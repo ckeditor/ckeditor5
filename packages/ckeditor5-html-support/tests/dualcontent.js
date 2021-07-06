@@ -59,9 +59,9 @@ describe( 'DualContentModelElementSupport', () => {
 		editor.setData( '<div><i>foo</i>bar<b>baz</b></div>' );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<htmlDivInline>' +
+			'<htmlDivParagraph>' +
 			'<$text italic="true">foo</$text>bar<$text bold="true">baz</$text>' +
-			'</htmlDivInline>'
+			'</htmlDivParagraph>'
 		);
 
 		expect( editor.getData() ).to.equal( '<div><i>foo</i>bar<strong>baz</strong></div>' );
@@ -73,7 +73,7 @@ describe( 'DualContentModelElementSupport', () => {
 		editor.setData( '<div>foo<br>bar</div>' );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<htmlDivInline>foo<softBreak></softBreak>bar</htmlDivInline>'
+			'<htmlDivParagraph>foo<softBreak></softBreak>bar</htmlDivParagraph>'
 		);
 
 		expect( editor.getData() ).to.equal( '<div>foo<br>bar</div>' );
@@ -109,7 +109,7 @@ describe( 'DualContentModelElementSupport', () => {
 		editor.setData( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
 
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			'<htmlDiv><htmlDivInline>inline</htmlDivInline><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>'
+			'<htmlDiv><htmlDivParagraph>inline</htmlDivParagraph><htmlDiv><paragraph>sectioning</paragraph></htmlDiv></htmlDiv>'
 		);
 
 		expect( editor.getData() ).to.equal( '<div><div>inline</div><div><p>sectioning</p></div></div>' );
@@ -123,7 +123,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<htmlDiv htmlAttributes="(1)"><paragraph>foobar</paragraph></htmlDiv>' +
-			'<htmlDivInline htmlAttributes="(2)">foobar</htmlDivInline>',
+			'<htmlDivParagraph htmlAttributes="(2)">foobar</htmlDivParagraph>',
 			attributes: {
 				1: {
 					attributes: { 'data-foo': '' }
@@ -146,7 +146,7 @@ describe( 'DualContentModelElementSupport', () => {
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data: '<htmlDiv><paragraph>foobar</paragraph></htmlDiv>' +
-			'<htmlDivInline>foobar</htmlDivInline>',
+			'<htmlDivParagraph>foobar</htmlDivParagraph>',
 			attributes: {}
 		} );
 

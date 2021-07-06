@@ -31,7 +31,7 @@ import DataFilter from '../datafilter';
  * If element contains any block element, it will be treated as a sectioning element and registered using
  * {@link module:html-support/dataschema~DataSchemaDefinition#model} and
  * {@link module:html-support/dataschema~DataSchemaDefinition#modelSchema} in editor schema.
- * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#textModel} model
+ * Otherwise, it will be registered under {@link module:html-support/dataschema~DataSchemaBlockElementDefinition#paragraphLikeModel} model
  * name with model schema accepting only inline content (inheriting from `$block`).
  *
  * @extends module:core/plugin~Plugin
@@ -49,22 +49,22 @@ export default class DualContentModelElementSupport extends Plugin {
 			const schema = editor.model.schema;
 			const conversion = editor.conversion;
 
-			if ( !definition.textModel ) {
+			if ( !definition.paragraphLikeModel ) {
 				return;
 			}
 
 			// Can only apply to newly registered features.
-			if ( schema.isRegistered( definition.model ) || schema.isRegistered( definition.textModel ) ) {
+			if ( schema.isRegistered( definition.model ) || schema.isRegistered( definition.paragraphLikeModel ) ) {
 				return;
 			}
 
-			const textModelDefinition = {
-				model: definition.textModel,
+			const paragraphLikeModelDefinition = {
+				model: definition.paragraphLikeModel,
 				view: definition.view
 			};
 
 			schema.register( definition.model, definition.modelSchema );
-			schema.register( textModelDefinition.model, {
+			schema.register( paragraphLikeModelDefinition.model, {
 				inheritAllFrom: '$block'
 			} );
 
@@ -75,7 +75,7 @@ export default class DualContentModelElementSupport extends Plugin {
 						return writer.createElement( definition.model );
 					}
 
-					return writer.createElement( textModelDefinition.model );
+					return writer.createElement( paragraphLikeModelDefinition.model );
 				},
 				// With a `low` priority, `paragraph` plugin auto-paragraphing mechanism is executed. Make sure
 				// this listener is called before it. If not, some elements will be transformed into a paragraph.
@@ -89,10 +89,10 @@ export default class DualContentModelElementSupport extends Plugin {
 			this._addAttributeConversion( definition );
 
 			conversion.for( 'downcast' ).elementToElement( {
-				view: textModelDefinition.view,
-				model: textModelDefinition.model
+				view: paragraphLikeModelDefinition.view,
+				model: paragraphLikeModelDefinition.model
 			} );
-			this._addAttributeConversion( textModelDefinition );
+			this._addAttributeConversion( paragraphLikeModelDefinition );
 
 			evt.stop();
 		} );
