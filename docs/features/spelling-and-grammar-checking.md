@@ -18,7 +18,7 @@ After reading this guide, you may find additional interesting details and exampl
 
 ## Demo
 
-See the spelling and grammar checking feature working in the editor below.
+Use the toolbar button {@icon @webspellchecker/wproofreader-ckeditor5/theme/icons/wproofreader.svg Spelling and grammar check} to test the spelling and grammar checking feature in the editor below.
 
 {@snippet features/wproofreader}
 
