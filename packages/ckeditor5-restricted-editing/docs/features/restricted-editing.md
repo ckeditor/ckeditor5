@@ -21,7 +21,7 @@ By using this feature, the users of your application will be able to create temp
 
 ## Demo
 
-The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode. Use the toolbar button to turn selected area into an editable region or to remove an existing one.
+The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode. Select a section of text and use the toolbar button {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} to turn selected area into an editable region or to remove an existing one.
 
 Then you can switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
