@@ -116,16 +116,6 @@ describe( 'FindAndReplace', () => {
 		describe( 'mocks', () => {
 			// Verifying mocks from https://github.com/ckeditor/ckeditor5/issues/9719#issuecomment-857557024.
 			it( 'has a proper initial state', () => {
-				// "Initial state" mock.
-				editor.setData( LONG_TEXT );
-
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
-				itemView.buttonView.fire( 'execute' );
-
 				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.false;
 				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
 				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
@@ -160,13 +150,6 @@ describe( 'FindAndReplace', () => {
 				// "No/one result found" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
-				// First search.
-				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'nothingtobefound';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -180,13 +163,6 @@ describe( 'FindAndReplace', () => {
 				// "No/one result found" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
-				// First search.
-				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'jujubes';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -200,13 +176,6 @@ describe( 'FindAndReplace', () => {
 				// "Found results" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
-				// First search.
-				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -225,6 +194,7 @@ describe( 'FindAndReplace', () => {
 					)[ 0 ];
 
 				itemView.buttonView.fire( 'execute' );
+
 				expect( itemView.panelView.isVisible ).to.be.true;
 			} );
 		} );
