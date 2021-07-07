@@ -566,7 +566,7 @@ export function remove() {
 	return ( evt, data, conversionApi ) => {
 		let viewRange = null;
 
-		if ( data.element ) {
+		if ( false && data.element ) {
 			const viewElement = conversionApi.mapper.toViewElement( data.element );
 
 			viewRange = conversionApi.writer.createRangeOn( viewElement );
@@ -580,12 +580,17 @@ export function remove() {
 			viewRange = conversionApi.writer.createRange( viewStart, viewEnd );
 		}
 
+		// TODO maybe range to remove should expand to contain every view element that is mapped to the same model element?
+		//  but then what about partly covered view? seems like wrong place for that
+		//  or maybe there should be another event and handler for rangeRemove that would clean view?
+
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
 		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
 
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
 		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
+			// TODO should conversionApi.unbindViewElement() be called to collect all the mappings before real removal?
 			conversionApi.mapper.unbindViewElement( child );
 		}
 	};
@@ -1074,6 +1079,146 @@ function insertStructure( elementCreator ) {
 			}
 		}
 	};
+}
+
+export function insertSlotted( data, conversionApi, elementCreator ) {
+	const { writer, mapper, consumable } = conversionApi;
+
+	// Scan for elements and it's current mapped view elements.
+	const elements = Array.from( data.range.getItems( { shallow: true } ) );
+	const consumables = data.consumables || elements.map( element => [ element, 'insert' ] );
+
+	// Verify if all consumables are available to be consumed.
+	for ( const [ item, eventName ] of consumables ) {
+		if ( !consumable.test( item, eventName ) ) {
+			return;
+		}
+	}
+
+	const slotsMap = new Map();
+
+	// View creation.
+	const viewElement = elementCreator( {
+		...conversionApi,
+		slotFor( element, mode = 'children' ) {
+			const slot = writer.createContainerElement( '$slot' );
+
+			if ( slotsMap.has( element ) ) {
+				slotsMap.get( element ).push( { slot, mode } );
+			} else {
+				slotsMap.set( element, [ { slot, mode } ] );
+			}
+
+			return slot;
+		}
+	} );
+
+	// Insert the new structure if any was created. Otherwise it's removed.
+	if ( !viewElement ) {
+		return;
+	}
+
+	// Consume consumables.
+	for ( const [ item, eventName ] of consumables ) {
+		if ( !consumable.consume( item, eventName ) ) {
+			return;
+		}
+	}
+
+	const viewPosition = mapper.toViewPosition( data.range.start );
+
+	// TODO make sure that provided viewElement has no bindings (else there could be an infinite loop).
+
+	mapper.bindElements( elements[ 0 ], viewElement );
+	writer.insert( viewPosition, viewElement );
+
+	mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'high' } );
+
+	// Fill slots with nested view nodes.
+	for ( const [ element, elementSlots ] of slotsMap.entries() ) {
+		for ( const { slot, mode } of elementSlots ) {
+			// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
+
+			if ( mode == 'children' ) {
+				// Bind slot with element so children will be down-casted into it.
+				mapper.bindElements( element, slot );
+
+				for ( const modelChildNode of element.getChildren() ) {
+					const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
+
+					if ( data.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
+						writer.move(
+							writer.createRangeOn( viewChildNode ),
+							mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+						);
+						console.log( 'reused old view for', modelChildNode );
+					} else {
+						// TODO this should be exposed by conversionApi?
+						// Note that this is not creating another consumable, it's using the current one.
+						conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+					}
+				}
+
+				writer.move( writer.createRangeIn( slot ), writer.createPositionBefore( slot ) );
+				writer.remove( slot );
+
+				// Rebind the original view element to the correct model element.
+				mapper.bindElements( element, viewElement );
+			} else if ( mode == 'self' ) {
+				// const currentViewElement = currentMapping.get( element );
+
+				// Bind slot parents to the element so they could be found while reconverting.
+				// TODO probably all parents that have no mapping yet (so excluding main viewElement)
+				mapper.bindElements( element, slot.parent );
+
+				// if ( data.reconversion && currentViewElement && currentViewElement.root != viewElement.root ) {
+				// 	writer.move(
+				// 		writer.createRangeOn( currentViewElement ),
+				// 		mapper.toViewPosition( ModelPosition._createBefore( element ) )
+				// 	);
+				// 	console.log( 'reused old view for element at', ModelPosition._createBefore( element ).path, '->', currentViewElement );
+				//
+				// 	// Rebind the original view element to the correct model element.
+				// 	mapper.bindElements( element, currentViewElement );
+				// } else {
+					// TODO this should be exposed by conversionApi?
+					// Note that this is not creating another consumable, it's using the current one.
+					conversionApi.dispatcher._convertInsert( ModelRange._createOn( element ) );
+				// }
+
+				writer.remove( slot );
+			} else {
+				// TODO callback check (for example tbody vs thead)
+			}
+		}
+	}
+
+	mapper.off( 'modelToViewPosition', toViewPositionMapping );
+
+	// // After reconversion is done we can unbind the old view.
+	// for ( const currentView of currentViewElements ) {
+	// 	if ( currentView.root != viewElement.root ) {
+	// 		mapper.unbindViewElement( currentView );
+	// 	}
+	// }
+
+	function toViewPositionMapping( evt, data ) {
+		if ( data.isPhantom || data.viewPosition ) {
+			return;
+		}
+
+		const elementSlots = slotsMap.get( data.modelPosition.nodeAfter );
+
+		if ( !elementSlots ) {
+			return;
+		}
+
+		// TODO conditional slots?
+
+		if ( elementSlots[ 0 ].mode == 'self' ) {
+			data.viewPosition = writer.createPositionBefore( elementSlots[ 0 ].slot );
+		}
+	}
 }
 
 /**
@@ -1670,6 +1815,12 @@ function downcastRangeToStructure( config ) {
 		if ( config.triggerBy ) {
 			// TODO trigger by for nested inside blockquote
 			dispatcher.on( 'magicTrigger', createMagicHandler( config, { magicUid } ) );
+
+			dispatcher.on( 'magicRange', ( evt, data ) => {
+				if ( magicUid == data.magicUid ) {
+					evt.return = config.model( data.element );
+				}
+			} );
 		}
 	};
 }
@@ -1952,13 +2103,12 @@ function createMagicHandler( config, auxData = null ) {
 	if ( typeof config.triggerBy == 'function' ) {
 		return ( evt, diffItem ) => {
 			const data = config.triggerBy( diffItem );
-			// data.range, data.consumables
 
-			if ( !data || !data.range ) {
+			if ( !data ) {
 				return;
 			}
 
-			evt.return = { ...auxData, type: 'range', ...data };
+			evt.return = { ...auxData, type: 'range' };
 			evt.stop();
 		};
 	}

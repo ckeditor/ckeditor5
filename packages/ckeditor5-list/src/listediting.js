@@ -19,6 +19,8 @@ import {
 	viewToModelPosition, isList
 } from './converters';
 import { createViewListItemElement } from './utils';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
+import { insertSlotted } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
@@ -92,257 +94,277 @@ export default class ListEditing extends Plugin {
 		}
 
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
-		editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
-		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
+		// editing.mapper.on( 'modelToViewPosition', modelToViewPosition );
+		// data.mapper.on( 'modelToViewPosition', modelToViewPosition );
 
-		function modelToViewPosition( evt, data ) {
-			if ( data.isPhantom || data.viewPosition ) {
-				return;
-			}
+		// function modelToViewPosition( evt, data ) {
+		// 	if ( data.isPhantom || data.viewPosition ) {
+		// 		return;
+		// 	}
+		//
+		// 	const modelItem = data.modelPosition.nodeAfter;
+		//
+		// 	if ( !isListItem( modelItem ) ) {
+		// 		return;
+		// 	}
+		//
+		// 	const firstModelItem = findFirstSameListItemEntry( modelItem ) || modelItem;
+		// 	const viewElement = data.mapper.toViewElement( firstModelItem );
+		//
+		// 	if ( !viewElement ) {
+		// 		return;
+		// 	}
+		//
+		// 	const listView = viewElement.is( 'element', 'li' ) ? viewElement : viewElement.findAncestor( 'li' );
+		//
+		// 	if ( !listView ) {
+		// 		return;
+		// 	}
+		//
+		// 	data.viewPosition = editing.mapper.findPositionIn( listView, data.modelPosition.offset - firstModelItem.startOffset );
+		// }
 
-			const modelItem = data.modelPosition.nodeAfter;
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			// An abstract name of the model structure conversion.
+			const magicUid = uid();
 
-			if ( !isListItem( modelItem ) ) {
-				return;
-			}
+			dispatcher.on( 'reduceChanges', ( evt, data ) => {
+				const changes = [];
 
-			const firstModelItem = findFirstSameListItemEntry( modelItem ) || modelItem;
-			const viewElement = data.mapper.toViewElement( firstModelItem );
+				for ( const change of data.changes ) {
+					if ( isListItemChange( change ) ) {
+						const position = change.position || change.range.start;
 
-			if ( !viewElement ) {
-				return;
-			}
+						const otherChange = changes.find( entry => (
+							entry.type == 'range' &&
+							entry.magicUid == magicUid &&
+							entry.range.containsPosition( position ) &&
+							entry.range.start.path.length == position.path.length
+						) );
 
-			const listView = viewElement.is( 'element', 'li' ) ? viewElement : viewElement.findAncestor( 'li' );
-
-			if ( !listView ) {
-				return;
-			}
-
-			data.viewPosition = editing.mapper.findPositionIn( listView, data.modelPosition.offset - firstModelItem.startOffset );
-		}
-
-		editor.conversion.for( 'downcast' ).rangeToStructure( {
-			triggerBy: diffItem => {
-				if ( diffItem.name == '$text' ) {
-					return;
-				}
-
-				const consumables = [];
-				let startElement = null;
-				let endElement = null;
-
-				switch ( diffItem.type ) {
-					case 'attribute': {
-						if ( ![ 'listIndent', 'listType', 'listItem' ].includes( diffItem.attributeKey ) ) {
-							return;
-						}
-
-						const nodeBefore = diffItem.range.start.nodeBefore;
-						const nodeAfter = diffItem.range.start.nodeAfter;
-
-						// The attribute was set.
-						if ( diffItem.attributeNewValue ) {
-							startElement = nodeAfter;
-						}
-						// The attribute was removed but the previous item has the attribute.
-						else if ( isListItem( nodeBefore ) ) {
-							startElement = nodeBefore;
-							endElement = nodeAfter;
-						}
-						// The attribute was removed but the element after that has it.
-						else if ( isListItem( nodeAfter.nextSibling ) ) {
-							startElement = nodeAfter;
-							endElement = nodeAfter.nextSibling;
+						// Range is already marked for reconversion, so skip this change.
+						if ( otherChange ) {
+							otherChange.related.push( change );
 						} else {
-							// TODO what if the whole range of elements got listItem attribute removed
-							//  this should trigger reconversion but we need to know the range to reconvert
+							const changedElement = position.nodeAfter;
+							const { range, consumables } = findListConversionRangeAndConsumables( changedElement, editor );
+
+							// // TODO this should check if there is a multi-multi mapping for that range
+							// if ( editor.editing.mapper.toViewElement( changedElement ) ) {
+							// 	changes.push( {
+							// 		type: 'remove',
+							// 		position: range.start,
+							// 		length: range.end.offset - range.start.offset
+							// 	} );
+							// }
+
+							changes.push( {
+								type: 'range',
+								related: [ change ],
+								magicUid,
+								range,
+								consumables
+							} );
 						}
-
-						console.log( 'trigger - attribute change at', diffItem.range.start.path );
-
-						break;
-					}
-
-					case 'insert': {
-						startElement = diffItem.position.nodeAfter;
-
-						if ( !startElement.hasAttribute( 'listItem' ) ) {
-							return;
-						}
-
-						console.log( 'trigger - insert at', diffItem.position.path );
-
-						break;
-					}
-
-					case 'remove': {
-						if ( !diffItem.attributes.has( 'listItem' ) ) {
-							return;
-						}
-
-						const nodeBefore = diffItem.position.nodeBefore;
-						const nodeAfter = diffItem.position.nodeAfter;
-
-						console.log( 'trigger - remove at', diffItem.position.path );
-
-						if ( isListItem( nodeBefore ) ) {
-							startElement = nodeBefore;
-						} else if ( isListItem( nodeAfter ) ) {
-							startElement = nodeAfter;
-						} else {
-							// Collapsed range to indicate the deletion of the whole structure that starts at that position.
-							return {
-								type: 'remove',
-								range: editor.model.createRange( diffItem.position )
-							};
-						}
-
-						break;
-					}
-				}
-
-				if ( !startElement ) {
-					return;
-				}
-
-				addConsumable( startElement );
-
-				if ( endElement ) {
-					addConsumable( endElement );
-				} else {
-					endElement = startElement;
-				}
-
-				let node;
-
-				while ( ( node = startElement.previousSibling ) && isListItem( node ) ) {
-					startElement = node;
-					addConsumable( node );
-				}
-
-				while ( ( node = endElement.nextSibling ) && isListItem( node ) ) {
-					endElement = node;
-					addConsumable( node );
-				}
-
-				const range = editor.model.createRange(
-					editor.model.createPositionBefore( startElement ),
-					editor.model.createPositionAfter( endElement )
-				);
-
-				return {
-					range,
-					consumables
-				};
-
-				function addConsumable( node ) {
-					for ( const attribute of [ 'listItem', 'listType', 'listIndent' ] ) {
-						if ( node.hasAttribute( attribute ) ) {
-							consumables.push( [ node, `attribute:${ attribute }` ] );
-						}
-					}
-				}
-			},
-			view: ( range, { writer, slotFor } ) => {
-				const modelElements = Array.from( range.getItems( { shallow: true } ) );
-
-				if ( !modelElements.length ) {
-					return null;
-				}
-
-				console.log( 'creating view' );
-
-				const viewLists = [];
-				const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-
-				let viewList = writer.createContainerElement( listType );
-
-				viewLists.push( viewList );
-
-				// let previousItem = null;
-
-				for ( const modelItem of modelElements ) {
-					if ( isListItem( modelItem ) ) {
-						const viewItem = createViewListItemElement( writer );
-
-						writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-						writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
 					} else {
-						// Some other element that lost it's list item properties.
-						viewList = writer.createContainerElement( listType );
-
-						viewLists.push( viewList );
-
-						writer.insert( writer.createPositionAt( viewList, 'end' ), slotFor( modelItem, 'self' ) );
+						changes.push( change );
 					}
-
-					// const itemModelPosition = editor.model.createPositionBefore( modelItem );
-					//
-					// // Don't insert ol/ul or li if this is a continuation of some other list item.
-					// const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
-					//
-					// console.log( 'converting', modelItem ); // eslint-disable-line
-					//
-					// consumable.consume( modelItem, 'attribute:listItem' );
-					// consumable.consume( modelItem, 'attribute:listType' );
-					// consumable.consume( modelItem, 'attribute:listIndent' );
-					//
-					// if ( isFirstInListItem ) {
-					// 	console.log( 'create list item' ); // eslint-disable-line
-					// 	let viewList;
-					//
-					// 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-					// 	const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
-					//
-					// 	// First element of the top level list.
-					// 	if (
-					// 		!previousIsListItem ||
-					// 		modelItem.getAttribute( 'listIndent' ) == 0 &&
-					// 		previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
-					// 	) {
-					// 		viewList = writer.createContainerElement( listType );
-					// 		writer.insert( mapper.toViewPosition( itemModelPosition ), viewList );
-					// 	}
-					//
-					// 	// Deeper nested list.
-					// 	else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
-					// 		const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
-					//
-					// 		viewList = writer.createContainerElement( listType );
-					// 		writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
-					// 	}
-					//
-					// 	// Same or shallower level.
-					// 	else {
-					// 		viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
-					//
-					// 		for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
-					// 			viewList = viewList.findAncestor( isList );
-					// 		}
-					// 	}
-					//
-					// 	// Inserting the li.
-					// 	const viewItem = createViewListItemElement( writer );
-					//
-					// 	writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-					// 	mapper.bindElements( modelItem, viewList );
-					// 	mapper.bindElements( modelItem, viewItem );
-					//
-					// 	writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
-					// } else {
-					// 	writer.insert( mapper.toViewPosition( itemModelPosition ), slotFor( modelItem, 'self' ) );
-					// }
-					//
-					// previousItem = modelItem;
 				}
 
-				// TODO should this return a fragment that would consist multiple lists (with slots for elements between lists)?
-				//  but how should the mapping be handled then?
-				return viewList;
-				// return writer.createDocumentFragment( viewLists );
-			}
+				data.changes = changes;
+			} );
+
+			dispatcher.on( `insertRange:${ magicUid }`, ( evt, data, conversionApi ) => {
+				insertSlotted( data, conversionApi, conversionApi => (
+					buildViewForRange( data.range, conversionApi.writer, conversionApi.slotFor )
+				) );
+			} );
 		} );
+
+		// editor.conversion.for( 'downcast' ).rangeToStructure( {
+		// 	triggerBy: diffItem => {
+		// 		if ( diffItem.name == '$text' ) {
+		// 			return false;
+		// 		}
+		//
+		// 		switch ( diffItem.type ) {
+		// 			case 'attribute': {
+		// 				if ( ![ 'listIndent', 'listType', 'listItem' ].includes( diffItem.attributeKey ) ) {
+		// 					return false;
+		// 				}
+		//
+		// 				console.log( 'trigger - attribute change at', diffItem.range.start.path );
+		//
+		// 				return true;
+		// 			}
+		//
+		// 			case 'insert': {
+		// 				const node = diffItem.position.nodeAfter;
+		//
+		// 				if ( !node.hasAttribute( 'listItem' ) ) {
+		// 					return false;
+		// 				}
+		//
+		// 				// TODO this is the case that can't be handled by the declarative triggerBy
+		// 				//  maybe inserting node with watched attribute should trigger reconvert also in declarative API
+		// 				console.log( 'trigger - insert at', diffItem.position.path );
+		//
+		// 				return true;
+		// 			}
+		//
+		// 			case 'remove': {
+		// 				if ( !diffItem.attributes.has( 'listItem' ) ) {
+		// 					return false;
+		// 				}
+		//
+		// 				// TODO this is the case that can't be handled by the declarative triggerBy
+		// 				//  maybe removing node with watched attribute should trigger reconvert also in declarative API
+		// 				console.log( 'trigger - remove at', diffItem.position.path );
+		//
+		// 				return true;
+		// 			}
+		// 		}
+		//
+		// 		return false;
+		// 	},
+		// 	model: element => {
+		// 		const consumables = [];
+		//
+		// 		addConsumable( element, consumables );
+		//
+		// 		let node;
+		// 		let startElement = element;
+		// 		let endElement = element;
+		//
+		// 		while ( ( node = element.previousSibling ) && isListItem( node ) ) {
+		// 			startElement = node;
+		// 			addConsumable( node, consumables );
+		// 		}
+		//
+		// 		while ( ( node = endElement.nextSibling ) && isListItem( node ) ) {
+		// 			endElement = node;
+		// 			addConsumable( node, consumables );
+		// 		}
+		//
+		// 		const range = editor.model.createRange(
+		// 			editor.model.createPositionBefore( startElement ),
+		// 			editor.model.createPositionAfter( endElement )
+		// 		);
+		//
+		// 		console.log( 'conversion range', range.start.path, '-', range.end.path );
+		//
+		// 		return {
+		// 			range,
+		// 			consumables
+		// 		};
+		//
+		// 		function addConsumable( node, consumables ) {
+		// 			for ( const attribute of [ 'listItem', 'listType', 'listIndent' ] ) {
+		// 				if ( node.hasAttribute( attribute ) ) {
+		// 					consumables.push( [ node, `attribute:${ attribute }` ] );
+		// 				}
+		// 			}
+		// 		}
+		// 	},
+		// 	view: ( range, { writer, slotFor } ) => {
+		// 		const modelElements = Array.from( range.getItems( { shallow: true } ) );
+		//
+		// 		if ( !modelElements.length ) {
+		// 			return null;
+		// 		}
+		//
+		// 		console.log( 'creating view' );
+		//
+		// 		const viewLists = [];
+		// 		const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+		//
+		// 		let viewList = writer.createContainerElement( listType );
+		//
+		// 		viewLists.push( viewList );
+		//
+		// 		// let previousItem = null;
+		//
+		// 		for ( const modelItem of modelElements ) {
+		// 			if ( isListItem( modelItem ) ) {
+		// 				const viewItem = createViewListItemElement( writer );
+		//
+		// 				writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+		// 				writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+		// 			} else {
+		// 				// Some other element that lost it's list item properties.
+		// 				viewList = writer.createContainerElement( listType );
+		//
+		// 				viewLists.push( viewList );
+		//
+		// 				writer.insert( writer.createPositionAt( viewList, 'end' ), slotFor( modelItem, 'self' ) );
+		// 			}
+		//
+		// 			// const itemModelPosition = editor.model.createPositionBefore( modelItem );
+		// 			//
+		// 			// // Don't insert ol/ul or li if this is a continuation of some other list item.
+		// 			// const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
+		// 			//
+		// 			// console.log( 'converting', modelItem ); // eslint-disable-line
+		// 			//
+		// 			// consumable.consume( modelItem, 'attribute:listItem' );
+		// 			// consumable.consume( modelItem, 'attribute:listType' );
+		// 			// consumable.consume( modelItem, 'attribute:listIndent' );
+		// 			//
+		// 			// if ( isFirstInListItem ) {
+		// 			// 	console.log( 'create list item' ); // eslint-disable-line
+		// 			// 	let viewList;
+		// 			//
+		// 			// 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+		// 			// 	const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
+		// 			//
+		// 			// 	// First element of the top level list.
+		// 			// 	if (
+		// 			// 		!previousIsListItem ||
+		// 			// 		modelItem.getAttribute( 'listIndent' ) == 0 &&
+		// 			// 		previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
+		// 			// 	) {
+		// 			// 		viewList = writer.createContainerElement( listType );
+		// 			// 		writer.insert( mapper.toViewPosition( itemModelPosition ), viewList );
+		// 			// 	}
+		// 			//
+		// 			// 	// Deeper nested list.
+		// 			// 	else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
+		// 			// 		const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
+		// 			//
+		// 			// 		viewList = writer.createContainerElement( listType );
+		// 			// 		writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
+		// 			// 	}
+		// 			//
+		// 			// 	// Same or shallower level.
+		// 			// 	else {
+		// 			// 		viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
+		// 			//
+		// 			// 		for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
+		// 			// 			viewList = viewList.findAncestor( isList );
+		// 			// 		}
+		// 			// 	}
+		// 			//
+		// 			// 	// Inserting the li.
+		// 			// 	const viewItem = createViewListItemElement( writer );
+		// 			//
+		// 			// 	writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+		// 			// 	mapper.bindElements( modelItem, viewList );
+		// 			// 	mapper.bindElements( modelItem, viewItem );
+		// 			//
+		// 			// 	writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+		// 			// } else {
+		// 			// 	writer.insert( mapper.toViewPosition( itemModelPosition ), slotFor( modelItem, 'self' ) );
+		// 			// }
+		// 			//
+		// 			// previousItem = modelItem;
+		// 		}
+		//
+		// 		// TODO should this return a fragment that would consist multiple lists (with slots for elements between lists)?
+		// 		//  but how should the mapping be handled then?
+		// 		return viewList;
+		// 		// return writer.createDocumentFragment( viewLists );
+		// 	}
+		// } );
 
 		// editor.conversion.for( 'downcast' ).add( dispatcher => {
 		// 	dispatcher.on( 'insert', ( evt, data, { consumable, writer, mapper } ) => {
@@ -583,4 +605,173 @@ function findFirstSameListItemEntry( modelItem ) {
 
 function isListItem( node ) {
 	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItem' );
+}
+
+function isListItemChange( change ) {
+	if ( change.name == '$text' ) {
+		return false;
+	}
+
+	switch ( change.type ) {
+		case 'attribute': {
+			if ( ![ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
+				return false;
+			}
+
+			console.log( 'trigger - attribute change at', change.range.start.path );
+
+			return true;
+		}
+
+		case 'insert': {
+			const node = change.position.nodeAfter;
+
+			if ( !node.hasAttribute( 'listItem' ) ) {
+				return false;
+			}
+
+			// TODO this is the case that can't be handled by the declarative triggerBy
+			//  maybe inserting node with watched attribute should trigger reconvert also in declarative API
+			console.log( 'trigger - insert at', change.position.path );
+
+			return true;
+		}
+
+		case 'remove': {
+			if ( !change.attributes.has( 'listItem' ) ) {
+				return false;
+			}
+
+			// TODO this is the case that can't be handled by the declarative triggerBy
+			//  maybe removing node with watched attribute should trigger reconvert also in declarative API
+			console.log( 'trigger - remove at', change.position.path );
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function findListConversionRangeAndConsumables( element, editor ) {
+	const consumables = [];
+	addConsumable( element, consumables );
+
+	let node;
+	let startElement = element;
+	let endElement = element;
+
+	while ( ( node = startElement.previousSibling ) && isListItem( node ) ) {
+		startElement = node;
+		addConsumable( node, consumables );
+	}
+
+	while ( ( node = endElement.nextSibling ) && isListItem( node ) ) {
+		endElement = node;
+		addConsumable( node, consumables );
+	}
+
+	const range = editor.model.createRange(
+		editor.model.createPositionBefore( startElement ),
+		editor.model.createPositionAfter( endElement )
+	);
+
+	console.log( 'conversion range', range.start.path, '-', range.end.path );
+
+	return {
+		range,
+		consumables
+	};
+
+	function addConsumable( node, consumables ) {
+		for ( const attribute of [ 'listItem', 'listType', 'listIndent' ] ) {
+			if ( node.hasAttribute( attribute ) ) {
+				consumables.push( [ node, `attribute:${ attribute }` ] );
+			}
+		}
+	}
+}
+
+function buildViewForRange( range, writer, slotFor ) {
+	const modelElements = Array.from( range.getItems( { shallow: true } ) );
+
+	if ( !modelElements.length ) {
+		return null;
+	}
+
+	console.log( 'creating view' );
+
+	const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+
+	const viewList = writer.createContainerElement( listType );
+
+	// let previousItem = null;
+
+	for ( const modelItem of modelElements ) {
+		const viewItem = createViewListItemElement( writer );
+
+		writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+		writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+
+		// const itemModelPosition = editor.model.createPositionBefore( modelItem );
+		//
+		// // Don't insert ol/ul or li if this is a continuation of some other list item.
+		// const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
+		//
+		// console.log( 'converting', modelItem ); // eslint-disable-line
+		//
+		// consumable.consume( modelItem, 'attribute:listItem' );
+		// consumable.consume( modelItem, 'attribute:listType' );
+		// consumable.consume( modelItem, 'attribute:listIndent' );
+		//
+		// if ( isFirstInListItem ) {
+		// 	console.log( 'create list item' ); // eslint-disable-line
+		// 	let viewList;
+		//
+		// 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
+		// 	const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
+		//
+		// 	// First element of the top level list.
+		// 	if (
+		// 		!previousIsListItem ||
+		// 		modelItem.getAttribute( 'listIndent' ) == 0 &&
+		// 		previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
+		// 	) {
+		// 		viewList = writer.createContainerElement( listType );
+		// 		writer.insert( mapper.toViewPosition( itemModelPosition ), viewList );
+		// 	}
+		//
+		// 	// Deeper nested list.
+		// 	else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
+		// 		const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
+		//
+		// 		viewList = writer.createContainerElement( listType );
+		// 		writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
+		// 	}
+		//
+		// 	// Same or shallower level.
+		// 	else {
+		// 		viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
+		//
+		// 		for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
+		// 			viewList = viewList.findAncestor( isList );
+		// 		}
+		// 	}
+		//
+		// 	// Inserting the li.
+		// 	const viewItem = createViewListItemElement( writer );
+		//
+		// 	writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
+		// 	mapper.bindElements( modelItem, viewList );
+		// 	mapper.bindElements( modelItem, viewItem );
+		//
+		// 	writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
+		// } else {
+		// 	writer.insert( mapper.toViewPosition( itemModelPosition ), slotFor( modelItem, 'self' ) );
+		// }
+		//
+		// previousItem = modelItem;
+	}
+
+	return viewList;
 }

@@ -138,7 +138,19 @@ export default class DowncastDispatcher {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
-		const changes = this._mapChangesWithAutomaticReconversion( differ );
+		const reduceChangesData = {
+			changes: differ.getChanges()
+		};
+
+		this.fire( 'reduceChanges', reduceChangesData );
+
+		const changes = reduceChangesData.changes;
+		// const changes = this._mapChangesWithAutomaticReconversion( differ );
+
+		// TODO for range conversion:
+		//  - separate removeRange and insertRange
+		//  - the non-list elements between/before/after list should be converted as normal insert
+		//  - keep mappings locally for removed view elements so they could be reused
 
 		console.log( 'changes', changes );
 
@@ -294,7 +306,7 @@ export default class DowncastDispatcher {
 		const elements = Array.from( range.getItems( { shallow: true } ) );
 
 		// Trigger single insert for magic conversion.
-		this.fire( 'magic:' + data.magicUid, {
+		this.fire( 'insertRange:' + data.magicUid, {
 			...data,
 			reconversion: !!mapper.toViewElement( elements[ 0 ] ) // TODO is this needed?
 		}, this.conversionApi );
@@ -619,8 +631,8 @@ export default class DowncastDispatcher {
 	_mapChangesWithAutomaticReconversion( differ ) {
 		const updated = [];
 
-		for ( const entry of differ.getChanges() ) {
-			const data = this.fire( 'magicTrigger', entry ); // { range, magicUid }
+		for ( const diffItem of differ.getChanges() ) {
+			const data = this.fire( 'magicTrigger', diffItem ); // { range, magicUid }
 
 			if ( data ) {
 				// Single element reconversion.
@@ -633,41 +645,43 @@ export default class DowncastDispatcher {
 
 					// Range is already marked for reconversion, so skip this change.
 					if ( otherChange ) {
-						otherChange.related.push( entry );
+						otherChange.related.push( diffItem );
 					} else {
 						// Add special "reconvert" change.
 						updated.push( {
 							...data,
 							type: data.type,
-							related: [ entry ]
+							related: [ diffItem ]
 						} );
 					}
 				}
 				// A range reconversion.
 				else if ( data.type == 'range' ) {
-					// TODO make sure those are not intersecting.
 					const otherChange = updated.find( entry => (
 						entry.type == data.type &&
 						entry.magicUid == data.magicUid &&
-						( entry.range.isEqual( data.range ) || entry.range.isIntersecting( data.range ) )
+						entry.range.containsPosition( diffItem.position || diffItem.range.start )
 					) );
 
 					// Range is already marked for reconversion, so skip this change.
 					if ( otherChange ) {
-						otherChange.range = otherChange.range.getJoined( data.range );
-						otherChange.related.push( entry );
+						// otherChange.range = otherChange.range.getJoined( data.range );
+						otherChange.related.push( diffItem );
 					} else {
 						// Add special "range" change.
 						updated.push( {
 							...data,
 							type: data.type,
-							related: [ entry ]
+							related: [ diffItem ],
+							...this.fire( 'magicRange', {
+								magicUid: data.magicUid,
+								element: ( diffItem.position || diffItem.range.start ).nodeAfter
+							} )
 						} );
 					}
 				}
 				// A range removed as a whole.
 				else if ( data.type == 'remove' ) {
-					// TODO make sure those are not intersecting.
 					const otherChange = updated.find( entry => (
 						entry.type == data.type &&
 						entry.range &&
@@ -677,13 +691,13 @@ export default class DowncastDispatcher {
 
 					// Range is already marked for reconversion, so skip this change.
 					if ( otherChange ) {
-						otherChange.length += entry.length;
+						otherChange.length += diffItem.length;
 					} else {
 						updated.push( {
 							...data,
 							type: data.type,
 							position: data.range.start,
-							length: entry.length
+							length: diffItem.length
 						} );
 					}
 				} else {
@@ -691,7 +705,7 @@ export default class DowncastDispatcher {
 					throw new Error( 'invalid type' );
 				}
 			} else {
-				updated.push( entry );
+				updated.push( diffItem );
 			}
 		}
 
