@@ -41,7 +41,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-select-all"
+    "directory": "packages/ckeditor5-minimap"
   },
   "files": [
     "lang",

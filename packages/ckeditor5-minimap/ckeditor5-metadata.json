@@ -3,7 +3,7 @@
 		{
 			"name": "Content minimap",
 			"className": "Minimap",
-			"description": "Renders a content minimap which, when placed next to the editor, helps users navigate their content",
+			"description": "Renders a minimap that helps users navigate editor content.",
 			"docs": "features/minimap.html",
 			"path": "src/minimap.js"
 		}
