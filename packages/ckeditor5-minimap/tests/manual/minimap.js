@@ -126,7 +126,8 @@ async function startSimpleMinimapMode() {
 	await reloadEditor( {
 		...config,
 		minimap: {
-			useSimplePreview: true
+			useSimplePreview: true,
+			container: document.querySelector( '.minimap-container' )
 		}
 	} );
 }
