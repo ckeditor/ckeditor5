@@ -124,7 +124,7 @@ describe( 'FindAndReplace', () => {
 						item.buttonView && item.buttonView.tooltip == 'Find and replace'
 					)[ 0 ];
 
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 
 				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.false;
 				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
@@ -141,14 +141,14 @@ describe( 'FindAndReplace', () => {
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 				// Close the panel.
 				itemView.isOpen = false;
 
 				// Second search, should retain search text.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 
 				expect( findAndReplaceUI.formView.findInputView.fieldView.value ).to.equal( 'cake' );
 				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.true;
@@ -166,7 +166,7 @@ describe( 'FindAndReplace', () => {
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'nothingtobefound';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -186,7 +186,7 @@ describe( 'FindAndReplace', () => {
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'jujubes';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -206,7 +206,7 @@ describe( 'FindAndReplace', () => {
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -224,8 +224,7 @@ describe( 'FindAndReplace', () => {
 						item.buttonView && item.buttonView.tooltip == 'Find and replace'
 					)[ 0 ];
 
-				itemView.buttonView.arrowView.fire( 'execute' );
-
+				itemView.buttonView.fire( 'execute' );
 				expect( itemView.panelView.isVisible ).to.be.true;
 			} );
 		} );
