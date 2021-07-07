@@ -46,7 +46,8 @@
     "lang",
     "src",
     "theme",
-    "build"
+    "build",
+    "ckeditor5-metadata.json"
   ],
   "depcheckIgnore": [
     "collapse-whitespace",
