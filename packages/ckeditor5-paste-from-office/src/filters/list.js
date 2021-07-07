@@ -247,8 +247,6 @@ function findListMarkerNode( element ) {
 
 		return textNodeOrElement.getChild( 0 );
 	}
-
-	return null;
 }
 
 // Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
