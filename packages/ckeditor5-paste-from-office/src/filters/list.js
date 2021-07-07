@@ -231,18 +231,24 @@ function findListMarkerNode( element ) {
 		return null;
 	}
 
-	// The list-style marker will be inside the `<span>` element. Let's ignore all non-span elements.
-	// It may happen that the `<a>` element is added as the first child. Most probably, it's an anchor element.
-	let textNodeOrElement = [ ...element.getChildren() ].filter( element => element.is( 'element', 'span' ) );
-	textNodeOrElement = textNodeOrElement[ 0 ].getChild( 0 );
+	for ( const childNode of element.getChildren() ) {
+		// The list-style marker will be inside the `<span>` element. Let's ignore all non-span elements.
+		// It may happen that the `<a>` element is added as the first child. Most probably, it's an anchor element.
+		if ( !childNode.is( 'element', 'span' ) ) {
+			continue;
+		}
 
-	// If already found the marker element, use it.
-	if ( textNodeOrElement.is( '$text' ) ) {
-		return textNodeOrElement;
+		const textNodeOrElement = childNode.getChild( 0 );
+
+		// If already found the marker element, use it.
+		if ( textNodeOrElement.is( '$text' ) ) {
+			return textNodeOrElement;
+		}
+
+		return textNodeOrElement.getChild( 0 );
 	}
 
-	// Otherwise, it will be as the first children.
-	return textNodeOrElement.getChild( 0 );
+	return null;
 }
 
 // Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
