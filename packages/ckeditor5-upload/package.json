@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-upload",
-  "version": "28.0.0",
+  "version": "29.0.0",
   "description": "Upload Feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -11,9 +11,9 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^28.0.0",
-    "@ckeditor/ckeditor5-utils": "^28.0.0",
-    "@ckeditor/ckeditor5-ui": "^28.0.0"
+    "@ckeditor/ckeditor5-core": "^29.0.0",
+    "@ckeditor/ckeditor5-utils": "^29.0.0",
+    "@ckeditor/ckeditor5-ui": "^29.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

@@ -3,7 +3,7 @@
 		{
 			"name": "Auto image",
 			"className": "AutoImage",
-			"description": "Allows for inserting images simply by pasting a URL to the image into the content. Turns the pasted URL into an image on the go.",
+			"description": "Allows for inserting images simply by pasting a URL of the image into the content. It turns the pasted URL into an image on the go.",
 			"docs": "features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor",
 			"path": "src/autoimage.js",
 			"requires": [
@@ -195,7 +195,7 @@
 		{
 			"name": "Image upload",
 			"className": "ImageUpload",
-			"description": "Allows for pasting images from clipboard, dragging and dropping images, selecting them through a file system dialog or from a media management tool. You need to set this plugin up with an official or custom upload adapter.",
+			"description": "Allows for pasting images from the clipboard, dragging and dropping of images, selecting them through a file system dialog or from a media management tool. You need to set this plugin up with an official or a custom upload adapter.",
 			"docs": "features/images/image-upload/image-upload.html",
 			"path": "src/imageupload.js",
 			"requires": [
