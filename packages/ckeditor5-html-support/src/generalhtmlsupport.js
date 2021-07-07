@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import DataFilter from './datafilter';
 import CodeBlockHtmlSupport from './integrations/codeblock';
+import TableElementSupport from './integrations/table';
 
 /**
  * The General HTML Support feature.
@@ -42,7 +43,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	static get requires() {
 		return [
 			DataFilter,
-			CodeBlockHtmlSupport
+			CodeBlockHtmlSupport,
+			TableElementSupport
 		];
 	}
 }
