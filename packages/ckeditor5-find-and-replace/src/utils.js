@@ -104,21 +104,20 @@ function findInsertIndex( resultsList, markerToInsert ) {
 }
 
 function regexpMatchToFindResult( matchResult ) {
-	// In case of match words option the matching results contain indices so that we work on
-	// offset where a subject match group was (as opposed to working on entire matched string).
-	if ( matchResult.indices ) {
-		return {
-			label: matchResult[ 1 ],
-			start: matchResult.indices[ 1 ][ 0 ],
-			end: matchResult.indices[ 1 ][ 1 ]
-		};
-	} else {
-		return {
-			label: matchResult[ 1 ],
-			start: matchResult.index,
-			end: matchResult.index + matchResult[ 1 ].length
-		};
+	const lastGroupIndex = matchResult.length - 1;
+
+	let startOffset = matchResult.index;
+
+	// Searches with match all flag have an extra matching group with empty string or white space matched before the word.
+	if ( matchResult.length === 3 ) {
+		startOffset += matchResult[ 1 ].length;
 	}
+
+	return {
+		label: matchResult[ lastGroupIndex ],
+		start: startOffset,
+		end: startOffset + matchResult[ lastGroupIndex ].length
+	};
 }
 
 /**
@@ -139,11 +138,9 @@ export function findByTextCallback( searchTerm, options ) {
 	let regExpQuery = `(${ escapeRegExp( searchTerm ) })`;
 
 	if ( options.wholeWords ) {
-		flags += 'd'; // Special groups so that regexp indices are available.
-
 		const nonLetterGroup = '[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]';
 
-		regExpQuery = `(?:^|${ nonLetterGroup }|_)` + regExpQuery + `(?:_|${ nonLetterGroup }|$)`;
+		regExpQuery = `(^|${ nonLetterGroup }|_)` + regExpQuery + `(?:_|${ nonLetterGroup }|$)`;
 	}
 
 	const regExp = new RegExp( regExpQuery, flags );

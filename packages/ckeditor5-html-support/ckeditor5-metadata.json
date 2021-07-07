@@ -15,6 +15,27 @@
 					"_comment": "The plugin can output any arbitrary HTML configured by config.htmlSupport option."
 				}
 			]
+		},
+		{
+			"name": "Data Filter",
+			"className": "DataFilter",
+			"description": "Adds support for enabling and disabling HTML features and their attributes. Part of General HTML Support feature.",
+			"path": "src/datafilter.js",
+			"htmlOutput": [
+				{
+					"elements": "*",
+					"attributes": "*",
+					"classes": "*",
+					"styles": "*",
+					"_comment": "The plugin can output any arbitrary HTML depending on its configuration."
+				}
+			]
+		},
+		{
+			"name": "Data Schema",
+			"className": "DataSchema",
+			"description": "Holds representation of the extended HTML document type definitions. Part of General HTML Support feature.",
+			"path": "src/dataschema.js"
 		}
 	]
 }
