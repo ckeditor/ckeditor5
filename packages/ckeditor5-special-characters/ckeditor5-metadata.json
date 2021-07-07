@@ -3,7 +3,7 @@
 		{
 			"name": "Special characters",
 			"className": "SpecialCharacters",
-			"description": "Allows for inserting special characters via a dropdown. This is the core part of the feature. Add plugins like special characters essentials or special characters currency to fill it with some signs.",
+			"description": "Allows for inserting special characters via a dropdown. This is the core part of the feature. Add plugins like special characters essentials or special characters currency to fill it with some characters.",
 			"docs": "features/special-characters.html",
 			"path": "src/specialcharacters.js",
 			"uiComponents": [
@@ -17,7 +17,7 @@
 		{
 			"name": "Special characters essentials",
 			"className": "SpecialCharactersEssentials",
-			"description": "Adds a basic set with the most popular signs to the special characters feature.",
+			"description": "Adds a basic set with the most popular characters to the special characters feature.",
 			"docs": "features/special-characters.html",
 			"path": "src/specialcharactersessentials.js",
 			"requires": [
@@ -47,7 +47,7 @@
 		{
 			"name": "Special characters latin",
 			"className": "SpecialCharactersLatin",
-			"description": "Adds the Latin category and signs to the special characters feature.",
+			"description": "Adds the Latin category and characters to the special characters feature.",
 			"docs": "features/special-characters.html",
 			"path": "src/specialcharacterslatin.js",
 			"requires": [
@@ -57,7 +57,7 @@
 		{
 			"name": "Special characters mathematical",
 			"className": "SpecialCharactersMathematical",
-			"description": "Adds the mathematical category and signs to the special characters feature.",
+			"description": "Adds the mathematical category and symbols to the special characters feature.",
 			"docs": "features/special-characters.html",
 			"path": "src/specialcharactersmathematical.js",
 			"requires": [
@@ -67,7 +67,7 @@
 		{
 			"name": "Special characters text",
 			"className": "SpecialCharactersText",
-			"description": "Adds the text category and signs to the special characters feature.",
+			"description": "Adds the text category and characters to the special characters feature.",
 			"docs": "features/special-characters.html",
 			"path": "src/specialcharacterstext.js",
 			"requires": [

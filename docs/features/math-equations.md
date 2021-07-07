@@ -18,7 +18,7 @@ Additionally, MathType offers a special tool designed to help you work with chem
 
 ## Demo
 
-In order to start creating math or chemical formulas in the WYSIWYG editor below, click the MathType or ChemType buttons in the toolbar. This will open the relevant dialog on the screen.
+To start creating math or chemical formulas in the WYSIWYG editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog on the screen.
 
 Use the toolbar to write your equation or formula. At any time you can also click the "Go to handwritten mode" button on the right side of the MathType editor to switch to handwriting.
 

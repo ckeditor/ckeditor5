@@ -25,7 +25,7 @@ import { createImageTypeRegExp } from './utils';
  * The editing part of the image upload feature. It registers the `'uploadImage'` command
  * and the `imageUpload` command as an aliased name.
  *
- * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete` event}
+ * When an image is uploaded, it fires the {@link ~ImageUploadEditing#event:uploadComplete `uploadComplete`} event
  * that allows adding custom attributes to the {@link module:engine/model/element~Element image element}.
  *
  * @extends module:core/plugin~Plugin
@@ -53,6 +53,21 @@ export default class ImageUploadEditing extends Plugin {
 				types: [ 'jpeg', 'png', 'gif', 'bmp', 'webp', 'tiff' ]
 			}
 		} );
+
+		/**
+		 * An internal mapping of {@link module:upload/filerepository~FileLoader#id file loader UIDs} and
+		 * model elements during the upload.
+		 *
+		 * Model element of the uploaded image can change, for instance, when {@link module:image/image/imagetypecommand~ImageTypeCommand}
+		 * is executed as a result of adding caption or changing image style. As a result, the upload logic must keep track of the model
+		 * element (reference) and resolve the upload for the correct model element (instead of the one that landed in the `$graveyard`
+		 * after image type changed).
+		 *
+		 * @private
+		 * @readonly
+		 * @member {Map.<String,module:engine/model/element~Element>}
+		 */
+		this._uploadImageElements = new Map();
 	}
 
 	/**
@@ -155,16 +170,20 @@ export default class ImageUploadEditing extends Plugin {
 
 		// Upload placeholder images that appeared in the model.
 		doc.on( 'change', () => {
-			const changes = doc.differ.getChanges( { includeChangesInGraveyard: true } );
+			// Note: Reversing changes to start with insertions and only then handle removals. If it was the other way around,
+			// loaders for **all** images that land in the $graveyard would abort while in fact only those that were **not** replaced
+			// by other images should be aborted.
+			const changes = doc.differ.getChanges( { includeChangesInGraveyard: true } ).reverse();
+			const insertedImagesIds = new Set();
 
 			for ( const entry of changes ) {
 				if ( entry.type == 'insert' && entry.name != '$text' ) {
 					const item = entry.position.nodeAfter;
-					const isInGraveyard = entry.position.root.rootName == '$graveyard';
+					const isInsertedInGraveyard = entry.position.root.rootName == '$graveyard';
 
-					for ( const image of getImagesFromChangeItem( editor, item ) ) {
+					for ( const imageElement of getImagesFromChangeItem( editor, item ) ) {
 						// Check if the image element still has upload id.
-						const uploadId = image.getAttribute( 'uploadId' );
+						const uploadId = imageElement.getAttribute( 'uploadId' );
 
 						if ( !uploadId ) {
 							continue;
@@ -177,12 +196,28 @@ export default class ImageUploadEditing extends Plugin {
 							continue;
 						}
 
-						if ( isInGraveyard ) {
-							// If the image was inserted to the graveyard - abort the loading process.
-							loader.abort();
-						} else if ( loader.status == 'idle' ) {
-							// If the image was inserted into content and has not been loaded yet, start loading it.
-							this._readAndUpload( loader, image );
+						if ( isInsertedInGraveyard ) {
+							// If the image was inserted to the graveyard for good (**not** replaced by another image),
+							// only then abort the loading process.
+							if ( !insertedImagesIds.has( uploadId ) ) {
+								loader.abort();
+							}
+						} else {
+							// Remember the upload id of the inserted image. If it acted as a replacement for another
+							// image (which landed in the $graveyard), the related loader will not be aborted because
+							// this is still the same image upload.
+							insertedImagesIds.add( uploadId );
+
+							// Keep the mapping between the upload ID and the image model element so the upload
+							// can later resolve in the context of the correct model element. The model element could
+							// change for the same upload if one image was replaced by another (e.g. image type was changed),
+							// so this may also replace an existing mapping.
+							this._uploadImageElements.set( uploadId, imageElement );
+
+							if ( loader.status == 'idle' ) {
+								// If the image was inserted into content and has not been loaded yet, start loading it.
+								this._readAndUpload( loader );
+							}
 						}
 					}
 				}
@@ -231,24 +266,25 @@ export default class ImageUploadEditing extends Plugin {
 	 *
 	 * @protected
 	 * @param {module:upload/filerepository~FileLoader} loader
-	 * @param {module:engine/model/element~Element} imageElement
 	 * @returns {Promise}
 	 */
-	_readAndUpload( loader, imageElement ) {
+	_readAndUpload( loader ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const t = editor.locale.t;
 		const fileRepository = editor.plugins.get( FileRepository );
 		const notification = editor.plugins.get( Notification );
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageUploadElements = this._uploadImageElements;
 
 		model.enqueueChange( 'transparent', writer => {
-			writer.setAttribute( 'uploadStatus', 'reading', imageElement );
+			writer.setAttribute( 'uploadStatus', 'reading', imageUploadElements.get( loader.id ) );
 		} );
 
 		return loader.read()
 			.then( () => {
 				const promise = loader.upload();
+				const imageElement = imageUploadElements.get( loader.id );
 
 				// Force re–paint in Safari. Without it, the image will display with a wrong size.
 				// https://github.com/ckeditor/ckeditor5/issues/1975
@@ -289,6 +325,8 @@ export default class ImageUploadEditing extends Plugin {
 			} )
 			.then( data => {
 				model.enqueueChange( 'transparent', writer => {
+					const imageElement = imageUploadElements.get( loader.id );
+
 					writer.setAttribute( 'uploadStatus', 'complete', imageElement );
 
 					/**
@@ -339,18 +377,22 @@ export default class ImageUploadEditing extends Plugin {
 					} );
 				}
 
-				clean();
-
 				// Permanently remove image from insertion batch.
 				model.enqueueChange( 'transparent', writer => {
-					writer.remove( imageElement );
+					writer.remove( imageUploadElements.get( loader.id ) );
 				} );
+
+				clean();
 			} );
 
 		function clean() {
 			model.enqueueChange( 'transparent', writer => {
+				const imageElement = imageUploadElements.get( loader.id );
+
 				writer.removeAttribute( 'uploadId', imageElement );
 				writer.removeAttribute( 'uploadStatus', imageElement );
+
+				imageUploadElements.delete( loader.id );
 			} );
 
 			fileRepository.destroyLoader( loader );

@@ -13,7 +13,7 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 ## Demo
 
-Use the editor below to see the text part language plugin in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
+Use the language toolbar dropdown in the editor below to see the feature in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
 
 {@snippet features/textpartlanguage}
 
