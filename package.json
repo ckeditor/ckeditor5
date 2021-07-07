@@ -210,5 +210,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
-  }
+  },
+  "files": [
+    "ckeditor5-metadata.json"
+  ]
 }
