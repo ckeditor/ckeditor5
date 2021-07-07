@@ -23,7 +23,7 @@ function initEditors() {
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 				image: {
-					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+					toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 				}
 			} )
 			.then( editor => {

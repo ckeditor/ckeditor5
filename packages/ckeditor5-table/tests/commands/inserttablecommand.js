@@ -51,11 +51,11 @@ describe( 'InsertTableCommand', () => {
 		} );
 
 		describe( 'when selection is not collapsed', () => {
-			it( 'should be false if an object is selected', () => {
+			it( 'should be true if an object is selected', () => {
 				model.schema.register( 'media', { isObject: true, isBlock: true, allowWhere: '$block' } );
 
 				setData( model, '[<media url="http://ckeditor.com"></media>]' );
-				expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be true if in a paragraph', () => {
@@ -166,6 +166,31 @@ describe( 'InsertTableCommand', () => {
 						[ '', '', '', '' ],
 						[ '', '', '', '' ]
 					] )
+				);
+			} );
+		} );
+
+		describe( 'expanded selection', () => {
+			it( 'should replace an existing selected object with a table', () => {
+				model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+				command.execute( { rows: 1, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should replace an existing table with another table', () => {
+				setData( model, '<paragraph>foo</paragraph>[' + modelTable( [ [ '', '' ], [ '', '' ] ] ) + ']<paragraph>bar</paragraph>' );
+
+				command.execute( { rows: 1, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' + modelTable( [ [ '[]', '' ] ] ) + '<paragraph>bar</paragraph>'
 				);
 			} );
 		} );

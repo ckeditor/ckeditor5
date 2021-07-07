@@ -33,7 +33,7 @@ describe( 'WidgetTypeAround', () => {
 				blockWidgetPlugin, inlineWidgetPlugin
 			],
 			image: {
-				toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 			}
 		} );
 

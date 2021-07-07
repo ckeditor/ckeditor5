@@ -50,14 +50,16 @@ describe( 'Widget', () => {
 				} );
 				model.schema.register( 'inline', {
 					allowWhere: '$text',
-					isObject: true
+					isObject: true,
+					allowAttributes: [ 'attr' ]
 				} );
 				model.schema.register( 'nested', {
 					allowIn: 'widget',
 					isLimit: true
 				} );
 				model.schema.extend( '$text', {
-					allowIn: [ 'nested', 'editable' ]
+					allowIn: [ 'nested', 'editable' ],
+					allowAttributes: [ 'attr', 'bttr' ]
 				} );
 				model.schema.register( 'editable', {
 					allowIn: [ 'widget', '$root' ]
@@ -65,11 +67,12 @@ describe( 'Widget', () => {
 				model.schema.register( 'inline-widget', {
 					allowWhere: '$text',
 					isObject: true,
-					isInline: true
+					isInline: true,
+					allowAttributes: [ 'attr', 'bttr' ]
 				} );
 
 				// Image feature.
-				model.schema.register( 'image', {
+				model.schema.register( 'imageBlock', {
 					allowIn: '$root',
 					isObject: true,
 					isBlock: true
@@ -87,8 +90,10 @@ describe( 'Widget', () => {
 				} );
 
 				editor.conversion.for( 'downcast' )
-					.elementToElement( { model: 'inline', view: 'figure' } )
-					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'inline', view: ( modelItem, { writer } ) => {
+						return writer.createContainerElement( 'figure', null, { isAllowedInsideAttributeElement: true } );
+					} } )
+					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
 					.elementToElement( { model: 'div', view: 'div' } )
 					.elementToElement( {
@@ -104,7 +109,7 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'inline-widget',
 						view: ( modelItem, { writer } ) => {
-							const span = writer.createContainerElement( 'span' );
+							const span = writer.createContainerElement( 'span', null, { isAllowedInsideAttributeElement: true } );
 
 							return toWidget( span, writer );
 						}
@@ -116,7 +121,13 @@ describe( 'Widget', () => {
 					.elementToElement( {
 						model: 'editable',
 						view: ( modelItem, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
-					} );
+					} )
+					.attributeToElement( { model: 'attr', view: ( modelAttributeValue, conversionApi ) => {
+						return conversionApi.writer.createAttributeElement( 'attr', { value: modelAttributeValue } );
+					} } )
+					.attributeToElement( { model: 'bttr', view: ( modelAttributeValue, conversionApi ) => {
+						return conversionApi.writer.createAttributeElement( 'bttr', { value: modelAttributeValue } );
+					} } );
 			} );
 	} );
 
@@ -228,6 +239,124 @@ describe( 'Widget', () => {
 		expect( viewDocument.selection.isFake ).to.be.true;
 	} );
 
+	it( 'should apply fake view selection when an inline widget is surrounded by an attribute element', () => {
+		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>foo ' +
+				'<attr value="foo">' +
+					'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+				'</attr>' +
+			' bar</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should apply fake view selection when an inline widget is surrounded by a couple of nested attribute elements', () => {
+		setModelData( model, '<paragraph>foo [<inline-widget attr="foo" bttr="bar"></inline-widget>] bar</paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>foo ' +
+				'<attr value="foo">' +
+					'<bttr value="bar">' +
+						'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+					'</bttr>' +
+				'</attr>' +
+			' bar</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should apply fake view selection when the model selection surrounds the inline widget and an UI element', () => {
+		setModelData( model, '<paragraph>[]<inline-widget></inline-widget></paragraph>' );
+
+		editor.conversion.for( 'editingDowncast' ).markerToElement( {
+			model: 'testMarker',
+			view: ( data, { writer } ) => writer.createUIElement( 'span', { class: 'ui' } )
+		} );
+
+		model.change( writer => {
+			writer.addMarker( 'testMarker', {
+				range: writer.createRange( writer.createPositionAt( model.document.getRoot().getChild( 0 ), 0 ) ),
+				usingOperation: true
+			} );
+
+			writer.setSelection( model.document.getRoot().getChild( 0 ), 'in' );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>' +
+				'<span class="ui"></span>' +
+				'[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.true;
+	} );
+
+	it( 'should allow overriding the selection downcast', () => {
+		const spy = sinon.spy();
+
+		editor.conversion.for( 'editingDowncast' ).add(
+			dispatcher => dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+				const selection = data.selection;
+
+				if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
+					return;
+				}
+
+				const position = model.createPositionAt( selection.getFirstPosition().findAncestor( 'paragraph' ), 'end' );
+				const viewPosition = conversionApi.mapper.toViewPosition( position );
+
+				conversionApi.writer.setSelection( viewPosition );
+
+				spy();
+			}, { priority: 'high' } )
+		);
+
+		setModelData( model, '<paragraph>foo[<inline-widget></inline-widget>]bar</paragraph>' );
+
+		expect( spy.calledOnce ).to.be.true;
+		expect( getViewData( view ) ).to.equal(
+			'<p>' +
+				'foo' +
+				'<span class="ck-widget" contenteditable="false"></span>' +
+				'bar{}' +
+			'</p>'
+		);
+	} );
+
+	it( 'should not apply fake view selection when an inline widget and some other content is surrounded by an attribute element', () => {
+		setModelData( model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget><$text attr="foo">bar]</$text></paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>foo ' +
+				'{<attr value="foo">' +
+					'<span class="ck-widget ck-widget_selected" contenteditable="false"></span>bar' +
+				'</attr>]' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.false;
+	} );
+
+	it( 'should not apply fake view selection when a non-widget element is surrounded by an attribute element', () => {
+		setModelData( model, '<paragraph>foo [<inline attr="foo"></inline>] bar</paragraph>' );
+
+		expect( getViewData( view ) ).to.equal(
+			'<p>foo ' +
+				'{<attr value="foo">' +
+					'<figure></figure>' +
+				'</attr>}' +
+				' bar' +
+			'</p>'
+		);
+
+		expect( viewDocument.selection.isFake ).to.be.false;
+	} );
+
 	it( 'should use element\'s label to set fake selection if one is provided', () => {
 		setModelData( model, '[<widget>foo bar</widget>]' );
 
@@ -239,7 +368,6 @@ describe( 'Widget', () => {
 
 		expect( viewDocument.selection.isFake ).to.be.false;
 		expect( getViewData( view ) ).to.equal(
-
 			'<p>{foo</p>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false">' +
 				'<b></b>' +
@@ -671,7 +799,7 @@ describe( 'Widget', () => {
 				'should work if selection is in nested element (left arrow)',
 
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -684,7 +812,7 @@ describe( 'Widget', () => {
 				keyCodes.arrowleft,
 
 				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -699,7 +827,7 @@ describe( 'Widget', () => {
 				'should work if selection is in nested element (up arrow)',
 
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -712,7 +840,7 @@ describe( 'Widget', () => {
 				keyCodes.arrowup,
 
 				'<paragraph>foo</paragraph>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<blockQuote>' +
 					'<div>' +
 						'<div>' +
@@ -734,7 +862,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>foo</paragraph>',
 
 				keyCodes.arrowright,
@@ -747,7 +875,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<paragraph>foo</paragraph>'
 			);
 
@@ -762,7 +890,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<paragraph>foo</paragraph>',
 
 				keyCodes.arrowdown,
@@ -775,7 +903,7 @@ describe( 'Widget', () => {
 						'</div>' +
 					'</div>' +
 				'</blockQuote>' +
-				'[<image></image>]' +
+				'[<imageBlock></imageBlock>]' +
 				'<paragraph>foo</paragraph>'
 			);
 
@@ -1088,27 +1216,27 @@ describe( 'Widget', () => {
 			'should remove the entire empty element if it is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 			'<paragraph>foo</paragraph>',
 
 			'backward',
 
-			'<paragraph>foo</paragraph>[<image></image>]<paragraph>foo</paragraph>'
+			'<paragraph>foo</paragraph>[<imageBlock></imageBlock>]<paragraph>foo</paragraph>'
 		);
 
 		test(
 			'should remove the entire empty element (deeper structure) if it is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
 			'<paragraph>foo</paragraph>',
 
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<paragraph>foo</paragraph>'
 		);
 
@@ -1117,13 +1245,13 @@ describe( 'Widget', () => {
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><div><div><paragraph>[]</paragraph></div></div></blockQuote>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<paragraph>foo</paragraph>',
 
 			'forward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<paragraph>foo</paragraph>'
 		);
 
@@ -1131,14 +1259,14 @@ describe( 'Widget', () => {
 			'should not remove the entire element which is not empty and the element is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote><paragraph>[]</paragraph><paragraph></paragraph></blockQuote>' +
 			'<paragraph>foo</paragraph>',
 
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<blockQuote><paragraph></paragraph></blockQuote>' +
 			'<paragraph>foo</paragraph>'
 		);
@@ -1148,14 +1276,14 @@ describe( 'Widget', () => {
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><paragraph>Foo</paragraph><paragraph>[]</paragraph></blockQuote>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<paragraph>foo</paragraph>',
 
 			'forward',
 
 			'<paragraph>foo</paragraph>' +
 			'<blockQuote><paragraph>Foo</paragraph></blockQuote>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<paragraph>foo</paragraph>'
 		);
 
@@ -1163,7 +1291,7 @@ describe( 'Widget', () => {
 			'should not remove the entire element (deeper structure) which is not empty and the element is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote>' +
 			'<div>' +
 			'<div>' +
@@ -1177,7 +1305,7 @@ describe( 'Widget', () => {
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'[<image></image>]' +
+			'[<imageBlock></imageBlock>]' +
 			'<blockQuote>' +
 			'<paragraph></paragraph>' +
 			'</blockQuote>' +
@@ -1188,7 +1316,7 @@ describe( 'Widget', () => {
 			'should do nothing if the nested element is not empty and the element is next to a widget',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote>' +
 			'<div>' +
 			'<div>' +
@@ -1201,7 +1329,7 @@ describe( 'Widget', () => {
 			'backward',
 
 			'<paragraph>foo</paragraph>' +
-			'<image></image>' +
+			'<imageBlock></imageBlock>' +
 			'<blockQuote>' +
 			'<div>' +
 			'<div>' +
@@ -1216,7 +1344,7 @@ describe( 'Widget', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
@@ -1233,7 +1361,7 @@ describe( 'Widget', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
@@ -1244,7 +1372,7 @@ describe( 'Widget', () => {
 			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);
@@ -1261,7 +1389,7 @@ describe( 'Widget', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
-				'<image></image>' +
+				'<imageBlock></imageBlock>' +
 				'<blockQuote><paragraph>[]</paragraph></blockQuote>' +
 				'<paragraph>foo</paragraph>'
 			);

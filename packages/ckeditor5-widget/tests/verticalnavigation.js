@@ -1143,7 +1143,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				setModelData( model,
 					'<widget><nested>' +
 						'<paragraph>foo</paragraph>' +
-						`<image src="${ imageUrl }"><caption>bar[]baz</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>bar[]baz</caption></imageBlock>` +
 					'</nested></widget>'
 				);
 
@@ -1154,7 +1154,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				assertEqualMarkup( getModelData( model ), '<widget><nested>' +
 					'<paragraph>foo</paragraph>' +
-					`<image src="${ imageUrl }"><caption>[]barbaz</caption></image>` +
+					`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 					'</nested></widget>'
 				);
 			} );
@@ -1163,7 +1163,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				setModelData( model,
 					'<widget><nested>' +
 						'<paragraph>foo</paragraph>' +
-						`<image src="${ imageUrl }"><caption>[]barbaz</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 					'</nested></widget>'
 				);
 
@@ -1176,7 +1176,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			it( 'should move the caret to the first position of the image caption', () => {
 				setModelData( model,
 					'<widget><nested>' +
-						`<image src="${ imageUrl }"><caption>bar[]baz</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>bar[]baz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);
@@ -1188,7 +1188,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				assertEqualMarkup( getModelData( model ),
 					'<widget><nested>' +
-						`<image src="${ imageUrl }"><caption>[]barbaz</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);
@@ -1197,7 +1197,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			it( 'should move caret to the end of image caption', () => {
 				setModelData( model,
 					'<widget><nested>' +
-						`<image src="${ imageUrl }"><caption>bar[]baz</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>bar[]baz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);
@@ -1209,7 +1209,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				assertEqualMarkup( getModelData( model ),
 					'<widget><nested>' +
-					`<image src="${ imageUrl }"><caption>barbaz[]</caption></image>` +
+					`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 					'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);
@@ -1218,7 +1218,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			it( 'should move caret to the end of image caption when caret is on the position next to the last one', () => {
 				setModelData( model,
 					'<widget><nested>' +
-						`<image src="${ imageUrl }"><caption>barba[]z</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>barba[]z</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);
@@ -1230,7 +1230,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				assertEqualMarkup( getModelData( model ),
 					'<widget><nested>' +
-					`<image src="${ imageUrl }"><caption>barbaz[]</caption></image>` +
+					`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 					'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);
@@ -1239,7 +1239,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			it( 'should not prevent default browser behavior when caret inside image caption when followed by a paragraph', () => {
 				setModelData( model,
 					'<widget><nested>' +
-						`<image src="${ imageUrl }"><caption>barbaz[]</caption></image>` +
+						`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
 					'</nested></widget>'
 				);

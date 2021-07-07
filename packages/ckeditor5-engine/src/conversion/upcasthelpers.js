@@ -173,7 +173,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * View attribute to model attribute conversion helper.
 	 *
 	 * This conversion results in setting an attribute on a model node. For example, view `<img src="foo.jpg"></img>` becomes
-	 * `<image source="foo.jpg"></image>` in the model.
+	 * `<imageBlock source="foo.jpg"></imageBlock>` in the model.
 	 *
 	 * This helper is meant to convert view attributes from view elements which got converted to the model, so the view attribute
 	 * is set only on the corresponding model node:
@@ -389,7 +389,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 *
 	 *		// Model:
 	 *		<paragraph>Foo[bar</paragraph>
-	 *		<image src="abc.jpg"></image>]
+	 *		<imageBlock src="abc.jpg"></imageBlock>]
 	 *
 	 * Where `[]` are boundaries of a marker that will receive the `comment:commentId:uid` name.
 	 *

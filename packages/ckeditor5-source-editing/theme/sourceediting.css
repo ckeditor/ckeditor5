@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_rounded.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_focus.css";
+@import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
+
+.ck-source-editing-area {
+	display: inline-grid;
+	width: 100%;
+	font-family: monospace;
+}
+
+.ck-source-editing-area::after,
+.ck-source-editing-area textarea {
+	grid-area: 1/1;
+	padding: var(--ck-spacing-large);
+	margin: 0;
+	border: 1px solid transparent;
+	line-height: var(--ck-line-height-base);
+	font-size: var(--ck-font-size-normal);
+	white-space: pre-wrap;
+}
+
+.ck-source-editing-area::after {
+	content: attr(data-value) " ";
+	visibility: hidden;
+}
+
+.ck-source-editing-area textarea {
+	resize: none;
+	outline: none;
+	overflow: hidden;
+
+	border-color: var(--ck-color-base-border);
+
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	&:not([readonly]):focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-inner-shadow);
+	}
+}

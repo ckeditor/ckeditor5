@@ -6,9 +6,18 @@
 /* The feature container. */
 .ck-widget.raw-html-embed {
 	/* Give the embed some air. */
-	margin: 1em auto;
+	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
+	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
+	margin: 0.9em auto;
 	position: relative;
 	display: flow-root;
+
+	/* Give the html embed some minimal width in the content to prevent them
+	from being "squashed" in tight spaces, e.g. in table cells (https://github.com/ckeditor/ckeditor5/issues/8331) */
+	min-width: 15em;
+
+	/* Don't inherit the style, e.g. when in a block quote. */
+	font-style: normal;
 
 	/* ----- Emebed label in the upper left corner ----------------------------------------------- */
 
@@ -56,16 +65,4 @@
 		align-items: center;
 		justify-content: center;
 	}
-}
-
-.ck-content .raw-html-embed {
-	/* Give the embed some air. */
-	margin: 1em auto;
-
-	/* Give the html embed some minimal width in the content to prevent them
-	from being "squashed" in tight spaces, e.g. in table cells (https://github.com/ckeditor/ckeditor5/issues/8331) */
-	min-width: 15em;
-
-	/* Don't inherit the style, e.g. when in a block quote. */
-	font-style: normal;
 }

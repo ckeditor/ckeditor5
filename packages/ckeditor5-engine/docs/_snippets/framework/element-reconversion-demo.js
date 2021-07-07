@@ -4,7 +4,7 @@
  */
 
 /* globals
-	ClassicEditor, Plugin, ButtonView, Command, toWidget, toWidgetEditable, createElement, findOptimalInsertionPosition,
+	ClassicEditor, Plugin, ButtonView, Command, toWidget, toWidgetEditable, createElement, findOptimalInsertionRange,
 	console, window, prompt, document
 */
 
@@ -186,9 +186,9 @@ class InsertCardCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const validParent = findOptimalInsertionPosition( model.document.selection, model );
+		const range = findOptimalInsertionRange( model.document.selection, model );
 
-		this.isEnabled = model.schema.checkChild( validParent, 'sideCard' );
+		this.isEnabled = model.schema.checkChild( range.start, 'sideCard' );
 	}
 
 	/**
@@ -198,7 +198,7 @@ class InsertCardCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const insertPosition = findOptimalInsertionPosition( selection, model );
+		const insertionRange = findOptimalInsertionRange( selection, model );
 
 		model.change( writer => {
 			const sideCard = writer.createElement( 'sideCard', { cardType: 'default' } );
@@ -210,7 +210,7 @@ class InsertCardCommand extends Command {
 			writer.insert( section, sideCard, 1 );
 			writer.insert( paragraph, section, 0 );
 
-			model.insertContent( sideCard, insertPosition );
+			model.insertContent( sideCard, insertionRange );
 
 			writer.setSelection( writer.createPositionAt( title, 0 ) );
 		} );
@@ -333,7 +333,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ ComplexBox ],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

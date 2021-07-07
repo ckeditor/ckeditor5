@@ -66,7 +66,7 @@ editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) =>
 
 Click the editable area of the editor and then click somewhere else &mdash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link framework/guides/custom-editor-creator **multiple editing roots**} and navigate across them.
 
-To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/guides/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/image#image-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
+To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/guides/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
 
 ### How to focus the editor?
 

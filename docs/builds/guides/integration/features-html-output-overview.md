@@ -24,10 +24,10 @@ The data used to generate the following tables comes from the package metadata. 
 		width: 33.333%;
 	}
 
-    table.features-html-output td.plugin a,
-    table.features-html-output td.plugin code {
-        white-space: nowrap;
-    }
+	table.features-html-output td.plugin a,
+	table.features-html-output td.plugin code {
+		white-space: nowrap;
+	}
 
 	table.features-html-output td.html-output > code {
 		display: block;
@@ -40,6 +40,8 @@ The data used to generate the following tables comes from the package metadata. 
 		margin-top: 1em;
 	}
 </style>
+
+<!-- Do not edit anything below this comment, as it will be overwritten. Edit the ckeditor5-metadata.json files for respective images instead. -->
 
 <!-- Do not delete the comment below as it indicates the place where the features HTML output will be stored. -->
 
@@ -63,7 +65,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
+					<a href="../../../features/images/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html"><code>CKFinderUploadAdapter</code></a>
@@ -96,7 +98,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">Alignment</a>
+					<a href="../../../features/text-alignment.html">Alignment</a>
 				</p>
 				<p>
 					<a href="../../../api/module_alignment_alignment-Alignment.html"><code>Alignment</code></a>
@@ -113,7 +115,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>$block</strong> <strong>class</strong>="*"&gt;</code>
 				<p>
-					If <code>config.alignment.options</code> is set, then these classes are used for alignment instead of inline styles.
+					If <code>config.alignment.options</code> is set, these classes are used for alignment instead of inline styles.
 				</p>
 			</td>
 		</tr>
@@ -344,7 +346,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/ckfinder.html">CKFinder</a>
+					<a href="../../../features/images/image-upload/ckfinder.html">CKFinder</a>
 				</p>
 				<p>
 					<a href="../../../api/module_ckfinder_ckfinder-CKFinder.html"><code>CKFinder</code></a>
@@ -424,7 +426,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>code</strong> <strong>class</strong>="* language-*"&gt;</code>
 				<p>
-					By default, the language of the code block is represented as a CSS class prefixed by <code>language-</code>. CSS class name can be customized via <code>config.codeBlock.languages</code> array.
+					By default, the language of the code block is represented as a CSS class prefixed by <code>language-</code>. The CSS class name can be customized via the <code>config.codeBlock.languages</code> array.
 				</p>
 			</td>
 		</tr>
@@ -493,7 +495,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/easy-image.html">Easy Image</a>
+					<a href="../../../features/images/image-upload/easy-image.html">Easy Image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_easy-image_easyimage-EasyImage.html"><code>EasyImage</code></a>
@@ -691,7 +693,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>class</strong>="text-tiny text-small text-big text-huge"&gt;</code>
 				<p>
-					If the <code>config.fontSize.options</code> option is not set or it contains predefined named presets, then the feature uses class names.
+					If the <code>config.fontSize.options</code> option is not set or it contains predefined named presets, the feature uses class names.
 				</p>
 			</td>
 		</tr>
@@ -699,7 +701,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>span</strong> <strong>style</strong>="font-size:*"&gt;</code>
 				<p>
-					If the <code>config.fontSize.options</code> option contains numerical values, then the font size feature uses the <code>font-size</code> inline style.
+					If the <code>config.fontSize.options</code> option contains numerical values, the font size feature uses the <code>font-size</code> inline style.
 				</p>
 			</td>
 		</tr>
@@ -779,6 +781,9 @@ The data used to generate the following tables comes from the package metadata. 
 				<code>&lt;<strong>h2</strong>&gt;</code><code>&lt;<strong>h3</strong>&gt;</code><code>&lt;<strong>h4</strong>&gt;</code>
 				<p>
 					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
+				</p>
+				<p>
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the &lt;code&gt;<code>$block</code></code> element.
 				</p>
 			</td>
 		</tr>
@@ -904,6 +909,71 @@ The data used to generate the following tables comes from the package metadata. 
 		</tr>
 	</tbody>
 </table>
+<h3 id="ckeditor5-html-support"><code>ckeditor5-html-support</code></h3>
+<p>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-html-support/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-html-support/ckeditor5-metadata.json</code></a>
+</p>
+<table class="features-html-output">
+	<thead>
+		<tr>
+			<th class="plugin">
+				Plugin
+			</th>
+			<th class="html-output">
+				HTML output
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/general-html-support.html">General HTML Support</a>
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_generalhtmlsupport-GeneralHtmlSupport.html"><code>GeneralHtmlSupport</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML configured by config.htmlSupport option.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					Data Filter
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_datafilter-DataFilter.html"><code>DataFilter</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML depending on its configuration.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					Data Schema
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_dataschema-DataSchema.html"><code>DataSchema</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
 <h3 id="ckeditor5-image"><code>ckeditor5-image</code></h3>
 <p>
 	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-image/ckeditor5-metadata.json</code></a>
@@ -923,7 +993,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
+					<a href="../../../features/images/image-upload/images-inserting.html#inserting-images-via-pasting-url-into-editor">Auto image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_autoimage-AutoImage.html"><code>AutoImage</code></a>
@@ -938,10 +1008,10 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image.html">Image</a>
+					<a href="../../../features/images/images-installation.html#inline-and-block-images">Block image</a>
 				</p>
 				<p>
-					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
+					<a href="../../../api/module_image_imageblock-ImageBlock.html"><code>ImageBlock</code></a>
 				</p>
 			</td>
 			<td class="html-output">
@@ -956,7 +1026,35 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-captions">Image caption</a>
+					<a href="../../../features/images/images-installation.html#inline-and-block-images">Inline image</a>
+				</p>
+				<p>
+					<a href="../../../api/module_image_imageinline-ImageInline.html"><code>ImageInline</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>img</strong><br>    <strong>alt</strong>="*"<br>    <strong>sizes</strong>="*"<br>    <strong>src</strong>="*"<br>    <strong>srcset</strong>="*"<br>    <strong>width</strong>="*"<br>&gt;</code>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/images/images-overview.html">Image</a>
+				</p>
+				<p>
+					<a href="../../../api/module_image_image-Image.html"><code>Image</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/images/images-captions.html">Image caption</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagecaption-ImageCaption.html"><code>ImageCaption</code></a>
@@ -969,7 +1067,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#resizing-images">Image resize</a>
+					<a href="../../../features/images/images-resizing.html">Image resize</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageresize-ImageResize.html"><code>ImageResize</code></a>
@@ -982,14 +1080,14 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin" rowspan="2">
 				<p>
-					<a href="../../../features/image.html#image-styles">Image style</a>
+					<a href="../../../features/images/images-styles.html">Image style</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagestyle-ImageStyle.html"><code>ImageStyle</code></a>
 				</p>
 			</td>
 			<td class="html-output">
-				<code>&lt;<strong>figure</strong> <strong>class</strong>="image-style-side image-style-align-left image-style-align-center image-style-align-right"&gt;</code>
+				<code>&lt;<strong>figure</strong> <strong>class</strong>="image-style-side image-style-align-left image-style-align-right image-style-block-align-center image-style-block-align-left image-style-block-align-right"&gt;</code>
 			</td>
 		</tr>
 		<tr>
@@ -1003,7 +1101,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-contextual-toolbar">Image toolbar</a>
+					<a href="../../../features/images/images-overview.html#image-contextual-toolbar">Image toolbar</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imagetoolbar-ImageToolbar.html"><code>ImageToolbar</code></a>
@@ -1018,7 +1116,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#image-upload">Image upload</a>
+					<a href="../../../features/images/image-upload/image-upload.html">Image upload</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageupload-ImageUpload.html"><code>ImageUpload</code></a>
@@ -1033,7 +1131,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#inserting-images-via-source-url">Image insert</a>
+					<a href="../../../features/images/image-upload/images-inserting.html#inserting-images-via-source-url">Image insert</a>
 				</p>
 				<p>
 					<a href="../../../api/module_image_imageinsert-ImageInsert.html"><code>ImageInsert</code></a>
@@ -1198,7 +1296,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image.html#linking-images">Link image</a>
+					<a href="../../../features/images/images-linking.html">Link image</a>
 				</p>
 				<p>
 					<a href="../../../api/module_link_linkimage-LinkImage.html"><code>LinkImage</code></a>
@@ -1553,6 +1651,9 @@ The data used to generate the following tables comes from the package metadata. 
 				<p>
 					HTML element may contain classes, styles or attributes, that are created by other plugins, which alter the <code>&lt;$block&gt;</code> element.
 				</p>
+				<p>
+					The HTML element may contain classes, styles or attributes that are created by other plugins, which alter the &lt;code&gt;<code>$block</code></code> element.
+				</p>
 			</td>
 		</tr>
 	</tbody>
@@ -1764,10 +1865,43 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/revision-history/revision-history.html" data-skip-validation>Revision History</a>
+					<a href="../../../features/revision-history/revision-history" data-skip-validation>Revision History</a>
 				</p>
 				<p>
 					<a href="../../../api/module_revision-history_revisionhistory-RevisionHistory.html" data-skip-validation><code>RevisionHistory</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<h3 id="ckeditor5-source-editing"><code>ckeditor5-source-editing</code></h3>
+<p>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-source-editing/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-source-editing/ckeditor5-metadata.json</code></a>
+</p>
+<table class="features-html-output">
+	<thead>
+		<tr>
+			<th class="plugin">
+				Plugin
+			</th>
+			<th class="html-output">
+				HTML output
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/source-editing.html">Source editing</a>
+				</p>
+				<p>
+					<a href="../../../api/module_source-editing_sourceediting-SourceEditing.html"><code>SourceEditing</code></a>
 				</p>
 			</td>
 			<td class="html-output">
@@ -2119,7 +2253,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/base64-upload-adapter.html">Base64 upload adapter</a>
+					<a href="../../../features/images/image-upload/base64-upload-adapter.html">Base64 upload adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_upload_adapters_base64uploadadapter-Base64UploadAdapter.html"><code>Base64UploadAdapter</code></a>
@@ -2134,7 +2268,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/simple-upload-adapter.html">Simple upload adapter</a>
+					<a href="../../../features/images/image-upload/simple-upload-adapter.html">Simple upload adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_upload_adapters_simpleuploadadapter-SimpleUploadAdapter.html"><code>SimpleUploadAdapter</code></a>

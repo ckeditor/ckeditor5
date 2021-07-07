@@ -488,7 +488,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					expect( model.schema.checkChild( [ '$root', 'media' ], 'media' ) ).to.be.false;
 					expect( model.schema.checkChild( [ '$root', 'media' ], '$text' ) ).to.be.false;
-					expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+					expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 				} );
 		} );
 

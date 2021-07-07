@@ -49,7 +49,7 @@
 			"name": "Link image",
 			"className": "LinkImage",
 			"description": "Allows adding clickable links to images for creating banners or referrers.",
-			"docs": "features/image.html#linking-images",
+			"docs": "features/images/images-linking.html",
 			"path": "src/linkimage.js",
 			"requires": [
 				"Link",

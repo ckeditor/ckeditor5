@@ -428,7 +428,7 @@ describe( 'BlockQuote integration', () => {
 				.then( editor => {
 					setModelData( editor.model,
 						'<paragraph>fo[o</paragraph>' +
-						'<image src="/assets/sample.png"></image>' +
+						'<imageBlock src="/assets/sample.png"></imageBlock>' +
 						'<paragraph>b]ar</paragraph>'
 					);
 
@@ -437,7 +437,7 @@ describe( 'BlockQuote integration', () => {
 					expect( getModelData( editor.model ) ).to.equal(
 						'<blockQuote>' +
 							'<paragraph>fo[o</paragraph>' +
-							'<image src="/assets/sample.png"></image>' +
+							'<imageBlock src="/assets/sample.png"></imageBlock>' +
 							'<paragraph>b]ar</paragraph>' +
 						'</blockQuote>'
 					);
@@ -450,9 +450,9 @@ describe( 'BlockQuote integration', () => {
 		it( 'quotes an image with caption', () => {
 			setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<image src="/assets/sample.png">' +
+				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<paragraph>b]ar</paragraph>'
 			);
 
@@ -461,9 +461,9 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote>' +
 					'<paragraph>fo[o</paragraph>' +
-					'<image src="/assets/sample.png">' +
+					'<imageBlock src="/assets/sample.png">' +
 						'<caption>xxx</caption>' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>b]ar</paragraph>' +
 				'</blockQuote>'
 			);
@@ -472,9 +472,9 @@ describe( 'BlockQuote integration', () => {
 		it( 'adds an image to an existing quote', () => {
 			setModelData( model,
 				'<paragraph>fo[o</paragraph>' +
-				'<image src="/assets/sample.png">' +
+				'<imageBlock src="/assets/sample.png">' +
 					'<caption>xxx</caption>' +
-				'</image>' +
+				'</imageBlock>' +
 				'<blockQuote><paragraph>b]ar</paragraph></blockQuote>'
 			);
 
@@ -484,9 +484,9 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote>' +
 					'<paragraph>foo</paragraph>' +
-					'<image src="/assets/sample.png">' +
+					'<imageBlock src="/assets/sample.png">' +
 						'<caption>xxx</caption>' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>[b]ar</paragraph>' +
 				'</blockQuote>'
 			);
@@ -494,49 +494,49 @@ describe( 'BlockQuote integration', () => {
 
 		it( 'wraps paragraph+image', () => {
 			setModelData( model,
-				'<paragraph>[foo</paragraph><image><caption>foo</caption></image>]'
+				'<paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]'
 			);
 
 			editor.execute( 'blockQuote' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<blockQuote><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</blockQuote>'
+				'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>'
 			);
 		} );
 
 		it( 'unwraps paragraph+image', () => {
 			setModelData( model,
-				'<blockQuote><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</blockQuote>'
+				'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>'
 			);
 
 			editor.execute( 'blockQuote' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph>[foo</paragraph><image><caption>foo</caption></image>]'
+				'<paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]'
 			);
 		} );
 
 		it( 'wraps image+paragraph', () => {
 			setModelData( model,
-				'[<image><caption>foo</caption></image><paragraph>foo]</paragraph>'
+				'[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph>'
 			);
 
 			editor.execute( 'blockQuote' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<blockQuote>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></blockQuote>'
+				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>'
 			);
 		} );
 
 		it( 'unwraps image+paragraph', () => {
 			setModelData( model,
-				'[<image><caption>foo</caption></image><paragraph>foo]</paragraph>'
+				'[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph>'
 			);
 
 			editor.execute( 'blockQuote' );
 
 			expect( getModelData( model ) ).to.equal(
-				'<blockQuote>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></blockQuote>'
+				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>'
 			);
 		} );
 	} );
@@ -615,7 +615,7 @@ describe( 'BlockQuote integration', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell>[<image><caption>foo</caption></image>]</tableCell>' +
+						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
 				'	</tableRow>' +
 				'</table>'
 			);
@@ -625,7 +625,7 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell><blockQuote>[<image><caption>foo</caption></image>]</blockQuote></tableCell>' +
+						'<tableCell><blockQuote>[<imageBlock><caption>foo</caption></imageBlock>]</blockQuote></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -635,7 +635,7 @@ describe( 'BlockQuote integration', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell><blockQuote>[<image><caption>foo</caption></image>]</blockQuote></tableCell>' +
+						'<tableCell><blockQuote>[<imageBlock><caption>foo</caption></imageBlock>]</blockQuote></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -645,7 +645,7 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell>[<image><caption>foo</caption></image>]</tableCell>' +
+						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -655,7 +655,7 @@ describe( 'BlockQuote integration', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</tableCell>' +
+						'<tableCell><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -666,7 +666,7 @@ describe( 'BlockQuote integration', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<blockQuote><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</blockQuote>' +
+							'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -678,7 +678,7 @@ describe( 'BlockQuote integration', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<blockQuote><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</blockQuote>' +
+							'<blockQuote><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</blockQuote>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -689,7 +689,7 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell><paragraph>[foo</paragraph><image><caption>foo</caption></image>]</tableCell>' +
+						'<tableCell><paragraph>[foo</paragraph><imageBlock><caption>foo</caption></imageBlock>]</tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -699,7 +699,7 @@ describe( 'BlockQuote integration', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></tableCell>' +
+						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -710,7 +710,7 @@ describe( 'BlockQuote integration', () => {
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
-							'<blockQuote>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></blockQuote>' +
+							'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -721,7 +721,7 @@ describe( 'BlockQuote integration', () => {
 			setModelData( model,
 				'<table>' +
 					'<tableRow>' +
-						'<tableCell>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></tableCell>' +
+						'<tableCell>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></tableCell>' +
 					'</tableRow>' +
 				'</table>'
 			);
@@ -732,7 +732,7 @@ describe( 'BlockQuote integration', () => {
 				'<table>' +
 				'<tableRow>' +
 				'<tableCell>' +
-				'<blockQuote>[<image><caption>foo</caption></image><paragraph>foo]</paragraph></blockQuote>' +
+				'<blockQuote>[<imageBlock><caption>foo</caption></imageBlock><paragraph>foo]</paragraph></blockQuote>' +
 				'</tableCell>' +
 				'</tableRow>' +
 				'</table>'
