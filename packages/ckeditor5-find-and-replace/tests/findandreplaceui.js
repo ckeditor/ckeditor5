@@ -124,6 +124,7 @@ describe( 'FindAndReplaceUI', () => {
 				} );
 
 				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
+					// (#10008)
 					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
 					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
 					const selectSpy = sinon.spy( form.findInputView.fieldView, 'select' );
