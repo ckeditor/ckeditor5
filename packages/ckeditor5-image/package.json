@@ -64,7 +64,8 @@
     "lang",
     "src",
     "theme",
-    "build"
+    "build",
+    "ckeditor5-metadata.json"
   ],
   "scripts": {
     "dll:build": "webpack"

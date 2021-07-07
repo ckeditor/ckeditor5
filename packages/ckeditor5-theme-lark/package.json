@@ -53,7 +53,8 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json"
   ],
   "main": "./theme/theme.css"
 }

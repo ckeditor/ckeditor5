@@ -10,7 +10,7 @@
     "ckeditor5-plugin",
     "compatibility",
     "content compatibility",
-	"html support",
+    "html support",
     "generic html support"
   ],
   "main": "src/index.js",
@@ -63,7 +63,8 @@
     "lang",
     "src",
     "theme",
-    "build"
+    "build",
+    "ckeditor5-metadata.json"
   ],
   "scripts": {
     "dll:build": "webpack"
