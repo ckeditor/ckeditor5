@@ -11,6 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import { global } from 'ckeditor5/src/utils';
 import MinimapView from './minimapview';
 import {
+	// @if CK_DEBUG_MINIMAP // RectDrawer,
+
 	cloneEditingViewDomRoot,
 	getClientHeight,
 	getDomElementRect,
@@ -18,8 +20,6 @@ import {
 	getScrollable,
 	findClosestScrollableAncestor
 } from './utils';
-
-// import { RectDrawer } from './utils';
 
 import '../theme/minimap.css';
 
@@ -188,9 +188,9 @@ export default class Minimap extends Plugin {
 		const scrollableRootAncestorRect = getDomElementRect( this._scrollableRootAncestor );
 		let scrollProgress;
 
-		// RectDrawer.clear();
-		// RectDrawer.draw( scrollableRootAncestorRect, { outlineColor: 'red' }, 'scrollableRootAncestor' );
-		// RectDrawer.draw( editingRootRect, { outlineColor: 'green' }, 'editingRoot' );
+		// @if CK_DEBUG_MINIMAP // RectDrawer.clear();
+		// @if CK_DEBUG_MINIMAP // RectDrawer.draw( scrollableRootAncestorRect, { outlineColor: 'red' }, 'scrollableRootAncestor' );
+		// @if CK_DEBUG_MINIMAP // RectDrawer.draw( editingRootRect, { outlineColor: 'green' }, 'editingRoot' );
 
 		// The root is completely visible in the scrollable ancestor.
 		if ( scrollableRootAncestorRect.contains( editingRootRect ) ) {
