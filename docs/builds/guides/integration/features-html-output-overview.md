@@ -909,6 +909,71 @@ The data used to generate the following tables comes from the package metadata. 
 		</tr>
 	</tbody>
 </table>
+<h3 id="ckeditor5-html-support"><code>ckeditor5-html-support</code></h3>
+<p>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-html-support/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-html-support/ckeditor5-metadata.json</code></a>
+</p>
+<table class="features-html-output">
+	<thead>
+		<tr>
+			<th class="plugin">
+				Plugin
+			</th>
+			<th class="html-output">
+				HTML output
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/general-html-support.html">General HTML Support</a>
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_generalhtmlsupport-GeneralHtmlSupport.html"><code>GeneralHtmlSupport</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML configured by config.htmlSupport option.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					Data Filter
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_datafilter-DataFilter.html"><code>DataFilter</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<code>&lt;<strong>*</strong><br>    <strong>class</strong>="*"<br>    <strong>style</strong>="*:*"<br>    <strong>*</strong>="*"<br>&gt;</code>
+				<p>
+					The plugin can output any arbitrary HTML depending on its configuration.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					Data Schema
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_dataschema-DataSchema.html"><code>DataSchema</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
 <h3 id="ckeditor5-image"><code>ckeditor5-image</code></h3>
 <p>
 	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-image/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-image/ckeditor5-metadata.json</code></a>

@@ -533,6 +533,18 @@ See CKEditor 5 release blog posts [on the CKEditor blog](https://ckeditor.com/bl
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-html-support"><code>@ckeditor/ckeditor5-html-support</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-html-support.svg" alt="@ckeditor/ckeditor5-html-support npm package badge"></a>
+	</td>
+	<td>
+		The General HTML Support feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-image"><code>@ckeditor/ckeditor5-image</code></a>
 	</td>
 	<td>

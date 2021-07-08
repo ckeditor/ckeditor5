@@ -14,6 +14,8 @@ After reading this guide, you may find additional interesting details and exampl
 
 ## Demo
 
+Use the Insert to-do list toolbar button {@icon @ckeditor/ckeditor5-list/theme/icons/todolist.svg Insert a to-do list} to add a list to the editor content.
+
 {@snippet features/todo-list}
 
 ## Keyboard support

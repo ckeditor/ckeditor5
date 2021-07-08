@@ -9,6 +9,8 @@ The {@link module:alignment/alignment~Alignment} feature enables support for tex
 
 ## Demo
 
+Click inside a paragraph or a header and use the toolbar dropdown {@icon @ckeditor/ckeditor5-core/theme/icons/align-right.svg Text alignment} to apply desired alignment to a paragraph
+
 {@snippet features/text-alignment}
 
 ## Related features

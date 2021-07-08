@@ -206,6 +206,25 @@ describe( 'ImageTypeCommand', () => {
 				expect( returned ).to.be.null;
 			} );
 
+			it( 'should convert if "src" attribute is not set (but "uploadId" is) because this is what happens during image upload', () => {
+				model.schema.extend( 'imageBlock', {
+					allowAttributes: 'uploadId'
+				} );
+
+				model.schema.extend( 'imageInline', {
+					allowAttributes: 'uploadId'
+				} );
+
+				setModelData( model, '<paragraph>[<imageInline uploadId="1234"></imageInline>]</paragraph>' );
+
+				const oldElement = model.document.getRoot().getChild( 0 ).getChild( 0 );
+				const returned = blockCommand.execute();
+				const newElement = model.document.getRoot().getChild( 0 );
+
+				expect( getModelData( model ) ).to.equal( '[<imageBlock uploadId="1234"></imageBlock>]' );
+				expect( returned ).to.deep.equal( { oldElement, newElement } );
+			} );
+
 			it( 'should not convert an inline image to a block image if it is not allowed by the schema', () => {
 				model.schema.addChildCheck( ( context, childDefinition ) => {
 					if ( childDefinition.name == 'imageBlock' ) {

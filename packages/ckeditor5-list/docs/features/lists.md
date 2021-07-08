@@ -24,12 +24,14 @@ An unordered (bulleted) list can represent items where the order is not importan
 
 An ordered (numbered) list can be used if the order of the items matters, for example, when creating an instruction. Here, the sequence of steps that must be done is important.
 
-Use the editor below to see the list feature plugin in action. Lists can be introduced using toolbar buttons, or with Markdown code provided by the {@link features/autoformat autoformatting feature}:
+### Demo
+
+Use the editor below to see the list feature plugin in action. Toolbar buttons can be used to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
+
+A Markdown code provided by the {@link features/autoformat autoformatting feature} can also be utilized:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
 * Start a line with `1.` or `1)` followed by a space for a numbered list.
-
-### Demo
 
 {@snippet features/lists-basic}
 
