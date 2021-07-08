@@ -141,7 +141,6 @@ export default class PictureEditing extends Plugin {
 
 			editor.model.change( writer => {
 				writer.setAttributes( {
-					src: data.default,
 					sources
 				}, imageElement );
 			} );
