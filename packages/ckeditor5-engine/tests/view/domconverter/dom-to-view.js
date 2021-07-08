@@ -6,6 +6,7 @@
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
+import ViewUIElement from '../../../src/view/uielement';
 import ViewDocument from '../../../src/view/document';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
@@ -171,10 +172,30 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( textNode ) ).to.be.null;
 		} );
 
-		it( 'should return null for a comment', () => {
-			const comment = document.createComment( 'abc' );
+		it( 'should create UIElement for comment', () => {
+			const domComment = document.createComment( 'abc' );
 
-			expect( converter.domToView( comment ) ).to.be.null;
+			const viewComment = converter.domToView( domComment );
+
+			expect( viewComment ).to.be.an.instanceof( ViewUIElement );
+			expect( viewComment.name ).to.equal( '$comment' );
+
+			expect( viewComment.getCustomProperty( '$rawContent' ) ).to.equal( 'abc' );
+
+			expect( converter.mapViewToDom( viewComment ) ).to.not.equal( domComment );
+		} );
+
+		it( 'should create UIElement for comment and bind element', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { bind: true } );
+
+			expect( viewComment ).to.be.an.instanceof( ViewUIElement );
+			expect( viewComment.name ).to.equal( '$comment' );
+
+			expect( viewComment.getCustomProperty( '$rawContent' ) ).to.equal( 'abc' );
+
+			expect( converter.mapViewToDom( viewComment ) ).to.equal( domComment );
 		} );
 
 		describe( 'it should clear whitespaces', () => {
