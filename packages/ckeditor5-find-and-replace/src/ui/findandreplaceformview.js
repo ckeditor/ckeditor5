@@ -39,7 +39,23 @@ export default class FindAndReplaceFormView extends View {
 		 * @member {Boolean} #isSearching
 		 */
 		this.set( 'isSearching', false );
+
+		/**
+		 * Searched text value.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {String} #searchText
+		 */
 		this.set( 'searchText', '' );
+
+		/**
+		  * Replace text value.
+		  *
+		  * @readonly
+		  * @observable
+		  * @member {String} #replaceText
+		  */
 		this.set( 'replaceText', '' );
 
 		/**
@@ -50,7 +66,23 @@ export default class FindAndReplaceFormView extends View {
 		 * @member {Boolean} #isDirty
 		 */
 		this.set( 'isDirty', false );
+
+		/**
+		 * Indicates if the matchCase checkbox has been checked.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #matchCase
+		 */
 		this.set( 'matchCase', false );
+
+		/**
+		  * Indicates if the matchWholeWords checkbox has been checked.
+		  *
+		  * @readonly
+		  * @observable
+		  * @member {Boolean} #matchWholeWords
+		  */
 		this.set( 'matchWholeWords', false );
 
 		/**

@@ -18,15 +18,57 @@ export default class FindAndReplaceState extends Plugin {
 	constructor( model ) {
 		super();
 
+		/**
+		 * A collection of results.
+		 *
+		 * @private
+		 * @member {module:utils/collection~Collection}
+		 */
 		this.set( 'results', new Collection() );
 
+		/**
+		 * Currently highlighted search result in {@link #matchCount matched results}.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Object|null} #highlightedResult
+		 */
 		this.set( 'highlightedResult', null );
 
+		/**
+		 * Searched text value.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {String} #searchText
+		 */
 		this.set( 'searchText', '' );
 
+		/**
+		 * Replace text value.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {String} #replaceText
+		 */
 		this.set( 'replaceText', '' );
 
+		/**
+		 * Indicates if the matchCase checkbox has been checked.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #matchCase
+		 */
 		this.set( 'matchCase', false );
+
+		/**
+		 * Indicates if the matchWholeWords checkbox has been checked.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #matchWholeWords
+		 */
 		this.set( 'matchWholeWords', false );
 
 		this.results.on( 'change', ( eventInfo, { removed, index } ) => {
