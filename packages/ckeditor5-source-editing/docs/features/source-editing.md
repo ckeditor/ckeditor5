@@ -15,7 +15,7 @@ The changes made to the document source will be applied to the editor's {@link f
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
 
 {@snippet features/source-editing-imports}
 

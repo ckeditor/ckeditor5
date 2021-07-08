@@ -83,9 +83,9 @@ A semantical style lets the user choose from predefined appearances of the image
 As the most of the predefined editor builds support editing a structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below presents an editor with such a basic configuration. There are three types of the images:
-* a block image - a representation of a block image with no style-related CSS class,
-* an inline image - a representation of an inline image with no style-related CSS class,
-* a side image - a semantical style applying the `image-style-side` CSS class to it.
+* a block image {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Block image} - a representation of a block image with no style-related CSS class,
+* an inline image {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline image} - a representation of an inline image with no style-related CSS class,
+* a side image {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Side image} - a semantical style applying the `image-style-side` CSS class to it.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
