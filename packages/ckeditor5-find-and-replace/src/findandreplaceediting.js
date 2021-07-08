@@ -134,9 +134,11 @@ function onDocumentChange( results, model, searchCallback ) {
 	// Remove results & markers from the changed part of content.
 	model.change( writer => {
 		removedMarkers.forEach( markerName => {
+			const removedResult = getResultByMarker( markerName );
+
 			// Remove the result first - in order to prevent rendering a removed marker.
-			if ( results.has( markerName ) ) {
-				results.remove( markerName );
+			if ( removedResult ) {
+				results.remove( removedResult );
 			}
 
 			if ( model.markers.has( markerName ) ) {
@@ -149,6 +151,14 @@ function onDocumentChange( results, model, searchCallback ) {
 	changedNodes.forEach( nodeToCheck => {
 		updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
 	} );
+
+	function getResultByMarker( markerName ) {
+		for ( const result of results ) {
+			if ( result.marker.name === markerName ) {
+				return result;
+			}
+		}
+	}
 }
 
 /**
@@ -246,14 +256,10 @@ export default class FindAndReplaceEditing extends Plugin {
 	 */
 	find( callbackOrText ) {
 		const { editor } = this;
-		const { model } = editor;
 
-		const { findCallback, results } = editor.execute( 'find', callbackOrText );
+		const { results } = editor.execute( 'find', callbackOrText );
 
 		this.activeResults = results;
-
-		// @todo: handle this listener, another copy is in findcommand.js file.
-		this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
 
 		return this.activeResults;
 	}
@@ -265,8 +271,6 @@ export default class FindAndReplaceEditing extends Plugin {
 		if ( !this.activeResults ) {
 			return;
 		}
-
-		this.stopListening( this.editor.model.document );
 
 		this.state.clear( this.editor.model );
 

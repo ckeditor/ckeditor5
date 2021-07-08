@@ -352,6 +352,8 @@ describe( 'FindAndReplace', () => {
 
 				editor.execute( 'replace', 'new', results.get( 0 ) );
 
+				editor.plugins.get( 'FindAndReplaceEditing' ).state.clear( editor.model );
+
 				editor.execute( 'undo' );
 
 				expect( stringify( model.document.getRoot(), null, editor.model.markers ) ).to.equal(
@@ -365,7 +367,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should return list of results', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.be.instanceOf( Collection );
 			expect( findResults ).to.have.property( 'length', 6 );
@@ -374,7 +376,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should return properly formatted result', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplaceEditing.find( 'bar' );
+			const findResults = editor.execute( 'find', 'bar' ).results;
 
 			const [ result ] = findResults;
 
@@ -395,7 +397,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (text insert)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -409,7 +411,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (block with text insert)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -427,7 +429,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (removed block)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -441,7 +443,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplaceEditing.find( 'bar' );
+			const findResults = editor.execute( 'find', 'bar' ).results;
 
 			expect( findResults ).to.have.property( 'length', 1 );
 
@@ -460,7 +462,7 @@ describe( 'FindAndReplace', () => {
 			editor.conversion.elementToElement( { model: 'test', view: 'test' } );
 			editor.setData( '<test>Foo bar baz</test>' );
 
-			const findResults = findAndReplaceEditing.find( 'bar' );
+			const findResults = editor.execute( 'find', 'bar' ).results;
 			expect( findResults ).to.have.property( 'length', 1 );
 		} );
 

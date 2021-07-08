@@ -65,17 +65,15 @@ export default class FindCommand extends Command {
 		// Initial search is done on all nodes inside the content.
 		const range = model.createRangeIn( model.document.getRoot() );
 
-		// @todo: fix me
-		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
+		const resultsArray = Array.from( updateFindResultFromRange( range, model, findCallback ) );
 
 		const ret = {
-			results: updateFindResultFromRange( range, model, findCallback ),
 			findCallback
 		};
 
 		this.state.clear( model );
-		this.state.results.addMany( Array.from( ret.results ) );
-		this.state.highlightedResult = ret.results.get( 0 );
+		this.state.results.addMany( resultsArray );
+		this.state.highlightedResult = resultsArray[ 0 ];
 
 		if ( typeof callbackOrText === 'string' ) {
 			// @todo: eliminate this code repetition. Done to fix unit tests.
@@ -84,6 +82,8 @@ export default class FindCommand extends Command {
 
 		this.state.matchCase = !!matchCase;
 		this.state.matchWholeWords = !!wholeWords;
+
+		ret.results = this.state.results;
 
 		return ret;
 	}
