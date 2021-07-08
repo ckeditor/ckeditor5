@@ -7,6 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -22,8 +23,6 @@ import ImageUtils from '../src/imageutils';
 import ImageResizeEditing from '../src/imageresize/imageresizeediting';
 import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
 import ImageUploadEditing from '../src/imageupload/imageuploadediting';
-
-import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 describe( 'PictureEditing', () => {
 	let editor, model, modelDocument, view, imageUtils;
