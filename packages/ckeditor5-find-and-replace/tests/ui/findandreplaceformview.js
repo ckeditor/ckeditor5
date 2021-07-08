@@ -137,6 +137,42 @@ describe( 'FindAndReplaceFormView', () => {
 
 				expect( view.isDirty ).to.false;
 			} );
+
+			it( 'should change to true on matchCase change', () => {
+				view.matchCase = true;
+
+				expect( view.isDirty ).to.true;
+
+				view.matchCase = false;
+				state.matchCase = true;
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should change to true on matchWholeWords change', () => {
+				state.matchWholeWords = true;
+
+				expect( view.isDirty ).to.true;
+
+				view.matchWholeWords = false;
+				state.matchWholeWords = true;
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should be false when matchCase or matchWholeWords have the same value', () => {
+				expect( view.isDirty ).to.false;
+
+				state.matchCase = true;
+				view.matchCase = true;
+
+				expect( view.isDirty ).to.false;
+
+				state.matchWholeWords = true;
+				view.matchWholeWords = true;
+
+				expect( view.isDirty ).to.false;
+			} );
 		} );
 	} );
 

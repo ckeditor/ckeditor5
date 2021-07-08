@@ -50,6 +50,8 @@ export default class FindAndReplaceFormView extends View {
 		 * @member {Boolean} #isDirty
 		 */
 		this.set( 'isDirty', false );
+		this.set( 'matchCase', false );
+		this.set( 'matchWholeWords', false );
 
 		/**
 		 * Stores the number of matched search results.
@@ -220,9 +222,16 @@ export default class FindAndReplaceFormView extends View {
 			}
 		} );
 
-		this.bind( 'isDirty' ).to( this, 'searchText', state, 'searchText', ( formSearchText, stateSearchText ) => {
-			return formSearchText !== stateSearchText;
-		} );
+		this.bind( 'isDirty' ).to(
+			this, 'searchText', state, 'searchText',
+			this, 'matchCase', state, 'matchCase',
+			this, 'matchWholeWords', state, 'matchWholeWords',
+			( formSearchText, stateSearchText, formMatchCase, stateMatchCase, formMatchWholeWords, stateMatchWholeWords ) => {
+				return formSearchText !== stateSearchText ||
+				formMatchCase !== stateMatchCase ||
+				formMatchWholeWords !== stateMatchWholeWords;
+			}
+		);
 
 		this.bind( 'searchText' ).to( this.findInputView.fieldView, 'value', enforceStringValue );
 		this.findButtonView.bind( 'isEnabled' ).to( this.findInputView.fieldView, 'isEmpty', value => !value );
