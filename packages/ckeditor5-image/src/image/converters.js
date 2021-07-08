@@ -264,7 +264,10 @@ export function downcastSourcesAttribute( imageUtils ) {
 			for ( const attributeElement of attributeElements ) {
 				viewWriter.wrap( viewWriter.createRangeOn( pictureElement ), attributeElement );
 			}
-		} else {
+		}
+		// Both setting "sources" to an empty array and removing the attribute should unwrap the <img />.
+		// Unwrap once if the latter followed the former, though.
+		else if ( imgElement.parent.is( 'element', 'picture' ) ) {
 			const pictureElement = imgElement.parent;
 
 			viewWriter.move( viewWriter.createRangeOn( imgElement ), viewWriter.createPositionBefore( pictureElement ) );

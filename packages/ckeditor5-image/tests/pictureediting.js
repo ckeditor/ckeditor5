@@ -872,6 +872,50 @@ describe( 'PictureEditing', () => {
 								'</p>'
 							);
 						} );
+
+						it( 'should downcast a plain inline image if the previous value was an empty array', () => {
+							editor.setData(
+								'<p>' +
+									'foo<picture>' +
+										'<source srcset="/assets/sample.png" type="image/png" media="(min-width: 800px)">' +
+										'<source srcset="/assets/sample.png?foo" type="image/png" media="(max-width: 800px)">' +
+										'<img src="/assets/sample.png">' +
+									'</picture>bar' +
+								'</p>'
+							);
+
+							model.change( writer => {
+								writer.setAttribute(
+									'sources',
+									[],
+									modelDocument.getRoot().getChild( 0 ).getChild( 1 )
+								);
+							} );
+
+							expect( getViewData( view ) ).to.equal(
+								'<p>' +
+									'{}foo' +
+									'<span class="ck-widget image-inline" contenteditable="false">' +
+										'<img src="/assets/sample.png"></img>' +
+									'</span>' +
+									'bar' +
+								'</p>'
+							);
+
+							model.change( writer => {
+								writer.removeAttribute( 'sources', modelDocument.getRoot().getChild( 0 ).getChild( 1 ) );
+							} );
+
+							expect( getViewData( view ) ).to.equal(
+								'<p>' +
+									'{}foo' +
+									'<span class="ck-widget image-inline" contenteditable="false">' +
+										'<img src="/assets/sample.png"></img>' +
+									'</span>' +
+									'bar' +
+								'</p>'
+							);
+						} );
 					} );
 				} );
 
