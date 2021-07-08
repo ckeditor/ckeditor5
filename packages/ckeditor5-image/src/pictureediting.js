@@ -12,8 +12,8 @@ import { Plugin } from 'ckeditor5/src/core';
 import ImageEditing from './image/imageediting';
 import ImageUtils from './imageutils';
 import {
-	sourcesAttributeConverter,
-	viewPictureToModel
+	downcastSourcesAttribute,
+	upcastPicture
 } from './image/converters';
 
 /**
@@ -114,8 +114,8 @@ export default class PictureEditing extends Plugin {
 		const conversion = editor.conversion;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
-		conversion.for( 'upcast' ).add( viewPictureToModel( imageUtils ) );
-		conversion.for( 'downcast' ).add( sourcesAttributeConverter( imageUtils ) );
+		conversion.for( 'upcast' ).add( upcastPicture( imageUtils ) );
+		conversion.for( 'downcast' ).add( downcastSourcesAttribute( imageUtils ) );
 	}
 
 	/**

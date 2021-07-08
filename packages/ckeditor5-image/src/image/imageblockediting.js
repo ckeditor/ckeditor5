@@ -12,9 +12,9 @@ import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import {
-	modelToViewAttributeConverter,
-	srcsetAttributeConverter,
-	viewFigureToModel
+	downcastImageAttribute,
+	downcastSrcsetAttribute,
+	upcastImageFigure
 } from './converters';
 
 import ImageEditing from './imageediting';
@@ -104,9 +104,9 @@ export default class ImageBlockEditing extends Plugin {
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
-			.add( srcsetAttributeConverter( imageUtils, 'imageBlock' ) );
+			.add( downcastImageAttribute( imageUtils, 'imageBlock', 'src' ) )
+			.add( downcastImageAttribute( imageUtils, 'imageBlock', 'alt' ) )
+			.add( downcastSrcsetAttribute( imageUtils, 'imageBlock' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )
@@ -114,7 +114,7 @@ export default class ImageBlockEditing extends Plugin {
 				view: getImgViewElementMatcher( editor, 'imageBlock' ),
 				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } )
 			} )
-			.add( viewFigureToModel( imageUtils ) );
+			.add( upcastImageFigure( imageUtils ) );
 	}
 
 	/**

@@ -21,10 +21,11 @@ import { first } from 'ckeditor5/src/utils';
  * The entire content of the `<figure>` element except the first `<img>` is being converted as children
  * of the `<imageBlock>` model element.
  *
+ * @protected
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @returns {Function}
  */
-export function viewFigureToModel( imageUtils ) {
+export function upcastImageFigure( imageUtils ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', converter );
 	};
@@ -70,10 +71,11 @@ export function viewFigureToModel( imageUtils ) {
  *
  *		<image[Block|Inline] ... sources="..."></image[Block|Inline]>
  *
+ * @protected
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @returns {Function}
  */
-export function viewPictureToModel( imageUtils ) {
+export function upcastPicture( imageUtils ) {
 	const sourceAttributeNames = [ 'srcset', 'media', 'type' ];
 
 	return dispatcher => {
@@ -162,11 +164,12 @@ export function viewPictureToModel( imageUtils ) {
 /**
  * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
+ * @protected
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'imageBlock'|'imageInline'} imageType The type of the image.
  * @returns {Function}
  */
-export function srcsetAttributeConverter( imageUtils, imageType ) {
+export function downcastSrcsetAttribute( imageUtils, imageType ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:srcset:${ imageType }`, converter );
 	};
@@ -211,10 +214,11 @@ export function srcsetAttributeConverter( imageUtils, imageType ) {
  * Converts the `source` model attribute to the `<picture><source /><source />...<img /></picture>`
  * view structure.
  *
+ * @protected
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @returns {Function}
  */
-export function sourcesAttributeConverter( imageUtils ) {
+export function downcastSourcesAttribute( imageUtils ) {
 	return dispatcher => {
 		dispatcher.on( 'attribute:sources:imageBlock', converter );
 		dispatcher.on( 'attribute:sources:imageInline', converter );
@@ -272,12 +276,13 @@ export function sourcesAttributeConverter( imageUtils ) {
 /**
  * Converter used to convert a given image attribute from the model to the view.
  *
+ * @protected
  * @param {module:image/imageutils~ImageUtils} imageUtils
  * @param {'imageBlock'|'imageInline'} imageType The type of the image.
  * @param {String} attributeKey The name of the attribute to convert.
  * @returns {Function}
  */
-export function modelToViewAttributeConverter( imageUtils, imageType, attributeKey ) {
+export function downcastImageAttribute( imageUtils, imageType, attributeKey ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:${ attributeKey }:${ imageType }`, converter );
 	};

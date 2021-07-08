@@ -12,8 +12,8 @@ import { ClipboardPipeline } from 'ckeditor5/src/clipboard';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 import {
-	modelToViewAttributeConverter,
-	srcsetAttributeConverter
+	downcastImageAttribute,
+	downcastSrcsetAttribute
 } from './converters';
 
 import ImageEditing from './imageediting';
@@ -112,9 +112,9 @@ export default class ImageInlineEditing extends Plugin {
 			} );
 
 		conversion.for( 'downcast' )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
-			.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) )
-			.add( srcsetAttributeConverter( imageUtils, 'imageInline' ) );
+			.add( downcastImageAttribute( imageUtils, 'imageInline', 'src' ) )
+			.add( downcastImageAttribute( imageUtils, 'imageInline', 'alt' ) )
+			.add( downcastSrcsetAttribute( imageUtils, 'imageInline' ) );
 
 		// More image related upcasts are in 'ImageEditing' plugin.
 		conversion.for( 'upcast' )

@@ -235,7 +235,6 @@ export default class ImageUtils extends Plugin {
 	 *
 	 * The `<img>` can be located deep in other elements, so this helper performs a deep tree search.
 	 *
-	 * @protected
 	 * @param {module:engine/view/element~Element} figureView
 	 * @returns {module:engine/view/element~Element}
 	 */
