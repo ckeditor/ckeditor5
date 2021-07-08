@@ -40,6 +40,7 @@
     "@ckeditor/ckeditor5-list": "^29.0.0",
     "@ckeditor/ckeditor5-page-break": "^29.0.0",
     "@ckeditor/ckeditor5-paragraph": "^29.0.0",
+    "@ckeditor/ckeditor5-source-editing": "^29.0.0",
     "@ckeditor/ckeditor5-table": "^29.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^29.0.0",
     "@ckeditor/ckeditor5-utils": "^29.0.0",

@@ -13,6 +13,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
@@ -20,15 +21,16 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Bold,
-			Table,
 			Essentials,
+			GeneralHtmlSupport,
 			Italic,
 			Paragraph,
+			SourceEditing,
 			Strikethrough,
-			GeneralHtmlSupport,
+			Table,
 			TableCaption
 		],
-		toolbar: [ 'insertTable', '|', 'bold', 'italic', 'strikethrough' ],
+		toolbar: [ 'insertTable', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
 		htmlSupport: {
 			allow: [
 				{

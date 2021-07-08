@@ -153,5 +153,4 @@ function getDescendantElement( conversionApi, containerElement, elementName ) {
 			return item;
 		}
 	}
-	return null;
 }
