@@ -55,18 +55,8 @@ export default class TableElementSupport extends Plugin {
 			evt.stop();
 		} );
 
-		// Consume figure if it contains table element child to avoid elementToElement conversion for figure with that context.
 		dataFilter.on( 'register:figure', () => {
-			conversion.for( 'upcast' ).add( dispatcher => {
-				dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-					for ( const childNode of data.viewItem.getChildren() ) {
-						if ( childNode.is( 'element', 'table' ) ) {
-							conversionApi.consumable.consume( data.viewItem, { name: true } );
-							return;
-						}
-					}
-				} );
-			} );
+			conversion.for( 'upcast' ).add( consumeTableFigureConverter() );
 		} );
 	}
 }
@@ -153,4 +143,22 @@ function getDescendantElement( conversionApi, containerElement, elementName ) {
 			return item;
 		}
 	}
+}
+
+// Conversion helper consuming figure element if it's a part of the Table feature
+// to avoid elementToElement conversion for figure with that context.
+//
+// @private
+// @returns {Function} Returns a conversion callback.
+function consumeTableFigureConverter() {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			for ( const childNode of data.viewItem.getChildren() ) {
+				if ( childNode.is( 'element', 'table' ) ) {
+					conversionApi.consumable.consume( data.viewItem, { name: true } );
+					return;
+				}
+			}
+		} );
+	};
 }
