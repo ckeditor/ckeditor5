@@ -6,6 +6,7 @@
 /* globals Event */
 
 import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
+import FindAndReplaceState from '../../src/findandreplacestate';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -17,11 +18,13 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'FindAndReplaceFormView', () => {
 	let view;
 	let viewValue;
+	let state;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new FindAndReplaceFormView( { t: val => val } );
+		state = new FindAndReplaceState();
+		view = new FindAndReplaceFormView( { t: val => val }, state );
 		view.render();
 	} );
 
@@ -110,6 +113,33 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 	} );
 
+	describe( 'observable properties', () => {
+		describe( 'isDirty', () => {
+			it( 'should be initially false', () => {
+				expect( view.isDirty ).to.be.false;
+			} );
+
+			it( 'should change to true on searchText change', () => {
+				view.searchText = 'foo';
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should change to true on state change', () => {
+				state.searchText = 'foo';
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should be false when state and view have the same value', () => {
+				view.searchText = 'foo';
+				state.searchText = 'foo';
+
+				expect( view.isDirty ).to.false;
+			} );
+		} );
+	} );
+
 	describe( 'find and replace events', () => {
 		it( 'should trigger findNext twice', () => {
 			const spy = sinon.spy();
@@ -179,7 +209,7 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			view = new FindAndReplaceFormView( { t: val => val } );
+			view = new FindAndReplaceFormView( { t: val => val }, state );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
@@ -197,7 +227,7 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new FindAndReplaceFormView( { t: val => val } );
+			view = new FindAndReplaceFormView( { t: val => val }, state );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 

@@ -14,7 +14,6 @@ import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
  * The object storing find & replace plugin state in a given editor instance.
  *
  */
-
 export default class FindAndReplaceState extends Plugin {
 	constructor( model ) {
 		super();

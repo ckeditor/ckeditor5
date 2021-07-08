@@ -26,7 +26,7 @@ import CheckboxView from '../ui/checkboxview';
  * @extends module:ui/view~View
  */
 export default class FindAndReplaceFormView extends View {
-	constructor( locale ) {
+	constructor( locale, state ) {
 		super( locale );
 
 		const t = locale.t;
@@ -38,9 +38,18 @@ export default class FindAndReplaceFormView extends View {
 		 * @observable
 		 * @member {Boolean} #isSearching
 		 */
-		this.set( 'isSearching' );
+		this.set( 'isSearching', false );
 		this.set( 'searchText', '' );
 		this.set( 'replaceText', '' );
+
+		/**
+		 * Indicates if searched text has been changed in form.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isDirty
+		 */
+		this.set( 'isDirty', false );
 
 		/**
 		 * Stores the number of matched search results.
@@ -211,9 +220,13 @@ export default class FindAndReplaceFormView extends View {
 			}
 		} );
 
-		this.bind( 'searchText' ).to( this.findInputView.fieldView, 'value' );
+		this.bind( 'isDirty' ).to( this, 'searchText', state, 'searchText', ( formSearchText, stateSearchText ) => {
+			return formSearchText !== stateSearchText;
+		} );
+
+		this.bind( 'searchText' ).to( this.findInputView.fieldView, 'value', enforceStringValue );
 		this.findButtonView.bind( 'isEnabled' ).to( this.findInputView.fieldView, 'isEmpty', value => !value );
-		this.bind( 'replaceText' ).to( this.replaceInputView.fieldView, 'value' );
+		this.bind( 'replaceText' ).to( this.replaceInputView.fieldView, 'value', enforceStringValue );
 		this.replaceButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
 		this.replaceAllButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
 
@@ -236,6 +249,11 @@ export default class FindAndReplaceFormView extends View {
 				this.replaceView
 			]
 		} );
+
+		function enforceStringValue( value ) {
+			// For search / replace text let's enforce strings for easier comparision.
+			return value === undefined ? '' : value;
+		}
 	}
 
 	render() {

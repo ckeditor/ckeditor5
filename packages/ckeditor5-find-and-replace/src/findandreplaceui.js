@@ -43,12 +43,8 @@ export default class FindAndReplaceUI extends Plugin {
 		this.set( 'searchText' );
 		this.set( 'replaceText' );
 
-		this.set( 'isSearching', false );
-
 		this.set( 'matchCount', null );
 		this.set( 'highlightOffset', null );
-
-		this.bind( 'isSearching' ).to( this, 'matchCount', count => count > 0 );
 
 		/**
 		 * The form view will only be assigned if the find and replace toolbar button was added.
@@ -69,7 +65,7 @@ export default class FindAndReplaceUI extends Plugin {
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const dropdown = createDropdown( locale, SplitButtonView );
 
-			const formView = new FindAndReplaceFormView( editor.locale );
+			const formView = new FindAndReplaceFormView( editor.locale, this._state );
 
 			formView.delegate( 'findNext' ).to( this );
 			formView.delegate( 'findPrevious' ).to( this );
