@@ -2,6 +2,8 @@
 
 **Note**: For the purpose of this test, all images in the editor that use `<picture>` have 🖼 next to them (via CSS).
 
+**Note**: For the time being, uploading images in this test will always insert a pre-defined image with pre-defined picture sources (project's logo). This should change when an upload service supporting `<picture>` is available.
+
 1. Some images in this test use `<picture>` and some not.
 1. Scale down the viewport (browser window) to see `<picture>`-based images change their look (this is called [art direction](http://usecases.responsiveimages.org/#art-direction)).
 1. Make sure linking and unlinking `<picture>`-based images works as expected.
