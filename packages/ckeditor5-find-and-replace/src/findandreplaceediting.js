@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { updateFindResultFromRange } from './utils';
+import { updateFindResultFromRange, findByTextCallback } from './utils';
 import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
@@ -139,7 +139,9 @@ function onDocumentChange( results, model, searchCallback ) {
 				results.remove( markerName );
 			}
 
-			writer.removeMarker( markerName );
+			if ( model.markers.has( markerName ) ) {
+				writer.removeMarker( markerName );
+			}
 		} );
 	} );
 
@@ -209,6 +211,19 @@ export default class FindAndReplaceEditing extends Plugin {
 		// It's possible that the editor will get destroyed before debounced call kicks in.
 		// This would result with accessing a view three that is no longer in DOM.
 		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
+
+		const model = this.editor.model;
+
+		this.listenTo( model.document, 'change:data', () => {
+			if ( !this.state.searchText ) {
+				// No searching is active.
+				return;
+			}
+
+			const findCallback = findByTextCallback( this.state.searchText, this.state );
+
+			onDocumentChange( this.state.results, model, findCallback );
+		} );
 
 		function scrollToHighlightedResult( eventInfo, name, newValue ) {
 			if ( newValue ) {

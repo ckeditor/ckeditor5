@@ -189,6 +189,26 @@ describe( 'FindAndReplaceEditing', () => {
 			expect( markers ).to.have.length( 2 );
 		} );
 
+		it( 'should get the modified results removed', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( '<p>foo</p><p>foo</p><p>foo</p>' );
+
+			editor.execute( 'find', 'foo' );
+
+			const model = editor.model;
+
+			model.change( writer => {
+				const secondOccurrenceNode = model.document.getRoot().getChild( 1 ).getChild( 0 );
+				// Make 'f^oo' position where the text will be inserted to break match.
+				const positionInText = model.createPositionBefore( secondOccurrenceNode ).getShiftedBy( 1 );
+
+				writer.insertText( '_', positionInText, 'end' );
+			} );
+
+			expect( state.results.length ).to.equal( 2 );
+		} );
+
 		describe( 'changing highlighted result', () => {
 			it( 'should automatically change highlighted result', () => {
 				const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
