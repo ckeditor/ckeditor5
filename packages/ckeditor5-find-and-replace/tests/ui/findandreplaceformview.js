@@ -139,11 +139,11 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			it( 'should change to true on matchCase change', () => {
-				view.matchCase = true;
+				view.matchCaseView.isChecked = true;
 
 				expect( view.isDirty ).to.true;
 
-				view.matchCase = false;
+				view.matchCaseView.isChecked = false;
 				state.matchCase = true;
 
 				expect( view.isDirty ).to.true;
@@ -154,7 +154,7 @@ describe( 'FindAndReplaceFormView', () => {
 
 				expect( view.isDirty ).to.true;
 
-				view.matchWholeWords = false;
+				view.matchWholeWordsView.isChecked = false;
 				state.matchWholeWords = true;
 
 				expect( view.isDirty ).to.true;
@@ -164,12 +164,12 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view.isDirty ).to.false;
 
 				state.matchCase = true;
-				view.matchCase = true;
+				view.matchCaseView.isChecked = true;
 
 				expect( view.isDirty ).to.false;
 
 				state.matchWholeWords = true;
-				view.matchWholeWords = true;
+				view.matchWholeWordsView.isChecked = true;
 
 				expect( view.isDirty ).to.false;
 			} );

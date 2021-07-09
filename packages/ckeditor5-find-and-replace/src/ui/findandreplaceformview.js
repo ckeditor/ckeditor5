@@ -256,8 +256,8 @@ export default class FindAndReplaceFormView extends View {
 
 		this.bind( 'isDirty' ).to(
 			this, 'searchText', state, 'searchText',
-			this, 'matchCase', state, 'matchCase',
-			this, 'matchWholeWords', state, 'matchWholeWords',
+			this.matchCaseView, 'isChecked', state, 'matchCase',
+			this.matchWholeWordsView, 'isChecked', state, 'matchWholeWords',
 			( formSearchText, stateSearchText, formMatchCase, stateMatchCase, formMatchWholeWords, stateMatchWholeWords ) => {
 				return formSearchText !== stateSearchText ||
 				formMatchCase !== stateMatchCase ||
@@ -274,6 +274,20 @@ export default class FindAndReplaceFormView extends View {
 		this.bind( 'isCounterHidden' ).to( this, 'matchCount', this, 'highlightOffset', ( matchCount, highlightOffset ) => {
 			return matchCount === null || highlightOffset === null;
 		} );
+
+		this.bind( 'isSearching' ).to( this );
+
+		if ( state ) {
+			this.unbind( 'isSearching' );
+			this.bind( 'isSearching' ).to(
+				this, 'matchCount', this, 'isDirty',
+				this.matchCaseView, 'isChecked', state, 'matchCase',
+				this.matchWholeWordsView, 'isChecked', state, 'matchWholeWords',
+				( count, isDirty ) => {
+					return count > 0 && !isDirty;
+				}
+			);
+		}
 
 		this.setTemplate( {
 			tag: 'form',

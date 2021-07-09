@@ -75,8 +75,6 @@ export default class FindAndReplaceUI extends Plugin {
 			formView.bind( 'matchCount' ).to( this );
 			formView.bind( 'highlightOffset' ).to( this );
 
-			formView.bind( 'isSearching' ).to( this );
-
 			this._createToolbarDropdown( dropdown, loupeIcon, formView );
 
 			dropdown.panelView.children.add( formView );
@@ -88,29 +86,6 @@ export default class FindAndReplaceUI extends Plugin {
 			} );
 
 			this.formView = formView;
-
-			if ( this._state ) {
-				this.unbind( 'isSearching' );
-
-				const findTextInputView = formView.findInputView.fieldView;
-
-				// Searching should only be active if there's more than 1 result matched and
-				// the user has not changed any search criteria.
-				this.bind( 'isSearching' ).to( this, 'matchCount',
-					findTextInputView, 'value', this._state, 'searchText',
-					formView.matchCaseView, 'isChecked', this._state, 'matchCase',
-					formView.matchWholeWordsView, 'isChecked', this._state, 'matchWholeWords',
-					( count,
-						viewSearchText, modelSearchText,
-						viewMatchCase, modelMatchCase,
-						viewWholeWords, modelWholeWords
-					) => {
-						return count > 0 &&
-							viewSearchText == modelSearchText &&
-							viewMatchCase == modelMatchCase &&
-							viewWholeWords == modelWholeWords;
-					} );
-			}
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
 				dropdown.buttonView.actionView.fire( 'execute' );
