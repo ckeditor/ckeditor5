@@ -20,7 +20,30 @@ ClassicEditor
 			Image,
 			DrupalImage
 		],
-		toolbar: [ 'heading', '|', 'undo', 'redo' ]
+		toolbar: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'|',
+			'outdent',
+			'indent',
+			'|',
+			'blockQuote',
+			'insertTable',
+			'mediaEmbed',
+			'undo',
+			'redo'
+		],
+		image: {
+			toolbar: [
+				'imageTextAlternative', 'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:alignLeft' , 'imageStyle:alignRight'
+			]
+		},
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -7,6 +7,22 @@
  * @module drupal-image/drupalimage
  */
 
+/*
+<imageBlock>
+	<caption>xxx</caption>
+</imageBlock>
+
+----
+
+Step 1. Make editor.getData() return this:
+
+<drupal-img src data-align ...>
+	<figcaption>foo <strong>bar</strong></figcaption>
+</drupal-img>
+
+Step 2. Override editor.data.stringify in a way that it takes figcaption from drupal-img and moves it to the attribute of drupal-img, removes figcaption and replaces drupal-img with img
+*/
+
 import { Plugin } from 'ckeditor5/src/core';
 
 export default class DrupalImageEditing extends Plugin {
@@ -47,61 +63,55 @@ export default class DrupalImageEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
+			// TODO: Alignment downcast to data-align
+			// TODO: Missing space before the inline image (check upcast first)
+			// TODO: setData/getData automated integration tests
 			.add( modelEntityUuidToDataAttribute() )
 			.add( modelEntityFileToDataAttribute() );
 
 		conversion.for( 'dataDowncast' )
-			.add( dispatcher => {
-				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
-					if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-						return;
-					}
+			// .add( dispatcher => {
+			// 	dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
 
-					let captionText = '';
+			// 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+			// 			return;
+			// 		}
 
-					for ( const { item } of editor.model.createRangeIn( data.item ) ) {
-						if ( !conversionApi.consumable.consume( item, 'insert' ) ) {
-							continue;
-						}
+			// 		console.log( editor.data.stringify( data.item ) );
 
-						if ( item.is( '$textProxy' ) ) {
-							captionText += item.data;
-						}
-					}
+			// 		// if ( captionText ) {
+			// 		// 	const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
 
-					if ( captionText ) {
-						const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
+			// 		// 	conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
+			// 		// }
+			// 	},
+			// 	{ priority: 'high' }
+			// 	);
+			// } )
+			// .add( dispatcher => {
+			// 	dispatcher.on( 'insert:$text', ( evt, data ) => {
+			// 		const { parent } = data.item;
+			// 		const isInImageCaption = parent.is( 'element', 'caption' ) && parent.parent.is( 'element', 'imageBlock' );
 
-						conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
-					}
-				},
-				{ priority: 'high' }
-				);
-			} )
-			.add( dispatcher => {
-				dispatcher.on( 'insert:$text', ( evt, data ) => {
-					const { parent } = data.item;
-					const isInImageCaption = parent.is( 'element', 'caption' ) && parent.parent.is( 'element', 'imageBlock' );
-
-					if ( isInImageCaption ) {
-						// Prevent `modelViewSplitOnInsert()` function inside ckeditor5-list package from interfering when downcasting
-						// a text inside caption. Normally aforementioned function tries to mitigate side effects of inserting content in
-						// the middle of the lists, but in this case we want to stop the conversion from proceeding.
-						evt.stop();
-					}
-				},
-				// Make sure we are overriding the `modelViewSplitOnInsert() converter from ckeditor5-list.
-				{ priority: 'highest' }
-				);
-			} )
+			// 		if ( isInImageCaption ) {
+			// 			// Prevent `modelViewSplitOnInsert()` function inside ckeditor5-list package from interfering when downcasting
+			// 			// a text inside caption. Normally aforementioned function tries to mitigate side effects of inserting content in
+			// 			// the middle of the lists, but in this case we want to stop the conversion from proceeding.
+			// 			evt.stop();
+			// 		}
+			// 	},
+			// 	// Make sure we are overriding the `modelViewSplitOnInsert() converter from ckeditor5-list.
+			// 	{ priority: 'highest' }
+			// 	);
+			// } )
 			.elementToElement( {
 				model: 'imageBlock',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageBlock' ),
+				view: ( modelElement, { writer, consumable } ) => createImageViewElement( writer, modelElement, editor, consumable ),
 				converterPriority: 'high'
 			} )
 			.elementToElement( {
 				model: 'imageInline',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageInline' ),
+				view: ( modelElement, { writer } ) => createImageViewElement( writer, modelElement ),
 				converterPriority: 'high'
 			} );
 	}
@@ -197,7 +207,18 @@ function viewImageToModelImage( editor ) {
 	}
 }
 
-function createImageViewElement( writer ) {
+function createImageViewElement( writer, modelElement, editor, consumable ) {
+	if ( modelElement.is( 'element', 'imageInline' ) ) {
+		return writer.createEmptyElement( 'img' );
+	}
+
+	const caption = modelElement.getChild( 0 );
+
+	if ( caption ) {
+		// consumable.consume( caption, 'insert' );
+		console.log( editor.data.stringify( modelElement ) );
+	}
+
 	return writer.createEmptyElement( 'img' );
 }
 
@@ -213,7 +234,7 @@ function modelEntityUuidToDataAttribute() {
 		if ( !consumable.consume( item, evt.name ) ) {
 			return;
 		}
-
+q
 		const viewElement = conversionApi.mapper.toViewElement( item );
 		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 

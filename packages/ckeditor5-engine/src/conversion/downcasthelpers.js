@@ -813,6 +813,8 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
+		console.log( viewElement, elementCreator, data.item, conversionApi.consumable._consumable );
+
 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
