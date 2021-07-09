@@ -7,22 +7,6 @@
  * @module drupal-image/drupalimage
  */
 
-/*
-<imageBlock>
-	<caption>xxx</caption>
-</imageBlock>
-
-----
-
-Step 1. Make editor.getData() return this:
-
-<drupal-img src data-align ...>
-	<figcaption>foo <strong>bar</strong></figcaption>
-</drupal-img>
-
-Step 2. Override editor.data.stringify in a way that it takes figcaption from drupal-img and moves it to the attribute of drupal-img, removes figcaption and replaces drupal-img with img
-*/
-
 import { Plugin } from 'ckeditor5/src/core';
 
 export default class DrupalImageEditing extends Plugin {
@@ -70,48 +54,68 @@ export default class DrupalImageEditing extends Plugin {
 			.add( modelEntityFileToDataAttribute() );
 
 		conversion.for( 'dataDowncast' )
-			// .add( dispatcher => {
-			// 	dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+			.add( dispatcher => {
+				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+					if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+						return;
+					}
 
-			// 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-			// 			return;
-			// 		}
+					const range = editor.model.createRangeIn( data.item );
+					const viewDocumentFragment = conversionApi.writer.createDocumentFragment();
 
-			// 		console.log( editor.data.stringify( data.item ) );
+					// Bind caption model element to the detached view document fragment so all content of the caption
+					// will be downcasted into that document fragment.
+					conversionApi.mapper.bindElements( data.item, viewDocumentFragment );
 
-			// 		// if ( captionText ) {
-			// 		// 	const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
+					for ( const { item } of range ) {
+						const data = {
+							item,
+							range: editor.model.createRangeOn( item )
+						};
 
-			// 		// 	conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
-			// 		// }
-			// 	},
-			// 	{ priority: 'high' }
-			// 	);
-			// } )
-			// .add( dispatcher => {
-			// 	dispatcher.on( 'insert:$text', ( evt, data ) => {
-			// 		const { parent } = data.item;
-			// 		const isInImageCaption = parent.is( 'element', 'caption' ) && parent.parent.is( 'element', 'imageBlock' );
+						// The following lines are extracted from:
+						// editor.data.downcastDispatcher._convertInsertWithAttributes( data );
 
-			// 		if ( isInImageCaption ) {
-			// 			// Prevent `modelViewSplitOnInsert()` function inside ckeditor5-list package from interfering when downcasting
-			// 			// a text inside caption. Normally aforementioned function tries to mitigate side effects of inserting content in
-			// 			// the middle of the lists, but in this case we want to stop the conversion from proceeding.
-			// 			evt.stop();
-			// 		}
-			// 	},
-			// 	// Make sure we are overriding the `modelViewSplitOnInsert() converter from ckeditor5-list.
-			// 	{ priority: 'highest' }
-			// 	);
-			// } )
+						const eventName = `insert:${ item.is( '$textProxy' ) ? '$text' : item.name }`;
+
+						editor.data.downcastDispatcher.fire( eventName, data, conversionApi );
+
+						for ( const key of item.getAttributeKeys() ) {
+							Object.assign( data, {
+								attributeKey: key,
+								attributeOldValue: null,
+								attributeNewValue: data.item.getAttribute( key )
+							} );
+
+							editor.data.downcastDispatcher.fire( `attribute:${ key }`, data, conversionApi );
+						}
+					}
+
+					// Unbind all the view elements that were downcasted to the document fragment.
+					for ( const child of conversionApi.writer.createRangeIn( viewDocumentFragment ).getItems() ) {
+						conversionApi.mapper.unbindViewElement( child );
+					}
+
+					conversionApi.mapper.unbindViewElement( viewDocumentFragment );
+
+					// Stringify view document fragment to HTML string.
+					const captionText = editor.data.processor.toData( viewDocumentFragment );
+
+					if ( captionText ) {
+						const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
+
+						conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
+					}
+				}, { priority: 'high' } );
+			} )
 			.elementToElement( {
 				model: 'imageBlock',
-				view: ( modelElement, { writer, consumable } ) => createImageViewElement( writer, modelElement, editor, consumable ),
+				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
 				converterPriority: 'high'
 			} )
 			.elementToElement( {
 				model: 'imageInline',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, modelElement ),
+				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
 				converterPriority: 'high'
 			} );
 	}
@@ -175,7 +179,18 @@ function viewImageToModelImage( editor ) {
 			// recognize this image as a block image with a caption.
 			const caption = writer.createElement( 'caption' );
 
-			writer.insertText( viewItem.getAttribute( 'data-caption' ), caption );
+			// Parse HTML from data-caption attribute and upcast it to model fragment.
+			const viewFragment = editor.data.processor.toView( viewItem.getAttribute( 'data-caption' ) );
+			const modelFragment = writer.createDocumentFragment();
+
+			// Consumable must know about those newly parsed view elements.
+			conversionApi.consumable.constructor.createFrom( viewFragment, conversionApi.consumable );
+			conversionApi.convertChildren( viewFragment, modelFragment );
+
+			// Insert caption model nodes into the caption.
+			for ( const child of Array.from( modelFragment.getChildren() ) ) {
+				writer.append( child, caption );
+			}
 
 			// Insert the caption element into image, as a last child.
 			writer.append( caption, image );
@@ -207,18 +222,7 @@ function viewImageToModelImage( editor ) {
 	}
 }
 
-function createImageViewElement( writer, modelElement, editor, consumable ) {
-	if ( modelElement.is( 'element', 'imageInline' ) ) {
-		return writer.createEmptyElement( 'img' );
-	}
-
-	const caption = modelElement.getChild( 0 );
-
-	if ( caption ) {
-		// consumable.consume( caption, 'insert' );
-		console.log( editor.data.stringify( modelElement ) );
-	}
-
+function createImageViewElement( writer ) {
 	return writer.createEmptyElement( 'img' );
 }
 
@@ -234,7 +238,7 @@ function modelEntityUuidToDataAttribute() {
 		if ( !consumable.consume( item, evt.name ) ) {
 			return;
 		}
-q
+
 		const viewElement = conversionApi.mapper.toViewElement( item );
 		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 
