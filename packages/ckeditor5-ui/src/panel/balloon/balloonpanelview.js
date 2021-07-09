@@ -68,6 +68,21 @@ export default class BalloonPanelView extends View {
 		const bind = this.bindTemplate;
 
 		/**
+		 * The offset from the top edge of the web browser's viewport which makes the
+		 * balloon become sticky. The default value is `0`, which means that the balloon becomes
+		 * sticky when its upper edge touches the top of the page viewport.
+		 *
+		 * This attribute is useful when the web page has UI elements positioned to the top
+		 * either using `position: fixed` or `position: sticky`, which would cover the
+		 * balloon or vice–versa (depending on the `z-index` hierarchy).
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Number} #viewportTopOffset
+		 */
+		this.set( 'viewportTopOffset', 0 );
+
+		/**
 		 * The absolute top position of the balloon panel in pixels.
 		 *
 		 * @observable
@@ -235,7 +250,8 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthEast
 			],
 			limiter: defaultLimiterElement,
-			fitInViewport: true
+			fitInViewport: true,
+			viewportTopOffset: this.viewportTopOffset
 		}, options );
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
