@@ -123,8 +123,8 @@ The sample editor below uses predefined presentational image styles represented 
   * `'align-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Image aligned to the left},
   * `'align-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Image aligned to the right}.
 * **Images placed between the paragraphs** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Centered image} - block images without the CSS `float` property. It contains following image styles:
-  * `'align-block-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-right.svg Block image aligned to the left},
-  * `'align-block-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-left.svg Block image aligned to the right},
+  * `'align-block-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-left.svg Block image aligned to the left},
+  * `'align-block-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-right.svg Block image aligned to the right},
   * `'block'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Centered block image} - this style is the default one for block images and it does not apply any CSS class to the image.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
