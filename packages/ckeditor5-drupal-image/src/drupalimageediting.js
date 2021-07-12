@@ -71,8 +71,7 @@ export default class DrupalImageEditing extends Plugin {
 							range: editor.model.createRangeOn( item )
 						};
 
-						// The following lines are extracted from:
-						// DowncastDispatcher#_convertInsertWithAttributes();
+						// The following lines are extracted from DowncastDispatcher#_convertInsertWithAttributes().
 
 						const eventName = `insert:${ item.is( '$textProxy' ) ? '$text' : item.name }`;
 
@@ -127,6 +126,8 @@ export default class DrupalImageEditing extends Plugin {
 
 				this.editor.model.change( writer => {
 					writer.setAttribute( 'dataEntityUuid', uploadId, imageElement );
+
+					// Mapping to proper entity type should be straighforward.
 					writer.setAttribute( 'dataEntityType', 'file', imageElement );
 				} );
 			}, { priority: 'high' } );
@@ -217,9 +218,9 @@ function viewImageToModelImage( editor ) {
 			attributesToConsume.push( 'data-entity-uuid' );
 		}
 
-		if ( consumable.test( viewItem, { name: true, attributes: 'data-entity-file' } ) ) {
-			writer.setAttribute( 'dataEntityType', viewItem.getAttribute( 'data-entity-file' ), image );
-			attributesToConsume.push( 'data-entity-file' );
+		if ( consumable.test( viewItem, { name: true, attributes: 'data-entity-type' } ) ) {
+			writer.setAttribute( 'dataEntityType', viewItem.getAttribute( 'data-entity-type' ), image );
+			attributesToConsume.push( 'data-entity-type' );
 		}
 
 		// Try to place the image in the allowed position.
@@ -275,7 +276,7 @@ function modelEntityFileToDataAttribute() {
 		const viewElement = conversionApi.mapper.toViewElement( item );
 		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 
-		writer.setAttribute( 'data-entity-file', data.attributeNewValue, imageInFigure || viewElement );
+		writer.setAttribute( 'data-entity-type', data.attributeNewValue, imageInFigure || viewElement );
 	}
 }
 

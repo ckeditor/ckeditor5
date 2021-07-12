@@ -116,10 +116,62 @@ describe( 'DrupalImageEditing', () => {
 						'</p>'
 					);
 			} );
+
+			it( 'should convert data-entity-uuid', () => {
+				editor.setData(
+					'<p>Some text' +
+						'<img src="/drupal/image.jpg" alt="Alternative text" data-entity-uuid="AAAA-0000-BBBB-1111" />' +
+					'</p>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal(
+						'<paragraph>' +
+							'Some text' +
+							'<imageInline alt="Alternative text" dataEntityUuid="AAAA-0000-BBBB-1111" src="/drupal/image.jpg">' +
+							'</imageInline>' +
+						'</paragraph>'
+					);
+
+				// Might move it to a test section with downcast.
+				expect( editor.getData() )
+					.to.equal(
+						'<p>' +
+							'Some text' +
+							'<img src="/drupal/image.jpg" data-entity-uuid="AAAA-0000-BBBB-1111" alt="Alternative text">' +
+						'</p>'
+					);
+			} );
+
+			it( 'should convert data-entity-type', () => {
+				editor.setData(
+					'<p>Some text' +
+						'<img src="/drupal/image.jpg" alt="Alternative text" data-entity-type="file" />' +
+					'</p>'
+				);
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal(
+						'<paragraph>' +
+							'Some text' +
+							'<imageInline alt="Alternative text" dataEntityType="file" src="/drupal/image.jpg">' +
+							'</imageInline>' +
+						'</paragraph>'
+					);
+
+				// Might move it to a test section with downcast.
+				expect( editor.getData() )
+					.to.equal(
+						'<p>' +
+							'Some text' +
+							'<img src="/drupal/image.jpg" data-entity-type="file" alt="Alternative text">' +
+						'</p>'
+					);
+			} );
 		} );
 
-		describe( 'model to view (downcast)', () => {
-			it.skip( 'should convert caption element to figcaption', () => {
+		describe.skip( 'model to view (downcast)', () => {
+			it( 'should convert caption element to figcaption', () => {
 				setModelData( model, '<imageBlock src="img.png"><caption>Foo bar baz.</caption></imageBlock>' );
 
 				expect( editor.getData() ).to.equal(
