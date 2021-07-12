@@ -83,9 +83,9 @@ A semantical style lets the user choose from predefined appearances of the image
 As the most of the predefined editor builds support editing a structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below presents an editor with such a basic configuration. There are three types of the images:
-* a block image - a representation of a block image with no style-related CSS class,
-* an inline image - a representation of an inline image with no style-related CSS class,
-* a side image - a semantical style applying the `image-style-side` CSS class to it.
+* **a block image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Block image} - a representation of a block image with no style-related CSS class,
+* **an inline image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline image} - a representation of an inline image with no style-related CSS class,
+* **a side image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Side image} - a semantical style applying the `image-style-side` CSS class to it.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
@@ -118,14 +118,14 @@ Presentational styles do not relate to any special meaning of the content. They 
 </info-box>
 
 The sample editor below uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
-* <img class="inline-icon" src="../../assets/img/icons/object-inline.svg">**Inline images** - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
-* <img class="inline-icon" src="../../assets/img/icons/object-inline-left.svg">**Images wrapped with text** - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
-  * `'align-left'`,
-  * `'align-right'`.
-* <img class="inline-icon" src="../../assets/img/icons/object-center.svg">**Images placed between the paragraphs** - block images without the CSS `float` property. It contains following image styles:
-  * `'align-block-left'`,
-  * `'align-block-right'`,
-  * `'block'` - this style is the default one for block images and it does not apply any CSS class to the image.
+* **Inline images** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline images} - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
+* **Images wrapped with text** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Inline image aligned to the left} - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
+  * `'align-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Image aligned to the left},
+  * `'align-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Image aligned to the right}.
+* **Images placed between the paragraphs** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Centered image} - block images without the CSS `float` property. It contains following image styles:
+  * `'align-block-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-left.svg Block image aligned to the left},
+  * `'align-block-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-right.svg Block image aligned to the right},
+  * `'block'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Centered block image} - this style is the default one for block images and it does not apply any CSS class to the image.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
