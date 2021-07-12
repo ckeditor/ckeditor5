@@ -13,7 +13,7 @@ Check out the demo in the [HTML embed feature](https://ckeditor.com/docs/ckedito
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-html-embed` package](https://ckeditor.com/docs/ckeditor5/latest/api/html-embed.html) page as well as the [HTML embed feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-html-embed` package](https://ckeditor.com/docs/ckeditor5/latest/api/html-embed.html) page as well as the [HTML embed feature](https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

@@ -13,7 +13,7 @@ Check out the demo in the [horizontal line feature](https://ckeditor.com/docs/ck
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-horizontal-line` package](https://ckeditor.com/docs/ckeditor5/latest/api/horizontal-line.html) page as well as the [horizontal line feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-horizontal-line` package](https://ckeditor.com/docs/ckeditor5/latest/api/horizontal-line.html) page as well as the [horizontal line feature](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
