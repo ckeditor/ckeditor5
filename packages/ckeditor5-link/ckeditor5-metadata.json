@@ -3,7 +3,7 @@
 		{
 			"name": "Autolink",
 			"className": "AutoLink",
-			"description": "Automatically turns plain links in the document into active URLs as you write. Works for emails, too.",
+			"description": "Automatically turns plain text links in the document into active URLs as you write. Works for emails, too.",
 			"docs": "features/link.html#autolink-feature",
 			"path": "src/autolink.js",
 			"requires": [
@@ -49,7 +49,7 @@
 			"name": "Link image",
 			"className": "LinkImage",
 			"description": "Allows adding clickable links to images for creating banners or referrers.",
-			"docs": "features/image.html#linking-images",
+			"docs": "features/images/images-linking.html",
 			"path": "src/linkimage.js",
 			"requires": [
 				"Link",

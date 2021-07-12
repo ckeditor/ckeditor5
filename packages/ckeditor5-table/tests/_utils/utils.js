@@ -382,8 +382,11 @@ function makeRows( tableData, options ) {
 				}
 
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
+					const wrappingElementStart = wrappingElement == 'span' ?
+						'span class="ck-table-bogus-paragraph"' : wrappingElement;
+
 					contents =
-						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
+						`<${ wrappingElementStart }>` +
 						contents +
 						`</${ wrappingElement }>`;
 				}

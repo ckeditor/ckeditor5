@@ -16,7 +16,7 @@ Code blocks is a perfect feature to present programming- or software-related iss
 
 ## Demo
 
-Use the code block toolbar button and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just use the double caret function (press <kbd>Enter</kbd> twice).
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just use the double caret function (press <kbd>Enter</kbd> twice).
 
 {@snippet features/code-block}
 

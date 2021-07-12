@@ -5,6 +5,8 @@
 
 /* globals setTimeout, document, console */
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 import ViewRange from '../../../src/view/range';
 import DocumentSelection from '../../../src/view/documentselection';
 import ViewSelection from '../../../src/view/selection';
@@ -17,6 +19,8 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( done => {
 		domDocument = document;

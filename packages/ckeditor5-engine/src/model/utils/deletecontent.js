@@ -45,7 +45,7 @@ import DocumentSelection from '../documentselection';
  * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
  * to a place where text cannot be inserted.
  *
- * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
+ * For example `<paragraph>x</paragraph>[<imageBlock src="foo.jpg"></imageBlock>]` will become:
  *
  * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
  * * `<paragraph>x</paragraph>[]` with the option enabled (`doNotAutoparagraph == true`).
@@ -53,9 +53,9 @@ import DocumentSelection from '../documentselection';
  * If you use this option you need to make sure to handle invalid selections yourself or leave
  * them to the selection post-fixer (may not always work).
  *
- * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+ * **Note:** If there is no valid position for the selection, the paragraph will always be created:
  *
- * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
+ * `[<imageBlock src="foo.jpg"></imageBlock>]` -> `<paragraph>[]</paragraph>`.
  */
 export default function deleteContent( model, selection, options = {} ) {
 	if ( selection.isCollapsed ) {
@@ -150,13 +150,13 @@ function getLivePositionsForSelectedBlocks( range ) {
 
 			const newEndPosition = selection.getLastPosition();
 
-			// For such model and selection:
-			//     <paragraph>A[</paragraph><image></image><paragraph>]B</paragraph>
+			// For such a model and selection:
+			//     <paragraph>A[</paragraph><imageBlock></imageBlock><paragraph>]B</paragraph>
 			//
-			// After modifySelection() we would end up with this:
-			//     <paragraph>A[</paragraph>]<image></image><paragraph>B</paragraph>
+			// After modifySelection(), we would end up with this:
+			//     <paragraph>A[</paragraph>]<imageBlock></imageBlock><paragraph>B</paragraph>
 			//
-			// So we need to check if there is no content in the skipped range (because we want to include the <image>).
+			// So we need to check if there is no content in the skipped range (because we want to include the <imageBlock>).
 			const skippedRange = model.createRange( newEndPosition, endPosition );
 
 			if ( !model.hasContent( skippedRange, { ignoreMarkers: true } ) ) {

@@ -16,10 +16,6 @@ msgstr ""
 "Language: uk\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "Зберегти"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Відміна"
@@ -31,3 +27,11 @@ msgstr "Видалити колір"
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
 msgstr ""
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Зберегти"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "Показати більше"

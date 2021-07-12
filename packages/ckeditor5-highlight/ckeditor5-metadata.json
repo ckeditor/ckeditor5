@@ -3,7 +3,7 @@
 		{
 			"name": "Highlight",
 			"className": "Highlight",
-			"description": "Offers text marking tools (pens and markers) useful when reviewing content or highlighting it for future reference.",
+			"description": "Offers the text marking tools (pens and markers) useful when reviewing content or highlighting it for future reference.",
 			"docs": "features/highlight.html",
 			"path": "src/highlight.js",
 			"uiComponents": [

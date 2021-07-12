@@ -19,7 +19,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 
 // Delay related to word-count throttling.
 const DELAY = 255;
@@ -30,9 +30,12 @@ describe( 'WordCount', () => {
 	let wordCountPlugin, editor, model;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( {
-			plugins: [ WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageEditing, ImageCaptionEditing ]
-		} )
+		return VirtualTestEditor
+			.create( {
+				plugins: [
+					WordCount, Paragraph, ShiftEnter, TableEditing, ListEditing, LinkEditing, ImageBlockEditing, ImageCaptionEditing
+				]
+			} )
 			.then( _editor => {
 				editor = _editor;
 				model = editor.model;
@@ -180,9 +183,9 @@ describe( 'WordCount', () => {
 
 			it( 'should count words in the image caption', () => {
 				setModelData( model,
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>Foo Bar</caption>' +
-					'</image>'
+					'</imageBlock>'
 				);
 
 				wordCountPlugin._refreshStats();

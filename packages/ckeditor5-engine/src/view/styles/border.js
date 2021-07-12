@@ -239,26 +239,26 @@ function normalizeBorderShorthand( string ) {
 //
 // It tries to produce the most optimal output for the specified styles.
 //
-// For border style:
+// For a border style:
 //
 //      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
 //
-// It will produce: `border-style: solid` output.
-// For border style and color:
+// It will produce: `border-style: solid`.
+// For a border style and color:
 //
 //      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
 //      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
 //
-// It will produce: `border-color: #ff0; border-style: solid`
+// It will produce: `border-color: #ff0; border-style: solid`.
 // If all border parameters are specified:
 //
 //      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
 //      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
 //      width: {top: "2px", bottom: "2px", right: "2px", left: "2px"}
 //
-// It will combine everything into the single property: `border: 2px solid #ff0`.
+// It will combine everything into a single property: `border: 2px solid #ff0`.
 //
-// Definitions are merged only if all border selectors have the same values.
+// The definitions are merged only if all border selectors have the same values.
 //
 // @returns {Function}
 function getBorderReducer() {
@@ -295,7 +295,7 @@ function getBorderReducer() {
 			return reducedStyleTypes;
 		}, [] );
 
-		// The reduced properties (by type) and all the rest that could not be reduced.
+		// The reduced properties (by type) and all that remains that could not be reduced.
 		return [
 			...reducedStyleTypes,
 			...reduceBorderPosition( topStyles, 'top' ),
@@ -318,10 +318,10 @@ function getBorderPositionReducer( which ) {
 	return value => reduceBorderPosition( value, which );
 }
 
-// Returns an array with reduced border styles depending on specified values.
+// Returns an array with reduced border styles depending on the specified values.
 //
-// If all (width, style, color) border properties are specified, the returned selector will be
-// merged into the group: `border-*: [width] [style] [color]`.
+// If all border properties (width, style, color) are specified, the returned selector will be
+// merged into a group: `border-*: [width] [style] [color]`.
 //
 // Otherwise, the specific definitions will be returned: `border-(width|style|color)-*: [value]`.
 //

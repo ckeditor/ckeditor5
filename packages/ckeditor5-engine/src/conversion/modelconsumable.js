@@ -38,12 +38,12 @@ import TextProxy from '../model/textproxy';
  *
  * Consuming multiple values in a single callback:
  *
- *		// Converter for custom `image` element that might have a `caption` element inside which changes
+ *		// Converter for custom `imageBlock` element that might have a `caption` element inside which changes
  *		// how the image is displayed in the view:
  *		//
  *		// Model:
  *		//
- *		// [image]
+ *		// [imageBlock]
  *		//   └─ [caption]
  *		//       └─ foo
  *		//
@@ -53,8 +53,8 @@ import TextProxy from '../model/textproxy';
  *		//   ├─ <img />
  *		//   └─ <caption>
  *		//       └─ foo
- *		modelConversionDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
- *			// First, consume the `image` element.
+ *		modelConversionDispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+ *			// First, consume the `imageBlock` element.
  *			conversionApi.consumable.consume( data.item, 'insert' );
  *
  *			// Just create normal image element for the view.
@@ -63,7 +63,7 @@ import TextProxy from '../model/textproxy';
  *			const insertPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *			const viewWriter = conversionApi.writer;
  *
- *			// Check if the `image` element has children.
+ *			// Check if the `imageBlock` element has children.
  *			if ( data.item.childCount > 0 ) {
  *				const modelCaption = data.item.getChild( 0 );
  *
@@ -319,6 +319,11 @@ export default class ModelConsumable {
 // @returns {String} Normalized consumable type.
 function _normalizeConsumableType( type ) {
 	const parts = type.split( ':' );
+
+	// Markers are identified by the whole name (otherwise we would consume the whole markers group).
+	if ( parts[ 0 ] == 'addMarker' || parts[ 0 ] == 'removeMarker' ) {
+		return type;
+	}
 
 	return parts.length > 1 ? parts[ 0 ] + ':' + parts[ 1 ] : parts[ 0 ];
 }

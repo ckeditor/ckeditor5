@@ -16,9 +16,7 @@ If you load some content unknown to any editor feature, it will be dropped. If y
 
 ## How to turn the source mode on? How to write a source mode plugin?
 
-Because of the custom {@link framework/guides/architecture/editing-engine data model} used in the editor, the source mode makes little sense in CKEditor 5. CKEditor 5 is a content editor, **not** a page builder and, unless some editor feature (plugin) supports some particular kind of HTML (or any other input format), it will not be accepted as content.
-
-See the [relevant issue](https://github.com/ckeditor/ckeditor5/issues/592) on GitHub to learn more.
+The {@link features/source-editing source editing} feature provides basic support for viewing and editing the source of the document.
 
 ## What happened to the `contents.css` file? How do I style the content of the editor?
 
@@ -72,7 +70,7 @@ By default, CKEditor 5 has no global registry of editor instances. But if necess
 
 ## How to enable image drag&drop and upload? Where should I start?
 
-The {@link features/image Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
+The {@link features/images-overview Image} and {@link features/image-upload Image upload} features are enabled by default in all editor builds. However, to fully enable image upload when installing CKEditor 5 you need to configure one of the available upload adapters. Check out the {@link features/image-upload comprehensive "Image upload" guide} to find out the best image upload strategy for your project.
 
 ## How to use CKEditor 5 with frameworks (Angular, React, Vue, etc.)?
 
