@@ -152,7 +152,7 @@ export default class DowncastDispatcher {
 		//  - the non-list elements between/before/after list should be converted as normal insert
 		//  - keep mappings locally for removed view elements so they could be reused
 
-		console.log( 'changes', changes );
+		// console.log( 'changes', changes );
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {

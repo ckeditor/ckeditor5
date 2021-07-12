@@ -149,6 +149,10 @@ export default class ListEditing extends Plugin {
 						for ( let i = 0; i < this._lists.length; i++ ) {
 							const list = this._lists[ i ];
 
+							if ( list.range.start.path.length != change.position.path.length ) {
+								continue;
+							}
+
 							if ( change.attributes.has( 'listItem' ) ) {
 								const [ newRange ] = list.range._getTransformedByInsertion( change.position, change.length );
 
