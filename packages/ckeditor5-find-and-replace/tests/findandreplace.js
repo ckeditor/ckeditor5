@@ -512,20 +512,6 @@ describe( 'FindAndReplace', () => {
 			expect( callbackSpy.callCount ).to.equal( 2 );
 		} );
 
-		it( 'should call a callback for changed blocks', () => {
-			editor.setData( LONG_TEXT );
-
-			const callbackSpy = sinon.spy();
-			findAndReplaceEditing.find( callbackSpy );
-			callbackSpy.resetHistory();
-
-			model.change( writer => {
-				model.insertContent( writer.createText( 'Foo bears foo' ), root.getChild( 0 ), 0 );
-			} );
-
-			expect( callbackSpy.callCount ).to.equal( 1 );
-		} );
-
 		it( 'should handle custom callback return value', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
