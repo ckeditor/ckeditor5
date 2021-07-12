@@ -194,7 +194,7 @@ export default class FindAndReplaceFormView extends View {
 			// For search / replace text let's enforce strings for easier comparision.
 			return value === undefined ? '' : value;
 		}
-    
+
 		injectCssTransitionDisabler( this );
 	}
 
