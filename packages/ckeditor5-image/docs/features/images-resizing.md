@@ -28,8 +28,7 @@ In this case, the user is able to resize images by dragging square handles displ
 
 Use the corner handles to resize the image and adjust it to the text as needed. You can also use the alignment options from the image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Image align} to achieve the desired effect.
 
-Images can also be pre-resized using styling, as observed below (the bottom image is hard-set to 60%).
-<!-- Is this true? There are 3 images at the bottom, this needs clarification. -->
+Images can also be pre-resized using styling, as observed below (the last three images are hard-set to 28% for the visual consistency of the article).
 
 {@snippet features/image-resize}
 
