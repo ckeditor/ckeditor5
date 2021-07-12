@@ -1,7 +1,19 @@
 CKEditor 5 find and replace feature
 ===========================
 
+[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-find-and-replace.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-find-and-replace)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
+
 This package implements the find and replace feature for CKEditor 5.
+
+## Demo
+
+Check out the demo in the [Find and replace feature](https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html) guide.
+
+## Documentation
+
+See the [`@ckeditor/ckeditor5-find-and-replace` package](https://ckeditor.com/docs/ckeditor5/latest/api/find-and-replace.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

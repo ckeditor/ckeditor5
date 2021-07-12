@@ -7,7 +7,16 @@
  * @module find-and-replace/ui/findandreplaceformview
  */
 
-import { ButtonView, FocusCycler, LabeledFieldView, createLabeledInputText, View, submitHandler, ViewCollection } from 'ckeditor5/src/ui';
+import {
+	ButtonView,
+	FocusCycler,
+	LabeledFieldView,
+	createLabeledInputText,
+	View,
+	submitHandler,
+	ViewCollection,
+	injectCssTransitionDisabler
+} from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler, uid } from 'ckeditor5/src/utils';
 
 // See: #8833.
@@ -185,6 +194,8 @@ export default class FindAndReplaceFormView extends View {
 			// For search / replace text let's enforce strings for easier comparision.
 			return value === undefined ? '' : value;
 		}
+    
+		injectCssTransitionDisabler( this );
 	}
 
 	render() {

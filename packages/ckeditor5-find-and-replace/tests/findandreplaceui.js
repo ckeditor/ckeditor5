@@ -4,11 +4,15 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import FindAndReplaceUI from '../src/findandreplaceui';
 import FindAndReplace from '../src/findandreplace';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import loupeIcon from '../theme/icons/find-replace.svg';
 
 describe( 'FindAndReplaceUI', () => {
 	let editorElement;
 	let editor;
 	let dropdown;
+	let findCommand;
+	let button;
+	let form;
 
 	testUtils.createSinonSandbox();
 
@@ -23,6 +27,9 @@ describe( 'FindAndReplaceUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				dropdown = editor.ui.componentFactory.create( 'findAndReplace' );
+				form = dropdown.panelView.children.get( 0 );
+				button = dropdown.buttonView;
+				findCommand = editor.commands.get( 'find' );
 			} );
 	} );
 
@@ -49,25 +56,84 @@ describe( 'FindAndReplaceUI', () => {
 		expect( dropdown ).to.not.equal( secondInstance );
 	} );
 
-	it( 'should delegate dropdown:closed event', () => {
-		const plugin = editor.plugins.get( 'FindAndReplaceUI' );
-		const spy = sinon.spy();
+	describe( 'dropdown', () => {
+		it( 'should delegate dropdown:closed event', () => {
+			const plugin = editor.plugins.get( 'FindAndReplaceUI' );
+			const spy = sinon.spy();
 
-		plugin.on( 'dropdown:closed', spy );
+			plugin.on( 'dropdown:closed', spy );
 
-		dropdown.fire( 'change:isOpen', 'isClosed', false );
+			dropdown.fire( 'change:isOpen', 'isClosed', false );
 
-		expect( spy.calledOnce ).to.be.true;
-	} );
+			expect( spy.calledOnce ).to.be.true;
+		} );
 
-	it( 'should not delegate dropdown:closed event when the UI is opened', () => {
-		const plugin = editor.plugins.get( 'FindAndReplaceUI' );
-		const spy = sinon.spy();
+		it( 'should not delegate dropdown:closed event when the UI is opened', () => {
+			const plugin = editor.plugins.get( 'FindAndReplaceUI' );
+			const spy = sinon.spy();
 
-		plugin.on( 'dropdown:closed', spy );
+			plugin.on( 'dropdown:closed', spy );
 
-		dropdown.fire( 'change:isOpen', 'isClosed', true );
+			dropdown.fire( 'change:isOpen', 'isClosed', true );
 
-		expect( spy.calledOnce ).to.be.false;
+			expect( spy.calledOnce ).to.be.false;
+		} );
+
+		it( 'should not enable dropdown when find command is disabled', () => {
+			findCommand.isEnabled = true;
+			expect( dropdown ).to.have.property( 'isEnabled', true );
+
+			findCommand.isEnabled = false;
+			expect( dropdown ).to.have.property( 'isEnabled', false );
+		} );
+
+		describe( 'button', () => {
+			it( 'should set an #icon of the #buttonView', () => {
+				expect( dropdown.buttonView.icon ).to.equal( loupeIcon );
+			} );
+
+			it( 'should set a #label of the #buttonView', () => {
+				expect( dropdown.buttonView.tooltip ).to.equal( 'Find and replace' );
+			} );
+
+			describe( '#open event', () => {
+				it( 'executes the actions with the "low" priority', () => {
+					const spy = sinon.spy();
+					const selectSpy = sinon.spy( form.findInputView.fieldView, 'select' );
+
+					button.on( 'open', () => {
+						spy();
+					} );
+
+					button.fire( 'open' );
+					sinon.assert.callOrder( spy, selectSpy );
+				} );
+
+				it( 'should select the content of the input', () => {
+					const spy = sinon.spy( form.findInputView.fieldView, 'select' );
+
+					button.fire( 'open' );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should focus the form', () => {
+					const spy = sinon.spy( form, 'focus' );
+
+					button.fire( 'open' );
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( 'should disable CSS transitions to avoid unnecessary animations (and then enable them again)', () => {
+					// (#10008)
+					const disableCssTransitionsSpy = sinon.spy( form, 'disableCssTransitions' );
+					const enableCssTransitionsSpy = sinon.spy( form, 'enableCssTransitions' );
+					const selectSpy = sinon.spy( form.findInputView.fieldView, 'select' );
+
+					button.fire( 'open' );
+
+					sinon.assert.callOrder( disableCssTransitionsSpy, selectSpy, enableCssTransitionsSpy );
+				} );
+			} );
+		} );
 	} );
 } );

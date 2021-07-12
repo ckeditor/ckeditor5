@@ -93,6 +93,9 @@ export default class FindAndReplaceUI extends Plugin {
 				cancelEvent();
 			} );
 
+			// Dropdown should be disabled when in source editing mode. See #10001.
+			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
+
 			return dropdown;
 		} );
 	}
@@ -152,9 +155,16 @@ export default class FindAndReplaceUI extends Plugin {
 		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
 
 		// Each time a dropdown is opened, the search text field should get focused.
+		// Note: Use the low priority to make sure the following listener starts working after the
+		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
+		// invisible form/input cannot be focused/selected.
 		buttonView.on( 'open', () => {
+			formView.disableCssTransitions();
+
 			formView.findInputView.fieldView.select();
 			formView.focus();
+
+			formView.enableCssTransitions();
 		}, { priority: 'low' } );
 	}
 }

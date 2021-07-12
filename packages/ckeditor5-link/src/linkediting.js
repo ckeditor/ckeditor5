@@ -572,7 +572,7 @@ function isTyping( editor ) {
 	return input.isInput( editor.model.change( writer => writer.batch ) );
 }
 
-// Returns an array containing names of attributes allowed on `$text` that describes the link item.
+// Returns an array containing names of the attributes allowed on `$text` that describes the link item.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Array.<String>}

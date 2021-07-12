@@ -53,7 +53,7 @@ import DocumentSelection from '../documentselection';
  * If you use this option you need to make sure to handle invalid selections yourself or leave
  * them to the selection post-fixer (may not always work).
  *
- * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+ * **Note:** If there is no valid position for the selection, the paragraph will always be created:
  *
  * `[<imageBlock src="foo.jpg"></imageBlock>]` -> `<paragraph>[]</paragraph>`.
  */
@@ -150,10 +150,10 @@ function getLivePositionsForSelectedBlocks( range ) {
 
 			const newEndPosition = selection.getLastPosition();
 
-			// For such model and selection:
+			// For such a model and selection:
 			//     <paragraph>A[</paragraph><imageBlock></imageBlock><paragraph>]B</paragraph>
 			//
-			// After modifySelection() we would end up with this:
+			// After modifySelection(), we would end up with this:
 			//     <paragraph>A[</paragraph>]<imageBlock></imageBlock><paragraph>B</paragraph>
 			//
 			// So we need to check if there is no content in the skipped range (because we want to include the <imageBlock>).

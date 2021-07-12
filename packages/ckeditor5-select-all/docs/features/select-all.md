@@ -9,7 +9,7 @@ The {@link module:select-all/selectall~SelectAll} feature allows selecting the e
 
 ## Demo
 
-Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor.
+Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@icon @ckeditor/ckeditor5-select-all/theme/icons/select-all.svg Select all} to select the entire content of the editor.
 
 {@snippet features/select-all}
 

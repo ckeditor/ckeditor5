@@ -65,6 +65,10 @@ describe( 'FindAndReplaceFormView', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
 		} );
 
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
+		} );
+
 		describe( 'find input view', () => {
 			it( 'has label', () => {
 				expect( view.findInputView.label ).to.match( /^Find in text/ );
