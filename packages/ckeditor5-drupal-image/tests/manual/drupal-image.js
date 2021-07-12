@@ -9,15 +9,19 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
 import DrupalImage from '../../src/drupalimage';
 
-// Note: We need to load paragraph because we don't have inline editors yet.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet,
 			Image,
+			ImageInsert,
+			ImageUpload,
 			DrupalImage
 		],
 		toolbar: [
@@ -34,6 +38,7 @@ ClassicEditor
 			'|',
 			'blockQuote',
 			'insertTable',
+			'uploadImage',
 			'mediaEmbed',
 			'undo',
 			'redo'
@@ -47,6 +52,17 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		// Register fake adapter.
+		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+			const adapterMock = new UploadAdapterMock( loader );
+
+			loader.file.then( () => {
+				window.setTimeout( () => adapterMock.mockSuccess( { default: './sample.jpg' } ), 1000 );
+			} );
+
+			return adapterMock;
+		};
 	} )
 	.catch( err => {
 		console.error( err.stack );

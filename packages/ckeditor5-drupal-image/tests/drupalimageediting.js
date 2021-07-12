@@ -11,6 +11,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DrupalImageEditing from '../src/drupalimageediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
+import ImageStyleEditing from '@ckeditor/ckeditor5-image/src/imagestyle/imagestyleediting';
 
 describe( 'DrupalImageEditing', () => {
 	let editor, model;
@@ -22,7 +24,9 @@ describe( 'DrupalImageEditing', () => {
 			plugins: [
 				Paragraph,
 				ImageBlockEditing,
+				ImageInlineEditing,
 				ImageCaptionEditing,
+				ImageStyleEditing,
 				DrupalImageEditing
 			]
 		} );
@@ -42,51 +46,85 @@ describe( 'DrupalImageEditing', () => {
 		expect( editor.plugins.get( DrupalImageEditing ) ).to.be.instanceOf( DrupalImageEditing );
 	} );
 
+	/**
+	 * data-align
+	 * data-caption
+	 * data-entity-file
+	 * data-entity-uuid
+	 */
+
 	describe( 'data pipeline', () => {
 		describe( 'view to model (upcast)', () => {
-			it( 'should convert figcaption inside image figure', () => {
+			it( 'should convert data-caption', () => {
 				editor.setData(
-					'<img alt="Alternative text" src="/drupal/image.jpg" data-caption="Some caption" data-align="right" />'
+					'<img src="/drupal/image.jpg" alt="Alternative text" data-caption="Some caption" />'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<imageBlock></imageBlock>' );
+					.to.equal(
+						'<imageBlock alt="Alternative text" src="/drupal/image.jpg">' +
+							'<caption>Some caption</caption>' +
+						'</imageBlock>'
+					);
+
+				// Might move it to a test section with downcast.
+				expect( editor.getData() )
+					.to.equal(
+						'<img src="/drupal/image.jpg" alt="Alternative text" data-caption="Some caption">'
+					);
 			} );
 
-			it( 'should not add an empty caption if there is no figcaption', () => {
-				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+			it( 'should convert data-align - block image', () => {
+				editor.setData(
+					'<img src="/drupal/image.jpg" alt="Alternative text" data-align="right" />'
+				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<imageBlock src="/assets/sample.png"></imageBlock>' );
+					.to.equal(
+						'<imageBlock alt="Alternative text" imageStyle="alignBlockRight" src="/drupal/image.jpg">' +
+						'</imageBlock>'
+					);
+
+				// Might move it to a test section with downcast.
+				expect( editor.getData() )
+					.to.equal(
+						'<img src="/drupal/image.jpg" data-align="right" alt="Alternative text">'
+					);
 			} );
 
-			it( 'should not convert figcaption inside other elements than image', () => {
-				editor.setData( '<widget><figcaption>foobar</figcaption></widget>' );
+			it( 'should convert data-align - inline image', () => {
+				editor.setData(
+					'<p>Some text' +
+						'<img src="/drupal/image.jpg" alt="Alternative text" data-align="right" />' +
+					'</p>'
+				);
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<widget>foobar</widget>' );
+					.to.equal(
+						'<paragraph>' +
+							'Some text' +
+							'<imageInline alt="Alternative text" imageStyle="alignRight" src="/drupal/image.jpg"></imageInline>' +
+						'</paragraph>'
+					);
+
+				// Might move it to a test section with downcast.
+				expect( editor.getData() )
+					.to.equal(
+						'<p>' +
+							'Some text' +
+							'<img src="/drupal/image.jpg" data-align="right" alt="Alternative text">' +
+						'</p>'
+					);
 			} );
 		} );
 
 		describe( 'model to view (downcast)', () => {
-			it( 'should convert caption element to figcaption', () => {
+			it.skip( 'should convert caption element to figcaption', () => {
 				setModelData( model, '<imageBlock src="img.png"><caption>Foo bar baz.</caption></imageBlock>' );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image"><img src="img.png"><figcaption>Foo bar baz.</figcaption></figure>'
 				);
-			} );
-
-			it( 'should not convert caption to figcaption if it\'s empty', () => {
-				setModelData( model, '<imageBlock src="img.png"><caption></caption></imageBlock>' );
-
-				expect( editor.getData() ).to.equal( '<figure class="image"><img src="img.png"><figcaption>&nbsp;</figcaption></figure>' );
-			} );
-
-			it( 'should not convert caption from other elements', () => {
-				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
-
-				expect( editor.getData() ).to.equal( '<widget>foo bar</widget>' );
 			} );
 		} );
 	} );

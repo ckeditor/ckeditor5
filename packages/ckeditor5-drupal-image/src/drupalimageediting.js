@@ -29,7 +29,7 @@ export default class DrupalImageEditing extends Plugin {
 			schema.extend( 'imageInline', {
 				allowAttributes: [
 					'dataEntityUuid',
-					'dataEntityFile'
+					'dataEntityType'
 				]
 			} );
 		}
@@ -38,7 +38,7 @@ export default class DrupalImageEditing extends Plugin {
 			schema.extend( 'imageBlock', {
 				allowAttributes: [
 					'dataEntityUuid',
-					'dataEntityFile'
+					'dataEntityType'
 				]
 			} );
 		}
@@ -48,7 +48,8 @@ export default class DrupalImageEditing extends Plugin {
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
 			.add( modelEntityUuidToDataAttribute() )
-			.add( modelEntityFileToDataAttribute() );
+			.add( modelEntityFileToDataAttribute() )
+			.add( modelAlignToDataAttribute() );
 
 		conversion.for( 'dataDowncast' )
 			.add( dispatcher => {
@@ -115,6 +116,21 @@ export default class DrupalImageEditing extends Plugin {
 				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
 				converterPriority: 'high'
 			} );
+
+		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
+
+		if ( editor.plugins.has( 'ImageUploadEditing' ) ) {
+			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
+
+			imageUploadEditing.on( 'uploadComplete', ( evt, { imageElement } ) => {
+				const uploadId = imageElement.getAttribute( 'uploadId' );
+
+				this.editor.model.change( writer => {
+					writer.setAttribute( 'dataEntityUuid', uploadId, imageElement );
+					writer.setAttribute( 'dataEntityType', 'file', imageElement );
+				} );
+			}, { priority: 'high' } );
+		}
 	}
 }
 
@@ -146,20 +162,20 @@ function viewImageToModelImage( editor ) {
 			consumable.test( viewItem, { name: true, attributes: 'data-align' } )
 		) {
 			// https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-defaultStyles
-			const dataToPresentationMapBlock = {
+			const dataToBlockImageStyle = {
 				left: 'alignBlockLeft',
 				center: 'alignCenter',
 				right: 'alignBlockRight'
 			};
-			const dataToPresentationMapInline = {
+			const dataToInlineImageStyle = {
 				left: 'alignLeft',
 				right: 'alignRight'
 			};
 
 			const dataAlign = viewItem.getAttribute( 'data-align' );
 			const alignment = image.is( 'element', 'imageBlock' ) ?
-				dataToPresentationMapBlock[ dataAlign ] :
-				dataToPresentationMapInline[ dataAlign ];
+				dataToBlockImageStyle[ dataAlign ] :
+				dataToInlineImageStyle[ dataAlign ];
 
 			writer.setAttribute( 'imageStyle', alignment, image );
 
@@ -202,7 +218,7 @@ function viewImageToModelImage( editor ) {
 		}
 
 		if ( consumable.test( viewItem, { name: true, attributes: 'data-entity-file' } ) ) {
-			writer.setAttribute( 'dataEntityFile', viewItem.getAttribute( 'data-entity-file' ), image );
+			writer.setAttribute( 'dataEntityType', viewItem.getAttribute( 'data-entity-file' ), image );
 			attributesToConsume.push( 'data-entity-file' );
 		}
 
@@ -245,7 +261,7 @@ function modelEntityUuidToDataAttribute() {
 
 function modelEntityFileToDataAttribute() {
 	return dispatcher => {
-		dispatcher.on( 'attribute:dataEntityFile', converter );
+		dispatcher.on( 'attribute:dataEntityType', converter );
 	};
 
 	function converter( evt, data, conversionApi ) {
@@ -260,5 +276,33 @@ function modelEntityFileToDataAttribute() {
 		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 
 		writer.setAttribute( 'data-entity-file', data.attributeNewValue, imageInFigure || viewElement );
+	}
+}
+
+function modelAlignToDataAttribute() {
+	return dispatcher => {
+		dispatcher.on( 'attribute:imageStyle', converter, { priority: 'high' } );
+	};
+
+	function converter( evt, data, conversionApi ) {
+		const { item } = data;
+		const { consumable, writer } = conversionApi;
+
+		if ( !consumable.consume( item, evt.name ) ) {
+			return;
+		}
+
+		const dataToImageStyle = {
+			alignLeft: 'left',
+			alignBlockLeft: 'left',
+			alignCenter: 'center',
+			alignRight: 'right',
+			alignBlockRight: 'right'
+		};
+
+		const viewElement = conversionApi.mapper.toViewElement( item );
+		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
+
+		writer.setAttribute( 'data-align', dataToImageStyle[ data.attributeNewValue ], imageInFigure || viewElement );
 	}
 }

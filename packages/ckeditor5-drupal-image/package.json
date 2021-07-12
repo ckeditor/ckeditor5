@@ -19,6 +19,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^28.0.0",
     "@ckeditor/ckeditor5-engine": "^28.0.0",
     "@ckeditor/ckeditor5-image": "^28.0.0",
+    "@ckeditor/ckeditor5-upload": "^28.0.0",
     "@ckeditor/ckeditor5-paragraph": "^28.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^28.0.0",
     "webpack": "^4.43.0",
