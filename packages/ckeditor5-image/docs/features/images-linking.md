@@ -29,9 +29,9 @@ An example source code for block image would look similar to this one:
 An inline image code would look more like this:
 
 ```html
-	<a href="...">
+<a href="...">
 	Some text <img src="..." alt="..." style="width: 20px">
-	</a>
+</a>
 ```
 ## Demo
 
