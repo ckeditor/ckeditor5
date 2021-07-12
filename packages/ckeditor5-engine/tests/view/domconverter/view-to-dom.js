@@ -187,7 +187,7 @@ describe( 'DomConverter', () => {
 			expect( domSvg.createSVGRect ).to.be.a( 'function' );
 		} );
 
-		it( 'should create DOM comment node from view element', () => {
+		it( 'should create a DOM comment node from a view `$comment` UIElement', () => {
 			const viewComment = new ViewUIElement( viewDocument, '$comment' );
 
 			viewComment._setCustomProperty( '$rawContent', 'foo' );
@@ -201,7 +201,7 @@ describe( 'DomConverter', () => {
 			expect( converter.mapDomToView( domComment ) ).to.not.equal( viewComment );
 		} );
 
-		it( 'should create DOM comment node from view element and bind element', () => {
+		it( 'should create a DOM comment node from a view `$comment` UIElement and bind them', () => {
 			const viewComment = new ViewUIElement( viewDocument, '$comment' );
 
 			viewComment._setCustomProperty( '$rawContent', 'foo' );

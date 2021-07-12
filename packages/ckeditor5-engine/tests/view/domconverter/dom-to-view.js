@@ -185,7 +185,7 @@ describe( 'DomConverter', () => {
 			expect( converter.mapViewToDom( viewComment ) ).to.not.equal( domComment );
 		} );
 
-		it( 'should create UIElement for comment and bind element', () => {
+		it( 'should create UIElement for comment and bind elements', () => {
 			const domComment = document.createComment( 'abc' );
 
 			const viewComment = converter.domToView( domComment, { bind: true } );

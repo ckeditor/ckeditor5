@@ -238,9 +238,12 @@ export default class DomConverter {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
-				domElement = viewNode.name === '$comment' ?
-					domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) ) :
-					viewNode.render( domDocument );
+				if ( viewNode.name === '$comment' ) {
+					domElement = domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) );
+				} else {
+					// UIElement has its own render() method (see #799).
+					domElement = viewNode.render( domDocument );
+				}
 
 				if ( options.bind ) {
 					this.bindElements( domElement, viewNode );
@@ -1324,6 +1327,7 @@ export default class DomConverter {
 	/**
 	 * Checks if view element's content should be treated as a raw data.
 	 *
+	 * @private
 	 * @param {Element} viewElement View element to check.
 	 * @param {Object} options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
 	 * @returns {Boolean}
