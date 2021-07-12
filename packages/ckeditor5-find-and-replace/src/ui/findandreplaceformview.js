@@ -16,7 +16,7 @@ import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.c
 import '../../theme/findandreplaceform.css';
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import findArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
-import CheckboxView from '../ui/checkboxview';
+import CheckboxView from './checkboxview';
 
 /**
  * The find and replace form view controller class.
@@ -114,145 +114,23 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'isCounterHidden', true );
 
 		/**
-		 * The find in text input view that stores the searched string.
+		 * Assigning form elements views.
 		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
-		this.findInputView = this._createInputField( t( 'Find in text…' ) );
-
-		/**
-		 * The find button view that initializes the search process.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.findButtonView = this._createButton( t( 'Find' ), 'ck-button-find' );
-		this.findButtonView.on( 'execute', () => {
-			this.fire( 'findNext', {
-				searchText: this.searchText,
-				matchCase: this.matchCaseView.isChecked,
-				wholeWords: this.matchWholeWordsView.isChecked
-			} );
-		} );
-
-		/**
-		 * The find previous button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.findPrevButtonView = this._createButton( t( 'Previous result' ), 'ck-button-prev', findArrowIcon, false );
-		this.findPrevButtonView.on( 'execute', () => {
-			this.fire( 'findPrevious' );
-		} );
-
-		/**
-		 * The find next button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.findNextButtonView = this._createButton( t( 'Next result' ), 'ck-button-next', findArrowIcon, false );
-		this.findNextButtonView.on( 'execute', () => {
-			this.fire( 'findNext' );
-		} );
-
-		/**
-		 * The replace button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-replace' );
-		this.replaceButtonView.on( 'execute', () => {
-			this.fire( 'replace', { searchText: this.searchText, replaceText: this.replaceText } );
-		} );
-
-		/**
-		 * The replace all button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.replaceAllButtonView = this._createButton( t( 'Replace all' ), 'ck-button-replaceall' );
-		this.replaceAllButtonView.on( 'execute', () => {
-			this.fire( 'replaceAll', { searchText: this.searchText, replaceText: this.replaceText } );
-		} );
-
-		/**
-		 * The match case checkbox view.
-		 *
-		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
-		*/
-		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
-
-		/**
-		 * The whole words only checkbox view.
-		 *
-		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
-		*/
-		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
-
-		/**
-		 * The replace input view.
-		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
-		this.replaceInputView = this._createInputField( t( 'Replace with…' ) );
-
-		/**
-		 * Stores gathered views related to find functionality of the feature.
-		 *
-		 * @member {module:ui/view~View}
-		 */
-		this.findView = this._createFindView();
-
-		/**
-		 * Stores gathered views related to replace functionality of the feature.
-		 *
-		 * @member {module:ui/view~View}
-		 */
-		this.replaceView = this._createReplaceView();
-
-		/**
-		 * Tracks information about the DOM focus in the form.
-		 *
+		 * @private
 		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
+		 * @observable
+	 	 * @param {Function} t Used to translate message to the uiLanguage.
 		 */
-		this.focusTracker = new FocusTracker();
+		this._assignViews( t );
 
 		/**
-		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+	 	 * Initialization of focusables elements of the form.
 		 *
+		 * @private
 		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
-
-		/**
-		 * A collection of views that can be focused in the form.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/viewcollection~ViewCollection}
-		 */
-		this._focusables = new ViewCollection();
-
-		/**
-		  * Helps cycling over {@link #_focusables} in the form.
-		  *
-		  * @readonly
-		  * @protected
-		  * @member {module:ui/focuscycler~FocusCycler}
-		  */
-		this._focusCycler = new FocusCycler( {
-			focusables: this._focusables,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
-				focusPrevious: 'shift + tab',
-
-				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
-				focusNext: 'tab'
-			}
-		} );
+		 * @observable
+	 	 */
+		this._initFocusables();
 
 		this.bind( 'isDirty' ).to(
 			this, 'searchText', state, 'searchText',
@@ -281,8 +159,6 @@ export default class FindAndReplaceFormView extends View {
 			this.unbind( 'isSearching' );
 			this.bind( 'isSearching' ).to(
 				this, 'matchCount', this, 'isDirty',
-				this.matchCaseView, 'isChecked', state, 'matchCase',
-				this.matchWholeWordsView, 'isChecked', state, 'matchWholeWords',
 				( count, isDirty ) => {
 					return count > 0 && !isDirty;
 				}
@@ -399,6 +275,162 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
+	 * Initialization of focusables elements of the form.
+	 *
+	 * @private
+	 */
+	_initFocusables() {
+		/**
+		 * Tracks information about the DOM focus in the form.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+
+		/**
+		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
+		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * A collection of views that can be focused in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
+		this._focusables = new ViewCollection();
+
+		/**
+		 * Helps cycling over {@link #_focusables} in the form.
+		 *
+		 * @readonly
+		 * @protected
+		 * @member {module:ui/focuscycler~FocusCycler}
+		 */
+		this._focusCycler = new FocusCycler( {
+			focusables: this._focusables,
+			focusTracker: this.focusTracker,
+			keystrokeHandler: this.keystrokes,
+			actions: {
+				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
+				focusPrevious: 'shift + tab',
+
+				// Navigate form fields forwards using the <kbd>Tab</kbd> key.
+				focusNext: 'tab'
+			}
+		} );
+	}
+
+	/**
+	 * Assigning form element views.
+	 *
+	 * @private
+	 * @param {Function} t Used for translating message to the uiLanguage.
+	 */
+	_assignViews( t ) {
+		/**
+		 * The find in text input view that stores the searched string.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
+		this.findInputView = this._createInputField( t( 'Find in text…' ) );
+
+		/**
+		 * The find button view that initializes the search process.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.findButtonView = this._createButton( t( 'Find' ), 'ck-button-find' );
+		this.findButtonView.on( 'execute', () => {
+			this.fire( 'findNext', {
+				searchText: this.searchText,
+				matchCase: this.matchCaseView.isChecked,
+				wholeWords: this.matchWholeWordsView.isChecked
+			} );
+		} );
+
+		/**
+		 * The find previous button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.findPrevButtonView = this._createButton( t( 'Previous result' ), 'ck-button-prev', findArrowIcon, false );
+		this.findPrevButtonView.on( 'execute', () => {
+			this.fire( 'findPrevious' );
+		} );
+
+		/**
+		 * The find next button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.findNextButtonView = this._createButton( t( 'Next result' ), 'ck-button-next', findArrowIcon, false );
+		this.findNextButtonView.on( 'execute', () => {
+			this.fire( 'findNext' );
+		} );
+
+		/**
+		 * The replace button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-replace' );
+		this.replaceButtonView.on( 'execute', () => {
+			this.fire( 'replace', { searchText: this.searchText, replaceText: this.replaceText } );
+		} );
+
+		/**
+		 * The replace all button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this.replaceAllButtonView = this._createButton( t( 'Replace all' ), 'ck-button-replaceall' );
+		this.replaceAllButtonView.on( 'execute', () => {
+			this.fire( 'replaceAll', { searchText: this.searchText, replaceText: this.replaceText } );
+		} );
+
+		/**
+		 * The match case checkbox view.
+		 *
+		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
+	 	*/
+		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
+
+		/**
+		 * The whole words only checkbox view.
+		 *
+		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
+	 	 */
+		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
+
+		/**
+		 * The replace input view.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
+		this.replaceInputView = this._createInputField( t( 'Replace with…' ) );
+
+		/**
+		 * Stores gathered views related to find functionality of the feature.
+		 *
+		 * @member {module:ui/view~View}
+		 */
+		this.findView = this._createFindView();
+
+		/**
+		 * Stores gathered views related to replace functionality of the feature.
+		 *
+		 * @member {module:ui/view~View}
+		 */
+		this.replaceView = this._createReplaceView();
+	}
+
+	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	focus() {
@@ -406,7 +438,7 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * A collection of views for the 'find' functionality of the feature
+	 * A collection of views for the 'find' functionality of the feature.
 	 *
 	 * @private
 	 * @return {module:ui/view~View} The find view instance.
@@ -478,7 +510,7 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * A collection of views for the 'replace' functionality of the feature
+	 * A collection of views for the 'replace' functionality of the feature.
 	 *
 	 * @private
 	 * @returns {module:ui/view~View} The replace view instance.
@@ -590,7 +622,7 @@ export default class FindAndReplaceFormView extends View {
 }
 
 /**
- * Fired when the find next button ({@link #findNextButtonView}) is triggered .
+ * Fired when the find next button ({@link #findNextButtonView}) is triggered.
  *
  * @event findNext
  * @param {String} searchText Search text.
