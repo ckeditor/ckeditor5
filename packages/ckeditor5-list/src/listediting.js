@@ -124,6 +124,8 @@ export default class ListEditing extends Plugin {
 		// 	data.viewPosition = editing.mapper.findPositionIn( listView, data.modelPosition.offset - firstModelItem.startOffset );
 		// }
 
+		this._lists = []; // { range, view }
+
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			// An abstract name of the model structure conversion.
 			const magicUid = uid();
@@ -132,44 +134,187 @@ export default class ListEditing extends Plugin {
 				const changes = [];
 
 				for ( const change of data.changes ) {
-					if ( isListItemChange( change ) ) {
-						const position = change.position || change.range.start;
+					// if ( change.name == '$text' ) {
+					// 	changes.push( change );
+					//
+					// 	continue;
+					// }
 
-						const otherChange = changes.find( entry => (
-							entry.type == 'range' &&
-							entry.magicUid == magicUid &&
-							entry.range.containsPosition( position ) &&
-							entry.range.start.path.length == position.path.length
-						) );
+					// TEMP
+					changes.push( change );
 
-						// Range is already marked for reconversion, so skip this change.
-						if ( otherChange ) {
-							otherChange.related.push( change );
-						} else {
-							const changedElement = position.nodeAfter;
-							const { range, consumables } = findListConversionRangeAndConsumables( changedElement, editor );
+					if ( change.type == 'insert' ) {
+						let wasHandled = false;
 
-							// // TODO this should check if there is a multi-multi mapping for that range
-							// if ( editor.editing.mapper.toViewElement( changedElement ) ) {
-							// 	changes.push( {
-							// 		type: 'remove',
-							// 		position: range.start,
-							// 		length: range.end.offset - range.start.offset
-							// 	} );
-							// }
+						for ( let i = 0; i < this._lists.length; i++ ) {
+							const list = this._lists[ i ];
 
-							changes.push( {
-								type: 'range',
-								related: [ change ],
-								magicUid,
-								range,
-								consumables
-							} );
+							if ( change.attributes.has( 'listItem' ) ) {
+								const [ newRange ] = list.range._getTransformedByInsertion( change.position, change.length );
+
+								if ( list.range.start.isEqual( change.position ) ) {
+									const range = editor.model.createRange( change.position, newRange.end );
+
+									console.log( '-- list grow at start', list.range.start.path + '-' + list.range.end.path,
+										'to', range.start.path + '-' + range.end.path );
+
+									list.range = range;
+									wasHandled = true;
+								} else if ( list.range.end.isEqual( change.position ) ) {
+									const range = editor.model.createRange( newRange.start, change.position.getShiftedBy( change.length ) );
+
+									console.log( '-- list grow at end', list.range.start.path + '-' + list.range.end.path,
+										'to', range.start.path + '-' + range.end.path );
+
+									list.range = range;
+									wasHandled = true;
+								} else if ( list.range.containsPosition( change.position ) ) {
+									console.log( '-- list grow inside', list.range.start.path + '-' + list.range.end.path,
+										'to', newRange.start.path + '-' + newRange.end.path );
+
+									list.range = newRange;
+									wasHandled = true;
+								} else {
+									list.range = newRange;
+								}
+							} else {
+								const newRanges = list.range._getTransformedByInsertion( change.position, change.length, true );
+
+								// Insertion was inside this list.
+								if ( newRanges.length > 1 ) {
+									console.log( '-- list split', list.range.start.path + '-' + list.range.end.path,
+										'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path,
+										'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
+
+									list.range = newRanges[ 0 ];
+									this._lists.push( { range: newRanges[ 1 ] } );
+								} else if ( !newRanges[ 0 ].isEqual( list.range ) ) {
+									console.log( '-- list move', list.range.start.path + '-' + list.range.end.path,
+										'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
+
+									list.range = newRanges[ 0 ];
+								}
+							}
 						}
-					} else {
-						changes.push( change );
+
+						if ( !wasHandled && change.attributes.has( 'listItem' ) ) {
+							const range = editor.model.createRange( change.position, change.position.getShiftedBy( change.length ) );
+
+							console.log( '-- new list item', range.start.path + '-' + range.end.path );
+
+							this._lists.push( { range } );
+						}
 					}
+
+					if ( change.type == 'remove' ) {
+						for ( let i = 0; i < this._lists.length; i++ ) {
+							const list = this._lists[ i ];
+
+							const newRange = list.range._getTransformedByDeletion( change.position, change.length );
+
+							if ( list.range.isEqual( newRange ) ) {
+								continue;
+							}
+
+							if ( !newRange || newRange.isCollapsed ) {
+								console.log( '-- list removed', list.range.start.path + '-' + list.range.end.path );
+
+								this._lists.splice( i--, 1 );
+							} else if ( list.range.start.isEqual( change.position ) || list.range.containsPosition( change.position ) ) {
+								console.log( '-- list shrink', list.range.start.path + '-' + list.range.end.path,
+									'to', newRange.start.path + '-' + newRange.end.path );
+
+								list.range = newRange;
+							} else {
+								console.log( '-- list move', list.range.start.path + '-' + list.range.end.path,
+									'to', newRange.start.path + '-' + newRange.end.path );
+
+								list.range = newRange;
+							}
+						}
+					}
+
+					// if ( change.type == 'attribute' ) {
+					// 	if ( ![ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
+					// 		return null;
+					// 	}
+					//
+					// 	// Attribute was set.
+					// 	if ( !change.attributeOldValue ) {
+					// 		return [ change.range.start.nodeAfter ];
+					// 	}
+					//
+					// 	// Attribute was removed.
+					// 	if ( !change.attributeNewValue ) {
+					// 		const result = [];
+					//
+					// 		// Check nodes before and after the removed attribute range.
+					// 		const nodeBefore = change.range.start.nodeBefore;
+					// 		const nodeAfter = change.range.end.nodeAfter;
+					//
+					// 		if ( nodeBefore && nodeBefore.hasAttribute( 'listItem' ) ) {
+					// 			result.push( nodeBefore );
+					// 		}
+					//
+					// 		if ( nodeAfter && nodeAfter.hasAttribute( 'listItem' ) ) {
+					// 			result.push( nodeAfter );
+					// 		}
+					//
+					// 		// TODO what if attributes on a whole list are removed?
+					//
+					// 		return result.length ? result : null;
+					// 	}
+					//
+					//
+					// 	// TEMP
+					// 	changes.push( change );
+					// }
+
+
+					// const anchorElements = getListChangeAnchorElements( change );
+
+					// if ( anchorElements ) {
+					// 	// TODO use anchorElements
+					//
+					// 	const position = change.position || change.range.start;
+					//
+					// 	const otherChange = changes.find( entry => (
+					// 		entry.type == 'range' &&
+					// 		entry.magicUid == magicUid &&
+					// 		entry.range.containsPosition( position ) &&
+					// 		entry.range.start.path.length == position.path.length
+					// 	) );
+					//
+					// 	// Range is already marked for reconversion, so skip this change.
+					// 	if ( otherChange ) {
+					// 		otherChange.related.push( change );
+					// 	} else {
+					// 		const changedElement = position.nodeAfter;
+					// 		const { range, consumables } = findListConversionRangeAndConsumables( changedElement, editor );
+					//
+					// 		// // TODO this should check if there is a multi-multi mapping for that range
+					// 		// if ( editor.editing.mapper.toViewElement( changedElement ) ) {
+					// 		// 	changes.push( {
+					// 		// 		type: 'remove',
+					// 		// 		position: range.start,
+					// 		// 		length: range.end.offset - range.start.offset
+					// 		// 	} );
+					// 		// }
+					//
+					// 		changes.push( {
+					// 			type: 'range',
+					// 			related: [ change ],
+					// 			magicUid,
+					// 			range,
+					// 			consumables
+					// 		} );
+					// 	}
+					// } else {
+					// 	changes.push( change );
+					// }
 				}
+
+				console.log( 'lists:', ...this._lists.map( ( { range } ) => range.start.path + '-' + range.end.path ) );
 
 				data.changes = changes;
 			} );
@@ -607,50 +752,124 @@ function isListItem( node ) {
 	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItem' );
 }
 
-function isListItemChange( change ) {
+/**
+ *	* insert element
+ *		* with list attribute
+ *			* before/after list - find range from current element
+ *			* inside list - find range from current element
+ *			* between lists - find range from current element
+ *		* without list attribute
+ *			* before/after list - doesn't affect list
+ * 			* inside list - splits list - find range from SIBLING elements
+ *			* between lists - doesn't affect list (same as before/after)
+ *	* remove element
+ *		* with list attribute
+ *			* start/end of list - it's already gone from the model - find range from SIBLING elements
+ *			* inside list - it's already gone from the model - find range from SIBLING elements
+ *		* without list attribute
+ *			* before/after list - doesn't affect list
+ *			* between lists - it's already gone from the model - find range from SIBLING elements
+ *	* attribute
+ *		* set list attribute
+ *			* before/after list - find range from current element
+ *			* between lists - find range from current element
+ *		* remove list attribute
+ *			* start/end of list - find range from SIBLING elements
+ *			* inside list - split list - find range from SIBLING elements
+ *		* change list attribute
+ *			* start/end of list - find range from current element
+ *			* inside list - find range from current element
+ */
+function getListChangeAnchorElements( change ) {
 	if ( change.name == '$text' ) {
-		return false;
+		return null;
 	}
 
 	switch ( change.type ) {
 		case 'attribute': {
 			if ( ![ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
-				return false;
+				return null;
 			}
 
-			console.log( 'trigger - attribute change at', change.range.start.path );
+			// Attribute was set.
+			if ( !change.attributeOldValue ) {
+				return [ change.range.start.nodeAfter ];
+			}
 
-			return true;
+			// Attribute was removed.
+			if ( !change.attributeNewValue ) {
+				const result = [];
+
+				// Check nodes before and after the removed attribute range.
+				const nodeBefore = change.range.start.nodeBefore;
+				const nodeAfter = change.range.end.nodeAfter;
+
+				if ( nodeBefore && nodeBefore.hasAttribute( 'listItem' ) ) {
+					result.push( nodeBefore );
+				}
+
+				if ( nodeAfter && nodeAfter.hasAttribute( 'listItem' ) ) {
+					result.push( nodeAfter );
+				}
+
+				// TODO what if attributes on a whole list are removed?
+
+				return result.length ? result : null;
+			}
+
+			return null;
 		}
 
 		case 'insert': {
 			const node = change.position.nodeAfter;
 
-			if ( !node.hasAttribute( 'listItem' ) ) {
-				return false;
+			// New element with an attribute.
+			if ( node.hasAttribute( 'listItem' ) ) {
+				return [ node ];
 			}
 
-			// TODO this is the case that can't be handled by the declarative triggerBy
-			//  maybe inserting node with watched attribute should trigger reconvert also in declarative API
-			console.log( 'trigger - insert at', change.position.path );
+			// New element without an attribute - list splitting.
 
-			return true;
+			const result = [];
+
+			// Check elements before and after inserted element.
+			const previousSibling = node.previousSibling;
+			const nextSibling = node.nextSibling;
+
+			if ( previousSibling && previousSibling.hasAttribute( 'listItem' ) ) {
+				result.push( previousSibling );
+			}
+
+			if ( nextSibling && nextSibling.hasAttribute( 'listItem' ) ) {
+				result.push( nextSibling );
+			}
+
+			return result.length ? result : null;
 		}
 
 		case 'remove': {
-			if ( !change.attributes.has( 'listItem' ) ) {
-				return false;
+			const result = [];
+
+			// Doesn't matter if it had an attribute - this could trigger a list merge.
+			// Check elements around the deletion position.
+			const nodeBefore = change.position.nodeBefore;
+			const nodeAfter = change.position.nodeAfter;
+
+			if ( nodeBefore && nodeBefore.hasAttribute( 'listItem' ) ) {
+				result.push( nodeBefore );
 			}
 
-			// TODO this is the case that can't be handled by the declarative triggerBy
-			//  maybe removing node with watched attribute should trigger reconvert also in declarative API
-			console.log( 'trigger - remove at', change.position.path );
+			if ( nodeAfter && nodeAfter.hasAttribute( 'listItem' ) ) {
+				result.push( nodeAfter );
+			}
 
-			return true;
+			// TODO what if the whole list is removed?
+
+			return result.length ? result : null;
 		}
 	}
 
-	return false;
+	return null;
 }
 
 function findListConversionRangeAndConsumables( element, editor ) {
