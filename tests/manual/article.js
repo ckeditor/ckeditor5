@@ -31,10 +31,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [
-				'imageTextAlternative', 'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side'
-			]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

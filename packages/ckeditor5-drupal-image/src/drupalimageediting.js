@@ -47,9 +47,6 @@ export default class DrupalImageEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 		conversion.for( 'downcast' )
-			// TODO: Alignment downcast to data-align
-			// TODO: Missing space before the inline image (check upcast first)
-			// TODO: setData/getData automated integration tests
 			.add( modelEntityUuidToDataAttribute() )
 			.add( modelEntityFileToDataAttribute() );
 
@@ -74,7 +71,7 @@ export default class DrupalImageEditing extends Plugin {
 						};
 
 						// The following lines are extracted from:
-						// editor.data.downcastDispatcher._convertInsertWithAttributes( data );
+						// DowncastDispatcher#_convertInsertWithAttributes();
 
 						const eventName = `insert:${ item.is( '$textProxy' ) ? '$text' : item.name }`;
 

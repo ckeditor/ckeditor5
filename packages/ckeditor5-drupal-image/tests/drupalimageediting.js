@@ -6,45 +6,14 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-// import DrupalImageEditing from '../../src/imagecaption/imagecaptionediting';
-
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-// import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DrupalImageEditing from '../src/drupalimageediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 
 describe( 'DrupalImageEditing', () => {
-	let editor, model; // , doc, view;
-
-	// FakePlugin helps check if the plugin under test extends existing schema correctly.
-	// class FakePlugin extends Plugin {
-	// 	init() {
-	// 		const schema = this.editor.model.schema;
-	// 		const conversion = this.editor.conversion;
-
-	// 		schema.register( 'foo', {
-	// 			isObject: true,
-	// 			isBlock: true,
-	// 			allowWhere: '$block'
-	// 		} );
-	// 		schema.register( 'caption', {
-	// 			allowIn: 'foo',
-	// 			allowContentOf: '$block',
-	// 			isLimit: true
-	// 		} );
-
-	// 		conversion.elementToElement( {
-	// 			view: 'foo',
-	// 			model: 'foo'
-	// 		} );
-	// 		conversion.elementToElement( {
-	// 			view: 'caption',
-	// 			model: 'caption'
-	// 		} );
-	// 	}
-	// }
+	let editor, model;
 
 	testUtils.createSinonSandbox();
 
@@ -59,17 +28,6 @@ describe( 'DrupalImageEditing', () => {
 		} );
 
 		model = editor.model;
-		// doc = model.document;
-		// view = editor.editing.view;
-		// model.schema.register( 'widget' );
-		// model.schema.extend( 'widget', { allowIn: '$root' } );
-		// model.schema.extend( 'caption', { allowIn: 'widget' } );
-		// model.schema.extend( '$text', { allowIn: 'widget' } );
-
-		// editor.conversion.elementToElement( {
-		// 	model: 'widget',
-		// 	view: 'widget'
-		// } );
 	} );
 
 	afterEach( async () => {
@@ -86,7 +44,7 @@ describe( 'DrupalImageEditing', () => {
 
 	describe( 'data pipeline', () => {
 		describe( 'view to model (upcast)', () => {
-			it.only( 'should convert figcaption inside image figure', () => {
+			it( 'should convert figcaption inside image figure', () => {
 				editor.setData(
 					'<img alt="Alternative text" src="/drupal/image.jpg" data-caption="Some caption" data-align="right" />'
 				);

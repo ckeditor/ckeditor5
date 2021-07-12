@@ -41,9 +41,9 @@ ClassicEditor
 		image: {
 			toolbar: [
 				'imageTextAlternative', 'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:block', 'imageStyle:alignLeft' , 'imageStyle:alignRight'
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:alignLeft', 'imageStyle:alignRight'
 			]
-		},
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
