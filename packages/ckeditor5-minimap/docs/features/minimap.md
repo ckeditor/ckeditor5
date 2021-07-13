@@ -5,6 +5,7 @@ category: features
 classes: main__content--no-toc
 toc: false
 contributeUrl: false
+modified_at: 2021-07-12
 ---
 
 The {@link module:minimap/minimap~Minimap} feature renders a content minimap which, when placed next to the editor, helps users navigate their content. It allows moving around documents and provides a visual overview when the document is longer than its visible portion on the screen.
