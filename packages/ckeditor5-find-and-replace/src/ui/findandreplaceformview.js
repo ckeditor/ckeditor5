@@ -35,6 +35,12 @@ import CheckboxView from './checkboxview';
  * @extends module:ui/view~View
  */
 export default class FindAndReplaceFormView extends View {
+	/**
+	 * Creates a view of find and replace form.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state State object.
+	 */
 	constructor( locale, state ) {
 		super( locale );
 
@@ -68,8 +74,11 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'replaceText', '' );
 
 		/**
-		 * Indicates if match case or whole words checkboxes have been checked or
-		 * searched text has been changed in form.
+		 * Indicates whether search text, match case or whole word checkbox in form
+		 * is different from the values in
+		 * {@link module:find-and-replace/findandreplaceediting~FindAndReplaceEditing#state the editing state}.
+		 *
+		 * If `true` it means that the user made some changes to the form without actually triggering the search.
 		 *
 		 * @readonly
 		 * @observable
@@ -105,7 +114,8 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'matchCount', null );
 
 		/**
-		 * The offset of currently highlighted search result in {@link #matchCount matched results} or null.
+		 * The offset of currently highlighted search result in {@link #matchCount matched results} or
+		 * `null` if there's no highlighted result.
 		 *
 		 * @readonly
 		 * @observable
