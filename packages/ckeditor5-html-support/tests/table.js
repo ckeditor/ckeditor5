@@ -1,7 +1,7 @@
 /**
  * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
- */
+*/
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -1115,6 +1115,127 @@ describe( 'TableElementSupport', () => {
 					'<figcaption>caption</figcaption>' +
 				'</figure>'
 			);
+		} );
+
+		it( 'should handle mixed allowed and disallowed attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|table|tbody|thead|tr|th|td)$/,
+				attributes: /^data-.*$/,
+				classes: [ 'allow', 'disallow' ],
+				styles: [ 'color', 'background' ]
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|table|tbody|thead|tr|th|td)$/,
+				attributes: 'data-disallow',
+				classes: 'disallow',
+				styles: 'background'
+			} ] );
+
+			/* eslint-disable max-len */
+			editor.setData(
+				'<figure class="table allow disallow" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+					'<table class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+						'<thead class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1</th>' +
+								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2</th>' +
+								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">3</th>' +
+							'</tr>' +
+						'</thead>' +
+						'<tbody class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.1</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.2</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.3</td>' +
+							'</tr>' +
+							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.1</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.2</td>' +
+								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
+					'<tableRow htmlAttributes="(5)">' +
+						'<tableCell htmlAttributes="(6)">' +
+							'<paragraph>1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(7)">' +
+							'<paragraph>2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(8)">' +
+							'<paragraph>3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(9)">' +
+						'<tableCell htmlAttributes="(10)">' +
+							'<paragraph>1.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(11)">' +
+							'<paragraph>1.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(12)">' +
+							'<paragraph>1.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow htmlAttributes="(13)">' +
+						'<tableCell htmlAttributes="(14)">' +
+							'<paragraph>2.1</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(15)">' +
+							'<paragraph>2.2</paragraph>' +
+						'</tableCell>' +
+						'<tableCell htmlAttributes="(16)">' +
+							'<paragraph>2.3</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>',
+				attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						attributes: {
+							'data-allow': 'allow'
+						},
+						styles: {
+							color: 'red'
+						},
+						classes: [ 'allow' ]
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table allow" style="color:red;" data-allow="allow">' +
+					'<table class="allow" style="color:red;" data-allow="allow">' +
+						'<thead class="allow" style="color:red;" data-allow="allow">' +
+							'<tr class="allow" style="color:red;" data-allow="allow">' +
+								'<th class="allow" style="color:red;" data-allow="allow">1</th>' +
+								'<th class="allow" style="color:red;" data-allow="allow">2</th>' +
+								'<th class="allow" style="color:red;" data-allow="allow">3</th>' +
+							'</tr>' +
+						'</thead>' +
+						'<tbody class="allow" style="color:red;" data-allow="allow">' +
+							'<tr class="allow" style="color:red;" data-allow="allow">' +
+								'<td class="allow" style="color:red;" data-allow="allow">1.1</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">1.2</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">1.3</td>' +
+							'</tr>' +
+							'<tr class="allow" style="color:red;" data-allow="allow">' +
+								'<td class="allow" style="color:red;" data-allow="allow">2.1</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">2.2</td>' +
+								'<td class="allow" style="color:red;" data-allow="allow">2.3</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+			/* eslint-enable max-len */
 		} );
 	} );
 } );
