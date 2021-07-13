@@ -10,7 +10,7 @@ The {@link module:find-and-replace/findandreplace~FindAndReplace} feature allows
 
 ## Demo
 
-Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to invoke the search panel and find and replace desired words or phrases. Or use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut to invoke the search and replace panel. For a starter, try replacing "steam" with "diesel" to make the demo content more up to date. Be careful to match the case, for there are different instances of the word present in the document!
+Use the find and replace toolbar button {@icon @ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg Find and replace} to invoke the search panel and find and replace desired words or phrases or use the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>F</kbd> keyboard shortcut. For a starter, try replacing "steam" with "diesel" to make the demo content more up to date. Be careful to match the case, for there are different instances of the word present in the document!
 
 {@snippet features/find-and-replace}
 

@@ -1,5 +1,5 @@
-CKEditor 5 General HTML Support feature
-=============================
+CKEditor 5 HTML Support feature
+===============================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-html-support.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
