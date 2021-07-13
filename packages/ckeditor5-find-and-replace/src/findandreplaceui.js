@@ -114,8 +114,8 @@ export default class FindAndReplaceUI extends Plugin {
 		} );
 
 		this.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
-			if ( !highlightedResult && state.results.length === 0 ) {
-				return 0;
+			if ( !highlightedResult ) {
+				return null;
 			}
 
 			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {

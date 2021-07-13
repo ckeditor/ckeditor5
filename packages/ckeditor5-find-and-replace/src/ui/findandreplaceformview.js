@@ -68,7 +68,8 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'replaceText', '' );
 
 		/**
-		 * Indicates if searched text has been changed in form.
+		 * Indicates if match case or whole words checkboxes have been checked or
+		 * searched text has been changed in form.
 		 *
 		 * @readonly
 		 * @observable
@@ -104,7 +105,7 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'matchCount', null );
 
 		/**
-		 * The offset of currently highlighted search result in {@link #matchCount matched results}.
+		 * The offset of currently highlighted search result in {@link #matchCount matched results} or null.
 		 *
 		 * @readonly
 		 * @observable
@@ -122,23 +123,8 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this.set( 'isCounterHidden', true );
 
-		/**
-		 * Assigning form elements views.
-		 *
-		 * @private
-		 * @readonly
-		 * @observable
-	 	 * @param {Function} t Used to translate message to the uiLanguage.
-		 */
 		this._assignViews( t );
 
-		/**
-	 	 * Initialization of focusables elements of the form.
-		 *
-		 * @private
-		 * @readonly
-		 * @observable
-	 	 */
 		this._initFocusables();
 
 		this.bind( 'isDirty' ).to(
@@ -162,17 +148,12 @@ export default class FindAndReplaceFormView extends View {
 			return matchCount === null || highlightOffset === null;
 		} );
 
-		this.bind( 'isSearching' ).to( this );
-
-		if ( state ) {
-			this.unbind( 'isSearching' );
-			this.bind( 'isSearching' ).to(
-				this, 'matchCount', this, 'isDirty',
-				( count, isDirty ) => {
-					return count > 0 && !isDirty;
-				}
-			);
-		}
+		this.bind( 'isSearching' ).to(
+			this, 'matchCount', this, 'isDirty',
+			( count, isDirty ) => {
+				return count > 0 && !isDirty;
+			}
+		);
 
 		this.setTemplate( {
 			tag: 'form',
@@ -283,6 +264,13 @@ export default class FindAndReplaceFormView extends View {
 		this.listenTo( this.replaceInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Focuses the fist {@link #_focusables} in the form.
+	 */
+	focus() {
+		this._focusCycler.focusFirst();
 	}
 
 	/**
@@ -439,13 +427,6 @@ export default class FindAndReplaceFormView extends View {
 		 * @member {module:ui/view~View}
 		 */
 		this.replaceView = this._createReplaceView();
-	}
-
-	/**
-	 * Focuses the fist {@link #_focusables} in the form.
-	 */
-	focus() {
-		this._focusCycler.focusFirst();
 	}
 
 	/**
