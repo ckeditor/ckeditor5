@@ -104,7 +104,7 @@ export default class FindAndReplaceUI extends Plugin {
 	 * Sets the observed state object. It is used to display search result count etc.
 	 *
 	 * @protected
-	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state State object to be tracked.
 	 */
 	_setState( state ) {
 		this._state = state;

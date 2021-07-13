@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
 
 /**
- * The object storing find & replace plugin state in a given editor instance.
+ * The object storing find and replace plugin state for a given editor instance.
  *
  */
 export default class FindAndReplaceState extends Plugin {
@@ -19,15 +19,15 @@ export default class FindAndReplaceState extends Plugin {
 		super();
 
 		/**
-		 * A collection of results.
+		 * A collection of find matches.
 		 *
 		 * @private
-		 * @member {module:utils/collection~Collection}
+		 * @member {module:utils/collection~Collection} #results
 		 */
 		this.set( 'results', new Collection() );
 
 		/**
-		 * Currently highlighted search result in {@link #matchCount matched results}.
+		 * Currently highlighted search result in {@link #results matched results}.
 		 *
 		 * @readonly
 		 * @observable
@@ -54,7 +54,7 @@ export default class FindAndReplaceState extends Plugin {
 		this.set( 'replaceText', '' );
 
 		/**
-		 * Indicates if the matchCase checkbox has been checked.
+		 * Indicates whether the matchCase checkbox has been checked.
 		 *
 		 * @readonly
 		 * @observable
@@ -63,7 +63,7 @@ export default class FindAndReplaceState extends Plugin {
 		this.set( 'matchCase', false );
 
 		/**
-		 * Indicates if the matchWholeWords checkbox has been checked.
+		 * Indicates whether the matchWholeWords checkbox has been checked.
 		 *
 		 * @readonly
 		 * @observable

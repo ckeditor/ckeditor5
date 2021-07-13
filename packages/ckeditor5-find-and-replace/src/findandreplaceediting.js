@@ -99,7 +99,7 @@ export default class FindAndReplaceEditing extends Plugin {
 		/**
 		 * An object storing the find and replace state within a given editor instance.
 		 *
-		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #state
+		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #state
 		 */
 		this.state = new FindAndReplaceState( this.editor.model );
 
