@@ -13,7 +13,7 @@ Check out the [demo in the source editing feature](https://ckeditor.com/docs/cke
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-source-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/source-editing.html) page as well as the [source editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html) in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-source-editing` package](https://ckeditor.com/docs/ckeditor5/latest/api/source-editing.html) page as well as the [source editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

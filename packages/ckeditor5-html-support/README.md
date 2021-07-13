@@ -13,7 +13,7 @@ Check out the demo in the [General HTML Support feature](https://ckeditor.com/do
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-html-support` package](https://ckeditor.com/docs/ckeditor5/latest/api/html-support.html) page as well as the [General HTML Support feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-html-support` package](https://ckeditor.com/docs/ckeditor5/latest/api/html-support.html) page as well as the [General HTML Support feature](https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

@@ -13,7 +13,7 @@ Check out the demo in the [Content minimap feature](https://ckeditor.com/docs/ck
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-minimap` package](https://ckeditor.com/docs/ckeditor5/latest/api/minimap.html) page as well as the [Content minimap feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-minimap` package](https://ckeditor.com/docs/ckeditor5/latest/api/minimap.html) page as well as the [Content minimap feature](https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 
