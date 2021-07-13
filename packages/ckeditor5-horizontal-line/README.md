@@ -9,7 +9,7 @@ This package implements the horizontal line feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [horizontal line feature](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html) guide.
+Check out the demo in the [horizontal line feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/horizontal-line.html#demo).
 
 ## Documentation
 

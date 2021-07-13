@@ -9,7 +9,7 @@ This package implements the content minimap feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Content minimap feature](https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html) guide.
+Check out the demo in the [content minimap feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/minimap.html#demo).
 
 ## Documentation
 

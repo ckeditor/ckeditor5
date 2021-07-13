@@ -9,6 +9,10 @@ This package implements the [paste from Office](https://docs.ckeditor.com/ckedit
 
 Paste from Office allows copying content from Microsoft Word without loosing any formatting.
 
+## Demo
+
+Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-paste-from-office` package](https://docs.ckeditor.com/ckeditor5/latest/api/paste-from-office.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).

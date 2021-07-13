@@ -9,7 +9,7 @@ This package implements the HTML embed feature for CKEditor 5. It allows embeddi
 
 ## Demo
 
-Check out the demo in the [HTML embed feature](https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html) guide.
+Check out the demo in the [HTML embed feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/html-embed.html#demo).
 
 ## Documentation
 

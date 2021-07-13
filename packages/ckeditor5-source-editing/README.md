@@ -9,7 +9,7 @@ This package implements the source editing support for CKEditor 5 that allows yo
 
 ## Demo
 
-Check out the [demo in the source editing feature](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#demo) guide.
+Check out the [demo in the source editing feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/source-editing.html#demo).
 
 ## Documentation
 

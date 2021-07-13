@@ -9,7 +9,7 @@ This package implements the page break feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [page break feature](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) guide.
+Check out the demo in the [page break feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html#demo).
 
 ## Documentation
 

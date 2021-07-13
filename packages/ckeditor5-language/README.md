@@ -9,7 +9,7 @@ This package implements text part language support for CKEditor 5 that allows yo
 
 ## Demo
 
-Check out the [demo in the text part language feature](https://ckeditor.com/docs/ckeditor5/latest/features/language.html#demo) guide.
+Check out the [demo in the text part language feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/language.html#demo).
 
 ## Documentation
 

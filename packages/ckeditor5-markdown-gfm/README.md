@@ -9,7 +9,7 @@ This package implements the GitHub Flavored Markdown data processor for CKEditor
 
 ## Demo
 
-Check out the [demo in the Markdown output feature](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html#demo) guide.
+Check out the [demo in the Markdown output feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/markdown.html#demo).
 
 ## Documentation
 

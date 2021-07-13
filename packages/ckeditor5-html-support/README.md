@@ -9,7 +9,7 @@ This package implements the General HTML Support feature for CKEditor 5. It allo
 
 ## Demo
 
-Check out the demo in the [General HTML Support feature](https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html) guide.
+Check out the demo in the [General HTML Support feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/general-html-support.html#demo).
 
 ## Documentation
 

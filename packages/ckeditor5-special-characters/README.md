@@ -7,6 +7,10 @@ CKEditor 5 special characters feature
 
 This package implements the special characters feature for CKEditor 5.
 
+## Demo
+
+Check out the demo in the [special character feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html#demo).
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-special-characters` package](https://ckeditor.com/docs/ckeditor5/latest/api/special-characters.html) page as well as the [special characters feature](https://ckeditor.com/docs/ckeditor5/latest/features/special-characters.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

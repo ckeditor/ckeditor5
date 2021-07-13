@@ -7,6 +7,10 @@ CKEditor 5 select all feature
 
 This package implements the select all feature for CKEditor 5.
 
+## Demo
+
+Check out the demo in the [select all feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html#demo).
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-select-all` package](https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html) as well as the [select all feature](https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
