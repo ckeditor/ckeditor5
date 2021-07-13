@@ -10,11 +10,11 @@ This package implements the highlight feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/highlight#demo demo in the Highlight feature} guide.
+Check out the {@link features/highlight#demo demo in the highlight feature guide}.
 
 ## Documentation
 
-See the {@link features/highlight Highlight feature} guide and the {@link module:highlight/highlight~Highlight} plugin documentation.
+See the {@link features/highlight highlight feature guide} and the {@link module:highlight/highlight~Highlight} plugin documentation.
 
 ## Installation
 
