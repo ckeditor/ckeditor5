@@ -35,12 +35,12 @@ export default class HtmlComment extends Plugin {
 		// attribute. The comment content is needed in the `dataDowncast` pipeline to re-create the comment node.
 		editor.conversion.for( 'upcast' ).elementToMarker( {
 			view: '$comment',
-			model: viewElement => {
+			model: ( viewElement, { writer } ) => {
 				const root = editor.model.document.getRoot();
 				const markerName = `$comment:${ uid() }`;
 				const commentContent = viewElement.getCustomProperty( '$rawContent' );
 
-				root._setAttribute( markerName, commentContent );
+				writer.setAttribute( markerName, commentContent, root );
 
 				return markerName;
 			}
