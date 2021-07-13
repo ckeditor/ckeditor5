@@ -297,12 +297,12 @@ function matchPatterns( patterns, keys, valueGetter ) {
 	const match = [];
 
 	normalizedPatterns.forEach( ( [ patternKey, patternValue ] ) => {
-		normalizedItems.forEach( key => {
+		normalizedItems.forEach( itemKey => {
 			if (
-				isKeyMatched( patternKey, key ) &&
-				isValueMatched( patternValue, key, valueGetter )
+				isKeyMatched( patternKey, itemKey ) &&
+				isValueMatched( patternValue, itemKey, valueGetter )
 			) {
-				match.push( key );
+				match.push( itemKey );
 			}
 		} );
 	} );
@@ -734,7 +734,8 @@ function matchStyles( patterns, element ) {
  * 			styles: /^border.*$/
  * 		}
  *
- * Refer the documentation: {@link module:engine/view/matcher~MatcherPattern}.
+ * Refer to the {@glink builds/guides/migration/migration-to-30 Migration to v30} guide
+ * and {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param {Object} pattern Pattern with missing properties.
  * @error matcher-pattern-deprecated-attributes-style-key
@@ -763,7 +764,8 @@ function matchStyles( patterns, element ) {
  * 			classes: 'foobar'
  * 		}
  *
- * Refer the documentation: {@link module:engine/view/matcher~MatcherPattern}.
+ * Refer to the {@glink builds/guides/migration/migration-to-30 Migration to v30} guide
+ * and {@link module:engine/view/matcher~MatcherPattern} documentation.
  *
  * @param {Object} pattern Pattern with missing properties.
  * @error matcher-pattern-deprecated-attributes-class-key
