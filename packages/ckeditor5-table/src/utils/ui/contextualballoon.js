@@ -25,6 +25,41 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.viewportStickyNorth
 ];
 
+const TABLE_CELL_PROPS_BALLOON_POSITIONS = [
+	DEFAULT_BALLOON_POSITIONS.northArrowSouth,
+	DEFAULT_BALLOON_POSITIONS.northArrowSouthWest,
+	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
+	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast,
+
+	( targetRect, balloonRect, viewportRect ) => {
+		if ( targetRect.bottom > viewportRect.top ) {
+			return null;
+		}
+
+		return {
+			top: viewportRect.top + 10,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 'arrow_less',
+			withArrow: false
+		};
+	},
+
+	( targetRect, balloonRect, viewportRect ) => {
+		if ( targetRect.top < viewportRect.bottom ) {
+			return null;
+		}
+
+		return {
+			top: viewportRect.bottom - balloonRect.height - 10,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 'arrow_less',
+			withArrow: false
+		};
+	}
+];
+
 // const TABLE_PROPERTIES_BALLOON_POSITIONS = [
 // 	...BALLOON_POSITIONS,
 // 	centeredBalloonPositionForLongWidgets
@@ -90,7 +125,7 @@ export function getBalloonCellPositionData( editor ) {
 	if ( selection.rangeCount > 1 ) {
 		return {
 			target: () => createBoundingRect( selection.getRanges(), editor ),
-			positions: BALLOON_POSITIONS
+			positions: TABLE_CELL_PROPS_BALLOON_POSITIONS
 		};
 	}
 
@@ -99,7 +134,7 @@ export function getBalloonCellPositionData( editor ) {
 
 	return {
 		target: domConverter.viewToDom( viewTableCell ),
-		positions: BALLOON_POSITIONS
+		positions: TABLE_CELL_PROPS_BALLOON_POSITIONS
 	};
 }
 
