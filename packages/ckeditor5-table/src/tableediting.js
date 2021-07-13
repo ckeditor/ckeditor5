@@ -113,9 +113,29 @@ export default class TableEditing extends Plugin {
 			converterPriority: 'high'
 		} );
 
+		// Fixes invalid colspan and rowspan attrbutes values
+		const upcastCellSpan = type => {
+			return cell => {
+				const span = parseInt( cell.getAttribute( type ) );
+
+				if ( Number.isNaN( span ) || ( type === 'colspan' && span <= 0 ) || ( type === 'rowspan' && span < 0 ) ) {
+					return 1;
+				}
+
+				return span;
+			};
+		};
+
 		// Table attributes conversion.
-		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		conversion.for( 'downcast' ).attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+		conversion.for( 'upcast' ).attributeToAttribute(
+			{ model: { key: 'colspan', value: upcastCellSpan( 'colspan' ) }, view: 'colspan' }
+		);
+
+		conversion.for( 'downcast' ).attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		conversion.for( 'upcast' ).attributeToAttribute(
+			{ model: { key: 'rowspan', value: upcastCellSpan( 'rowspan' ) }, view: 'rowspan' }
+		);
 
 		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
