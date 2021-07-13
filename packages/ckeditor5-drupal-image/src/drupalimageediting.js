@@ -43,15 +43,45 @@ export default class DrupalImageEditing extends Plugin {
 			} );
 		}
 
+		const dataToImageStyle = {
+			alignLeft: 'left',
+			alignBlockLeft: 'left',
+			alignCenter: 'center',
+			alignRight: 'right',
+			alignBlockRight: 'right'
+		};
+
 		// Conversion.
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
-		conversion.for( 'downcast' )
-			.add( modelEntityUuidToDataAttribute() )
-			.add( modelEntityFileToDataAttribute() )
-			.add( modelAlignToDataAttribute() );
 
 		conversion.for( 'dataDowncast' )
+			.attributeToAttribute( {
+				model: 'dataEntityUuid',
+				view: 'data-entity-uuid'
+			} )
+			.attributeToAttribute( {
+				model: 'dataEntityType',
+				view: 'data-entity-type'
+			} )
+			.attributeToAttribute( {
+				model: 'imageStyle',
+				view: modelAttributeValue => ( {
+					key: 'data-align',
+					value: dataToImageStyle[ modelAttributeValue ]
+				} ),
+				converterPriority: 'high'
+			} )
+			.elementToElement( {
+				model: 'imageBlock',
+				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
+				converterPriority: 'high'
+			} )
+			.elementToElement( {
+				model: 'imageInline',
+				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
+				converterPriority: 'high'
+			} )
 			.add( dispatcher => {
 				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
 					if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
@@ -104,16 +134,6 @@ export default class DrupalImageEditing extends Plugin {
 						conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
 					}
 				}, { priority: 'high' } );
-			} )
-			.elementToElement( {
-				model: 'imageBlock',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
-				converterPriority: 'high'
-			} )
-			.elementToElement( {
-				model: 'imageInline',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
-				converterPriority: 'high'
 			} );
 
 		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
@@ -121,14 +141,10 @@ export default class DrupalImageEditing extends Plugin {
 		if ( editor.plugins.has( 'ImageUploadEditing' ) ) {
 			const imageUploadEditing = editor.plugins.get( 'ImageUploadEditing' );
 
-			imageUploadEditing.on( 'uploadComplete', ( evt, { imageElement } ) => {
-				const uploadId = imageElement.getAttribute( 'uploadId' );
-
-				this.editor.model.change( writer => {
-					writer.setAttribute( 'dataEntityUuid', uploadId, imageElement );
-
-					// Mapping to proper entity type should be straighforward.
-					writer.setAttribute( 'dataEntityType', 'file', imageElement );
+			imageUploadEditing.on( 'uploadComplete', ( evt, { data, imageElement } ) => {
+				editor.model.change( writer => {
+					writer.setAttribute( 'dataEntityUuid', data.uuid, imageElement );
+					writer.setAttribute( 'dataEntityType', data.entity_type, imageElement );
 				} );
 			}, { priority: 'high' } );
 		}
@@ -162,7 +178,9 @@ function viewImageToModelImage( editor ) {
 		if ( editor.plugins.has( 'ImageStyleEditing' ) &&
 			consumable.test( viewItem, { name: true, attributes: 'data-align' } )
 		) {
-			// https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-defaultStyles
+			// Styles taken from https://ckeditor.com/docs/ckeditor5/latest/api/module_image_imagestyle_utils.html#constant-defaultStyles
+			// To learn more about styles visit:
+			// https://ckeditor.com/docs/ckeditor5/latest/features/images/images-styles.html#approaches-to-styling-images
 			const dataToBlockImageStyle = {
 				left: 'alignBlockLeft',
 				center: 'alignCenter',
@@ -238,72 +256,4 @@ function viewImageToModelImage( editor ) {
 
 function createImageViewElement( writer ) {
 	return writer.createEmptyElement( 'img' );
-}
-
-function modelEntityUuidToDataAttribute() {
-	return dispatcher => {
-		dispatcher.on( 'attribute:dataEntityUuid', converter );
-	};
-
-	function converter( evt, data, conversionApi ) {
-		const { item } = data;
-		const { consumable, writer } = conversionApi;
-
-		if ( !consumable.consume( item, evt.name ) ) {
-			return;
-		}
-
-		const viewElement = conversionApi.mapper.toViewElement( item );
-		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
-
-		writer.setAttribute( 'data-entity-uuid', data.attributeNewValue, imageInFigure || viewElement );
-	}
-}
-
-function modelEntityFileToDataAttribute() {
-	return dispatcher => {
-		dispatcher.on( 'attribute:dataEntityType', converter );
-	};
-
-	function converter( evt, data, conversionApi ) {
-		const { item } = data;
-		const { consumable, writer } = conversionApi;
-
-		if ( !consumable.consume( item, evt.name ) ) {
-			return;
-		}
-
-		const viewElement = conversionApi.mapper.toViewElement( item );
-		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
-
-		writer.setAttribute( 'data-entity-type', data.attributeNewValue, imageInFigure || viewElement );
-	}
-}
-
-function modelAlignToDataAttribute() {
-	return dispatcher => {
-		dispatcher.on( 'attribute:imageStyle', converter, { priority: 'high' } );
-	};
-
-	function converter( evt, data, conversionApi ) {
-		const { item } = data;
-		const { consumable, writer } = conversionApi;
-
-		if ( !consumable.consume( item, evt.name ) ) {
-			return;
-		}
-
-		const dataToImageStyle = {
-			alignLeft: 'left',
-			alignBlockLeft: 'left',
-			alignCenter: 'center',
-			alignRight: 'right',
-			alignBlockRight: 'right'
-		};
-
-		const viewElement = conversionApi.mapper.toViewElement( item );
-		const imageInFigure = Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
-
-		writer.setAttribute( 'data-align', dataToImageStyle[ data.attributeNewValue ], imageInFigure || viewElement );
-	}
 }

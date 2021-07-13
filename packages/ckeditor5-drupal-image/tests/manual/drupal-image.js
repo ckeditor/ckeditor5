@@ -58,7 +58,11 @@ ClassicEditor
 			const adapterMock = new UploadAdapterMock( loader );
 
 			loader.file.then( () => {
-				window.setTimeout( () => adapterMock.mockSuccess( { default: './sample.jpg' } ), 1000 );
+				window.setTimeout( () => adapterMock.mockSuccess( {
+					default: './sample.jpg',
+					uuid: '0000-aaaaaa-bbbbbb-1111',
+					entity_type: 'file'
+				} ), 1000 );
 			} );
 
 			return adapterMock;
