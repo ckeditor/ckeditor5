@@ -154,8 +154,8 @@ export default class FindAndReplaceFormView extends View {
 		this.replaceButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
 		this.replaceAllButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
 
-		this.bind( 'isCounterHidden' ).to( this, 'matchCount', this, 'highlightOffset', ( matchCount, highlightOffset ) => {
-			return matchCount === null || highlightOffset === null;
+		this.bind( 'isCounterHidden' ).to( state, 'searchText', this, 'isDirty', ( searchText, isDirty ) => {
+			return searchText == '' || isDirty;
 		} );
 
 		this.bind( 'isSearching' ).to(
@@ -182,7 +182,7 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		function enforceStringValue( value ) {
-			// For search / replace text let's enforce strings for easier comparision.
+			// For search / replace text let's enforce strings for easier comparison.
 			return value === undefined ? '' : value;
 		}
 
@@ -474,7 +474,7 @@ export default class FindAndReplaceFormView extends View {
 					},
 					children: [
 						{
-							text: bind.to( 'highlightOffset' )
+							text: bind.to( 'highlightOffset', highlightOffset => highlightOffset || 0 )
 						},
 						t( ' of ' ),
 						{
