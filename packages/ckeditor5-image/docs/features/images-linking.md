@@ -29,13 +29,13 @@ An example source code for block image would look similar to this one:
 An inline image code would look more like this:
 
 ```html
-	<a href="...">
+<a href="...">
 	Some text <img src="..." alt="..." style="width: 20px">
-	</a>
+</a>
 ```
 ## Demo
 
-Click on the images to invoke the contextual toolbar. Use the link icon in the image toolbar to access the editing options for links on an image. Also notice the icon in the top-right corner of the image, indicating there is a link attached to the image.
+Click on the images to invoke the contextual toolbar. Use the link icon {@icon @ckeditor/ckeditor5-link/theme/icons/link.svg Link} to access the editing options for links on an image. Also notice the icon in the top-right corner of the image, indicating there is a link attached to the image.
 
 {@snippet features/image-link}
 
