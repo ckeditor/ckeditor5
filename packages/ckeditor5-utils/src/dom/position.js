@@ -13,6 +13,8 @@ import getPositionedAncestor from './getpositionedancestor';
 import getBorderWidths from './getborderwidths';
 import { isFunction } from 'lodash-es';
 
+// @if CK_DEBUG_POSITION // import { RectDrawer } from '@ckeditor/ckeditor5-minimap/src/utils';
+
 /**
  * Calculates the `position: absolute` coordinates of a given element so it can be positioned with respect to the
  * target in the visually most efficient way, taking various restrictions like viewport or limiter geometry
@@ -77,7 +79,7 @@ import { isFunction } from 'lodash-es';
  * @param {module:utils/dom/position~Options} options Positioning options object.
  * @returns {module:utils/dom/position~Position}
  */
-export function getOptimalPosition( { element, target, positions, limiter, fitInViewport } ) {
+export function getOptimalPosition( { element, target, positions, limiter, fitInViewport, viewportOffsetConfig } ) {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -90,56 +92,55 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 		limiter = limiter();
 	}
 
-	const positionedElementAncestor = getPositionedAncestor( element );
+	const positionedAncestor = getPositionedAncestor( element );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
 
-	let bestPositionRect;
-	let bestPositionName;
+	let bestPosition;
+
+	// @if CK_DEBUG_POSITION // RectDrawer.clear();
+	// @if CK_DEBUG_POSITION // RectDrawer.draw( targetRect, { outlineWidth: '5px' }, 'Target' );
+
+	const positionOptions = { targetRect, elementRect, positionedAncestor };
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
-		[ bestPositionName, bestPositionRect ] = getPositionNameAndRect( positions[ 0 ], targetRect, elementRect );
+		bestPosition = new Position( positions[ 0 ], positionOptions );
 	} else {
 		const limiterRect = limiter && new Rect( limiter ).getVisible();
-		const viewportRect = fitInViewport && new Rect( global.window );
-		const bestPosition = getBestPositionNameAndRect( positions, { targetRect, elementRect, limiterRect, viewportRect } );
+		const viewportRect = fitInViewport && getConstrainedViewportRect( viewportOffsetConfig );
+
+		// @if CK_DEBUG_POSITION // if ( viewportRect ) {
+		// @if CK_DEBUG_POSITION //	RectDrawer.draw( viewportRect, { outlineWidth: '5px' }, 'Viewport' );
+		// @if CK_DEBUG_POSITION // }
+
+		// @if CK_DEBUG_POSITION // if ( limiter ) {
+		// @if CK_DEBUG_POSITION // 	RectDrawer.draw( limiterRect, { outlineWidth: '5px', outlineColor: 'green' }, 'Visible limiter' );
+		// @if CK_DEBUG_POSITION // }
+
+		Object.assign( positionOptions, { limiterRect, viewportRect } );
 
 		// If there's no best position found, i.e. when all intersections have no area because
 		// rects have no width or height, then just use the first available position.
-		[ bestPositionName, bestPositionRect ] = bestPosition || getPositionNameAndRect( positions[ 0 ], targetRect, elementRect );
+		bestPosition = getBestPosition( positions, positionOptions ) || new Position( positions[ 0 ], positionOptions );
 	}
 
-	let absoluteRectCoordinates = getAbsoluteRectCoordinates( bestPositionRect );
-
-	if ( positionedElementAncestor ) {
-		absoluteRectCoordinates = shiftRectCoordinatesDueToPositionedAncestor( absoluteRectCoordinates, positionedElementAncestor );
-	}
-
-	return {
-		left: absoluteRectCoordinates.left,
-		top: absoluteRectCoordinates.top,
-		name: bestPositionName
-	};
+	return bestPosition;
 }
 
-// For given position function, returns a corresponding `Rect` instance.
-//
+// TODO
 // @private
-// @param {Function} position A function returning {@link module:utils/dom/position~Position}.
-// @param {utils/dom/rect~Rect} targetRect A rect of the target.
-// @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
-// @returns {Array|null} An array containing position name and its Rect (or null if position should be ignored).
-function getPositionNameAndRect( position, targetRect, elementRect ) {
-	const positionData = position( targetRect, elementRect );
+function getConstrainedViewportRect( viewportOffsetConfig ) {
+	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
-	if ( !positionData ) {
-		return null;
-	}
+	const viewportRect = new Rect( global.window );
 
-	const { left, top, name } = positionData;
+	viewportRect.top += viewportOffsetConfig.top;
+	viewportRect.height -= viewportOffsetConfig.top;
+	viewportRect.bottom -= viewportOffsetConfig.bottom;
+	viewportRect.height -= viewportOffsetConfig.bottom;
 
-	return [ name, elementRect.clone().moveTo( left, top ) ];
+	return viewportRect;
 }
 
 // For a given array of positioning functions, returns such that provides the best
@@ -157,106 +158,34 @@ function getPositionNameAndRect( position, targetRect, elementRect ) {
 // @param {utils/dom/rect~Rect} options.viewportRect A rect of the viewport.
 //
 // @returns {Array} An array containing the name of the position and it's rect.
-function getBestPositionNameAndRect( positions, options ) {
+function getBestPosition( positioningFunctions, options ) {
 	const { elementRect, viewportRect } = options;
 
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
 
 	// Let's calculate intersection areas for positions. It will end early if best match is found.
-	const processedPositions = processPositionsToAreas( positions, options );
+	const positions = positioningFunctions
+		.map( positioningFunction => new Position( positioningFunction, options ) )
+		// Some positioning functions may return `null` if they don't want to participate.
+		.filter( position => !!position.name );
 
 	// First let's check all positions that fully fit in the viewport.
 	if ( viewportRect ) {
-		const processedPositionsInViewport = processedPositions.filter( ( { viewportIntersectArea } ) => {
-			return viewportIntersectArea === elementRectArea;
+		const positionsInViewport = positions.filter( position => {
+			return position.viewportIntersectionArea === elementRectArea;
 		} );
 
 		// Try to find best position from those which fit completely in viewport.
-		const bestPositionData = getBestOfProcessedPositions( processedPositionsInViewport, elementRectArea );
+		const bestPosition = getBestConstrainedPosition( positionsInViewport, elementRectArea );
 
-		if ( bestPositionData ) {
-			return bestPositionData;
+		if ( bestPosition ) {
+			return bestPosition;
 		}
 	}
 
 	// Either there is no viewportRect or there is no position that fits completely in the viewport.
-	return getBestOfProcessedPositions( processedPositions, elementRectArea );
-}
-
-// For a given array of positioning functions, calculates intersection areas for them.
-//
-// Note: If some position fully fits into the `limiterRect`, it will be returned early, without further consideration
-// of other positions.
-//
-// @private
-//
-// @param {module:utils/dom/position~Options#positions} positions Functions returning {@link module:utils/dom/position~Position}
-// to be checked, in the order of preference.
-// @param {Object} options
-// @param {utils/dom/rect~Rect} options.targetRect A rect of the {@link module:utils/dom/position~Options#target}.
-// @param {utils/dom/rect~Rect} options.elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
-// @param {utils/dom/rect~Rect} options.limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
-// @param {utils/dom/rect~Rect} options.viewportRect A rect of the viewport.
-//
-// @returns {Array.<Object>} Array of positions with calculated intersection areas. Each item is an object containing:
-// * {String} positionName Name of position.
-// * {utils/dom/rect~Rect} positionRect Rect of position.
-// * {Number} limiterIntersectArea Area of intersection of the position with limiter part that is in the viewport.
-// * {Number} viewportIntersectArea Area of intersection of the position with viewport.
-function processPositionsToAreas( positions, { targetRect, elementRect, limiterRect, viewportRect } ) {
-	const processedPositions = [];
-
-	// This is when element is fully visible.
-	const elementRectArea = elementRect.getArea();
-
-	for ( const position of positions ) {
-		const positionData = getPositionNameAndRect( position, targetRect, elementRect );
-
-		if ( !positionData ) {
-			continue;
-		}
-
-		const [ positionName, positionRect ] = positionData;
-		let limiterIntersectArea = 0;
-		let viewportIntersectArea = 0;
-
-		if ( limiterRect ) {
-			if ( viewportRect ) {
-				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
-				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
-
-				if ( limiterViewportIntersectRect ) {
-					// If the limiter is within the viewport, then check the intersection between that part of the
-					// limiter and actual position.
-					limiterIntersectArea = limiterViewportIntersectRect.getIntersectionArea( positionRect );
-				}
-			} else {
-				limiterIntersectArea = limiterRect.getIntersectionArea( positionRect );
-			}
-		}
-
-		if ( viewportRect ) {
-			viewportIntersectArea = viewportRect.getIntersectionArea( positionRect );
-		}
-
-		const processedPosition = {
-			positionName,
-			positionRect,
-			limiterIntersectArea,
-			viewportIntersectArea
-		};
-
-		// If a such position is found that element is fully contained by the limiter then, obviously,
-		// there will be no better one, so finishing.
-		if ( limiterIntersectArea === elementRectArea ) {
-			return [ processedPosition ];
-		}
-
-		processedPositions.push( processedPosition );
-	}
-
-	return processedPositions;
+	return getBestConstrainedPosition( positions, elementRectArea );
 }
 
 // For a given array of processed position data (with calculated Rects for positions and intersection areas)
@@ -270,35 +199,35 @@ function processPositionsToAreas( positions, { targetRect, elementRect, limiterR
 //
 //	* {String} positionName Name of position.
 //	* {utils/dom/rect~Rect} positionRect Rect of position.
-//	* {Number} limiterIntersectArea Area of intersection of the position with limiter part that is in the viewport.
-//	* {Number} viewportIntersectArea Area of intersection of the position with viewport.
+//	* {Number} limiterIntersectionArea Area of intersection of the position with limiter part that is in the viewport.
+//	* {Number} viewportIntersectionArea Area of intersection of the position with viewport.
 //
 // @param {Number} elementRectArea Area of positioned {@link module:utils/dom/position~Options#element}.
 // @returns {Array|null} An array containing the name of the position and it's rect, or null if not found.
-function getBestOfProcessedPositions( processedPositions, elementRectArea ) {
+function getBestConstrainedPosition( processedPositions, elementRectArea ) {
 	let maxFitFactor = 0;
-	let bestPositionRect;
-	let bestPositionName;
+	let bestPosition = null;
 
-	for ( const { positionName, positionRect, limiterIntersectArea, viewportIntersectArea } of processedPositions ) {
+	for ( const position of processedPositions ) {
+		const { limiterIntersectionArea, viewportIntersectionArea } = position;
+
 		// If a such position is found that element is fully container by the limiter then, obviously,
 		// there will be no better one, so finishing.
-		if ( limiterIntersectArea === elementRectArea ) {
-			return [ positionName, positionRect ];
+		if ( limiterIntersectionArea === elementRectArea ) {
+			return position;
 		}
 
-		// To maximize both viewport and limiter intersection areas we use distance on viewportIntersectArea
-		// and limiterIntersectArea plane (without sqrt because we are looking for max value).
-		const fitFactor = viewportIntersectArea ** 2 + limiterIntersectArea ** 2;
+		// To maximize both viewport and limiter intersection areas we use distance on viewportIntersectionArea
+		// and limiterIntersectionArea plane (without sqrt because we are looking for max value).
+		const fitFactor = viewportIntersectionArea ** 2 + limiterIntersectionArea ** 2;
 
 		if ( fitFactor > maxFitFactor ) {
 			maxFitFactor = fitFactor;
-			bestPositionRect = positionRect;
-			bestPositionName = positionName;
+			bestPosition = position;
 		}
 	}
 
-	return bestPositionRect ? [ bestPositionName, bestPositionRect ] : null;
+	return bestPosition;
 }
 
 // For a given absolute Rect coordinates object and a positioned element ancestor, it returns an object with
@@ -310,41 +239,44 @@ function getBestOfProcessedPositions( processedPositions, elementRectArea ) {
 //
 // @private
 //
-// @param {Object} absoluteRectCoordinates An object with absolute rect coordinates.
-// @param {Object} absoluteRectCoordinates.top
-// @param {Object} absoluteRectCoordinates.left
+// @param {Object} absoluteRect An object with absolute rect coordinates.
+// @param {Object} absoluteRect.top
+// @param {Object} absoluteRect.left
 // @param {HTMLElement} positionedElementAncestor An ancestor element that should be considered.
 //
-// @returns {Object} An object corresponding to `absoluteRectCoordinates` input but with values shifted
+// @returns {Object} An object corresponding to `absoluteRect` input but with values shifted
 // to make up for the positioned element ancestor.
-function shiftRectCoordinatesDueToPositionedAncestor( { left, top }, positionedElementAncestor ) {
-	const ancestorPosition = getAbsoluteRectCoordinates( new Rect( positionedElementAncestor ) );
+function shiftRectToCompensatePositionedAncestor( rect, positionedElementAncestor ) {
+	const ancestorPosition = getRectForAbsolutePositioning( new Rect( positionedElementAncestor ) );
 	const ancestorBorderWidths = getBorderWidths( positionedElementAncestor );
+
+	let moveX = 0;
+	let moveY = 0;
 
 	// (https://github.com/ckeditor/ckeditor5-ui-default/issues/126)
 	// If there's some positioned ancestor of the panel, then its `Rect` must be taken into
 	// consideration. `Rect` is always relative to the viewport while `position: absolute` works
 	// with respect to that positioned ancestor.
-	left -= ancestorPosition.left;
-	top -= ancestorPosition.top;
+	moveX -= ancestorPosition.left;
+	moveY -= ancestorPosition.top;
 
 	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
 	// If there's some positioned ancestor of the panel, not only its position must be taken into
 	// consideration (see above) but also its internal scrolls. Scroll have an impact here because `Rect`
 	// is relative to the viewport (it doesn't care about scrolling), while `position: absolute`
 	// must compensate that scrolling.
-	left += positionedElementAncestor.scrollLeft;
-	top += positionedElementAncestor.scrollTop;
+	moveX += positionedElementAncestor.scrollLeft;
+	moveY += positionedElementAncestor.scrollTop;
 
 	// (https://github.com/ckeditor/ckeditor5-utils/issues/139)
 	// If there's some positioned ancestor of the panel, then its `Rect` includes its CSS `borderWidth`
 	// while `position: absolute` positioning does not consider it.
 	// E.g. `{ position: absolute, top: 0, left: 0 }` means upper left corner of the element,
 	// not upper-left corner of its border.
-	left -= ancestorBorderWidths.left;
-	top -= ancestorBorderWidths.top;
+	moveX -= ancestorBorderWidths.left;
+	moveY -= ancestorBorderWidths.top;
 
-	return { left, top };
+	rect.moveBy( moveX, moveY );
 }
 
 // DOMRect (also Rect) works in a scroll–independent geometry but `position: absolute` doesn't.
@@ -353,13 +285,103 @@ function shiftRectCoordinatesDueToPositionedAncestor( { left, top }, positionedE
 // @private
 // @param {utils/dom/rect~Rect} rect A rect to be converted.
 // @returns {Object} Object containing `left` and `top` properties, in absolute coordinates.
-function getAbsoluteRectCoordinates( { left, top } ) {
+function getRectForAbsolutePositioning( rect ) {
 	const { scrollX, scrollY } = global.window;
 
-	return {
-		left: left + scrollX,
-		top: top + scrollY
-	};
+	return rect.clone().moveBy( scrollX, scrollY );
+}
+
+// @private
+class Position {
+	constructor( positioningFunction, options ) {
+		const positioningFunctionOutput = positioningFunction( options.targetRect, options.elementRect, options.viewportRect );
+
+		// Nameless position for a function that didn't participate.
+		if ( !positioningFunctionOutput ) {
+			return;
+		}
+
+		const { left, top } = positioningFunctionOutput;
+
+		delete positioningFunctionOutput.left;
+		delete positioningFunctionOutput.top;
+
+		Object.assign( this, positioningFunctionOutput );
+
+		this._positioningFunctionCorrdinates = { left, top };
+		this._options = options;
+	}
+
+	get left() {
+		return this._absoluteRect.left;
+	}
+
+	get top() {
+		return this._absoluteRect.top;
+	}
+
+	// TODO
+	get limiterIntersectionArea() {
+		const limiterRect = this._options.limiterRect;
+
+		if ( limiterRect ) {
+			const viewportRect = this._options.viewportRect;
+
+			if ( viewportRect ) {
+				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
+				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
+
+				if ( limiterViewportIntersectRect ) {
+					// If the limiter is within the viewport, then check the intersection between that part of the
+					// limiter and actual position.
+					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
+				}
+			} else {
+				return limiterRect.getIntersectionArea( this._rect );
+			}
+		}
+
+		return 0;
+	}
+
+	// TODO
+	get viewportIntersectionArea() {
+		const viewportRect = this._options.viewportRect;
+
+		if ( viewportRect ) {
+			return viewportRect.getIntersectionArea( this._rect );
+		}
+
+		return 0;
+	}
+
+	get _rect() {
+		if ( this._cachedRect ) {
+			return this._cachedRect;
+		}
+
+		this._cachedRect = this._options.elementRect.clone().moveTo(
+			this._positioningFunctionCorrdinates.left,
+			this._positioningFunctionCorrdinates.top
+		);
+
+		return this._cachedRect;
+	}
+
+	get _absoluteRect() {
+		// Speed optimization.
+		if ( this._cachedAbsoluteRect ) {
+			return this._cachedAbsoluteRect;
+		}
+
+		this._cachedAbsoluteRect = getRectForAbsolutePositioning( this._rect );
+
+		if ( this._options.positionedAncestor ) {
+			shiftRectToCompensatePositionedAncestor( this._cachedAbsoluteRect, this._options.positionedAncestor );
+		}
+
+		return this._cachedAbsoluteRect;
+	}
 }
 
 /**

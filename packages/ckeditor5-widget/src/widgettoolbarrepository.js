@@ -289,6 +289,8 @@ function getBalloonPositionData( editor, relatedElement ) {
 			defaultPositions.southArrowNorth,
 			defaultPositions.southArrowNorthWest,
 			defaultPositions.southArrowNorthEast,
+			defaultPositions.southArrowNorthEast,
+			defaultPositions.viewportStickyNorth,
 			centeredBalloonPositionForLongWidgets
 		]
 	};

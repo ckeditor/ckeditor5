@@ -217,17 +217,31 @@ export class RectDrawer {
 	static _injectStyles() {
 		RectDrawer._stylesElement = global.document.createElement( 'style' );
 		RectDrawer._stylesElement.innerHTML = `
+			div.ck-rect-preview::before,
 			div.ck-rect-preview::after {
 				content: attr(data-name);
 				position: absolute;
-				left: 3px;
-				top: 3px;
 				font-family: monospace;
 				background: #000;
 				color: #fff;
 				font-size: 10px;
 				padding: 1px 3px;
 				pointer-events: none;
+			}
+
+			div.ck-rect-preview[data-name=""]::before,
+			div.ck-rect-preview[data-name=""]::after {
+				display: none;
+			}
+
+			div.ck-rect-preview::before {
+				left: 3px;
+				top: 3px;
+			}
+
+			div.ck-rect-preview::after {
+				right: 3px;
+				bottom: 3px;
 			}
 		`;
 
@@ -245,7 +259,7 @@ RectDrawer._defaultStyles = {
 	outlineStyle: 'solid',
 	outlineColor: 'blue',
 	outlineOffset: '-1px',
-	zIndex: 999,
+	zIndex: 99999,
 	opacity: .5,
 	pointerEvents: 'none'
 };

@@ -21,13 +21,14 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast,
+	DEFAULT_BALLOON_POSITIONS.viewportStickyNorth
 ];
 
-const TABLE_PROPERTIES_BALLOON_POSITIONS = [
-	...BALLOON_POSITIONS,
-	centeredBalloonPositionForLongWidgets
-];
+// const TABLE_PROPERTIES_BALLOON_POSITIONS = [
+// 	...BALLOON_POSITIONS,
+// 	centeredBalloonPositionForLongWidgets
+// ];
 
 /**
  * A helper utility that positions the
@@ -69,7 +70,7 @@ export function getBalloonTablePositionData( editor ) {
 
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTable ),
-		positions: TABLE_PROPERTIES_BALLOON_POSITIONS
+		positions: BALLOON_POSITIONS
 	};
 }
 
