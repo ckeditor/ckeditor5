@@ -30,7 +30,7 @@ export default class ReplaceCommand extends Command {
 		 * The find and replace state object used for command operations.
 		 *
 		 * @private
-		 * @member {module:find-and-replace/findandreplaceediting~FindAndReplaceState} #_state
+		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
 		 */
 		this._state = state;
 	}
