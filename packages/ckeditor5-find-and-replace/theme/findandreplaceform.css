@@ -182,7 +182,7 @@
 		}
 	}
 
-	& .ck.ck-responsive-form > :not(:last-child) {
+	& .ck.ck-responsive-form :not(:last-child) {
 		margin-left: 0;
 	}
 
