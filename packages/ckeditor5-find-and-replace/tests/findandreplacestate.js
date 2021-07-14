@@ -134,7 +134,7 @@ describe( 'FindAndReplaceState', () => {
 			expect( markers ).to.have.length( 2 );
 		} );
 
-		it( 'should get the modified results removed', () => {
+		it( 'remove results when matched data was modified', () => {
 			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
 
 			editor.setData( '<p>foo</p><p>foo</p><p>foo</p>' );
