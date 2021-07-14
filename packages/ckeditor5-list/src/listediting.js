@@ -21,6 +21,7 @@ import {
 import { createViewListItemElement } from './utils';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import { insertSlotted } from '@ckeditor/ckeditor5-engine/src/conversion/downcasthelpers';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
@@ -134,152 +135,215 @@ export default class ListEditing extends Plugin {
 				const changes = [];
 
 				for ( const change of data.changes ) {
-					// if ( change.name == '$text' ) {
-					// 	changes.push( change );
-					//
-					// 	continue;
-					// }
-
 					// TEMP
 					changes.push( change );
 
 					if ( change.type == 'insert' ) {
-						let wasHandled = false;
+						const insertionRange = editor.model.createRange( change.position, change.position.getShiftedBy( change.length ) );
 
-						for ( let i = 0; i < this._lists.length; i++ ) {
-							const list = this._lists[ i ];
-
-							if ( list.range.start.path.length != change.position.path.length ) {
+						for ( const { type, item: element, previousPosition: position, length } of insertionRange ) {
+							if ( type != 'elementStart' ) {
 								continue;
 							}
 
-							if ( change.attributes.has( 'listItem' ) ) {
-								const [ newRange ] = list.range._getTransformedByInsertion( change.position, change.length );
+							let wasHandled = false;
 
-								if ( list.range.start.isEqual( change.position ) ) {
-									const range = editor.model.createRange( change.position, newRange.end );
+							for ( let i = 0; i < this._lists.length; i++ ) {
+								const list = this._lists[ i ];
 
-									console.log( '-- list grow at start', list.range.start.path + '-' + list.range.end.path,
-										'to', range.start.path + '-' + range.end.path );
-
-									list.range = range;
-									wasHandled = true;
-								} else if ( list.range.end.isEqual( change.position ) ) {
-									const range = editor.model.createRange( newRange.start, change.position.getShiftedBy( change.length ) );
-
-									console.log( '-- list grow at end', list.range.start.path + '-' + list.range.end.path,
-										'to', range.start.path + '-' + range.end.path );
-
-									list.range = range;
-									wasHandled = true;
-								} else if ( list.range.containsPosition( change.position ) ) {
-									console.log( '-- list grow inside', list.range.start.path + '-' + list.range.end.path,
-										'to', newRange.start.path + '-' + newRange.end.path );
-
-									list.range = newRange;
-									wasHandled = true;
-								} else {
-									list.range = newRange;
+								if ( compareArrays( list.range.start.getParentPath(), position.getParentPath() ) != 'same' ) {
+									continue;
 								}
-							} else {
-								const newRanges = list.range._getTransformedByInsertion( change.position, change.length, true );
 
-								// Insertion was inside this list.
-								if ( newRanges.length > 1 ) {
-									console.log( '-- list split', list.range.start.path + '-' + list.range.end.path,
-										'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path,
-										'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
+								if ( element.hasAttribute( 'listItem' ) ) {
+									const [ newRange ] = list.range._getTransformedByInsertion( position, length );
 
-									list.range = newRanges[ 0 ];
-									this._lists.push( { range: newRanges[ 1 ] } );
-								} else if ( !newRanges[ 0 ].isEqual( list.range ) ) {
-									console.log( '-- list move', list.range.start.path + '-' + list.range.end.path,
-										'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
+									if ( list.range.start.isEqual( position ) ) {
+										const range = editor.model.createRange( position, newRange.end );
 
-									list.range = newRanges[ 0 ];
+										// @if CK_DEBUG // console.log( '-- list grow at start',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
+
+										list.range = range;
+										wasHandled = true;
+									} else if ( list.range.end.isEqual( position ) ) {
+										const range = editor.model.createRange( newRange.start, position.getShiftedBy( length ) );
+
+										// @if CK_DEBUG // console.log( '-- list grow at end',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
+
+										list.range = range;
+										wasHandled = true;
+									} else if ( list.range.containsPosition( position ) ) {
+										// @if CK_DEBUG // console.log( '-- list grow inside',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
+
+										list.range = newRange;
+										wasHandled = true;
+									} else {
+										// @if CK_DEBUG // console.log( '-- ????',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
+
+										list.range = newRange;
+									}
+								} else {
+									const newRanges = list.range._getTransformedByInsertion( position, length, true );
+
+									// Insertion was inside this list.
+									if ( newRanges.length > 1 ) {
+										// @if CK_DEBUG // console.log( '-- list split',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path,
+										// @if CK_DEBUG // 		'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
+
+										list.range = newRanges[ 0 ];
+										this._lists.push( { range: newRanges[ 1 ] } );
+									} else if ( !newRanges[ 0 ].isEqual( list.range ) ) {
+										// @if CK_DEBUG // console.log( '-- list move',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
+
+										list.range = newRanges[ 0 ];
+									}
 								}
 							}
-						}
 
-						if ( !wasHandled && change.attributes.has( 'listItem' ) ) {
-							const range = editor.model.createRange( change.position, change.position.getShiftedBy( change.length ) );
+							if ( !wasHandled && element.hasAttribute( 'listItem' ) ) {
+								const range = editor.model.createRange( position, position.getShiftedBy( length ) );
 
-							console.log( '-- new list item', range.start.path + '-' + range.end.path );
+								// @if CK_DEBUG // console.log( '-- new list item', range.start.path + '-' + range.end.path );
 
-							this._lists.push( { range } );
+								this._lists.push( { range } );
+							}
 						}
 					}
 
-					if ( change.type == 'remove' ) {
+					else if ( change.type == 'remove' ) {
 						for ( let i = 0; i < this._lists.length; i++ ) {
 							const list = this._lists[ i ];
 
 							const newRange = list.range._getTransformedByDeletion( change.position, change.length );
 
+							if ( !newRange || newRange.isCollapsed ) {
+								// @if CK_DEBUG // console.log( '-- list removed', list.range.start.path + '-' + list.range.end.path );
+
+								this._lists.splice( i--, 1 );
+
+								continue;
+							}
+
 							if ( list.range.isEqual( newRange ) ) {
 								continue;
 							}
 
-							if ( !newRange || newRange.isCollapsed ) {
-								console.log( '-- list removed', list.range.start.path + '-' + list.range.end.path );
-
-								this._lists.splice( i--, 1 );
-							} else if ( list.range.start.isEqual( change.position ) || list.range.containsPosition( change.position ) ) {
-								console.log( '-- list shrink', list.range.start.path + '-' + list.range.end.path,
-									'to', newRange.start.path + '-' + newRange.end.path );
+							if ( list.range.start.isEqual( change.position ) || list.range.containsPosition( change.position ) ) {
+								// @if CK_DEBUG // console.log( '-- list shrink',
+								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+								// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
 								list.range = newRange;
 							} else {
-								console.log( '-- list move', list.range.start.path + '-' + list.range.end.path,
-									'to', newRange.start.path + '-' + newRange.end.path );
+								// @if CK_DEBUG // console.log( '-- list move',
+								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+								// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
 								list.range = newRange;
 							}
 						}
 					}
 
-					// if ( change.type == 'attribute' ) {
-					// 	if ( ![ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
-					// 		return null;
-					// 	}
-					//
-					// 	// Attribute was set.
-					// 	if ( !change.attributeOldValue ) {
-					// 		return [ change.range.start.nodeAfter ];
-					// 	}
-					//
-					// 	// Attribute was removed.
-					// 	if ( !change.attributeNewValue ) {
-					// 		const result = [];
-					//
-					// 		// Check nodes before and after the removed attribute range.
-					// 		const nodeBefore = change.range.start.nodeBefore;
-					// 		const nodeAfter = change.range.end.nodeAfter;
-					//
-					// 		if ( nodeBefore && nodeBefore.hasAttribute( 'listItem' ) ) {
-					// 			result.push( nodeBefore );
-					// 		}
-					//
-					// 		if ( nodeAfter && nodeAfter.hasAttribute( 'listItem' ) ) {
-					// 			result.push( nodeAfter );
-					// 		}
-					//
-					// 		// TODO what if attributes on a whole list are removed?
-					//
-					// 		return result.length ? result : null;
-					// 	}
-					//
-					//
-					// 	// TEMP
-					// 	changes.push( change );
-					// }
+					else if ( change.type == 'attribute' ) {
+						if ( [ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
+							const changedRange = change.range.isFlat ? change.range :
+								editor.model.createRange( change.range.start, change.range.start.getShiftedBy( 1 ) );
 
+							let wasHandled = false;
 
-					// const anchorElements = getListChangeAnchorElements( change );
+							for ( let i = 0; i < this._lists.length; i++ ) {
+								const list = this._lists[ i ];
 
-					// if ( anchorElements ) {
-					// 	// TODO use anchorElements
-					//
+								if ( compareArrays( list.range.start.getParentPath(), change.range.start.getParentPath() ) != 'same' ) {
+									continue;
+								}
+
+								// Attribute was set.
+								if ( change.attributeOldValue === null ) {
+									if ( list.range.start.isEqual( changedRange.end ) ) {
+										const range = editor.model.createRange( changedRange.start, list.range.end );
+
+										// @if CK_DEBUG // console.log( '-- list grow at start',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
+
+										list.range = range;
+										wasHandled = true;
+									} else if ( list.range.end.isEqual( changedRange.start ) ) {
+										const range = editor.model.createRange( list.range.start, changedRange.end );
+
+										// @if CK_DEBUG // console.log( '-- list grow at end',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
+
+										list.range = range;
+										wasHandled = true;
+									} else if ( list.range.isIntersecting( changedRange ) ) {
+										// @if CK_DEBUG // console.log( '-- list added secondary attribute',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
+										wasHandled = true;
+									}
+								}
+
+								// Attribute was removed.
+								else if ( change.attributeNewValue === null ) {
+									const newRanges = list.range.getDifference( changedRange );
+
+									// Does not affect this list.
+									if ( newRanges.length == 1 && newRanges[ 0 ].isEqual( list.range ) ) {
+										continue;
+									}
+
+									if ( newRanges.length > 1 ) {
+										// @if CK_DEBUG // console.log( '-- list split',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path,
+										// @if CK_DEBUG // 		'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
+
+										list.range = newRanges[ 0 ];
+										this._lists.push( { range: newRanges[ 1 ] } );
+									} else if ( newRanges.length ) {
+										// @if CK_DEBUG // console.log( '-- list shrink',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
+										// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
+
+										list.range = newRanges[ 0 ];
+									} else {
+										// @if CK_DEBUG // console.log( '-- list removed',
+										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
+
+										this._lists.splice( i--, 1 );
+									}
+								}
+
+								// Attribute value was changed.
+								else if ( change.range.isIntersecting( list.range ) ) {
+									// @if CK_DEBUG // console.log( '-- list attr change',
+									// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
+								}
+							}
+
+							// New attribute on new list.
+							if ( !wasHandled && change.attributeOldValue === null ) {
+								// @if CK_DEBUG // console.log( '-- new list item', changedRange.start.path + '-' + changedRange.end.path );
+
+								this._lists.push( { range: changedRange } );
+							}
+						}
+					}
+
 					// 	const position = change.position || change.range.start;
 					//
 					// 	const otherChange = changes.find( entry => (
@@ -329,276 +393,6 @@ export default class ListEditing extends Plugin {
 				) );
 			} );
 		} );
-
-		// editor.conversion.for( 'downcast' ).rangeToStructure( {
-		// 	triggerBy: diffItem => {
-		// 		if ( diffItem.name == '$text' ) {
-		// 			return false;
-		// 		}
-		//
-		// 		switch ( diffItem.type ) {
-		// 			case 'attribute': {
-		// 				if ( ![ 'listIndent', 'listType', 'listItem' ].includes( diffItem.attributeKey ) ) {
-		// 					return false;
-		// 				}
-		//
-		// 				console.log( 'trigger - attribute change at', diffItem.range.start.path );
-		//
-		// 				return true;
-		// 			}
-		//
-		// 			case 'insert': {
-		// 				const node = diffItem.position.nodeAfter;
-		//
-		// 				if ( !node.hasAttribute( 'listItem' ) ) {
-		// 					return false;
-		// 				}
-		//
-		// 				// TODO this is the case that can't be handled by the declarative triggerBy
-		// 				//  maybe inserting node with watched attribute should trigger reconvert also in declarative API
-		// 				console.log( 'trigger - insert at', diffItem.position.path );
-		//
-		// 				return true;
-		// 			}
-		//
-		// 			case 'remove': {
-		// 				if ( !diffItem.attributes.has( 'listItem' ) ) {
-		// 					return false;
-		// 				}
-		//
-		// 				// TODO this is the case that can't be handled by the declarative triggerBy
-		// 				//  maybe removing node with watched attribute should trigger reconvert also in declarative API
-		// 				console.log( 'trigger - remove at', diffItem.position.path );
-		//
-		// 				return true;
-		// 			}
-		// 		}
-		//
-		// 		return false;
-		// 	},
-		// 	model: element => {
-		// 		const consumables = [];
-		//
-		// 		addConsumable( element, consumables );
-		//
-		// 		let node;
-		// 		let startElement = element;
-		// 		let endElement = element;
-		//
-		// 		while ( ( node = element.previousSibling ) && isListItem( node ) ) {
-		// 			startElement = node;
-		// 			addConsumable( node, consumables );
-		// 		}
-		//
-		// 		while ( ( node = endElement.nextSibling ) && isListItem( node ) ) {
-		// 			endElement = node;
-		// 			addConsumable( node, consumables );
-		// 		}
-		//
-		// 		const range = editor.model.createRange(
-		// 			editor.model.createPositionBefore( startElement ),
-		// 			editor.model.createPositionAfter( endElement )
-		// 		);
-		//
-		// 		console.log( 'conversion range', range.start.path, '-', range.end.path );
-		//
-		// 		return {
-		// 			range,
-		// 			consumables
-		// 		};
-		//
-		// 		function addConsumable( node, consumables ) {
-		// 			for ( const attribute of [ 'listItem', 'listType', 'listIndent' ] ) {
-		// 				if ( node.hasAttribute( attribute ) ) {
-		// 					consumables.push( [ node, `attribute:${ attribute }` ] );
-		// 				}
-		// 			}
-		// 		}
-		// 	},
-		// 	view: ( range, { writer, slotFor } ) => {
-		// 		const modelElements = Array.from( range.getItems( { shallow: true } ) );
-		//
-		// 		if ( !modelElements.length ) {
-		// 			return null;
-		// 		}
-		//
-		// 		console.log( 'creating view' );
-		//
-		// 		const viewLists = [];
-		// 		const listType = modelElements[ 0 ].getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-		//
-		// 		let viewList = writer.createContainerElement( listType );
-		//
-		// 		viewLists.push( viewList );
-		//
-		// 		// let previousItem = null;
-		//
-		// 		for ( const modelItem of modelElements ) {
-		// 			if ( isListItem( modelItem ) ) {
-		// 				const viewItem = createViewListItemElement( writer );
-		//
-		// 				writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-		// 				writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
-		// 			} else {
-		// 				// Some other element that lost it's list item properties.
-		// 				viewList = writer.createContainerElement( listType );
-		//
-		// 				viewLists.push( viewList );
-		//
-		// 				writer.insert( writer.createPositionAt( viewList, 'end' ), slotFor( modelItem, 'self' ) );
-		// 			}
-		//
-		// 			// const itemModelPosition = editor.model.createPositionBefore( modelItem );
-		// 			//
-		// 			// // Don't insert ol/ul or li if this is a continuation of some other list item.
-		// 			// const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
-		// 			//
-		// 			// console.log( 'converting', modelItem ); // eslint-disable-line
-		// 			//
-		// 			// consumable.consume( modelItem, 'attribute:listItem' );
-		// 			// consumable.consume( modelItem, 'attribute:listType' );
-		// 			// consumable.consume( modelItem, 'attribute:listIndent' );
-		// 			//
-		// 			// if ( isFirstInListItem ) {
-		// 			// 	console.log( 'create list item' ); // eslint-disable-line
-		// 			// 	let viewList;
-		// 			//
-		// 			// 	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-		// 			// 	const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
-		// 			//
-		// 			// 	// First element of the top level list.
-		// 			// 	if (
-		// 			// 		!previousIsListItem ||
-		// 			// 		modelItem.getAttribute( 'listIndent' ) == 0 &&
-		// 			// 		previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
-		// 			// 	) {
-		// 			// 		viewList = writer.createContainerElement( listType );
-		// 			// 		writer.insert( mapper.toViewPosition( itemModelPosition ), viewList );
-		// 			// 	}
-		// 			//
-		// 			// 	// Deeper nested list.
-		// 			// 	else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
-		// 			// 		const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
-		// 			//
-		// 			// 		viewList = writer.createContainerElement( listType );
-		// 			// 		writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
-		// 			// 	}
-		// 			//
-		// 			// 	// Same or shallower level.
-		// 			// 	else {
-		// 			// 		viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
-		// 			//
-		// 			// 		for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
-		// 			// 			viewList = viewList.findAncestor( isList );
-		// 			// 		}
-		// 			// 	}
-		// 			//
-		// 			// 	// Inserting the li.
-		// 			// 	const viewItem = createViewListItemElement( writer );
-		// 			//
-		// 			// 	writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-		// 			// 	mapper.bindElements( modelItem, viewList );
-		// 			// 	mapper.bindElements( modelItem, viewItem );
-		// 			//
-		// 			// 	writer.insert( writer.createPositionAt( viewItem, 0 ), slotFor( modelItem, 'self' ) );
-		// 			// } else {
-		// 			// 	writer.insert( mapper.toViewPosition( itemModelPosition ), slotFor( modelItem, 'self' ) );
-		// 			// }
-		// 			//
-		// 			// previousItem = modelItem;
-		// 		}
-		//
-		// 		// TODO should this return a fragment that would consist multiple lists (with slots for elements between lists)?
-		// 		//  but how should the mapping be handled then?
-		// 		return viewList;
-		// 		// return writer.createDocumentFragment( viewLists );
-		// 	}
-		// } );
-
-		// editor.conversion.for( 'downcast' ).add( dispatcher => {
-		// 	dispatcher.on( 'insert', ( evt, data, { consumable, writer, mapper } ) => {
-		// 		if (
-		// 			!consumable.test( data.item, 'attribute:listItem' ) ||
-		// 			!consumable.test( data.item, 'attribute:listType' ) ||
-		// 			!consumable.test( data.item, 'attribute:listIndent' )
-		// 		) {
-		// 			return;
-		// 		}
-		//
-		// 		const modelItem = data.item;
-		// 		const previousItem = modelItem.previousSibling;
-		//
-		// 		// Don't insert ol/ul or li if this is a continuation of some other list item.
-		// 		const isFirstInListItem = !findFirstSameListItemEntry( modelItem );
-		//
-		// 		console.log( 'converting', modelItem ); // eslint-disable-line
-		//
-		// 		consumable.consume( modelItem, 'attribute:listItem' );
-		// 		consumable.consume( modelItem, 'attribute:listType' );
-		// 		consumable.consume( modelItem, 'attribute:listIndent' );
-		//
-		// 		let contentViewPosition;
-		//
-		// 		// Get the previously converted list item content element.
-		// 		const viewChildContent = mapper.toViewElement( modelItem );
-		//
-		// 		if ( isFirstInListItem ) {
-		// 			console.log( 'create list item' ); // eslint-disable-line
-		// 			let viewList;
-		//
-		// 			const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
-		// 			const previousIsListItem = previousItem && previousItem.is( 'element' ) && previousItem.hasAttribute( 'listItem' );
-		//
-		// 			// First element of the top level list.
-		// 			if (
-		// 				!previousIsListItem ||
-		// 				modelItem.getAttribute( 'listIndent' ) == 0 &&
-		// 				previousItem.getAttribute( 'listType' ) != modelItem.getAttribute( 'listType' )
-		// 			) {
-		// 				viewList = writer.createContainerElement( listType );
-		// 				writer.insert( mapper.toViewPosition( data.range.start ), viewList );
-		// 			}
-		//
-		// 			// Deeper nested list.
-		// 			else if ( previousItem.getAttribute( 'listIndent' ) < modelItem.getAttribute( 'listIndent' ) ) {
-		// 				const viewListItem = editing.mapper.toViewElement( previousItem ).findAncestor( 'li' );
-		//
-		// 				viewList = writer.createContainerElement( listType );
-		// 				writer.insert( view.createPositionAt( viewListItem, 'end' ), viewList );
-		// 			}
-		//
-		// 			// Same or shallower level.
-		// 			else {
-		// 				viewList = editing.mapper.toViewElement( previousItem ).findAncestor( isList );
-		//
-		// 				for ( let i = 0; i < previousItem.getAttribute( 'listIndent' ) - modelItem.getAttribute( 'listIndent' ); i++ ) {
-		// 					viewList = viewList.findAncestor( isList );
-		// 				}
-		// 			}
-		//
-		// 			// Inserting the li.
-		// 			const viewItem = createViewListItemElement( writer );
-		//
-		// 			writer.insert( writer.createPositionAt( viewList, 'end' ), viewItem );
-		// 			mapper.bindElements( modelItem, viewList );
-		// 			mapper.bindElements( modelItem, viewItem );
-		//
-		// 			contentViewPosition = writer.createPositionAt( viewItem, 0 );
-		// 		} else {
-		// 			contentViewPosition = mapper.toViewPosition( data.range.start );
-		// 		}
-		//
-		// 		// The content of this list item was already converted before so just insert it into the new list item.
-		// 		if ( viewChildContent ) {
-		// 			writer.insert( contentViewPosition, viewChildContent );
-		// 			mapper.bindElements( modelItem, viewChildContent );
-		//
-		// 			evt.stop();
-		// 		}
-		//
-		// 		// Let the list item content get converted.
-		// 	}, { priority: 'high' } );
-		// } );
 
 		// editor.conversion.for( 'editingDowncast' )
 		// 	.add( dispatcher => {
@@ -784,136 +578,6 @@ function isListItem( node ) {
  *			* start/end of list - find range from current element
  *			* inside list - find range from current element
  */
-function getListChangeAnchorElements( change ) {
-	if ( change.name == '$text' ) {
-		return null;
-	}
-
-	switch ( change.type ) {
-		case 'attribute': {
-			if ( ![ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
-				return null;
-			}
-
-			// Attribute was set.
-			if ( !change.attributeOldValue ) {
-				return [ change.range.start.nodeAfter ];
-			}
-
-			// Attribute was removed.
-			if ( !change.attributeNewValue ) {
-				const result = [];
-
-				// Check nodes before and after the removed attribute range.
-				const nodeBefore = change.range.start.nodeBefore;
-				const nodeAfter = change.range.end.nodeAfter;
-
-				if ( nodeBefore && nodeBefore.hasAttribute( 'listItem' ) ) {
-					result.push( nodeBefore );
-				}
-
-				if ( nodeAfter && nodeAfter.hasAttribute( 'listItem' ) ) {
-					result.push( nodeAfter );
-				}
-
-				// TODO what if attributes on a whole list are removed?
-
-				return result.length ? result : null;
-			}
-
-			return null;
-		}
-
-		case 'insert': {
-			const node = change.position.nodeAfter;
-
-			// New element with an attribute.
-			if ( node.hasAttribute( 'listItem' ) ) {
-				return [ node ];
-			}
-
-			// New element without an attribute - list splitting.
-
-			const result = [];
-
-			// Check elements before and after inserted element.
-			const previousSibling = node.previousSibling;
-			const nextSibling = node.nextSibling;
-
-			if ( previousSibling && previousSibling.hasAttribute( 'listItem' ) ) {
-				result.push( previousSibling );
-			}
-
-			if ( nextSibling && nextSibling.hasAttribute( 'listItem' ) ) {
-				result.push( nextSibling );
-			}
-
-			return result.length ? result : null;
-		}
-
-		case 'remove': {
-			const result = [];
-
-			// Doesn't matter if it had an attribute - this could trigger a list merge.
-			// Check elements around the deletion position.
-			const nodeBefore = change.position.nodeBefore;
-			const nodeAfter = change.position.nodeAfter;
-
-			if ( nodeBefore && nodeBefore.hasAttribute( 'listItem' ) ) {
-				result.push( nodeBefore );
-			}
-
-			if ( nodeAfter && nodeAfter.hasAttribute( 'listItem' ) ) {
-				result.push( nodeAfter );
-			}
-
-			// TODO what if the whole list is removed?
-
-			return result.length ? result : null;
-		}
-	}
-
-	return null;
-}
-
-function findListConversionRangeAndConsumables( element, editor ) {
-	const consumables = [];
-	addConsumable( element, consumables );
-
-	let node;
-	let startElement = element;
-	let endElement = element;
-
-	while ( ( node = startElement.previousSibling ) && isListItem( node ) ) {
-		startElement = node;
-		addConsumable( node, consumables );
-	}
-
-	while ( ( node = endElement.nextSibling ) && isListItem( node ) ) {
-		endElement = node;
-		addConsumable( node, consumables );
-	}
-
-	const range = editor.model.createRange(
-		editor.model.createPositionBefore( startElement ),
-		editor.model.createPositionAfter( endElement )
-	);
-
-	console.log( 'conversion range', range.start.path, '-', range.end.path );
-
-	return {
-		range,
-		consumables
-	};
-
-	function addConsumable( node, consumables ) {
-		for ( const attribute of [ 'listItem', 'listType', 'listIndent' ] ) {
-			if ( node.hasAttribute( attribute ) ) {
-				consumables.push( [ node, `attribute:${ attribute }` ] );
-			}
-		}
-	}
-}
 
 function buildViewForRange( range, writer, slotFor ) {
 	const modelElements = Array.from( range.getItems( { shallow: true } ) );
