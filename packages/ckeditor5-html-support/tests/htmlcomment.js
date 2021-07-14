@@ -121,8 +121,11 @@ describe( 'HtmlComment', () => {
 
 			const paragraph = root.getChild( 0 );
 
-			addComment( '$comment:1', ' comment 1 ', paragraph, 1 );
-			addComment( '$comment:2', ' comment 2 ', paragraph, 2 );
+			addMarker( '$comment:1', paragraph, 1 );
+			root._setAttribute( '$comment:1', ' comment 1 ' );
+
+			addMarker( '$comment:2', paragraph, 2 );
+			root._setAttribute( '$comment:2', ' comment 2 ' );
 
 			expect( editor.getData() ).to.equal( '<p>F<!-- comment 1 -->o<!-- comment 2 -->o</p>' );
 		} );
@@ -130,8 +133,11 @@ describe( 'HtmlComment', () => {
 		it( 'should convert each $comment marker located at $root\'s boundary to a comment node', () => {
 			editor.setData( '<p>Foo</p>' );
 
-			addComment( '$comment:1', ' comment 1 ', root, 0 );
-			addComment( '$comment:2', ' comment 2 ', root, 1 );
+			addMarker( '$comment:1', root, 0 );
+			root._setAttribute( '$comment:1', ' comment 1 ' );
+
+			addMarker( '$comment:2', root, 1 );
+			root._setAttribute( '$comment:2', ' comment 2 ' );
 
 			expect( editor.getData() ).to.equal( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
 		} );
@@ -141,8 +147,11 @@ describe( 'HtmlComment', () => {
 
 			const paragraph = root.getNodeByPath( [ 0, 0, 0, 0 ] );
 
-			addComment( '$comment:1', ' comment 1 ', paragraph, 1 );
-			addComment( '$comment:2', ' comment 2 ', paragraph, 2 );
+			addMarker( '$comment:1', paragraph, 1 );
+			root._setAttribute( '$comment:1', ' comment 1 ' );
+
+			addMarker( '$comment:2', paragraph, 2 );
+			root._setAttribute( '$comment:2', ' comment 2 ' );
 
 			expect( editor.getData() ).to.equal( '<div><div><div><p>F<!-- comment 1 -->o<!-- comment 2 -->o</p></div></div></div>' );
 		} );
@@ -213,38 +222,7 @@ describe( 'HtmlComment', () => {
 		} );
 	} );
 
-	describe( '_getCommentContent()', () => {
-		it( 'should return comment\'s content associated with a marker', () => {
-			root._setAttribute( '$comment:1', ' comment 1 ' );
-			root._setAttribute( '$comment:2', ' comment 2 ' );
-
-			const htmlCommentPlugin = editor.plugins.get( 'HtmlComment' );
-
-			expect( htmlCommentPlugin._getCommentContent( '$comment:1' ) ).to.equal( ' comment 1 ' );
-			expect( htmlCommentPlugin._getCommentContent( '$comment:2' ) ).to.equal( ' comment 2 ' );
-		} );
-
-		it( 'should return undefined, if there is no $root attribute associated with a marker', () => {
-			const htmlCommentPlugin = editor.plugins.get( 'HtmlComment' );
-
-			expect( htmlCommentPlugin._getCommentContent( '$comment:1' ) ).to.be.undefined;
-			expect( htmlCommentPlugin._getCommentContent( '$comment:2' ) ).to.be.undefined;
-		} );
-	} );
-
-	describe( '_setCommentContent()', () => {
-		it( 'should store comment\'s content in a $root attribute', () => {
-			const htmlCommentPlugin = editor.plugins.get( 'HtmlComment' );
-
-			htmlCommentPlugin._setCommentContent( '$comment:1', ' comment 1 ' );
-			htmlCommentPlugin._setCommentContent( '$comment:2', ' comment 2 ' );
-
-			expect( root.getAttribute( '$comment:1' ) ).to.equal( ' comment 1 ' );
-			expect( root.getAttribute( '$comment:2' ) ).to.equal( ' comment 2 ' );
-		} );
-	} );
-
-	function addComment( name, content, element, offset ) {
+	function addMarker( name, element, offset ) {
 		model.change( writer => {
 			writer.addMarker( name, {
 				usingOperation: true,
@@ -253,8 +231,6 @@ describe( 'HtmlComment', () => {
 					writer.createPositionAt( element, offset )
 				)
 			} );
-
-			writer.setAttribute( name, content, root );
 		} );
 	}
 } );
