@@ -10,28 +10,28 @@ modified_at: 2021-06-25
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
-<!-- For the entire list of the changes introduced in version 29.0.0 of the CKEditor 5 see the changelog (TODO:link). -->
+For the entire list of changes introduced in version 29.0.0, see the [changelog for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2900-2021-07-05).
 
 To get to know the new editor UI for the image features, visit the {@link features/images-overview image feature guide}, especially:
-* {@link features/images-styles#semantical-styles Images in the structured content }
+* {@link features/images-styles#semantical-styles Images in the structured content}
 * {@link features/images-styles#presentational-styles Images in the document-like content}
 
 ## Inline images
 
-Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins - {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
-* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting an inline `<img>` tag nested in text (e.g. inside a paragraph).
+Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins: {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
+* The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting the inline `<img>` tag nested in text (e.g. inside a paragraph).
 * The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it ues the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
-**Note:** It is possible to load only one of these plugins, but only when {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source building the editor from source}.
+	**Note:** It is possible to load only one of these plugins, but only when {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source building the editor from source}.
 </info-box>
 
 ## Image caption
 
-An image caption is no longer automatically showed up when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link builds/guides/overview#available-builds predefined editor builds}.
+An image caption is no longer automatically shown when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link builds/guides/overview#available-builds predefined editor builds}.
 
 <info-box>
-To provide a valid data output, captions can be added to block images only. Adding a caption to an inline image will automatically convert it to the block image (which can be undone by the user).
+	To provide a valid data output, captions can be added to block images only. Adding a caption to an inline image will automatically convert it to a block image (which can be undone by the user).
 </info-box>
 
 ## Image styles
@@ -41,10 +41,10 @@ Since the appearance of the image in the document depends on the image type (blo
 * {@link module:image/image~ImageConfig#styles A new set of buttons} is available to manage the image type and appearance.
 
 * There is a possibility to group the buttons provided by the {@link module:image/imagestyle~ImageStyle} plugin into dropdowns.
-	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default drop-downs} are provided.
-	* In the editor configuration, {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition a custom drop-down} can be declared.
+	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default dropdowns} are provided.
+	* In the editor configuration, {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition a custom dropdown} can be declared.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link builds/guides/integration/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying an existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link builds/guides/integration/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying the existing image style}.
 
 * The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/image~ImageConfig#styles `image.styles` configuration}.
 
@@ -102,11 +102,11 @@ Since the appearance of the image in the document depends on the image type (blo
 	} );
 	```
 
-* Several changes has been also made to the {@link module:image/imagestyle~ImageStyle} plugin API:
-	* In the {@link module:image/imagestyle/utils image style utils} module:
-		* the `defaultIcons` were renamed to {@link module:image/imagestyle/utils~DEFAULT_ICONS},
-		* the `defaultStyles` were renamed to {@link module:image/imagestyle/utils~DEFAULT_OPTIONS},
-		* the `normalizeImageStyles()` function was removed from the public API.
+* Several changes have been also made to the {@link module:image/imagestyle~ImageStyle} plugin API:
+	* In the {@link module:image/imagestyle/utils image style utilities} module:
+		* The `defaultIcons` were renamed to {@link module:image/imagestyle/utils~DEFAULT_ICONS}.
+		* The `defaultStyles` were renamed to {@link module:image/imagestyle/utils~DEFAULT_OPTIONS}.
+		* The `normalizeImageStyles()` function was removed from the public API.
 	* The `ImageStyleCommand#defaultStyle` and `ImageStyleCommand#styles` were removed from the public API.
 
 ## Image toolbar
@@ -150,9 +150,9 @@ We recommended one of the following configurations as the minimum set-up for the
 			toolbar: [
 				'toggleImageCaption',
 				'imageStyle:inline',
-				// A drop-down containing `alignLeft` and `alignRight` options
+				// A dropdown containing `alignLeft` and `alignRight` options.
 				'imageStyle:wrapText',
-				// A drop-down containing `alignBlockLeft`, `block` (default) and  `alignBlockRight` options
+				// A dropdown containing `alignBlockLeft`, `block` (default) and  `alignBlockRight` options.
 				'imageStyle:breakText'
 			]
 		}
@@ -165,9 +165,9 @@ See the {@link features/images-overview#image-contextual-toolbar image feature g
 
 Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text will no longer split it if the {@link module:image/imageinline~ImageInline} plugin is loaded (default). If you prefer the old behavior in your integration, this can be specified in the {@link module:image/imageinsert~ImageInsertConfig `ImageInsert` plugin configuration}.
 
-## Image utils
+## Image utilities
 
-* The image utils are now wrapped by the {@link module:image/imageutils~ImageUtils} plugin.
+* The image utilities are now wrapped by the {@link module:image/imageutils~ImageUtils} plugin.
 
 	```js
 	// Before v29.0.0
@@ -189,10 +189,10 @@ Since v29.0.0 inserting (also: pasting, dropping) an image in the middle of text
 	}
 	```
 
-* The {@link module:image/imageutils~ImageUtils#insertImage `insertImage()`} function
-	* no longer requires the `model` model instance to run,
-	* allows {@link module:engine/model/selection~Selectable} as a second argument (previously only {@link module:engine/model/position~Position} was accepted),
-	* supports the optional `imageType` argument to force a type of the image to be inserted.
+* The {@link module:image/imageutils~ImageUtils#insertImage `insertImage()`} function:
+	* No longer requires the `model` model instance to run.
+	* Allows {@link module:engine/model/selection~Selectable} as a second argument (previously only {@link module:engine/model/position~Position} was accepted).
+	* Supports the optional `imageType` argument to force the type of the image to be inserted.
 
 	```js
 	// Before v29.0.0
