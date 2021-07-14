@@ -35,12 +35,11 @@ export default class HtmlComment extends Plugin {
 		// attribute. The comment content is needed in the `dataDowncast` pipeline to re-create the comment node.
 		editor.conversion.for( 'upcast' ).elementToMarker( {
 			view: '$comment',
-			model: ( viewElement, { writer } ) => {
-				const root = editor.model.document.getRoot();
+			model: viewElement => {
 				const markerName = `$comment:${ uid() }`;
 				const commentContent = viewElement.getCustomProperty( '$rawContent' );
 
-				writer.setAttribute( markerName, commentContent, root );
+				this._setCommentContent( markerName, commentContent );
 
 				return markerName;
 			}
@@ -50,10 +49,8 @@ export default class HtmlComment extends Plugin {
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
 			model: '$comment',
 			view: ( modelElement, { writer } ) => {
-				const root = editor.model.document.getRoot();
 				const markerName = modelElement.markerName;
-				const commentContent = root.getAttribute( markerName );
-
+				const commentContent = this._getCommentContent( markerName );
 				const comment = writer.createUIElement( '$comment' );
 
 				writer.setCustomProperty( '$rawContent', commentContent, comment );
@@ -89,5 +86,32 @@ export default class HtmlComment extends Plugin {
 
 			return true;
 		} );
+	}
+
+	/**
+	 * Gets the content of the comment, associated with the given marker name, from the $root attribute. If there is no attribute with
+	 * provided marker name, returns undefined.
+	 *
+	 * @private
+	 * @param {String} markerName Marker name associated with the comment node.
+	 * @returns {String|undefined}
+	 */
+	_getCommentContent( markerName ) {
+		const root = this.editor.model.document.getRoot();
+
+		return root.getAttribute( markerName );
+	}
+
+	/**
+	 * Sets the content of the comment, associated with the given marker name, in the $root attribute.
+	 *
+	 * @private
+	 * @param {String} markerName Marker name associated with the comment node.
+	 * @param {String} commentContent The comment content.
+	 */
+	_setCommentContent( markerName, commentContent ) {
+		const root = this.editor.model.document.getRoot();
+
+		root._setAttribute( markerName, commentContent );
 	}
 }

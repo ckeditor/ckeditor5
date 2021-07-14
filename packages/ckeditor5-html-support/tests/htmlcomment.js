@@ -35,12 +35,8 @@ describe( 'HtmlComment', () => {
 		return editor.destroy();
 	} );
 
-	it( 'should be named', () => {
-		expect( HtmlComment.pluginName ).to.equal( 'HtmlComment' );
-	} );
-
-	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HtmlComment ) ).to.be.instanceOf( HtmlComment );
+	it( 'should be loadable using its plugin name', () => {
+		expect( editor.plugins.get( 'HtmlComment' ) ).to.be.instanceOf( HtmlComment );
 	} );
 
 	describe( 'upcast conversion', () => {
@@ -56,6 +52,20 @@ describe( 'HtmlComment', () => {
 
 			expect( markers[ 1 ].getStart().path ).to.deep.equal( [ 0, 3 ] );
 			expect( markers[ 1 ].getEnd().path ).to.deep.equal( [ 0, 3 ] );
+		} );
+
+		it( 'should convert each comment node located at $root\'s boundary to a collapsed marker', () => {
+			editor.setData( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
+
+			const markers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			expect( markers ).to.have.length( 2 );
+
+			expect( markers[ 0 ].getStart().path ).to.deep.equal( [ 0 ] );
+			expect( markers[ 0 ].getEnd().path ).to.deep.equal( [ 0 ] );
+
+			expect( markers[ 1 ].getStart().path ).to.deep.equal( [ 1 ] );
+			expect( markers[ 1 ].getEnd().path ).to.deep.equal( [ 1 ] );
 		} );
 
 		it( 'should convert each comment node from a nested tree to a collapsed marker', () => {
@@ -111,10 +121,19 @@ describe( 'HtmlComment', () => {
 
 			const paragraph = root.getChild( 0 );
 
-			addMarker( '$comment:1', ' comment 1 ', paragraph, 1 );
-			addMarker( '$comment:2', ' comment 2 ', paragraph, 2 );
+			addComment( '$comment:1', ' comment 1 ', paragraph, 1 );
+			addComment( '$comment:2', ' comment 2 ', paragraph, 2 );
 
 			expect( editor.getData() ).to.equal( '<p>F<!-- comment 1 -->o<!-- comment 2 -->o</p>' );
+		} );
+
+		it( 'should convert each $comment marker located at $root\'s boundary to a comment node', () => {
+			editor.setData( '<p>Foo</p>' );
+
+			addComment( '$comment:1', ' comment 1 ', root, 0 );
+			addComment( '$comment:2', ' comment 2 ', root, 1 );
+
+			expect( editor.getData() ).to.equal( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
 		} );
 
 		it( 'should convert each $comment marker to a comment node inside a nested tree', () => {
@@ -122,20 +141,22 @@ describe( 'HtmlComment', () => {
 
 			const paragraph = root.getNodeByPath( [ 0, 0, 0, 0 ] );
 
-			addMarker( '$comment:1', ' comment 1 ', paragraph, 1 );
-			addMarker( '$comment:2', ' comment 2 ', paragraph, 2 );
+			addComment( '$comment:1', ' comment 1 ', paragraph, 1 );
+			addComment( '$comment:2', ' comment 2 ', paragraph, 2 );
 
 			expect( editor.getData() ).to.equal( '<div><div><div><p>F<!-- comment 1 -->o<!-- comment 2 -->o</p></div></div></div>' );
 		} );
 	} );
 
 	describe( 'marker removal post fixer', () => {
-		it( 'should remove all markers and corresponding $root attributes', () => {
+		it( 'should remove all markers and their corresponding $root attributes', () => {
 			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
 			} );
+
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
 
 			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
 
@@ -146,7 +167,31 @@ describe( 'HtmlComment', () => {
 			expect( markers ).to.have.length( 0 );
 		} );
 
-		it( 'should remove markers and corresponding $root attributes representing removed comments only', () => {
+		// Currently, this test fails. Removing all content from the editor does not remove markers located at $root's boundary.
+		// Since the markers survive, so do comments and their $root attributes.
+		// See https://github.com/ckeditor/ckeditor5/issues/10117.
+		it( 'should remove all markers located at $root\'s boundary and their corresponding $root attributes', () => {
+			editor.setData( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
+
+			model.change( writer => {
+				writer.remove( writer.createRangeIn( root ) );
+			} );
+
+			// Currently, the returned data is: <p>&nbsp;</p><!-- comment 2 --><!-- comment 1 -->
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+
+			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
+
+			// Currently, there are 2 $root attributes associated with markers.
+			expect( rootAttributes ).to.have.length( 0 );
+
+			const markers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			// Currently, there are 2 markers associated with comment nodes.
+			expect( markers ).to.have.length( 0 );
+		} );
+
+		it( 'should remove markers and their corresponding $root attributes representing removed comments only', () => {
 			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p><p><!-- comment 3 -->Foo<!-- comment 4 --></p>' );
 
 			model.change( writer => {
@@ -168,7 +213,38 @@ describe( 'HtmlComment', () => {
 		} );
 	} );
 
-	function addMarker( name, content, element, offset ) {
+	describe( '_getCommentContent()', () => {
+		it( 'should return comment\'s content associated with a marker', () => {
+			root._setAttribute( '$comment:1', ' comment 1 ' );
+			root._setAttribute( '$comment:2', ' comment 2 ' );
+
+			const htmlCommentPlugin = editor.plugins.get( 'HtmlComment' );
+
+			expect( htmlCommentPlugin._getCommentContent( '$comment:1' ) ).to.equal( ' comment 1 ' );
+			expect( htmlCommentPlugin._getCommentContent( '$comment:2' ) ).to.equal( ' comment 2 ' );
+		} );
+
+		it( 'should return undefined, if there is no $root attribute associated with a marker', () => {
+			const htmlCommentPlugin = editor.plugins.get( 'HtmlComment' );
+
+			expect( htmlCommentPlugin._getCommentContent( '$comment:1' ) ).to.be.undefined;
+			expect( htmlCommentPlugin._getCommentContent( '$comment:2' ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( '_setCommentContent()', () => {
+		it( 'should store comment\'s content in a $root attribute', () => {
+			const htmlCommentPlugin = editor.plugins.get( 'HtmlComment' );
+
+			htmlCommentPlugin._setCommentContent( '$comment:1', ' comment 1 ' );
+			htmlCommentPlugin._setCommentContent( '$comment:2', ' comment 2 ' );
+
+			expect( root.getAttribute( '$comment:1' ) ).to.equal( ' comment 1 ' );
+			expect( root.getAttribute( '$comment:2' ) ).to.equal( ' comment 2 ' );
+		} );
+	} );
+
+	function addComment( name, content, element, offset ) {
 		model.change( writer => {
 			writer.addMarker( name, {
 				usingOperation: true,
