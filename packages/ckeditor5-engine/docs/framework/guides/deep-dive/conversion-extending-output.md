@@ -64,9 +64,7 @@ ClassicEditor
 			decorators: {
 				addGreenLink: {
 					mode: 'automatic',
-					attributes: {
-						class: 'my-green-link'
-					}
+					classes: 'my-green-link'
 				}
 			}
 		}
@@ -227,9 +225,7 @@ ClassicEditor
 				markUnsafeLink: {
 					mode: 'automatic',
 					callback: url => /^(http:)?\/\//.test( url ),
-					attributes: {
-						class: 'unsafe-link'
-					}
+					classes: 'unsafe-link'
 				}
 			}
 		}
