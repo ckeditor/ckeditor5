@@ -78,10 +78,8 @@ export default class AutomaticDecorators {
 						viewWriter.addClass( item.classes, viewElement );
 					}
 
-					if ( item.styles ) {
-						for ( const key in item.styles ) {
-							viewWriter.setStyle( key, item.styles[ key ], viewElement );
-						}
+					for ( const key in item.styles ) {
+						viewWriter.setStyle( key, item.styles[ key ], viewElement );
 					}
 
 					viewWriter.setCustomProperty( 'link', true, viewElement );
