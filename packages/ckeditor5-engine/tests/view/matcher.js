@@ -166,6 +166,8 @@ describe( 'Matcher', () => {
 		} );
 
 		it( 'should match style and class attributes using "attributes: key->value" pattern', () => {
+			// Stub console, otherwise it will break test coverage.
+			sinon.stub( console, 'warn' );
 			const pattern = {
 				attributes: {
 					style: true,
