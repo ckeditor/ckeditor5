@@ -51,11 +51,11 @@ export default class DrupalImageEditing extends Plugin {
 			alignBlockRight: 'right'
 		};
 
-		// Conversion.
 		conversion.for( 'upcast' )
 			.add( viewImageToModelImage( editor ) );
 
 		conversion.for( 'dataDowncast' )
+			.add( viewCaptionToCaptionAttribute( editor ) )
 			.attributeToAttribute( {
 				model: 'dataEntityUuid',
 				view: 'data-entity-uuid'
@@ -72,6 +72,8 @@ export default class DrupalImageEditing extends Plugin {
 				} ),
 				converterPriority: 'high'
 			} )
+			// Flatten all image models to match Drupal's current <img> output.
+			// From CKE5 usual `<figure class="image"><img ...></figure>` to just `<img>`.
 			.elementToElement( {
 				model: 'imageBlock',
 				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
@@ -81,59 +83,6 @@ export default class DrupalImageEditing extends Plugin {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => createImageViewElement( writer ),
 				converterPriority: 'high'
-			} )
-			.add( dispatcher => {
-				dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
-					if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-						return;
-					}
-
-					const range = editor.model.createRangeIn( data.item );
-					const viewDocumentFragment = conversionApi.writer.createDocumentFragment();
-
-					// Bind caption model element to the detached view document fragment so all content of the caption
-					// will be downcasted into that document fragment.
-					conversionApi.mapper.bindElements( data.item, viewDocumentFragment );
-
-					for ( const { item } of range ) {
-						const data = {
-							item,
-							range: editor.model.createRangeOn( item )
-						};
-
-						// The following lines are extracted from DowncastDispatcher#_convertInsertWithAttributes().
-
-						const eventName = `insert:${ item.is( '$textProxy' ) ? '$text' : item.name }`;
-
-						editor.data.downcastDispatcher.fire( eventName, data, conversionApi );
-
-						for ( const key of item.getAttributeKeys() ) {
-							Object.assign( data, {
-								attributeKey: key,
-								attributeOldValue: null,
-								attributeNewValue: data.item.getAttribute( key )
-							} );
-
-							editor.data.downcastDispatcher.fire( `attribute:${ key }`, data, conversionApi );
-						}
-					}
-
-					// Unbind all the view elements that were downcasted to the document fragment.
-					for ( const child of conversionApi.writer.createRangeIn( viewDocumentFragment ).getItems() ) {
-						conversionApi.mapper.unbindViewElement( child );
-					}
-
-					conversionApi.mapper.unbindViewElement( viewDocumentFragment );
-
-					// Stringify view document fragment to HTML string.
-					const captionText = editor.data.processor.toData( viewDocumentFragment );
-
-					if ( captionText ) {
-						const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
-
-						conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
-					}
-				}, { priority: 'high' } );
 			} );
 
 		// Set the default handler for feeding the image element with `src` and `srcset` attributes.
@@ -146,11 +95,13 @@ export default class DrupalImageEditing extends Plugin {
 					writer.setAttribute( 'dataEntityUuid', data.uuid, imageElement );
 					writer.setAttribute( 'dataEntityType', data.entity_type, imageElement );
 				} );
-			}, { priority: 'high' } );
+			},
+			{ priority: 'high' } );
 		}
 	}
 }
 
+// Upcast entire `<img>` with all custom attributes in one go.
 function viewImageToModelImage( editor ) {
 	return dispatcher => {
 		dispatcher.on( 'element:img', converter, { priority: 'high' } );
@@ -256,4 +207,64 @@ function viewImageToModelImage( editor ) {
 
 function createImageViewElement( writer ) {
 	return writer.createEmptyElement( 'img' );
+}
+
+// Downcast `caption` model to `data-caption` attribute with its content downcasted to plain HTML.
+// For now to achieve that we have to manually repeat work done in the DowncastDispatcher's private methods.
+function viewCaptionToCaptionAttribute( editor ) {
+	return dispatcher => {
+		dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+			if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+				return;
+			}
+
+			const range = editor.model.createRangeIn( data.item );
+			const viewDocumentFragment = conversionApi.writer.createDocumentFragment();
+
+			// Bind caption model element to the detached view document fragment so all content of the caption
+			// will be downcasted into that document fragment.
+			conversionApi.mapper.bindElements( data.item, viewDocumentFragment );
+
+			for ( const { item } of range ) {
+				const data = {
+					item,
+					range: editor.model.createRangeOn( item )
+				};
+
+				// The following lines are extracted from DowncastDispatcher#_convertInsertWithAttributes().
+
+				const eventName = `insert:${ item.is( '$textProxy' ) ? '$text' : item.name }`;
+
+				editor.data.downcastDispatcher.fire( eventName, data, conversionApi );
+
+				for ( const key of item.getAttributeKeys() ) {
+					Object.assign( data, {
+						attributeKey: key,
+						attributeOldValue: null,
+						attributeNewValue: data.item.getAttribute( key )
+					} );
+
+					editor.data.downcastDispatcher.fire( `attribute:${ key }`, data, conversionApi );
+				}
+			}
+
+			// Unbind all the view elements that were downcasted to the document fragment.
+			for ( const child of conversionApi.writer.createRangeIn( viewDocumentFragment ).getItems() ) {
+				conversionApi.mapper.unbindViewElement( child );
+			}
+
+			conversionApi.mapper.unbindViewElement( viewDocumentFragment );
+
+			// Stringify view document fragment to HTML string.
+			const captionText = editor.data.processor.toData( viewDocumentFragment );
+
+			if ( captionText ) {
+				const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
+
+				conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
+			}
+		},
+		// Override default caption converter.
+		{ priority: 'high' } );
+	};
 }
