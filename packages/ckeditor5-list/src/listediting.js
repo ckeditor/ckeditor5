@@ -135,8 +135,9 @@ export default class ListEditing extends Plugin {
 				const changes = [];
 
 				for ( const change of data.changes ) {
-					// TEMP
-					changes.push( change );
+					let createdList = null;
+					let changedList = null;
+					let removedList = null;
 
 					if ( change.type == 'insert' ) {
 						const insertionRange = editor.model.createRange( change.position, change.position.getShiftedBy( change.length ) );
@@ -158,33 +159,17 @@ export default class ListEditing extends Plugin {
 								if ( element.hasAttribute( 'listItem' ) ) {
 									const [ newRange ] = list.range._getTransformedByInsertion( position, length );
 
-									if ( list.range.start.isEqual( position ) ) {
-										const range = editor.model.createRange( position, newRange.end );
-
-										// @if CK_DEBUG // console.log( '-- list grow at start',
-										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
-
-										list.range = range;
-										wasHandled = true;
-									} else if ( list.range.end.isEqual( position ) ) {
-										const range = editor.model.createRange( newRange.start, position.getShiftedBy( length ) );
-
-										// @if CK_DEBUG // console.log( '-- list grow at end',
-										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
-
-										list.range = range;
-										wasHandled = true;
-									} else if ( list.range.containsPosition( position ) ) {
+									if ( list.range.containsPosition( position ) ) {
 										// @if CK_DEBUG // console.log( '-- list grow inside',
 										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
 										// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
 										list.range = newRange;
 										wasHandled = true;
-									} else {
-										// @if CK_DEBUG // console.log( '-- ????',
+
+										changedList = list;
+									} else if ( !newRange.isEqual( list.range ) ) {
+										// @if CK_DEBUG // console.log( '-- list move',
 										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
 										// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
@@ -201,7 +186,8 @@ export default class ListEditing extends Plugin {
 										// @if CK_DEBUG // 		'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
 
 										list.range = newRanges[ 0 ];
-										this._lists.push( { range: newRanges[ 1 ] } );
+										changedList = list;
+										createdList = { range: newRanges[ 1 ] };
 									} else if ( !newRanges[ 0 ].isEqual( list.range ) ) {
 										// @if CK_DEBUG // console.log( '-- list move',
 										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
@@ -217,7 +203,7 @@ export default class ListEditing extends Plugin {
 
 								// @if CK_DEBUG // console.log( '-- new list item', range.start.path + '-' + range.end.path );
 
-								this._lists.push( { range } );
+								createdList = { range };
 							}
 						}
 					}
@@ -231,7 +217,7 @@ export default class ListEditing extends Plugin {
 							if ( !newRange || newRange.isCollapsed ) {
 								// @if CK_DEBUG // console.log( '-- list removed', list.range.start.path + '-' + list.range.end.path );
 
-								this._lists.splice( i--, 1 );
+								removedList = list;
 
 								continue;
 							}
@@ -246,6 +232,7 @@ export default class ListEditing extends Plugin {
 								// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
 								list.range = newRange;
+								changedList = list;
 							} else {
 								// @if CK_DEBUG // console.log( '-- list move',
 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
@@ -272,28 +259,11 @@ export default class ListEditing extends Plugin {
 
 								// Attribute was set.
 								if ( change.attributeOldValue === null ) {
-									if ( list.range.start.isEqual( changedRange.end ) ) {
-										const range = editor.model.createRange( changedRange.start, list.range.end );
-
-										// @if CK_DEBUG // console.log( '-- list grow at start',
-										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
-
-										list.range = range;
-										wasHandled = true;
-									} else if ( list.range.end.isEqual( changedRange.start ) ) {
-										const range = editor.model.createRange( list.range.start, changedRange.end );
-
-										// @if CK_DEBUG // console.log( '-- list grow at end',
-										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-										// @if CK_DEBUG // 		'to', range.start.path + '-' + range.end.path );
-
-										list.range = range;
-										wasHandled = true;
-									} else if ( list.range.isIntersecting( changedRange ) ) {
+									if ( list.range.isIntersecting( changedRange ) ) {
 										// @if CK_DEBUG // console.log( '-- list added secondary attribute',
 										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
 										wasHandled = true;
+										changedList = list;
 									}
 								}
 
@@ -313,18 +283,20 @@ export default class ListEditing extends Plugin {
 										// @if CK_DEBUG // 		'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
 
 										list.range = newRanges[ 0 ];
-										this._lists.push( { range: newRanges[ 1 ] } );
+										changedList = list;
+										createdList = { range: newRanges[ 1 ] };
 									} else if ( newRanges.length ) {
 										// @if CK_DEBUG // console.log( '-- list shrink',
 										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
 										// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
 
 										list.range = newRanges[ 0 ];
+										changedList = list;
 									} else {
 										// @if CK_DEBUG // console.log( '-- list removed',
 										// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
 
-										this._lists.splice( i--, 1 );
+										removedList = list;
 									}
 								}
 
@@ -332,6 +304,8 @@ export default class ListEditing extends Plugin {
 								else if ( change.range.isIntersecting( list.range ) ) {
 									// @if CK_DEBUG // console.log( '-- list attr change',
 									// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
+
+									changedList = list;
 								}
 							}
 
@@ -339,47 +313,68 @@ export default class ListEditing extends Plugin {
 							if ( !wasHandled && change.attributeOldValue === null ) {
 								// @if CK_DEBUG // console.log( '-- new list item', changedRange.start.path + '-' + changedRange.end.path );
 
-								this._lists.push( { range: changedRange } );
+								createdList = { range: changedRange };
 							}
 						}
 					}
 
-					// 	const position = change.position || change.range.start;
-					//
-					// 	const otherChange = changes.find( entry => (
-					// 		entry.type == 'range' &&
-					// 		entry.magicUid == magicUid &&
-					// 		entry.range.containsPosition( position ) &&
-					// 		entry.range.start.path.length == position.path.length
-					// 	) );
-					//
-					// 	// Range is already marked for reconversion, so skip this change.
-					// 	if ( otherChange ) {
-					// 		otherChange.related.push( change );
-					// 	} else {
-					// 		const changedElement = position.nodeAfter;
-					// 		const { range, consumables } = findListConversionRangeAndConsumables( changedElement, editor );
-					//
-					// 		// // TODO this should check if there is a multi-multi mapping for that range
-					// 		// if ( editor.editing.mapper.toViewElement( changedElement ) ) {
-					// 		// 	changes.push( {
-					// 		// 		type: 'remove',
-					// 		// 		position: range.start,
-					// 		// 		length: range.end.offset - range.start.offset
-					// 		// 	} );
-					// 		// }
-					//
-					// 		changes.push( {
-					// 			type: 'range',
-					// 			related: [ change ],
-					// 			magicUid,
-					// 			range,
-					// 			consumables
-					// 		} );
-					// 	}
-					// } else {
-					// 	changes.push( change );
-					// }
+					if ( !createdList && !changedList && !removedList ) {
+						changes.push( change );
+
+						continue;
+					}
+
+					if ( createdList ) {
+						this._lists.push( createdList );
+					}
+
+					if ( removedList ) {
+						this._lists.splice( this._lists.indexOf( removedList ), 1 );
+					}
+
+					this._lists.sort( ( a, b ) => a.range.start.isBefore( b.range.start ) ? -1 : 1 );
+
+					// TODO instead of push and join - find place and join or insert
+					for ( let i = 1; i < this._lists.length; i++ ) {
+						const previousItem = this._lists[ i - 1 ];
+						const currentItem = this._lists[ i ];
+
+						const joinedRange = previousItem.range.getJoined( currentItem.range );
+
+						if ( joinedRange ) {
+							previousItem.range = joinedRange;
+							this._lists.splice( i--, 1 );
+							createdList = null;
+							// changedList = previousItem;
+						}
+					}
+
+					const localChanges = [];
+
+					if ( removedList ) {
+						localChanges.push( [ 'removeRange', removedList ] );
+					}
+
+					if ( changedList ) {
+						localChanges.push( [ 'removeRange', changedList ] );
+						localChanges.push( [ 'insertRange', changedList ] );
+					}
+
+					if ( createdList ) {
+						localChanges.push( [ 'insertRange', createdList ] );
+					}
+
+					for ( const [ type, list ] of localChanges ) {
+						const otherChange = changes.find( entry => entry.type == type && entry.list === list );
+
+						if ( !otherChange ) {
+							changes.push( {
+								type,
+								list,
+								magicUid
+							} );
+						}
+					}
 				}
 
 				console.log( 'lists:', ...this._lists.map( ( { range } ) => range.start.path + '-' + range.end.path ) );
@@ -388,9 +383,26 @@ export default class ListEditing extends Plugin {
 			} );
 
 			dispatcher.on( `insertRange:${ magicUid }`, ( evt, data, conversionApi ) => {
-				insertSlotted( data, conversionApi, conversionApi => (
+				const viewElement = insertSlotted( data, conversionApi, conversionApi => (
 					buildViewForRange( data.range, conversionApi.writer, conversionApi.slotFor )
 				) );
+
+				data.list.view = viewElement;
+			} );
+
+			dispatcher.on( `removeRange:${ magicUid }`, ( evt, data, conversionApi ) => {
+				if ( !data.list.view ) {
+					return;
+				}
+
+				const removed = conversionApi.writer.remove( data.list.view );
+
+				// After the range is removed, unbind all view elements from the model.
+				// Range inside view document fragment is used to unbind deeply.
+				for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
+					// TODO should conversionApi.unbindViewElement() be called to collect all the mappings before real removal?
+					conversionApi.mapper.unbindViewElement( child );
+				}
 			} );
 		} );
 

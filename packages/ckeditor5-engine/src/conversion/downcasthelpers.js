@@ -1086,7 +1086,8 @@ export function insertSlotted( data, conversionApi, elementCreator ) {
 
 	// Scan for elements and it's current mapped view elements.
 	const elements = Array.from( data.range.getItems( { shallow: true } ) );
-	const consumables = data.consumables || elements.map( element => [ element, 'insert' ] );
+	// const consumables = data.consumables || elements.map( element => [ element, 'insert' ] );
+	const consumables = []; // TODO
 
 	// Verify if all consumables are available to be consumed.
 	for ( const [ item, eventName ] of consumables ) {
@@ -1219,6 +1220,8 @@ export function insertSlotted( data, conversionApi, elementCreator ) {
 			data.viewPosition = writer.createPositionBefore( elementSlots[ 0 ].slot );
 		}
 	}
+
+	return viewElement;
 }
 
 /**

@@ -152,7 +152,9 @@ export default class DowncastDispatcher {
 		//  - the non-list elements between/before/after list should be converted as normal insert
 		//  - keep mappings locally for removed view elements so they could be reused
 
-		// console.log( 'changes', changes );
+		if ( changes.length ) {
+			console.log( 'changes', changes );
+		}
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
@@ -162,9 +164,11 @@ export default class DowncastDispatcher {
 				this.convertRemove( entry.position, entry.length, entry.name, entry.element, writer );
 			} else if ( entry.type === 'reconvert' ) {
 				this.reconvertElement( entry.element, entry.related, writer );
-			} else if ( entry.type === 'range' ) {
-				this.convertRange( entry.range, entry, writer );
-			} else {
+			} else if ( entry.type === 'insertRange' ) {
+				this.convertInsertRange( entry.list.range, entry, writer );
+			} else if ( entry.type === 'removeRange' ) {
+				this.convertRemoveRange( entry, writer );
+			} else if ( entry.type === 'attribute' ) {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			}
@@ -295,7 +299,7 @@ export default class DowncastDispatcher {
 	/**
 	 * TODO
 	 */
-	convertRange( range, data, writer ) {
+	convertInsertRange( range, data, writer ) {
 		const mapper = this.conversionApi.mapper;
 
 		this.conversionApi.writer = writer;
@@ -308,6 +312,7 @@ export default class DowncastDispatcher {
 		// Trigger single insert for magic conversion.
 		this.fire( 'insertRange:' + data.magicUid, {
 			...data,
+			range,
 			reconversion: !!mapper.toViewElement( elements[ 0 ] ) // TODO is this needed?
 		}, this.conversionApi );
 
@@ -327,6 +332,17 @@ export default class DowncastDispatcher {
 				} );
 			}
 		}
+
+		this._clearConversionApi();
+	}
+
+	/**
+	 * TODO
+	 */
+	convertRemoveRange( data, writer ) {
+		this.conversionApi.writer = writer;
+
+		this.fire( 'removeRange:' + data.magicUid, { list: data.list }, this.conversionApi );
 
 		this._clearConversionApi();
 	}
