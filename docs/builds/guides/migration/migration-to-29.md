@@ -148,7 +148,7 @@ We recommended one of the following configurations as the minimum set-up for the
 		...
 		image: {
 			toolbar: [
-				'imageCaption',
+				'toggleImageCaption',
 				'imageStyle:inline',
 				// A drop-down containing `alignLeft` and `alignRight` options
 				'imageStyle:wrapText',

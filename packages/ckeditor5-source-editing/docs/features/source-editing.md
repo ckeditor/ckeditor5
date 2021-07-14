@@ -10,12 +10,12 @@ The {@link module:source-editing/sourceediting~SourceEditing} feature provides t
 The changes made to the document source will be applied to the editor's {@link framework/guides/architecture/editing-engine data model} only, if the editor understands (via loaded plugins) the given syntax. You will lose all changes that the editor features cannot understand. For example, if the editor does not have a {@link features/horizontal-line horizontal line} plugin loaded, the `<hr>` tag added in the document source will be removed upon exit from the source editing mode.
 
 <info-box>
-	Currently, the source editing mode is supported in the {@link examples/builds/classic-editor classic editor}. The source editing feature may not work with [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
+	Currently, the source editing mode is supported in the {@link examples/builds/classic-editor classic editor}. The source editing feature is not compatible with [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html). If you would like to use collaboration features, but for some reason you would like to also enable source editing, please [contact us](https://ckeditor.com/contact/).
 </info-box>
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
 
 {@snippet features/source-editing-imports}
 

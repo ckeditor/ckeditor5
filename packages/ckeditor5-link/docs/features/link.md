@@ -7,7 +7,7 @@ category: features
 
 The {@link module:link/link~Link} feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
-After you enable the optional [autolink](#autolink-feature) plugin, typed or pasted URL and e-mail addresses will be automatically turned into working links as you type.
+Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses will be automatically turned into working links as you type. The plugin is enabled in all {@link builds/guides/overview predefined builds}.
 
 ## Demo
 
@@ -242,7 +242,7 @@ ClassicEditor
 
 ## Autolink feature
 
-You can enable automatic linking of URLs typed or pasted into the editor. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
+Automatic linking of URLs typed or pasted into the editor is enabled by default in the preconfigured builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
 
 To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 
@@ -252,14 +252,10 @@ To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or 
 
 {@snippet features/autolink}
 
-Unlike the base link feature, the autolink plugin is not available in any of the builds. Refer to the [Installation](#installation) section to learn how to enable it.
-
 ## Installation
 
 <info-box info>
-	This base link feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
-
-	The autolink feature is not available in any of the builds and needs to be installed first. Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Both the base link feature and autolink feature are enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-link`](https://www.npmjs.com/package/@ckeditor/ckeditor5-link) package:

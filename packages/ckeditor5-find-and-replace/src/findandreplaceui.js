@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import { createDropdown } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -67,7 +67,7 @@ export default class FindAndReplaceUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
-			const dropdown = createDropdown( locale, SplitButtonView );
+			const dropdown = createDropdown( locale );
 
 			const formView = new FindAndReplaceFormView( editor.locale );
 
@@ -179,9 +179,6 @@ export default class FindAndReplaceUI extends Plugin {
 			icon,
 			tooltip: t( 'Find and replace' )
 		} );
-
-		// Clicking the main button has the same effect as clicking the dropdown arrow.
-		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
 
 		// Each time a dropdown is opened, the search text field should get focused.
 		// Note: Use the low priority to make sure the following listener starts working after the
