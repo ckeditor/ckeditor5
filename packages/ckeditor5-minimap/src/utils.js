@@ -13,13 +13,13 @@ import { Rect, global } from 'ckeditor5/src/utils';
 import { DomConverter, Renderer } from 'ckeditor5/src/engine';
 
 /**
- * Clones an editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~Renderer} and
+ * Clones the editing view DOM root by using a dedicated pair of {@link module:engine/view/renderer~Renderer} and
  * {@link module:engine/view/domconverter~DomConverter}. The DOM root clone updates incrementally to stay in sync with the
  * source root.
  *
  * @protected
  * @param {module:core/editor/editor~Editor} editor The editor instance the original editing root belongs to.
- * @param {String} rootName Name of the root to clone.
+ * @param {String} rootName The name of the root to clone.
  * @returns {HTMLElement} The editing root DOM clone element.
  */
 export function cloneEditingViewDomRoot( editor, rootName ) {

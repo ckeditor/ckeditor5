@@ -44,7 +44,7 @@ export default class MinimapIframeView extends IframeView {
 		this.set( 'top', 0 );
 
 		/**
-		 * The CSS `height` if the iframe.
+		 * The CSS `height` of the iframe.
 		 *
 		 * @readonly
 		 * @member {Number} #height

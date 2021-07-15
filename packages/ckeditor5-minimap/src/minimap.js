@@ -71,7 +71,7 @@ export default class Minimap extends Plugin {
 	}
 
 	/**
-	 * Initialized the minimap view element and starts the layout synchronization
+	 * Initializes the minimap view element and starts the layout synchronization
 	 * on the editing view `render` event.
 	 *
 	 * @private
@@ -206,7 +206,7 @@ export default class Minimap extends Plugin {
 			}
 		}
 
-		// The intersection helps to change the tracker height when there's a lot of padding around the root.
+		// The intersection helps to change the tracker height when there is a lot of padding around the root.
 		// Note: It is **essential** that the height is set first because the progress depends on the correct tracker height.
 		minimapView.setPositionTrackerHeight( scrollableRootAncestorRect.getIntersection( editingRootRect ).height );
 		minimapView.setScrollProgress( scrollProgress );
@@ -254,7 +254,7 @@ export default class Minimap extends Plugin {
  * Extra CSS class (or classes) that will be set internally on the `<body>` element of the `<iframe>` enclosing the minimap.
  *
  * By default, the minimap feature will attempt to clone all website styles and re-apply them in the `<iframe>` for the best accuracy.
- * However, this may not work if the content of your editor inherits styles from parent containers, resulting in inconsistent
+ * However, this may not work if the content of your editor inherits the styles from parent containers, resulting in inconsistent
  * look and imprecise scrolling of the minimap.
  *
  * This optional configuration can address these issues by ensuring the same CSS rules apply to the content of the minimap
