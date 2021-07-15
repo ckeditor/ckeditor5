@@ -18,7 +18,7 @@ You can try the minimap feature it in the demo below.
 
 ## Demo
 
-Scroll the content and the minimap in the sidebar will show your current location. Drag the box marking to the visible portion of the content to quickly navigate the document. You can also simply click anywhere on the minimap to move around instantly.
+Scroll the content and the minimap in the sidebar will show your current location. Drag the box marking the visible portion of the content to quickly navigate the document. You can also simply click anywhere on the minimap to move around instantly.
 
 {@snippet features/minimap}
 
