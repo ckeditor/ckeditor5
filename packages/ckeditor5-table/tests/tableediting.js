@@ -226,23 +226,21 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td colspan="abc">foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell colspan="1"><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with colspan 0', () => {
 				editor.setData( '<table><tbody><tr><td colspan="0">foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell colspan="1"><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should convert table with negative rowspan and colspan', () => {
 				editor.setData( '<table><tbody><tr><td colspan="-1" rowspan="-1">foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell colspan="1" rowspan="1">' +
-						'<paragraph>foo</paragraph>' +
-					'</tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
 	} );
