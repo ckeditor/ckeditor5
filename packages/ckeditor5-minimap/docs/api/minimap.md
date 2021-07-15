@@ -10,7 +10,7 @@ This package implements the minimap feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/minimap#demo demo in the Content Minimap feature} guide.
+Check out the {@link features/minimap#demo demo in the Content Minimap feature guide}.
 
 ## Documentation
 
