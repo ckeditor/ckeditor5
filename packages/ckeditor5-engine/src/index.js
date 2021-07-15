@@ -30,6 +30,7 @@ export { default as TreeWalker } from './model/treewalker';
 export { default as Element } from './model/element';
 
 export { default as DomConverter } from './view/domconverter';
+export { default as Renderer } from './view/renderer';
 export { default as ViewDocument } from './view/document';
 
 export { getFillerOffset } from './view/containerelement';

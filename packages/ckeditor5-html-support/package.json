@@ -31,6 +31,7 @@
     "@ckeditor/ckeditor5-engine": "^29.0.0",
     "@ckeditor/ckeditor5-essentials": "^29.0.0",
     "@ckeditor/ckeditor5-font": "^29.0.0",
+    "@ckeditor/ckeditor5-heading": "^29.0.0",
     "@ckeditor/ckeditor5-highlight": "^29.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^29.0.0",
     "@ckeditor/ckeditor5-html-embed": "^29.0.0",
