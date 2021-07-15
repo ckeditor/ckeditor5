@@ -11,6 +11,7 @@
 
 import ViewText from './text';
 import ViewElement from './element';
+import ViewUIElement from './uielement';
 import ViewPosition from './position';
 import ViewRange from './range';
 import ViewSelection from './selection';
@@ -237,8 +238,12 @@ export default class DomConverter {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
-				// UIElement has its own render() method (see #799).
-				domElement = viewNode.render( domDocument );
+				if ( viewNode.name === '$comment' ) {
+					domElement = domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) );
+				} else {
+					// UIElement has its own render() method (see #799).
+					domElement = viewNode.render( domDocument );
+				}
 
 				if ( options.bind ) {
 					this.bindElements( domElement, viewNode );
@@ -430,8 +435,6 @@ export default class DomConverter {
 
 				return textData === '' ? null : new ViewText( this.document, textData );
 			}
-		} else if ( this.isComment( domNode ) ) {
-			return null;
 		} else {
 			if ( this.mapDomToView( domNode ) ) {
 				return this.mapDomToView( domNode );
@@ -448,8 +451,7 @@ export default class DomConverter {
 				}
 			} else {
 				// Create view element.
-				const viewName = options.keepOriginalCase ? domNode.tagName : domNode.tagName.toLowerCase();
-				viewElement = new ViewElement( this.document, viewName );
+				viewElement = this._createViewElement( domNode, options );
 
 				if ( options.bind ) {
 					this.bindElements( domNode, viewElement );
@@ -458,13 +460,18 @@ export default class DomConverter {
 				// Copy element's attributes.
 				const attrs = domNode.attributes;
 
-				for ( let i = attrs.length - 1; i >= 0; i-- ) {
-					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
+				if ( attrs ) {
+					for ( let i = attrs.length - 1; i >= 0; i-- ) {
+						viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
+					}
 				}
 
 				// Treat this element's content as a raw data if it was registered as such.
-				if ( options.withChildren !== false && this._rawContentElementMatcher.match( viewElement ) ) {
-					viewElement._setCustomProperty( '$rawContent', domNode.innerHTML );
+				// Comment node is also treated as an element with raw data.
+				if ( this._isViewElementWithRawContent( viewElement, options ) || this.isComment( domNode ) ) {
+					const rawContent = this.isComment( domNode ) ? domNode.data : domNode.innerHTML;
+
+					viewElement._setCustomProperty( '$rawContent', rawContent );
 
 					// Store a DOM node to prevent left trimming of the following text node.
 					this._encounteredRawContentDomNodes.add( domNode );
@@ -1297,6 +1304,36 @@ export default class DomConverter {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Creates view element basing on the node type.
+	 *
+	 * @private
+	 * @param {Node} node DOM node to check.
+	 * @param {Object} options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @returns {Element}
+	 */
+	_createViewElement( node, options ) {
+		if ( this.isComment( node ) ) {
+			return new ViewUIElement( this.document, '$comment' );
+		}
+
+		const viewName = options.keepOriginalCase ? node.tagName : node.tagName.toLowerCase();
+
+		return new ViewElement( this.document, viewName );
+	}
+
+	/**
+	 * Checks if view element's content should be treated as a raw data.
+	 *
+	 * @private
+	 * @param {Element} viewElement View element to check.
+	 * @param {Object} options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @returns {Boolean}
+	 */
+	_isViewElementWithRawContent( viewElement, options ) {
+		return options.withChildren !== false && this._rawContentElementMatcher.match( viewElement );
 	}
 }
 
