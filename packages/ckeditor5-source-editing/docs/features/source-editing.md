@@ -55,7 +55,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-To achieve Markdown source editing mode just add the MArkdown plugin to the editor.
+To achieve Markdown source editing mode just add the {@link module:markdown-gfm/markdown~Markdown} Markdown plugin to the editor.
 
 ```js
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
