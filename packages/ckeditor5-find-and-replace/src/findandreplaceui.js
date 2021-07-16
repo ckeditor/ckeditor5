@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { createDropdown, SplitButtonView } from 'ckeditor5/src/ui';
+import { createDropdown } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -43,12 +43,8 @@ export default class FindAndReplaceUI extends Plugin {
 		this.set( 'searchText' );
 		this.set( 'replaceText' );
 
-		this.set( 'isSearching', false );
-
 		this.set( 'matchCount', null );
 		this.set( 'highlightOffset', null );
-
-		this.bind( 'isSearching' ).to( this, 'matchCount', count => count > 0 );
 
 		/**
 		 * The form view will only be assigned if the find and replace toolbar button was added.
@@ -67,9 +63,9 @@ export default class FindAndReplaceUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
-			const dropdown = createDropdown( locale, SplitButtonView );
+			const dropdown = createDropdown( locale );
 
-			const formView = new FindAndReplaceFormView( editor.locale );
+			const formView = new FindAndReplaceFormView( editor.locale, this._state );
 
 			formView.delegate( 'findNext' ).to( this );
 			formView.delegate( 'findPrevious' ).to( this );
@@ -78,8 +74,6 @@ export default class FindAndReplaceUI extends Plugin {
 
 			formView.bind( 'matchCount' ).to( this );
 			formView.bind( 'highlightOffset' ).to( this );
-
-			formView.bind( 'isSearching' ).to( this );
 
 			this._createToolbarDropdown( dropdown, loupeIcon, formView );
 
@@ -93,34 +87,14 @@ export default class FindAndReplaceUI extends Plugin {
 
 			this.formView = formView;
 
-			if ( this._state ) {
-				this.unbind( 'isSearching' );
-
-				const findTextInputView = formView.findInputView.fieldView;
-
-				// Searching should only be active if there's more than 1 result matched and
-				// the user has not changed any search criteria.
-				this.bind( 'isSearching' ).to( this, 'matchCount',
-					findTextInputView, 'value', this._state, 'searchText',
-					formView.matchCaseView, 'isChecked', this._state, 'matchCase',
-					formView.matchWholeWordsView, 'isChecked', this._state, 'matchWholeWords',
-					( count,
-						viewSearchText, modelSearchText,
-						viewMatchCase, modelMatchCase,
-						viewWholeWords, modelWholeWords
-					) => {
-						return count > 0 &&
-							viewSearchText == modelSearchText &&
-							viewMatchCase == modelMatchCase &&
-							viewWholeWords == modelWholeWords;
-					} );
-			}
-
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
 				dropdown.buttonView.actionView.fire( 'execute' );
 
 				cancelEvent();
 			} );
+
+			// Dropdown should be disabled when in source editing mode. See #10001.
+			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
 
 			return dropdown;
 		} );
@@ -130,7 +104,7 @@ export default class FindAndReplaceUI extends Plugin {
 	 * Sets the observed state object. It is used to display search result count etc.
 	 *
 	 * @protected
-	 * @param {module:find-and-replace/findandreplaceediting~FindAndReplaceState} state State object to be tracked.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state State object to be tracked.
 	 */
 	_setState( state ) {
 		this._state = state;
@@ -177,13 +151,17 @@ export default class FindAndReplaceUI extends Plugin {
 			tooltip: t( 'Find and replace' )
 		} );
 
-		// Clicking the main button has the same effect as clicking the dropdown arrow.
-		buttonView.actionView.delegate( 'execute' ).to( buttonView.arrowView );
-
 		// Each time a dropdown is opened, the search text field should get focused.
+		// Note: Use the low priority to make sure the following listener starts working after the
+		// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
+		// invisible form/input cannot be focused/selected.
 		buttonView.on( 'open', () => {
+			formView.disableCssTransitions();
+
 			formView.findInputView.fieldView.select();
 			formView.focus();
+
+			formView.enableCssTransitions();
 		}, { priority: 'low' } );
 	}
 }

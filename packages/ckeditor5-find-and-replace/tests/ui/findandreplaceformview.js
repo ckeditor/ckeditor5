@@ -6,6 +6,7 @@
 /* globals Event */
 
 import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
+import FindAndReplaceState from '../../src/findandreplacestate';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -17,11 +18,13 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'FindAndReplaceFormView', () => {
 	let view;
 	let viewValue;
+	let state;
 
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		view = new FindAndReplaceFormView( { t: val => val } );
+		state = new FindAndReplaceState();
+		view = new FindAndReplaceFormView( { t: val => val }, state );
 		view.render();
 	} );
 
@@ -32,7 +35,6 @@ describe( 'FindAndReplaceFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			// expect( view.element.classList.contains( 'ck-find-and-replace-form__wrapper' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
@@ -60,6 +62,10 @@ describe( 'FindAndReplaceFormView', () => {
 
 		it( 'should create #_focusables view collection', () => {
 			expect( view._focusables ).to.be.instanceOf( ViewCollection );
+		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
 		} );
 
 		describe( 'find input view', () => {
@@ -106,6 +112,69 @@ describe( 'FindAndReplaceFormView', () => {
 				view.element.dispatchEvent( new Event( 'submit' ) );
 
 				expect( spy.calledOnce ).to.true;
+			} );
+		} );
+	} );
+
+	describe( 'observable properties', () => {
+		describe( 'isDirty', () => {
+			it( 'should be initially false', () => {
+				expect( view.isDirty ).to.be.false;
+			} );
+
+			it( 'should change to true on searchText change', () => {
+				view.searchText = 'foo';
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should change to true on state change', () => {
+				state.searchText = 'foo';
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should be false when state and view have the same value', () => {
+				view.searchText = 'foo';
+				state.searchText = 'foo';
+
+				expect( view.isDirty ).to.false;
+			} );
+
+			it( 'should change to true on matchCase change', () => {
+				view.matchCaseView.isChecked = true;
+
+				expect( view.isDirty ).to.true;
+
+				view.matchCaseView.isChecked = false;
+				state.matchCase = true;
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should change to true on matchWholeWords change', () => {
+				state.matchWholeWords = true;
+
+				expect( view.isDirty ).to.true;
+
+				view.matchWholeWordsView.isChecked = false;
+				state.matchWholeWords = true;
+
+				expect( view.isDirty ).to.true;
+			} );
+
+			it( 'should be false when matchCase or matchWholeWords have the same value', () => {
+				expect( view.isDirty ).to.false;
+
+				state.matchCase = true;
+				view.matchCaseView.isChecked = true;
+
+				expect( view.isDirty ).to.false;
+
+				state.matchWholeWords = true;
+				view.matchWholeWordsView.isChecked = true;
+
+				expect( view.isDirty ).to.false;
 			} );
 		} );
 	} );
@@ -179,7 +248,7 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			view = new FindAndReplaceFormView( { t: val => val } );
+			view = new FindAndReplaceFormView( { t: val => val }, state );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
@@ -197,7 +266,7 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new FindAndReplaceFormView( { t: val => val } );
+			view = new FindAndReplaceFormView( { t: val => val }, state );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
@@ -297,7 +366,7 @@ describe( 'FindAndReplaceFormView', () => {
 	} );
 
 	describe( 'find and replace input values', () => {
-		it( 'returns the #findInputView DOM value', () => { // TODO: possible improvements to the code readability?
+		it( 'returns the #findInputView DOM value', () => {
 			viewValue = view.findInputView.fieldView.element.value;
 			viewValue = 'foo';
 
