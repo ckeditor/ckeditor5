@@ -1,0 +1,85 @@
+<head>
+	<meta http-equiv="Content-Security-Policy"
+		  content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+</head>
+
+<style>
+[contenteditable="true"] [data-validation-allow]{
+	border: 1px solid blue !important;
+}
+
+[contenteditable="true"] [data-validation-disallow]{
+	border: 1px solid red !important;
+}
+</style>
+
+<div id="editor">
+	<ol>
+		<li>list item 1</li>
+		<li>list item 2</li>
+		<li>list item 3</li>
+		<ol>
+			<li>list item 4</li>
+			<li>list item 5</li>
+			<li>list item 6</li>
+		</ol>
+	</ol>
+
+	<ul>
+		<li>list item 1</li>
+		<li>list item 2</li>
+		<li>list item 3</li>
+		<ul>
+			<li>list item 4</li>
+			<li>list item 5</li>
+			<li>list item 6</li>
+		</ul>
+	</ul>
+
+	<ul class="todo-list">
+		<li>
+			<label class="todo-list__label">
+				<input type="checkbox" disabled="disabled">
+				<span class="todo-list__label__description">list item 1</span>
+			</label>
+		</li>
+		<li>
+			<label class="todo-list__label">
+				<input type="checkbox" disabled="disabled">
+				<span class="todo-list__label__description">list item 2</span>
+			</label>
+		</li>
+		<li>
+			<label class="todo-list__label">
+				<input type="checkbox" disabled="disabled">
+				<span class="todo-list__label__description">list item 3</span>
+			</label>
+		</li>
+		<ul class="todo-list">
+			<li>
+				<label class="todo-list__label">
+					<input type="checkbox" disabled="disabled">
+					<span class="todo-list__label__description">list item 4</span>
+				</label>
+			</li>
+			<li>
+				<label class="todo-list__label">
+					<input type="checkbox" disabled="disabled">
+					<span class="todo-list__label__description">list item 5</span>
+				</label>
+			</li>
+			<li>
+				<label class="todo-list__label">
+					<input type="checkbox" disabled="disabled">
+					<span class="todo-list__label__description">list item 6</span>
+				</label>
+			</li>
+		</ul>
+	</ul>
+</div>
+<script>
+	document.getElementById( 'editor' ).querySelectorAll( 'ul, ol, li' ).forEach( node => {
+		node.setAttribute( 'data-validation-allow', true );
+		node.setAttribute( 'data-validation-disallow', true );
+	} );
+</script>
