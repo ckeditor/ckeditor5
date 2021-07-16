@@ -25,58 +25,6 @@ import '../theme/findandreplace.css';
 
 const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
-// Reacts to document changes in order to update search list.
-function onDocumentChange( results, model, searchCallback ) {
-	const changedNodes = new Set();
-	const removedMarkers = new Set();
-
-	const changes = model.document.differ.getChanges();
-
-	// Get nodes in which changes happened to re-run a search callback on them.
-	changes.forEach( change => {
-		if ( change.name === '$text' || model.schema.isInline( change.position.nodeAfter ) ) {
-			changedNodes.add( change.position.parent );
-
-			[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
-				removedMarkers.add( markerAtChange.name );
-			} );
-		} else if ( change.type === 'insert' ) {
-			changedNodes.add( change.position.nodeAfter );
-		}
-	} );
-
-	// Get markers from removed nodes also.
-	model.document.differ.getChangedMarkers().forEach( ( { name, data: { newRange } } ) => {
-		if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
-			removedMarkers.add( name );
-		}
-	} );
-
-	// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
-	changedNodes.forEach( node => {
-		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
-
-		markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
-	} );
-
-	// Remove results & markers from the changed part of content.
-	model.change( writer => {
-		removedMarkers.forEach( markerName => {
-			// Remove the result first - in order to prevent rendering a removed marker.
-			if ( results.has( markerName ) ) {
-				results.remove( markerName );
-			}
-
-			writer.removeMarker( markerName );
-		} );
-	} );
-
-	// Run search callback again on updated nodes.
-	changedNodes.forEach( nodeToCheck => {
-		updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
-	} );
-}
-
 /**
  * Implements the editing part for find and replace plugin. For example conversion, commands etc.
  *
@@ -165,7 +113,6 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this.activeResults = results;
 
-		// @todo: handle this listener, another copy is in findcommand.js file.
 		this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
 
 		return this.activeResults;
@@ -240,4 +187,56 @@ export default class FindAndReplaceEditing extends Plugin {
 			}
 		} );
 	}
+}
+
+// Reacts to document changes in order to update search list.
+function onDocumentChange( results, model, searchCallback ) {
+	const changedNodes = new Set();
+	const removedMarkers = new Set();
+
+	const changes = model.document.differ.getChanges();
+
+	// Get nodes in which changes happened to re-run a search callback on them.
+	changes.forEach( change => {
+		if ( change.name === '$text' || model.schema.isInline( change.position.nodeAfter ) ) {
+			changedNodes.add( change.position.parent );
+
+			[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
+				removedMarkers.add( markerAtChange.name );
+			} );
+		} else if ( change.type === 'insert' ) {
+			changedNodes.add( change.position.nodeAfter );
+		}
+	} );
+
+	// Get markers from removed nodes also.
+	model.document.differ.getChangedMarkers().forEach( ( { name, data: { newRange } } ) => {
+		if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
+			removedMarkers.add( name );
+		}
+	} );
+
+	// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
+	changedNodes.forEach( node => {
+		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
+
+		markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
+	} );
+
+	// Remove results & markers from the changed part of content.
+	model.change( writer => {
+		removedMarkers.forEach( markerName => {
+			// Remove the result first - in order to prevent rendering a removed marker.
+			if ( results.has( markerName ) ) {
+				results.remove( markerName );
+			}
+
+			writer.removeMarker( markerName );
+		} );
+	} );
+
+	// Run search callback again on updated nodes.
+	changedNodes.forEach( nodeToCheck => {
+		updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
+	} );
 }
