@@ -238,7 +238,6 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		this.keystrokes.set( 'enter', event => {
-			// @todo: this is a bit workaroundish way to handle enter, we should work on views rather than raw DOM elements.
 			const target = event.target;
 
 			if ( target.classList.contains( 'ck-input-text' ) ) {
@@ -562,7 +561,6 @@ export default class FindAndReplaceFormView extends View {
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 		const inputField = labeledInput.fieldView;
 
-		// @todo: this looks like an upstream UI bug (the fact that InputTextView#value does not get updated).
 		inputField.on( 'input', () => {
 			inputField.value = inputField.element.value;
 		} );
