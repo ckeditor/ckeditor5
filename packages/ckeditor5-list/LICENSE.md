@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor5 List Feature** – https://github.com/ckeditor/ckeditor5-list <br>
+**CKEditor 5 list feature** – https://github.com/ckeditor/ckeditor5-list <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

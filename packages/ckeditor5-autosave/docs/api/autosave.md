@@ -10,7 +10,7 @@ This package implements the autosaving feature for CKEditor 5.
 
 ## Documentation
 
-See the {@link builds/guides/integration/saving-data#autosave-feature Autosave feature} guide and the {@link module:autosave/autosave~Autosave} plugin documentation.
+See the {@link builds/guides/integration/saving-data#autosave-feature autosave feature guide} and the {@link module:autosave/autosave~Autosave} plugin documentation.
 
 ## Installation
 

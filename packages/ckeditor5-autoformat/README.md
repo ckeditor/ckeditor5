@@ -9,7 +9,7 @@ This package implements the autoformatting feature for CKEditor 5. It allows sty
 
 ## Demo
 
-Check out the demo in the [Autoformat feature](https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html) guide.
+Check out the [demo in the autoformat feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html#demo).
 
 ## Documentation
 

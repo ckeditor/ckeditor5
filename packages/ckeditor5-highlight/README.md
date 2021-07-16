@@ -9,7 +9,7 @@ This package implements text highlight support for CKEditor 5.
 
 ## Demo
 
-Check out the [demo in the Highlight feature](https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html#demo) guide.
+Check out the [demo in the highlight feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/highlight.html#demo).
 
 ## Documentation
 

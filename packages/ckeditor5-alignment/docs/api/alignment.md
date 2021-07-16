@@ -10,11 +10,11 @@ This package implements the text alignment feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/text-alignment#demo demo in the Text alignment feature} guide.
+Check out the {@link features/text-alignment#demo demo in the text alignment feature guide}.
 
 ## Documentation
 
-See the {@link features/text-alignment Text alignment feature} guide and the {@link module:alignment/alignment~Alignment} plugin documentation.
+See the {@link features/text-alignment text alignment feature guide} and the {@link module:alignment/alignment~Alignment} plugin documentation.
 
 ## Installation
 
