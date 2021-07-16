@@ -59,6 +59,7 @@ To achieve Markdown source editing mode just add the MArkdown plugin to the edit
 
 ```js
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
