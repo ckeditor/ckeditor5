@@ -6,6 +6,7 @@
 
 category: builds-migration
 order: 100
+modified_at: 2021-07-16
 ---
 
 # Migration from CKEditor 4
@@ -91,8 +92,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><span id="allowedContent"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent">allowedContent</a></span></td>
 			<td>
-				<p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup.</p>
-				<p>For more information on how to create plugins check the {@link framework/guides/creating-simple-plugin Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
+				<p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved via the {@link features/general-html-support General HTML Support feature} that allows to add markup elements not covered byt official plugins into the content. Such elements can be loaded, pasted or output and are visible in the editor. It does not, however, provide and UI for the markup.</p>
+				<p> Having a full fledged HTML support can be acheived by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/guides/creating-simple-plugin Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
 				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/guides/deep-dive/conversion-introduction conversion tutorials} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
@@ -283,7 +284,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-disallowedContent">disallowedContent</a></td>
-			<td>See <a href="#allowedContent"><code>config.allowedContent</code></a>. No longer needed as CKEditor 5 removes all unwanted markup that cannot be edited with the editor.</td>
+			<td>See <a href="#allowedContent"><code>config.allowedContent</code></a>. No longer needed as CKEditor 5 removes all unwanted markup that cannot be edited with the editor. This can be controlled by adding plugins into the editor or via the {@link features/general-html-support General HTML Support feature}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-div_wrapTable">div_wrapTable</a></td>
@@ -311,7 +312,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><span id="emoji"><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_emojiListUrl">emoji_emojiListUrl</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-emoji_minChars">emoji_minChars</a></span></td>
-			<td>Emoji can be pasted into CKEditor 5 as Unicode content. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut on macOS, <kbd>Win</kbd>+<kbd>.</kbd> on Windows or the relevant emoji key on the touch keyboard of your device to open the picker.</td>
+			<td>The {@link features/text-transformation Automatic text transformation feature} may be configured to deliver emojis with shortcodes. Emoji can be pasted into CKEditor 5 as Unicode content, too. You can use the emoji picker of your operating system to insert emoji characters. Use the <kbd>Ctrl</kbd>+<kbd>Cmd</kbd>+<kbd>Space</kbd> keyboard shortcut on macOS, <kbd>Win</kbd>+<kbd>.</kbd> on Windows or the relevant emoji key on the touch keyboard of your device to open the picker.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-enableContextMenu">enableContextMenu</a></td>
@@ -342,7 +343,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraAllowedContent">extraAllowedContent</a></td>
-			<td>See <a href="#allowedContent"><code>config.allowedContent</code></a>.</td>
+			<td>See <a href="#allowedContent"><code>config.allowedContent</code></a>. This can also be achieved via the {@link features/general-html-support General HTML Support feature}.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-extraPlugins">extraPlugins</a></td>
@@ -398,7 +399,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-format_tags">format_tags</a></td>
-			<td>N/A. In order to enable additional block tags in CKEditor 5, a dedicated plugin must be provided. See also <a href="#allowedContent"><code>config.allowedContent</code></a>.</td>
+			<td>In order to enable additional block tags in CKEditor 5, the {@link features/general-html-support General HTML Support feature} may be used. Alternatively a dedicated plugin must be provided. See also <a href="#allowedContent"><code>config.allowedContent</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-fullPage">fullPage</a></td>
@@ -585,7 +586,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_columns">smiley_columns</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_descriptions">smiley_descriptions</a> <br> <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_images">smiley_images</a> <br>  <a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-smiley_path">smiley_path</a></td>
-			<td>N/A. There is no smiley plugin in CKEditor 5. However, <a href="#emoji">emoji</a> can be pasted into the rich-text editor as Unicode content.</td>
+			<td>There is no dedicated smiley plugin in CKEditor 5. However, the {@link features/text-transformation Automatic text transformation feature} may be configured to deliver emojis with shortcodes. The <a href="#emoji">emoji</a> can also be pasted into the rich-text editor as Unicode content.</td>
 		</tr>
 		<tr>
 			<td><a href="/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-sourceAreaTabSize">sourceAreaTabSize</a></td>

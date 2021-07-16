@@ -6,7 +6,7 @@ updated_at: 2021-06-14
 
 # General HTML Support
 
-The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins.
+The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins. It acts similarly to the {@link @ckeditor4 /guide/dev/acf/README Advanced Content Filtering} feature from CKEditor 4, letting the user expand the list of supported HTML elements in the content.
 
 Some examples of HTML features that can be easily enabled using General HTML Support include:
 
