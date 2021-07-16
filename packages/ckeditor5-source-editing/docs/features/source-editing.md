@@ -21,7 +21,7 @@ Use the editor below to see the source editing plugin in action. Toggle the sour
 
 {@snippet features/source-editing}
 
-The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. It is enough to add the plugin to the editor to change the source editing mode. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 {@snippet features/source-editing-with-markdown}
 
@@ -49,6 +49,20 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ SourceEditing, ... ],
+		toolbar: [ 'sourceEditing', ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+To achieve Markdown source editing mode just add the MArkdown plugin to the editor.
+
+```js
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SourceEditing, Markdown, ... ],
 		toolbar: [ 'sourceEditing', ... ]
 	} )
 	.then( ... )
