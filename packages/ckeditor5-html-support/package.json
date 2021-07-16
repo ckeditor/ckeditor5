@@ -39,6 +39,7 @@
     "@ckeditor/ckeditor5-indent": "^29.0.0",
     "@ckeditor/ckeditor5-link": "^29.0.0",
     "@ckeditor/ckeditor5-list": "^29.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^29.0.0",
     "@ckeditor/ckeditor5-page-break": "^29.0.0",
     "@ckeditor/ckeditor5-paragraph": "^29.0.0",
     "@ckeditor/ckeditor5-source-editing": "^29.0.0",
