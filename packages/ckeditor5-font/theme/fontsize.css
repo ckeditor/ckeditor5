@@ -9,11 +9,11 @@
 See https://github.com/ckeditor/ckeditor5/issues/6636 */
 .ck-content {
 	& .text-tiny {
-		font-size: .7em;
+		font-size: 0.7em;
 	}
 
 	& .text-small {
-		font-size: .85em;
+		font-size: 0.85em;
 	}
 
 	& .text-big {
@@ -22,5 +22,77 @@ See https://github.com/ckeditor/ckeditor5/issues/6636 */
 
 	& .text-huge {
 		font-size: 1.8em;
+	}
+
+	& .text-size-10 {
+		font-size: 0.625rem;
+	}
+
+	& .text-size-14 {
+		font-size: 0.875rem;
+	}
+
+	& .text-size-16 {
+		font-size: 1rem;
+	}
+
+	& .text-size-18 {
+		font-size: 1.125rem;
+	}
+
+	& .text-size-20 {
+		font-size: 1.25rem;
+	}
+
+	& .text-size-24 {
+		font-size: 1.5rem;
+	}
+
+	& .text-size-26 {
+		font-size: 1.625rem;
+	}
+
+	& .text-size-28 {
+		font-size: 1.75rem;
+	}
+
+	& .text-size-30 {
+		font-size: 1.875rem;
+	}
+
+	& .text-size-32 {
+		font-size: 2rem;
+	}
+
+	& .text-size-36 {
+		font-size: 2.25rem;
+	}
+
+	& .text-size-42 {
+		font-size: 2.625rem;
+	}
+
+	& .text-size-46 {
+		font-size: 2.875rem;
+	}
+
+	& .text-size-48 {
+		font-size: 3rem;
+	}
+
+	& .text-size-52 {
+		font-size: 3.25rem;
+	}
+
+	& .text-size-56 {
+		font-size: 3.5rem;
+	}
+
+	& .text-size-60 {
+		font-size: 3.75rem;
+	}
+
+	& .text-size-72 {
+		font-size: 4.5rem;
 	}
 }

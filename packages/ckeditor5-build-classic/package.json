@@ -43,9 +43,12 @@
     "@ckeditor/ckeditor5-paragraph": "^29.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^29.0.0",
     "@ckeditor/ckeditor5-table": "^29.0.0",
-    "@ckeditor/ckeditor5-typing": "^29.0.0"
+    "@ckeditor/ckeditor5-typing": "^29.0.0",
+    "@eastdesire/jscolor": "^2.4.5",
+    "ckeditor5-colorpicker": "file:../ckeditor5-colorpicker"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "^29.0.0",
     "@ckeditor/ckeditor5-core": "^29.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.0.0",

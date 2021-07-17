@@ -1,0 +1,23 @@
+{
+  "name": "ckeditor5-colorpicker",
+  "version": "29.0.0",
+  "description": "Color picker for text",
+  "keywords": [
+    "ckeditor",
+    "ckeditor5",
+    "ckeditor 5",
+    "ckeditor5-feature",
+    "ckeditor5-plugin"
+  ],
+  "main": "src/index.js",
+  "dependencies": {
+    "@ckeditor/ckeditor5-font": "^29.0.0",
+    "@eastdesire/jscolor": "^2.4.5",
+    "ckeditor5": "^29.0.0"
+  },
+  "scripts": {
+    "dll:build": "webpack"
+  },
+  "author": "APPgrade34",
+  "license": "GPL-2.0-or-later"
+}

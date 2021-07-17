@@ -26,46 +26,211 @@ export function normalizeOptions( configuredOptions ) {
 
 // Default named presets map. Always create a new instance of the preset object in order to avoid modifying references.
 const namedPresets = {
-	get tiny() {
+	get sizeDefault() {
 		return {
-			title: 'Tiny',
-			model: 'tiny',
+			title: 'Default',
+			model: 'sizeDefault',
 			view: {
 				name: 'span',
-				classes: 'text-tiny',
+				classes: '',
 				priority: 7
 			}
 		};
 	},
-	get small() {
+	get size10() {
 		return {
-			title: 'Small',
-			model: 'small',
+			title: 'Size 10',
+			model: 'size10',
 			view: {
 				name: 'span',
-				classes: 'text-small',
+				classes: 'text-size-10',
 				priority: 7
 			}
 		};
 	},
-	get big() {
+	get size14() {
 		return {
-			title: 'Big',
-			model: 'big',
+			title: 'Size 14',
+			model: 'size14',
 			view: {
 				name: 'span',
-				classes: 'text-big',
+				classes: 'text-size-14',
 				priority: 7
 			}
 		};
 	},
-	get huge() {
+	get size16() {
 		return {
-			title: 'Huge',
-			model: 'huge',
+			title: 'Size 16',
+			model: 'size16',
 			view: {
 				name: 'span',
-				classes: 'text-huge',
+				classes: 'text-size-16',
+				priority: 7
+			}
+		};
+	},
+	get size18() {
+		return {
+			title: 'Size 18',
+			model: 'size18',
+			view: {
+				name: 'span',
+				classes: 'text-size-18',
+				priority: 7
+			}
+		};
+	},
+	get size20() {
+		return {
+			title: 'Size 20',
+			model: 'size20',
+			view: {
+				name: 'span',
+				classes: 'text-size-20',
+				priority: 7
+			}
+		};
+	},
+	get size24() {
+		return {
+			title: 'Size 24',
+			model: 'size24',
+			view: {
+				name: 'span',
+				classes: 'text-size-24',
+				priority: 7
+			}
+		};
+	},
+	get size26() {
+		return {
+			title: 'Size 26',
+			model: 'size26',
+			view: {
+				name: 'span',
+				classes: 'text-size-26',
+				priority: 7
+			}
+		};
+	},
+	get size28() {
+		return {
+			title: 'Size 28',
+			model: 'size28',
+			view: {
+				name: 'span',
+				classes: 'text-size-28',
+				priority: 7
+			}
+		};
+	},
+	get size30() {
+		return {
+			title: 'Size 30',
+			model: 'size30',
+			view: {
+				name: 'span',
+				classes: 'text-size-30',
+				priority: 7
+			}
+		};
+	},
+	get size32() {
+		return {
+			title: 'Size 32',
+			model: 'size32',
+			view: {
+				name: 'span',
+				classes: 'text-size-32',
+				priority: 7
+			}
+		};
+	},
+	get size36() {
+		return {
+			title: 'Size 36',
+			model: 'size36',
+			view: {
+				name: 'span',
+				classes: 'text-size-36',
+				priority: 7
+			}
+		};
+	},
+	get size42() {
+		return {
+			title: 'Size 42',
+			model: 'size42',
+			view: {
+				name: 'span',
+				classes: 'text-size-42',
+				priority: 7
+			}
+		};
+	},
+	get size46() {
+		return {
+			title: 'Size 46',
+			model: 'size46',
+			view: {
+				name: 'span',
+				classes: 'text-size-46',
+				priority: 7
+			}
+		};
+	},
+	get size48() {
+		return {
+			title: 'Size 48',
+			model: 'size48',
+			view: {
+				name: 'span',
+				classes: 'text-size-48',
+				priority: 7
+			}
+		};
+	},
+	get size52() {
+		return {
+			title: 'Size 52',
+			model: 'size52',
+			view: {
+				name: 'span',
+				classes: 'text-size-52',
+				priority: 7
+			}
+		};
+	},
+	get size56() {
+		return {
+			title: 'Size 56',
+			model: 'size56',
+			view: {
+				name: 'span',
+				classes: 'text-size-56',
+				priority: 7
+			}
+		};
+	},
+	get size60() {
+		return {
+			title: 'Size 60',
+			model: 'size60',
+			view: {
+				name: 'span',
+				classes: 'text-size-60',
+				priority: 7
+			}
+		};
+	},
+	get size72() {
+		return {
+			title: 'Size 72',
+			model: 'size72',
+			view: {
+				name: 'span',
+				classes: 'text-size-72',
 				priority: 7
 			}
 		};
