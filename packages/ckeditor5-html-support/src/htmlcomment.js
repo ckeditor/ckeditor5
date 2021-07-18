@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { uid } from 'ckeditor5/src/utils';
+import { CKEditorError, uid } from 'ckeditor5/src/utils';
 
 /**
  * The HTML comment feature.
@@ -37,8 +37,8 @@ export default class HtmlComment extends Plugin {
 			view: '$comment',
 			model: ( viewElement, { writer } ) => {
 				const root = this.editor.model.document.getRoot();
-				const markerName = `$comment:${ uid() }`;
 				const commentContent = viewElement.getCustomProperty( '$rawContent' );
+				const markerName = `$comment:${ uid() }`;
 
 				writer.setAttribute( markerName, commentContent, root );
 
@@ -89,4 +89,142 @@ export default class HtmlComment extends Plugin {
 			return true;
 		} );
 	}
+
+	/**
+	 * Creates an HTML comment on the specified position and returns its ID.
+	 *
+	 * *Note*: If two comments are created at the same position, the second comment will be inserted before the first one.
+	 *
+	 * @param {module:engine/model/position~Position} position
+	 * @param {String} content
+	 * @returns {String} Comment ID. This ID can be later used to e.g. remove the comment from the content.
+	 */
+	createHtmlComment( position, content ) {
+		const id = uid();
+		const editor = this.editor;
+		const model = editor.model;
+		const root = model.document.getRoot();
+		const markerName = `$comment:${ id }`;
+
+		return model.change( writer => {
+			const range = writer.createRange( position );
+
+			writer.addMarker( markerName, {
+				usingOperation: true,
+				affectsData: true,
+				range
+			} );
+
+			writer.setAttribute( markerName, content, root );
+
+			return markerName;
+		} );
+	}
+
+	/**
+	 * Removes an HTML comment with the given comment ID.
+	 *
+	 * It throws an error if the comment with the given ID does not exist.
+	 * Note that a comment can be removed also by removing the content in which it is created.
+	 *
+	 * @param {String} commentID The ID of the comment to be removed.
+	 */
+	removeHtmlComment( commentID ) {
+		const editor = this.editor;
+		const root = editor.model.document.getRoot();
+
+		const marker = editor.model.markers.get( commentID );
+
+		if ( !marker ) {
+			/**
+			 * An HTML comment with the given ID does not exist.
+			 *
+			 * @error html-comment-does-not-exist
+			 */
+			throw new CKEditorError( 'html-comment-does-not-exist', null );
+		}
+
+		editor.model.change( writer => {
+			writer.removeMarker( marker );
+			writer.removeAttribute( commentID, root );
+		} );
+	}
+
+	/**
+	 * Gets the HTML comment with the given ID.
+	 *
+	 * Returns `null` if the comment does not exist.
+	 *
+	 * @param {String} commentID
+	 * @returns {module:html-support/htmlcomment~HtmlCommentData}
+	 */
+	getHtmlComment( commentID ) {
+		const editor = this.editor;
+		const marker = editor.model.markers.get( commentID );
+		const root = editor.model.document.getRoot();
+
+		if ( !marker ) {
+			return null;
+		}
+
+		return {
+			content: root.getAttribute( commentID ),
+			position: marker.getStart()
+		};
+	}
+
+	/**
+	 * Updates the HTML comment.
+	 *
+	 * Using this method it is possible to update the comment's position and/or its content.
+	 *
+	 * @param {String} commentID
+	 * @param {module:html-support/htmlcomment~HtmlCommentData} options
+	 */
+	updateHtmlComment( commentID, { position, content } ) {
+		const editor = this.editor;
+		const marker = editor.model.markers.get( commentID );
+		const root = editor.model.document.getRoot();
+
+		if ( !marker ) {
+			throw new CKEditorError( 'html-comment-does-not-exist', null );
+		}
+
+		editor.model.change( writer => {
+			if ( position ) {
+				const range = writer.createRange( position );
+
+				writer.updateMarker( marker, { range } );
+			}
+
+			if ( content ) {
+				writer.setAttribute( commentID, content, root );
+			}
+		} );
+	}
+
+	/**
+	 * Gets all HTML comment at the given position.
+	 *
+	 * @param {module:engine/model/position~Position} position
+	 * @returns {Array.<String>} HTML Comment IDs
+	 */
+	getHtmlCommentsAtPosition( position ) {
+		const intersectingMarkers = Array.from( this.editor.model.markers.getMarkersAtPosition( position ) );
+
+		return intersectingMarkers
+			.filter( marker => marker.name.startsWith( '$comment:' ) )
+			.map( commentMarker => commentMarker.name );
+	}
 }
+
+/**
+ * An interface for the HTML comments data.
+ *
+ * It consists of the {@link module:engine/model/position~Position `position`} and `content`.
+ *
+ * @typedef {Object} HtmlCommentData
+ *
+ * @property {module:engine/model/position~Position} position
+ * @property {String} content
+ */

@@ -1,3 +1,4 @@
+
 /**
  * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
@@ -6,29 +7,28 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
 import HtmlComment from '../src/htmlcomment';
+import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'HtmlComment', () => {
-	let editor, model, root;
+	let model, root, editor, htmlCommentPlugin;
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [ HtmlComment, Paragraph ]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				root = model.document.getRoot();
+	beforeEach( async () => {
+		editor = await VirtualTestEditor.create( {
+			plugins: [ HtmlComment, Paragraph ]
+		} );
 
-				model.schema.register( 'div' );
-				model.schema.extend( '$block', { allowIn: 'div' } );
-				model.schema.extend( 'div', { allowIn: '$root' } );
-				model.schema.extend( 'div', { allowIn: 'div' } );
+		model = editor.model;
+		root = model.document.getRoot();
 
-				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
-			} );
+		model.schema.register( 'div' );
+		model.schema.extend( '$block', { allowIn: 'div' } );
+		model.schema.extend( 'div', { allowIn: '$root' } );
+		model.schema.extend( 'div', { allowIn: 'div' } );
+
+		editor.conversion.elementToElement( { model: 'div', view: 'div' } );
+
+		htmlCommentPlugin = editor.plugins.get( HtmlComment );
 	} );
 
 	afterEach( () => {
@@ -233,4 +233,165 @@ describe( 'HtmlComment', () => {
 			} );
 		} );
 	}
+
+	describe( 'createHtmlComment()', () => {
+		it( 'should create an HTML comment between elements', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'first' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><!--first--><p>Bar</p><p>Baz</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 2 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'second' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><!--first--><p>Bar</p><!--second--><p>Baz</p>' );
+		} );
+
+		it( 'should return a comment ID of the comment', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			const firstCommentID = editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+
+			const secondCommentID = editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
+			} );
+
+			expect( firstCommentID ).to.be.a( 'string' );
+			expect( secondCommentID ).to.be.a( 'string' );
+
+			expect( firstCommentID ).to.not.equal( secondCommentID );
+		} );
+
+		it( 'should create a marker at the given position constructed with the comment ID', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+		} );
+
+		it( 'should allow creating an HTML comment inside the text', () => {
+			editor.setData( '<p>Foo</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root.getChild( 0 ), 1 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>F<!--foo-->oo</p>' );
+		} );
+
+		it( 'should allow creating a few HTML comments in the same place', () => {
+			editor.setData( '<p>Foo</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root.getChild( 0 ), 1 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'foo' );
+				htmlCommentPlugin.createHtmlComment( position, 'bar' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>F<!--bar--><!--foo-->oo</p>' );
+		} );
+
+		it( 'should allow creating an HTML comment before the first element', () => {
+			editor.setData( '<p>Foo</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 0 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<!--foo--><p>Foo</p>' );
+		} );
+
+		it( 'should allow creating an HTML comment after the last element', () => {
+			editor.setData( '<p>Foo</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><!--foo-->' );
+		} );
+	} );
+
+	describe( 'removeHtmlComment()', () => {
+		it( 'should allow removing a comment with the given comment ID', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			const firstCommentID = editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+
+			const secondCommentID = editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
+			} );
+
+			htmlCommentPlugin.removeHtmlComment( firstCommentID );
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><!--bar--><p>Bar</p><p>Baz</p>' );
+
+			htmlCommentPlugin.removeHtmlComment( secondCommentID );
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+		} );
+
+		it( 'should throw an error when a comment with the given comment ID does not exist', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'foo', 'first' );
+			} );
+
+			editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'bar', 'second' );
+			} );
+
+			expectToThrowCKEditorError( () => {
+				htmlCommentPlugin.removeHtmlComment( 'third' );
+			}, /^html-comment-does-not-exist/, null );
+		} );
+	} );
 } );

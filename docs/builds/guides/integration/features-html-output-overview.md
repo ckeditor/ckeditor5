@@ -65,7 +65,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/images/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
+					<a href="../../../features/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html"><code>CKFinderUploadAdapter</code></a>
@@ -470,7 +470,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>data-comment-end-after</strong>="*"<br>    <strong>data-comment-start-before</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin adds <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments starts or ends.
+					The plugin adds the <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which the comment starts or ends.
 				</p>
 			</td>
 		</tr>
@@ -1551,6 +1551,39 @@ The data used to generate the following tables comes from the package metadata. 
 		</tr>
 	</tbody>
 </table>
+<h3 id="ckeditor5-minimap"><code>ckeditor5-minimap</code></h3>
+<p>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-minimap/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-minimap/ckeditor5-metadata.json</code></a>
+</p>
+<table class="features-html-output">
+	<thead>
+		<tr>
+			<th class="plugin">
+				Plugin
+			</th>
+			<th class="html-output">
+				HTML output
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/minimap.html">Content minimap</a>
+				</p>
+				<p>
+					<a href="../../../api/module_minimap_minimap-Minimap.html"><code>Minimap</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
 <h3 id="ckeditor5-page-break"><code>ckeditor5-page-break</code></h3>
 <p>
 	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-page-break/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-page-break/ckeditor5-metadata.json</code></a>
@@ -1865,7 +1898,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/revision-history/revision-history" data-skip-validation>Revision History</a>
+					<a href="../../../features/collaboration/revision-history" data-skip-validation>Revision History</a>
 				</p>
 				<p>
 					<a href="../../../api/module_revision-history_revisionhistory-RevisionHistory.html" data-skip-validation><code>RevisionHistory</code></a>
