@@ -10,8 +10,9 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
-ClassicEditor.builtinPlugins.push( SourceEditing );
+ClassicEditor.builtinPlugins.push( SourceEditing, GeneralHtmlSupport );
 
 ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
