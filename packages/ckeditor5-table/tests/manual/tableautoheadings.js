@@ -11,23 +11,23 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 const editors = [
 	{
 		id: 'editor-1',
-		autoHeading: { rows: 1 }
+		defaultHeadings: { rows: 1 }
 	},
 	{
 		id: 'editor-2',
-		autoHeading: { columns: 1 }
+		defaultHeadings: { columns: 1 }
 	},
 	{
 		id: 'editor-3',
-		autoHeading: { rows: 1, columns: 1 }
+		defaultHeadings: { rows: 1, columns: 1 }
 	},
 	{
 		id: 'editor-4',
-		autoHeading: { rows: 3, columns: 2 }
+		defaultHeadings: { rows: 3, columns: 2 }
 	}
 ];
 
-for ( const { id, autoHeading } of editors ) {
+for ( const { id, defaultHeadings } of editors ) {
 	ClassicEditor
 		.create( document.getElementById( id ), {
 			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
@@ -38,7 +38,7 @@ for ( const { id, autoHeading } of editors ) {
 			table: {
 				contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 				tableToolbar: [ 'bold', 'italic' ],
-				autoHeading
+				defaultHeadings
 			}
 		} )
 		.then( editor => {

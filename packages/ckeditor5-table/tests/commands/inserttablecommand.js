@@ -201,7 +201,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							autoHeading: { rows: 1 }
+							defaultHeadings: { rows: 1 }
 						}
 					} );
 
@@ -225,7 +225,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							autoHeading: { columns: 1 }
+							defaultHeadings: { columns: 1 }
 						}
 					} );
 
@@ -249,7 +249,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							autoHeading: { rows: 1, columns: 1 }
+							defaultHeadings: { rows: 1, columns: 1 }
 						}
 					} );
 
@@ -274,7 +274,7 @@ describe( 'InsertTableCommand', () => {
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
-							autoHeading: { rows: 3, columns: 2 }
+							defaultHeadings: { rows: 3, columns: 2 }
 						}
 					} );
 

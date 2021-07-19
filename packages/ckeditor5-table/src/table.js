@@ -80,7 +80,7 @@ export default class Table extends Plugin {
  * You can configure it like this:
  *
  *		const tableConfig = {
- *			autoHeading: {
+ *			defaultHeadings: {
  *				rows: 1,
  *				columns: 1
  *			}
@@ -88,7 +88,7 @@ export default class Table extends Plugin {
  *
  * Both rows and columns properties are optional defaulting to 0 (no heading).
  *
- * @member {Object} module:table/table~TableConfig#autoHeading
+ * @member {Object} module:table/table~TableConfig#defaultHeadings
  */
 
 /**

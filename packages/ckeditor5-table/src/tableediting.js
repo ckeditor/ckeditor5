@@ -121,8 +121,8 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
 		// Define all the config
-		editor.config.define( 'table.autoHeading.row', 0 );
-		editor.config.define( 'table.autoHeading.column', 0 );
+		editor.config.define( 'table.defaultHeadings.rows', 0 );
+		editor.config.define( 'table.defaultHeadings.columns', 0 );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
