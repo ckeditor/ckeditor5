@@ -39,10 +39,12 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 
 import ColorPicker from './colorpicker/colorpicker';
+import './fontsize.css';
 
-export default class ClassicEditor extends ClassicEditorBase {}
+export default class ClassicEditor extends ClassicEditorBase { }
 
 // Plugins to include in the build.
 ClassicEditor.builtinPlugins = [
@@ -79,6 +81,7 @@ ClassicEditor.builtinPlugins = [
 	Code,
 	Subscript,
 	Superscript,
+	FileRepository,
 	ColorPicker
 ];
 
@@ -153,25 +156,177 @@ ClassicEditor.defaultConfig = {
 	},
 	fontSize: {
 		options: [
-			'sizeDefault',
-			'size10',
-			'size14',
-			'size16',
-			'size18',
-			'size20',
-			'size24',
-			'size26',
-			'size28',
-			'size30',
-			'size32',
-			'size36',
-			'size42',
-			'size46',
-			'size48',
-			'size52',
-			'size56',
-			'size60',
-			'size72'
+			{
+				title: 'Default',
+				model: 'sizeDefault',
+				view: {
+					name: 'span',
+					classes: '',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 10',
+				model: 'size10',
+				view: {
+					name: 'span',
+					classes: 'text-size-10',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 14',
+				model: 'size14',
+				view: {
+					name: 'span',
+					classes: 'text-size-14',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 16',
+				model: 'size16',
+				view: {
+					name: 'span',
+					classes: 'text-size-16',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 18',
+				model: 'size18',
+				view: {
+					name: 'span',
+					classes: 'text-size-18',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 20',
+				model: 'size20',
+				view: {
+					name: 'span',
+					classes: 'text-size-20',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 24',
+				model: 'size24',
+				view: {
+					name: 'span',
+					classes: 'text-size-24',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 26',
+				model: 'size26',
+				view: {
+					name: 'span',
+					classes: 'text-size-26',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 28',
+				model: 'size28',
+				view: {
+					name: 'span',
+					classes: 'text-size-28',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 30',
+				model: 'size30',
+				view: {
+					name: 'span',
+					classes: 'text-size-30',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 32',
+				model: 'size32',
+				view: {
+					name: 'span',
+					classes: 'text-size-32',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 36',
+				model: 'size36',
+				view: {
+					name: 'span',
+					classes: 'text-size-36',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 42',
+				model: 'size42',
+				view: {
+					name: 'span',
+					classes: 'text-size-42',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 46',
+				model: 'size46',
+				view: {
+					name: 'span',
+					classes: 'text-size-46',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 48',
+				model: 'size48',
+				view: {
+					name: 'span',
+					classes: 'text-size-48',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 52',
+				model: 'size52',
+				view: {
+					name: 'span',
+					classes: 'text-size-52',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 56',
+				model: 'size56',
+				view: {
+					name: 'span',
+					classes: 'text-size-56',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 60',
+				model: 'size60',
+				view: {
+					name: 'span',
+					classes: 'text-size-60',
+					priority: 7
+				}
+			},
+			{
+				title: 'Size 72',
+				model: 'size72',
+				view: {
+					name: 'span',
+					classes: 'text-size-72',
+					priority: 7
+				}
+			}
 		],
 		supportAllValues: false
 	},
@@ -401,8 +556,8 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	mediaEmbed: {
-        previewsInData: true
-    },
+		previewsInData: true
+	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'it'
 };

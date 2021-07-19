@@ -44,8 +44,7 @@
     "@ckeditor/ckeditor5-paste-from-office": "^29.0.0",
     "@ckeditor/ckeditor5-table": "^29.0.0",
     "@ckeditor/ckeditor5-typing": "^29.0.0",
-    "@eastdesire/jscolor": "^2.4.5",
-    "ckeditor5-colorpicker": "file:../ckeditor5-colorpicker"
+    "@eastdesire/jscolor": "^2.4.5"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^29.0.0",
@@ -75,6 +74,7 @@
   },
   "scripts": {
     "build": "webpack --mode production",
+    "build-svi": "webpack --mode development",
     "preversion": "npm run build"
   }
 }

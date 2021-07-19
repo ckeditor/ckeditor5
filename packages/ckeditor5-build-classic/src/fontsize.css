@@ -1,0 +1,98 @@
+/*
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* The values should be synchronized with the "FONT_SIZE_PRESET_UNITS" object in the "/src/fontsize/utils.js" file. */
+
+/* Styles should be prefixed with the `.ck-content` class.
+See https://github.com/ckeditor/ckeditor5/issues/6636 */
+.ck-content {
+	& .text-tiny {
+		font-size: 0.7em;
+	}
+
+	& .text-small {
+		font-size: 0.85em;
+	}
+
+	& .text-big {
+		font-size: 1.4em;
+	}
+
+	& .text-huge {
+		font-size: 1.8em;
+	}
+
+	& .text-size-10 {
+		font-size: 0.625rem;
+	}
+
+	& .text-size-14 {
+		font-size: 0.875rem;
+	}
+
+	& .text-size-16 {
+		font-size: 1rem;
+	}
+
+	& .text-size-18 {
+		font-size: 1.125rem;
+	}
+
+	& .text-size-20 {
+		font-size: 1.25rem;
+	}
+
+	& .text-size-24 {
+		font-size: 1.5rem;
+	}
+
+	& .text-size-26 {
+		font-size: 1.625rem;
+	}
+
+	& .text-size-28 {
+		font-size: 1.75rem;
+	}
+
+	& .text-size-30 {
+		font-size: 1.875rem;
+	}
+
+	& .text-size-32 {
+		font-size: 2rem;
+	}
+
+	& .text-size-36 {
+		font-size: 2.25rem;
+	}
+
+	& .text-size-42 {
+		font-size: 2.625rem;
+	}
+
+	& .text-size-46 {
+		font-size: 2.875rem;
+	}
+
+	& .text-size-48 {
+		font-size: 3rem;
+	}
+
+	& .text-size-52 {
+		font-size: 3.25rem;
+	}
+
+	& .text-size-56 {
+		font-size: 3.5rem;
+	}
+
+	& .text-size-60 {
+		font-size: 3.75rem;
+	}
+
+	& .text-size-72 {
+		font-size: 4.5rem;
+	}
+}
