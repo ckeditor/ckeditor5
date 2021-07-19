@@ -40,9 +40,6 @@ if ( TRAVIS_JOB_TYPE === 'Validation' ) {
 	// Verifying manual tests.
 	exec( 'yarn', 'run', 'dll:build' );
 	exec( 'sh', './scripts/check-manual-tests.sh', '-r', 'ckeditor5', '-f', 'ckeditor5' );
-
-	// Build the docs.
-	exec( 'yarn', 'run', 'docs', '--strict' );
 }
 
 /**

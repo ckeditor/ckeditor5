@@ -23,8 +23,6 @@ install:
 script:
 - ./scripts/ci/travis-check.js
 - if [[ $TRAVIS_JOB_TYPE == "Tests" && $TRAVIS_TEST_RESULT -eq 0 ]]; then ./scripts/ci/trigger-ckeditor5-continuous-integration.sh; fi
-# "travis_wait" does not work in child processes. Hence, it must be called from the configuration file.
-- if [[ $TRAVIS_JOB_TYPE == "Validation" && $TRAVIS_TEST_RESULT -eq 0 ]]; then travis_wait 30 yarn run docs:build-and-publish-nightly; fi
 after_script:
 - export END_TIME=$( date +%s )
 - ckeditor5-dev-tests-notify-travis-status
