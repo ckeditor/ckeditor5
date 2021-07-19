@@ -9,6 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import HtmlComment from '../src/htmlcomment';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'HtmlComment', () => {
 	let model, root, editor, htmlCommentPlugin;
@@ -280,17 +281,6 @@ describe( 'HtmlComment', () => {
 			expect( firstCommentID ).to.not.equal( secondCommentID );
 		} );
 
-		it( 'should create a marker at the given position constructed with the comment ID', () => {
-			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
-
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
-
-				htmlCommentPlugin.createHtmlComment( position, 'foo' );
-			} );
-		} );
-
 		it( 'should allow creating an HTML comment inside the text', () => {
 			editor.setData( '<p>Foo</p>' );
 
@@ -379,19 +369,45 @@ describe( 'HtmlComment', () => {
 				const root = editor.model.document.getRoot();
 				const position = writer.createPositionAt( root, 1 );
 
-				return htmlCommentPlugin.createHtmlComment( position, 'foo', 'first' );
-			} );
-
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
-
-				return htmlCommentPlugin.createHtmlComment( position, 'bar', 'second' );
+				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
 			} );
 
 			expectToThrowCKEditorError( () => {
-				htmlCommentPlugin.removeHtmlComment( 'third' );
+				htmlCommentPlugin.removeHtmlComment( 'invalid-comment-id' );
 			}, /^html-comment-does-not-exist/, null );
+		} );
+	} );
+
+	describe( 'getHtmlComment()', () => {
+		it( 'should return a comment content and position for the given ID', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			const firstCommentId = editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root, 1 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			} );
+
+			const secondCommentId = editor.model.change( writer => {
+				const root = editor.model.document.getRoot();
+				const position = writer.createPositionAt( root.getChild( 0 ), 2 );
+
+				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
+			} );
+
+			const firstCommentData = htmlCommentPlugin.getHtmlComment( firstCommentId );
+			const secondCommentData = htmlCommentPlugin.getHtmlComment( secondCommentId );
+
+			expect( firstCommentData.content ).to.equal( 'foo' );
+			expect( firstCommentData.position ).to.be.instanceOf( Position );
+			expect( firstCommentData.position.path ).to.deep.equal( [ 1 ] );
+			expect( firstCommentData.position.root ).to.be.equal( editor.model.document.getRoot() );
+
+			expect( secondCommentData.content ).to.equal( 'bar' );
+			expect( secondCommentData.position ).to.be.instanceOf( Position );
+			expect( secondCommentData.position.path ).to.deep.equal( [ 0, 2 ] );
+			expect( secondCommentData.position.root ).to.be.equal( editor.model.document.getRoot() );
 		} );
 	} );
 } );
