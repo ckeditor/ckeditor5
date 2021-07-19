@@ -194,5 +194,106 @@ describe( 'InsertTableCommand', () => {
 				);
 			} );
 		} );
+
+		describe( 'auto headings', () => {
+			it( 'should have first row as a heading by default', async () => {
+				const _editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							autoHeading: { rows: 1 }
+						}
+					} );
+
+				const _model = _editor.model;
+				const _command = new InsertTableCommand( _editor );
+
+				setData( _model, '[]' );
+
+				_command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( _model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1 } )
+				);
+			} );
+
+			it( 'should have first column as a heading by default', async () => {
+				const _editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							autoHeading: { columns: 1 }
+						}
+					} );
+
+				const _model = _editor.model;
+				const _command = new InsertTableCommand( _editor );
+
+				setData( _model, '[]' );
+
+				_command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( _model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should have first row and first column as a heading by default', async () => {
+				const _editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							autoHeading: { rows: 1, columns: 1 }
+						}
+					} );
+
+				const _model = _editor.model;
+				const _command = new InsertTableCommand( _editor );
+
+				setData( _model, '[]' );
+
+				_command.execute( { rows: 3, columns: 3 } );
+
+				expect( getData( _model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1, headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should have first three rows and two columns as a heading by default', async () => {
+				const _editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							autoHeading: { rows: 3, columns: 2 }
+						}
+					} );
+
+				const _model = _editor.model;
+				const _command = new InsertTableCommand( _editor );
+
+				setData( _model, '[]' );
+
+				_command.execute( { rows: 4, columns: 3 } );
+
+				expect( getData( _model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 3, headingColumns: 2 } )
+				);
+			} );
+		} );
 	} );
 } );

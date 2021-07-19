@@ -120,6 +120,10 @@ export default class TableEditing extends Plugin {
 		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
+		// Define all the config
+		editor.config.define( 'table.autoHeading.row', 0 );
+		editor.config.define( 'table.autoHeading.column', 0 );
+
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );

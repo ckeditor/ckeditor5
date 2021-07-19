@@ -49,8 +49,17 @@ export default class InsertTableCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const config = this.editor.config.get( 'table' );
 
 		const insertionRange = findOptimalInsertionRange( selection, model );
+
+		if ( config.autoHeading && config.autoHeading.rows ) {
+			options.headingRows = config.autoHeading.rows;
+		}
+
+		if ( config.autoHeading && config.autoHeading.columns ) {
+			options.headingColumns = config.autoHeading.columns;
+		}
 
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, options );
