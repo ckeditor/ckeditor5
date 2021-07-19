@@ -17,6 +17,16 @@ ClassicEditor
 				'|',
 				'imageTextAlternative'
 			]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /.*/,
+					attributes: true,
+					classes: true,
+					styles: true
+				}
+			]
 		}
 	} )
 	.then( editor => {
