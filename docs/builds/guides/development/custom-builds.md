@@ -22,7 +22,7 @@ Some of the reasons for creating custom builds are:
 * Enabling bug fixes which are still not a part of any public release.
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor 5, check also the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create easily a custom build through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor 5, check also the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create easily a custom build through a simple and intuitive UI. Check the {@link builds/guides/development/online-builder step-by-step guide} on how to use it.
 </info-box>
 
 ## Requirements
