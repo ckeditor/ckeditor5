@@ -27,7 +27,7 @@ ClassicEditor
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		toolbar: [ 'mediaEmbed', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
 		mediaEmbed: {
-			previewsInData: true,
+			// previewsInData: true,
 			toolbar: [ 'blockQuote' ]
 		},
 		htmlSupport: {
