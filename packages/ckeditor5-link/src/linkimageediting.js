@@ -126,7 +126,7 @@ function upcastLink( editor ) {
 			// 3. A "root > ... > block > a > img" structure.
 			// 4. A "root > ... > block > a > picture > img" structure.
 			//
-			// but the latter should only be considered by this converter when the inline image plugin
+			// but the last 2 cases should only be considered by this converter when the inline image plugin
 			// is NOT loaded in the editor (because otherwise, that would be a plain, linked inline image).
 			if ( isImageInlinePluginLoaded && !blockImageView ) {
 				return;
