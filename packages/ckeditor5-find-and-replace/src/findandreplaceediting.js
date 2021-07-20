@@ -25,113 +25,6 @@ import '../theme/findandreplace.css';
 
 const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 
-// Reacts to document changes in order to update search list.
-function onDocumentChange( results, model, searchCallback ) {
-	const changedNodes = new Set();
-	let removedMarkers = [];
-
-	const changes = model.document.differ.getChanges();
-
-	// Get nodes in which changes happened to re-run a search callback on them.
-	changes.forEach( change => {
-		if ( change.name === '$text' || model.schema.isInline( change.position.nodeAfter ) ) {
-			changedNodes.add( change.position.parent );
-
-			[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
-				removedMarkers.push( markerAtChange.name );
-			} );
-		} else if ( change.type === 'insert' ) {
-			changedNodes.add( change.position.nodeAfter );
-		}
-	} );
-
-	// Get markers from removed nodes also.
-	model.document.differ.getChangedMarkers().forEach( ( { name, data: { newRange } } ) => {
-		if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
-			removedMarkers.push( name );
-		}
-	} );
-
-	// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
-	changedNodes.forEach( node => {
-		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
-
-		markersInNode.forEach( marker => removedMarkers.push( marker.name ) );
-	} );
-
-	// Only find and result markers should be removed.
-	removedMarkers = removedMarkers.filter( markerName => markerName.startsWith( 'findResult:' ) );
-
-	// Since the implemented match algorithm is typically searching outside of the changed scope (e.g. entire parent)
-	// it will remove other valid markers and add them once again. It's pointless and generates extra change events.
-	const proposedResults = [].concat( ...Array.from( changedNodes ).map( nodeToCheck =>
-		findResultsInRange( model.createRangeOn( nodeToCheck ), model, searchCallback ) ) );
-
-	for ( let i = proposedResults.length - 1; i >= 0; i-- ) {
-		const proposedItem = proposedResults[ i ];
-
-		for ( const removedMarkerName of removedMarkers ) {
-			const removedMarker = model.markers.get( removedMarkerName );
-
-			if ( removedMarker.getRange().isEqual( proposedItem.range ) ) {
-				proposedResults.splice( i, 1 );
-				removedMarkers.splice( removedMarkers.indexOf( removedMarkerName ), 1 );
-				break;
-			}
-		}
-	}
-
-	for ( const proposedResult of proposedResults ) {
-		model.change( writer => {
-			const marker = writer.addMarker( proposedResult.id, {
-				usingOperation: false,
-				affectsData: false,
-				range: proposedResult.range
-			} );
-
-			const index = findInsertIndex( results, marker );
-
-			results.add( {
-				id: proposedResult.id,
-				label: proposedResult.label,
-				marker
-			}, index );
-		} );
-	}
-
-	// Remove results & markers from the changed part of content.
-	model.change( writer => {
-		removedMarkers.forEach( markerName => {
-			const removedResult = getResultByMarker( markerName );
-
-			// Remove the result first - in order to prevent rendering a removed marker.
-			if ( removedResult ) {
-				results.remove( removedResult );
-			}
-
-			if ( model.markers.has( markerName ) ) {
-				writer.removeMarker( markerName );
-			}
-		} );
-	} );
-
-	function getResultByMarker( markerName ) {
-		for ( const result of results ) {
-			if ( result.marker.name === markerName ) {
-				return result;
-			}
-		}
-	}
-
-	function findInsertIndex( resultsList, markerToInsert ) {
-		const result = resultsList.find( ( { marker } ) => {
-			return markerToInsert.getStart().isBefore( marker.getStart() );
-		} );
-
-		return result ? resultsList.getIndex( result ) : resultsList.length;
-	}
-}
-
 /**
  * Implements the editing part for find and replace plugin. For example conversion, commands etc.
  *
@@ -301,5 +194,112 @@ export default class FindAndReplaceEditing extends Plugin {
 				};
 			}
 		} );
+	}
+}
+
+// Reacts to document changes in order to update search list.
+function onDocumentChange( results, model, searchCallback ) {
+	const changedNodes = new Set();
+	let removedMarkers = [];
+
+	const changes = model.document.differ.getChanges();
+
+	// Get nodes in which changes happened to re-run a search callback on them.
+	changes.forEach( change => {
+		if ( change.name === '$text' || model.schema.isInline( change.position.nodeAfter ) ) {
+			changedNodes.add( change.position.parent );
+
+			[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
+				removedMarkers.push( markerAtChange.name );
+			} );
+		} else if ( change.type === 'insert' ) {
+			changedNodes.add( change.position.nodeAfter );
+		}
+	} );
+
+	// Get markers from removed nodes also.
+	model.document.differ.getChangedMarkers().forEach( ( { name, data: { newRange } } ) => {
+		if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
+			removedMarkers.push( name );
+		}
+	} );
+
+	// Get markers from the updated nodes and remove all (search will be re-run on these nodes).
+	changedNodes.forEach( node => {
+		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
+
+		markersInNode.forEach( marker => removedMarkers.push( marker.name ) );
+	} );
+
+	// Only find and result markers should be removed.
+	removedMarkers = removedMarkers.filter( markerName => markerName.startsWith( 'findResult:' ) );
+
+	// Since the implemented match algorithm is typically searching outside of the changed scope (e.g. entire parent)
+	// it will remove other valid markers and add them once again. It's pointless and generates extra change events.
+	const proposedResults = [].concat( ...Array.from( changedNodes ).map( nodeToCheck =>
+		findResultsInRange( model.createRangeOn( nodeToCheck ), model, searchCallback ) ) );
+
+	for ( let i = proposedResults.length - 1; i >= 0; i-- ) {
+		const proposedItem = proposedResults[ i ];
+
+		for ( const removedMarkerName of removedMarkers ) {
+			const removedMarker = model.markers.get( removedMarkerName );
+
+			if ( removedMarker.getRange().isEqual( proposedItem.range ) ) {
+				proposedResults.splice( i, 1 );
+				removedMarkers.splice( removedMarkers.indexOf( removedMarkerName ), 1 );
+				break;
+			}
+		}
+	}
+
+	for ( const proposedResult of proposedResults ) {
+		model.change( writer => {
+			const marker = writer.addMarker( proposedResult.id, {
+				usingOperation: false,
+				affectsData: false,
+				range: proposedResult.range
+			} );
+
+			const index = findInsertIndex( results, marker );
+
+			results.add( {
+				id: proposedResult.id,
+				label: proposedResult.label,
+				marker
+			}, index );
+		} );
+	}
+
+	// Remove results & markers from the changed part of content.
+	model.change( writer => {
+		removedMarkers.forEach( markerName => {
+			const removedResult = getResultByMarker( markerName );
+
+			// Remove the result first - in order to prevent rendering a removed marker.
+			if ( removedResult ) {
+				results.remove( removedResult );
+			}
+
+			if ( model.markers.has( markerName ) ) {
+				writer.removeMarker( markerName );
+			}
+		} );
+	} );
+
+	function getResultByMarker( markerName ) {
+		for ( const result of results ) {
+			if ( result.marker.name === markerName ) {
+				return result;
+			}
+		}
+	}
+
+	function findInsertIndex( resultsList, markerToInsert ) {
+		const result = resultsList.find( ( { marker } ) => {
+			return markerToInsert.getStart().isBefore( marker.getStart() );
+		} );
+
+		return result ? resultsList.getIndex( result ) : resultsList.length;
 	}
 }
