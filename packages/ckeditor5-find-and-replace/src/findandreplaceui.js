@@ -88,7 +88,7 @@ export default class FindAndReplaceUI extends Plugin {
 			this.formView = formView;
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				dropdown.buttonView.actionView.fire( 'execute' );
+				dropdown.buttonView.fire( 'execute' );
 
 				cancelEvent();
 			} );
