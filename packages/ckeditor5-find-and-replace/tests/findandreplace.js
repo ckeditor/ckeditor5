@@ -5,6 +5,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -41,7 +42,7 @@ describe( 'FindAndReplace', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicEditor.create( editorElement, {
-			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing ],
+			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing, Table ],
 			toolbar: [ 'findAndReplace' ]
 		} );
 
@@ -262,7 +263,7 @@ describe( 'FindAndReplace', () => {
 				expect( findAndReplaceEditing.state.results.length ).to.eql( 2 );
 			} );
 
-			it( 'modifying attribute on matched text doens\'t crash', () => {
+			it( 'modifying attribute on matched text doesn\'t crash', () => {
 				// (https://github.com/cksource/ckeditor5-internal/issues/859).
 				editor.setData( LONG_TEXT );
 
@@ -277,6 +278,32 @@ describe( 'FindAndReplace', () => {
 				model.change( writer => {
 					writer.setAttribute( 'bold', true, range );
 				} );
+			} );
+
+			it( 'merging cells with matched text doesn\'t crash', () => {
+				// (https://github.com/cksource/ckeditor5-internal/issues/857).
+				const model = editor.model;
+
+				editor.setData( '<p>foo</p>' +
+					'<table>' +
+					'	<tr>' +
+					'		<td>bar</td>' +
+					'		<td>bar</td>' +
+					'	</tr>' +
+					'</table>' );
+
+				const tableCellElement = model.document.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+				const range = model.createRange(
+					model.createPositionAt( tableCellElement, 'before' ),
+					model.createPositionAt( tableCellElement, 'after' )
+				);
+
+				model.change( writer => {
+					writer.setSelection( range );
+				} );
+
+				editor.execute( 'mergeTableCellRight' );
 			} );
 
 			it( 'subsequent findPrevious events causes just a findPrevious command call', () => {
