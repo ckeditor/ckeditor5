@@ -35,6 +35,7 @@ ClassicEditor
 			allow: [
 				{
 					name: /^(ul|ol|li)$/,
+					classes: true,
 					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
 				}
 			],

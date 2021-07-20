@@ -88,9 +88,7 @@ function viewToModelListAttributeConverter( dataFilter, listName ) {
 			}
 
 			for ( const node of data.viewItem.getChildren() ) {
-				if ( node.is( 'element', 'li' ) ) {
-					conversionApi.store.$htmlList.set( node, attributeName );
-				}
+				conversionApi.store.$htmlList.set( node, attributeName );
 			}
 
 			conversionApi.writer.setAttribute( attributeName, viewAttributes, root );
@@ -138,12 +136,8 @@ function modelToViewListItemAttributeConverter( editor ) {
 			}
 
 			const viewAttributes = root.getAttribute( attributeId );
-
-			if ( !viewAttributes ) {
-				return;
-			}
-
 			const listViewElement = conversionApi.mapper.toViewElement( data.item ).parent;
+
 			setViewAttributes( conversionApi.writer, viewAttributes, listViewElement );
 		} );
 	};
