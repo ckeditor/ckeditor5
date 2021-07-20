@@ -9,7 +9,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import HtmlComment from '../src/htmlcomment';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'HtmlComment', () => {
 	let model, root, editor, htmlCommentPlugin;
@@ -223,18 +223,6 @@ describe( 'HtmlComment', () => {
 		} );
 	} );
 
-	function addMarker( name, element, offset ) {
-		model.change( writer => {
-			writer.addMarker( name, {
-				usingOperation: true,
-				affectsData: true,
-				range: writer.createRange(
-					writer.createPositionAt( element, offset )
-				)
-			} );
-		} );
-	}
-
 	describe( 'createHtmlComment()', () => {
 		it( 'should create an HTML comment between elements', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
@@ -378,36 +366,129 @@ describe( 'HtmlComment', () => {
 		} );
 	} );
 
-	describe( 'getHtmlComment()', () => {
-		it( 'should return a comment content and position for the given ID', () => {
+	describe( 'getHtmlCommentsInRange()', () => {
+		it( 'should return all comment marker IDs present in the specified range', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			const firstCommentId = editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
+			htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 1, 0 ] ),
+				'foo'
+			);
 
-				return htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2 ] ),
+				'bar'
+			);
+
+			const id3 = htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2, 1 ] ),
+				'foo'
+			);
+
+			const id4 = htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2, 3 ] ),
+				'foo'
+			);
+
+			const range = editor.model.change( writer => {
+				return writer.createRangeIn( root.getChild( 2 ) );
 			} );
 
-			const secondCommentId = editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root.getChild( 0 ), 2 );
+			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id3, id4 ] );
+		} );
 
-				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
-			} );
+		it( 'should return all comment marker IDs present in the specified range including comments at range boundaries', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			const firstCommentData = htmlCommentPlugin.getHtmlComment( firstCommentId );
-			const secondCommentData = htmlCommentPlugin.getHtmlComment( secondCommentId );
+			htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 1, 0 ] ),
+				'foo'
+			);
 
-			expect( firstCommentData.content ).to.equal( 'foo' );
-			expect( firstCommentData.position ).to.be.instanceOf( Position );
-			expect( firstCommentData.position.path ).to.deep.equal( [ 1 ] );
-			expect( firstCommentData.position.root ).to.be.equal( editor.model.document.getRoot() );
+			htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2 ] ),
+				'bar'
+			);
 
-			expect( secondCommentData.content ).to.equal( 'bar' );
-			expect( secondCommentData.position ).to.be.instanceOf( Position );
-			expect( secondCommentData.position.path ).to.deep.equal( [ 0, 2 ] );
-			expect( secondCommentData.position.root ).to.be.equal( editor.model.document.getRoot() );
+			const posStart = createPositionFromPath( [ 2, 1 ] );
+			const posEnd = createPositionFromPath( [ 2, 3 ] );
+
+			const id3 = htmlCommentPlugin.createHtmlComment( posStart, 'baz' );
+			const id4 = htmlCommentPlugin.createHtmlComment( posEnd, 'biz' );
+
+			const range = new Range( posStart, posEnd );
+
+			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id3, id4 ] );
+		} );
+
+		it( 'should return all comment marker IDs present in the specified collapsed range', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2, 0 ] ),
+				'foo'
+			);
+
+			htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2, 2 ] ),
+				'bar'
+			);
+
+			const position = createPositionFromPath( [ 2, 1 ] );
+
+			const id1 = htmlCommentPlugin.createHtmlComment( position, 'baz' );
+			const id2 = htmlCommentPlugin.createHtmlComment( position, 'biz' );
+
+			const range = new Range( position, position );
+
+			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id1, id2 ] );
 		} );
 	} );
+
+	describe( 'getHtmlCommentData()', () => {
+		it( 'should return a position and the content for the given comment', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			const id1 = htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 0 ] ),
+				'foo'
+			);
+
+			const id2 = htmlCommentPlugin.createHtmlComment(
+				createPositionFromPath( [ 2, 2 ] ),
+				'bar'
+			);
+
+			const commentData1 = htmlCommentPlugin.getHtmlCommentData( id1 );
+			const commentData2 = htmlCommentPlugin.getHtmlCommentData( id2 );
+
+			expect( commentData1 ).to.be.an( 'object' );
+			expect( commentData1.position.isEqual( createPositionFromPath( [ 0 ] ) ) ).to.be.true;
+			expect( commentData1.content ).to.equal( 'foo' );
+
+			expect( commentData2 ).to.be.an( 'object' );
+			expect( commentData2.position.isEqual( createPositionFromPath( [ 2, 2 ] ) ) ).to.be.true;
+			expect( commentData2.content ).to.equal( 'bar' );
+		} );
+	} );
+
+	function createPositionFromPath( path ) {
+		return model.change( writer => {
+			const root = editor.model.document.getRoot();
+
+			return writer.createPositionFromPath( root, path );
+		} );
+	}
+
+	function addMarker( name, element, offset ) {
+		model.change( writer => {
+			writer.addMarker( name, {
+				usingOperation: true,
+				affectsData: true,
+				range: writer.createRange(
+					writer.createPositionAt( element, offset )
+				)
+			} );
+		} );
+	}
 } );

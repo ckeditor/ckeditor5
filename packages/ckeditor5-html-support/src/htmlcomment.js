@@ -151,14 +151,14 @@ export default class HtmlComment extends Plugin {
 	}
 
 	/**
-	 * Gets the HTML comment with the given ID.
+	 * Gets the HTML comment data for the comment with a given ID.
 	 *
 	 * Returns `null` if the comment does not exist.
 	 *
 	 * @param {String} commentID
 	 * @returns {module:html-support/htmlcomment~HtmlCommentData}
 	 */
-	getHtmlComment( commentID ) {
+	getHtmlCommentData( commentID ) {
 		const editor = this.editor;
 		const marker = editor.model.markers.get( commentID );
 		const root = editor.model.document.getRoot();
@@ -174,47 +174,25 @@ export default class HtmlComment extends Plugin {
 	}
 
 	/**
-	 * Updates the HTML comment.
+	 * Gets all HTML comment in the given range including the comments existing at the range boundaries.
 	 *
-	 * Using this method it is possible to update the comment's position and/or its content.
-	 *
-	 * @param {String} commentID
-	 * @param {module:html-support/htmlcomment~HtmlCommentData} options
-	 */
-	updateHtmlComment( commentID, { position, content } ) {
-		const editor = this.editor;
-		const marker = editor.model.markers.get( commentID );
-		const root = editor.model.document.getRoot();
-
-		if ( !marker ) {
-			throw new CKEditorError( 'html-comment-does-not-exist', null );
-		}
-
-		editor.model.change( writer => {
-			if ( position ) {
-				const range = writer.createRange( position );
-
-				writer.updateMarker( marker, { range } );
-			}
-
-			if ( content ) {
-				writer.setAttribute( commentID, content, root );
-			}
-		} );
-	}
-
-	/**
-	 * Gets all HTML comment at the given position.
-	 *
-	 * @param {module:engine/model/position~Position} position
+	 * @param {module:engine/model/range~Range} range
 	 * @returns {Array.<String>} HTML Comment IDs
 	 */
-	getHtmlCommentsAtPosition( position ) {
-		const intersectingMarkers = Array.from( this.editor.model.markers.getMarkersAtPosition( position ) );
+	getHtmlCommentsInRange( range ) {
+		// Unfortunately MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
+		return Array.from( this.editor.model.markers.getMarkersGroup( '$comment' ) )
+			.filter( marker => isCommentMarkerInRange( marker, range ) )
+			.map( marker => marker.name );
 
-		return intersectingMarkers
-			.filter( marker => marker.name.startsWith( '$comment:' ) )
-			.map( commentMarker => commentMarker.name );
+		function isCommentMarkerInRange( commentMarker, range ) {
+			const position = commentMarker.getRange().start;
+
+			return (
+				( position.isAfter( range.start ) || position.isEqual( range.start ) ) &&
+				( position.isBefore( range.end ) || position.isEqual( range.end ) )
+			);
+		}
 	}
 }
 
