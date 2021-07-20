@@ -7,6 +7,10 @@ CKEditor 5 link feature
 
 This package implements the link feature for CKEditor 5. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
+## Demo
+
+Check out the demo in the [link feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/link.html#demo).
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-link` package](https://ckeditor.com/docs/ckeditor5/latest/api/link.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

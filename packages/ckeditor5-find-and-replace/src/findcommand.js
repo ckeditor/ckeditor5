@@ -42,7 +42,7 @@ export default class FindCommand extends Command {
 	 *
 	 * @param {Function|String} callbackOrText
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be ignored.
+	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be matched.
 	 * @param {Boolean} [options.wholeWords=false] If set to `true`, only whole words that match `callbackOrText` will be matched.
 	 * @fires execute
 	 */
@@ -58,15 +58,11 @@ export default class FindCommand extends Command {
 
 			this.state.searchText = callbackOrText;
 		} else {
-			// @todo: disable callback version
 			findCallback = callbackOrText;
 		}
 
 		// Initial search is done on all nodes inside the content.
 		const range = model.createRangeIn( model.document.getRoot() );
-
-		// @todo: fix me
-		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
 
 		const ret = {
 			results: updateFindResultFromRange( range, model, findCallback ),
@@ -78,7 +74,6 @@ export default class FindCommand extends Command {
 		this.state.highlightedResult = ret.results.get( 0 );
 
 		if ( typeof callbackOrText === 'string' ) {
-			// @todo: eliminate this code repetition. Done to fix unit tests.
 			this.state.searchText = callbackOrText;
 		}
 

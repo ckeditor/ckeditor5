@@ -11,7 +11,7 @@ modified_at: 2021-06-17
 ## Overview
 This package allows for adjusting the image appearance by:
 * **Applying CSS classes** - adding a particular [predefined](#ready-to-use-styles) or [custom](#configuring-the-styles) CSS class or removing any style-related CSS class,
-* **Managing the HTML representation** by changing the image type from inline to block and vice versa. The type conversion occurs if the newly applied style doesn't support the current image type.
+* **Managing the HTML representation** by changing the image type from inline to block and vice versa. Applying a style may change the type of the image, depending on the configuration of the style.
 
 <info-box>
 	The actual styling of the images is the integrator's job. CKEditor 5 WYSIWYG editor comes with some default styles, but they will only be applied to the images inside the editor. The integrator needs to style them appropriately on the target pages.
@@ -40,7 +40,7 @@ The inline type images are represented as inline HTML elements and can be insert
 Block type images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. The HTML representation of the block image looks like this:
 * `<figure class=”image image-style-class”><img></img></figure>`.
 
-**Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. The inline <-> block conversion occurs if the newly applied style does not support the current image type.
+**Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. Applying a style may change the type of the image, depending on the configuration of the style.
 
 When a new image is inserted, the editor will, by default, choose the optimal image type based on the context of the insertion (e.g. the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageinsert~ImageInsertConfig#type `image.insert.type` configuration}.
 
@@ -83,9 +83,9 @@ A semantical style lets the user choose from predefined appearances of the image
 As the most of the predefined editor builds support editing a structured content which requires passing the control over the possible image appearances to the developer, they introduce a UI containing a set of buttons applying the semantical styles (taken from the [default styles](#styles-table) listed below).
 
 The example below presents an editor with such a basic configuration. There are three types of the images:
-* a block image - a representation of a block image with no style-related CSS class,
-* an inline image - a representation of an inline image with no style-related CSS class,
-* a side image - a semantical style applying the `image-style-side` CSS class to it.
+* **a block image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Block image} - a representation of a block image with no style-related CSS class,
+* **an inline image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline image} - a representation of an inline image with no style-related CSS class,
+* **a side image** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Side image} - a semantical style applying the `image-style-side` CSS class to it.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
@@ -118,14 +118,14 @@ Presentational styles do not relate to any special meaning of the content. They 
 </info-box>
 
 The sample editor below uses predefined presentational image styles represented by buttons grouped in the drop-downs by the way the image is displayed in the document:
-* <img class="inline-icon" src="../../assets/img/icons/object-inline.svg">**Inline images** - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
-* <img class="inline-icon" src="../../assets/img/icons/object-inline-left.svg">**Images wrapped with text** - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
-  * `'align-left'`,
-  * `'align-right'`.
-* <img class="inline-icon" src="../../assets/img/icons/object-center.svg">**Images placed between the paragraphs** - block images without the CSS `float` property. It contains following image styles:
-  * `'align-block-left'`,
-  * `'align-block-right'`,
-  * `'block'` - this style is the default one for block images and it does not apply any CSS class to the image.
+* **Inline images** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline.svg Inline images} - displayed inside a line of text. It is a default style for the inline images and it does not apply any CSS class to the image.
+* **Images wrapped with text** {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Inline image aligned to the left} - these are the images with the CSS `float` property. They can be either in the inline or block mode, but to keep the valid HTML output, the block images (wrapped with the `<figure>` tags) can only be placed before or after paragraphs, not in the middle of one. It contains the following image styles:
+  * `'align-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-left.svg Image aligned to the left},
+  * `'align-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-inline-right.svg Image aligned to the right}.
+* **Images placed between the paragraphs** {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Centered image} - block images without the CSS `float` property. It contains following image styles:
+  * `'align-block-left'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-left.svg Block image aligned to the left},
+  * `'align-block-right'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-right.svg Block image aligned to the right},
+  * `'block'` {@icon @ckeditor/ckeditor5-core/theme/icons/object-center.svg Centered block image} - this style is the default one for block images and it does not apply any CSS class to the image.
 
 You can change the style of an individual image using the contextual toolbar invoked after an image is clicked.
 
@@ -417,7 +417,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation} guide to learn how to enable this feature.
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 

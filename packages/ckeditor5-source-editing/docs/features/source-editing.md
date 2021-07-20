@@ -15,13 +15,13 @@ The changes made to the document source will be applied to the editor's {@link f
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
 
 {@snippet features/source-editing-imports}
 
 {@snippet features/source-editing}
 
-The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. It is enough to add the plugin to the editor to change the source editing mode. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
 {@snippet features/source-editing-with-markdown}
 
@@ -49,6 +49,21 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ SourceEditing, ... ],
+		toolbar: [ 'sourceEditing', ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+To achieve Markdown source editing mode just add the {@link module:markdown-gfm/markdown~Markdown} Markdown plugin to the editor.
+
+```js
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ SourceEditing, Markdown, ... ],
 		toolbar: [ 'sourceEditing', ... ]
 	} )
 	.then( ... )

@@ -20,7 +20,7 @@ By default, if the image caption is empty, the `<figcaption>` element is not vis
 
 ## Demo
 
-Click on an image and use the contextual image toolbar to toggle captions on and off. Click on a caption to edit it.
+Click on an image and use the contextual image toolbar {@icon @ckeditor/ckeditor5-core/theme/icons/caption.svg Image caption} to toggle captions on and off. Click on a caption to edit it.
 
 {@snippet features/image-caption}
 
@@ -30,7 +30,7 @@ Click on an image and use the contextual image toolbar to toggle captions on and
 
 ## Installation
 
-This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation} guide to learn how to enable this feature.
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
 
 ## Common API
 

@@ -9,7 +9,7 @@ This package implements the find and replace feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Find and replace feature](https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html) guide.
+Check out the demo in the [find and replace feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/find-and-replace.html#demo).
 
 ## Documentation
 

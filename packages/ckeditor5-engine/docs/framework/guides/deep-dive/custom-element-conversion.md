@@ -194,7 +194,7 @@ The missing bits are the downcast converters for the editing and data pipelines.
 You will want to use the widget system to make the info box behave like an "object". Another aspect that you need to take care of is the fact that the view structure has more elements than the model structure. In this case, you could actually use one-way converters. However, this tutorial will showcase how an event-based converter would look.
 
 <info-box>
-	See the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} guide to learn about the widget system.
+	See the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget guide} to learn about the widget system.
 </info-box>
 
 The remaining downcast converters:

@@ -28,13 +28,13 @@ CKEditor 5 provides support for alternate image text using the The {@link module
 
 ## Demo
 
-You can see the demo of a WYSIWYG editor with the base image feature enabled below. Click on the images to activate the image toolbar and edit the text alternative.
+You can see the demo of a WYSIWYG editor with the base image feature enabled below. Click on the images to activate the image toolbar and use the contextual toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/low-vision.svg Alternative text} to edit the text alternative.
 
 {@snippet features/image-text-alternative}
 
 ## Installation
 
-This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation} guide to learn how to enable this feature.
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image features installation guide} to learn how to enable this feature.
 
 ## Common API
 

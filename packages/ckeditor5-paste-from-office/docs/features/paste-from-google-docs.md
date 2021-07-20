@@ -19,7 +19,7 @@ When the plugin is enabled, it automatically detects Google Docs content and tra
 </info-box>
 
 <info-box info>
-	The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-word Pasting content from Microsoft Word} guide to learn more.
+	The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Microsoft Word. See the {@link features/paste-from-word pasting content from Microsoft Word guide} to learn more.
 </info-box>
 
 ## Demo
@@ -29,7 +29,7 @@ To test how Paste from Office works, open the [sample Google Docs document](http
 {@snippet features/paste-from-office}
 
 ## Related features
- 
+
 CKEditor 5 supports a wider range of paste features, including:
 * {@link features/paste-plain-text Paste plain text} &ndash; Paste text without formatting that will inherit the style of the content it was pasted into.
 * {@link features/paste-from-word Paste from Word} &ndash; Paste content from Microsoft Word and maintain the original structure and formatting.
