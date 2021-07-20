@@ -262,6 +262,23 @@ describe( 'FindAndReplace', () => {
 				expect( findAndReplaceEditing.state.results.length ).to.eql( 2 );
 			} );
 
+			it( 'modifying attribute on matched text doens\'t crash', () => {
+				// (https://github.com/cksource/ckeditor5-internal/issues/859).
+				editor.setData( LONG_TEXT );
+
+				editor.execute( 'find', 'biscuit' );
+				const model = editor.model;
+
+				const range = model.createRange(
+					model.createPositionFromPath( model.document.getRoot(), [ 0, 29 ] ),
+					model.createPositionFromPath( model.document.getRoot(), [ 0, 36 ] )
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'bold', true, range );
+				} );
+			} );
+
 			it( 'subsequent findPrevious events causes just a findPrevious command call', () => {
 				editor.setData( LONG_TEXT );
 

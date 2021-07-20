@@ -190,7 +190,10 @@ function onDocumentChange( results, model, searchCallback ) {
 	const changedNodes = new Set();
 	let removedMarkers = [];
 
-	const changes = model.document.differ.getChanges();
+	// Only the insert / remove diffs should be handled.
+	// https://github.com/cksource/ckeditor5-internal/issues/859
+	const changes = model.document.differ.getChanges()
+		.filter( change => [ 'insert', 'remove' ].includes( change.type ) );
 
 	// Get nodes in which changes happened to re-run a search callback on them.
 	changes.forEach( change => {
