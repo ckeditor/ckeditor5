@@ -1,0 +1,69 @@
+<div id="editor">
+	<h2>Picture element demo</h2>
+
+	<figure class="image image-style-side" style="width: 250px">
+		<picture>
+			<source srcset="logo-square.png" type="image/png" media="(max-width: 800px)" />
+			<source srcset="logo-wide.png" type="image/png" media="(min-width: 800px)" />
+			<img alt="Alt text of the inline image." src="logo-wide.png">
+		</picture>
+		<figcaption>An image using picture</figcaption>
+	</figure>
+
+	<figure class="image image-style-side" style="width: 250px">
+		<img alt="Alt text of the inline image." src="logo-wide.png">
+		<figcaption>A regular image</figcaption>
+	</figure>
+
+	<figure class="image image-style-side" style="width: 250px">
+		<a href="https://ckeditor.com">
+			<picture>
+				<source srcset="logo-square.png" type="image/png" media="(max-width: 800px)" />
+				<source srcset="logo-wide.png" type="image/png" media="(min-width: 800px)" />
+				<img alt="Alt text of the inline image." src="logo-wide.png">
+			</picture>
+		</a>
+		<figcaption>A linked image using picture</figcaption>
+	</figure>
+
+	<p>
+		A paragraph with an inline <picture>
+			<source srcset="logo-square.png" type="image/png" media="(max-width: 800px)" />
+			<source srcset="logo-wide.png" type="image/png" media="(min-width: 800px)" />
+			<img alt="Alt text of the block image." src="logo-wide.png" style="width: 60px">
+		</picture> picture and a linked <a href="https://ckeditor.com">
+			<picture>
+				<source srcset="logo-square.png" type="image/png" media="(max-width: 800px)" />
+				<source srcset="logo-wide.png" type="image/png" media="(min-width: 800px)" />
+				<img alt="Alt text of the block image." src="logo-wide.png" style="width: 250px">
+			</picture>
+		</a> picture.
+	</p>
+
+	<p>Ad alias, architecto culpa cumque dignissimos dolor eos incidunt ipsa itaque laboriosam magnam molestias nihil numquam odit quam, suscipit veritatis voluptate voluptatum.</p>
+	<p>Ad alias, architecto culpa cumque dignissimos dolor eos incidunt ipsa itaque laboriosam magnam molestias nihil numquam odit quam, suscipit veritatis voluptate voluptatum.</p>
+
+	<p>
+		A paragraph with a regular inline <img alt="Alt text of the block image." src="logo-wide.png" style="width: 60px"> image.
+	</p>
+
+	<p>Ad alias, architecto culpa cumque dignissimos dolor eos incidunt ipsa itaque laboriosam magnam molestias nihil numquam odit quam, suscipit veritatis voluptate voluptatum.</p>
+	<p>Ad alias, architecto culpa cumque dignissimos dolor eos incidunt ipsa itaque laboriosam magnam molestias nihil numquam odit quam, suscipit veritatis voluptate voluptatum.</p>
+</div>
+
+<style>
+	picture::after {
+		content: "🖼";
+		position: absolute;
+		top: -1px;
+		left: 0px;
+		border-radius: 100px;
+		white-space: nowrap;
+		font-size: 24px;
+		transform: translate(-50%, -50%);
+		box-sizing: border-box;
+		pointer-events: none;
+		z-index: 9999;
+		font-weight: bold;
+	}
+</style>

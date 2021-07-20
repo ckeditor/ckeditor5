@@ -11,6 +11,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
+import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
 
 import LinkImageEditing from '../src/linkimageediting';
 import LinkEditing from '../src/linkediting';
@@ -128,6 +129,65 @@ describe( 'LinkImageEditing', () => {
 				);
 
 				return editor.destroy();
+			} );
+
+			it( 'should convert a linked block image that uses <picture> element internally', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlockEditing, LinkImageEditing, PictureEditing ]
+				} );
+				const model = editor.model;
+
+				setModelData( model,
+					'<imageBlock src="/assets/sample.png" ' +
+						'linkHref="http://ckeditor.com" ' +
+						'sources=\'[ { "srcset": "small.png" } ]\'>' +
+					'</imageBlock>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<a href="http://ckeditor.com">' +
+							'<picture>' +
+								'<source srcset="small.png">' +
+								'<img src="/assets/sample.png">' +
+							'</picture>' +
+						'</a>' +
+					'</figure>'
+				);
+
+				await editor.destroy();
+			} );
+
+			it( 'should convert a linked inline image that uses <picture> element internally', async () => {
+				const editor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageInlineEditing, LinkImageEditing, PictureEditing ]
+				} );
+				const model = editor.model;
+
+				setModelData( model,
+					'<paragraph>' +
+						'<$text linkhref="http://ckeditor.com">foo</$text>' +
+						'<imageInline ' +
+							'src="/assets/sample.png" ' +
+							'alt="alt text" ' +
+							'sources=\'[ { "srcset": "small.png" } ]\' ' +
+							'linkHref="http://ckeditor.com">' +
+						'</imageInline>' +
+						'<$text linkhref="http://ckeditor.com">bar</$text>' +
+					'</paragraph>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<p>' +
+						'foo' +
+						'<a href="http://ckeditor.com">' +
+							'<picture><source srcset="small.png"><img alt="alt text" src="/assets/sample.png"></picture>' +
+						'</a>' +
+						'bar' +
+					'</p>'
+				);
+
+				await editor.destroy();
 			} );
 		} );
 

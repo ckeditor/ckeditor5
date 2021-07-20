@@ -157,7 +157,7 @@ function _showPlaceholder( imageUtils, placeholder, viewFigure, writer ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
 
-	const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
+	const viewImg = imageUtils.findViewImgElement( viewFigure );
 
 	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
 		writer.setAttribute( 'src', placeholder, viewImg );
@@ -285,7 +285,7 @@ function _removeUIElement( viewFigure, writer, uniqueProperty ) {
 // @param {module:upload/filerepository~FileLoader} loader
 function _displayLocalImage( imageUtils, viewFigure, writer, loader ) {
 	if ( loader.data ) {
-		const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
+		const viewImg = imageUtils.findViewImgElement( viewFigure );
 
 		writer.setAttribute( 'src', loader.data, viewImg );
 	}
