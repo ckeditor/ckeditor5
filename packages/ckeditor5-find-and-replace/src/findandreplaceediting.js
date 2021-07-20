@@ -42,8 +42,6 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this.activeResults = null;
-
 		/**
 		 * An object storing the find and replace state within a given editor instance.
 		 *
@@ -121,24 +119,14 @@ export default class FindAndReplaceEditing extends Plugin {
 	find( callbackOrText ) {
 		const { editor } = this;
 
-		const { results } = editor.execute( 'find', callbackOrText );
-
-		this.activeResults = results;
-
-		return this.activeResults;
+		editor.execute( 'find', callbackOrText );
 	}
 
 	/**
 	 * Stops active results from updating, and clears out the results.
 	 */
 	stop() {
-		if ( !this.activeResults ) {
-			return;
-		}
-
 		this.state.clear( this.editor.model );
-
-		this.activeResults = null;
 	}
 
 	/**

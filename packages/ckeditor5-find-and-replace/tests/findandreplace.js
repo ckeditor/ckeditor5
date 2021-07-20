@@ -82,7 +82,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should trigger replace command', () => {
 			const replaceCommandSpy = sinon.spy( editor.commands.get( 'replace' ), 'execute' );
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
+			const [ firstResult ] = editor.execute( 'find', 'bar' ).results;
 
 			findAndReplaceUI.fire( 'replace', { searchText: 'bar', replaceText: 'test' } );
 
@@ -529,33 +529,6 @@ describe( 'FindAndReplace', () => {
 			findAndReplaceEditing.find( callbackSpy );
 
 			expect( callbackSpy.callCount ).to.equal( 2 );
-		} );
-
-		it( 'should handle custom callback return value', () => {
-			editor.setData( FOO_BAR_PARAGRAPH );
-
-			const findResults = findAndReplaceEditing.find( () => {
-				return [
-					{
-						label: 'XXX',
-						start: 0,
-						end: 7
-					}
-				];
-			} );
-
-			expect( findResults ).to.have.length( 1 );
-			const [ result ] = findResults;
-
-			expect( result ).to.have.property( 'label', 'XXX' );
-			expect( result ).to.have.property( 'marker' );
-
-			const { marker } = result;
-
-			const paragraph = root.getChild( 0 );
-			const rangeOnBar = model.createRange( model.createPositionAt( paragraph, 0 ), model.createPositionAt( paragraph, 7 ) );
-
-			expect( marker.getRange().isEqual( rangeOnBar ) ).to.equal( true );
 		} );
 
 		it( 'should handle soft breaks in text', () => {
