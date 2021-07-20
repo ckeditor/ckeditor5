@@ -120,6 +120,10 @@ export default class TableEditing extends Plugin {
 		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
+		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
+		// to its parent (to the table cell).
+		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
+
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
@@ -158,4 +162,39 @@ export default class TableEditing extends Plugin {
 	static get requires() {
 		return [ TableUtils ];
 	}
+}
+
+// Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
+// (to the table cell). Only positions after this paragraph have to be adjusted, because after binding this paragraph to the table cell,
+// elements located after this paragraph would point either to a non-existent offset inside `tableCell` (if paragraph is empty), or after
+// first character from paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
+//
+// <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
+//
+// <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
+//
+// @param {module:engine/view/view~View} editingView
+// @returns {Function}
+function mapModelPositionToView( editingView ) {
+	return ( evt, data ) => {
+		const modelParent = data.modelPosition.parent;
+		const modelNodeBefore = data.modelPosition.nodeBefore;
+
+		if ( !modelParent.is( 'element', 'tableCell' ) ) {
+			return;
+		}
+
+		if ( !modelNodeBefore || !modelNodeBefore.is( 'element', 'paragraph' ) ) {
+			return;
+		}
+
+		const viewNodeBefore = data.mapper.toViewElement( modelNodeBefore );
+		const viewParent = data.mapper.toViewElement( modelParent );
+
+		if ( viewNodeBefore === viewParent ) {
+			// Since the paragraph has already been bound to its parent, update the current position in the model with paragraph's
+			// max offset, so it points to the place which should normally (in all other cases) be the end position of this paragraph.
+			data.viewPosition = editingView.createPositionAt( viewParent, modelNodeBefore.maxOffset );
+		}
+	};
 }
