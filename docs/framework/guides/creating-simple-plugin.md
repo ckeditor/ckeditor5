@@ -184,10 +184,14 @@ class InsertImage extends Plugin {
 			return view;
 		} );
 	}
+
+	static get requires() {
+		return [ Image ];
+	}
 }
 ```
 
-If you refresh the page, you should now be able to insert new images into the content:
+Note that at this step we also explicitly require the base Image plugin - without it, the inserted image will not be properly converted and added to model. If you refresh the page, you should now be able to insert new images into the content:
 
 {@img assets/img/framework-quick-start-classic-editor-insert-image.gif 640 Screencast of inserting a new image.}
 
@@ -272,6 +276,10 @@ class InsertImage extends Plugin {
 
 			return view;
 		} );
+	}
+
+	static get requires() {
+		return [ Image ];
 	}
 }
 
