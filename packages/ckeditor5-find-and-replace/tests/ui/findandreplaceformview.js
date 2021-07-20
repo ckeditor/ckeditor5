@@ -35,7 +35,6 @@ describe( 'FindAndReplaceFormView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
-			// expect( view.element.classList.contains( 'ck-find-and-replace-form__wrapper' ) ).to.true;
 		} );
 
 		it( 'should create child views', () => {
@@ -367,7 +366,7 @@ describe( 'FindAndReplaceFormView', () => {
 	} );
 
 	describe( 'find and replace input values', () => {
-		it( 'returns the #findInputView DOM value', () => { // TODO: possible improvements to the code readability?
+		it( 'returns the #findInputView DOM value', () => {
 			viewValue = view.findInputView.fieldView.element.value;
 			viewValue = 'foo';
 

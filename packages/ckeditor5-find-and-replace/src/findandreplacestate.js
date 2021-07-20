@@ -98,12 +98,7 @@ export default class FindAndReplaceState extends Plugin {
 	}
 
 	clear( model ) {
-		// @todo: actually this handling might be moved to editing part.
-		// This could be a results#change listener that would ensure that related markers are ALWAYS removed without
-		// having to call state.clear() explicitly.
-
 		this.searchText = '';
-		// this.replaceText = '';
 
 		model.change( writer => {
 			if ( this.highlightedResult ) {

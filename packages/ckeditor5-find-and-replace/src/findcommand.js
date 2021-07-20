@@ -58,7 +58,6 @@ export default class FindCommand extends Command {
 
 			this.state.searchText = callbackOrText;
 		} else {
-			// @todo: disable callback version
 			findCallback = callbackOrText;
 		}
 
@@ -76,7 +75,6 @@ export default class FindCommand extends Command {
 		this.state.highlightedResult = resultsArray[ 0 ];
 
 		if ( typeof callbackOrText === 'string' ) {
-			// @todo: eliminate this code repetition. Done to fix unit tests.
 			this.state.searchText = callbackOrText;
 		}
 
