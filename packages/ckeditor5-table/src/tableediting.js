@@ -122,7 +122,7 @@ export default class TableEditing extends Plugin {
 
 		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
 		// to its parent (to the table cell).
-		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( editor.editing.view ) );
+		editor.data.mapper.on( 'modelToViewPosition', mapTableCellModelPositionToView( editor.editing.view ) );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -167,7 +167,7 @@ export default class TableEditing extends Plugin {
 // Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
 // (to the table cell). Only positions after this paragraph have to be adjusted, because after binding this paragraph to the table cell,
 // elements located after this paragraph would point either to a non-existent offset inside `tableCell` (if paragraph is empty), or after
-// first character from paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
+// the first character of the paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
 //
 // <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
 //
@@ -175,7 +175,7 @@ export default class TableEditing extends Plugin {
 //
 // @param {module:engine/view/view~View} editingView
 // @returns {Function}
-function mapModelPositionToView( editingView ) {
+function mapTableCellModelPositionToView( editingView ) {
 	return ( evt, data ) => {
 		const modelParent = data.modelPosition.parent;
 		const modelNodeBefore = data.modelPosition.nodeBefore;
