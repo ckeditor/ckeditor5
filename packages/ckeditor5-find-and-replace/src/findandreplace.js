@@ -49,7 +49,7 @@ export default class FindAndReplace extends Plugin {
 			// Data is contained only for the "find" button.
 			if ( data ) {
 				findAndReplaceEditing.state.searchText = data.searchText;
-				this.editor.execute( 'find', data.searchText );
+				this.editor.execute( 'find', data.searchText, data );
 			} else {
 				// Arrow button press.
 				this.editor.execute( 'findNext' );
@@ -61,7 +61,7 @@ export default class FindAndReplace extends Plugin {
 		 */
 		ui.on( 'findPrevious', ( event, data ) => {
 			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
-				this.editor.execute( 'find', data.searchText );
+				this.editor.execute( 'find', data.searchText, data );
 			} else {
 				// Subsequent calls.
 				this.editor.execute( 'findPrevious' );

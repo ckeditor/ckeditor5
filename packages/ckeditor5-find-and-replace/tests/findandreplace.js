@@ -249,8 +249,20 @@ describe( 'FindAndReplace', () => {
 			} );
 		} );
 
-		describe( 'subsequent findPrevious events', () => {
-			it( 'causes just a findPrevious command call', () => {
+		describe( 'find', () => {
+			it( 'match case flag is passed', () => {
+				// (#10188).
+				editor.setData( LONG_TEXT );
+
+				findAndReplaceUI.fire( 'findNext', {
+					searchText: 'cake',
+					wholeWords: true
+				} );
+
+				expect( findAndReplaceEditing.state.results.length ).to.eql( 2 );
+			} );
+
+			it( 'subsequent findPrevious events causes just a findPrevious command call', () => {
 				editor.setData( LONG_TEXT );
 
 				// The first call, it will call different logic.
