@@ -145,6 +145,7 @@ export default class DowncastDispatcher {
 		this.fire( 'reduceChanges', reduceChangesData );
 
 		const changes = reduceChangesData.changes;
+
 		// const changes = this._mapChangesWithAutomaticReconversion( differ );
 
 		// TODO for range conversion:

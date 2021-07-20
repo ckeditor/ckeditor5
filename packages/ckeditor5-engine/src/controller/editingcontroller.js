@@ -91,8 +91,12 @@ export default class EditingController {
 		// Also convert model selection.
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
+				doc.mappedRanges.applyChanges( doc.differ.getChanges() );
+
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
+
+				// TODO differ.reset() should be handled here since this is the main consumer of it.
 			} );
 		}, { priority: 'low' } );
 

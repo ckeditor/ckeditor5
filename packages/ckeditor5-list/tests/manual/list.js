@@ -16,6 +16,7 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import List from '../../src/list';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { uid } from '@ckeditor/ckeditor5-utils';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
 
 function AddRenderCount( editor ) {
 	let insertCount = 0;
@@ -36,8 +37,8 @@ function AddRenderCount( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard, Alignment, AddRenderCount ],
-		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', '|', 'alignment', '|', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard, Alignment, AddRenderCount, BlockQuote ],
+		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', '|', 'alignment', 'blockQuote', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -54,11 +55,28 @@ const actions = {
 		writer.setAttribute( 'listIndent', 1, root.getChild( 1 ) );
 		writer.setAttribute( 'listItem', uid(), root.getChild( 1 ) );
 	},
+	'Make list item at 0': ( writer, root ) => {
+		const id = uid();
+
+		writer.setAttribute( 'listItem', id, root.getChild( 0 ) );
+	},
 	'Make list item at 1': ( writer, root ) => {
 		const id = uid();
 
 		writer.setAttribute( 'listItem', id, root.getChild( 1 ) );
-		writer.setAttribute( 'listItem', id, root.getChild( 2 ) );
+	},
+	'Remove list attr at 0': ( writer, root ) => {
+		writer.removeAttribute( 'listItem', root.getChild( 0 ) );
+	},
+	'Remove list attr at 1': ( writer, root ) => {
+		writer.removeAttribute( 'listItem', root.getChild( 1 ) );
+	},
+	'Remove list attr at 2': ( writer, root ) => {
+		writer.removeAttribute( 'listItem', root.getChild( 2 ) );
+	},
+	'Remove list attr at 2 & 3': ( writer, root ) => {
+		writer.removeAttribute( 'listItem', root.getChild( 2 ) );
+		writer.removeAttribute( 'listItem', root.getChild( 3 ) );
 	},
 	'Remove at 0': ( writer, root ) => {
 		writer.remove( root.getChild( 0 ) );
@@ -68,6 +86,9 @@ const actions = {
 	},
 	'Remove at 2': ( writer, root ) => {
 		writer.remove( root.getChild( 2 ) );
+	},
+	'Insert list at 2': ( writer, root ) => {
+		writer.insertElement( 'paragraph', { listItem: uid() }, root, 2 );
 	}
 };
 
@@ -95,11 +116,13 @@ function setData() {
 	const modelData =
 		// eslint-disable-next-line
 		'<paragraph>before</paragraph>' +
+		// '<blockQuote>' +
 		'<paragraph></paragraph>' +
 		'<paragraph listIndent="0" listItem="a0" listType="bulleted">Foo</paragraph>' +
 		'<paragraph listIndent="0" listItem="a1" listType="bulleted">Bar</paragraph>' +
 		// '<paragraph listIndent="0" listItem="a2" listType="bulleted">zzz</paragraph>' +
 		'<paragraph>plain</paragraph>' +
+		// '</blockQuote>' +
 
 		// '<heading1 listIndent="0" listItem="b" listType="bulleted">Aaa</heading1>' +
 		// '<paragraph listIndent="0" listItem="b" listType="bulleted">Bbb</paragraph>' +

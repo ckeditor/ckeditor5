@@ -17,6 +17,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 import { clone } from 'lodash-es';
+import MappedRangeCollection from './mappedrange';
 
 // @if CK_DEBUG_ENGINE // const { logDocument } = require( '../dev-utils/utils' );
 
@@ -95,6 +96,12 @@ export default class Document {
 		 * @type {module:engine/model/differ~Differ}
 		 */
 		this.differ = new Differ( model.markers );
+
+		/**
+		 * TODO
+		 * @type {module:engine/model/mappedrange~MappedRangeCollection}
+		 */
+		this.mappedRanges = new MappedRangeCollection();
 
 		/**
 		 * Post-fixer callbacks registered to the model document.
