@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { updateFindResultFromRange, findByTextCallback } from './utils';
+import { findResultsInRange, findByTextCallback } from './utils';
 import FindCommand from './findcommand';
 import ReplaceCommand from './replacecommand';
 import ReplaceAllCommand from './replaceallcommand';
@@ -28,7 +28,7 @@ const HIGHLIGHT_CLASS = 'ck-find-result_selected';
 // Reacts to document changes in order to update search list.
 function onDocumentChange( results, model, searchCallback ) {
 	const changedNodes = new Set();
-	const removedMarkers = new Set();
+	let removedMarkers = [];
 
 	const changes = model.document.differ.getChanges();
 
@@ -38,7 +38,7 @@ function onDocumentChange( results, model, searchCallback ) {
 			changedNodes.add( change.position.parent );
 
 			[ ...model.markers.getMarkersAtPosition( change.position ) ].forEach( markerAtChange => {
-				removedMarkers.add( markerAtChange.name );
+				removedMarkers.push( markerAtChange.name );
 			} );
 		} else if ( change.type === 'insert' ) {
 			changedNodes.add( change.position.nodeAfter );
@@ -48,7 +48,7 @@ function onDocumentChange( results, model, searchCallback ) {
 	// Get markers from removed nodes also.
 	model.document.differ.getChangedMarkers().forEach( ( { name, data: { newRange } } ) => {
 		if ( newRange && newRange.start.root.rootName === '$graveyard' ) {
-			removedMarkers.add( name );
+			removedMarkers.push( name );
 		}
 	} );
 
@@ -56,8 +56,48 @@ function onDocumentChange( results, model, searchCallback ) {
 	changedNodes.forEach( node => {
 		const markersInNode = [ ...model.markers.getMarkersIntersectingRange( model.createRangeIn( node ) ) ];
 
-		markersInNode.forEach( marker => removedMarkers.add( marker.name ) );
+		markersInNode.forEach( marker => removedMarkers.push( marker.name ) );
 	} );
+
+	// Only find and result markers should be removed.
+	removedMarkers = removedMarkers.filter( markerName => markerName.startsWith( 'findResult:' ) );
+
+	// Since the implemented match algorithm is typically searching outside of the changed scope (e.g. entire parent)
+	// it will remove other valid markers and add them once again. It's pointless and generates extra change events.
+	const proposedResults = [].concat( ...Array.from( changedNodes ).map( nodeToCheck =>
+		findResultsInRange( model.createRangeOn( nodeToCheck ), model, searchCallback ) ) );
+
+	for ( let i = proposedResults.length - 1; i >= 0; i-- ) {
+		const proposedItem = proposedResults[ i ];
+
+		for ( const removedMarkerName of removedMarkers ) {
+			const removedMarker = model.markers.get( removedMarkerName );
+
+			if ( removedMarker.getRange().isEqual( proposedItem.range ) ) {
+				proposedResults.splice( i, 1 );
+				removedMarkers.splice( removedMarkers.indexOf( removedMarkerName ), 1 );
+				break;
+			}
+		}
+	}
+
+	for ( const proposedResult of proposedResults ) {
+		model.change( writer => {
+			const marker = writer.addMarker( proposedResult.id, {
+				usingOperation: false,
+				affectsData: false,
+				range: proposedResult.range
+			} );
+
+			const index = findInsertIndex( results, marker );
+
+			results.add( {
+				id: proposedResult.id,
+				label: proposedResult.label,
+				marker
+			}, index );
+		} );
+	}
 
 	// Remove results & markers from the changed part of content.
 	model.change( writer => {
@@ -75,17 +115,20 @@ function onDocumentChange( results, model, searchCallback ) {
 		} );
 	} );
 
-	// Run search callback again on updated nodes.
-	changedNodes.forEach( nodeToCheck => {
-		updateFindResultFromRange( model.createRangeOn( nodeToCheck ), model, searchCallback, results );
-	} );
-
 	function getResultByMarker( markerName ) {
 		for ( const result of results ) {
 			if ( result.marker.name === markerName ) {
 				return result;
 			}
 		}
+	}
+
+	function findInsertIndex( resultsList, markerToInsert ) {
+		const result = resultsList.find( ( { marker } ) => {
+			return markerToInsert.getStart().isBefore( marker.getStart() );
+		} );
+
+		return result ? resultsList.getIndex( result ) : resultsList.length;
 	}
 }
 

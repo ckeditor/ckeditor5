@@ -76,6 +76,40 @@ export function updateFindResultFromRange( range, model, findCallback, startResu
 	return results;
 }
 
+export function findResultsInRange( range, model, findCallback ) {
+	const ret = [].concat( ...[ ...range ].map( ( { type, item } ) => {
+		if ( type === 'elementStart' ) {
+			if ( model.schema.checkChild( item, '$text' ) ) {
+				const foundItems = findCallback( {
+					item,
+					text: rangeToText( model.createRangeIn( item ) )
+				} );
+
+				if ( !foundItems ) {
+					return [];
+				}
+
+				return foundItems.map( foundItem => {
+					const resultId = `findResult:${ uid() }`;
+
+					return {
+						id: resultId,
+						label: foundItem.label,
+						range: model.createRange(
+							model.createPositionAt( item, foundItem.start ),
+							model.createPositionAt( item, foundItem.end )
+						)
+					};
+				} );
+			}
+		}
+
+		return [];
+	} ) );
+
+	return ret;
+}
+
 /**
  * Returns text representation of a range. The returned text length should be the same as range length.
  * In order to achieve this this function will:
