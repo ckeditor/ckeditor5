@@ -99,5 +99,35 @@ describe( 'ReplaceAllCommand', () => {
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
+
+		it( 'should replace all occurrences in multiple roots', async () => {
+			class MultiRootEditor extends ModelTestEditor {
+				constructor( { roots, config } ) {
+					super( config );
+
+					for ( const rootName of roots ) {
+						this.model.document.createRoot( '$root', rootName );
+					}
+				}
+			}
+
+			const multiRootEditor = await MultiRootEditor
+				.create( {
+					roots: [ 'second' ],
+					config: { plugins: [ FindAndReplaceEditing, Paragraph ] }
+				} );
+
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
+			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+
+			const { results } = multiRootEditor.execute( 'find', 'z' );
+
+			multiRootEditor.execute( 'replaceAll', 'r', results );
+
+			expect( multiRootEditor.getData() ).to.equal( '<p>Foo bar bar</p>' );
+			expect( multiRootEditor.getData( { rootName: 'second' } ) ).to.equal( '<p>Foo bar bar</p>' );
+
+			await multiRootEditor.destroy();
+		} );
 	} );
 } );

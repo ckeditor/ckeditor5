@@ -257,6 +257,57 @@ describe( 'FindCommand', () => {
 					expect( results.length ).to.equal( 1 );
 				} );
 			} );
+
+			describe( 'in multi-root editor', () => {
+				let multiRootEditor, multiRootModel;
+
+				class MultiRootEditor extends ModelTestEditor {
+					constructor( config ) {
+						super( config );
+
+						this.model.document.createRoot( '$root', 'second' );
+					}
+				}
+
+				beforeEach( async () => {
+					multiRootEditor = await MultiRootEditor.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
+					multiRootModel = multiRootEditor.model;
+
+					setData( multiRootModel, '<paragraph>Foo bar baz</paragraph>' );
+					setData( multiRootModel, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+				} );
+
+				afterEach( async () => {
+					await multiRootEditor.destroy();
+				} );
+
+				it( 'should place markers correctly in the model in every root', () => {
+					const { results } = multiRootEditor.execute( 'find', 'z' );
+					const [ markerMain, markerSecond ] = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( multiRootModel.document.getRoot( 'main' ), null, [ markerMain ] ) ).to.equal(
+						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
+					);
+
+					expect( stringify( multiRootModel.document.getRoot( 'second' ), null, [ markerSecond ] ) ).to.equal(
+						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
+					);
+				} );
+
+				it( 'should properly search for occurrences in every root', () => {
+					const { results } = multiRootEditor.execute( 'find', 'z' );
+
+					expect( results ).to.be.lengthOf( 2 );
+				} );
+
+				it( 'should properly search for all occurrences if the first occurrence is not in the first root', () => {
+					setData( multiRootModel, '<paragraph>Foo bar bar</paragraph>' );
+
+					const { results } = multiRootEditor.execute( 'find', 'z' );
+
+					expect( results ).to.be.lengthOf( 1 );
+				} );
+			} );
 		} );
 
 		it( 'adds marker synchronously', () => {
