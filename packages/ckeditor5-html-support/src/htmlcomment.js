@@ -125,6 +125,7 @@ export default class HtmlComment extends Plugin {
 	 * Removes an HTML comment with the given comment ID.
 	 *
 	 * It does nothing and returns `false` if the comment with the given ID does not exist.
+	 * Otherwise it removes the comment and returns `true`.
 	 *
 	 * Note that a comment can be removed also by removing the content around the comment.
 	 *
