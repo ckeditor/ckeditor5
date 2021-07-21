@@ -130,7 +130,7 @@ export default class HtmlComment extends Plugin {
 	 * Note that a comment can be removed also by removing the content around the comment.
 	 *
 	 * @param {String} commentID The ID of the comment to be removed.
-	 * @return {Boolean} `true` when the comment with the given ID was removed.
+	 * @returns {Boolean} `true` when the comment with the given ID was removed, `false` otherwise.
 	 */
 	removeHtmlComment( commentID ) {
 		const editor = this.editor;
