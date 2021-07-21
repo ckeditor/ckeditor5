@@ -96,12 +96,12 @@ describe( 'ReplaceCommand', () => {
 			}
 
 			expect( getData( editor.model, { convertMarkers: true } ) ).to.equal(
-				'<paragraph>bar <findResult:1:start></findResult:1:start>' +
-					'<findResultHighlighted:x:start></findResultHighlighted:x:start>foo<findResult:1:end></findResult:1:end>' +
+				'<paragraph>bar <findResult:0:start></findResult:0:start>' +
+					'<findResultHighlighted:x:start></findResultHighlighted:x:start>foo<findResult:0:end></findResult:0:end>' +
 					'<findResultHighlighted:x:end></findResultHighlighted:x:end> ' +
-					'<findResult:2:start>' +
-						'</findResult:2:start>foo<findResult:2:end></findResult:2:end> ' +
-						'<findResult:3:start></findResult:3:start>foo<findResult:3:end></findResult:3:end> ' +
+					'<findResult:1:start>' +
+						'</findResult:1:start>foo<findResult:1:end></findResult:1:end> ' +
+						'<findResult:2:start></findResult:2:start>foo<findResult:2:end></findResult:2:end> ' +
 				'</paragraph>'
 			);
 		} );

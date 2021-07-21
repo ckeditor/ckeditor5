@@ -5,6 +5,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { stringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -41,7 +42,7 @@ describe( 'FindAndReplace', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicEditor.create( editorElement, {
-			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing ],
+			plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace, FindAndReplaceUI, FindAndReplaceEditing, Table ],
 			toolbar: [ 'findAndReplace' ]
 		} );
 
@@ -82,7 +83,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should trigger replace command', () => {
 			const replaceCommandSpy = sinon.spy( editor.commands.get( 'replace' ), 'execute' );
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
-			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
+			const [ firstResult ] = editor.execute( 'find', 'bar' ).results;
 
 			findAndReplaceUI.fire( 'replace', { searchText: 'bar', replaceText: 'test' } );
 
@@ -262,6 +263,49 @@ describe( 'FindAndReplace', () => {
 				expect( findAndReplaceEditing.state.results.length ).to.eql( 2 );
 			} );
 
+			it( 'modifying attribute on matched text doesn\'t crash', () => {
+				// (https://github.com/cksource/ckeditor5-internal/issues/859).
+				editor.setData( LONG_TEXT );
+
+				editor.execute( 'find', 'biscuit' );
+				const model = editor.model;
+
+				const range = model.createRange(
+					model.createPositionFromPath( model.document.getRoot(), [ 0, 29 ] ),
+					model.createPositionFromPath( model.document.getRoot(), [ 0, 36 ] )
+				);
+
+				model.change( writer => {
+					writer.setAttribute( 'bold', true, range );
+				} );
+			} );
+
+			it( 'merging cells with matched text doesn\'t crash', () => {
+				// (https://github.com/cksource/ckeditor5-internal/issues/857).
+				const model = editor.model;
+
+				editor.setData( '<p>foo</p>' +
+					'<table>' +
+					'	<tr>' +
+					'		<td>bar</td>' +
+					'		<td>bar</td>' +
+					'	</tr>' +
+					'</table>' );
+
+				const tableCellElement = model.document.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+				const range = model.createRange(
+					model.createPositionAt( tableCellElement, 'before' ),
+					model.createPositionAt( tableCellElement, 'after' )
+				);
+
+				model.change( writer => {
+					writer.setSelection( range );
+				} );
+
+				editor.execute( 'mergeTableCellRight' );
+			} );
+
 			it( 'subsequent findPrevious events causes just a findPrevious command call', () => {
 				editor.setData( LONG_TEXT );
 
@@ -383,6 +427,8 @@ describe( 'FindAndReplace', () => {
 
 				editor.execute( 'replace', 'new', results.get( 0 ) );
 
+				editor.plugins.get( 'FindAndReplaceEditing' ).state.clear( editor.model );
+
 				editor.execute( 'undo' );
 
 				expect( stringify( model.document.getRoot(), null, editor.model.markers ) ).to.equal(
@@ -396,7 +442,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should return list of results', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.be.instanceOf( Collection );
 			expect( findResults ).to.have.property( 'length', 6 );
@@ -405,7 +451,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should return properly formatted result', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplaceEditing.find( 'bar' );
+			const findResults = editor.execute( 'find', 'bar' ).results;
 
 			const [ result ] = findResults;
 
@@ -426,7 +472,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (text insert)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -440,7 +486,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (block with text insert)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -458,7 +504,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (removed block)', () => {
 			editor.setData( LONG_TEXT );
 
-			const findResults = findAndReplaceEditing.find( 'bears' );
+			const findResults = editor.execute( 'find', 'bears' ).results;
 
 			expect( findResults ).to.have.property( 'length', 6 );
 
@@ -472,7 +518,7 @@ describe( 'FindAndReplace', () => {
 		it( 'should update list of results on editor change (changed text in marker)', () => {
 			editor.setData( FOO_BAR_PARAGRAPH );
 
-			const findResults = findAndReplaceEditing.find( 'bar' );
+			const findResults = editor.execute( 'find', 'bar' ).results;
 
 			expect( findResults ).to.have.property( 'length', 1 );
 
@@ -491,7 +537,7 @@ describe( 'FindAndReplace', () => {
 			editor.conversion.elementToElement( { model: 'test', view: 'test' } );
 			editor.setData( '<test>Foo bar baz</test>' );
 
-			const findResults = findAndReplaceEditing.find( 'bar' );
+			const findResults = editor.execute( 'find', 'bar' ).results;
 			expect( findResults ).to.have.property( 'length', 1 );
 		} );
 
@@ -539,47 +585,6 @@ describe( 'FindAndReplace', () => {
 			findAndReplaceEditing.find( callbackSpy );
 
 			expect( callbackSpy.callCount ).to.equal( 2 );
-		} );
-
-		it( 'should call a callback for changed blocks', () => {
-			editor.setData( LONG_TEXT );
-
-			const callbackSpy = sinon.spy();
-			findAndReplaceEditing.find( callbackSpy );
-			callbackSpy.resetHistory();
-
-			model.change( writer => {
-				model.insertContent( writer.createText( 'Foo bears foo' ), root.getChild( 0 ), 0 );
-			} );
-
-			expect( callbackSpy.callCount ).to.equal( 1 );
-		} );
-
-		it( 'should handle custom callback return value', () => {
-			editor.setData( FOO_BAR_PARAGRAPH );
-
-			const findResults = findAndReplaceEditing.find( () => {
-				return [
-					{
-						label: 'XXX',
-						start: 0,
-						end: 7
-					}
-				];
-			} );
-
-			expect( findResults ).to.have.length( 1 );
-			const [ result ] = findResults;
-
-			expect( result ).to.have.property( 'label', 'XXX' );
-			expect( result ).to.have.property( 'marker' );
-
-			const { marker } = result;
-
-			const paragraph = root.getChild( 0 );
-			const rangeOnBar = model.createRange( model.createPositionAt( paragraph, 0 ), model.createPositionAt( paragraph, 7 ) );
-
-			expect( marker.getRange().isEqual( rangeOnBar ) ).to.equal( true );
 		} );
 
 		it( 'should handle soft breaks in text', () => {
