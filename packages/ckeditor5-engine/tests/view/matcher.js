@@ -8,6 +8,7 @@
 import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { StylesProcessor } from '../../src/view/stylesmap';
 import { addMarginRules } from '../../src/view/styles/margin';
 import { addBorderRules } from '../../src/view/styles/border';
@@ -15,6 +16,8 @@ import { addBackgroundRules } from '../../src/view/styles/background';
 
 describe( 'Matcher', () => {
 	let document;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		document = new Document( new StylesProcessor() );
@@ -118,6 +121,136 @@ describe( 'Matcher', () => {
 			expect( result.match.attributes ).to.deep.equal( [ 'title', 'alt' ] );
 
 			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should not match style and class attributes using "attributes: true" pattern', () => {
+			const pattern = {
+				attributes: true
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el2 = new Element( document, 'p', { class: 'foobar' } );
+			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should not match style and class attributes using "attributes: Array" pattern', () => {
+			const pattern = {
+				attributes: [ 'style', 'class' ]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el2 = new Element( document, 'p', { class: 'foobar' } );
+			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should not match style and class attributes using "attributes: RegExp" pattern', () => {
+			const pattern = {
+				attributes: /.*/
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el2 = new Element( document, 'p', { class: 'foobar' } );
+			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match style and class attributes using "attributes: key->value" pattern', () => {
+			// Stub console, otherwise it will break test coverage.
+			sinon.stub( console, 'warn' );
+			const pattern = {
+				attributes: {
+					style: true,
+					class: true
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 2 );
+			expect( result.match.attributes ).to.deep.equal( [ 'style', 'class' ] );
+		} );
+
+		it( 'should display warning when using deprecated style attribute with key->value pattern', () => {
+			const pattern = {
+				attributes: {
+					style: true
+				}
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-pattern-deprecated-attributes-style-key',
+				pattern.attributes
+			);
+		} );
+
+		it( 'should display warning when using deprecated class attribute with key->value pattern', () => {
+			const pattern = {
+				attributes: {
+					class: true
+				}
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foobar' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-pattern-deprecated-attributes-class-key',
+				pattern.attributes
+			);
+		} );
+
+		it( 'should match style and class attributes using mixed pattern', () => {
+			const pattern = {
+				attributes: true,
+				classes: true,
+				styles: true
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;', class: 'foobar', 'data-foo': 'foo' } );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes ).to.deep.equal( [ 'data-foo' ] );
+
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles.length ).equal( 1 );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
+
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 1 );
+			expect( result.match.classes ).to.deep.equal( [ 'foobar' ] );
 		} );
 
 		it( 'should match all element attributes using RegExp', () => {
@@ -655,8 +788,6 @@ describe( 'Matcher', () => {
 				'matcher-pattern-missing-key-or-value',
 				pattern.styles[ 0 ]
 			);
-
-			sinon.restore();
 		} );
 
 		it( 'should display warning when key->value pattern is missing value', () => {
@@ -676,8 +807,6 @@ describe( 'Matcher', () => {
 				'matcher-pattern-missing-key-or-value',
 				pattern.styles[ 0 ]
 			);
-
-			sinon.restore();
 		} );
 
 		it( 'should allow to use function as a pattern', () => {
