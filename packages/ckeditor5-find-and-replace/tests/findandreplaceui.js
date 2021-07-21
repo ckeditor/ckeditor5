@@ -5,6 +5,8 @@ import FindAndReplaceUI from '../src/findandreplaceui';
 import FindAndReplace from '../src/findandreplace';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import loupeIcon from '../theme/icons/find-replace.svg';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'FindAndReplaceUI', () => {
 	let editorElement;
@@ -107,6 +109,24 @@ describe( 'FindAndReplaceUI', () => {
 
 					button.fire( 'open' );
 					sinon.assert.callOrder( spy, selectSpy );
+				} );
+
+				it( 'should open the dropdown when CTRL+F was pressed', () => {
+					const spy = sinon.spy( form.findInputView.fieldView, 'select' );
+
+					const keyEventData = ( {
+						keyCode: keyCodes.f,
+						ctrlKey: !env.isMac,
+						metaKey: env.isMac,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					} );
+
+					const wasHandled = editor.keystrokes.press( keyEventData );
+
+					expect( wasHandled ).to.be.true;
+					expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+					sinon.assert.calledOnce( spy );
 				} );
 
 				it( 'should select the content of the input', () => {

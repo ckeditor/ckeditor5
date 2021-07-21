@@ -88,7 +88,7 @@ export default class FindAndReplaceUI extends Plugin {
 			this.formView = formView;
 
 			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				dropdown.buttonView.actionView.fire( 'execute' );
+				dropdown.buttonView.fire( 'execute' );
 
 				cancelEvent();
 			} );
@@ -148,7 +148,9 @@ export default class FindAndReplaceUI extends Plugin {
 		// Configure the dropdown's button properties:
 		buttonView.set( {
 			icon,
-			tooltip: t( 'Find and replace' )
+			label: t( 'Find and replace' ),
+			keystroke: 'CTRL+F',
+			tooltip: true
 		} );
 
 		// Each time a dropdown is opened, the search text field should get focused.
