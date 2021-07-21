@@ -147,7 +147,7 @@ export default class MappedRangeCollection {
 							continue;
 						}
 
-						if ( compareArrays( mappedRange.start.getParentPath(), change.range.start.getParentPath() ) != 'same' ) {
+						if ( compareArrays( mappedRange.start.getParentPath(), changedRange.start.getParentPath() ) != 'same' ) {
 							continue;
 						}
 
@@ -215,7 +215,18 @@ export default class MappedRangeCollection {
 		console.log( 'ranges:', ...this._ranges.map( range => range.start.path + '-' + range.end.path ) );
 		console.log( 'range changes:', ...Array.from( this._changedRanges.entries() )
 			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path ) );
+	}
 
+	getRanges() {
+		return this._ranges;
+	}
+
+	getReducedChanges( name, changes ) {
+		// TODO
+		return changes;
+	}
+
+	clearChanges() {
 		this._changedRanges.clear();
 	}
 

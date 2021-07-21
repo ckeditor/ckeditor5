@@ -127,345 +127,115 @@ export default class ListEditing extends Plugin {
 
 		this._lists = []; // { range, view }
 
-		// editor.conversion.for( 'downcast' ).add( dispatcher => {
-		// 	// An abstract name of the model structure conversion.
-		// 	const magicUid = uid();
-		//
-		// 	dispatcher.on( 'reduceChanges', ( evt, data ) => {
-		// 		const reducedChanges = [];
-		//
-		// 		const createdLists = new Set();
-		// 		const changedLists = new Set();
-		// 		const removedLists = new Set();
-		//
-		// 		for ( const change of data.changes ) {
-		// 			if ( change.type == 'insert' ) {
-		// 				const insertionRange = editor.model.createRange( change.position, change.position.getShiftedBy( change.length ) );
-		//
-		// 				for ( const { type, item: element, previousPosition: position, length } of insertionRange ) {
-		// 					if ( type != 'elementStart' ) {
-		// 						continue;
-		// 					}
-		//
-		// 					let wasHandled = false;
-		//
-		// 					for ( let i = 0; i < this._lists.length; i++ ) {
-		// 						const list = this._lists[ i ];
-		//
-		// 						if ( compareArrays( list.range.start.getParentPath(), position.getParentPath() ) != 'same' ) {
-		// 							continue;
-		// 						}
-		//
-		// 						if ( element.hasAttribute( 'listItem' ) ) {
-		// 							const [ newRange ] = list.range._getTransformedByInsertion( position, length );
-		//
-		// 							if ( list.range.containsPosition( position ) ) {
-		// 								// @if CK_DEBUG // console.log( '-- list grow inside',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 								// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
-		//
-		// 								list.range = newRange;
-		// 								wasHandled = true;
-		//
-		// 								changedLists.add( list );
-		// 							} else if ( !newRange.isEqual( list.range ) ) {
-		// 								// @if CK_DEBUG // console.log( '-- list move',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 								// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
-		//
-		// 								list.range = newRange;
-		// 							}
-		// 						} else {
-		// 							const newRanges = list.range._getTransformedByInsertion( position, length, true );
-		//
-		// 							// Insertion was inside this list.
-		// 							if ( newRanges.length > 1 ) {
-		// 								// @if CK_DEBUG // console.log( '-- list split',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 								// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path,
-		// 								// @if CK_DEBUG // 		'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
-		//
-		// 								list.range = newRanges[ 0 ];
-		// 								changedLists.add( list );
-		//
-		// 								const newList = { range: newRanges[ 1 ] };
-		//
-		// 								this._lists.push( newList );
-		// 								createdLists.add( newList );
-		// 							} else if ( !newRanges[ 0 ].isEqual( list.range ) ) {
-		// 								// @if CK_DEBUG // console.log( '-- list move',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 								// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
-		//
-		// 								list.range = newRanges[ 0 ];
-		// 							}
-		// 						}
-		// 					}
-		//
-		// 					if ( !wasHandled && element.hasAttribute( 'listItem' ) ) {
-		// 						const range = editor.model.createRange( position, position.getShiftedBy( length ) );
-		//
-		// 						// @if CK_DEBUG // console.log( '-- new list item', range.start.path + '-' + range.end.path );
-		//
-		// 						const newList = { range };
-		//
-		// 						this._lists.push( newList );
-		// 						createdLists.add( newList );
-		// 					}
-		// 				}
-		// 			} else if ( change.type == 'remove' ) {
-		// 				for ( let i = 0; i < this._lists.length; i++ ) {
-		// 					const list = this._lists[ i ];
-		//
-		// 					const newRange = list.range._getTransformedByDeletion( change.position, change.length );
-		//
-		// 					if ( !newRange || newRange.isCollapsed ) {
-		// 						// @if CK_DEBUG // console.log( '-- list removed', list.range.start.path + '-' + list.range.end.path );
-		//
-		// 						this._lists.splice( i, 1 );
-		// 						removedLists.add( list );
-		//
-		// 						continue;
-		// 					}
-		//
-		// 					if ( list.range.isEqual( newRange ) ) {
-		// 						continue;
-		// 					}
-		//
-		// 					if ( list.range.start.isEqual( change.position ) || list.range.containsPosition( change.position ) ) {
-		// 						// @if CK_DEBUG // console.log( '-- list shrink',
-		// 						// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 						// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
-		//
-		// 						list.range = newRange;
-		// 						changedLists.add( list );
-		// 					} else {
-		// 						// @if CK_DEBUG // console.log( '-- list move',
-		// 						// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 						// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
-		//
-		// 						list.range = newRange;
-		// 					}
-		// 				}
-		// 			} else if ( change.type == 'attribute' ) {
-		// 				if ( [ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
-		// 					const changedRange = change.range.isFlat ? change.range :
-		// 						editor.model.createRange( change.range.start, change.range.start.getShiftedBy( 1 ) );
-		//
-		// 					let wasHandled = false;
-		//
-		// 					for ( let i = 0; i < this._lists.length; i++ ) {
-		// 						const list = this._lists[ i ];
-		//
-		// 						if ( compareArrays( list.range.start.getParentPath(), change.range.start.getParentPath() ) != 'same' ) {
-		// 							continue;
-		// 						}
-		//
-		// 						// Attribute was set.
-		// 						if ( change.attributeOldValue === null ) {
-		// 							if ( list.range.isIntersecting( changedRange ) ) {
-		// 								// @if CK_DEBUG // console.log( '-- list added secondary attribute',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
-		// 								wasHandled = true;
-		// 								changedLists.add( list );
-		// 							}
-		// 						}
-		//
-		// 						// Attribute was removed.
-		// 						else if ( change.attributeNewValue === null ) {
-		// 							const newRanges = list.range.getDifference( changedRange );
-		//
-		// 							// Does not affect this list.
-		// 							if ( newRanges.length == 1 && newRanges[ 0 ].isEqual( list.range ) ) {
-		// 								continue;
-		// 							}
-		//
-		// 							if ( newRanges.length > 1 ) {
-		// 								// @if CK_DEBUG // console.log( '-- list split',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 								// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path,
-		// 								// @if CK_DEBUG // 		'and', newRanges[ 1 ].start.path + '-' + newRanges[ 1 ].end.path );
-		//
-		// 								list.range = newRanges[ 0 ];
-		// 								changedLists.add( list );
-		//
-		// 								const newList = { range: newRanges[ 1 ] };
-		//
-		// 								this._lists.push( newList );
-		// 								createdLists.add( newList );
-		// 							} else if ( newRanges.length ) {
-		// 								// @if CK_DEBUG // console.log( '-- list shrink',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path,
-		// 								// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
-		//
-		// 								list.range = newRanges[ 0 ];
-		// 								changedLists.add( list );
-		// 							} else {
-		// 								// @if CK_DEBUG // console.log( '-- list removed',
-		// 								// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
-		//
-		// 								this._lists.splice( i, 1 );
-		// 								removedLists.add( list );
-		// 							}
-		// 						}
-		//
-		// 						// Attribute value was changed.
-		// 						else if ( change.range.isIntersecting( list.range ) ) {
-		// 							// @if CK_DEBUG // console.log( '-- list attr change',
-		// 							// @if CK_DEBUG // 		list.range.start.path + '-' + list.range.end.path );
-		//
-		// 							changedLists.add( list );
-		// 						}
-		// 					}
-		//
-		// 					// New attribute on new list.
-		// 					if ( !wasHandled && change.attributeOldValue === null ) {
-		// 						// @if CK_DEBUG // console.log( '-- new list item', changedRange.start.path + '-' + changedRange.end.path );
-		//
-		// 						const newList = { range: changedRange };
-		//
-		// 						this._lists.push( newList );
-		// 						createdLists.add( newList );
-		// 					}
-		// 				}
-		// 			}
-		// 		}
-		//
-		// 		this._lists.sort( ( a, b ) => a.range.start.isBefore( b.range.start ) ? -1 : 1 );
-		//
-		// 		for ( let i = 1; i < this._lists.length; i++ ) {
-		// 			const previousItem = this._lists[ i - 1 ];
-		// 			const currentItem = this._lists[ i ];
-		//
-		// 			const joinedRange = previousItem.range.getJoined( currentItem.range );
-		//
-		// 			if ( joinedRange ) {
-		// 				previousItem.range = joinedRange;
-		//
-		// 				this._lists.splice( i--, 1 );
-		//
-		// 				if ( createdLists.has( currentItem ) ) {
-		// 					createdLists.delete( currentItem );
-		// 				} else if ( changedLists.has( currentItem ) ) {
-		// 					changedLists.delete( currentItem );
-		// 				}
-		// 			}
-		// 		}
-		//
-		// 		console.log( createdLists, changedLists, removedLists );
-		//
-		// 		// TODO make sure that one list is not in multiple sets
-		//
-		// 		for ( const change of data.changes ) {
-		// 			if ( !createdLists.size && !changedLists.size && !removedLists.size ) {
-		// 				reducedChanges.push( change );
-		//
-		// 				continue;
-		// 			}
-		//
-		// 			const position = change.position || change.range.start;
-		//
-		// 			const removedList = Array.from( removedLists ).find( list => (
-		// 				list.range.start.isEqual( position ) ||
-		// 				list.range.containsPosition( position ) &&
-		// 				compareArrays( list.range.start.getParentPath(), position.getParentPath() ) == 'same'
-		// 			) );
-		//
-		// 			const changedList = Array.from( changedLists ).find( list => (
-		// 				list.range.start.isEqual( position ) ||
-		// 				list.range.containsPosition( position ) &&
-		// 				compareArrays( list.range.start.getParentPath(), position.getParentPath() ) == 'same'
-		// 			) );
-		//
-		// 			const createdList = Array.from( createdLists ).find( list => (
-		// 				list.range.start.isEqual( position ) ||
-		// 				list.range.containsPosition( position ) &&
-		// 				compareArrays( list.range.start.getParentPath(), position.getParentPath() ) == 'same'
-		// 			) );
-		//
-		// 			if ( removedList && changedList ) {
-		// 				throw new Error( '!! removedList && changedList' );
-		// 			}
-		// 			if ( removedList && createdList ) {
-		// 				throw new Error( '!! removedList && createdList' );
-		// 			}
-		// 			if ( changedList && createdList ) {
-		// 				throw new Error( '!! changedList && createdList' );
-		// 			}
-		//
-		// 			if ( removedList ) {
-		// 				if ( !removedList.range.start.isEqual( position ) ) {
-		// 					reducedChanges.push( {
-		// 						type: 'removeRange',
-		// 						list: removedList,
-		// 						magicUid
-		// 					} );
-		// 				}
-		//
-		// 				continue;
-		// 			}
-		//
-		// 			if ( changedList ) {
-		// 				if ( !changedList.range.start.isEqual( position ) ) {
-		// 					reducedChanges.push( {
-		// 						type: 'removeRange',
-		// 						list: changedList,
-		// 						magicUid
-		// 					} );
-		//
-		// 					reducedChanges.push( {
-		// 						type: 'insertRange',
-		// 						list: changedList,
-		// 						magicUid
-		// 					} );
-		// 				}
-		//
-		// 				continue;
-		// 			}
-		//
-		// 			if ( createdList ) {
-		// 				if ( !createdList.range.start.isEqual( position ) ) {
-		// 					reducedChanges.push( {
-		// 						type: 'insertRange',
-		// 						list: createdList,
-		// 						magicUid
-		// 					} );
-		// 				}
-		//
-		// 				continue;
-		// 			}
-		//
-		// 			reducedChanges.push( change );
-		// 		}
-		//
-		// 		console.log( 'lists:', ...this._lists.map( ( { range } ) => range.start.path + '-' + range.end.path ) );
-		//
-		// 		data.changes = reducedChanges;
-		// 	} );
-		//
-		// 	dispatcher.on( `insertRange:${ magicUid }`, ( evt, data, conversionApi ) => {
-		// 		const viewElement = insertSlotted( data, conversionApi, conversionApi => (
-		// 			buildViewForRange( data.range, conversionApi.writer, conversionApi.slotFor )
-		// 		) );
-		//
-		// 		data.list.view = viewElement;
-		// 	} );
-		//
-		// 	dispatcher.on( `removeRange:${ magicUid }`, ( evt, data, conversionApi ) => {
-		// 		if ( !data.list.view ) {
-		// 			return;
-		// 		}
-		//
-		// 		const removed = conversionApi.writer.remove( data.list.view );
-		//
-		// 		// After the range is removed, unbind all view elements from the model.
-		// 		// Range inside view document fragment is used to unbind deeply.
-		// 		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
-		// 			// TODO should conversionApi.unbindViewElement() be called to collect all the mappings before real removal?
-		// 			conversionApi.mapper.unbindViewElement( child );
-		// 		}
-		// 	} );
-		// } );
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			// An abstract name of the model structure conversion.
+			const magicUid = uid();
+
+			dispatcher.on( 'reduceChanges', ( evt, data ) => {
+				const reducedChanges = editor.model.document.mappedRanges.getReducedChanges( 'list', data.changes );
+
+				// for ( const change of changes ) {
+				// 	const position = change.position || change.range.start;
+				//
+				// 	const removedList = Array.from( removedLists ).find( list => (
+				// 		list.range.start.isEqual( position ) ||
+				// 		list.range.containsPosition( position ) &&
+				// 		compareArrays( list.range.start.getParentPath(), position.getParentPath() ) == 'same'
+				// 	) );
+				//
+				// 	const changedList = Array.from( changedLists ).find( list => (
+				// 		list.range.start.isEqual( position ) ||
+				// 		list.range.containsPosition( position ) &&
+				// 		compareArrays( list.range.start.getParentPath(), position.getParentPath() ) == 'same'
+				// 	) );
+				//
+				// 	const createdList = Array.from( createdLists ).find( list => (
+				// 		list.range.start.isEqual( position ) ||
+				// 		list.range.containsPosition( position ) &&
+				// 		compareArrays( list.range.start.getParentPath(), position.getParentPath() ) == 'same'
+				// 	) );
+				//
+				// 	if ( removedList && changedList ) {
+				// 		throw new Error( '!! removedList && changedList' );
+				// 	}
+				// 	if ( removedList && createdList ) {
+				// 		throw new Error( '!! removedList && createdList' );
+				// 	}
+				// 	if ( changedList && createdList ) {
+				// 		throw new Error( '!! changedList && createdList' );
+				// 	}
+				//
+				// 	if ( removedList ) {
+				// 		if ( !removedList.range.start.isEqual( position ) ) {
+				// 			reducedChanges.push( {
+				// 				type: 'removeRange',
+				// 				list: removedList,
+				// 				magicUid
+				// 			} );
+				// 		}
+				//
+				// 		continue;
+				// 	}
+				//
+				// 	if ( changedList ) {
+				// 		if ( !changedList.range.start.isEqual( position ) ) {
+				// 			reducedChanges.push( {
+				// 				type: 'removeRange',
+				// 				list: changedList,
+				// 				magicUid
+				// 			} );
+				//
+				// 			reducedChanges.push( {
+				// 				type: 'insertRange',
+				// 				list: changedList,
+				// 				magicUid
+				// 			} );
+				// 		}
+				//
+				// 		continue;
+				// 	}
+				//
+				// 	if ( createdList ) {
+				// 		if ( !createdList.range.start.isEqual( position ) ) {
+				// 			reducedChanges.push( {
+				// 				type: 'insertRange',
+				// 				list: createdList,
+				// 				magicUid
+				// 			} );
+				// 		}
+				//
+				// 		continue;
+				// 	}
+				//
+				// 	reducedChanges.push( change );
+				// }
+
+				data.changes = reducedChanges;
+			} );
+
+			dispatcher.on( `insertRange:${ magicUid }`, ( evt, data, conversionApi ) => {
+				const viewElement = insertSlotted( data, conversionApi, conversionApi => (
+					buildViewForRange( data.range, conversionApi.writer, conversionApi.slotFor )
+				) );
+
+				data.list.view = viewElement;
+			} );
+
+			dispatcher.on( `removeRange:${ magicUid }`, ( evt, data, conversionApi ) => {
+				if ( !data.list.view ) {
+					return;
+				}
+
+				const removed = conversionApi.writer.remove( data.list.view );
+
+				// After the range is removed, unbind all view elements from the model.
+				// Range inside view document fragment is used to unbind deeply.
+				for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
+					// TODO should conversionApi.unbindViewElement() be called to collect all the mappings before real removal?
+					conversionApi.mapper.unbindViewElement( child );
+				}
+			} );
+		} );
 
 		// editor.conversion.for( 'editingDowncast' )
 		// 	.add( dispatcher => {
@@ -626,30 +396,30 @@ function isListItem( node ) {
 /**
  *	* insert element
  *		* with list attribute
- *			* before/after list - find range from current element
- *			* inside list - find range from current element
- *			* between lists - find range from current element
+ *			* before/after list - expand
+ *			* inside list - expand
+ *			* between lists - join
  *		* without list attribute
- *			* before/after list - doesn't affect list
- * 			* inside list - splits list - find range from SIBLING elements
- *			* between lists - doesn't affect list (same as before/after)
+ *			* before/after list - nothing
+ * 			* inside list - split
+ *			* between lists - nothing
  *	* remove element
  *		* with list attribute
- *			* start/end of list - it's already gone from the model - find range from SIBLING elements
- *			* inside list - it's already gone from the model - find range from SIBLING elements
+ *			* start/end of list - shrink
+ *			* inside list - shrink
  *		* without list attribute
- *			* before/after list - doesn't affect list
- *			* between lists - it's already gone from the model - find range from SIBLING elements
+ *			* before/after list - nothing
+ *			* between lists - join
  *	* attribute
  *		* set list attribute
- *			* before/after list - find range from current element
- *			* between lists - find range from current element
+ *			* before/after list - expand
+ *			* between lists - join
  *		* remove list attribute
- *			* start/end of list - find range from SIBLING elements
- *			* inside list - split list - find range from SIBLING elements
+ *			* start/end of list - trim
+ *			* inside list - split
  *		* change list attribute
- *			* start/end of list - find range from current element
- *			* inside list - find range from current element
+ *			* start/end of list - refresh
+ *			* inside list - refresh
  */
 
 function buildViewForRange( range, writer, slotFor ) {

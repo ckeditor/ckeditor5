@@ -96,6 +96,7 @@ export default class EditingController {
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
 
+				doc.mappedRanges.clearChanges();
 				// TODO differ.reset() should be handled here since this is the main consumer of it.
 			} );
 		}, { priority: 'low' } );
