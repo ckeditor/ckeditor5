@@ -5,9 +5,10 @@ category: features
 classes: main__content--no-toc
 toc: false
 contributeUrl: false
+modified_at: 2021-07-12
 ---
 
-The {@link module:minimap/minimap~Minimap} feature renders a content minimap which, when placed next to the editor, helps users navigate their content. It allows moving around documents and provides a visual overview when the document is longer than its visible portion on the screen.
+The {@link module:minimap/minimap~Minimap} feature renders a content minimap which, when placed next to the editor, helps the users navigate their content. It enables navigating the content and provides a visual overview when the document is longer than its visible portion on the screen.
 
 You can try the minimap feature it in the demo below.
 
@@ -17,7 +18,7 @@ You can try the minimap feature it in the demo below.
 
 ## Demo
 
-Scroll the content and the minimap in the sidebar will show you your current location. Drag the box pointing to the visible portion of the content for quick navigation. You can also simply click the minimap to move around instantly.
+Scroll the content and the minimap in the sidebar will show your current location. Drag the box marking the visible portion of the content to quickly navigate the document. You can also simply click anywhere on the minimap to move around instantly.
 
 {@snippet features/minimap}
 
@@ -28,7 +29,7 @@ To configure the editor as [presented above](#demo), you can use the following D
 ```html
 <div id="document-container">
 	<div id="toolbar-container">
-		<!-- This is where document editor toolbar will be inserted. -->
+		<!-- This is where the document editor toolbar will be inserted. -->
 	</div>
 	<div class="minimap-wrapper">
 		<div class="editor-container">
@@ -43,7 +44,7 @@ To configure the editor as [presented above](#demo), you can use the following D
 </div>
 ```
 
-and the following CSS:
+Employ the following CSS:
 
 ```css
 .document-container {
@@ -103,7 +104,7 @@ and the following CSS:
 }
 ```
 
-and, finally, the JavaScript to run the editor (learn how to [install](#installation) the feature):
+Finally, the JavaScript to run the editor (learn how to [install](#installation) the feature):
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
@@ -126,7 +127,7 @@ DecoupledEditor
 
 ## Installation
 
-To add the pagination feature to your editor, install the [`@ckeditor/ckeditor5-minimap`](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap) package:
+To add the content minimap feature to your editor, install the [`@ckeditor/ckeditor5-minimap`](https://www.npmjs.com/package/@ckeditor/ckeditor5-minimap) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-minimap
@@ -180,7 +181,7 @@ DecoupledEditor
 
 ### Content styles and classes
 
-The minimap feature uses `<iframe>` internally. For proper look and operation, is is essential the content (clone) inside the `<iframe>` has exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimap~MinimapConfig#extraClasses detailed documentation} to learn more.
+The minimap feature uses `<iframe>` internally. For a proper look and operation, is is essential for the content (clone) inside the `<iframe>` to have exactly the same styles as the main editor document. If the content of your editor inherits styles from parent containers, you may need to pass the class names of these containers in the feature configuration to maintain style parity. See the {@link module:minimap/minimap~MinimapConfig#extraClasses detailed classes documentation} to learn more.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.

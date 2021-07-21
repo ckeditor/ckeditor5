@@ -40,7 +40,7 @@ ClassicEditor
 		plugins: [ SourceEditing, GeneralHtmlSupport, ... ],
 		toolbar: [ 'sourceEditing', ... ],
 		htmlSupport: {
-			allow: {
+			allow: [
 				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
 				{
 					name: /^(div|details|summary)$/,
@@ -68,7 +68,7 @@ ClassicEditor
 					name: 'abbr',
 					attributes: [ 'title' ]
 				}
-			}
+			]
 		}
 	} )
 	.then( ... )

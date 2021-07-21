@@ -8,7 +8,7 @@ The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an
 
 The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link builds/guides/overview#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link builds/guides/overview#balloon-block-editor balloon block editor overview}.
 
-## Example
+## Demo
 
 <info-box hint>
 	Move the caret around the content with the balloon editor below to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, for example, to create a header or insert an image. See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.

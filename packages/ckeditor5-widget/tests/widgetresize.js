@@ -557,24 +557,6 @@ describe( 'WidgetResize', () => {
 
 			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
 		} );
-
-		function gerResizerOptions( editor ) {
-			return {
-				modelElement: editor.model.document.getRoot().getChild( 0 ),
-				viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
-				editor,
-
-				isCentered: () => false,
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-
-				onCommit: commitStub
-			};
-		}
 	} );
 
 	describe( 'init()', () => {
@@ -593,6 +575,22 @@ describe( 'WidgetResize', () => {
 			} );
 
 			expect( redrawSpy.callCount ).to.equal( 1 );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10156
+		it( 'removes references to and destroys resizers removed from the document', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
+
+			editor.setData( '' );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
+			sinon.assert.calledOnce( resizerDestroySpy );
 		} );
 	} );
 
@@ -720,5 +718,23 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
+	}
+
+	function gerResizerOptions( editor ) {
+		return {
+			modelElement: editor.model.document.getRoot().getChild( 0 ),
+			viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
+			editor,
+
+			isCentered: () => false,
+			getHandleHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+			getResizeHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			onCommit: commitStub
+		};
 	}
 } );

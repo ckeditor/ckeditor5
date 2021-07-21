@@ -18,11 +18,11 @@ This package implements the General HTML Support feature for CKEditor 5.
 
 ## Demo
 
-Check out the demos in the {@link features/general-html-support General HTML Support feature} guide.
+Check out the demos in the {@link features/general-html-support General HTML Support feature guide}.
 
 ## Documentation
 
-See the {@link features/general-html-support General HTML Support feature} guide.
+See the {@link features/general-html-support General HTML Support feature guide}.
 
 ## Installation
 

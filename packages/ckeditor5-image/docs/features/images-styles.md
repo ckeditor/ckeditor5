@@ -11,7 +11,7 @@ modified_at: 2021-06-17
 ## Overview
 This package allows for adjusting the image appearance by:
 * **Applying CSS classes** - adding a particular [predefined](#ready-to-use-styles) or [custom](#configuring-the-styles) CSS class or removing any style-related CSS class,
-* **Managing the HTML representation** by changing the image type from inline to block and vice versa. The type conversion occurs if the newly applied style doesn't support the current image type.
+* **Managing the HTML representation** by changing the image type from inline to block and vice versa. Applying a style may change the type of the image, depending on the configuration of the style.
 
 <info-box>
 	The actual styling of the images is the integrator's job. CKEditor 5 WYSIWYG editor comes with some default styles, but they will only be applied to the images inside the editor. The integrator needs to style them appropriately on the target pages.
@@ -40,7 +40,7 @@ The inline type images are represented as inline HTML elements and can be insert
 Block type images, on the other hand, can be inserted only between other blocks like paragraphs, tables or media. The HTML representation of the block image looks like this:
 * `<figure class=”image image-style-class”><img></img></figure>`.
 
-**Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. The inline <-> block conversion occurs if the newly applied style does not support the current image type.
+**Switching between these two types of images can be executed by applying/removing a style from the image**: Each of the defined style options provides a list of the image types which it can be applied to. Applying a style may change the type of the image, depending on the configuration of the style.
 
 When a new image is inserted, the editor will, by default, choose the optimal image type based on the context of the insertion (e.g. the current selection/position and {@link features/images-installation#inline-and-block-images availability of plugins}). The default type of the newly inserted image can be controlled using the {@link module:image/imageinsert~ImageInsertConfig#type `image.insert.type` configuration}.
 
@@ -417,7 +417,7 @@ The `ImageStyle` plugin provides a set of default styles depending on the loaded
 
 ## Installation
 
-This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation} guide to learn how to enable this feature.
+This feature is available in all {@link builds/guides/overview ready-to-use editor builds}. If your integrations uses a custom editor build, check out the {@link features/images-installation image feature installation guide} to learn how to enable this feature.
 
 ## Common API
 

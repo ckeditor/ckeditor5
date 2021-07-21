@@ -10,11 +10,11 @@ This package implements the horizontal line feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/horizontal-line#demo demo in the Horizontal line feature} guide.
+Check out the {@link features/horizontal-line#demo demo in the horizontal line feature guide}.
 
 ## Documentation
 
-See the {@link features/horizontal-line Horizontal line feature} guide and the {@link module:horizontal-line/horizontalline~HorizontalLine} plugin documentation.
+See the {@link features/horizontal-line horizontal line feature guide} and the {@link module:horizontal-line/horizontalline~HorizontalLine} plugin documentation.
 
 ## Installation
 

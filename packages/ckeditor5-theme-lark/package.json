@@ -9,6 +9,9 @@
     "ckeditor5-theme"
   ],
   "dependencies": {
+    "@ckeditor/ckeditor5-ui": "^29.0.0"
+  },
+  "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^29.0.0",
     "@ckeditor/ckeditor5-ckfinder": "^29.0.0",
     "@ckeditor/ckeditor5-code-block": "^29.0.0",
@@ -31,7 +34,6 @@
     "@ckeditor/ckeditor5-select-all": "^29.0.0",
     "@ckeditor/ckeditor5-source-editing": "^29.0.0",
     "@ckeditor/ckeditor5-special-characters": "^29.0.0",
-    "@ckeditor/ckeditor5-ui": "^29.0.0",
     "@ckeditor/ckeditor5-undo": "^29.0.0",
     "@ckeditor/ckeditor5-utils": "^29.0.0",
     "@ckeditor/ckeditor5-table": "^29.0.0",
