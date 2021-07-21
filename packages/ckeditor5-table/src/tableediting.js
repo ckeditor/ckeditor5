@@ -121,8 +121,9 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
 		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
-		// to its parent (to the table cell).
-		editor.data.mapper.on( 'modelToViewPosition', mapTableCellModelPositionToView( editor.editing.view ) );
+		// to its parent (to the table cell). This custom model-to-view position mapping is necessary in data pipeline only,
+		// because only during this conversion a paragraph can be bound to its parent.
+		editor.data.mapper.on( 'modelToViewPosition', mapTableCellModelPositionToView() );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -173,9 +174,8 @@ export default class TableEditing extends Plugin {
 //
 // <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
 //
-// @param {module:engine/view/view~View} editingView
 // @returns {Function}
-function mapTableCellModelPositionToView( editingView ) {
+function mapTableCellModelPositionToView() {
 	return ( evt, data ) => {
 		const modelParent = data.modelPosition.parent;
 		const modelNodeBefore = data.modelPosition.nodeBefore;
@@ -194,7 +194,7 @@ function mapTableCellModelPositionToView( editingView ) {
 		if ( viewNodeBefore === viewParent ) {
 			// Since the paragraph has already been bound to its parent, update the current position in the model with paragraph's
 			// max offset, so it points to the place which should normally (in all other cases) be the end position of this paragraph.
-			data.viewPosition = editingView.createPositionAt( viewParent, modelNodeBefore.maxOffset );
+			data.viewPosition = data.mapper.findPositionIn( viewParent, modelNodeBefore.maxOffset );
 		}
 	};
 }
