@@ -111,18 +111,6 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
-	 * Initiate a search.
-	 *
-	 * @param {Function|String} callbackOrText
-	 * @returns {module:utils/collection~Collection}
-	 */
-	find( callbackOrText ) {
-		const { editor } = this;
-
-		editor.execute( 'find', callbackOrText );
-	}
-
-	/**
 	 * Stops active results from updating, and clears out the results.
 	 */
 	stop() {
