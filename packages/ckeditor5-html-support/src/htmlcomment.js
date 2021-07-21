@@ -173,10 +173,10 @@ export default class HtmlComment extends Plugin {
 	}
 
 	/**
-	 * Gets all HTML comment in the given range including the comments existing at the range boundaries.
+	 * Gets all HTML comments in the given range including the comments existing at the range boundaries.
 	 *
 	 * @param {module:engine/model/range~Range} range
-	 * @returns {Array.<String>} HTML Comment IDs
+	 * @returns {Array.<String>} HTML comment IDs
 	 */
 	getHtmlCommentsInRange( range ) {
 		// Unfortunately MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
