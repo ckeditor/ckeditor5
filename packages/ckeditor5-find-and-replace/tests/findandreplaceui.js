@@ -95,7 +95,15 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			it( 'should set a #label of the #buttonView', () => {
-				expect( dropdown.buttonView.tooltip ).to.equal( 'Find and replace' );
+				expect( dropdown.buttonView.label ).to.equal( 'Find and replace' );
+			} );
+
+			it( 'should set a #tooltip of the #buttonView', () => {
+				expect( dropdown.buttonView.tooltip ).to.be.true;
+			} );
+
+			it( 'should set a #keystroke of the #buttonView', () => {
+				expect( dropdown.buttonView.keystroke ).to.equal( 'CTRL+F' );
 			} );
 
 			describe( '#open event', () => {
