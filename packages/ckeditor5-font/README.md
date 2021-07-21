@@ -14,7 +14,7 @@ This package implements support for the following CKEditor 5 features:
 
 ## Demo
 
-Check out the [demo in the Font feature](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#demo) guide.
+Check out the [demo in the font feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/font.html#demo).
 
 ## Documentation
 

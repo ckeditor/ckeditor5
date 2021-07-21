@@ -144,7 +144,7 @@ export default class MinimapView extends View {
 	}
 
 	/**
-	 * Sets the new height of the minimap (in px) to respond to changes in the original editing DOM root.
+	 * Sets the new height of the minimap (in px) to respond to the changes in the original editing DOM root.
 	 *
 	 * **Note**:The provided value should be the `offsetHeight` of the original editing DOM root.
 	 *
@@ -162,7 +162,7 @@ export default class MinimapView extends View {
 	 * overview of the visible document.
 	 *
 	 * **Note**: The value should be between 0 and 1. 0 when the DOM root has not been scrolled, 1 when the
-	 * scrolling reached the end.
+	 * scrolling has reached the end.
 	 *
 	 * @param {Number} newScrollProgress
 	 */

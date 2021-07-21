@@ -19,7 +19,7 @@ When the plugin is enabled, it automatically detects Word content and transforms
 </info-box>
 
 <info-box info>
-	The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs Pasting content from Google Docs} guide to learn more.
+	The {@link module:paste-from-office/pastefromoffice~PasteFromOffice} plugin also allows you to paste content from Google Docs. See the {@link features/paste-from-google-docs pasting content from Google Docs guide} to learn more.
 </info-box>
 
 ## Demo

@@ -5,9 +5,13 @@ CKEditor 5 paste from Office feature
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
-This package implements the [Paste from Office](https://docs.ckeditor.com/ckeditor5/latest/features/paste-from-office.html) feature for CKEditor 5.
+This package implements the [paste from Office](https://docs.ckeditor.com/ckeditor5/latest/features/paste-from-office.html) feature for CKEditor 5.
 
 Paste from Office allows copying content from Microsoft Word without loosing any formatting.
+
+## Demo
+
+Check out the demos for the [paste from office](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-word.html#demo) and [paste from Google Docs](https://ckeditor.com/docs/ckeditor5/latest/features/pasting/paste-from-google-docs.html#demo) features.
 
 ## Documentation
 

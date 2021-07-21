@@ -9,7 +9,7 @@ This package contains CKEditor 5 features allowing to apply basic text formattin
 
 ## Demo
 
-Check out the [demo in the Basic styles feature](https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html#demo) guide.
+Check out the [demo in the basic styles feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html#demo).
 
 ## Documentation
 

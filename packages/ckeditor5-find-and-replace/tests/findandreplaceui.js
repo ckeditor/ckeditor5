@@ -5,6 +5,8 @@ import FindAndReplaceUI from '../src/findandreplaceui';
 import FindAndReplace from '../src/findandreplace';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import loupeIcon from '../theme/icons/find-replace.svg';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'FindAndReplaceUI', () => {
 	let editorElement;
@@ -93,7 +95,15 @@ describe( 'FindAndReplaceUI', () => {
 			} );
 
 			it( 'should set a #label of the #buttonView', () => {
-				expect( dropdown.buttonView.tooltip ).to.equal( 'Find and replace' );
+				expect( dropdown.buttonView.label ).to.equal( 'Find and replace' );
+			} );
+
+			it( 'should set a #tooltip of the #buttonView', () => {
+				expect( dropdown.buttonView.tooltip ).to.be.true;
+			} );
+
+			it( 'should set a #keystroke of the #buttonView', () => {
+				expect( dropdown.buttonView.keystroke ).to.equal( 'CTRL+F' );
 			} );
 
 			describe( '#open event', () => {
@@ -107,6 +117,24 @@ describe( 'FindAndReplaceUI', () => {
 
 					button.fire( 'open' );
 					sinon.assert.callOrder( spy, selectSpy );
+				} );
+
+				it( 'should open the dropdown when CTRL+F was pressed', () => {
+					const spy = sinon.spy( form.findInputView.fieldView, 'select' );
+
+					const keyEventData = ( {
+						keyCode: keyCodes.f,
+						ctrlKey: !env.isMac,
+						metaKey: env.isMac,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					} );
+
+					const wasHandled = editor.keystrokes.press( keyEventData );
+
+					expect( wasHandled ).to.be.true;
+					expect( keyEventData.preventDefault.calledOnce ).to.be.true;
+					sinon.assert.calledOnce( spy );
 				} );
 
 				it( 'should select the content of the input', () => {
