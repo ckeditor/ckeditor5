@@ -169,7 +169,7 @@ export default class TableEditing extends Plugin {
 	}
 }
 
-// Returns fixed colspan and rowspan attrbutes values
+// Returns fixed colspan and rowspan attrbutes values.
 //
 // @private
 // @param {String} type colspan or rowspan.
