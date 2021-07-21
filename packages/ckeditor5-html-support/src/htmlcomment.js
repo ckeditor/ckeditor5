@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { CKEditorError, uid } from 'ckeditor5/src/utils';
+import { uid } from 'ckeditor5/src/utils';
 
 /**
  * The HTML comment feature.
@@ -124,10 +124,12 @@ export default class HtmlComment extends Plugin {
 	/**
 	 * Removes an HTML comment with the given comment ID.
 	 *
-	 * It throws an error if the comment with the given ID does not exist.
-	 * Note that a comment can be removed also by removing the content in which it is created.
+	 * It does nothing and returns `false` if the comment with the given ID does not exist.
+	 *
+	 * Note that a comment can be removed also by removing the content around the comment.
 	 *
 	 * @param {String} commentID The ID of the comment to be removed.
+	 * @return {Boolean} `true` when the comment with the given ID was removed.
 	 */
 	removeHtmlComment( commentID ) {
 		const editor = this.editor;
@@ -136,18 +138,15 @@ export default class HtmlComment extends Plugin {
 		const marker = editor.model.markers.get( commentID );
 
 		if ( !marker ) {
-			/**
-			 * An HTML comment with the given ID does not exist.
-			 *
-			 * @error html-comment-does-not-exist
-			 */
-			throw new CKEditorError( 'html-comment-does-not-exist', null );
+			return false;
 		}
 
 		editor.model.change( writer => {
 			writer.removeMarker( marker );
 			writer.removeAttribute( commentID, root );
 		} );
+
+		return true;
 	}
 
 	/**

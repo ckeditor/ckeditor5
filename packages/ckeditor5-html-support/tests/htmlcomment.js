@@ -8,7 +8,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import HtmlComment from '../src/htmlcomment';
-import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 describe( 'HtmlComment', () => {
@@ -227,21 +226,11 @@ describe( 'HtmlComment', () => {
 		it( 'should create an HTML comment between elements', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
-
-				htmlCommentPlugin.createHtmlComment( position, 'first' );
-			} );
+			htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'first' );
 
 			expect( editor.getData() ).to.equal( '<p>Foo</p><!--first--><p>Bar</p><p>Baz</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 2 );
-
-				htmlCommentPlugin.createHtmlComment( position, 'second' );
-			} );
+			htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 2 ), 'second' );
 
 			expect( editor.getData() ).to.equal( '<p>Foo</p><!--first--><p>Bar</p><!--second--><p>Baz</p>' );
 		} );
@@ -249,19 +238,9 @@ describe( 'HtmlComment', () => {
 		it( 'should return a comment ID of the comment', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			const firstCommentID = editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
+			const firstCommentID = htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'foo' );
 
-				return htmlCommentPlugin.createHtmlComment( position, 'foo' );
-			} );
-
-			const secondCommentID = editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
-
-				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
-			} );
+			const secondCommentID = htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'bar' );
 
 			expect( firstCommentID ).to.be.a( 'string' );
 			expect( secondCommentID ).to.be.a( 'string' );
@@ -272,12 +251,7 @@ describe( 'HtmlComment', () => {
 		it( 'should allow creating an HTML comment inside the text', () => {
 			editor.setData( '<p>Foo</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root.getChild( 0 ), 1 );
-
-				htmlCommentPlugin.createHtmlComment( position, 'foo' );
-			} );
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 0, 1 ] ), 'foo' );
 
 			expect( editor.getData() ).to.equal( '<p>F<!--foo-->oo</p>' );
 		} );
@@ -285,13 +259,10 @@ describe( 'HtmlComment', () => {
 		it( 'should allow creating a few HTML comments in the same place', () => {
 			editor.setData( '<p>Foo</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root.getChild( 0 ), 1 );
+			const position = model.createPositionFromPath( root, [ 0, 1 ] );
 
-				htmlCommentPlugin.createHtmlComment( position, 'foo' );
-				htmlCommentPlugin.createHtmlComment( position, 'bar' );
-			} );
+			htmlCommentPlugin.createHtmlComment( position, 'foo' );
+			htmlCommentPlugin.createHtmlComment( position, 'bar' );
 
 			expect( editor.getData() ).to.equal( '<p>F<!--bar--><!--foo-->oo</p>' );
 		} );
@@ -299,12 +270,7 @@ describe( 'HtmlComment', () => {
 		it( 'should allow creating an HTML comment before the first element', () => {
 			editor.setData( '<p>Foo</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 0 );
-
-				htmlCommentPlugin.createHtmlComment( position, 'foo' );
-			} );
+			htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 0 ), 'foo' );
 
 			expect( editor.getData() ).to.equal( '<!--foo--><p>Foo</p>' );
 		} );
@@ -312,57 +278,42 @@ describe( 'HtmlComment', () => {
 		it( 'should allow creating an HTML comment after the last element', () => {
 			editor.setData( '<p>Foo</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
-
-				htmlCommentPlugin.createHtmlComment( position, 'foo' );
-			} );
+			htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'foo' );
 
 			expect( editor.getData() ).to.equal( '<p>Foo</p><!--foo-->' );
 		} );
 	} );
 
 	describe( 'removeHtmlComment()', () => {
-		it( 'should allow removing a comment with the given comment ID', () => {
+		it( 'should remove a comment and return true if the comment with the given comment ID exists', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			const firstCommentID = editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
+			const firstCommentID = htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'foo' );
+			const secondCommentID = htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'bar' );
 
-				return htmlCommentPlugin.createHtmlComment( position, 'foo' );
-			} );
-
-			const secondCommentID = editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
-
-				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
-			} );
-
-			htmlCommentPlugin.removeHtmlComment( firstCommentID );
+			const result1 = htmlCommentPlugin.removeHtmlComment( firstCommentID );
 
 			expect( editor.getData() ).to.equal( '<p>Foo</p><!--bar--><p>Bar</p><p>Baz</p>' );
 
-			htmlCommentPlugin.removeHtmlComment( secondCommentID );
+			const result2 = htmlCommentPlugin.removeHtmlComment( secondCommentID );
 
 			expect( editor.getData() ).to.equal( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			expect( result1 ).to.equal( true );
+			expect( result2 ).to.equal( true );
 		} );
 
-		it( 'should throw an error when a comment with the given comment ID does not exist', () => {
+		// Note that the comment could have been removed via the content changes.
+		it( 'should do nothing and return `false` if a comment with the given comment ID does not exist', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			editor.model.change( writer => {
-				const root = editor.model.document.getRoot();
-				const position = writer.createPositionAt( root, 1 );
+			htmlCommentPlugin.createHtmlComment( model.createPositionAt( root, 1 ), 'bar' );
 
-				return htmlCommentPlugin.createHtmlComment( position, 'bar' );
-			} );
+			const result = htmlCommentPlugin.removeHtmlComment( 'invalid-comment-id' );
 
-			expectToThrowCKEditorError( () => {
-				htmlCommentPlugin.removeHtmlComment( 'invalid-comment-id' );
-			}, /^html-comment-does-not-exist/, null );
+			expect( editor.getData() ).to.equal( '<p>Foo</p><!--bar--><p>Bar</p><p>Baz</p>' );
+
+			expect( result ).to.equal( false );
 		} );
 	} );
 
@@ -371,28 +322,26 @@ describe( 'HtmlComment', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
 			htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 1, 0 ] ),
+				model.createPositionFromPath( root, [ 1, 0 ] ),
 				'foo'
 			);
 
 			htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2 ] ),
+				model.createPositionFromPath( root, [ 2 ] ),
 				'bar'
 			);
 
 			const id3 = htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2, 1 ] ),
+				model.createPositionFromPath( root, [ 2, 1 ] ),
 				'foo'
 			);
 
 			const id4 = htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2, 3 ] ),
+				model.createPositionFromPath( root, [ 2, 3 ] ),
 				'foo'
 			);
 
-			const range = editor.model.change( writer => {
-				return writer.createRangeIn( root.getChild( 2 ) );
-			} );
+			const range = model.createRangeIn( root.getChild( 2 ) );
 
 			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id3, id4 ] );
 		} );
@@ -400,18 +349,12 @@ describe( 'HtmlComment', () => {
 		it( 'should return all comment marker IDs present in the specified range including comments at range boundaries', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 1, 0 ] ),
-				'foo'
-			);
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 1, 0 ] ), 'foo' );
 
-			htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2 ] ),
-				'bar'
-			);
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2 ] ), 'bar' );
 
-			const posStart = createPositionFromPath( [ 2, 1 ] );
-			const posEnd = createPositionFromPath( [ 2, 3 ] );
+			const posStart = model.createPositionFromPath( root, [ 2, 1 ] );
+			const posEnd = model.createPositionFromPath( root, [ 2, 3 ] );
 
 			const id3 = htmlCommentPlugin.createHtmlComment( posStart, 'baz' );
 			const id4 = htmlCommentPlugin.createHtmlComment( posEnd, 'biz' );
@@ -424,17 +367,11 @@ describe( 'HtmlComment', () => {
 		it( 'should return all comment marker IDs present in the specified collapsed range', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2, 0 ] ),
-				'foo'
-			);
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2, 0 ] ), 'foo' );
 
-			htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2, 2 ] ),
-				'bar'
-			);
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2, 2 ] ), 'bar' );
 
-			const position = createPositionFromPath( [ 2, 1 ] );
+			const position = model.createPositionFromPath( root, [ 2, 1 ] );
 
 			const id1 = htmlCommentPlugin.createHtmlComment( position, 'baz' );
 			const id2 = htmlCommentPlugin.createHtmlComment( position, 'biz' );
@@ -449,36 +386,27 @@ describe( 'HtmlComment', () => {
 		it( 'should return a position and the content for the given comment', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			const id1 = htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 0 ] ),
-				'foo'
-			);
-
-			const id2 = htmlCommentPlugin.createHtmlComment(
-				createPositionFromPath( [ 2, 2 ] ),
-				'bar'
-			);
+			const id1 = htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 0 ] ), 'foo' );
+			const id2 = htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2, 2 ] ), 'bar' );
 
 			const commentData1 = htmlCommentPlugin.getHtmlCommentData( id1 );
 			const commentData2 = htmlCommentPlugin.getHtmlCommentData( id2 );
 
 			expect( commentData1 ).to.be.an( 'object' );
-			expect( commentData1.position.isEqual( createPositionFromPath( [ 0 ] ) ) ).to.be.true;
+			expect( commentData1.position.isEqual( model.createPositionFromPath( root, [ 0 ] ) ) ).to.be.true;
 			expect( commentData1.content ).to.equal( 'foo' );
 
 			expect( commentData2 ).to.be.an( 'object' );
-			expect( commentData2.position.isEqual( createPositionFromPath( [ 2, 2 ] ) ) ).to.be.true;
+			expect( commentData2.position.isEqual( model.createPositionFromPath( root, [ 2, 2 ] ) ) ).to.be.true;
 			expect( commentData2.content ).to.equal( 'bar' );
 		} );
-	} );
 
-	function createPositionFromPath( path ) {
-		return model.change( writer => {
-			const root = editor.model.document.getRoot();
+		it( 'should return null if the given comment does not exist', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
-			return writer.createPositionFromPath( root, path );
+			expect( htmlCommentPlugin.getHtmlCommentData( 'invalid-id' ) ).to.be.null;
 		} );
-	}
+	} );
 
 	function addMarker( name, element, offset ) {
 		model.change( writer => {
