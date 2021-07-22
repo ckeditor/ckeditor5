@@ -79,7 +79,7 @@ function viewToModelListAttributeConverter( dataFilter, listName ) {
 			}
 
 			const root = dataFilter.editor.model.document.getRoot();
-			const attributeName = `$htmlList:${ uid() }`;
+			const attributeName = `htmlList-${ uid() }`;
 
 			// Use store to preserve information about list attribute id
 			// between list and list items conversions.

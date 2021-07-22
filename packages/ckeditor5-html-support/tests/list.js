@@ -61,12 +61,12 @@ describe( 'TableElementSupport', () => {
 
 		expect( getTableModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<listItem htmlAttributes="(1)" htmlList="$htmlList:1" listIndent="0" listType="numbered">1</listItem>' +
-			'<listItem htmlAttributes="(2)" htmlList="$htmlList:2" listIndent="0" listType="numbered">2</listItem>' +
-			'<listItem htmlAttributes="(3)" htmlList="$htmlList:3" listIndent="0" listType="numbered">3</listItem>' +
-			'<listItem htmlAttributes="(4)" htmlList="$htmlList:4" listIndent="1" listType="numbered">4</listItem>' +
-			'<listItem htmlAttributes="(5)" htmlList="$htmlList:5" listIndent="1" listType="numbered">5</listItem>' +
-			'<listItem htmlAttributes="(6)" htmlList="$htmlList:6" listIndent="1" listType="numbered">6</listItem>',
+			'<listItem htmlAttributes="(1)" htmlList="htmlList-1" listIndent="0" listType="numbered">1</listItem>' +
+			'<listItem htmlAttributes="(2)" htmlList="htmlList-2" listIndent="0" listType="numbered">2</listItem>' +
+			'<listItem htmlAttributes="(3)" htmlList="htmlList-3" listIndent="0" listType="numbered">3</listItem>' +
+			'<listItem htmlAttributes="(4)" htmlList="htmlList-4" listIndent="1" listType="numbered">4</listItem>' +
+			'<listItem htmlAttributes="(5)" htmlList="htmlList-5" listIndent="1" listType="numbered">5</listItem>' +
+			'<listItem htmlAttributes="(6)" htmlList="htmlList-6" listIndent="1" listType="numbered">6</listItem>',
 			attributes: createAttributesFromRange( 1, 7, ( { attributes: { 'data-list': 'li' } } ) )
 		} );
 
@@ -97,12 +97,12 @@ describe( 'TableElementSupport', () => {
 
 		expect( getTableModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<listItem htmlAttributes="(1)" htmlList="$htmlList:1" listIndent="0" listType="numbered">1</listItem>' +
-			'<listItem htmlAttributes="(2)" htmlList="$htmlList:2" listIndent="0" listType="numbered">2</listItem>' +
-			'<listItem htmlAttributes="(3)" htmlList="$htmlList:3" listIndent="0" listType="numbered">3</listItem>' +
-			'<listItem htmlAttributes="(4)" htmlList="$htmlList:4" listIndent="1" listType="numbered">4</listItem>' +
-			'<listItem htmlAttributes="(5)" htmlList="$htmlList:5" listIndent="1" listType="numbered">5</listItem>' +
-			'<listItem htmlAttributes="(6)" htmlList="$htmlList:6" listIndent="1" listType="numbered">6</listItem>',
+			'<listItem htmlAttributes="(1)" htmlList="htmlList-1" listIndent="0" listType="numbered">1</listItem>' +
+			'<listItem htmlAttributes="(2)" htmlList="htmlList-2" listIndent="0" listType="numbered">2</listItem>' +
+			'<listItem htmlAttributes="(3)" htmlList="htmlList-3" listIndent="0" listType="numbered">3</listItem>' +
+			'<listItem htmlAttributes="(4)" htmlList="htmlList-4" listIndent="1" listType="numbered">4</listItem>' +
+			'<listItem htmlAttributes="(5)" htmlList="htmlList-5" listIndent="1" listType="numbered">5</listItem>' +
+			'<listItem htmlAttributes="(6)" htmlList="htmlList-6" listIndent="1" listType="numbered">6</listItem>',
 			attributes: createAttributesFromRange( 1, 7, ( { classes: [ 'foobar' ] } ) )
 		} );
 
@@ -132,12 +132,12 @@ describe( 'TableElementSupport', () => {
 
 		expect( getTableModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<listItem htmlAttributes="(1)" htmlList="$htmlList:1" listIndent="0" listType="numbered">1</listItem>' +
-			'<listItem htmlAttributes="(2)" htmlList="$htmlList:2" listIndent="0" listType="numbered">2</listItem>' +
-			'<listItem htmlAttributes="(3)" htmlList="$htmlList:3" listIndent="0" listType="numbered">3</listItem>' +
-			'<listItem htmlAttributes="(4)" htmlList="$htmlList:4" listIndent="1" listType="numbered">4</listItem>' +
-			'<listItem htmlAttributes="(5)" htmlList="$htmlList:5" listIndent="1" listType="numbered">5</listItem>' +
-			'<listItem htmlAttributes="(6)" htmlList="$htmlList:6" listIndent="1" listType="numbered">6</listItem>',
+			'<listItem htmlAttributes="(1)" htmlList="htmlList-1" listIndent="0" listType="numbered">1</listItem>' +
+			'<listItem htmlAttributes="(2)" htmlList="htmlList-2" listIndent="0" listType="numbered">2</listItem>' +
+			'<listItem htmlAttributes="(3)" htmlList="htmlList-3" listIndent="0" listType="numbered">3</listItem>' +
+			'<listItem htmlAttributes="(4)" htmlList="htmlList-4" listIndent="1" listType="numbered">4</listItem>' +
+			'<listItem htmlAttributes="(5)" htmlList="htmlList-5" listIndent="1" listType="numbered">5</listItem>' +
+			'<listItem htmlAttributes="(6)" htmlList="htmlList-6" listIndent="1" listType="numbered">6</listItem>',
 			attributes: createAttributesFromRange( 1, 7, ( { styles: { color: 'red' } } ) )
 		} );
 
@@ -323,9 +323,9 @@ describe( 'TableElementSupport', () => {
 			'<listItem htmlAttributes="(1)" listIndent="0" listType="numbered">1</listItem>' +
 			'<listItem htmlAttributes="(2)" listIndent="0" listType="numbered">2</listItem>' +
 			'<listItem htmlAttributes="(3)" listIndent="0" listType="numbered">3</listItem>' +
-			'<listItem htmlAttributes="(4)" htmlList="$htmlList:1" listIndent="1" listType="numbered">4</listItem>' +
-			'<listItem htmlAttributes="(5)" htmlList="$htmlList:2" listIndent="1" listType="numbered">5</listItem>' +
-			'<listItem htmlAttributes="(6)" htmlList="$htmlList:3" listIndent="1" listType="numbered">6</listItem>',
+			'<listItem htmlAttributes="(4)" htmlList="htmlList-1" listIndent="1" listType="numbered">4</listItem>' +
+			'<listItem htmlAttributes="(5)" htmlList="htmlList-2" listIndent="1" listType="numbered">5</listItem>' +
+			'<listItem htmlAttributes="(6)" htmlList="htmlList-3" listIndent="1" listType="numbered">6</listItem>',
 			attributes: createAttributesFromRange( 1, 7, ( { attributes: { 'data-list': 'li' } } ) )
 		} );
 
@@ -366,12 +366,12 @@ describe( 'TableElementSupport', () => {
 
 		expect( getTableModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<listItem htmlAttributes="(1)" htmlList="$htmlList:1" listIndent="0" listType="bulleted">1</listItem>' +
-			'<listItem htmlAttributes="(2)" htmlList="$htmlList:2" listIndent="0" listType="bulleted">2</listItem>' +
-			'<listItem htmlAttributes="(3)" htmlList="$htmlList:3" listIndent="0" listType="bulleted">3</listItem>' +
-			'<listItem htmlAttributes="(4)" htmlList="$htmlList:4" listIndent="1" listType="bulleted">4</listItem>' +
-			'<listItem htmlAttributes="(5)" htmlList="$htmlList:5" listIndent="1" listType="bulleted">5</listItem>' +
-			'<listItem htmlAttributes="(6)" htmlList="$htmlList:6" listIndent="1" listType="bulleted">6</listItem>',
+			'<listItem htmlAttributes="(1)" htmlList="htmlList-1" listIndent="0" listType="bulleted">1</listItem>' +
+			'<listItem htmlAttributes="(2)" htmlList="htmlList-2" listIndent="0" listType="bulleted">2</listItem>' +
+			'<listItem htmlAttributes="(3)" htmlList="htmlList-3" listIndent="0" listType="bulleted">3</listItem>' +
+			'<listItem htmlAttributes="(4)" htmlList="htmlList-4" listIndent="1" listType="bulleted">4</listItem>' +
+			'<listItem htmlAttributes="(5)" htmlList="htmlList-5" listIndent="1" listType="bulleted">5</listItem>' +
+			'<listItem htmlAttributes="(6)" htmlList="htmlList-6" listIndent="1" listType="bulleted">6</listItem>',
 			attributes: createAttributesFromRange( 1, 7, ( {
 				attributes: {
 					'data-allow': 'allow'
@@ -451,12 +451,12 @@ describe( 'TableElementSupport', () => {
 
 		expect( getTableModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<listItem htmlAttributes="(1)" htmlList="$htmlList:1" listIndent="0" listType="todo">1</listItem>' +
-			'<listItem htmlAttributes="(2)" htmlList="$htmlList:2" listIndent="0" listType="todo">2</listItem>' +
-			'<listItem htmlAttributes="(3)" htmlList="$htmlList:3" listIndent="0" listType="todo">3</listItem>' +
-			'<listItem htmlAttributes="(4)" htmlList="$htmlList:4" listIndent="1" listType="todo">4</listItem>' +
-			'<listItem htmlAttributes="(5)" htmlList="$htmlList:5" listIndent="1" listType="todo">5</listItem>' +
-			'<listItem htmlAttributes="(6)" htmlList="$htmlList:6" listIndent="1" listType="todo">6</listItem>',
+			'<listItem htmlAttributes="(1)" htmlList="htmlList-1" listIndent="0" listType="todo">1</listItem>' +
+			'<listItem htmlAttributes="(2)" htmlList="htmlList-2" listIndent="0" listType="todo">2</listItem>' +
+			'<listItem htmlAttributes="(3)" htmlList="htmlList-3" listIndent="0" listType="todo">3</listItem>' +
+			'<listItem htmlAttributes="(4)" htmlList="htmlList-4" listIndent="1" listType="todo">4</listItem>' +
+			'<listItem htmlAttributes="(5)" htmlList="htmlList-5" listIndent="1" listType="todo">5</listItem>' +
+			'<listItem htmlAttributes="(6)" htmlList="htmlList-6" listIndent="1" listType="todo">6</listItem>',
 			attributes: createAttributesFromRange( 1, 7, ( { attributes: { 'data-list': 'li' } } ) )
 		} );
 
@@ -474,8 +474,8 @@ describe( 'TableElementSupport', () => {
 		const result = getModelDataWithAttributes( model, { ...options, excludeAttributes: [ 'htmlList' ] } );
 
 		let counter = 1;
-		result.data = result.data.replace( /htmlList="\$htmlList:(.*?)"/g, () => {
-			return `htmlList="$htmlList:${ counter++ }"`;
+		result.data = result.data.replace( /htmlList="htmlList-(.*?)"/g, () => {
+			return `htmlList="htmlList-${ counter++ }"`;
 		} );
 
 		return result;
