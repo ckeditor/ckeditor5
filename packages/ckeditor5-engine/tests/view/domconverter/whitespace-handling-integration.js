@@ -219,6 +219,26 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo <button> Button </button> bar</p>' );
 		} );
 
+		it( 'TODO 2', () => {
+			editor.model.schema.register( 'button', {
+				allowWhere: '$text',
+				isInline: true,
+				allowChildren: [ '$text' ]
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'button',
+				view: 'button'
+			} );
+
+			editor.setData( '<p>foo <button> Button </button> <button> Another </button> bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo <button> Button </button> <button> Another </button> bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo <button> Button </button> <button> Another </button> bar</p>' );
+		} );
+
 		it( 'white space with text before empty inline element is not ignored', () => {
 			editor.setData( '<p>foo <img src="/assets/sample.png"></p>' );
 

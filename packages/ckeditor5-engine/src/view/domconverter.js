@@ -95,7 +95,7 @@ export default class DomConverter {
 		/**
 		 * TODO
 		 */
-		this.inlineElements = [
+		this.inlineObjectElements = [
 			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'video', 'embed', 'audio', 'img', 'canvas'
 		];
 
@@ -1039,8 +1039,8 @@ export default class DomConverter {
 		// 1. Replace the first space with a nbsp if the previous node ends with a space or there is no previous node
 		// (container element boundary).
 		if ( data.charAt( 0 ) == ' ' ) {
-			const prevNode = this._getTouchingViewTextNode( node, false );
-			const prevEndsWithSpace = prevNode && this._nodeEndsWithSpace( prevNode );
+			const prevNode = this._getTouchingInlineViewNode( node, false );
+			const prevEndsWithSpace = prevNode && prevNode.is( '$textProxy' ) && this._nodeEndsWithSpace( prevNode );
 
 			if ( prevEndsWithSpace || !prevNode ) {
 				data = '\u00A0' + data.substr( 1 );
@@ -1057,9 +1057,10 @@ export default class DomConverter {
 		//
 		// More here: https://github.com/ckeditor/ckeditor5-engine/issues/1747.
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
-			const nextNode = this._getTouchingViewTextNode( node, true );
+			const nextNode = this._getTouchingInlineViewNode( node, true );
+			const nextStartsWithSpace = nextNode && nextNode.is( '$textProxy' ) && nextNode.data.charAt( 0 ) == ' ';
 
-			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextNode.data.charAt( 0 ) == ' ' ) {
+			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextStartsWithSpace ) {
 				data = data.substr( 0, data.length - 1 ) + '\u00A0';
 			}
 		}
@@ -1210,26 +1211,27 @@ export default class DomConverter {
 	 * @private
 	 * @param {module:engine/view/text~Text} node Reference node.
 	 * @param {Boolean} getNext
-	 * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.
+	 * @returns {module:engine/view/text~Text|module:engine/view/element~Element|null} Touching text node, an inline object
+	 * or `null` if there is no next or previous touching text node.
 	 */
-	_getTouchingViewTextNode( node, getNext ) {
+	_getTouchingInlineViewNode( node, getNext ) {
 		const treeWalker = new ViewTreeWalker( {
 			startPosition: getNext ? ViewPosition._createAfter( node ) : ViewPosition._createBefore( node ),
 			direction: getNext ? 'forward' : 'backward'
 		} );
 
 		for ( const value of treeWalker ) {
+			// Found an inline object (for example an image).
+			if ( value.item.is( 'element' ) && this.inlineObjectElements.includes( value.item.name ) ) {
+				return value.item;
+			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
-			if ( value.item.is( 'containerElement' ) ) {
+			else if ( value.item.is( 'containerElement' ) ) {
 				return null;
 			}
 			// <br> found – it works like a block boundary, so do not scan further.
 			else if ( value.item.is( 'element', 'br' ) ) {
-				return null;
-			}
-			// Empty element (e.g. <img/>) found – it works like a block boundary, so do not scan further.
-			else if ( value.item.is( 'emptyElement' ) ) {
 				return null;
 			}
 			// Found a text node in the same container element.
@@ -1287,7 +1289,7 @@ export default class DomConverter {
 				return null;
 			}
 		} while (
-			!( isText( node ) || node.tagName == 'BR' || this._isInlineElement( node ) )
+			!( isText( node ) || node.tagName == 'BR' || this._isInlineObjectElement( node ) )
 		);
 
 		return node;
@@ -1311,8 +1313,8 @@ export default class DomConverter {
 	 * @param {Node} node
 	 * @returns {Boolean}
 	 */
-	_isInlineElement( node ) {
-		return this.isElement( node ) && this.inlineElements.includes( node.tagName.toLowerCase() );
+	_isInlineObjectElement( node ) {
+		return this.isElement( node ) && this.inlineObjectElements.includes( node.tagName.toLowerCase() );
 	}
 }
 
@@ -1321,14 +1323,9 @@ export default class DomConverter {
 //
 // @param {Node} node
 // @param {Array.<String>} types
-// @param {Boolean} [boundaryParent] Can be given if parents should be checked up to a given element (excluding that element).
 // @returns {Boolean} `true` if such parent exists or `false` if it does not.
-function _hasDomParentOfType( node, types, boundaryParent ) {
-	let parents = getAncestors( node );
-
-	if ( boundaryParent ) {
-		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
-	}
+function _hasDomParentOfType( node, types ) {
+	const parents = getAncestors( node );
 
 	return parents.some( parent => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
 }
