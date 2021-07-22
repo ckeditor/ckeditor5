@@ -37,8 +37,8 @@ export default class HtmlComment extends Plugin {
 			view: '$comment',
 			model: ( viewElement, { writer } ) => {
 				const root = this.editor.model.document.getRoot();
-				const markerName = `$comment:${ uid() }`;
 				const commentContent = viewElement.getCustomProperty( '$rawContent' );
+				const markerName = `$comment:${ uid() }`;
 
 				writer.setAttribute( markerName, commentContent, root );
 
@@ -89,4 +89,120 @@ export default class HtmlComment extends Plugin {
 			return true;
 		} );
 	}
+
+	/**
+	 * Creates an HTML comment on the specified position and returns its ID.
+	 *
+	 * *Note*: If two comments are created at the same position, the second comment will be inserted before the first one.
+	 *
+	 * @param {module:engine/model/position~Position} position
+	 * @param {String} content
+	 * @returns {String} Comment ID. This ID can be later used to e.g. remove the comment from the content.
+	 */
+	createHtmlComment( position, content ) {
+		const id = uid();
+		const editor = this.editor;
+		const model = editor.model;
+		const root = model.document.getRoot();
+		const markerName = `$comment:${ id }`;
+
+		return model.change( writer => {
+			const range = writer.createRange( position );
+
+			writer.addMarker( markerName, {
+				usingOperation: true,
+				affectsData: true,
+				range
+			} );
+
+			writer.setAttribute( markerName, content, root );
+
+			return markerName;
+		} );
+	}
+
+	/**
+	 * Removes an HTML comment with the given comment ID.
+	 *
+	 * It does nothing and returns `false` if the comment with the given ID does not exist.
+	 * Otherwise it removes the comment and returns `true`.
+	 *
+	 * Note that a comment can be removed also by removing the content around the comment.
+	 *
+	 * @param {String} commentID The ID of the comment to be removed.
+	 * @returns {Boolean} `true` when the comment with the given ID was removed, `false` otherwise.
+	 */
+	removeHtmlComment( commentID ) {
+		const editor = this.editor;
+		const root = editor.model.document.getRoot();
+
+		const marker = editor.model.markers.get( commentID );
+
+		if ( !marker ) {
+			return false;
+		}
+
+		editor.model.change( writer => {
+			writer.removeMarker( marker );
+			writer.removeAttribute( commentID, root );
+		} );
+
+		return true;
+	}
+
+	/**
+	 * Gets the HTML comment data for the comment with a given ID.
+	 *
+	 * Returns `null` if the comment does not exist.
+	 *
+	 * @param {String} commentID
+	 * @returns {module:html-support/htmlcomment~HtmlCommentData}
+	 */
+	getHtmlCommentData( commentID ) {
+		const editor = this.editor;
+		const marker = editor.model.markers.get( commentID );
+		const root = editor.model.document.getRoot();
+
+		if ( !marker ) {
+			return null;
+		}
+
+		return {
+			content: root.getAttribute( commentID ),
+			position: marker.getStart()
+		};
+	}
+
+	/**
+	 * Gets all HTML comments in the given range including the comments existing at the range boundaries.
+	 *
+	 * @param {module:engine/model/range~Range} range
+	 * @returns {Array.<String>} HTML comment IDs
+	 */
+	getHtmlCommentsInRange( range ) {
+		// Unfortunately MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
+		return Array.from( this.editor.model.markers.getMarkersGroup( '$comment' ) )
+			.filter( marker => isCommentMarkerInRange( marker, range ) )
+			.map( marker => marker.name );
+
+		function isCommentMarkerInRange( commentMarker, range ) {
+			const position = commentMarker.getRange().start;
+
+			return (
+				( position.isAfter( range.start ) || position.isEqual( range.start ) ) &&
+				( position.isBefore( range.end ) || position.isEqual( range.end ) )
+			);
+		}
+	}
 }
+
+/**
+ * An interface for the HTML comments data.
+ *
+ * It consists of the {@link module:engine/model/position~Position `position`} and `content`.
+ *
+ * @typedef {Object} HtmlCommentData
+ *
+ * @property {module:engine/model/position~Position} position
+ * @property {String} content
+ */
