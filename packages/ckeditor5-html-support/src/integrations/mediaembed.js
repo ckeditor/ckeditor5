@@ -26,7 +26,9 @@ export default class MediaEmbedElementSupport extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		if ( !editor.plugins.has( 'MediaEmbed' ) ) {
+		// Stop here if MediaEmbed plugin is not provided or the integrator wants to output markup with previews as
+		// we do not support filtering previews.
+		if ( !editor.plugins.has( 'MediaEmbed' ) || editor.config.get( 'mediaEmbed.previewsInData' ) ) {
 			return;
 		}
 
@@ -34,7 +36,9 @@ export default class MediaEmbedElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
-		dataFilter.on( 'register:oembed', ( evt, definition ) => {
+		const mediaElementName = editor.config.get( 'mediaEmbed.elementName' );
+
+		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'htmlOembed' ) {
 				return;
 			}
@@ -47,7 +51,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 			} );
 
 			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
-			conversion.for( 'upcast' ).add( viewToModelOembedAttributesConverter( dataFilter ) );
+			conversion.for( 'upcast' ).add( viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) );
 			conversion.for( 'dataDowncast' ).add( modelToViewOembedAttributeConverter() );
 
 			evt.stop();
@@ -55,9 +59,9 @@ export default class MediaEmbedElementSupport extends Plugin {
 	}
 }
 
-function viewToModelOembedAttributesConverter( dataFilter ) {
+function viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
-		dispatcher.on( 'element:oembed', ( evt, data, conversionApi ) => {
+		dispatcher.on( `element:${ mediaElementName }`, ( evt, data, conversionApi ) => {
 			const viewOembedElement = data.viewItem;
 
 			preserveElementAttributes( viewOembedElement, 'htmlAttributes' );
@@ -80,9 +84,9 @@ function viewToModelOembedAttributesConverter( dataFilter ) {
 	};
 }
 
-function modelToViewOembedAttributeConverter() {
+function modelToViewOembedAttributeConverter( mediaElementName ) {
 	return dispatcher => {
-		addAttributeConversionDispatcherHandler( 'oembed', 'htmlAttributes' );
+		addAttributeConversionDispatcherHandler( mediaElementName, 'htmlAttributes' );
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName, attributeName ) {
