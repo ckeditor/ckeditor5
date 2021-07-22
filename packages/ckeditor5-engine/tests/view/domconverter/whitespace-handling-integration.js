@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 
 import { getData } from '../../../src/dev-utils/model';
@@ -13,14 +14,14 @@ import { getData } from '../../../src/dev-utils/model';
 // dev utils' setData() loses white spaces so don't use it for tests here!!!
 // https://github.com/ckeditor/ckeditor5-engine/issues/1428
 
-describe( 'DomConverter – whitespace handling – integration', () => {
+describe.only( 'DomConverter – whitespace handling – integration', () => {
 	let editor;
 
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/822.
 	describe( 'normalizing whitespaces around block boundaries (#822)', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph ] } )
+				.create( { plugins: [ Paragraph, ImageInlineEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 
@@ -196,6 +197,107 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 				.to.equal( '<paragraph> <$text bold="true">bar</$text></paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>&nbsp;<b>bar</b></p>' );
+		} );
+
+		it.only( 'TODO', () => {
+			editor.model.schema.register( 'button', {
+				allowWhere: '$text',
+				isInline: true,
+				allowChildren: [ '$text' ]
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'button',
+				view: 'button'
+			} );
+
+			editor.setData( '<p>foo <button> Button </button> bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo <button> Button </button> bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo <button> Button </button> bar</p>' );
+		} );
+
+		it( 'white space with text before empty inline element is not ignored', () => {
+			editor.setData( '<p>foo <img src="/assets/sample.png"></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo <img src="/assets/sample.png"></p>' );
+		} );
+
+		it( 'white space with text after empty inline element is not ignored', () => {
+			editor.setData( '<p><img src="/assets/sample.png" /> foo</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline> foo</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"> foo</p>' );
+		} );
+
+		it( 'white spaces with text around empty inline element are not ignored', () => {
+			editor.setData( '<p>foo <img src="/assets/sample.png"> bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline> bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo <img src="/assets/sample.png"> bar</p>' );
+		} );
+
+		it( 'white space before empty inline element is ignored', () => {
+			editor.setData( '<p> <img src="/assets/sample.png"></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+		} );
+
+		it( 'white space after empty inline element is ignored', () => {
+			editor.setData( '<p><img src="/assets/sample.png" /> </p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+		} );
+
+		it( 'white spaces around empty inline element are ignored', () => {
+			editor.setData( '<p> <img src="/assets/sample.png"> </p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"></p>' );
+		} );
+
+		it( 'nbsp before empty inline element is not ignored', () => {
+			editor.setData( '<p>&nbsp;<img src="/assets/sample.png"></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph> <imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>&nbsp;<img src="/assets/sample.png"></p>' );
+		} );
+
+		it( 'nbsp after empty inline element is not ignored', () => {
+			editor.setData( '<p><img src="/assets/sample.png" />&nbsp;</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline> </paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png">&nbsp;</p>' );
+		} );
+
+		it( 'nbsp around empty inline element are not ignored', () => {
+			editor.setData( '<p>&nbsp;<img src="/assets/sample.png">&nbsp;</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph> <imageInline src="/assets/sample.png"></imageInline> </paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>&nbsp;<img src="/assets/sample.png">&nbsp;</p>' );
 		} );
 
 		it( 'nbsp after inline element is not ignored', () => {

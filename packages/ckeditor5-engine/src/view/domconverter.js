@@ -95,6 +95,13 @@ export default class DomConverter {
 		];
 
 		/**
+		 * TODO
+		 */
+		this.inlineElements = [
+			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'video', 'embed', 'audio', 'img', 'canvas'
+		];
+
+		/**
 		 * The DOM-to-view mapping.
 		 *
 		 * @private
@@ -1163,7 +1170,7 @@ export default class DomConverter {
 	 *
 	 * @private
 	 * @param {Node} node
-	 * @param {Node} prevNode
+	 * @param {Node} prevNode Either DOM text or `<br>` or one of `#inlineElements`.
 	 */
 	_checkShouldLeftTrimDomText( node, prevNode ) {
 		if ( !prevNode ) {
@@ -1171,7 +1178,7 @@ export default class DomConverter {
 		}
 
 		if ( isElement( prevNode ) ) {
-			return true;
+			return prevNode.tagName === 'BR';
 		}
 
 		// Shouldn't left trim if previous node is a node that was encountered as a raw content node.
@@ -1188,7 +1195,7 @@ export default class DomConverter {
 	 *
 	 * @private
 	 * @param {Node} node
-	 * @param {Node} nextNode
+	 * @param {Node} nextNode Either DOM text or `<br>` or one of `#inlineElements`.
 	 */
 	_checkShouldRightTrimDomText( node, nextNode ) {
 		if ( nextNode ) {
@@ -1221,6 +1228,10 @@ export default class DomConverter {
 			}
 			// <br> found – it works like a block boundary, so do not scan further.
 			else if ( value.item.is( 'element', 'br' ) ) {
+				return null;
+			}
+			// Empty element (e.g. <img/>) found – it works like a block boundary, so do not scan further.
+			else if ( value.item.is( 'emptyElement' ) ) {
 				return null;
 			}
 			// Found a text node in the same container element.
@@ -1261,14 +1272,24 @@ export default class DomConverter {
 		const direction = getNext ? 'nextNode' : 'previousNode';
 		const document = node.ownerDocument;
 		const topmostParent = getAncestors( node )[ 0 ];
+		const inlineElements = this.inlineElements;
+
+		// const startingNode = node;
 
 		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
 			acceptNode( node ) {
+				// startingNode;
+				// direction;
+
 				if ( isText( node ) ) {
 					return NodeFilter.FILTER_ACCEPT;
 				}
 
 				if ( node.tagName == 'BR' ) {
+					return NodeFilter.FILTER_ACCEPT;
+				}
+
+				if ( inlineElements.includes( node.tagName.toLowerCase() ) ) {
 					return NodeFilter.FILTER_ACCEPT;
 				}
 
@@ -1279,6 +1300,19 @@ export default class DomConverter {
 		treeWalker.currentNode = node;
 
 		const touchingNode = treeWalker[ direction ]();
+
+		// if ( direction === 'previousNode' ) {
+		// 	console.log( startingNode );
+		// 	console.log( touchingNode );
+		// 	console.log( treeWalker[ direction ]() );
+		// }
+
+		// const isTouchingNodeSibling = touchingNode.parentNode.nextSibling === node;
+		// const isTouchingNodeParentInline = inlineElements.includes( touchingNode.parentNode.tagName.toLowerCase() );
+
+		// if ( touchingNode && !isTouchingNodeSibling && isTouchingNodeParentInline ) {
+		// 	touchingNode = touchingNode.parentNode;
+		// }
 
 		if ( touchingNode !== null ) {
 			const lca = getCommonAncestor( node, touchingNode );
@@ -1351,6 +1385,15 @@ function hasBlockParent( domNode, blockElements ) {
 	const parent = domNode.parentNode;
 
 	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
+}
+
+// Checks if an element is empty (void). Empty elements are <img />, <input />, etc.
+// As per https://developer.mozilla.org/en-US/docs/Glossary/Empty_element.
+//
+// @param {Node} domNode DOM node.
+// @returns {Boolean}
+function isEmptyElement( domNode ) {
+	return EMPTY_DOM_ELEMENTS.includes( domNode.tagName );
 }
 
 /**
