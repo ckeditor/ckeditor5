@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, NodeFilter, Text */
+/* globals document, Node, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -25,9 +25,7 @@ import {
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
-import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import { isElement } from 'lodash-es';
 
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
@@ -1177,7 +1175,7 @@ export default class DomConverter {
 			return true;
 		}
 
-		if ( isElement( prevNode ) ) {
+		if ( this.isElement( prevNode ) ) {
 			return prevNode.tagName === 'BR';
 		}
 
@@ -1269,68 +1267,52 @@ export default class DomConverter {
 			return null;
 		}
 
-		const direction = getNext ? 'nextNode' : 'previousNode';
-		const document = node.ownerDocument;
-		const topmostParent = getAncestors( node )[ 0 ];
-		const inlineElements = this.inlineElements;
+		const stepInto = getNext ? 'firstChild' : 'lastChild';
+		const stepOver = getNext ? 'nextSibling' : 'previousSibling';
 
-		// const startingNode = node;
+		let skipChildren = true;
 
-		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
-			acceptNode( node ) {
-				// startingNode;
-				// direction;
-
-				if ( isText( node ) ) {
-					return NodeFilter.FILTER_ACCEPT;
-				}
-
-				if ( node.tagName == 'BR' ) {
-					return NodeFilter.FILTER_ACCEPT;
-				}
-
-				if ( inlineElements.includes( node.tagName.toLowerCase() ) ) {
-					return NodeFilter.FILTER_ACCEPT;
-				}
-
-				return NodeFilter.FILTER_SKIP;
+		do {
+			if ( !skipChildren && node[ stepInto ] ) {
+				node = node[ stepInto ];
+			} else if ( node[ stepOver ] ) {
+				node = node[ stepOver ];
+				skipChildren = false;
+			} else {
+				node = node.parentNode;
+				skipChildren = true;
 			}
-		} );
 
-		treeWalker.currentNode = node;
-
-		const touchingNode = treeWalker[ direction ]();
-
-		// if ( direction === 'previousNode' ) {
-		// 	console.log( startingNode );
-		// 	console.log( touchingNode );
-		// 	console.log( treeWalker[ direction ]() );
-		// }
-
-		// const isTouchingNodeSibling = touchingNode.parentNode.nextSibling === node;
-		// const isTouchingNodeParentInline = inlineElements.includes( touchingNode.parentNode.tagName.toLowerCase() );
-
-		// if ( touchingNode && !isTouchingNodeSibling && isTouchingNodeParentInline ) {
-		// 	touchingNode = touchingNode.parentNode;
-		// }
-
-		if ( touchingNode !== null ) {
-			const lca = getCommonAncestor( node, touchingNode );
-
-			// If there is common ancestor between the text node and next/prev text node,
-			// and there are no block elements on a way from the text node to that ancestor,
-			// and there are no block elements on a way from next/prev text node to that ancestor...
-			if (
-				lca &&
-				!_hasDomParentOfType( node, this.blockElements, lca ) &&
-				!_hasDomParentOfType( touchingNode, this.blockElements, lca )
-			) {
-				// Then they are in the same container element.
-				return touchingNode;
+			if ( !node || this._isBlockElement( node ) ) {
+				return null;
 			}
-		}
+		} while (
+			!( isText( node ) || node.tagName == 'BR' || this._isInlineElement( node ) )
+		);
 
-		return null;
+		return node;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {Node} node
+	 * @returns {Boolean}
+	 */
+	_isBlockElement( node ) {
+		return this.isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {Node} node
+	 * @returns {Boolean}
+	 */
+	_isInlineElement( node ) {
+		return this.isElement( node ) && this.inlineElements.includes( node.tagName.toLowerCase() );
 	}
 }
 
@@ -1385,15 +1367,6 @@ function hasBlockParent( domNode, blockElements ) {
 	const parent = domNode.parentNode;
 
 	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
-}
-
-// Checks if an element is empty (void). Empty elements are <img />, <input />, etc.
-// As per https://developer.mozilla.org/en-US/docs/Glossary/Empty_element.
-//
-// @param {Node} domNode DOM node.
-// @returns {Boolean}
-function isEmptyElement( domNode ) {
-	return EMPTY_DOM_ELEMENTS.includes( domNode.tagName );
 }
 
 /**

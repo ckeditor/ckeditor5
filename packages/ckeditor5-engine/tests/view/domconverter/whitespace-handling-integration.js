@@ -14,7 +14,7 @@ import { getData } from '../../../src/dev-utils/model';
 // dev utils' setData() loses white spaces so don't use it for tests here!!!
 // https://github.com/ckeditor/ckeditor5-engine/issues/1428
 
-describe.only( 'DomConverter – whitespace handling – integration', () => {
+describe( 'DomConverter – whitespace handling – integration', () => {
 	let editor;
 
 	// See https://github.com/ckeditor/ckeditor5-engine/issues/822.
@@ -199,7 +199,7 @@ describe.only( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;<b>bar</b></p>' );
 		} );
 
-		it.only( 'TODO', () => {
+		it( 'TODO', () => {
 			editor.model.schema.register( 'button', {
 				allowWhere: '$text',
 				isInline: true,

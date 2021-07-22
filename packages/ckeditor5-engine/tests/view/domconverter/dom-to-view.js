@@ -202,7 +202,7 @@ describe( 'DomConverter', () => {
 						document.createTextNode( 'foo ' )
 					] ),
 					createElement( document, 'p', {}, [
-						document.createTextNode( 'foo ' )
+						document.createTextNode( 'bar ' )
 					] ),
 					document.createTextNode( ' ' )
 				] );
@@ -211,7 +211,7 @@ describe( 'DomConverter', () => {
 
 				expect( viewDiv.childCount ).to.equal( 2 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
-				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
 			} );
 
 			it( 'after a block element', () => {
