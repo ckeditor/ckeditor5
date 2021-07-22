@@ -128,12 +128,11 @@ describe( 'FindPreviousCommand', () => {
 			const multiRootEditor = await initMultiRootEditor();
 
 			multiRootEditor.execute( 'find', 'bar' );
-			multiRootEditor.execute( 'findNext' );
 			multiRootEditor.execute( 'findPrevious' );
 
 			const markers = getSimplifiedHighlightedMarkers( multiRootEditor.model.markers );
 
-			expect( stringify( multiRootEditor.model.document.getRoot( 'main' ), null, markers ) ).to.equal(
+			expect( stringify( multiRootEditor.model.document.getRoot( 'second' ), null, markers ) ).to.equal(
 				'<paragraph>' +
 					'Foo ' +
 					'<highlightedResult:start></highlightedResult:start>' +

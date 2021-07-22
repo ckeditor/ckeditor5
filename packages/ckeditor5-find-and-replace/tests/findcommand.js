@@ -300,7 +300,7 @@ describe( 'FindCommand', () => {
 					expect( results ).to.be.lengthOf( 2 );
 				} );
 
-				it( 'should properly search for all occurrences if the first occurrence is not in the first root', () => {
+				it( 'should properly search for all occurrences if the first occurrence is not in the main root', () => {
 					setData( multiRootModel, '<paragraph>Foo bar bar</paragraph>' );
 
 					const { results } = multiRootEditor.execute( 'find', 'z' );

@@ -102,20 +102,15 @@ describe( 'ReplaceAllCommand', () => {
 
 		it( 'should replace all occurrences in multiple roots', async () => {
 			class MultiRootEditor extends ModelTestEditor {
-				constructor( { roots, config } ) {
+				constructor( config ) {
 					super( config );
 
-					for ( const rootName of roots ) {
-						this.model.document.createRoot( '$root', rootName );
-					}
+					this.model.document.createRoot( '$root', 'second' );
 				}
 			}
 
 			const multiRootEditor = await MultiRootEditor
-				.create( {
-					roots: [ 'second' ],
-					config: { plugins: [ FindAndReplaceEditing, Paragraph ] }
-				} );
+				.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
 
 			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
 			setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );

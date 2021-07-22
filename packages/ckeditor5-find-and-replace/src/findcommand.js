@@ -61,13 +61,14 @@ export default class FindCommand extends Command {
 			findCallback = callbackOrText;
 		}
 
-		// Initial search is done on all nodes inside the root content.
-		const results = model.document.getRootNames().reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
-			model.createRangeIn( model.document.getRoot( rootName ) ),
-			model,
-			findCallback,
-			currentResults )
-		), null );
+		// Initial search is done on all nodes in all roots inside the content.
+		const results = model.document.getRootNames()
+			.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+				model.createRangeIn( model.document.getRoot( rootName ) ),
+				model,
+				findCallback,
+				currentResults
+			) ), null );
 
 		this.state.clear( model );
 		this.state.results.addMany( Array.from( results ) );

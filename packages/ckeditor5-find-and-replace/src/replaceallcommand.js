@@ -39,12 +39,13 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 		const { model } = editor;
 
 		const results = textToReplace instanceof Collection ?
-			textToReplace : model.document.getRootNames().reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
-				model.createRangeIn( model.document.getRoot( rootName ) ),
-				model,
-				findByTextCallback( textToReplace, this._state ),
-				currentResults
-			) ), null );
+			textToReplace : model.document.getRootNames()
+				.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+					model.createRangeIn( model.document.getRoot( rootName ) ),
+					model,
+					findByTextCallback( textToReplace, this._state ),
+					currentResults
+				) ), null );
 
 		if ( results.length ) {
 			model.change( () => {
