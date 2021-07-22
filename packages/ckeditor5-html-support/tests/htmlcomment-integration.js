@@ -58,11 +58,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty blockquote', async () => {
-			editor = await getEditor(
-				'<blockquote>' +
-					'<!-- c1 -->' +
-				'</blockquote>'
-			);
+			editor = await getEditor( '<blockquote><!-- c1 --></blockquote>' );
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
@@ -170,23 +166,13 @@ describe( 'HtmlComment integration', () => {
 
 		it( 'should work if comment is in an empty heading', async () => {
 			editor = await getEditor(
-				'<h1>' +
-					'<!-- c1 -->' +
-				'</h1>' +
-				'<h2>' +
-					'<!-- c2 -->' +
-				'</h2>'
+				'<h1><!-- c1 --></h1>' +
+				'<h2><!-- c2 --></h2>'
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<h2>' +
-					'<!-- c1 -->' +
-					'&nbsp;' +
-				'</h2>' +
-				'<h2>' +
-					'<!-- c2 -->' +
-					'&nbsp;' +
-				'</h2>'
+				'<h2><!-- c1 -->&nbsp;</h2>' +
+				'<h2><!-- c2 -->&nbsp;</h2>'
 			);
 		} );
 
@@ -243,12 +229,12 @@ describe( 'HtmlComment integration', () => {
 			editor = await getEditor(
 				'<p>' +
 					'<mark class="marker-yellow">' +
-					'<!-- c1 -->' +
+						'<!-- c1 -->' +
 					'</mark>' +
 				'</p>' +
 				'<p>' +
 					'<mark class="pen-red">' +
-					'<!-- c2 -->' +
+						'<!-- c2 -->' +
 					'</mark>' +
 				'</p>'
 			);
@@ -537,12 +523,7 @@ describe( 'HtmlComment integration', () => {
 				'</p>'
 			);
 
-			expect( editor.getData() ).to.equal(
-				'<p>' +
-					'<!-- c1 -->' +
-					'&nbsp;' +
-				'</p>'
-			);
+			expect( editor.getData() ).to.equal( '<p><!-- c1 -->&nbsp;</p>' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
@@ -640,31 +621,13 @@ describe( 'HtmlComment integration', () => {
 
 		it( 'should work if comment is in an empty list item', async () => {
 			editor = await getEditor(
-				'<ol>' +
-					'<li>' +
-						'<!-- c1 -->' +
-					'</li>' +
-				'</ol>' +
-				'<ul>' +
-					'<li>' +
-						'<!-- c2 -->' +
-					'</li>' +
-				'</ul>'
+				'<ol><li><!-- c1 --></li></ol>' +
+				'<ul><li><!-- c2 --></li></ul>'
 			);
 
 			expect( editor.getData() ).to.equal(
-				'<ol>' +
-					'<li>' +
-						'<!-- c1 -->' +
-						'&nbsp;' +
-					'</li>' +
-				'</ol>' +
-				'<ul>' +
-					'<li>' +
-						'<!-- c2 -->' +
-						'&nbsp;' +
-					'</li>' +
-				'</ul>'
+				'<ol><li><!-- c1 -->&nbsp;</li></ol>' +
+				'<ul><li><!-- c2 -->&nbsp;</li></ul>'
 			);
 		} );
 
@@ -859,11 +822,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty media wrapper tag', async () => {
-			editor = await getEditor(
-				'<figure class="media">' +
-					'<!-- c1 -->' +
-				'</figure>'
-			);
+			editor = await getEditor( '<figure class="media"><!-- c1 --></figure>' );
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
@@ -954,18 +913,9 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty paragraph', async () => {
-			editor = await getEditor(
-				'<p>' +
-					'<!-- c1 -->' +
-				'</p>'
-			);
+			editor = await getEditor( '<p><!-- c1 --></p>' );
 
-			expect( editor.getData() ).to.equal(
-				'<p>' +
-					'<!-- c1 -->' +
-					'&nbsp;' +
-				'</p>'
-			);
+			expect( editor.getData() ).to.equal( '<p><!-- c1 -->&nbsp;</p>' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
@@ -1080,11 +1030,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should add comments at non-boundary positions using the source editing mode', async () => {
-			editor = await getEditor(
-				'<p>' +
-					'Foo' +
-				'</p>'
-			);
+			editor = await getEditor( '<p>Foo</p>' );
 
 			const toggleSourceEditingModeButton = editor.ui.componentFactory.create( 'sourceEditing' );
 
@@ -1098,21 +1044,11 @@ describe( 'HtmlComment integration', () => {
 
 			toggleSourceEditingModeButton.fire( 'execute' );
 
-			expect( editor.getData() ).to.equal(
-				'<p>' +
-					'<!-- comment 1 -->' +
-					'Foo' +
-					'<!-- comment 2 -->' +
-				'</p>'
-			);
+			expect( editor.getData() ).to.equal( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
 		} );
 
 		it( 'should add comments at boundary positions using the source editing mode', async () => {
-			editor = await getEditor(
-				'<p>' +
-					'Foo' +
-				'</p>'
-			);
+			editor = await getEditor( '<p>Foo</p>' );
 
 			const toggleSourceEditingModeButton = editor.ui.componentFactory.create( 'sourceEditing' );
 
@@ -1126,13 +1062,7 @@ describe( 'HtmlComment integration', () => {
 
 			toggleSourceEditingModeButton.fire( 'execute' );
 
-			expect( editor.getData() ).to.equal(
-				'<!-- comment 1 -->' +
-				'<p>' +
-					'Foo' +
-				'</p>' +
-				'<!-- comment 2 -->'
-			);
+			expect( editor.getData() ).to.equal( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
 		} );
 
 		it( 'should properly handle existing and newly added comments after exiting from the source editing mode', async () => {
