@@ -1197,6 +1197,7 @@ describe( 'HtmlComment integration', () => {
 			return editor.destroy();
 		} );
 
+		// See https://github.com/ckeditor/ckeditor5/issues/10116.
 		it( 'should work if comment is in an empty table cell', async () => {
 			editor = await getEditor(
 				'<table>' +
@@ -1208,30 +1209,81 @@ describe( 'HtmlComment integration', () => {
 				'</table>'
 			);
 
-			// Currently, this test throws an exception.
-			// See https://github.com/ckeditor/ckeditor5/issues/10116.
-			//
-			// expect( editor.getData() ).to.equal(
-			// 	'<figure class="table">' +
-			// 		'<table>' +
-			// 			'<tbody>' +
-			// 				'<tr>' +
-			// 					'<td>' +
-			// 						'<!-- c1 -->' +
-			// 						'&nbsp;' +
-			// 					'</td>' +
-			// 				'</tr>' +
-			// 			'</tbody>' +
-			// 		'</table>' +
-			// 	'</figure>'
-			// );
-
-			expect( () => {
-				editor.getData();
-			} ).to.throw();
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>' +
+									'<!-- c1 -->' +
+									'&nbsp;' +
+								'</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
 		} );
 
-		it( 'should work if comments are in table cell', async () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/10116.
+		it( 'should work if comment is in table cell after empty paragraph', async () => {
+			editor = await getEditor(
+				'<table>' +
+					'<tr>' +
+						'<td>' +
+							'<p></p>' +
+							'<!-- c1 -->' +
+						'</td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>' +
+									'<!-- c1 -->' +
+									'&nbsp;' +
+								'</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/10116.
+		it( 'should work if comment is in table cell after non-empty paragraph', async () => {
+			editor = await getEditor(
+				'<table>' +
+					'<tr>' +
+						'<td>' +
+							'<p>foobar</p>' +
+							'<!-- c1 -->' +
+						'</td>' +
+					'</tr>' +
+				'</table>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr>' +
+								'<td>' +
+									'foobar' +
+									'<!-- c1 -->' +
+								'</td>' +
+							'</tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should work if comments are in a non-empty table cell', async () => {
 			editor = await getEditor(
 				'<table>' +
 					'<tr>' +
