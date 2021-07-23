@@ -19,7 +19,7 @@ export { default as HtmlDataProcessor } from './dataprocessor/htmldataprocessor'
 export { default as InsertOperation } from './model/operation/insertoperation';
 export { default as MarkerOperation } from './model/operation/markeroperation';
 export { default as OperationFactory } from './model/operation/operationfactory';
-export { transformSets } from './model/operation/transform';
+export { default as OperationTransform } from './model/operation/transform';
 
 export { default as DocumentSelection } from './model/documentselection';
 export { default as Range } from './model/range';
