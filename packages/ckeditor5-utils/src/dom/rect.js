@@ -46,7 +46,7 @@ export default class Rect {
 	 * ant the rect of a `window` includes scrollbars too. Use {@link #excludeScrollbarsAndBorders}
 	 * to get the inner part of the rect.
 	 *
-	 * @param {HTMLElement|Range|Window|ClientRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
+	 * @param {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object} source A source object to create the rect.
 	 */
 	constructor( source ) {
 		const isSourceRange = isRange( source );
@@ -56,7 +56,7 @@ export default class Rect {
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {HTMLElement|Range|ClientRect|module:utils/dom/rect~Rect|Object} #_source
+		 * @member {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object} #_source
 		 */
 		Object.defineProperty( this, '_source', {
 			// If the source is a Rect instance, copy it's #_source.

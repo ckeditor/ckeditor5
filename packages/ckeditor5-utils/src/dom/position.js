@@ -377,7 +377,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
 /**
  * Target with respect to which the `element` is to be positioned.
  *
- * @member {HTMLElement|Range|ClientRect|Rect|Function} #target
+ * @member {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object|Function} #target
  */
 
 /**
@@ -393,7 +393,7 @@ function getAbsoluteRectCoordinates( { left, top } ) {
  * When set, the algorithm will chose position which fits the most in the
  * limiter's bounding rect.
  *
- * @member {HTMLElement|Range|ClientRect|Rect|Function} #limiter
+ * @member {HTMLElement|Range|Window|ClientRect|DOMRect|module:utils/dom/rect~Rect|Object|Function} #limiter
  */
 
 /**
