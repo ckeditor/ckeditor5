@@ -264,10 +264,10 @@ export default {
 				isBlock: true
 			}
 		},
-		// TODO can also include text.
 		{
 			model: 'htmlDiv',
 			view: 'div',
+			paragraphLikeModel: 'htmlDivParagraph',
 			modelSchema: {
 				inheritAllFrom: '$htmlSection'
 			}

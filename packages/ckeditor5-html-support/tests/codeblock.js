@@ -11,7 +11,7 @@ import { getModelDataWithAttributes } from './_utils/utils';
 
 /* global document */
 
-describe( 'CodeBlockHtmlSupport', () => {
+describe( 'CodeBlockElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 
 	beforeEach( () => {
