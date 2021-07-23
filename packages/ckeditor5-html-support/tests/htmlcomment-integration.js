@@ -46,7 +46,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with BlockQuote', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, BlockQuoteEditing ]
@@ -58,13 +58,13 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty blockquote', async () => {
-			editor = await getEditor( '<blockquote><!-- c1 --></blockquote>' );
+			editor = await createEditor( '<blockquote><!-- c1 --></blockquote>' );
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<blockquote>' +
 					'<!-- c2 -->' +
@@ -89,7 +89,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with CodeBlock', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, CodeBlockEditing ]
@@ -101,7 +101,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty code block', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<pre>' +
 					'<code class="language-plaintext">' +
 						'<!-- c1 -->' +
@@ -120,7 +120,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<pre>' +
 					'<!-- c2 -->' +
@@ -153,7 +153,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Heading', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, HeadingEditing ]
@@ -165,7 +165,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty heading', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<h1><!-- c1 --></h1>' +
 				'<h2><!-- c2 --></h2>'
 			);
@@ -177,7 +177,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<h1>' +
 					'<!-- c2 -->' +
@@ -214,7 +214,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Highlight', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, HighlightEditing ]
@@ -226,7 +226,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty highlight', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<mark class="marker-yellow">' +
 						'<!-- c1 -->' +
@@ -252,7 +252,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<!-- c1 -->' +
 					'<mark class="marker-yellow">' +
@@ -301,7 +301,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with HtmlEmbed', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, HtmlEmbedEditing ]
@@ -313,7 +313,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty embedded HTML', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<div class="raw-html-embed">' +
 					'<!-- c1 -->' +
 				'</div>'
@@ -327,7 +327,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<div class="raw-html-embed">' +
 					'<!-- c2 -->' +
@@ -356,7 +356,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Image', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, ImageBlockEditing, ImageInlineEditing, ImageCaptionEditing ]
@@ -368,7 +368,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between block image tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<figure class="image">' +
 					'<!-- c2 -->' +
@@ -402,7 +402,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty image caption', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<figure class="image">' +
 					'<img src="/assets/sample.png" alt="Example image">' +
 					'<figcaption>' +
@@ -423,7 +423,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between inline image tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<p>' +
 					'<!-- c2 -->' +
@@ -448,7 +448,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Indent', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, IndentEditing, IndentBlock ]
@@ -460,7 +460,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty indented paragraph', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p style="margin:0 0 0 40px;">' +
 					'<!-- c1 -->' +
 				'</p>'
@@ -475,7 +475,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<p style="margin:0 0 0 40px;">' +
 					'<!-- c2 -->' +
@@ -500,7 +500,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Link', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, ImageBlockEditing, ImageInlineEditing, LinkEditing, LinkImageEditing ],
@@ -515,7 +515,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty link', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<a href="path/to/resource">' +
 						'<!-- c1 -->' +
@@ -527,7 +527,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<!-- c1 -->' +
 					'<a href="path/to/resource">' +
@@ -553,7 +553,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work with image link', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<a href="path/to/resource">' +
 						'<!-- c1 -->' +
@@ -579,7 +579,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work with links with decorators', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<a href="http://example.com">' +
 						'<!-- c1 -->' +
@@ -608,7 +608,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with List', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListStyleEditing, TodoListEditing ]
@@ -620,7 +620,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty list item', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<ol><li><!-- c1 --></li></ol>' +
 				'<ul><li><!-- c2 --></li></ul>'
 			);
@@ -632,7 +632,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<ol>' +
 					'<!-- c2 -->' +
@@ -678,7 +678,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work with nested lists', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<ul>' +
 					'<li>' +
 						'<!-- c1 -->' +
@@ -713,7 +713,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work with a to-do list', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<ul>' +
 					'<li>' +
 						'<!-- c1 -->' +
@@ -775,7 +775,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work with a list style', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<ul style="list-style-type:circle;">' +
 					'<li>' +
 						'<!-- c1 -->' +
@@ -800,7 +800,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with MediaEmbed', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, MediaEmbedEditing ],
@@ -822,13 +822,13 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty media wrapper tag', async () => {
-			editor = await getEditor( '<figure class="media"><!-- c1 --></figure>' );
+			editor = await createEditor( '<figure class="media"><!-- c1 --></figure>' );
 
 			expect( editor.getData() ).to.equal( '' );
 		} );
 
 		it( 'should work if comment is in an empty non-semantic media', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<figure class="media">' +
 					'<div data-oembed-url="https://example.com/1234">' +
 						'<!-- c1 -->' +
@@ -847,7 +847,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between semantic media tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<figure class="media">' +
 					'<!-- c2 -->' +
@@ -871,7 +871,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between non-semantic media tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<figure class="media">' +
 					'<!-- c2 -->' +
@@ -901,7 +901,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Paragraph', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph ]
@@ -913,13 +913,13 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty paragraph', async () => {
-			editor = await getEditor( '<p><!-- c1 --></p>' );
+			editor = await createEditor( '<p><!-- c1 --></p>' );
 
 			expect( editor.getData() ).to.equal( '<p><!-- c1 -->&nbsp;</p>' );
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<p>' +
 					'<!-- c2 -->' +
@@ -941,7 +941,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should remove comments when the content including them is removed', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<!-- comment 1 -->' +
 					'Foo' +
@@ -995,7 +995,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with SourceEditing', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, SourceEditing ]
@@ -1007,7 +1007,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should display comments in the source editing mode', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<!-- comment 1 -->' +
 					'Foo' +
@@ -1030,7 +1030,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should add comments at non-boundary positions using the source editing mode', async () => {
-			editor = await getEditor( '<p>Foo</p>' );
+			editor = await createEditor( '<p>Foo</p>' );
 
 			const toggleSourceEditingModeButton = editor.ui.componentFactory.create( 'sourceEditing' );
 
@@ -1048,7 +1048,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should add comments at boundary positions using the source editing mode', async () => {
-			editor = await getEditor( '<p>Foo</p>' );
+			editor = await createEditor( '<p>Foo</p>' );
 
 			const toggleSourceEditingModeButton = editor.ui.componentFactory.create( 'sourceEditing' );
 
@@ -1066,7 +1066,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should properly handle existing and newly added comments after exiting from the source editing mode', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- comment 1 -->' +
 				'<p>' +
 					'Foo' +
@@ -1116,7 +1116,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Table', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph, TableEditing, TableCaption ]
@@ -1129,7 +1129,7 @@ describe( 'HtmlComment integration', () => {
 
 		// See https://github.com/ckeditor/ckeditor5/issues/10116.
 		it( 'should work if comment is in an empty table cell', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<table>' +
 					'<tr>' +
 						'<td>' +
@@ -1157,7 +1157,7 @@ describe( 'HtmlComment integration', () => {
 
 		// See https://github.com/ckeditor/ckeditor5/issues/10116.
 		it( 'should work if comment is in table cell after empty paragraph', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<table>' +
 					'<tr>' +
 						'<td>' +
@@ -1186,7 +1186,7 @@ describe( 'HtmlComment integration', () => {
 
 		// See https://github.com/ckeditor/ckeditor5/issues/10116.
 		it( 'should work if comment is in table cell after non-empty paragraph', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<table>' +
 					'<tr>' +
 						'<td>' +
@@ -1214,7 +1214,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are in a non-empty table cell', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<table>' +
 					'<tr>' +
 						'<td>' +
@@ -1268,7 +1268,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are between tags', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<!-- c1 -->' +
 				'<table>' +
 					'<!-- c2 -->' +
@@ -1346,7 +1346,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comments are in table caption', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<table>' +
 					'<tr>' +
 						'<td>table cell</td>' +
@@ -1382,7 +1382,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if comment is in an empty table caption', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<table>' +
 					'<tr>' +
 						'<td>table cell</td>' +
@@ -1414,7 +1414,7 @@ describe( 'HtmlComment integration', () => {
 	describe( 'integration with Undo', () => {
 		let editor;
 
-		function getEditor( initialData = '' ) {
+		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
 					plugins: [ HtmlComment, Essentials, Paragraph ]
@@ -1426,7 +1426,7 @@ describe( 'HtmlComment integration', () => {
 		} );
 
 		it( 'should work if content with comments is removed and then restored', async () => {
-			editor = await getEditor(
+			editor = await createEditor(
 				'<p>' +
 					'<!-- c1 -->' +
 					'paragraph' +
