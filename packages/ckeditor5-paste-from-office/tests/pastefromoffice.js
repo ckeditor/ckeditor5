@@ -62,7 +62,12 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._parsedData ).to.have.property( 'body' );
+				expect( data._parsedData ).to.have.property( 'bodyString' );
+				expect( data._parsedData ).to.have.property( 'styles' );
+				expect( data._parsedData ).to.have.property( 'stylesString' );
+
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -82,7 +87,9 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._parsedData ).to.be.undefined;
+
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -104,7 +111,9 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._parsedData ).to.be.undefined;
+
 				sinon.assert.notCalled( getDataSpy );
 			}
 		} );
@@ -120,7 +129,7 @@ describe( 'PasteFromOffice', () => {
 		};
 
 		if ( isTransformedWithPasteFromOffice ) {
-			data.isTransformedWithPasteFromOffice = true;
+			data._isTransformedWithPasteFromOffice = true;
 		}
 
 		return data;

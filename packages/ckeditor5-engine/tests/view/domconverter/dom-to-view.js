@@ -198,6 +198,14 @@ describe( 'DomConverter', () => {
 			expect( converter.mapViewToDom( viewComment ) ).to.equal( domComment );
 		} );
 
+		it( 'should not create UIElement for comment', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { skipComments: true } );
+
+			expect( viewComment ).to.be.null;
+		} );
+
 		describe( 'it should clear whitespaces', () => {
 			it( 'at the beginning of block element', () => {
 				const domDiv = createElement( document, 'div', {}, [
