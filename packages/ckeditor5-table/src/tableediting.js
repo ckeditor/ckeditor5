@@ -120,7 +120,7 @@ export default class TableEditing extends Plugin {
 		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
-		// Define all the config
+		// Define the config.
 		editor.config.define( 'table.defaultHeadings.rows', 0 );
 		editor.config.define( 'table.defaultHeadings.columns', 0 );
 

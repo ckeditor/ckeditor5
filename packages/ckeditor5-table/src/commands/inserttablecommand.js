@@ -53,12 +53,15 @@ export default class InsertTableCommand extends Command {
 
 		const insertionRange = findOptimalInsertionRange( selection, model );
 
-		if ( config.defaultHeadings.rows ) {
-			options.headingRows = config.defaultHeadings.rows;
+		const defaultRows = config.defaultHeadings.rows;
+		const defaultColumns = config.defaultHeadings.columns;
+
+		if ( options.headingRows === undefined && defaultRows ) {
+			options.headingRows = Math.min( defaultRows, options.rows );
 		}
 
-		if ( config.defaultHeadings.columns ) {
-			options.headingColumns = config.defaultHeadings.columns;
+		if ( options.headingColumns === undefined && defaultColumns ) {
+			options.headingColumns = Math.min( defaultColumns, options.columns );
 		}
 
 		model.change( writer => {

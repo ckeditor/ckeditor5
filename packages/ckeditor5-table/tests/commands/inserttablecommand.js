@@ -197,7 +197,7 @@ describe( 'InsertTableCommand', () => {
 
 		describe( 'auto headings', () => {
 			it( 'should have first row as a heading by default', async () => {
-				const _editor = await ModelTestEditor
+				editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -205,14 +205,14 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				const _model = _editor.model;
-				const _command = new InsertTableCommand( _editor );
+				model = editor.model;
+				command = new InsertTableCommand( editor );
 
-				setData( _model, '[]' );
+				setData( model, '[]' );
 
-				_command.execute( { rows: 2, columns: 3 } );
+				command.execute( { rows: 2, columns: 3 } );
 
-				expect( getData( _model ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
@@ -221,7 +221,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have first column as a heading by default', async () => {
-				const _editor = await ModelTestEditor
+				editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -229,14 +229,14 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				const _model = _editor.model;
-				const _command = new InsertTableCommand( _editor );
+				model = editor.model;
+				command = new InsertTableCommand( editor );
 
-				setData( _model, '[]' );
+				setData( model, '[]' );
 
-				_command.execute( { rows: 2, columns: 3 } );
+				command.execute( { rows: 2, columns: 3 } );
 
-				expect( getData( _model ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ]
@@ -245,7 +245,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have first row and first column as a heading by default', async () => {
-				const _editor = await ModelTestEditor
+				editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -253,14 +253,14 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				const _model = _editor.model;
-				const _command = new InsertTableCommand( _editor );
+				model = editor.model;
+				command = new InsertTableCommand( editor );
 
-				setData( _model, '[]' );
+				setData( model, '[]' );
 
-				_command.execute( { rows: 3, columns: 3 } );
+				command.execute( { rows: 3, columns: 3 } );
 
-				expect( getData( _model ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ],
@@ -270,7 +270,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have first three rows and two columns as a heading by default', async () => {
-				const _editor = await ModelTestEditor
+				editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -278,20 +278,70 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				const _model = _editor.model;
-				const _command = new InsertTableCommand( _editor );
+				model = editor.model;
+				command = new InsertTableCommand( editor );
 
-				setData( _model, '[]' );
+				setData( model, '[]' );
 
-				_command.execute( { rows: 4, columns: 3 } );
+				command.execute( { rows: 4, columns: 3 } );
 
-				expect( getData( _model ) ).to.equal(
+				expect( getData( model ) ).to.equal(
 					modelTable( [
 						[ '[]', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ],
 						[ '', '', '' ]
 					], { headingRows: 3, headingColumns: 2 } )
+				);
+			} );
+
+			it( 'should have auto headings not to be greater than table rows and columns', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 3 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 2, headingColumns: 2 } )
+				);
+			} );
+
+			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3, headingRows: 0, headingColumns: 0 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					] )
 				);
 			} );
 		} );
