@@ -88,6 +88,35 @@ export default class HtmlComment extends Plugin {
 
 			return true;
 		} );
+
+		// Delete all comment markers from the document before setting new data.
+		editor.data.on( 'set', () => {
+			for ( const commentMarker of editor.model.markers.getMarkersGroup( '$comment' ) ) {
+				this.removeHtmlComment( commentMarker.name );
+			}
+		}, { priority: 'high' } );
+
+		// Delete all comment markers that are within a removed range.
+		// Delete all comment markers at the limit element boundaries if the whole content of the limit element is removed.
+		editor.model.on( 'deleteContent', ( evt, [ selection ] ) => {
+			for ( const range of selection.getRanges() ) {
+				const limitElement = editor.model.schema.getLimitElement( range );
+				const firstPosition = editor.model.createPositionAt( limitElement, 0 );
+				const lastPosition = editor.model.createPositionAt( limitElement, 'end' );
+
+				let affectedCommentMarkerIDs;
+
+				if ( firstPosition.isTouching( range.start ) && lastPosition.isTouching( range.end ) ) {
+					affectedCommentMarkerIDs = this.getHtmlCommentsInRange( editor.model.createRange( firstPosition, lastPosition ) );
+				} else {
+					affectedCommentMarkerIDs = this.getHtmlCommentsInRange( range, { skipBoundary: true } );
+				}
+
+				for ( const commentMarkerID of affectedCommentMarkerIDs ) {
+					this.removeHtmlComment( commentMarkerID );
+				}
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -179,7 +208,9 @@ export default class HtmlComment extends Plugin {
 	 * @param {module:engine/model/range~Range} range
 	 * @returns {Array.<String>} HTML comment IDs
 	 */
-	getHtmlCommentsInRange( range ) {
+	getHtmlCommentsInRange( range, { skipBoundary = false } = {} ) {
+		const includeBoundary = !skipBoundary;
+
 		// Unfortunately MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
 		return Array.from( this.editor.model.markers.getMarkersGroup( '$comment' ) )
 			.filter( marker => isCommentMarkerInRange( marker, range ) )
@@ -189,8 +220,8 @@ export default class HtmlComment extends Plugin {
 			const position = commentMarker.getRange().start;
 
 			return (
-				( position.isAfter( range.start ) || position.isEqual( range.start ) ) &&
-				( position.isBefore( range.end ) || position.isEqual( range.end ) )
+				( position.isAfter( range.start ) || ( includeBoundary && position.isEqual( range.start ) ) ) &&
+				( position.isBefore( range.end ) || ( includeBoundary && position.isEqual( range.end ) ) )
 			);
 		}
 	}
