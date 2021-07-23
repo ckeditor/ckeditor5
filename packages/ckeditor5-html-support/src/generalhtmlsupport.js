@@ -29,18 +29,9 @@ export default class GeneralHtmlSupport extends Plugin {
 		return 'GeneralHtmlSupport';
 	}
 
-	init() {
-		const editor = this.editor;
-		const dataFilter = editor.plugins.get( DataFilter );
-
-		// Load the filtering configuration.
-		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
-		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
-	}
-
 	/**
-	 * @inheritDoc
-	 */
+     * @inheritDoc
+     */
 	static get requires() {
 		return [
 			DataFilter,
@@ -48,6 +39,18 @@ export default class GeneralHtmlSupport extends Plugin {
 			CodeBlockElementSupport,
 			DualContentModelElementSupport
 		];
+	}
+
+	/**
+     * @inheritDoc
+     */
+	init() {
+		const editor = this.editor;
+		const dataFilter = editor.plugins.get( DataFilter );
+
+		// Load the filtering configuration.
+		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
+		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
 	}
 }
 
