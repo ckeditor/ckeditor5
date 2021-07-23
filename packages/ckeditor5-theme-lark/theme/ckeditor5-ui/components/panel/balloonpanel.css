@@ -6,7 +6,7 @@
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
 
-:root {
+:root, :host {
 	--ck-balloon-arrow-offset: 2px;
 	--ck-balloon-arrow-height: 10px;
 	--ck-balloon-arrow-half-width: 8px;

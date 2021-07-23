@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-mention-background: hsla(341, 100%, 30%, 0.1);
 	--ck-color-mention-text: hsl(341, 100%, 30%);
 }

@@ -9,7 +9,7 @@
 @import "../../../mixins/_focus.css";
 @import "../../mixins/_button.css";
 
-:root {
+:root, :host {
 	--ck-color-editable-blur-selection: hsl(0, 0%, 85%);
 }
 

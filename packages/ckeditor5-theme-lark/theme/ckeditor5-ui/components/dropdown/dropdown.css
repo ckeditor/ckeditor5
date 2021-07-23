@@ -8,7 +8,7 @@
 @import "../../../mixins/_shadow.css";
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-:root {
+:root, :host {
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 }
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-insert-table-dropdown-padding: 10px;
 	--ck-insert-table-dropdown-box-height: 11px;
 	--ck-insert-table-dropdown-box-width: 12px;

@@ -5,7 +5,7 @@
 
 @import "../mixins/_rounded.css";
 
-:root {
+:root, :host {
 	--ck-table-properties-error-arrow-size: 6px;
 	--ck-table-properties-min-error-width: 150px;
 }

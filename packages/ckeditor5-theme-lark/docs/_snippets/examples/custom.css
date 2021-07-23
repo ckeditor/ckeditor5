@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host{
 	/* Overrides the border radius setting in the theme. */
 	--ck-border-radius: 4px;
 

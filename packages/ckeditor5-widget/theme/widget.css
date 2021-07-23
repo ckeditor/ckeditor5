@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-resizer: var(--ck-color-focus-border);
 	--ck-color-resizer-tooltip-background: hsl(0, 0%, 15%);
 	--ck-color-resizer-tooltip-text: hsl(0, 0%, 95%);

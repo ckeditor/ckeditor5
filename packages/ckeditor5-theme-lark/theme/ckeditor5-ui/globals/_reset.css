@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	/* This is super-important. This is **manually** adjusted so a button without an icon
 	is never smaller than a button with icon, additionally making sure that text-less buttons
 	are perfect squares. The value is also shared by other components which should stay "in-line"

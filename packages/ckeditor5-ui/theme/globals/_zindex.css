@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-z-default: 1;
 	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }

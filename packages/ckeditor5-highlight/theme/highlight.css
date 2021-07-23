@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-highlight-marker-yellow: hsl(60, 97%, 73%);
 	--ck-highlight-marker-green: hsl(120, 93%, 68%);
 	--ck-highlight-marker-pink: hsl(345, 96%, 73%);

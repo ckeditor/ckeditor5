@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-:root {
+:root, :host {
 	--ck-color-block-toolbar-button: var(--ck-color-text);
 	--ck-block-toolbar-button-size: var(--ck-font-size-normal);
 }
