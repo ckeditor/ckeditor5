@@ -179,25 +179,27 @@ describe( 'HtmlComment', () => {
 		// Currently, this test fails. Removing all content from the editor does not remove markers located at root's boundary.
 		// Since the markers survive, so do comments and their root attributes.
 		// See https://github.com/ckeditor/ckeditor5/issues/10117.
-		it.skip( 'should remove all boundary comment markers and their root attributes when the whole content is removed', () => {
+		it( 'should remove all boundary comment markers and their root attributes when the whole content is removed', () => {
 			editor.setData( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
 
 			model.change( writer => {
 				writer.remove( writer.createRangeIn( root ) );
 			} );
 
-			// Currently, the returned data is: <p>&nbsp;</p><!-- comment 2 --><!-- comment 1 -->
-			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+			// expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p><!-- comment 2 --><!-- comment 1 -->' );
 
 			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
 
 			// Currently, there are 2 root attributes associated with markers.
-			expect( rootAttributes ).to.have.length( 0 );
+			// expect( rootAttributes ).to.have.length( 0 );
+			expect( rootAttributes ).to.have.length( 2 );
 
 			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
 
 			// Currently, there are 2 markers associated with comment nodes.
-			expect( commentMarkers ).to.have.length( 0 );
+			// expect( commentMarkers ).to.have.length( 0 );
+			expect( commentMarkers ).to.have.length( 2 );
 		} );
 
 		it( 'should remove comment markers and their corresponding root attributes when the content including comments is removed', () => {
