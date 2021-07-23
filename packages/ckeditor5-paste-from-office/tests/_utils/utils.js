@@ -52,7 +52,10 @@ export function createDataTransfer( data ) {
  * @param {Array.<String>} config.browsers List of all browsers for which to generate tests.
  * @param {Object} [config.editorConfig] Editor config which is passed to editor `create()` method.
  * @param {Object} [config.skip] List of fixtures for any browser to skip. The supported format is:
- *
+ *		{
+ *			browserName: [ fixtureName1, fixtureName2 ]
+ *		}
+ * @param {Object} [config.only] List of fixtures the test run should be limited to. The supported format is:
  *		{
  *			browserName: [ fixtureName1, fixtureName2 ]
  *		}
@@ -78,10 +81,11 @@ export function generateTests( config ) {
 			const editorConfig = config.editorConfig || {};
 
 			for ( const group of Object.keys( groups ) ) {
-				const skip = config.skip && config.skip[ group ] ? config.skip[ group ] : [];
+				const skip = config.skip && config.skip[ group ] || [];
+				const only = config.only && config.only[ group ] || [];
 
 				if ( groups[ group ] ) {
-					generateSuiteFn( group, groups[ group ], editorConfig, skip );
+					generateSuiteFn( group, groups[ group ], editorConfig, skip, only );
 				}
 			}
 		} );
@@ -138,7 +142,8 @@ function groupFixturesByBrowsers( browsers, fixturesGroup, skipBrowsers ) {
 // @param {Object} fixtures Object containing fixtures.
 // @param {Object} editorConfig Editor config with which test editor will be created.
 // @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
-function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
+// @param {Array.<String>} only Array of fixtures the test run should be limited to.
+function generateNormalizationTests( title, fixtures, editorConfig, skip, only ) {
 	describe( title, () => {
 		let editor;
 
@@ -155,7 +160,13 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			const testRunner = skip.indexOf( name ) !== -1 ? it.skip : it;
+			let testRunner = it;
+
+			if ( only.includes( name ) ) {
+				testRunner = it.only;
+			} else if ( skip.includes( name ) ) {
+				testRunner = it.skip;
+			}
 
 			testRunner( name, () => {
 				// Simulate data from Clipboard event
@@ -185,8 +196,8 @@ function generateNormalizationTests( title, fixtures, editorConfig, skip ) {
 // @param {String} title Tests group title.
 // @param {Object} fixtures Object containing fixtures.
 // @param {Object} editorConfig Editor config with which test editor will be created.
-// @param {Array.<String>} skip Array of fixtures names which tests should be skipped.
-function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
+// @param {Array.<String>} only Array of fixtures the test run should be limited to.
+function generateIntegrationTests( title, fixtures, editorConfig, skip, only ) {
 	describe( title, () => {
 		let element, editor;
 		let data = {};
@@ -231,7 +242,13 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 		} );
 
 		for ( const name of Object.keys( fixtures.input ) ) {
-			const testRunner = skip.indexOf( name ) !== -1 ? it.skip : it;
+			let testRunner = it;
+
+			if ( only.includes( name ) ) {
+				testRunner = it.only;
+			} else if ( skip.includes( name ) ) {
+				testRunner = it.skip;
+			}
 
 			testRunner( name, () => {
 				data.input = fixtures.input[ name ];
