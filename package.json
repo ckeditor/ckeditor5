@@ -166,6 +166,7 @@
     "changelog": "node ./scripts/release/changelog.js",
     "postchangelog": "node ./scripts/release/update-utils-version.js",
     "release:bump-version": "node ./scripts/release/bump-versions.js",
+    "postrelease:bump-version": "npm run dll:build",
     "release:publish": "node ./scripts/release/publish.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh",
     "clean-up-svg-icons": "sh ./scripts/clean-up-svg-icons.sh",
