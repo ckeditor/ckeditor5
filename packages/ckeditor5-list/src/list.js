@@ -12,6 +12,8 @@ import ListUI from './listui';
 
 import { Plugin } from 'ckeditor5/src/core';
 
+import '../theme/lists.css';
+
 /**
  * The list feature.
  *
