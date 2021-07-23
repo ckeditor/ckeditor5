@@ -30,8 +30,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-     * @inheritDoc
-     */
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [
 			DataFilter,
@@ -42,8 +42,8 @@ export default class GeneralHtmlSupport extends Plugin {
 	}
 
 	/**
-     * @inheritDoc
-     */
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
