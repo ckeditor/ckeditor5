@@ -320,6 +320,33 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;<img src="/assets/sample.png">&nbsp;</p>' );
 		} );
 
+		it( 'nbsp before empty inline element is not ignored', () => {
+			editor.setData( '<p>foo&nbsp;<img src="/assets/sample.png"></p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline></paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo <img src="/assets/sample.png"></p>' );
+		} );
+
+		it( 'nbsp after empty inline element is not ignored', () => {
+			editor.setData( '<p><img src="/assets/sample.png" />&nbsp;foo</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline> foo</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"> foo</p>' );
+		} );
+
+		it( 'nbsp around empty inline element are not ignored', () => {
+			editor.setData( '<p>foo&nbsp;<img src="/assets/sample.png">&nbsp;bar</p>' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>foo <imageInline src="/assets/sample.png"></imageInline> bar</paragraph>' );
+
+			expect( editor.getData() ).to.equal( '<p>foo <img src="/assets/sample.png"> bar</p>' );
+		} );
+
 		it( 'nbsp after inline element is not ignored', () => {
 			editor.setData( '<p><b>bar</b>&nbsp;</p>' );
 

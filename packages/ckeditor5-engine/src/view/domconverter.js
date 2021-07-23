@@ -1147,14 +1147,17 @@ export default class DomConverter {
 		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them back to `  `.
 		data = data.replace( / \u00A0/g, '  ' );
 
+		const isNextNodeInlineObjectElement = nextNode && this.isElement( nextNode ) && nextNode.tagName != 'BR';
+		const isNextNodeStaringWithSpace = nextNode && isText( nextNode ) && nextNode.data.charAt( 0 ) == ' ';
+
 		// Then, let's change the last nbsp to a space.
-		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || ( nextNode.data && nextNode.data.charAt( 0 ) == ' ' ) ) {
+		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || isNextNodeInlineObjectElement || isNextNodeStaringWithSpace ) {
 			data = data.replace( /\u00A0$/, ' ' );
 		}
 
 		// Then, change &nbsp; character that is at the beginning of the text node to space character.
 		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
-		if ( shouldLeftTrim ) {
+		if ( shouldLeftTrim || prevNode && this.isElement( prevNode ) && prevNode.tagName != 'BR' ) {
 			data = data.replace( /^\u00A0/, ' ' );
 		}
 

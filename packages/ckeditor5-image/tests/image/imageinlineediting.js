@@ -366,7 +366,7 @@ describe( 'ImageInlineEditing', () => {
 				editor.setData( '<p>foo <img alt="alt text" src="/assets/sample.png"></p>' );
 
 				expect( editor.getData() ).to.equal(
-					'<p>foo&nbsp;<img src="/assets/sample.png" alt="alt text"></p>'
+					'<p>foo <img src="/assets/sample.png" alt="alt text"></p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -378,7 +378,7 @@ describe( 'ImageInlineEditing', () => {
 				editor.setData( '<p><img alt="alt text" src="/assets/sample.png"> foo</p>' );
 
 				expect( editor.getData() ).to.equal(
-					'<p><img src="/assets/sample.png" alt="alt text">&nbsp;foo</p>'
+					'<p><img src="/assets/sample.png" alt="alt text"> foo</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -390,7 +390,7 @@ describe( 'ImageInlineEditing', () => {
 				editor.setData( '<p>foo <img alt="alt text" src="/assets/sample.png"> bar</p>' );
 
 				expect( editor.getData() ).to.equal(
-					'<p>foo&nbsp;<img src="/assets/sample.png" alt="alt text">&nbsp;bar</p>'
+					'<p>foo <img src="/assets/sample.png" alt="alt text"> bar</p>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
