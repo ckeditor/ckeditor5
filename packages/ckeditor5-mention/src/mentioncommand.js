@@ -104,7 +104,7 @@ export default class MentionCommand extends Command {
 			);
 		}
 
-		if ( mentionID.charAt( 0 ) != options.marker ) {
+		if ( typeof mentionID !== 'string' || mentionID.charAt( 0 ) != options.marker ) {
 			/**
 			 * The feed item ID must start with the marker character.
 			 *
