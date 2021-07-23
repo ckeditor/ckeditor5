@@ -135,7 +135,7 @@ export default class AutoMediaEmbed extends Plugin {
 		}
 
 		// If the URL represents a media, let's use it.
-		if ( !mediaRegistry.hasMedia( url ) ) {
+		if ( !mediaRegistry.hasAutomaticMedia( url ) ) {
 			urlRange.detach();
 
 			return;

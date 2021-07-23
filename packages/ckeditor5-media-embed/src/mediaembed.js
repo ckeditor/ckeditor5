@@ -67,7 +67,12 @@ export default class MediaEmbed extends Plugin {
  *			// The rendering function of the provider.
  *			// Used to represent the media when editing the content (i.e. in the view)
  *			// and also in the data output of the editor if semantic data output is disabled.
- *			html: match => `The HTML representing the media with ID=${ match[ 1 ] }.`
+ *			html: match => `The HTML representing the media with ID=${ match[ 1 ] }.`,
+ *
+ *			// Whether or not to automatically embed URL patterns on paste. When `true` (default),
+ *			// the {@link module:media-embed/automediaembed~AutoMediaEmbed auto-media embed feature}
+ *			// will render the URL as an embed. When false, it will paste the URL normally.
+ *			automaticEmbed: false
  *		}
  *
  * You can allow any sort of media in the editor using the "allow–all" `RegExp`.
@@ -100,6 +105,10 @@ export default class MediaEmbed extends Plugin {
  *
  * **Note:** You do not need to include the protocol (`http://`, `https://`) and `www` subdomain in your `RegExps`,
  * they are stripped from the URLs before matching anyway.
+ * @property {Boolean} (optional) automaticEmbed The setting if a provider's `url` pattern(s) should automatically embed
+ * upon pasting into the editor. This is only relevant when
+ * {@glink features/media-embed#automatic-media-embed-on-paste} is enabled via
+ * {@link module:media-embed/automediaembed~AutoMediaEmbed}
  * @property {Function} [html] (optional) The rendering function of the media. The function receives the entire matching
  * array from the corresponding `url` `RegExp` as an argument, allowing rendering a dedicated
  * preview of the media identified by a certain ID or a hash. When not defined, the media embed feature

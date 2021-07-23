@@ -354,6 +354,21 @@ By default, the {@link module:media-embed/mediaembed~MediaEmbed} plugin loads th
 
 The {@link module:media-embed/automediaembed~AutoMediaEmbed} plugin recognizes media links in the pasted content and embeds them shortly after they are injected into the document to speed up the editing. Just like the "traditional" embedding (i.e. by using the toolbar button), automatic embedding works for all media providers specified in the [configuration](#media-providers).
 
+Specific providers can opt-out of automatically embedding through `automaticEmbed` to `false` in their configuration:
+
+```
+mediaEmbed: {
+	extraProviders: [
+		{
+			name: 'ckeditor',
+			url: /^ckeditor\.com/
+		}
+	]
+}
+```
+
+The `automaticEmbed` variable can also work [overriding providers](#overriding-providers) as well, but note you will need to redefine the provider entirely.
+
 <info-box>
 	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>

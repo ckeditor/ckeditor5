@@ -51,6 +51,12 @@ export default class MediaRegistry {
 				}
 
 				return !removedProviders.has( name );
+			} ).map( provider => {
+				// Set `automaticEmbed` to true by default
+				if ( typeof provider.automaticEmbed === 'undefined' ) {
+					provider.automaticEmbed = true;
+				}
+				return provider;
 			} );
 
 		/**
@@ -80,6 +86,19 @@ export default class MediaRegistry {
 	}
 
 	/**
+	 * Checks whether the passed URL is automatically embeddable. Used via setting
+	 * `automaticEmbed` to `true` or `false` in the
+	 * {@link module:media-embed/mediaembed~MediaEmbedProvider provider syntax} when
+	 * {@link module:media-embed/automediaembed~AutoMediaEmbed} is enabled.
+	 *
+	 * @param {String} url The URL to be checked
+	 * @returns {Boolean}
+	 */
+	hasAutomaticMedia( url ) {
+		return !!this._getMedia( url, { automaticEmbed: true } );
+	}
+
+	/**
 	 * For the given media URL string and options, it returns the {@link module:engine/view/element~Element view element}
 	 * representing that media.
 	 *
@@ -101,10 +120,13 @@ export default class MediaRegistry {
 	 * Returns a `Media` instance for the given URL.
 	 *
 	 * @protected
-	 * @param {String} url The URL of the media.
+   * @param {String} url The URL of the media.
+	 * @param {Object} options
+	 * @param {Boolean} [options.automaticEmbed] Only match if automaticEmbed enabled in provider configuration.
+	 * Default `false`.
 	 * @returns {module:media-embed/mediaregistry~Media|null} The `Media` instance or `null` when there is none.
 	 */
-	_getMedia( url ) {
+	_getMedia( url, options = {} ) {
 		if ( !url ) {
 			return new Media( this.locale );
 		}
@@ -119,6 +141,9 @@ export default class MediaRegistry {
 				const match = this._getUrlMatches( url, subPattern );
 
 				if ( match ) {
+					if ( options.automaticEmbed && !definition.automaticEmbed ) {
+						continue;
+					}
 					return new Media( this.locale, url, match, previewRenderer );
 				}
 			}
