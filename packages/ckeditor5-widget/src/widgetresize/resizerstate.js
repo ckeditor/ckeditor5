@@ -117,7 +117,7 @@ export default class ResizeState {
 
 		this.activeHandlePosition = getHandlePosition( domResizeHandle );
 
-		this._referenceCoordinates = getAbsoluteBoundaryPoint( domHandleHost, getOppositePosition( this.activeHandlePosition ) );
+		this._referenceCoordinates = getAbsoluteBoundaryPoint( domHandleHost, this.activeHandlePosition );
 
 		this.originalWidth = clientRect.width;
 		this.originalHeight = clientRect.height;
@@ -201,19 +201,4 @@ function getHandlePosition( domHandle ) {
 			return position;
 		}
 	}
-}
-
-// @private
-// @param {String} position Like `"top-left"`.
-// @returns {String} Inverted `position`, e.g. it returns `"bottom-right"` if `"top-left"` was given as `position`.
-function getOppositePosition( position ) {
-	const parts = position.split( '-' );
-	const replacements = {
-		top: 'bottom',
-		bottom: 'top',
-		left: 'right',
-		right: 'left'
-	};
-
-	return `${ replacements[ parts[ 0 ] ] }-${ replacements[ parts[ 1 ] ] }`;
 }

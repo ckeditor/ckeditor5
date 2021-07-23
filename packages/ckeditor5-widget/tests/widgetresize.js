@@ -218,19 +218,19 @@ describe( 'WidgetResize', () => {
 			it( 'enlarges correctly with left-bottom handler', generateResizeTest( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: -10, y: 10 },
-				expectedWidth: '120px'
+				expectedWidth: '110px'
 			} ) );
 
 			it( 'enlarges correctly with right-bottom handler', generateResizeTest( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 10, y: 10 },
-				expectedWidth: '120px'
+				expectedWidth: '110px'
 			} ) );
 
 			it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 0, y: 20 },
-				expectedWidth: '140px'
+				expectedWidth: '100px'
 			} ) );
 
 			it( 'enlarges correctly with right-bottom handler, x axis only', generateResizeTest( {
@@ -280,7 +280,7 @@ describe( 'WidgetResize', () => {
 			it( 'enlarges correctly with right-bottom handler, y axis only', generateResizeTest( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 0, y: 10 },
-				expectedWidth: '120px'
+				expectedWidth: '100px'
 			} ) );
 
 			it( 'enlarges correctly with left-bottom handler, x axis only', generateResizeTest( {
@@ -292,7 +292,7 @@ describe( 'WidgetResize', () => {
 			it( 'enlarges correctly with left-bottom handler, y axis only', generateResizeTest( {
 				usedHandle: 'bottom-left',
 				movePointerBy: { x: 0, y: 10 },
-				expectedWidth: '120px'
+				expectedWidth: '100px'
 			} ) );
 
 			// --- top handlers ---
@@ -306,7 +306,7 @@ describe( 'WidgetResize', () => {
 			it( 'enlarges correctly with left-top handler, y axis only', generateResizeTest( {
 				usedHandle: 'top-left',
 				movePointerBy: { x: 0, y: -10 },
-				expectedWidth: '120px'
+				expectedWidth: '100px'
 			} ) );
 
 			it( 'enlarges correctly with right-top handler', generateResizeTest( {
@@ -318,7 +318,7 @@ describe( 'WidgetResize', () => {
 			it( 'enlarges correctly with right-top handler, y axis only', generateResizeTest( {
 				usedHandle: 'top-right',
 				movePointerBy: { x: 0, y: -10 },
-				expectedWidth: '120px'
+				expectedWidth: '100px'
 			} ) );
 		} );
 	} );
@@ -371,7 +371,7 @@ describe( 'WidgetResize', () => {
 			it( 'enlarges correctly with bottom-right handler', generateResizeTest( {
 				usedHandle: 'bottom-right',
 				movePointerBy: { x: 0, y: 5 },
-				expectedWidth: '27.5%'
+				expectedWidth: '25%'
 			} ) );
 
 			it( 'enlarges correctly an image with unsupported width unit', () => {
@@ -382,7 +382,7 @@ describe( 'WidgetResize', () => {
 				generateResizeTest( {
 					usedHandle: 'bottom-right',
 					movePointerBy: { x: 0, y: 5 },
-					expectedWidth: '36.67%'
+					expectedWidth: '33.33%'
 				} )();
 			} );
 		} );
@@ -443,7 +443,7 @@ describe( 'WidgetResize', () => {
 
 			const usedHandle = 'bottom-right';
 			const pointerDifference = { x: -10, y: -10 };
-			const expectedWidth = '20%';
+			const expectedWidth = '25%';
 
 			const domParts = getWidgetDomParts( editor, widget, usedHandle );
 			const resizeHost = domParts.widget.querySelector( '.sub-div' );
