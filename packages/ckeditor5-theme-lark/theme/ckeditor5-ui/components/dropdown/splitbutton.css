@@ -5,11 +5,6 @@
 
 @import "../../../mixins/_rounded.css";
 
-:root {
-	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
-	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
-}
-
 .ck.ck-splitbutton {
 	/*
 	 * Note: ck-rounded and ck-dir mixins don't go together (because they both use @nest).

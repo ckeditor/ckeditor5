@@ -57,6 +57,9 @@
 	--ck-color-switch-button-inner-background:					var(--ck-color-base-background);
 	--ck-color-switch-button-inner-shadow:						hsla(0, 0%, 0%, 0.1);
 
+	--ck-color-split-button-hover-background:                   hsl(0, 0%, 92%);
+	--ck-color-split-button-hover-border:                       hsl(0, 0%, 70%);
+	
 	/* -- Dropdown ------------------------------------------------------------------------------ */
 
 	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);
@@ -103,9 +106,14 @@
 
 	--ck-color-upload-bar-background:		 					hsl(209, 92%, 70%);
 
-	/* -- Link -------------------------------------------------------------------------------- */
+	/* -- Link ---------------------------------------------------------------------------------- */
 
 	--ck-color-link-default:									hsl(240, 100%, 47%);
 	--ck-color-link-selected-background:						hsla(201, 100%, 56%, 0.1);
 	--ck-color-link-fake-selection:								hsla(201, 100%, 56%, 0.3);
+
+	/* Editor ------------------------------------------------------------------------------------ */
+	
+	--ck-color-editable-blur-selection:                         hsl(0, 0%, 85%);
+
 }
