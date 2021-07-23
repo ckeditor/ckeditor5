@@ -15,6 +15,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { normalizeToolbarConfig } from '@ckeditor/ckeditor5-ui';
 
 import prevIcon from '../../../theme/icons/previous-arrow.svg';
 import nextIcon from '../../../theme/icons/next-arrow.svg';
@@ -117,6 +118,14 @@ export default class ContextualBalloon extends Plugin {
 		editor.ui.focusTracker.add( this.view.element );
 
 		/**
+		 * A normalized `config.toolbar` object.
+		 *
+		 * @type {Object}
+		 * @private
+		 */
+		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
+
+		/**
 		 * The map of views and their stacks.
 		 *
 		 * @private
@@ -203,6 +212,10 @@ export default class ContextualBalloon extends Plugin {
 				'contextualballoon-add-view-exist',
 				[ this, data ]
 			);
+		}
+
+		if ( this._toolbarConfig.viewportTopOffset ) {
+			this.view.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
 		}
 
 		const stackId = data.stackId || 'main';

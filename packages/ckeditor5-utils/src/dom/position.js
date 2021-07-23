@@ -77,7 +77,7 @@ import { isFunction } from 'lodash-es';
  * @param {module:utils/dom/position~Options} options Positioning options object.
  * @returns {module:utils/dom/position~Position}
  */
-export function getOptimalPosition( { element, target, positions, limiter, fitInViewport } ) {
+export function getOptimalPosition( { element, target, positions, limiter, fitInViewport, viewportTopOffset } ) {
 	// If the {@link module:utils/dom/position~Options#target} is a function, use what it returns.
 	// https://github.com/ckeditor/ckeditor5-utils/issues/157
 	if ( isFunction( target ) ) {
@@ -93,21 +93,41 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	const positionedElementAncestor = getPositionedAncestor( element );
 	const elementRect = new Rect( element );
 	const targetRect = new Rect( target );
+	const viewportRect = fitInViewport && new Rect( global.window );
 
 	let bestPositionRect;
 	let bestPositionName;
 
 	// If there are no limits, just grab the very first position and be done with that drama.
 	if ( !limiter && !fitInViewport ) {
-		[ bestPositionName, bestPositionRect ] = getPositionNameAndRect( positions[ 0 ], targetRect, elementRect );
+		[ bestPositionName, bestPositionRect ] = getPositionNameAndRect(
+			positions[ 0 ],
+			targetRect,
+			elementRect,
+			viewportRect,
+			viewportTopOffset
+		);
 	} else {
 		const limiterRect = limiter && new Rect( limiter ).getVisible();
-		const viewportRect = fitInViewport && new Rect( global.window );
-		const bestPosition = getBestPositionNameAndRect( positions, { targetRect, elementRect, limiterRect, viewportRect } );
+		const bestPosition = getBestPositionNameAndRect( positions, {
+			targetRect,
+			elementRect,
+			limiterRect,
+			viewportRect,
+			viewportTopOffset
+		} );
 
 		// If there's no best position found, i.e. when all intersections have no area because
 		// rects have no width or height, then just use the first available position.
-		[ bestPositionName, bestPositionRect ] = bestPosition || getPositionNameAndRect( positions[ 0 ], targetRect, elementRect );
+		[ bestPositionName, bestPositionRect ] =
+			bestPosition ||
+			getPositionNameAndRect(
+				positions[ 0 ],
+				targetRect,
+				elementRect,
+				viewportRect,
+				viewportTopOffset
+			);
 	}
 
 	let absoluteRectCoordinates = getAbsoluteRectCoordinates( bestPositionRect );
@@ -123,14 +143,44 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	};
 }
 
+/**
+ * Determines the panel top position of the {@link #panel} in {@link #panelPositions}
+ * for very tall panels.
+ *
+ * @private
+ * @param {module:utils/dom/rect~Rect} editableRect Rect of the {@link #element}.
+ * @param {module:utils/dom/rect~Rect} panelRect Rect of the {@link #panel}.
+ * @param {module:utils/dom/rect~Rect} viewportRect Rect of the {@link #viewport}.
+ * @param {Number} viewportTopOffset Viewport top offset {@link #viewportTopOffset}.
+ * @returns {Array} An array containing position name and position top.
+ */
+function getVeryTallPanelPositionTop( editableRect, panelRect, viewportRect, viewportTopOffset ) {
+	let positionTop = viewportTopOffset; // stick panel to the viewport top shifted by the top offset
+	let positionName = 'arrow_s'; // we need to change both top position and arrow placement, default center bottom
+	const panelTopOffset = 15; // move balloon 15px up (or down) to not cover element with the arrow
+
+	if ( editableRect.top > panelRect.height + viewportTopOffset + panelTopOffset ) {
+		// if top of the element is not above the viewport, just put baloon on top of it
+		positionTop = editableRect.top - panelRect.height - panelTopOffset;
+	} else if ( editableRect.top < 0 && editableRect.bottom + panelRect.height + panelTopOffset < viewportRect.height ) {
+		// if element is scrolled down so much that element bottom is visible and there is space for the balloon
+		positionTop = editableRect.bottom + panelTopOffset;
+		positionName = 'arrow_n'; // swap arrow position to center top in such case
+	}
+
+	return [ positionName, positionTop ];
+}
+
 // For given position function, returns a corresponding `Rect` instance.
 //
 // @private
 // @param {Function} position A function returning {@link module:utils/dom/position~Position}.
 // @param {utils/dom/rect~Rect} targetRect A rect of the target.
 // @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
+// @param {utils/dom/rect~Rect} viewportRect A rect of the viewport.
+// @param {Number} viewportTopOffset Editor config toolbar top offset.
 // @returns {Array|null} An array containing position name and its Rect (or null if position should be ignored).
-function getPositionNameAndRect( position, targetRect, elementRect ) {
+function getPositionNameAndRect( position, targetRect, elementRect, viewportRect, viewportTopOffset ) {
 	const positionData = position( targetRect, elementRect );
 
 	if ( !positionData ) {
@@ -139,7 +189,23 @@ function getPositionNameAndRect( position, targetRect, elementRect ) {
 
 	const { left, top, name } = positionData;
 
-	return [ name, elementRect.clone().moveTo( left, top ) ];
+	let _top = top;
+	let _name = name;
+
+	// Change position top logic for very tall elements (taller than the viewport)
+	if ( viewportRect && targetRect.height > viewportRect.height ) {
+		const [ positionName, positionTop ] = getVeryTallPanelPositionTop(
+			targetRect,
+			elementRect,
+			viewportRect,
+			viewportTopOffset
+		);
+
+		_name = positionName;
+		_top = positionTop;
+	}
+
+	return [ _name, elementRect.clone().moveTo( left, _top ) ];
 }
 
 // For a given array of positioning functions, returns such that provides the best
@@ -204,14 +270,17 @@ function getBestPositionNameAndRect( positions, options ) {
 // * {utils/dom/rect~Rect} positionRect Rect of position.
 // * {Number} limiterIntersectArea Area of intersection of the position with limiter part that is in the viewport.
 // * {Number} viewportIntersectArea Area of intersection of the position with viewport.
-function processPositionsToAreas( positions, { targetRect, elementRect, limiterRect, viewportRect } ) {
+function processPositionsToAreas( positions, { targetRect, elementRect, limiterRect, viewportRect, viewportTopOffset } ) {
 	const processedPositions = [];
+
+	// move viewport rect down by the top offset for proper rects intersection calculations
+	viewportRect.moveBy( 0, viewportTopOffset );
 
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
 
 	for ( const position of positions ) {
-		const positionData = getPositionNameAndRect( position, targetRect, elementRect );
+		const positionData = getPositionNameAndRect( position, targetRect, elementRect, viewportRect, viewportTopOffset );
 
 		if ( !positionData ) {
 			continue;
