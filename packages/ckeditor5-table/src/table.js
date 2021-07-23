@@ -75,6 +75,23 @@ export default class Table extends Plugin {
  */
 
 /**
+ * Number of rows and columns to render by default as table heading when inserting new tables.
+ *
+ * You can configure it like this:
+ *
+ *		const tableConfig = {
+ *			defaultHeadings: {
+ *				rows: 1,
+ *				columns: 1
+ *			}
+ *		};
+ *
+ * Both rows and columns properties are optional defaulting to 0 (no heading).
+ *
+ * @member {Object} module:table/table~TableConfig#defaultHeadings
+ */
+
+/**
  * An array of color definitions (either strings or objects).
  *
  *		const colors = [

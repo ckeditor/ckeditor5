@@ -194,5 +194,156 @@ describe( 'InsertTableCommand', () => {
 				);
 			} );
 		} );
+
+		describe( 'auto headings', () => {
+			it( 'should have first row as a heading by default', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1 } )
+				);
+			} );
+
+			it( 'should have first column as a heading by default', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { columns: 1 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ]
+					], { headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should have first row and first column as a heading by default', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 1, columns: 1 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 3, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 1, headingColumns: 1 } )
+				);
+			} );
+
+			it( 'should have first three rows and two columns as a heading by default', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					], { headingRows: 3, headingColumns: 2 } )
+				);
+			} );
+
+			it( 'should have auto headings not to be greater than table rows and columns', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 3 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 2, columns: 2 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					], { headingRows: 2, headingColumns: 2 } )
+				);
+			} );
+
+			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
+				editor = await ModelTestEditor
+					.create( {
+						plugins: [ Paragraph, TableEditing ],
+						table: {
+							defaultHeadings: { rows: 3, columns: 2 }
+						}
+					} );
+
+				model = editor.model;
+				command = new InsertTableCommand( editor );
+
+				setData( model, '[]' );
+
+				command.execute( { rows: 4, columns: 3, headingRows: 0, headingColumns: 0 } );
+
+				expect( getData( model ) ).to.equal(
+					modelTable( [
+						[ '[]', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ],
+						[ '', '', '' ]
+					] )
+				);
+			} );
+		} );
 	} );
 } );
