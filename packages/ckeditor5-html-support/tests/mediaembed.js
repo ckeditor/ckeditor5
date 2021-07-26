@@ -7,13 +7,14 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from './_utils/utils';
 import { range } from 'lodash-es';
 
 /* global document */
 
-describe( 'MediaEmbedElementSupport', () => {
+describe.only( 'MediaEmbedElementSupport', () => {
 	let editor, model, editorElement, dataFilter;
 
 	beforeEach( () => {
@@ -22,7 +23,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport ]
+				plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, MediaEmbed ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -40,153 +41,29 @@ describe( 'MediaEmbedElementSupport', () => {
 
 	it( 'should allow attributes', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			attributes: /^data-.*$/
 		} ] );
 
 		const expectedHtml =
-		'<figure class="table" data-figure="figure">' +
-			'<table data-table="table">' +
-				'<thead data-thead="thead">' +
-					'<tr data-tr="tr">' +
-						'<th data-th="th">1</th>' +
-						'<th data-th="th">2</th>' +
-						'<th data-th="th">3</th>' +
-					'</tr>' +
-				'</thead>' +
-				'<tbody data-tbody="tbody">' +
-					'<tr data-tr="tr">' +
-						'<td data-td="td">1.1</td>' +
-						'<td data-td="td">1.2</td>' +
-						'<td data-td="td">1.3</td>' +
-					'</tr>' +
-					'<tr data-tr="tr">' +
-						'<td data-td="td">2.1</td>' +
-						'<td data-td="td">2.2</td>' +
-						'<td data-td="td">2.3</td>' +
-					'</tr>' +
-				'</tbody>' +
-			'</table>' +
+		'<figure class="media" data-figure="data-figure-value">' +
+			'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-oembed="data-oembed-value"></oembed>' +
 		'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-				'<tableRow htmlAttributes="(5)">' +
-					'<tableCell htmlAttributes="(6)">' +
-						'<paragraph>1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(7)">' +
-						'<paragraph>2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(8)">' +
-						'<paragraph>3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow htmlAttributes="(9)">' +
-					'<tableCell htmlAttributes="(10)">' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(11)">' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(12)">' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow htmlAttributes="(13)">' +
-					'<tableCell htmlAttributes="(14)">' +
-						'<paragraph>2.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(15)">' +
-						'<paragraph>2.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(16)">' +
-						'<paragraph>2.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
+				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 			attributes: {
 				1: {
 					attributes: {
-						'data-table': 'table'
+						'data-oembed': 'data-oembed-value'
 					}
 				},
 				2: {
 					attributes: {
-						'data-figure': 'figure'
-					}
-				},
-				3: {
-					attributes: {
-						'data-tbody': 'tbody'
-					}
-				},
-				4: {
-					attributes: {
-						'data-thead': 'thead'
-					}
-				},
-				5: {
-					attributes: {
-						'data-tr': 'tr'
-					}
-				},
-				6: {
-					attributes: {
-						'data-th': 'th'
-					}
-				},
-				7: {
-					attributes: {
-						'data-th': 'th'
-					}
-				},
-				8: {
-					attributes: {
-						'data-th': 'th'
-					}
-				},
-				9: {
-					attributes: {
-						'data-tr': 'tr'
-					}
-				},
-				10: {
-					attributes: {
-						'data-td': 'td'
-					}
-				},
-				11: {
-					attributes: {
-						'data-td': 'td'
-					}
-				},
-				12: {
-					attributes: {
-						'data-td': 'td'
-					}
-				},
-				13: {
-					attributes: {
-						'data-tr': 'tr'
-					}
-				},
-				14: {
-					attributes: {
-						'data-td': 'td'
-					}
-				},
-				15: {
-					attributes: {
-						'data-td': 'td'
-					}
-				},
-				16: {
-					attributes: {
-						'data-td': 'td'
+						'data-figure': 'data-figure-value'
 					}
 				}
 			}
@@ -197,75 +74,21 @@ describe( 'MediaEmbedElementSupport', () => {
 
 	it( 'should allow classes', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			classes: 'foobar'
 		} ] );
 
 		const expectedHtml =
-		'<figure class="table foobar">' +
-			'<table class="foobar">' +
-				'<thead class="foobar">' +
-					'<tr class="foobar">' +
-						'<th class="foobar">1</th>' +
-						'<th class="foobar">2</th>' +
-						'<th class="foobar">3</th>' +
-					'</tr>' +
-				'</thead>' +
-				'<tbody class="foobar">' +
-					'<tr class="foobar">' +
-						'<td class="foobar">1.1</td>' +
-						'<td class="foobar">1.2</td>' +
-						'<td class="foobar">1.3</td>' +
-					'</tr>' +
-					'<tr class="foobar">' +
-						'<td class="foobar">2.1</td>' +
-						'<td class="foobar">2.2</td>' +
-						'<td class="foobar">2.3</td>' +
-					'</tr>' +
-				'</tbody>' +
-			'</table>' +
+		'<figure class="media foobar">' +
+			'<oembed class="foobar" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 		'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-				'<tableRow htmlAttributes="(5)">' +
-					'<tableCell htmlAttributes="(6)">' +
-						'<paragraph>1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(7)">' +
-						'<paragraph>2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(8)">' +
-						'<paragraph>3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow htmlAttributes="(9)">' +
-					'<tableCell htmlAttributes="(10)">' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(11)">' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(12)">' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow htmlAttributes="(13)">' +
-					'<tableCell htmlAttributes="(14)">' +
-						'<paragraph>2.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(15)">' +
-						'<paragraph>2.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(16)">' +
-						'<paragraph>2.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
-			attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
+			'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+			attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 				attributes[ index ] = {
 					classes: [ 'foobar' ]
 				};
@@ -278,75 +101,21 @@ describe( 'MediaEmbedElementSupport', () => {
 
 	it( 'should allow styles', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			styles: 'color'
 		} ] );
 
 		const expectedHtml =
-		'<figure class="table" style="color:red;">' +
-			'<table style="color:red;">' +
-				'<thead style="color:red;">' +
-					'<tr style="color:red;">' +
-						'<th style="color:red;">1</th>' +
-						'<th style="color:red;">2</th>' +
-						'<th style="color:red;">3</th>' +
-					'</tr>' +
-				'</thead>' +
-				'<tbody style="color:red;">' +
-					'<tr style="color:red;">' +
-						'<td style="color:red;">1.1</td>' +
-						'<td style="color:red;">1.2</td>' +
-						'<td style="color:red;">1.3</td>' +
-					'</tr>' +
-					'<tr style="color:red;">' +
-						'<td style="color:red;">2.1</td>' +
-						'<td style="color:red;">2.2</td>' +
-						'<td style="color:red;">2.3</td>' +
-					'</tr>' +
-				'</tbody>' +
-			'</table>' +
+		'<figure class="media" style="color:red;">' +
+			'<oembed style="color:red;" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 		'</figure>';
 
 		editor.setData( expectedHtml );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-				'<tableRow htmlAttributes="(5)">' +
-					'<tableCell htmlAttributes="(6)">' +
-						'<paragraph>1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(7)">' +
-						'<paragraph>2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(8)">' +
-						'<paragraph>3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow htmlAttributes="(9)">' +
-					'<tableCell htmlAttributes="(10)">' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(11)">' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(12)">' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow htmlAttributes="(13)">' +
-					'<tableCell htmlAttributes="(14)">' +
-						'<paragraph>2.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(15)">' +
-						'<paragraph>2.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell htmlAttributes="(16)">' +
-						'<paragraph>2.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
-			attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
+			'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+			attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 				attributes[ index ] = {
 					styles: {
 						color: 'red'
@@ -361,388 +130,133 @@ describe( 'MediaEmbedElementSupport', () => {
 
 	it( 'should disallow attributes', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			attributes: /^data-.*$/
 		} ] );
 
 		dataFilter.loadDisallowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			attributes: /^data-.*$/
 		} ] );
 
 		editor.setData(
-			'<figure class="table" data-figure="figure">' +
-				'<table data-table="table">' +
-					'<thead data-thead="thead">' +
-						'<tr data-tr="tr">' +
-							'<th data-th="th">1</th>' +
-							'<th data-th="th">2</th>' +
-							'<th data-th="th">3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody data-tbody="tbody">' +
-						'<tr data-tr="tr">' +
-							'<td data-td="td">1.1</td>' +
-							'<td data-td="td">1.2</td>' +
-							'<td data-td="td">1.3</td>' +
-						'</tr>' +
-						'<tr data-tr="tr">' +
-							'<td data-td="td">2.1</td>' +
-							'<td data-td="td">2.2</td>' +
-							'<td data-td="td">2.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media" data-figure="data-figure-value">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-oembed="data-oembed-value"></oembed>' +
 			'</figure>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table headingRows="1">' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>2.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
+			'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.equal(
-			'<figure class="table">' +
-				'<table>' +
-					'<thead>' +
-						'<tr>' +
-							'<th>1</th>' +
-							'<th>2</th>' +
-							'<th>3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody>' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-						'<tr>' +
-							'<td>2.1</td>' +
-							'<td>2.2</td>' +
-							'<td>2.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>'
 		);
 	} );
 
 	it( 'should disallow classes', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			classes: 'foobar'
 		} ] );
 
 		dataFilter.loadDisallowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			classes: 'foobar'
 		} ] );
 
 		editor.setData(
-			'<figure class="table foobar">' +
-				'<table class="foobar">' +
-					'<thead class="foobar">' +
-						'<tr class="foobar">' +
-							'<th class="foobar">1</th>' +
-							'<th class="foobar">2</th>' +
-							'<th class="foobar">3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody class="foobar">' +
-						'<tr class="foobar">' +
-							'<td class="foobar">1.1</td>' +
-							'<td class="foobar">1.2</td>' +
-							'<td class="foobar">1.3</td>' +
-						'</tr>' +
-						'<tr class="foobar">' +
-							'<td class="foobar">2.1</td>' +
-							'<td class="foobar">2.2</td>' +
-							'<td class="foobar">2.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media foobar">' +
+				'<oembed class="foobar" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table headingRows="1">' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>2.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
+			'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.equal(
-			'<figure class="table">' +
-				'<table>' +
-					'<thead>' +
-						'<tr>' +
-							'<th>1</th>' +
-							'<th>2</th>' +
-							'<th>3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody>' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-						'<tr>' +
-							'<td>2.1</td>' +
-							'<td>2.2</td>' +
-							'<td>2.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>'
 		);
 	} );
 
 	it( 'should disallow styles', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			styles: 'color'
 		} ] );
 
 		dataFilter.loadDisallowedConfig( [ {
-			name: /^(figure|table|tbody|thead|tr|th|td)$/,
+			name: /^(figure|oembed)$/,
 			styles: 'color'
 		} ] );
 
 		editor.setData(
-			'<figure class="table" style="color:red;">' +
-				'<table style="color:red;">' +
-					'<thead style="color:red;">' +
-						'<tr style="color:red;">' +
-							'<th style="color:red;">1</th>' +
-							'<th style="color:red;">2</th>' +
-							'<th style="color:red;">3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody style="color:red;">' +
-						'<tr style="color:red;">' +
-							'<td style="color:red;">1.1</td>' +
-							'<td style="color:red;">1.2</td>' +
-							'<td style="color:red;">1.3</td>' +
-						'</tr>' +
-						'<tr style="color:red;">' +
-							'<td style="color:red;">2.1</td>' +
-							'<td style="color:red;">2.2</td>' +
-							'<td style="color:red;">2.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media" style="color:red;">' +
+				'<oembed style="color:red;" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table headingRows="1">' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>2.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>2.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
+			'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 			attributes: {}
 		} );
 
 		expect( editor.getData() ).to.equal(
-			'<figure class="table">' +
-				'<table>' +
-					'<thead>' +
-						'<tr>' +
-							'<th>1</th>' +
-							'<th>2</th>' +
-							'<th>3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody>' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-						'<tr>' +
-							'<td>2.1</td>' +
-							'<td>2.2</td>' +
-							'<td>2.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>'
 		);
 	} );
 
 	it( 'should not set attributes on non existing figure', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|table|tbody|tr|td)$/,
+			name: /^(figure|oembed)$/,
 			attributes: true
 		} ] );
 
 		editor.setData(
-			'<table data-foo="foo">' +
-				'<tbody>' +
-					'<tr>' +
-						'<td>1.1</td>' +
-						'<td>1.2</td>' +
-						'<td>1.3</td>' +
-					'</tr>' +
-				'</tbody>' +
-			'</table>'
+			'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>'
 		);
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table htmlAttributes="(1)">' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>',
+			'<media htmlAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
 			attributes: {
 				1: {
-					attributes: { 'data-foo': 'foo' }
+					attributes: {
+						'data-foo': 'foo',
+						'url': 'https://www.youtube.com/watch?v=ZVv7UMQPEWk'
+					}
 				}
 			}
 		} );
 
 		expect( editor.getData() ).to.equal(
-			'<figure class="table">' +
-				'<table data-foo="foo">' +
-					'<tbody>' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>' +
 			'</figure>'
 		);
 	} );
 
 	it( 'should not break figure integration for other features', () => {
 		dataFilter.loadAllowedConfig( [ {
-			name: /^(figure|figcaption|table|tbody|tr|td)$/,
+			name: /^(figure|figcaption|oembed)$/,
 			attributes: /^data-.*$/
 		} ] );
 
 		const expectedHtml =
-			'<figure class="table" data-figure="table">' +
-				'<table>' +
-					'<tbody>' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media" data-figure="oembed">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>' +
 			'<figure data-figure="standalone">' +
 				'<figcaption data-figcaption="figcaption">foobar</figcaption>' +
@@ -752,26 +266,14 @@ describe( 'MediaEmbedElementSupport', () => {
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 			data:
-			'<table htmlFigureAttributes="(1)">' +
-				'<tableRow>' +
-					'<tableCell>' +
-						'<paragraph>1.1</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.2</paragraph>' +
-					'</tableCell>' +
-					'<tableCell>' +
-						'<paragraph>1.3</paragraph>' +
-					'</tableCell>' +
-				'</tableRow>' +
-			'</table>' +
+			'<media htmlFigureAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>' +
 			'<htmlFigure htmlAttributes="(2)">' +
 				'<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
 			'</htmlFigure>',
 			attributes: {
 				1: {
 					attributes: {
-						'data-figure': 'table'
+						'data-figure': 'oembed'
 					}
 				},
 				2: {
@@ -793,449 +295,32 @@ describe( 'MediaEmbedElementSupport', () => {
 	it( 'should not consume attributes already consumed (downcast)', () => {
 		[
 			'htmlAttributes',
-			'htmlFigureAttributes',
-			'htmlTbodyAttributes',
-			'htmlTheadAttributes'
+			'htmlFigureAttributes'
 		].forEach( attributeName => {
-			editor.conversion.for( 'downcast' ).add( dispatcher => {
-				dispatcher.on( `attribute:${ attributeName }:table`, ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.item, evt.name );
-				}, { priority: 'high' } );
-			} );
+			editor.conversion.for( 'downcast' )
+				.add( dispatcher => {
+					dispatcher.on( `attribute:${ attributeName }:media`, ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+				} );
 		} );
 
-		dataFilter.allowElement( /^(figure|table|tbody|thead)$/ );
+		dataFilter.allowElement( /^(figure|oembed)$/ );
 		dataFilter.allowAttributes( {
-			name: /^(figure|table|tbody|thead)$/,
+			name: /^(figure|oembed)$/,
 			attributes: { 'data-foo': true }
 		} );
 
 		editor.setData(
-			'<figure class="table" data-foo="foo">' +
-				'<table data-foo="foo">' +
-					'<thead data-foo="foo">' +
-						'<tr>' +
-							'<th>1</th>' +
-							'<th>2</th>' +
-							'<th>3</th>' +
-						'</tr>' +
-					'</tbody>' +
-					'<tbody data-foo="foo">' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media" data-foo="foo">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>' +
 			'</figure>'
 		);
 
 		expect( editor.getData() ).to.equal(
-			'<figure class="table">' +
-				'<table>' +
-					'<thead>' +
-						'<tr>' +
-							'<th>1</th>' +
-							'<th>2</th>' +
-							'<th>3</th>' +
-						'</tr>' +
-					'</thead>' +
-					'<tbody>' +
-						'<tr>' +
-							'<td>1.1</td>' +
-							'<td>1.2</td>' +
-							'<td>1.3</td>' +
-						'</tr>' +
-					'</tbody>' +
-				'</table>' +
+			'<figure class="media">' +
+				'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
 			'</figure>'
 		);
-	} );
-
-	describe( 'TableCaption', () => {
-		// Sanity tests verifying if table caption is correctly handled by default converters.
-
-		it( 'should allow attributes (caption)', () => {
-			dataFilter.loadAllowedConfig( [ {
-				// caption is changed to figcaption by TableCaption feature.
-				name: /^(caption|figcaption)$/,
-				attributes: 'data-foo',
-				styles: 'color',
-				classes: 'foobar'
-			} ] );
-
-			editor.setData(
-				'<figure class="table">' +
-					'<table>' +
-						'<caption class="foobar" style="color:red;" data-foo="foo">caption</caption>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>1.1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<caption htmlAttributes="(1)">caption</caption>' +
-				'</table>',
-				attributes: {
-					1: {
-						attributes: { 'data-foo': 'foo' },
-						styles: { color: 'red' },
-						classes: [ 'foobar' ]
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should disallow attributes (caption)', () => {
-			dataFilter.loadAllowedConfig( [ {
-				// caption is changed to figcaption by TableCaption feature.
-				name: /^(caption|figcaption)$/,
-				attributes: 'data-foo',
-				styles: 'color',
-				classes: 'foobar'
-			} ] );
-
-			dataFilter.loadDisallowedConfig( [ {
-				// caption is changed to figcaption by TableCaption feature.
-				name: /^(caption|figcaption)$/,
-				attributes: 'data-foo',
-				styles: 'color',
-				classes: 'foobar'
-			} ] );
-
-			editor.setData(
-				'<figure class="table">' +
-					'<table>' +
-						'<caption class="foobar" style="color:red;" data-foo="foo">caption</caption>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>1.1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<caption>caption</caption>' +
-				'</table>',
-				attributes: {}
-			} );
-
-			expect( editor.getData() ).to.equal(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption>caption</figcaption>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should allow attributes (figcaption)', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: 'figcaption',
-				attributes: 'data-foo',
-				styles: 'color',
-				classes: 'foobar'
-			} ] );
-
-			editor.setData(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>1.1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<caption htmlAttributes="(1)">caption</caption>' +
-				'</table>',
-				attributes: {
-					1: {
-						attributes: { 'data-foo': 'foo' },
-						styles: { color: 'red' },
-						classes: [ 'foobar' ]
-					}
-				}
-			} );
-
-			expect( editor.getData() ).to.equal(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should disallow attributes (figcaption)', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: 'figcaption',
-				attributes: 'data-foo',
-				styles: 'color',
-				classes: 'foobar'
-			} ] );
-
-			dataFilter.loadDisallowedConfig( [ {
-				name: 'figcaption',
-				attributes: 'data-foo',
-				styles: 'color',
-				classes: 'foobar'
-			} ] );
-
-			editor.setData(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption class="foobar" style="color:red;" data-foo="foo">caption</figcaption>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<table>' +
-					'<tableRow>' +
-						'<tableCell>' +
-							'<paragraph>1.1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell>' +
-							'<paragraph>1.3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<caption>caption</caption>' +
-				'</table>',
-				attributes: {}
-			} );
-
-			expect( editor.getData() ).to.equal(
-				'<figure class="table">' +
-					'<table>' +
-						'<tbody>' +
-							'<tr>' +
-								'<td>1.1</td>' +
-								'<td>1.2</td>' +
-								'<td>1.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-					'<figcaption>caption</figcaption>' +
-				'</figure>'
-			);
-		} );
-
-		it( 'should handle mixed allowed and disallowed attributes', () => {
-			dataFilter.loadAllowedConfig( [ {
-				name: /^(figure|table|tbody|thead|tr|th|td)$/,
-				attributes: /^data-.*$/,
-				classes: [ 'allow', 'disallow' ],
-				styles: [ 'color', 'background' ]
-			} ] );
-
-			dataFilter.loadDisallowedConfig( [ {
-				name: /^(figure|table|tbody|thead|tr|th|td)$/,
-				attributes: 'data-disallow',
-				classes: 'disallow',
-				styles: 'background'
-			} ] );
-
-			/* eslint-disable max-len */
-			editor.setData(
-				'<figure class="table allow disallow" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-					'<table class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-						'<thead class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1</th>' +
-								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2</th>' +
-								'<th class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">3</th>' +
-							'</tr>' +
-						'</thead>' +
-						'<tbody class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.1</td>' +
-								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.2</td>' +
-								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">1.3</td>' +
-							'</tr>' +
-							'<tr class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">' +
-								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.1</td>' +
-								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.2</td>' +
-								'<td class="allow disallow invalid" invalid-attribute="invalid" data-allow="allow" data-disallow="disallow" style="color:red;background:blue;width:10px;">2.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-
-			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<table headingRows="1" htmlAttributes="(1)" htmlFigureAttributes="(2)" htmlTbodyAttributes="(3)" htmlTheadAttributes="(4)">' +
-					'<tableRow htmlAttributes="(5)">' +
-						'<tableCell htmlAttributes="(6)">' +
-							'<paragraph>1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell htmlAttributes="(7)">' +
-							'<paragraph>2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell htmlAttributes="(8)">' +
-							'<paragraph>3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<tableRow htmlAttributes="(9)">' +
-						'<tableCell htmlAttributes="(10)">' +
-							'<paragraph>1.1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell htmlAttributes="(11)">' +
-							'<paragraph>1.2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell htmlAttributes="(12)">' +
-							'<paragraph>1.3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-					'<tableRow htmlAttributes="(13)">' +
-						'<tableCell htmlAttributes="(14)">' +
-							'<paragraph>2.1</paragraph>' +
-						'</tableCell>' +
-						'<tableCell htmlAttributes="(15)">' +
-							'<paragraph>2.2</paragraph>' +
-						'</tableCell>' +
-						'<tableCell htmlAttributes="(16)">' +
-							'<paragraph>2.3</paragraph>' +
-						'</tableCell>' +
-					'</tableRow>' +
-				'</table>',
-				attributes: range( 1, 17 ).reduce( ( attributes, index ) => {
-					attributes[ index ] = {
-						attributes: {
-							'data-allow': 'allow'
-						},
-						styles: {
-							color: 'red'
-						},
-						classes: [ 'allow' ]
-					};
-					return attributes;
-				}, {} )
-			} );
-
-			expect( editor.getData() ).to.equal(
-				'<figure class="table allow" style="color:red;" data-allow="allow">' +
-					'<table class="allow" style="color:red;" data-allow="allow">' +
-						'<thead class="allow" style="color:red;" data-allow="allow">' +
-							'<tr class="allow" style="color:red;" data-allow="allow">' +
-								'<th class="allow" style="color:red;" data-allow="allow">1</th>' +
-								'<th class="allow" style="color:red;" data-allow="allow">2</th>' +
-								'<th class="allow" style="color:red;" data-allow="allow">3</th>' +
-							'</tr>' +
-						'</thead>' +
-						'<tbody class="allow" style="color:red;" data-allow="allow">' +
-							'<tr class="allow" style="color:red;" data-allow="allow">' +
-								'<td class="allow" style="color:red;" data-allow="allow">1.1</td>' +
-								'<td class="allow" style="color:red;" data-allow="allow">1.2</td>' +
-								'<td class="allow" style="color:red;" data-allow="allow">1.3</td>' +
-							'</tr>' +
-							'<tr class="allow" style="color:red;" data-allow="allow">' +
-								'<td class="allow" style="color:red;" data-allow="allow">2.1</td>' +
-								'<td class="allow" style="color:red;" data-allow="allow">2.2</td>' +
-								'<td class="allow" style="color:red;" data-allow="allow">2.3</td>' +
-							'</tr>' +
-						'</tbody>' +
-					'</table>' +
-				'</figure>'
-			);
-			/* eslint-enable max-len */
-		} );
 	} );
 } );

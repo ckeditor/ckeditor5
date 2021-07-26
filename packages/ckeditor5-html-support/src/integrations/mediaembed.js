@@ -103,26 +103,28 @@ function viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) {
 			}
 		} );
 
-		// dispatcher.on( `element:${ mediaElementName }`, ( evt, data, conversionApi ) => {
-		// 	const viewOembedElement = data.viewItem;
+		// Handle media elements without `<figure>` container.
+		// TODO: Cleanup of those two handlers
+		dispatcher.on( `element:${ mediaElementName }`, ( evt, data, conversionApi ) => {
+			const viewOembedElement = data.viewItem;
 
-		// 	preserveElementAttributes( viewOembedElement, 'htmlAttributes' );
+			preserveElementAttributes( viewOembedElement, 'htmlAttributes' );
 
-		// 	const viewFigureElement = viewOembedElement.parent;
-		// 	if ( viewFigureElement.is( 'element', 'figure' ) ) {
-		// 		preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-		// 	}
+			const viewFigureElement = viewOembedElement.parent;
+			if ( viewFigureElement.is( 'element', 'figure' ) ) {
+				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+			}
 
-		// 	function preserveElementAttributes( viewElement, attributeName ) {
-		// 		const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+			function preserveElementAttributes( viewElement, attributeName ) {
+				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
 
-		// 		if ( viewAttributes ) {
-		// 			conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
-		// 		}
-		// 	}
-		// },
-		// // Low priority to let other converters prepare the modelRange for us.
-		// { priority: 'low' } );
+				if ( viewAttributes ) {
+					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+				}
+			}
+		},
+		// Low priority to let other converters prepare the modelRange for us.
+		{ priority: 'low' } );
 	};
 }
 
