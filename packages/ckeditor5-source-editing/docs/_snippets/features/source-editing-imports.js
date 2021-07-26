@@ -21,10 +21,13 @@ import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
 ClassicEditor.builtinPlugins.push(
 	SourceEditing, GeneralHtmlSupport, TableCellProperties, TableProperties, IndentBlock,
-	CodeBlock, Underline, Strikethrough, Code, TodoList, Superscript, Subscript );
+	CodeBlock, Underline, Strikethrough, Code, TodoList, Superscript, Subscript, Alignment,
+	ImageCaption );
 
 ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,

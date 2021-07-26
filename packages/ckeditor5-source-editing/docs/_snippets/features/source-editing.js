@@ -32,6 +32,7 @@ ClassicEditor
 				'numberedList',
 				'todoList',
 				'|',
+				'alignment',
 				'outdent',
 				'indent',
 				'|',
@@ -51,7 +52,8 @@ ClassicEditor
 				'imageStyle:block',
 				'imageStyle:side',
 				'|',
-				'imageTextAlternative'
+				'imageTextAlternative',
+				'toggleImageCaption'
 			]
 		},
 		htmlSupport: {
