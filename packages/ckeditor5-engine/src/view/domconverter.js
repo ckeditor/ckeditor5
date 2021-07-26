@@ -96,7 +96,7 @@ export default class DomConverter {
 		 * TODO
 		 */
 		this.inlineObjectElements = [
-			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'video', 'embed', 'audio', 'img', 'canvas'
+			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas'
 		];
 
 		/**

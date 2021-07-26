@@ -239,6 +239,66 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo <button> Button </button> <button> Another </button> bar</p>' );
 		} );
 
+		it( 'TODO 3', () => {
+			editor.model.schema.register( 'select', {
+				allowWhere: '$text',
+				isInline: true,
+				allowChildren: [ 'optgroup' ],
+				allowAttributes: [ 'name' ]
+			} );
+
+			editor.model.schema.register( 'optgroup', {
+				allowWhere: 'select',
+				isInline: true,
+				allowChildren: [ 'option' ],
+				allowAttributes: [ 'label' ]
+			} );
+
+			editor.model.schema.register( 'option', {
+				allowWhere: 'optgroup',
+				isInline: true,
+				allowChildren: [ '$text' ],
+				allowAttributes: [ 'value' ]
+			} );
+
+			editor.conversion.elementToElement( { model: 'select', view: 'select' } );
+			editor.conversion.elementToElement( { model: 'optgroup', view: 'optgroup' } );
+			editor.conversion.elementToElement( { model: 'option', view: 'option' } );
+			editor.conversion.attributeToAttribute( { model: 'name', view: 'name' } );
+			editor.conversion.attributeToAttribute( { model: 'label', view: 'label' } );
+			editor.conversion.attributeToAttribute( { model: 'value', view: 'value' } );
+
+			const initialData = '<p>select <select name="things">' +
+					'<optgroup label="FoosAndBars">' +
+						'<option value="foo"> Foo </option>' +
+						'<option value="bar"> Bar </option>' +
+					'</optgroup>' +
+					'<optgroup label="letters">' +
+						'<option value="a"> A </option>' +
+						'<option value="b"> B </option>' +
+					'</optgroup>' +
+				'</select> with some text' +
+			'</p>';
+
+			editor.setData( initialData );
+
+			expect( getData( editor.model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>select ' +
+					'<select name="things">' +
+						'<optgroup label="FoosAndBars">' +
+							'<option value="foo"> Foo </option>' +
+							'<option value="bar"> Bar </option>' +
+						'</optgroup>' +
+						'<optgroup label="letters">' +
+							'<option value="a"> A </option>' +
+							'<option value="b"> B </option>' +
+						'</optgroup>' +
+					'</select>' +
+				' with some text</paragraph>' );
+
+			expect( editor.getData() ).to.equal( initialData );
+		} );
+
 		it( 'white space with text before empty inline element is not ignored', () => {
 			editor.setData( '<p>foo <img src="/assets/sample.png"></p>' );
 
@@ -320,7 +380,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>&nbsp;<img src="/assets/sample.png">&nbsp;</p>' );
 		} );
 
-		it( 'nbsp before empty inline element is not ignored', () => {
+		it( 'text+nbsp before empty inline element is not ignored', () => {
 			editor.setData( '<p>foo&nbsp;<img src="/assets/sample.png"></p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
@@ -329,7 +389,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p>foo <img src="/assets/sample.png"></p>' );
 		} );
 
-		it( 'nbsp after empty inline element is not ignored', () => {
+		it( 'nbsp+text after empty inline element is not ignored', () => {
 			editor.setData( '<p><img src="/assets/sample.png" />&nbsp;foo</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
@@ -338,7 +398,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			expect( editor.getData() ).to.equal( '<p><img src="/assets/sample.png"> foo</p>' );
 		} );
 
-		it( 'nbsp around empty inline element are not ignored', () => {
+		it( 'text+nbsp or nbsp+text around empty inline element are not ignored', () => {
 			editor.setData( '<p>foo&nbsp;<img src="/assets/sample.png">&nbsp;bar</p>' );
 
 			expect( getData( editor.model, { withoutSelection: true } ) )
