@@ -418,13 +418,14 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 			} );
 
 			// All possible cases have been checked 👆. These are dummy tests only to verify this will work for all elements in the list.
+			// Note: <img> is added by ImageInlineEditing plugin in the editor configuration.
 			describe( 'detection of DomConverter#inlineObjectElements', () => {
 				const elements = [
-					'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas'
+					'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'canvas'
 				];
 
 				// Singletons don't have $text children.
-				const singletons = [ 'input', 'embed', 'img' ];
+				const singletons = [ 'input', 'embed' ];
 
 				for ( const name of elements ) {
 					it( `should work for the <${ name }> element`, () => {
