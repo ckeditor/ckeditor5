@@ -37,7 +37,6 @@ export default class MediaEmbedElementSupport extends Plugin {
 		const conversion = editor.conversion;
 		const dataFilter = this.editor.plugins.get( DataFilter );
 		const dataSchema = this.editor.plugins.get( DataSchema );
-
 		const mediaElementName = editor.config.get( 'mediaEmbed.elementName' );
 
 		// Overwrite GHS schema definition for a given elementName.
@@ -74,23 +73,24 @@ export default class MediaEmbedElementSupport extends Plugin {
 function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			if ( data.viewItem.getChild( 0 ).name === mediaElementName ) {
-				// If the range is not created yet, let's create it by converting children of the current node first.
-				if ( !data.modelRange ) {
-					// Convert children and set conversion result as a current data.
-					Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-				}
+			const viewFigureElement = data.viewItem;
+			const viewMediaElement = Array.from( viewFigureElement.getChildren() )
+				.find( item => item.is( 'element', mediaElementName ) );
 
-				const viewMediaElement = data.viewItem.getChild( 0 );
-				preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
-
-				const viewFigureElement = viewMediaElement.parent;
-				if ( viewFigureElement.is( 'element', 'figure' ) ) {
-					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-				}
-
-				conversionApi.consumable.consume( data.viewItem, { name: true } );
+			if ( !viewMediaElement ) {
+				return;
 			}
+
+			// If the range is not created yet, let's create it by converting children of the current node first.
+			if ( !data.modelRange ) {
+				// Convert children and set conversion result as a current data.
+				Object.assign( data, conversionApi.convertChildren( viewFigureElement, data.modelCursor ) );
+			}
+
+			preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
+			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+
+			conversionApi.consumable.consume( viewFigureElement, { name: true } );
 
 			function preserveElementAttributes( viewElement, attributeName ) {
 				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
