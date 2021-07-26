@@ -5,8 +5,6 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from './_utils/utils';
@@ -24,7 +22,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport, MediaEmbed ]
+					plugins: [ Paragraph, GeneralHtmlSupport, MediaEmbed ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -326,6 +324,320 @@ describe( 'MediaEmbedElementSupport', () => {
 		} );
 	} );
 
+	describe( 'MediaEmbed feature with custom element name', () => {
+		let editor, model, editorElement, dataFilter;
+
+		beforeEach( () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, GeneralHtmlSupport, MediaEmbed ],
+					mediaEmbed: {
+						elementName: 'custom-oembed'
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+
+					dataFilter = editor.plugins.get( 'DataFilter' );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should allow attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml =
+			'<figure class="media" data-figure="data-figure-value">' +
+				'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-oembed="data-oembed-value"></custom-oembed>' +
+			'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-oembed': 'data-oembed-value'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'data-figure-value'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should allow classes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				classes: 'foobar'
+			} ] );
+
+			const expectedHtml =
+			'<figure class="media foobar">' +
+				'<custom-oembed class="foobar" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+			'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						classes: [ 'foobar' ]
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should allow styles', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				styles: 'color'
+			} ] );
+
+			const expectedHtml =
+			'<figure class="media" style="color:red;">' +
+				'<custom-oembed style="color:red;" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+			'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media htmlAttributes="(1)" htmlFigureAttributes="(2)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						styles: {
+							color: 'red'
+						}
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			editor.setData(
+				'<figure class="media" data-figure="data-figure-value">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-oembed="data-oembed-value"></custom-oembed>' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should disallow classes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				classes: 'foobar'
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				classes: 'foobar'
+			} ] );
+
+			editor.setData(
+				'<figure class="media foobar">' +
+					'<custom-oembed class="foobar" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should disallow styles', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				styles: 'color'
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				styles: 'color'
+			} ] );
+
+			editor.setData(
+				'<figure class="media" style="color:red;">' +
+					'<custom-oembed style="color:red;" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should not set attributes on non existing figure', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|custom-oembed)$/,
+				attributes: true
+			} ] );
+
+			editor.setData(
+				'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media htmlAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'foo',
+							'url': 'https://www.youtube.com/watch?v=ZVv7UMQPEWk'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should not break figure integration for other features', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|figcaption|custom-oembed)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml =
+				'<figure class="media" data-figure="oembed">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>' +
+				'<figure data-figure="standalone">' +
+					'<figcaption data-figcaption="figcaption">foobar</figcaption>' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+				'<media htmlFigureAttributes="(1)" url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></media>' +
+				'<htmlFigure htmlAttributes="(2)">' +
+					'<htmlFigcaption htmlAttributes="(3)">foobar</htmlFigcaption>' +
+				'</htmlFigure>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-figure': 'oembed'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'standalone'
+						}
+					},
+					3: {
+						attributes: {
+							'data-figcaption': 'figcaption'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should not consume attributes already consumed (downcast)', () => {
+			[
+				'htmlAttributes',
+				'htmlFigureAttributes'
+			].forEach( attributeName => {
+				editor.conversion.for( 'downcast' )
+					.add( dispatcher => {
+						dispatcher.on( `attribute:${ attributeName }:media`, ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, evt.name );
+						}, { priority: 'high' } );
+					} );
+			} );
+
+			dataFilter.allowElement( /^(figure|custom-oembed)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(figure|custom-oembed)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="media">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></custom-oembed>' +
+				'</figure>'
+			);
+		} );
+	} );
+
 	// Even though the support of media embed feature by GHS alone seems lacking (e.g. extra paragraphs in the model, output)
 	// we still wanted to keep track of the state of that kind of conversion.
 	describe( 'Oembed supported solely by GHS', () => {
@@ -337,7 +649,7 @@ describe( 'MediaEmbedElementSupport', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Table, TableCaption, Paragraph, GeneralHtmlSupport ]
+					plugins: [ Paragraph, GeneralHtmlSupport ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
