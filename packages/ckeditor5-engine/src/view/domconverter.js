@@ -1182,7 +1182,7 @@ export default class DomConverter {
 	 *
 	 * @private
 	 * @param {Node} node
-	 * @param {Node} prevNode Either DOM text or `<br>` or one of `#inlineElements`.
+	 * @param {Node} prevNode Either DOM text or `<br>` or one of `#inlineObjectElements`.
 	 */
 	_checkShouldLeftTrimDomText( node, prevNode ) {
 		if ( !prevNode ) {
@@ -1207,7 +1207,7 @@ export default class DomConverter {
 	 *
 	 * @private
 	 * @param {Node} node
-	 * @param {Node} nextNode Either DOM text or `<br>` or one of `#inlineElements`.
+	 * @param {Node} nextNode Either DOM text or `<br>` or one of `#inlineObjectElements`.
 	 */
 	_checkShouldRightTrimDomText( node, nextNode ) {
 		if ( nextNode ) {
@@ -1309,7 +1309,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if a DOM node belongs to {@link #blockElements}. `false` otherwise.
 	 *
 	 * @private
 	 * @param {Node} node
@@ -1320,7 +1320,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
 	 *
 	 * @private
 	 * @param {Node} node
