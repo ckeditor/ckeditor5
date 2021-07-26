@@ -10,10 +10,11 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
@@ -22,26 +23,25 @@ ClassicEditor
 		plugins: [
 			Bold,
 			Essentials,
-			GeneralHtmlSupport,
+			Heading,
 			Italic,
 			Paragraph,
-			SourceEditing,
 			Strikethrough,
-			Table,
-			TableCaption
+			Underline,
+			GeneralHtmlSupport,
+			Image,
+			ImageCaption
 		],
-		toolbar: [ 'insertTable', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
+		toolbar: [
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough'
+		],
 		htmlSupport: {
 			allow: [
 				{
-					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption)$/,
-					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
-				}
-			],
-			disallow: [
-				{
-					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption)$/,
-					attributes: 'data-validation-disallow'
+					name: 'div'
 				}
 			]
 		}

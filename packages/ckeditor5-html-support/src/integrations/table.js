@@ -19,10 +19,16 @@ import DataFilter from '../datafilter';
  * @extends module:core/plugin~Plugin
  */
 export default class TableElementSupport extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ DataFilter ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
