@@ -93,7 +93,17 @@ export default class DomConverter {
 		];
 
 		/**
-		 * TODO
+		 * A list of elements that exist inline (in text) but their inner structure cannot be edited because
+		 * of the way they are rendered by the browser. They are mostly HTML form elements but there are other
+		 * elements such as `<img>` or `<iframe>` that also have non-editable children or no children whatsoever.
+		 *
+		 * Whether an element is considered an inline object has an impact on white space rendering (trimming)
+		 * around (and inside of it). In short, white spaces in text nodes next to inline objects are not trimmed.
+		 *
+		 * You can extend this array if you introduce support for inline object elements which are not yet recognized here.
+		 *
+		 * @readonly
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#inlineObjectElements
 		 */
 		this.inlineObjectElements = [
 			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas'
