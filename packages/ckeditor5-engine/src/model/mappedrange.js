@@ -138,7 +138,12 @@ export default class MappedRangeCollection {
 				}
 			} else if ( change.type == 'attribute' ) {
 				if ( [ 'listIndent', 'listType', 'listItem' ].includes( change.attributeKey ) ) {
-					const changedRange = change.range.isFlat ? change.range : Range._createFromPositionAndShift( change.range.start, 1 );
+					// Ignore text nodes.
+					if ( change.range.isFlat ) {
+						continue;
+					}
+
+					const changedRange = Range._createFromPositionAndShift( change.range.start, 1 );
 
 					let wasHandled = false;
 
@@ -221,6 +226,11 @@ export default class MappedRangeCollection {
 		return this._ranges;
 	}
 
+	getRangesChanges() {
+		return Array.from( this._changedRanges.entries() )
+			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path )
+	}
+
 	getReducedChanges( name, changes ) {
 		// TODO
 		return changes;
@@ -232,7 +242,7 @@ export default class MappedRangeCollection {
 
 	_createRange( range ) {
 		for ( const otherMappedRange of this._ranges ) {
-			const joinedRange = otherMappedRange.getJoined( range );
+			const joinedRange = joinRanges( otherMappedRange, range );
 
 			if ( !joinedRange ) {
 				continue;
@@ -255,7 +265,7 @@ export default class MappedRangeCollection {
 				continue;
 			}
 
-			const joinedRange = otherMappedRange.getJoined( newRange );
+			const joinedRange = joinRanges( otherMappedRange, newRange );
 
 			if ( !joinedRange ) {
 				continue;
@@ -286,4 +296,12 @@ class MappedRange extends Range {
 	static _createMappedRange( start, end ) {
 		return new this( start, end );
 	}
+}
+
+function joinRanges( a, b ) {
+	if ( compareArrays( a.start.getParentPath(), b.start.getParentPath() ) != 'same' ) {
+		return null;
+	}
+
+	return a.getJoined( b );
 }
