@@ -201,7 +201,7 @@ export default class HtmlComment extends Plugin {
  *
  * It consists of the {@link module:engine/model/position~Position `position`} and `content`.
  *
- * @typedef {Object} HtmlCommentData
+ * @typedef {Object} module:html-support/htmlcomment~HtmlCommentData
  *
  * @property {module:engine/model/position~Position} position
  * @property {String} content
