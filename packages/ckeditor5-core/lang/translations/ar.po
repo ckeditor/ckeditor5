@@ -16,10 +16,6 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "حفظ"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "إلغاء"
@@ -30,4 +26,12 @@ msgstr ""
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
+msgstr ""
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "حفظ"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
 msgstr ""

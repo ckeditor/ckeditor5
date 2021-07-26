@@ -22,6 +22,7 @@ createEditor( '#editor-geometry', 'geometry' );
 function createEditor( target, inspectorName ) {
 	ClassicEditor
 		.create( document.querySelector( target ), {
+			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet, Table, TableToolbar, TableSelection, TableClipboard, TableProperties, TableCellProperties ],
 			toolbar: [
 				'heading', '|',

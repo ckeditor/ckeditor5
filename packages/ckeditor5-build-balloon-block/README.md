@@ -2,8 +2,8 @@ CKEditor 5 balloon block editor build
 ==============================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-build-balloon-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon-block)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-balloon-block?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 The build of CKEditor 5 featuring the balloon and block toolbars. Read more about the [balloon block editor build](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#balloon-block-editor) and see the [demo](https://ckeditor.com/docs/ckeditor5/latest/examples/builds/balloon-block-editor.html).
 

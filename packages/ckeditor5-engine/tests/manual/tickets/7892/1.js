@@ -9,6 +9,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 const config = {
+	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [ ArticlePluginSet ],
 	toolbar: [
 		'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'

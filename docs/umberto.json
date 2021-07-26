@@ -20,7 +20,7 @@
 		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html",
 		"builds/guides/whats-new.html": "features/index.html",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
-		"features/ckfinder.html": "features/image-upload/ckfinder.html",
+		"features/ckfinder.html": "features/images/image-upload/ckfinder.html",
 		"features/collaboration/annotation-customization/annotations-custom-configuration.html": "features/collaboration/annotations/annotations-custom-configuration.html",
 		"features/collaboration/annotation-customization/annotations-custom-template.html": "features/collaboration/annotations/annotations-custom-template.html",
 		"features/collaboration/annotation-customization/annotations-custom-theme.html": "features/collaboration/annotations/annotations-custom-theme.html",
@@ -37,7 +37,9 @@
 		"features/collaboration/real-time-collaboration/real-time-collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
+		"features/images/overview.html": "features/images/images-overview.html",
 		"features/image-upload.html": "features/image-upload/image-upload.html",
+		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
@@ -249,9 +251,17 @@
 					]
 				},
 				{
-					"name": "Image upload",
-					"id": "features-image-upload",
-					"slug": "image-upload"
+					"name": "Images",
+					"id": "features-images",
+					"slug": "images",
+					"categories": [
+						{
+							"name": "Image upload",
+							"id": "features-image-upload",
+							"slug": "image-upload",
+							"order": 80
+						}
+					]
 				},
 				{
 					"name": "Lists",

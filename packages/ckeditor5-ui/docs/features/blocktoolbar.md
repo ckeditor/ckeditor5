@@ -8,7 +8,7 @@ The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an
 
 The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link builds/guides/overview#balloon-editor Balloon editor} when it falls short, for example when some content must be inserted (like an image) but the selection is collapsed, leaving the user unable to access the toolbar. You can read more about it in the {@link builds/guides/overview#balloon-block-editor balloon block editor overview}.
 
-## Example
+## Demo
 
 <info-box hint>
 	Move the caret around the content with the balloon editor below to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, for example, to create a header or insert an image. See the {@link examples/builds/balloon-block-editor balloon block editor example} page, too.
@@ -21,7 +21,7 @@ The block toolbar comes in handy when the main editor toolbar cannot be accessed
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
 
 <info-box hint>
-	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/image images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
+	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headings}) or insert objects (e.g. {@link features/images-overview images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
 </info-box>
 
 To adjust the position of the block toolbar button to match the styles of your website, use the CSS `transform` property:

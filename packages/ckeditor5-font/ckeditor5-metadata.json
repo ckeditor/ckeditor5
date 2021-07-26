@@ -62,12 +62,12 @@
 						"text-big",
 						"text-huge"
 					],
-					"_comment": "If the `config.fontSize.options` option is not set or it contains predefined named presets, then the feature uses class names."
+					"_comment": "If the `config.fontSize.options` option is not set or it contains predefined named presets, the feature uses class names."
 				},
 				{
 					"elements": "span",
 					"styles": "font-size",
-					"_comment": "If the `config.fontSize.options` option contains numerical values, then the font size feature uses the `font-size` inline style."
+					"_comment": "If the `config.fontSize.options` option contains numerical values, the font size feature uses the `font-size` inline style."
 				},
 				{
 					"elements": "*",

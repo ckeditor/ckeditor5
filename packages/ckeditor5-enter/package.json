@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-enter",
-  "version": "28.0.0",
+  "version": "29.0.0",
   "description": "Enter feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,18 +12,18 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^28.0.0",
-    "@ckeditor/ckeditor5-engine": "^28.0.0",
-    "@ckeditor/ckeditor5-utils": "^28.0.0"
+    "@ckeditor/ckeditor5-core": "^29.0.0",
+    "@ckeditor/ckeditor5-engine": "^29.0.0",
+    "@ckeditor/ckeditor5-utils": "^29.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^28.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^28.0.0",
-    "@ckeditor/ckeditor5-heading": "^28.0.0",
-    "@ckeditor/ckeditor5-link": "^28.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^28.0.0",
-    "@ckeditor/ckeditor5-typing": "^28.0.0",
-    "@ckeditor/ckeditor5-undo": "^28.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^29.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.0.0",
+    "@ckeditor/ckeditor5-heading": "^29.0.0",
+    "@ckeditor/ckeditor5-link": "^29.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^29.0.0",
+    "@ckeditor/ckeditor5-typing": "^29.0.0",
+    "@ckeditor/ckeditor5-undo": "^29.0.0"
   },
   "engines": {
     "node": ">=12.0.0",

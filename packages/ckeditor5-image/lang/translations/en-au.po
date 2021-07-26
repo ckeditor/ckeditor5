@@ -20,6 +20,18 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "image widget"
 
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr ""
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr ""
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr ""
+
 msgctxt "The label for the Side image option."
 msgid "Side image"
 msgstr "Side image"

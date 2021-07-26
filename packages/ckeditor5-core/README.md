@@ -2,8 +2,8 @@ CKEditor 5 core editor architecture
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-core.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-core)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-core/status.svg)](https://david-dm.org/ckeditor/ckeditor5-core)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-core/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-core?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements CKEditor 5's core editor architecture &mdash; a set of classes and interfaces which glue everything together.
 

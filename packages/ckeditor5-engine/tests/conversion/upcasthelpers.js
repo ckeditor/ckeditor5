@@ -499,9 +499,9 @@ describe( 'UpcastHelpers', () => {
 
 	describe( 'attributeToAttribute()', () => {
 		beforeEach( () => {
-			upcastHelpers.elementToElement( { view: 'img', model: 'image' } );
+			upcastHelpers.elementToElement( { view: 'img', model: 'imageBlock' } );
 
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				inheritAllFrom: '$block'
 			} );
 		} );
@@ -511,7 +511,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'config.view is a string', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'source' ]
 			} );
 
@@ -519,12 +519,12 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
 		it( 'config.view has only key set', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'source' ]
 			} );
 
@@ -532,25 +532,25 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
 		it( 'config.view has only key and name set', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'source' ]
 			} );
 
-			upcastHelpers.attributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
+			upcastHelpers.attributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'imageBlock', key: 'source' } } );
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'src', 'source' ]
 			} );
 
@@ -559,12 +559,12 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image source="foo.jpg"></image>'
+				'<imageBlock source="foo.jpg"></imageBlock>'
 			);
 		} );
 
 		it( 'config.view has value set', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -578,12 +578,12 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { 'data-style': 'dark' } ),
-				'<image styled="dark"></image>'
+				'<imageBlock styled="dark"></imageBlock>'
 			);
 		} );
 
 		it( 'model attribute value is a string', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -603,12 +603,12 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewContainerElement( viewDocument, 'img', { class: 'styled-dark' } ),
-				'<image styled="dark"></image>'
+				'<imageBlock styled="dark"></imageBlock>'
 			);
 
 			expectResult(
 				new ViewContainerElement( viewDocument, 'img', { class: 'styled-xxx' } ),
-				'<image></image>'
+				'<imageBlock></imageBlock>'
 			);
 
 			expectResult(
@@ -618,7 +618,7 @@ describe( 'UpcastHelpers', () => {
 		} );
 
 		it( 'model attribute value is a function', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -643,7 +643,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { 'class': 'styled-dark' } ),
-				'<image styled="dark"></image>'
+				'<imageBlock styled="dark"></imageBlock>'
 			);
 		} );
 
@@ -652,12 +652,12 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { src: 'foo.jpg' } ),
-				'<image></image>'
+				'<imageBlock></imageBlock>'
 			);
 		} );
 
 		it( 'should not do anything if returned model attribute is null', () => {
-			schema.extend( 'image', {
+			schema.extend( 'imageBlock', {
 				allowAttributes: [ 'styled' ]
 			} );
 
@@ -685,7 +685,7 @@ describe( 'UpcastHelpers', () => {
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'img', { class: 'styled' } ),
-				'<image styled="true"></image>'
+				'<imageBlock styled="true"></imageBlock>'
 			);
 		} );
 

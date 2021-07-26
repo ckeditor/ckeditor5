@@ -41,7 +41,7 @@ Most of these formatting options can be applied from the {@link features/toolbar
 
 ### Advanced content
 
-Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/image image feature} and create responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
+Rich text would not be rich without images. You can upload them, caption them, style them, you can even paste them straight from the URL with the help of the {@link features/images-overview image feature} and create responsive design. If that is not enough, {@link features/media-embed embed media} into your content.
 
 An essential feature for online content are {@link features/link links} - these can be easily pasted, changed and attributed.
 

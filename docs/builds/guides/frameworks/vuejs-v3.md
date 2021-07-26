@@ -282,7 +282,7 @@ module.exports = {
 
 ### Using the editor from source
 
-Having configured `vue.config.js`, you can choose the building blocks of your editor. Install the packages necessary for your integration:
+Having configured `vue.config.js`, you can choose the building blocks of your editor. Install the packages necessary for your integration, but please remember that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-vue`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
 
 ```bash
 npm install --save \

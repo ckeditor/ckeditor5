@@ -30,10 +30,10 @@ import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *			.then( ... )
  *			.catch( ... );
  *
- * See the {@glink features/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
+ * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
  * learn more about the feature (configuration, server–side requirements, etc.).
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
@@ -243,7 +243,7 @@ class Adapter {
  *			.then( ... )
  *			.catch( ... );
  *
- * See the {@glink features/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn more.
+ * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn more.
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
@@ -263,7 +263,7 @@ class Adapter {
  * upload of resources (images) inserted into the editor content.
  *
  * Learn more about the server application requirements in the
- * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
  * of the feature guide.
  *
  * @member {String} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl
@@ -287,7 +287,7 @@ class Adapter {
  *			.catch( ... );
  *
  * Learn more about the server application requirements in the
- * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
  * of the feature guide.
  *
  * @member {Object.<String, String>} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#headers
@@ -309,7 +309,7 @@ class Adapter {
  *			.catch( ... );
  *
  * Learn more about the server application requirements in the
- * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
  * of the feature guide.
  *
  * @member {Boolean} [module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials=false]

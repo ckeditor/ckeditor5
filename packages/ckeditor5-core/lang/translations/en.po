@@ -16,10 +16,6 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "Save"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Cancel"
@@ -31,3 +27,11 @@ msgstr "Remove color"
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
 msgstr "Restore default"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Save"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "Show more items"

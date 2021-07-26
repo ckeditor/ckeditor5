@@ -65,7 +65,7 @@ describe( 'Widget - integration', () => {
 
 				editor.conversion.for( 'downcast' )
 					.elementToElement( { model: 'inline', view: 'figure' } )
-					.elementToElement( { model: 'image', view: 'img' } )
+					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( {
 						model: 'widget',
 						view: ( modelItem, { writer } ) => {
@@ -289,8 +289,9 @@ describe( 'Widget - integration', () => {
 
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
+		expect( viewDocument.selection.isFake ).to.be.true;
 		expect( getViewData( view ) ).to.equal(
-			'<p>Foo{<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>}Bar</p>'
+			'<p>Foo[<span class="ck-widget ck-widget_selected" contenteditable="false">foo bar</span>]Bar</p>'
 		);
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>Foo[<inline-widget>foo bar</inline-widget>]Bar</paragraph>' );

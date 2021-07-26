@@ -11,6 +11,7 @@ import WordCount from '../../src/wordcount';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, WordCount ],
 		toolbar: [
 			'heading', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'link', 'undo', 'redo'
