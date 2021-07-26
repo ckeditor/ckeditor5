@@ -27,21 +27,56 @@ ClassicEditor
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		toolbar: [ 'mediaEmbed', '|', 'sourceEditing' ],
 		mediaEmbed: {
-			// previewsInData: true,
-
-			// elementName: 'xemebd',
 			toolbar: [ 'mediaEmbed' ]
 		},
 		htmlSupport: {
 			allow: [
 				{
-					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption|oembed)$/,
+					name: /^(figure|oembed)$/,
 					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
 				}
 			],
 			disallow: [
 				{
-					name: /^(figure|table|tbody|thead|tr|th|td|caption|figcaption|oembed)$/,
+					name: /^(figure|oembed)$/,
+					attributes: 'data-validation-disallow'
+				}
+			]
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( document.querySelector( '#editor-custom-element-name' ), {
+		plugins: [
+			GeneralHtmlSupport,
+			Essentials,
+			Paragraph,
+			SourceEditing,
+			MediaEmbed,
+			MediaEmbedToolbar
+		],
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		toolbar: [ 'mediaEmbed', '|', 'sourceEditing' ],
+		mediaEmbed: {
+			elementName: 'custom-oembed',
+			toolbar: [ 'mediaEmbed' ]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^(figure|custom-oembed)$/,
+					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
+				}
+			],
+			disallow: [
+				{
+					name: /^(figure|custom-oembed)$/,
 					attributes: 'data-validation-disallow'
 				}
 			]

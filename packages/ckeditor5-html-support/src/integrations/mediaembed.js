@@ -13,7 +13,6 @@ import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
-import { getDataFromElement } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
@@ -37,19 +36,19 @@ export default class MediaEmbedElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = this.editor.plugins.get( DataFilter );
-		// const dataSchema = this.editor.plugins.get( DataSchema );
+		const dataSchema = this.editor.plugins.get( DataSchema );
 
 		const mediaElementName = editor.config.get( 'mediaEmbed.elementName' );
 
-		// Add dynamically schema definition for a given elementName.
-		// dataSchema.registerBlockElement( {
-		// 	model: 'htmlOembed2',
-		// 	view: mediaElementName,
-		// 	isObject: true,
-		// 	modelSchema: {
-		// 		inheritAllFrom: '$htmlObjectInline'
-		// 	}
-		// } );
+		// Overwrite GHS schema definition for a given elementName.
+		dataSchema.registerInlineElement( {
+			model: 'htmlOembed',
+			view: mediaElementName,
+			isObject: true,
+			modelSchema: {
+				inheritAllFrom: '$htmlObjectInline'
+			}
+		} );
 
 		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'htmlOembed' ) {
@@ -75,7 +74,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 function viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			if ( data.viewItem.getChild( 0 ).name === 'oembed' ) {
+			if ( data.viewItem.getChild( 0 ).name === mediaElementName ) {
 				// Since we are converting to attribute we need a range on which we will set the attribute.
 				// If the range is not created yet, let's create it by converting children of the current node first.
 				if ( !data.modelRange ) {
