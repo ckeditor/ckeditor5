@@ -7,8 +7,44 @@
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		toolbar: {
+			items: [
+				'sourceEditing',
+				'|',
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'underline',
+				'strikethrough',
+				'subscript',
+				'superscript',
+				'code',
+				'|',
+				'codeBlock',
+				'blockQuote',
+				'link',
+				'uploadImage',
+				'insertTable',
+				'mediaEmbed',
+				'-',
+				'bulletedList',
+				'numberedList',
+				'todoList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'undo',
+				'redo'
+			],
+			shouldNotGroupWhenFull: true
+		},
 		table: {
-			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+			contentToolbar: [
+				'tableColumn', 'tableRow', 'mergeTableCells',
+				'tableProperties', 'tableCellProperties'
+			]
 		},
 		image: {
 			toolbar: [

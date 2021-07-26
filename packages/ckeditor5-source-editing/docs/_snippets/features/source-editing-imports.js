@@ -11,8 +11,20 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
+import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 
-ClassicEditor.builtinPlugins.push( SourceEditing, GeneralHtmlSupport );
+ClassicEditor.builtinPlugins.push(
+	SourceEditing, GeneralHtmlSupport, TableCellProperties, TableProperties, IndentBlock,
+	CodeBlock, Underline, Strikethrough, Code, TodoList, Superscript, Subscript );
 
 ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
@@ -27,9 +39,6 @@ ClassicEditor.defaultConfig = {
 			'link',
 			'bulletedList',
 			'numberedList',
-			'|',
-			'outdent',
-			'indent',
 			'|',
 			'uploadImage',
 			'blockQuote',
