@@ -24,9 +24,9 @@ import DataFilter from '../datafilter';
  * The distinction between this two content models is important for choosing correct schema model and proper content conversion.
  * As an example, it ensures that:
  *
- * * children elements paragraphing is enabled for sectioning elements only
- * * element and its content can be correctly handed by editing view (spliting and merging elements)
- * * model element HTML is semantically correct and easier to work with
+ * * children elements paragraphing is enabled for sectioning elements only,
+ * * element and its content can be correctly handled by editing view (splitting and merging elements),
+ * * model element HTML is semantically correct and easier to work with.
  *
  * If element contains any block element, it will be treated as a sectioning element and registered using
  * {@link module:html-support/dataschema~DataSchemaDefinition#model} and
@@ -37,10 +37,16 @@ import DataFilter from '../datafilter';
  * @extends module:core/plugin~Plugin
  */
 export default class DualContentModelElementSupport extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ DataFilter ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
@@ -99,7 +105,7 @@ export default class DualContentModelElementSupport extends Plugin {
 	}
 
 	/**
-	 * Checks whethever the given view element includes any other block element.
+	 * Checks whether the given view element includes any other block element.
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} viewElement

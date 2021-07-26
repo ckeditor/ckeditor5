@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+
 import DataFilter from './datafilter';
 import TableElementSupport from './integrations/table';
 import CodeBlockElementSupport from './integrations/codeblock';

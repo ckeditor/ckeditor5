@@ -19,10 +19,16 @@ import DataFilter from '../datafilter';
  * @extends module:core/plugin~Plugin
  */
 export default class CodeBlockElementSupport extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ DataFilter ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		if ( !this.editor.plugins.has( 'CodeBlockEditing' ) ) {
 			return;
