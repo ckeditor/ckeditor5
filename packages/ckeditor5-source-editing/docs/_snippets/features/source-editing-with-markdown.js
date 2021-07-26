@@ -8,6 +8,28 @@
 ClassicEditor
 	.create( document.querySelector( '#editor-markdown' ), {
 		extraPlugins: [ Markdown ],
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'|',
+				'uploadImage',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'|',
+				'undo',
+				'redo',
+				'|',
+				'sourceEditing'
+			],
+			shouldNotGroupWhenFull: true
+		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
@@ -21,7 +43,14 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		window.editorMarkdown = editor;
+		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.label && item.label === 'Source' ),
+			text: 'Switch to the source mode to edit the Markdown source.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

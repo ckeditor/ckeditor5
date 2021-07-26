@@ -9,9 +9,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'sourceEditing',
-				'|',
 				'heading',
+				'|',
+				'alignment',
+				'outdent',
+				'indent',
 				'|',
 				'bold',
 				'italic',
@@ -32,12 +34,10 @@ ClassicEditor
 				'numberedList',
 				'todoList',
 				'|',
-				'alignment',
-				'outdent',
-				'indent',
-				'|',
 				'undo',
-				'redo'
+				'redo',
+				'|',
+				'sourceEditing'
 			],
 			shouldNotGroupWhenFull: true
 		},
@@ -69,6 +69,13 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		window.attachTourBalloon( {
+			target: window.findToolbarItem( editor.ui.view.toolbar,
+				item => item.label && item.label === 'Source' ),
+			text: 'Switch to the source mode to edit the HTML source.',
+			editor
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

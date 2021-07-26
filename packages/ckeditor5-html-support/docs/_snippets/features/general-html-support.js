@@ -30,8 +30,6 @@ ClassicEditor
 		],
 		toolbar: {
 			items: [
-				'sourceEditing',
-				'|',
 				'heading',
 				'|',
 				'bold',
@@ -49,7 +47,9 @@ ClassicEditor
 				'insertTable',
 				'|',
 				'undo',
-				'redo'
+				'redo',
+				'|',
+				'sourceEditing'
 			],
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
@@ -107,7 +107,10 @@ ClassicEditor
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Source' ),
 			text: 'Switch to the source mode to check out the source of the content and play with it.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-end'
+			}
 		} );
 	} )
 	.catch( err => {
