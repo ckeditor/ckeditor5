@@ -11,7 +11,8 @@
     "compatibility",
     "content compatibility",
     "html support",
-    "generic html support"
+    "generic html support",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {
