@@ -1258,10 +1258,11 @@ export default class DomConverter {
 
 	/**
 	 * Helper function. For the given text node, it finds the closest touching node which is either
-	 * a text node or a `<br>`. The search is terminated at block element boundaries and if a matching node
-	 * wasn't found so far, `null` is returned.
+	 * a text, `<br>` or an {@link #inlineObjectElements inline object}.
 	 *
-	 * In the following DOM structure:
+	 * If no such node is found, `null` is returned.
+	 *
+	 * For instance, in the following DOM structure:
 	 *
 	 *		<p>foo<b>bar</b><br>bom</p>
 	 *
