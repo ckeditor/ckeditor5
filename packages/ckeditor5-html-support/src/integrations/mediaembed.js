@@ -12,6 +12,8 @@ import { disallowedAttributesConverter } from '../converters';
 import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
+import DataSchema from '../dataschema';
+import { getDataFromElement } from 'ckeditor5/src/utils';
 
 /**
  * Provides the General HTML Support integration with {@link module:media-embed/mediaembed~MediaEmbed Media Embed} feature.
@@ -35,8 +37,19 @@ export default class MediaEmbedElementSupport extends Plugin {
 		const schema = editor.model.schema;
 		const conversion = editor.conversion;
 		const dataFilter = this.editor.plugins.get( DataFilter );
+		// const dataSchema = this.editor.plugins.get( DataSchema );
 
 		const mediaElementName = editor.config.get( 'mediaEmbed.elementName' );
+
+		// Add dynamically schema definition for a given elementName.
+		// dataSchema.registerBlockElement( {
+		// 	model: 'htmlOembed2',
+		// 	view: mediaElementName,
+		// 	isObject: true,
+		// 	modelSchema: {
+		// 		inheritAllFrom: '$htmlObjectInline'
+		// 	}
+		// } );
 
 		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
 			if ( definition.model !== 'htmlOembed' ) {
@@ -52,7 +65,7 @@ export default class MediaEmbedElementSupport extends Plugin {
 
 			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
 			conversion.for( 'upcast' ).add( viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) );
-			conversion.for( 'dataDowncast' ).add( modelToViewOembedAttributeConverter() );
+			conversion.for( 'dataDowncast' ).add( modelToViewOembedAttributeConverter( mediaElementName ) );
 
 			evt.stop();
 		} );
@@ -61,14 +74,24 @@ export default class MediaEmbedElementSupport extends Plugin {
 
 function viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
-		dispatcher.on( `element:${ mediaElementName }`, ( evt, data, conversionApi ) => {
-			const viewOembedElement = data.viewItem;
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			if ( data.viewItem.getChild( 0 ).name === 'oembed' ) {
+				// Since we are converting to attribute we need a range on which we will set the attribute.
+				// If the range is not created yet, let's create it by converting children of the current node first.
+				if ( !data.modelRange ) {
+					// Convert children and set conversion result as a current data.
+					Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+				}
 
-			preserveElementAttributes( viewOembedElement, 'htmlAttributes' );
+				const viewOembedElement = data.viewItem.getChild( 0 );
+				preserveElementAttributes( viewOembedElement, 'htmlAttributes' );
 
-			const viewFigureElement = viewOembedElement.parent;
-			if ( viewFigureElement.is( 'element', 'figure' ) ) {
-				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+				const viewFigureElement = viewOembedElement.parent;
+				if ( viewFigureElement.is( 'element', 'figure' ) ) {
+					preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+				}
+
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
@@ -78,9 +101,28 @@ function viewToModelOembedAttributesConverter( dataFilter, mediaElementName ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		},
-		// Low priority to let other converters prepare the modelRange for us.
-		{ priority: 'low' } );
+		} );
+
+		// dispatcher.on( `element:${ mediaElementName }`, ( evt, data, conversionApi ) => {
+		// 	const viewOembedElement = data.viewItem;
+
+		// 	preserveElementAttributes( viewOembedElement, 'htmlAttributes' );
+
+		// 	const viewFigureElement = viewOembedElement.parent;
+		// 	if ( viewFigureElement.is( 'element', 'figure' ) ) {
+		// 		preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+		// 	}
+
+		// 	function preserveElementAttributes( viewElement, attributeName ) {
+		// 		const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+		// 		if ( viewAttributes ) {
+		// 			conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
+		// 		}
+		// 	}
+		// },
+		// // Low priority to let other converters prepare the modelRange for us.
+		// { priority: 'low' } );
 	};
 }
 

@@ -6,29 +6,31 @@
 /* globals console:false, window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import MediaEmbedToolbar from '@ckeditor/ckeditor5-media-embed/src/mediaembedtoolbar';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			ArticlePluginSet,
 			GeneralHtmlSupport,
+			Essentials,
+			Paragraph,
 			SourceEditing,
-			Strikethrough,
 			MediaEmbed,
 			MediaEmbedToolbar
 		],
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
-		toolbar: [ 'mediaEmbed', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
+		toolbar: [ 'mediaEmbed', '|', 'sourceEditing' ],
 		mediaEmbed: {
 			// previewsInData: true,
-			toolbar: [ 'blockQuote' ]
+
+			// elementName: 'xemebd',
+			toolbar: [ 'mediaEmbed' ]
 		},
 		htmlSupport: {
 			allow: [
