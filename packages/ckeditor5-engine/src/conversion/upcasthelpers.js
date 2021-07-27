@@ -298,6 +298,11 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * after the conversion is done, the marker will be available in
 	 * {@link module:engine/model/model~Model#markers model document markers}.
 	 *
+	 * **Note**: When this helper is used in the data upcast in combination with
+	 * {@link module:engine/conversion/conversionhelpers~ConversionHelpers~dataToMarker} in the data downcast,
+	 * then an invalid HTML (e.g. a span between table cells) may be produced by the latter.
+	 * In most of the cases, the {@link #dataToMarker} should be used instead.
+	 *
 	 *		editor.conversion.for( 'upcast' ).elementToMarker( {
 	 *			view: 'marker-search',
 	 *			model: 'search'

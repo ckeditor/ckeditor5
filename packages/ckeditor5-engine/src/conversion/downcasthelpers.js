@@ -272,8 +272,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
-	 * **Note**: This method should be used only for editing downcast. For data downcast, use
-	 * {@link #markerToData `#markerToData()`} that produces valid HTML data.
+	 * **Note**: This method should be used mainly for editing downcast.
+	 * In case of the data downcast, this helper may produce an invalid HTML (e.g. a span between table cells) so the
+	 * {@link #markerToData `#markerToData()`} is the preferable way of downcasting markers.
 	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
 	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
