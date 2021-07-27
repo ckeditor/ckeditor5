@@ -5,6 +5,8 @@
 
 /* globals console, window, document, ClassicEditor */
 
+import './source-editing.css';
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
