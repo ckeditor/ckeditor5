@@ -42,7 +42,9 @@ export default class InsertTableCommand extends Command {
 	 * @param {Number} [options.rows=2] The number of rows to create in the inserted table.
 	 * @param {Number} [options.columns=2] The number of columns to create in the inserted table.
 	 * @param {Number} [options.headingRows=0] The number of heading rows.
+	 * If not provided it will default to {@link module:table/table~TableConfig#defaultHeadings `defaultHeadings.rows`} table config.
 	 * @param {Number} [options.headingColumns=0] The number of heading columns.
+	 * If not provided it will default to {@link module:table/table~TableConfig#defaultHeadings `defaultHeadings.columns`} table config.
 	 * @fires execute
 	 */
 	execute( options = {} ) {
@@ -57,11 +59,11 @@ export default class InsertTableCommand extends Command {
 		const defaultColumns = config.defaultHeadings.columns;
 
 		if ( options.headingRows === undefined && defaultRows ) {
-			options.headingRows = Math.min( defaultRows, options.rows );
+			options.headingRows = defaultRows;
 		}
 
 		if ( options.headingColumns === undefined && defaultColumns ) {
-			options.headingColumns = Math.min( defaultColumns, options.columns );
+			options.headingColumns = defaultColumns;
 		}
 
 		model.change( writer => {

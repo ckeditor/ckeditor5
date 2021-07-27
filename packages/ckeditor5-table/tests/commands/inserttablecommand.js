@@ -197,7 +197,7 @@ describe( 'InsertTableCommand', () => {
 
 		describe( 'auto headings', () => {
 			it( 'should have first row as a heading by default', async () => {
-				editor = await ModelTestEditor
+				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -205,8 +205,8 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
 
 				setData( model, '[]' );
 
@@ -221,7 +221,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have first column as a heading by default', async () => {
-				editor = await ModelTestEditor
+				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -229,8 +229,8 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
 
 				setData( model, '[]' );
 
@@ -245,7 +245,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have first row and first column as a heading by default', async () => {
-				editor = await ModelTestEditor
+				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -253,8 +253,8 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
 
 				setData( model, '[]' );
 
@@ -270,7 +270,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have first three rows and two columns as a heading by default', async () => {
-				editor = await ModelTestEditor
+				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -278,8 +278,8 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
 
 				setData( model, '[]' );
 
@@ -296,7 +296,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should have auto headings not to be greater than table rows and columns', async () => {
-				editor = await ModelTestEditor
+				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -304,8 +304,8 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
 
 				setData( model, '[]' );
 
@@ -320,7 +320,7 @@ describe( 'InsertTableCommand', () => {
 			} );
 
 			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
-				editor = await ModelTestEditor
+				const editor = await ModelTestEditor
 					.create( {
 						plugins: [ Paragraph, TableEditing ],
 						table: {
@@ -328,8 +328,8 @@ describe( 'InsertTableCommand', () => {
 						}
 					} );
 
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+				const model = editor.model;
+				const command = new InsertTableCommand( editor );
 
 				setData( model, '[]' );
 
