@@ -54,34 +54,8 @@ class InsertSmartField extends Plugin {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
-		const smartFields = [
-			'Bill To Address',
-			'Company Name',
-			'Company Phone',
-			'Company Address',
-			'Company Logo',
-			'Customer Address',
-			'Customer Name',
-			'Discount',
-			'Expiration Date',
-			'Line Items',
-			'Ordered By',
-			'Ordered By Email',
-			'Ordered By Phone',
-			'Property Address',
-			'Property Name',
-			'Project Manager',
-			'Project Manager Email',
-			'Quote Creation Date',
-			'Quote Number',
-			'Quote Subject',
-			'Tasks',
-			'Task Groups',
-			'Tax',
-			'Terms and Conditions',
-			'Total',
-			'Totals and Subtotals'
-		];
+		const smartFieldsConfig = editor.config._config.insertSmartField;
+		const { cbFn = () => {}, smartFields = [] } = smartFieldsConfig;
 
 		componentFactory.add( 'insertSmartField', locale => {
 			const dropdownView = createDropdown( locale );
@@ -111,7 +85,7 @@ class InsertSmartField extends Plugin {
 			dropdownView.on( 'execute', evt => {
 				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
 				editor.model.change( () => {
-					editor.config._config.insertSmartField.cbFn( editor, formattedText );
+					cbFn( editor, formattedText );
 				} );
 			} );
 			return dropdownView;
