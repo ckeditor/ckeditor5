@@ -51,17 +51,6 @@ ClassicEditor.defaultConfig = {
 			'undo',
 			'redo'
 		],
-		htmlSupport: {
-			allow: [
-				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
-				{
-					name: /^(div|details|summary)$/,
-					styles: true,
-					classes: true,
-					attributes: true
-				}
-			]
-		},
 		viewportTopOffset: window.getViewportTopOffsetConfig()
 	}
 };
