@@ -12,7 +12,7 @@ This migration guide enumerates the most important changes that require your att
 
 ## The redesign of the Annotations API
 
-The entire annotations API was redesigned in order to support multiple annotation UIs at the same time. A good example of this is an idea of displaying {@link features/comments comments} in the [sidebar](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-display-mode.html#wide-sidebar) while showing suggestions from {@link features/track-changes track changes} in [inline balloons](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-display-mode.html#inline-balloons) when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
+The entire annotations API was redesigned in order to support multiple annotation UIs at the same time. A good example of this is an idea of displaying {@link features/comments comments} in the {@link features/annotations-display-mode#wide-sidebar sidebar} while showing suggestions from {@link features/track-changes track changes} in {@link features/annotations-display-mode#inline-balloons inline balloons} when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
 
 ## Conceptual and architectural changes
 
