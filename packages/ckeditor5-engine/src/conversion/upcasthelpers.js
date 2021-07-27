@@ -299,7 +299,7 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * {@link module:engine/model/model~Model#markers model document markers}.
 	 *
 	 * **Note**: When this helper is used in the data upcast in combination with
-	 * {@link module:engine/conversion/conversionhelpers~ConversionHelpers~dataToMarker} in the data downcast,
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToData `#markerToData()`} in the data downcast,
 	 * then an invalid HTML (e.g. a span between table cells) may be produced by the latter.
 	 * In most of the cases, the {@link #dataToMarker} should be used instead.
 	 *
