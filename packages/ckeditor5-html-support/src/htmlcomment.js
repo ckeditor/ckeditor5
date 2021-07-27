@@ -208,8 +208,8 @@ export default class HtmlComment extends Plugin {
 	 * By default it includes comments at the range boundaries.
 	 *
 	 * @param {module:engine/model/range~Range} range
-	 * @param {Object} options
-	 * @param {Boolean} options.skipBoundaries When set to `true` the range boundaries will be skipped.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.skipBoundaries=false] When set to `true` the range boundaries will be skipped.
 	 * @returns {Array.<String>} HTML comment IDs
 	 */
 	getHtmlCommentsInRange( range, { skipBoundaries = false } = {} ) {
