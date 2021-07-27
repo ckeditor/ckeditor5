@@ -109,7 +109,7 @@ export default class HtmlComment extends Plugin {
 				if ( firstPosition.isTouching( range.start ) && lastPosition.isTouching( range.end ) ) {
 					affectedCommentIDs = this.getHtmlCommentsInRange( editor.model.createRange( firstPosition, lastPosition ) );
 				} else {
-					affectedCommentIDs = this.getHtmlCommentsInRange( range, { skipBoundary: true } );
+					affectedCommentIDs = this.getHtmlCommentsInRange( range, { skipBoundaries: true } );
 				}
 
 				for ( const commentMarkerID of affectedCommentIDs ) {
@@ -203,15 +203,19 @@ export default class HtmlComment extends Plugin {
 	}
 
 	/**
-	 * Gets all HTML comments in the given range including the comments existing at the range boundaries.
+	 * Gets all HTML comments in the given range.
+	 *
+	 * By default it includes comments at the range boundaries.
 	 *
 	 * @param {module:engine/model/range~Range} range
+	 * @param {Object} options
+	 * @param {Boolean} options.skipBoundaries When set to `true` the range boundaries will be skipped.
 	 * @returns {Array.<String>} HTML comment IDs
 	 */
-	getHtmlCommentsInRange( range, { skipBoundary = false } = {} ) {
-		const includeBoundary = !skipBoundary;
+	getHtmlCommentsInRange( range, { skipBoundaries = false } = {} ) {
+		const includeBoundaries = !skipBoundaries;
 
-		// Unfortunately MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
+		// Unfortunately, MarkerCollection#getMarkersAtPosition() filters out collapsed markers.
 		return Array.from( this.editor.model.markers.getMarkersGroup( '$comment' ) )
 			.filter( marker => isCommentMarkerInRange( marker, range ) )
 			.map( marker => marker.name );
@@ -220,8 +224,8 @@ export default class HtmlComment extends Plugin {
 			const position = commentMarker.getRange().start;
 
 			return (
-				( position.isAfter( range.start ) || ( includeBoundary && position.isEqual( range.start ) ) ) &&
-				( position.isBefore( range.end ) || ( includeBoundary && position.isEqual( range.end ) ) )
+				( position.isAfter( range.start ) || ( includeBoundaries && position.isEqual( range.start ) ) ) &&
+				( position.isBefore( range.end ) || ( includeBoundaries && position.isEqual( range.end ) ) )
 			);
 		}
 	}

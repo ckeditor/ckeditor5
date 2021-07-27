@@ -461,33 +461,51 @@ describe( 'HtmlComment', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
 			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 1, 0 ] ), 'foo' );
-
 			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2 ] ), 'bar' );
 
 			const posStart = model.createPositionFromPath( root, [ 2, 1 ] );
 			const posEnd = model.createPositionFromPath( root, [ 2, 3 ] );
 
+			const range = new Range( posStart, posEnd );
+
+			// Comments at the range boundaries.
 			const id3 = htmlCommentPlugin.createHtmlComment( posStart, 'baz' );
 			const id4 = htmlCommentPlugin.createHtmlComment( posEnd, 'biz' );
 
+			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id3, id4 ] );
+		} );
+
+		it( 'should not return comments at range boundaries when the skipBoundaries option is set to true', () => {
+			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
+
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 1, 0 ] ), 'foo' );
+			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2 ] ), 'bar' );
+
+			const posStart = model.createPositionFromPath( root, [ 2, 1 ] );
+			const posEnd = model.createPositionFromPath( root, [ 2, 3 ] );
+
 			const range = new Range( posStart, posEnd );
 
-			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id3, id4 ] );
+			// Comments at the range boundaries.
+			htmlCommentPlugin.createHtmlComment( posStart, 'baz' );
+			htmlCommentPlugin.createHtmlComment( posEnd, 'biz' );
+
+			expect( htmlCommentPlugin.getHtmlCommentsInRange( range, { skipBoundaries: true } ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should return all comment marker IDs present in the specified collapsed range', () => {
 			editor.setData( '<p>Foo</p><p>Bar</p><p>Baz</p>' );
 
 			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2, 0 ] ), 'foo' );
-
 			htmlCommentPlugin.createHtmlComment( model.createPositionFromPath( root, [ 2, 2 ] ), 'bar' );
 
 			const position = model.createPositionFromPath( root, [ 2, 1 ] );
 
+			const range = new Range( position, position );
+
+			// Two comments at the position of the collapsed range.
 			const id1 = htmlCommentPlugin.createHtmlComment( position, 'baz' );
 			const id2 = htmlCommentPlugin.createHtmlComment( position, 'biz' );
-
-			const range = new Range( position, position );
 
 			expect( htmlCommentPlugin.getHtmlCommentsInRange( range ) ).to.deep.equal( [ id1, id2 ] );
 		} );
