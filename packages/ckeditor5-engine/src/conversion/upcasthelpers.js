@@ -7,7 +7,6 @@ import Matcher from '../view/matcher';
 import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
-import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
@@ -294,8 +293,6 @@ export default class UpcastHelpers extends ConversionHelpers {
 	/**
 	 * View element to model marker conversion helper.
 	 *
-	 * **Note**: This method was deprecated. Please use {@link #dataToMarker} instead.
-	 *
 	 * This conversion results in creating a model marker. For example, if the marker was stored in a view as an element:
 	 * `<p>Fo<span data-marker="comment" data-comment-id="7"></span>o</p><p>B<span data-marker="comment" data-comment-id="7"></span>ar</p>`,
 	 * after the conversion is done, the marker will be available in
@@ -330,7 +327,6 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * @deprecated
 	 * @method #elementToMarker
 	 * @param {Object} config Conversion configuration.
 	 * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
@@ -340,15 +336,6 @@ export default class UpcastHelpers extends ConversionHelpers {
 	 * @returns {module:engine/conversion/upcasthelpers~UpcastHelpers}
 	 */
 	elementToMarker( config ) {
-		/**
-		 * The {@link module:engine/conversion/upcasthelpers~UpcastHelpers#elementToMarker `UpcastHelpers#elementToMarker()`}
-		 * method was deprecated and will be removed in the near future.
-		 * Please use {@link module:engine/conversion/upcasthelpers~UpcastHelpers#dataToMarker `UpcastHelpers#dataToMarker()`} instead.
-		 *
-		 * @error upcast-helpers-element-to-marker-deprecated
-		 */
-		logWarning( 'upcast-helpers-element-to-marker-deprecated' );
-
 		return this.add( upcastElementToMarker( config ) );
 	}
 
