@@ -198,7 +198,7 @@ describe( 'DomConverter', () => {
 			expect( converter.mapViewToDom( viewComment ) ).to.equal( domComment );
 		} );
 
-		it( 'should not create UIElement for comment', () => {
+		it( 'should return `null` for a comment when the `skipComments` option is set to `true`', () => {
 			const domComment = document.createComment( 'abc' );
 
 			const viewComment = converter.domToView( domComment, { skipComments: true } );

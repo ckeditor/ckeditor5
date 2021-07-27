@@ -43,11 +43,11 @@ export default class MSWordNormalizer {
 	 * @inheritDoc
 	 */
 	execute( data ) {
-		const { body, stylesString } = data._parsedData;
+		const { body: documentFragment, stylesString } = data._parsedData;
 
-		transformListItemLikeElementsIntoLists( body, stylesString );
-		replaceImagesSourceWithBase64( body, data.dataTransfer.getData( 'text/rtf' ) );
+		transformListItemLikeElementsIntoLists( documentFragment, stylesString );
+		replaceImagesSourceWithBase64( documentFragment, data.dataTransfer.getData( 'text/rtf' ) );
 
-		data.content = body;
+		data.content = documentFragment;
 	}
 }

@@ -12,7 +12,7 @@ import Document from '@ckeditor/ckeditor5-engine/src/view/document';
  * Parses given string of HTML and returns normalized HTML.
  *
  * @param {String} html HTML string to normalize.
- * @param {Object} [options] Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+ * @param {Object} [options] DOM to View conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options.
  * @returns {String} Normalized HTML string.
  */
 export default function normalizeHtml( html, options = {} ) {
