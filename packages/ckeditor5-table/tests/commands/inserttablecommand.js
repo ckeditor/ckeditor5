@@ -219,7 +219,7 @@ describe( 'InsertTableCommand', () => {
 					], { headingRows: 1 } )
 				);
 
-				editor.destroy();
+				await editor.destroy();
 			} );
 
 			it( 'should have first column as a heading by default', async () => {
@@ -245,7 +245,7 @@ describe( 'InsertTableCommand', () => {
 					], { headingColumns: 1 } )
 				);
 
-				editor.destroy();
+				await editor.destroy();
 			} );
 
 			it( 'should have first row and first column as a heading by default', async () => {
@@ -272,7 +272,7 @@ describe( 'InsertTableCommand', () => {
 					], { headingRows: 1, headingColumns: 1 } )
 				);
 
-				editor.destroy();
+				await editor.destroy();
 			} );
 
 			it( 'should have first three rows and two columns as a heading by default', async () => {
@@ -300,7 +300,7 @@ describe( 'InsertTableCommand', () => {
 					], { headingRows: 3, headingColumns: 2 } )
 				);
 
-				editor.destroy();
+				await editor.destroy();
 			} );
 
 			it( 'should have auto headings not to be greater than table rows and columns', async () => {
@@ -326,7 +326,7 @@ describe( 'InsertTableCommand', () => {
 					], { headingRows: 2, headingColumns: 2 } )
 				);
 
-				editor.destroy();
+				await editor.destroy();
 			} );
 
 			it( 'should work when heading rows and columns are explicitly set to 0', async () => {
@@ -354,7 +354,7 @@ describe( 'InsertTableCommand', () => {
 					] )
 				);
 
-				editor.destroy();
+				await editor.destroy();
 			} );
 		} );
 	} );
