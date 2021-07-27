@@ -104,15 +104,15 @@ export default class HtmlComment extends Plugin {
 				const firstPosition = editor.model.createPositionAt( limitElement, 0 );
 				const lastPosition = editor.model.createPositionAt( limitElement, 'end' );
 
-				let affectedCommentMarkerIDs;
+				let affectedCommentIDs;
 
 				if ( firstPosition.isTouching( range.start ) && lastPosition.isTouching( range.end ) ) {
-					affectedCommentMarkerIDs = this.getHtmlCommentsInRange( editor.model.createRange( firstPosition, lastPosition ) );
+					affectedCommentIDs = this.getHtmlCommentsInRange( editor.model.createRange( firstPosition, lastPosition ) );
 				} else {
-					affectedCommentMarkerIDs = this.getHtmlCommentsInRange( range, { skipBoundary: true } );
+					affectedCommentIDs = this.getHtmlCommentsInRange( range, { skipBoundary: true } );
 				}
 
-				for ( const commentMarkerID of affectedCommentMarkerIDs ) {
+				for ( const commentMarkerID of affectedCommentIDs ) {
 					this.removeHtmlComment( commentMarkerID );
 				}
 			}

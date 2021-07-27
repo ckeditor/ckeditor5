@@ -157,8 +157,8 @@ describe( 'HtmlComment', () => {
 		} );
 	} );
 
-	describe( 'marker removal post fixer', () => {
-		it( 'should remove all non-boundary comment markers and their root attributes when the whole content is removed', () => {
+	describe( 'removing comments when the corresponding content is removed', () => {
+		it( 'should remove all non-boundary comments when the whole content is removed', () => {
 			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
 
 			model.change( writer => {
@@ -176,33 +176,7 @@ describe( 'HtmlComment', () => {
 			expect( commentMarkers ).to.have.length( 0 );
 		} );
 
-		// Currently, this test fails. Removing all content from the editor does not remove markers located at root's boundary.
-		// Since the markers survive, so do comments and their root attributes.
-		// See https://github.com/ckeditor/ckeditor5/issues/10117.
-		it( 'should remove all boundary comment markers and their root attributes when the whole content is removed', () => {
-			editor.setData( '<!-- comment 1 --><p>Foo</p><!-- comment 2 -->' );
-
-			model.change( writer => {
-				writer.remove( writer.createRangeIn( root ) );
-			} );
-
-			// expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
-			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p><!-- comment 2 --><!-- comment 1 -->' );
-
-			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
-
-			// Currently, there are 2 root attributes associated with markers.
-			// expect( rootAttributes ).to.have.length( 0 );
-			expect( rootAttributes ).to.have.length( 2 );
-
-			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
-
-			// Currently, there are 2 markers associated with comment nodes.
-			// expect( commentMarkers ).to.have.length( 0 );
-			expect( commentMarkers ).to.have.length( 2 );
-		} );
-
-		it( 'should remove comment markers and their corresponding root attributes when the content including comments is removed', () => {
+		it( 'should remove comments when the content including them is removed', () => {
 			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p><p><!-- comment 3 -->Foo<!-- comment 4 --></p>' );
 
 			model.change( writer => {
@@ -221,6 +195,141 @@ describe( 'HtmlComment', () => {
 
 			expect( root.getAttribute( commentMarkers[ 0 ].name ) ).to.equal( ' comment 3 ' );
 			expect( root.getAttribute( commentMarkers[ 1 ].name ) ).to.equal( ' comment 4 ' );
+		} );
+
+		it( 'should remove all comments when the whole content is removed with editor.setData( \'\' )', () => {
+			editor.setData(
+				'<!-- comment 1 -->' +
+				'<p>F<!-- comment 2 -->oo</p>' +
+				'<!-- comment 3 -->' +
+				'<p>Bar<!-- comment 4 --></p>' +
+				'<!-- comment 5 -->'
+			);
+			editor.setData( '' );
+
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+
+			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
+
+			expect( rootAttributes ).to.have.length( 0 );
+
+			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			expect( commentMarkers ).to.have.length( 0 );
+		} );
+
+		it( 'should remove replace all comments with new comments when the whole content is replaced with editor.setData()', () => {
+			editor.setData(
+				'<!-- comment 1 -->' +
+				'<p>F<!-- comment 2 -->oo</p>' +
+				'<!-- comment 3 -->' +
+				'<p>Bar<!-- comment 4 --></p>' +
+				'<!-- comment 5 -->'
+			);
+
+			editor.setData(
+				'<!--comment 6 -->' +
+				'<p>F<!-- comment 7 -->oo</p>' +
+				'<!-- comment 8 -->' +
+				'<p>Bar<!-- comment 9 --></p>' +
+				'<!-- comment 10 -->'
+			);
+
+			expect( editor.getData( { trim: false } ) ).to.equal(
+				'<!--comment 6 -->' +
+				'<p>F<!-- comment 7 -->oo</p>' +
+				'<!-- comment 8 -->' +
+				'<p>Bar<!-- comment 9 --></p>' +
+				'<!-- comment 10 -->'
+			);
+
+			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
+
+			expect( rootAttributes ).to.have.length( 5 );
+
+			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			expect( commentMarkers ).to.have.length( 5 );
+		} );
+
+		it( 'should remove all comments when the whole content is removed with model.deleteContent()', () => {
+			editor.setData(
+				'<!-- comment 1 -->' +
+				'<p>F<!-- comment 2 -->oo</p>' +
+				'<!-- comment 3 -->' +
+				'<p>Bar<!-- comment 4 --></p>' +
+				'<!-- comment 5 -->'
+			);
+
+			model.deleteContent( model.createSelection( root, 'in' ) );
+
+			expect( editor.getData( { trim: false } ) ).to.equal( '<p>&nbsp;</p>' );
+
+			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
+
+			expect( rootAttributes ).to.have.length( 0 );
+
+			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			expect( commentMarkers ).to.have.length( 0 );
+		} );
+
+		it( 'should not remove boundary comments when only the start of the content is removed with model.deleteContent()', () => {
+			editor.setData(
+				'<!-- comment 1 -->' +
+				'<p>F<!-- comment 2 -->oo</p>' +
+				'<!-- comment 3 -->' +
+				'<p>Bar<!-- comment 4 --></p>' +
+				'<!-- comment 5 -->'
+			);
+
+			model.deleteContent( model.createSelection( root.getChild( 0 ), 'on' ) );
+
+			expect( editor.getData( { trim: false } ) ).to.equal(
+				// The order is not perfect.
+				'<p>&nbsp;</p>' +
+				'<!-- comment 3 -->' +
+				'<!-- comment 1 -->' +
+				'<p>Bar<!-- comment 4 --></p>' +
+				'<!-- comment 5 -->'
+			);
+
+			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
+
+			expect( rootAttributes ).to.have.length( 4 );
+
+			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			expect( commentMarkers ).to.have.length( 4 );
+		} );
+
+		it( 'should not remove boundary comments when only the end of the content is removed with model.deleteContent()', () => {
+			editor.setData(
+				'<!-- comment 1 -->' +
+				'<p>F<!-- comment 2 -->oo</p>' +
+				'<!-- comment 3 -->' +
+				'<p>Bar<!-- comment 4 --></p>' +
+				'<!-- comment 5 -->'
+			);
+
+			model.deleteContent( model.createSelection( root.getChild( 1 ), 'on' ) );
+
+			expect( editor.getData( { trim: false } ) ).to.equal(
+				// The order is not perfect.
+				'<!-- comment 1 -->' +
+				'<p>F<!-- comment 2 -->oo</p>' +
+				'<p>&nbsp;</p>' +
+				'<!-- comment 5 -->' +
+				'<!-- comment 3 -->'
+			);
+
+			const rootAttributes = [ ...root.getAttributeKeys() ].filter( attr => attr.startsWith( '$comment' ) );
+
+			expect( rootAttributes ).to.have.length( 4 );
+
+			const commentMarkers = [ ...editor.model.markers ].filter( marker => marker.name.startsWith( '$comment' ) );
+
+			expect( commentMarkers ).to.have.length( 4 );
 		} );
 	} );
 
