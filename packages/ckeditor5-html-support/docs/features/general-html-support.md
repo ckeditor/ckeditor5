@@ -6,7 +6,7 @@ updated_at: 2021-06-14
 
 # General HTML Support
 
-The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins. It acts similarly to the {@link @ckeditor4 /guide/dev/acf/README Advanced Content Filtering} feature from CKEditor 4, letting the user expand the list of supported HTML markup in the content.
+The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins. It acts similarly to the {@link @ckeditor4 /guide/dev/acf/README Advanced Content Filtering} feature (ACF) from CKEditor 4, a feature that filters incoming HTML content by transforming and deleting disallowed elements, attributes, classes and styles. The GHS feature allows for adding this kind of markup to the source and prevents it from being filtered from the editor window and the output.
 
 Some examples of HTML features that can be easily enabled using General HTML Support include:
 
@@ -83,7 +83,7 @@ The difference between specific CKEditor 5 features such as {@link features/basi
 
 For instance, the dedicated {@link features/basic-styles#available-text-styles bold} feature offers a toolbar button used to make the selected text bold. Together with the {@link features/autoformat autoformatting feature}, it also allows for applying bold style to content by typing a Markdown shortcode (`**foo**`) in the editor. The {@link features/headings headings} feature offers a dropdown from which the user can choose a heading level and ensures that pressing <kbd>Enter</kbd> at the end of a heading creates a new paragraph (and not another heading).
 
-The General HTML Support does not offer any UI for the enabled features and takes only the basic semantics of a given feature into account. If you enable support for `<div>`s via GHS, the user will not be able to create `<div>`s from the editor UI. The GHS will know that a `<div>` is a container element, so it can wrap other blocks (like paragraphs) but cannot be used inline (next to e.g. a `<strong>` element).
+The General HTML Support does not offer any UI for the enabled features and takes only the basic semantics of a given feature into account. If you enable support for `<div>`s via GHS, the user will not be able to create `<div>`s from the editor UI. The GHS will know that a `<div>` is a container element, so it can wrap other blocks (like paragraphs) but cannot be used inline (next to e.g. a `<strong>` element). It is, in this respect, similar to the Content Filtering (ACF) feature from CKEditor 4 as it allows creating a set or a list of markup tags that will not be stripped.
 
 Therefore, GHS's main use cases would be:
 
