@@ -27,13 +27,11 @@ The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, o
 
 ## Demo
 
-The General HTML Support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.
-
-The configuration of this snippet can be found below the demo editor window.
+Use the {@link features/source-editing source editing feature} toolbar button {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to view and edit the HTML source of the document in the demo below. The configuration of this snippet can be found below the demo editor window.
 
 {@snippet features/general-html-support}
 
-The demo above uses the following configuration:
+The General HTML Support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.  The demo above uses the following configuration:
 
 ```js
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
