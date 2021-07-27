@@ -969,9 +969,8 @@ describe( 'HtmlComment integration', () => {
 
 			editor.execute( 'delete' );
 
-			// Currently, comments inside a deleted content are moved to adjacent paragraph.
-			// See https://github.com/ckeditor/ckeditor5/issues/10119.
-			//
+			// The following output could be considered as the correct and expected one,
+			// but currently the comment 4 is not removed, because it is not located at the limit element's boundary:
 			// expect( editor.getData() ).to.equal(
 			// 	'<p>' +
 			// 		'<!-- comment 1 -->' +
@@ -985,7 +984,6 @@ describe( 'HtmlComment integration', () => {
 					'<!-- comment 1 -->' +
 					'Foo' +
 					'<!-- comment 4 -->' +
-					'<!-- comment 3 -->' +
 					'<!-- comment 2 -->' +
 				'</p>'
 			);
@@ -1086,19 +1084,6 @@ describe( 'HtmlComment integration', () => {
 
 			toggleSourceEditingModeButton.fire( 'execute' );
 
-			// Currently, comments at root boundary are not removed after setData() is called with new content.
-			// See https://github.com/ckeditor/ckeditor5/issues/10117.
-			//
-			// expect( editor.getData() ).to.equal(
-			// 	'<!-- comment 1 -->' +
-			// 	'<p>' +
-			// 		'<!-- comment 2 -->' +
-			// 		'Foo' +
-			// 		'<!-- comment 3 -->' +
-			// 	'</p>' +
-			// 	'<!-- comment 4 -->'
-			// );
-
 			expect( editor.getData() ).to.equal(
 				'<!-- comment 1 -->' +
 				'<p>' +
@@ -1106,9 +1091,7 @@ describe( 'HtmlComment integration', () => {
 					'Foo' +
 					'<!-- comment 3 -->' +
 				'</p>' +
-				'<!-- comment 4 -->' +
-				'<!-- comment 2 -->' +
-				'<!-- comment 1 -->'
+				'<!-- comment 4 -->'
 			);
 		} );
 	} );
