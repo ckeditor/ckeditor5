@@ -2005,5 +2005,20 @@ describe( 'TableUtils', () => {
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 1 } ) );
 		} );
+
+		it( 'should clamp table heading rows and columns to the rows and columns number', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 2, columns: 2, headingRows: 3, headingColumns: 3 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 2, headingColumns: 2 } ) );
+		} );
 	} );
 } );
