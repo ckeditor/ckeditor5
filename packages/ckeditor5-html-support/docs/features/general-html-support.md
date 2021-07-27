@@ -237,7 +237,7 @@ The above configuration will work similarly to [`allowedContent: true`](/docs/ck
 
 ## HTML comments
 
-By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep comments in the document content and retrieve them back, i.e. during {@link builds/guides/integration/saving-data saving editor data}. Comments are transparent from the user point of view and they are not displayed in the editable element.
+By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. during {@link builds/guides/integration/saving-data saving the editor data}. Comments are transparent from the user point of view and they are not displayed in the editable element.
 
 Please note that the support for HTML comments is at the basic level so far - see the [known issues](#known-issues) section below.
 
