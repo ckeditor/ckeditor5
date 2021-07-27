@@ -218,7 +218,7 @@ describe( 'HtmlComment', () => {
 			expect( commentMarkers ).to.have.length( 0 );
 		} );
 
-		it( 'should remove replace all comments with new comments when the whole content is replaced with editor.setData()', () => {
+		it( 'should replace all comments with new comments when the whole content is replaced with editor.setData()', () => {
 			editor.setData(
 				'<!-- comment 1 -->' +
 				'<p>F<!-- comment 2 -->oo</p>' +
