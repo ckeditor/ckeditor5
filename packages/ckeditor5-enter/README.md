@@ -1,9 +1,9 @@
-CKEditor 5 Enter feature
+CKEditor 5 enter feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-enter.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd> (soft break) support for CKEditor 5.
 

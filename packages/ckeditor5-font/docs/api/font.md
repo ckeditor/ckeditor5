@@ -10,11 +10,11 @@ This package implements the font family, font size as well as font and backgroun
 
 ## Demo
 
-Check out the {@link features/font#demo demo in the Font feature} guide.
+Check out the {@link features/font#demo demo in the font feature guide}.
 
 ## Documentation
 
-See the {@link features/font Font feature} guide and plugin documentation:
+See the {@link features/font font feature guide} and plugin documentation:
 - {@link module:font/fontfamily~FontFamily}.
 - {@link module:font/fontsize~FontSize}.
 - {@link module:font/fontcolor~FontColor}.

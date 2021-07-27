@@ -14,6 +14,7 @@ if ( window.top === window ) {
 } else {
 	BalloonEditor
 		.create( document.querySelector( '#editor' ), {
+			image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 			plugins: [ ArticlePluginSet ],
 			toolbar: [ 'bold', 'link' ]
 		} )

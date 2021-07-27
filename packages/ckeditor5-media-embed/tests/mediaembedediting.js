@@ -303,6 +303,22 @@ describe( 'MediaEmbedEditing', () => {
 							] );
 						} );
 
+						it( 'upcasts the URL (google maps short URL)', () => {
+							testMediaUpcast( [
+								'https://goo.gl/maps/foo',
+								'goo.gl/maps/foo'
+							] );
+						} );
+
+						it( 'upcasts the URL (google maps for Android)', () => {
+							testMediaUpcast( [
+								'https://maps.google.com',
+								'https://maps.app.goo.gl',
+								'maps.google.com',
+								'maps.app.goo.gl'
+							] );
+						} );
+
 						it( 'upcasts the URL (flickr)', () => {
 							testMediaUpcast( [
 								'https://www.flickr.com/foo/bar',
@@ -472,7 +488,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					expect( model.schema.checkChild( [ '$root', 'media' ], 'media' ) ).to.be.false;
 					expect( model.schema.checkChild( [ '$root', 'media' ], '$text' ) ).to.be.false;
-					expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+					expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 				} );
 		} );
 

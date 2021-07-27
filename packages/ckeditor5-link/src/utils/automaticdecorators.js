@@ -73,6 +73,15 @@ export default class AutomaticDecorators {
 					const viewElement = viewWriter.createAttributeElement( 'a', item.attributes, {
 						priority: 5
 					} );
+
+					if ( item.classes ) {
+						viewWriter.addClass( item.classes, viewElement );
+					}
+
+					for ( const key in item.styles ) {
+						viewWriter.setStyle( key, item.styles[ key ], viewElement );
+					}
+
 					viewWriter.setCustomProperty( 'link', true, viewElement );
 					if ( item.callback( data.attributeNewValue ) ) {
 						if ( data.item.is( 'selection' ) ) {
@@ -97,8 +106,8 @@ export default class AutomaticDecorators {
 	 */
 	getDispatcherForLinkedImage() {
 		return dispatcher => {
-			dispatcher.on( 'attribute:linkHref:image', ( evt, data, conversionApi ) => {
-				const viewFigure = conversionApi.mapper.toViewElement( data.item );
+			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, { writer, mapper } ) => {
+				const viewFigure = mapper.toViewElement( data.item );
 				const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
 				for ( const item of this._definitions ) {
@@ -106,19 +115,37 @@ export default class AutomaticDecorators {
 
 					if ( item.callback( data.attributeNewValue ) ) {
 						for ( const [ key, val ] of attributes ) {
+							// Left for backward compatibility. Since v30 decorator should
+							// accept `classes` and `styles` separately from `attributes`.
 							if ( key === 'class' ) {
-								conversionApi.writer.addClass( val, linkInImage );
+								writer.addClass( val, linkInImage );
 							} else {
-								conversionApi.writer.setAttribute( key, val, linkInImage );
+								writer.setAttribute( key, val, linkInImage );
 							}
+						}
+
+						if ( item.classes ) {
+							writer.addClass( item.classes, linkInImage );
+						}
+
+						for ( const key in item.styles ) {
+							writer.setStyle( key, item.styles[ key ], linkInImage );
 						}
 					} else {
 						for ( const [ key, val ] of attributes ) {
 							if ( key === 'class' ) {
-								conversionApi.writer.removeClass( val, linkInImage );
+								writer.removeClass( val, linkInImage );
 							} else {
-								conversionApi.writer.removeAttribute( key, linkInImage );
+								writer.removeAttribute( key, linkInImage );
 							}
+						}
+
+						if ( item.classes ) {
+							writer.removeClass( item.classes, linkInImage );
+						}
+
+						for ( const key in item.styles ) {
+							writer.removeStyle( key, linkInImage );
 						}
 					}
 				}

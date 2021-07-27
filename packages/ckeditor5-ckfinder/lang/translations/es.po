@@ -22,11 +22,11 @@ msgstr "Insertar imagen o archivo"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr "No se puede acceder a la URL de la imagen redimensionada"
+msgstr "No se pudo obtener el URL de la imagen redimensionada."
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr "Fallo eligiendo imagen redimensionada"
+msgstr "No se pudo seleccionar la imagen redimensionada"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
@@ -34,4 +34,4 @@ msgstr "No se puede insertar una imagen en la posición actual"
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr "Error insertando imagen"
+msgstr "Error al insertar la imagen"

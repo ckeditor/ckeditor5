@@ -63,6 +63,8 @@ import contentUnlock from '@ckeditor/ckeditor5-restricted-editing/theme/icons/co
 
 import selectAll from '@ckeditor/ckeditor5-select-all/theme/icons/select-all.svg';
 
+import sourceEditing from '@ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg';
+
 import specialCharacters from '@ckeditor/ckeditor5-special-characters/theme/icons/specialcharacters.svg';
 
 import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
@@ -77,6 +79,8 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
 
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
+
+import loupe from '@ckeditor/ckeditor5-find-and-replace/theme/icons/find-replace.svg';
 
 import '../../theme/ckeditor5-ui/components/editorui/editorui.css';
 
@@ -132,6 +136,9 @@ const icons = {
 	// select-all
 	selectAll,
 
+	// source-editing
+	sourceEditing,
+
 	// special-characters
 	specialCharacters,
 
@@ -143,7 +150,10 @@ const icons = {
 	nextArrow, previousArrow,
 
 	// undo
-	undo, redo
+	undo, redo,
+
+	// find and replace
+	loupe
 };
 
 const toolbar = new ToolbarView( new Locale() );

@@ -70,9 +70,15 @@ childProcess.execSync( 'mkdir .nyc_output' );
 childProcess.execSync( 'rm -r -f .out' );
 childProcess.execSync( 'mkdir .out' );
 
-const packages = childProcess.execSync( 'ls -1 packages', {
-	encoding: 'utf8'
-} ).toString().trim().split( '\n' );
+// Temporary: Do not check the `ckeditor5-find-and-replace` and `ckeditor5-minimap` packages.
+const excludedPackages = [ 'ckeditor5-find-and-replace', 'ckeditor5-minimap' ];
+const packages = childProcess.execSync( 'ls -1 packages', { encoding: 'utf8' } )
+	.toString()
+	.trim()
+	.split( '\n' )
+	.filter( fullPackageName => !excludedPackages.includes( fullPackageName ) );
+
+packages.unshift( 'ckeditor5' );
 
 for ( const fullPackageName of packages ) {
 	const simplePackageName = fullPackageName.replace( /^ckeditor5?-/, '' );

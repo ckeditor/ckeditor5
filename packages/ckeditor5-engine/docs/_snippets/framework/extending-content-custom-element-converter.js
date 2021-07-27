@@ -27,7 +27,7 @@ class InfoBox {
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => dispatcher.on( 'insert:infoBox', dataDowncastConverter ) );
 
-		// Model to view position mapper is needed since the model <infoBox> content needs to end up in the inner
+		// The model-to-view position mapper is needed since the model <infoBox> content needs to end up in the inner
 		// <div class="info-box-content">.
 		editor.editing.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
 		editor.data.mapper.on( 'modelToViewPosition', createModelToViewPositionMapper( editor.editing.view ) );
@@ -142,7 +142,7 @@ function createModelToViewPositionMapper( view ) {
 		const modelPosition = data.modelPosition;
 		const parent = modelPosition.parent;
 
-		// Only mapping of positions that are directly in
+		// Only the mapping of positions that are directly in
 		// the <infoBox> model element should be modified.
 		if ( !parent.is( 'element', 'infoBox' ) ) {
 			return;
@@ -185,7 +185,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ InfoBox ],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

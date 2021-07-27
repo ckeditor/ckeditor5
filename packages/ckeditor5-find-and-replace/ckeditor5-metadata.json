@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "Find and replace",
+			"className": "FindAndReplace",
+			"path": "src/findandreplace.js",
+			"description": "Implements the find and replace function in CKEditor 5.",
+			"docs": "features/find-and-replace.html",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "findAndReplace",
+					"iconPath": "theme/icons/find-replace.svg"
+				}
+			]
+		}
+	]
+}

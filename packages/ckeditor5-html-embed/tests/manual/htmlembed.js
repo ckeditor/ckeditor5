@@ -82,7 +82,7 @@ async function reloadEditor( config = {} ) {
 			'undo', 'redo', '|', 'htmlEmbed', 'mediaEmbed'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
 	};
 

@@ -30,11 +30,11 @@ msgstr "Daftar untuk-dikerjakan"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "Bilah alat gaya daftar bullet"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "Bilah alat gaya daftar angka"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
@@ -74,23 +74,23 @@ msgstr ""
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "Disk"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "Lingkaran"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "Kotak"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "Desimal"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "Desimal dengan awalan nol"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"

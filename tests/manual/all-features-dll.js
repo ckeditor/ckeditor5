@@ -17,6 +17,8 @@ import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
 import '@ckeditor/ckeditor5-image/build/image';
 import '@ckeditor/ckeditor5-link/build/link';
 import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
+// import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace';
 import '@ckeditor/ckeditor5-font/build/font';
 import '@ckeditor/ckeditor5-indent/build/indent';
 import '@ckeditor/ckeditor5-list/build/list';
@@ -40,6 +42,7 @@ import '@ckeditor/ckeditor5-page-break/build/page-break';
 import '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office';
 import '@ckeditor/ckeditor5-remove-format/build/remove-format';
 import '@ckeditor/ckeditor5-word-count/build/word-count';
+import '@ckeditor/ckeditor5-source-editing/build/source-editing';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -51,6 +54,7 @@ const { BalloonEditor } = window.CKEditor5.editorBalloon;
 const { AutoImage, Image, ImageCaption, ImageResize, ImageStyle, ImageToolbar, ImageUpload } = window.CKEditor5.image;
 const { AutoLink, Link, LinkImage } = window.CKEditor5.link;
 const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } = window.CKEditor5.basicStyles;
+const { FindAndReplace } = window.CKEditor5.findAndReplace;
 const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
 const { Indent, IndentBlock } = window.CKEditor5.indent;
 const { List, ListStyle, TodoList } = window.CKEditor5.list;
@@ -74,6 +78,7 @@ const { PasteFromOffice } = window.CKEditor5.pasteFromOffice;
 const { RemoveFormat } = window.CKEditor5.removeFormat;
 const { TextPartLanguage } = window.CKEditor5.language;
 const { WordCount } = window.CKEditor5.wordCount;
+const { SourceEditing } = window.CKEditor5.sourceEditing;
 
 const { Plugin } = window.CKEditor5.core;
 const { ButtonView } = window.CKEditor5.ui;
@@ -114,6 +119,7 @@ const config = {
 		CodeBlock,
 		EasyImage,
 		Essentials,
+		FindAndReplace,
 		FontColor, FontFamily, FontSize, FontBackgroundColor,
 		Heading,
 		Highlight,
@@ -129,7 +135,8 @@ const config = {
 		SpecialCharacters, SpecialCharactersEssentials,
 		Table, TableToolbar, TableCellProperties, TableProperties, TableCaption,
 		TextPartLanguage,
-		WordCount
+		WordCount,
+		SourceEditing
 	],
 	toolbar: [
 		'heading',
@@ -152,7 +159,9 @@ const config = {
 		'|',
 		'textPartLanguage',
 		'|',
-		'undo', 'redo'
+		'sourceEditing',
+		'|',
+		'undo', 'redo', 'findAndReplace'
 	],
 	cloudServices: CS_CONFIG,
 	table: {
@@ -182,8 +191,8 @@ const config = {
 			}
 		],
 		toolbar: [
-			'imageTextAlternative', '|',
-			'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|',
+			'imageTextAlternative', 'toggleImageCaption', '|',
+			'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
 			'resizeImage'
 		],
 		insert: {

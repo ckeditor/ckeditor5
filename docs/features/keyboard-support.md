@@ -23,47 +23,47 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 		<tr>
 			<td>Copy</td>
 			<td><kbd>Ctrl</kbd> + <kbd>C</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>C</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>C</kbd></td>
 		</tr>
 		<tr>
 			<td>Paste</td>
 			<td><kbd>Ctrl</kbd> + <kbd>V</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>V</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>V</kbd></td>
 		</tr>
 		<tr>
 			<td>Paste plain text and inherit target formatting</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd></td>
 		</tr>
 		<tr>
 			<td>Undo</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Z</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>Z</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Z</kbd></td>
 		</tr>
 		<tr>
 			<td>Redo</td>
 			<td><kbd>Ctrl</kbd> + <kbd>Y</kbd> <br> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>Y</kbd> <br> <kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>Y</kbd> <br> <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>Z</kbd></td>
 		</tr>
 		<tr>
 			<td>Select all</td>
 			<td><kbd>Ctrl</kbd> + <kbd>A</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>A</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>A</kbd></td>
 		</tr>
 		<tr>
 			<td>Bold</td>
 			<td><kbd>Ctrl</kbd> + <kbd>B</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>B</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>B</kbd></td>
 		</tr>
 		<tr>
 			<td>Italic</td>
 			<td><kbd>Ctrl</kbd> + <kbd>I</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>I</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>I</kbd></td>
 		</tr>
 		<tr>
 			<td>Link</td>
 			<td><kbd>Ctrl</kbd> + <kbd>K</kbd></td>
-			<td><kbd>⌘</kbd> + <kbd>K</kbd></td>
+			<td><kbd>Cmd</kbd> + <kbd>K</kbd></td>
 		</tr>
 		<tr>
 			<td>Insert a hard break (e.g. a new paragraph)</td>

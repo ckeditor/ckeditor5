@@ -15,7 +15,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
@@ -711,6 +711,11 @@ describe( 'LinkEditing', () => {
 						attributes: {
 							class: 'mail-url'
 						}
+					}, {
+						url: 'ftp://example.com',
+						attributes: {
+							style: 'background:blue;color:yellow;'
+						}
 					}
 				];
 
@@ -739,8 +744,14 @@ describe( 'LinkEditing', () => {
 								isMail: {
 									mode: 'automatic',
 									callback: url => url.startsWith( 'mailto:' ),
-									attributes: {
-										class: 'mail-url'
+									classes: 'mail-url'
+								},
+								isFile: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'ftp' ),
+									styles: {
+										color: 'yellow',
+										background: 'blue'
 									}
 								}
 							}
@@ -774,7 +785,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				it( 'stores decorators in LinkCommand#automaticDecorators collection', () => {
-					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 3 );
+					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 4 );
 				} );
 			} );
 		} );
@@ -844,7 +855,8 @@ describe( 'LinkEditing', () => {
 			it( 'should upcast attributes from initial data', async () => {
 				editor = await ClassicTestEditor.create( element, {
 					initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
-						'<a href="example.com" download="file">Bar</a></p>',
+						'<a href="example.com" class="file" style="text-decoration:underline;">Bar</a>' +
+						'<a href="example.com" download="file">Baz</a></p>',
 					plugins: [ Paragraph, LinkEditing, Enter ],
 					link: {
 						decorators: {
@@ -862,6 +874,14 @@ describe( 'LinkEditing', () => {
 								attributes: {
 									download: 'file'
 								}
+							},
+							isFile: {
+								mode: 'manual',
+								label: 'File',
+								classes: 'file',
+								styles: {
+									'text-decoration': 'underline'
+								}
 							}
 						}
 					}
@@ -872,7 +892,8 @@ describe( 'LinkEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
 						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
-						'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
 					'</paragraph>'
 				);
 
@@ -1138,7 +1159,7 @@ describe( 'LinkEditing', () => {
 
 		beforeEach( async () => {
 			editor = await ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageEditing ],
+				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageBlockEditing ],
 				link: {
 					decorators: {
 						isFoo: {
@@ -1354,7 +1375,7 @@ describe( 'LinkEditing', () => {
 
 		it( 'should not preserve anything if selected an element instead of text', () => {
 			setModelData( model,
-				'[<image src="/assets/sample.png"></image>]'
+				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 
 			editor.execute( 'input', {

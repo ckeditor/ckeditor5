@@ -1,9 +1,9 @@
-CKEditor 5 inline editor creator
+CKEditor 5 inline editor implementation
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-inline.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-inline/status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-inline)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-editor-inline/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-editor-inline?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 The inline editor implementation for CKEditor 5.
 

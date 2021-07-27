@@ -6,7 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import SelectAllEditing from '../src/selectallediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -17,7 +17,7 @@ describe( 'SelectAllCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ SelectAllEditing, Paragraph, ImageEditing, ImageCaptionEditing, TableEditing ]
+				plugins: [ SelectAllEditing, Paragraph, ImageBlockEditing, ImageCaptionEditing, TableEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -46,35 +46,37 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should select all (collapsed selection in a content with an object)', () => {
-			setData( model, '<paragraph>fo[]o</paragraph><image src="foo.png"><caption></caption></image>' );
+			setData( model, '<paragraph>fo[]o</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><image src="foo.png"><caption></caption></image>]' );
+			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]' );
 		} );
 
 		it( 'should select all (selection on an object)', () => {
-			setData( model, '<paragraph>foo</paragraph>[<image src="foo.png"><caption></caption></image>]' );
+			setData( model, '<paragraph>foo</paragraph>[<imageBlock src="foo.png"><caption></caption></imageBlock>]' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><image src="foo.png"><caption></caption></image>]' );
+			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption></caption></imageBlock>]' );
 		} );
 
 		it( 'should select all (collapsed selection in a nested editable)', () => {
-			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>b[]ar</caption></image>' );
+			setData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>b[]ar</caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 		} );
 
 		it( 'should select all (selection in a nested editable)', () => {
-			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>b[ar]</caption></image>' );
+			setData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>b[ar]</caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 		} );
 
 		it( 'should select all (selection within limit element)', () => {
@@ -122,7 +124,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +
-							'<image src="foo.png"><caption>b[]ar</caption></image>' +
+							'<imageBlock src="foo.png"><caption>b[]ar</caption></imageBlock>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -135,7 +137,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +
-							'<image src="foo.png"><caption>[bar]</caption></image>' +
+							'<imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -143,11 +145,12 @@ describe( 'SelectAllCommand', () => {
 		} );
 
 		it( 'should select all in the parent select-all-limit element (the entire editable is selected)', () => {
-			setData( model, '<paragraph>foo</paragraph><image src="foo.png"><caption>[bar]</caption></image>' );
+			setData( model, '<paragraph>foo</paragraph><imageBlock src="foo.png"><caption>[bar]</caption></imageBlock>' );
 
 			editor.execute( 'selectAll' );
 
-			expect( getData( model ) ).to.equal( '<paragraph>[foo</paragraph><image src="foo.png"><caption>bar</caption></image>]' );
+			expect( getData( model ) ).to.equal(
+				'<paragraph>[foo</paragraph><imageBlock src="foo.png"><caption>bar</caption></imageBlock>]' );
 		} );
 
 		it( 'should select all in the parent sellect-all-limit element (consecutive execute() on a nested editable)', () => {
@@ -157,7 +160,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +
-							'<image src="foo.png"><caption>b[]ar</caption></image>' +
+							'<imageBlock src="foo.png"><caption>b[]ar</caption></imageBlock>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -171,7 +174,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>[foo</paragraph>' +
-							'<image src="foo.png"><caption>bar</caption></image>]' +
+							'<imageBlock src="foo.png"><caption>bar</caption></imageBlock>]' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>'
@@ -184,7 +187,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +
-							'<image src="foo.png"><caption>bar</caption></image>' +
+							'<imageBlock src="foo.png"><caption>bar</caption></imageBlock>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>]'
@@ -198,7 +201,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +
-							'<image src="foo.png"><caption>bar</caption></image>' +
+							'<imageBlock src="foo.png"><caption>bar</caption></imageBlock>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>]'
@@ -211,7 +214,7 @@ describe( 'SelectAllCommand', () => {
 					'<tableRow>' +
 						'<tableCell>' +
 							'<paragraph>foo</paragraph>' +
-							'<image src="foo.png"><caption>bar</caption></image>' +
+							'<imageBlock src="foo.png"><caption>bar</caption></imageBlock>' +
 						'</tableCell>' +
 					'</tableRow>' +
 				'</table>]'

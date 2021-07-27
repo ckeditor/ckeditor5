@@ -258,9 +258,7 @@ export function convertParagraphInTableCell( modelElement, conversionApi ) {
 	}
 
 	if ( isSingleParagraphWithoutAttributes( modelElement ) ) {
-		// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
-		// See #6062.
-		return writer.createContainerElement( 'span', { style: 'display:inline-block' } );
+		return writer.createContainerElement( 'span', { class: 'ck-table-bogus-paragraph' } );
 	} else {
 		return writer.createContainerElement( 'p' );
 	}
@@ -271,7 +269,7 @@ export function convertParagraphInTableCell( modelElement, conversionApi ) {
  *
  * The paragraph should be converted in the editing view to:
  *
- * * If returned `true` - to a `<span style="display:inline-block">`
+ * * If returned `true` - to a `<span class="ck-table-bogus-paragraph">`
  * * If returned `false` - to a `<p>`
  *
  * @param {module:engine/model/element~Element} modelElement

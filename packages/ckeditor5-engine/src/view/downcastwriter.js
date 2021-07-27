@@ -191,7 +191,7 @@ export default class DowncastWriter {
 	createAttributeElement( name, attributes, options = {} ) {
 		const attributeElement = new AttributeElement( this.document, name, attributes );
 
-		if ( options.priority ) {
+		if ( typeof options.priority === 'number' ) {
 			attributeElement._priority = options.priority;
 		}
 

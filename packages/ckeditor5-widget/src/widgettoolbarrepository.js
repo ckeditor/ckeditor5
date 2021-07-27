@@ -36,7 +36,7 @@ import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckedito
  *
  *				widgetToolbarRepository.register( 'image', {
  *					items: editor.config.get( 'image.toolbar' ),
- *					getRelatedElement: getSelectedImageWidget
+ *					getRelatedElement: getClosestSelectedImageWidget
  *				} );
  *			}
  *		}

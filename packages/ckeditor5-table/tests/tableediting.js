@@ -6,7 +6,7 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 
 import TableEditing from '../src/tableediting';
 import { modelTable } from './_utils/utils';
@@ -30,7 +30,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph, ImageEditing, MediaEmbedEditing ]
+				plugins: [ TableEditing, Paragraph, ImageBlockEditing, MediaEmbedEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -82,7 +82,7 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], '$block' ) ).to.be.true;
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'table' ) ).to.be.true;
-		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'image' ) ).to.be.true;
+		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).to.be.true;
 	} );
 
 	it( 'adds insertTable command', () => {
@@ -199,7 +199,7 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td><img src="sample.png"></td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell><image src="sample.png"></image></tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell><imageBlock src="sample.png"></imageBlock></tableCell></tableRow></table>' );
 			} );
 
 			it( 'should insert a paragraph when the cell content is unsupported', () => {
@@ -220,6 +220,27 @@ describe( 'TableEditing', () => {
 					.to.equal( '<table><tableRow><tableCell>' +
 						'<media url="https://www.youtube.com/watch?v=H08tGjXNHO4"></media>' +
 					'</tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table when colspan is string', () => {
+				editor.setData( '<table><tbody><tr><td colspan="abc">foo</td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with colspan 0', () => {
+				editor.setData( '<table><tbody><tr><td colspan="0">foo</td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
+			} );
+
+			it( 'should convert table with negative rowspan and colspan', () => {
+				editor.setData( '<table><tbody><tr><td colspan="-1" rowspan="-1">foo</td></tr></tbody></table>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) )
+					.to.equal( '<table><tableRow><tableCell><paragraph>foo</paragraph></tableCell></tableRow></table>' );
 			} );
 		} );
 	} );

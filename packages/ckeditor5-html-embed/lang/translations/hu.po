@@ -34,12 +34,12 @@ msgstr "Forrás szerkesztése"
 
 msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
 msgid "Save changes"
-msgstr "Változtatások mentése"
+msgstr "Módosítások mentése"
 
 msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
 msgid "No preview available"
-msgstr ""
+msgstr "Nincs elérhető előnézet"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr ""
+msgstr "Üres kódrészleti tartalom"

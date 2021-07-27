@@ -14,17 +14,10 @@ ClassicEditor
 			viewportTopOffset: window.getViewportTopOffsetConfig()
 		},
 		image: {
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
-				'|',
-				'imageTextAlternative'
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText'
 			]
 		},
 		cloudServices: CS_CONFIG

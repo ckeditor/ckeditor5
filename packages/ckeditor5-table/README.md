@@ -2,14 +2,14 @@ CKEditor 5 table feature
 ============================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-table.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-table/status.svg)](https://david-dm.org/ckeditor/ckeditor5-table)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-table/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-table?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements table support for CKEditor 5.
 
 ## Demo
 
-Check out the [demo in the Table feature](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#demo) guide.
+Check out the [demo in the table feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/table.html#demo).
 
 ## Documentation
 

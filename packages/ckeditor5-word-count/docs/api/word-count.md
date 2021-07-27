@@ -10,11 +10,11 @@ This package implements the word count and character count features for CKEditor
 
 ## Demo
 
-Check out the {@link features/word-count#demo demo in the Word count and character count feature} guide.
+Check out the {@link features/word-count#demo demo in the word count and character count feature guide}.
 
 ## Documentation
 
-See the {@link features/word-count Word count and character count feature} guide and the {@link module:word-count/wordcount~WordCount} plugin documentation.
+See the {@link features/word-count word count and character count feature guide} and the {@link module:word-count/wordcount~WordCount} plugin documentation.
 
 ## Installation
 

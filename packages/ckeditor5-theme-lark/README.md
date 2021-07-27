@@ -1,11 +1,11 @@
-CKEditor 5 Lark theme
+CKEditor 5 lark theme
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-theme-lark.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-theme-lark/status.svg)](https://david-dm.org/ckeditor/ckeditor5-theme-lark)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-theme-lark/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-theme-lark?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
-This package implements Lark theme &mdash; the default CKEditor 5 theme.
+This package implements lark theme &mdash; the default CKEditor 5 theme.
 
 ## Documentation
 

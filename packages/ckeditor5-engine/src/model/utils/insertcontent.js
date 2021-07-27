@@ -698,7 +698,7 @@ class Insertion {
 		// Do not autoparagraph if the paragraph won't be allowed there,
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
 		// the next _handleNode() call and we'd be here again.
-		if ( this._getAllowedIn( paragraph, this.position.parent ) && this.schema.checkChild( paragraph, node ) ) {
+		if ( this._getAllowedIn( this.position.parent, paragraph ) && this.schema.checkChild( paragraph, node ) ) {
 			paragraph._appendChild( node );
 			this._handleNode( paragraph );
 		}
@@ -747,7 +747,7 @@ class Insertion {
 	 * `false` is returned if the node isn't allowed at any position up in the tree, `true` if was.
 	 */
 	_checkAndSplitToAllowedPosition( node ) {
-		const allowedIn = this._getAllowedIn( node, this.position.parent );
+		const allowedIn = this._getAllowedIn( this.position.parent, node );
 
 		if ( !allowedIn ) {
 			return false;
@@ -759,11 +759,6 @@ class Insertion {
 		}
 
 		while ( allowedIn != this.position.parent ) {
-			// If a parent which we'd need to leave is a limit element, break.
-			if ( this.schema.isLimit( this.position.parent ) ) {
-				return false;
-			}
-
 			if ( this.position.isAtStart ) {
 				// If insertion position is at the beginning of the parent, move it out instead of splitting.
 				// <p>^Foo</p> -> ^<p>Foo</p>
@@ -806,19 +801,24 @@ class Insertion {
 	 * Gets the element in which the given node is allowed. It checks the passed element and all its ancestors.
 	 *
 	 * @private
-	 * @param {module:engine/model/node~Node} node The node to check.
-	 * @param {module:engine/model/element~Element} element The element in which the node's correctness should be checked.
+	 * @param {module:engine/model/element~Element} contextElement The element in which context the node should be checked.
+	 * @param {module:engine/model/node~Node} childNode The node to check.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
-	_getAllowedIn( node, element ) {
-		if ( this.schema.checkChild( element, node ) ) {
-			return element;
+	_getAllowedIn( contextElement, childNode ) {
+		if ( this.schema.checkChild( contextElement, childNode ) ) {
+			return contextElement;
 		}
 
-		if ( element.parent ) {
-			return this._getAllowedIn( node, element.parent );
+		// If the child wasn't allowed in the context element and the element is a limit there's no point in
+		// checking any further towards the root. This is it: the limit is unsplittable and there's nothing
+		// we can do about it. Without this check, the algorithm will analyze parent of the limit and may create
+		// an illusion of the child being allowed. There's no way to insert it down there, though. It results in
+		// infinite loops.
+		if ( this.schema.isLimit( contextElement ) ) {
+			return null;
 		}
 
-		return null;
+		return this._getAllowedIn( contextElement.parent, childNode );
 	}
 }

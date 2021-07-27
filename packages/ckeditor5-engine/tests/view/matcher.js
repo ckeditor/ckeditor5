@@ -3,16 +3,28 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global console */
+
 import Matcher from '../../src/view/matcher';
 import Element from '../../src/view/element';
 import Document from '../../src/view/document';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { StylesProcessor } from '../../src/view/stylesmap';
+import { addMarginRules } from '../../src/view/styles/margin';
+import { addBorderRules } from '../../src/view/styles/border';
+import { addBackgroundRules } from '../../src/view/styles/background';
 
 describe( 'Matcher', () => {
 	let document;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
 		document = new Document( new StylesProcessor() );
+
+		addMarginRules( document.stylesProcessor );
+		addBorderRules( document.stylesProcessor );
+		addBackgroundRules( document.stylesProcessor );
 	} );
 
 	describe( 'add', () => {
@@ -83,7 +95,270 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el2 ) ).to.be.null;
 		} );
 
-		it( 'should match element attributes', () => {
+		it( 'should match all element attributes', () => {
+			const pattern = {
+				attributes: true
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { title: 'foobar' } );
+			const el2 = new Element( document, 'p', { title: '', alt: 'alternative'	} );
+			const el3 = new Element( document, 'p' );
+
+			let result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
+
+			result = matcher.match( el2 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title', 'alt' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should not match style and class attributes using "attributes: true" pattern', () => {
+			const pattern = {
+				attributes: true
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el2 = new Element( document, 'p', { class: 'foobar' } );
+			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should not match style and class attributes using "attributes: Array" pattern', () => {
+			const pattern = {
+				attributes: [ 'style', 'class' ]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el2 = new Element( document, 'p', { class: 'foobar' } );
+			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should not match style and class attributes using "attributes: RegExp" pattern', () => {
+			const pattern = {
+				attributes: /.*/
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+			const el2 = new Element( document, 'p', { class: 'foobar' } );
+			const el3 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match style and class attributes using "attributes: key->value" pattern', () => {
+			// Stub console, otherwise it will break test coverage.
+			sinon.stub( console, 'warn' );
+			const pattern = {
+				attributes: {
+					style: true,
+					class: true
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;', class: 'foobar' } );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 2 );
+			expect( result.match.attributes ).to.deep.equal( [ 'style', 'class' ] );
+		} );
+
+		it( 'should display warning when using deprecated style attribute with key->value pattern', () => {
+			const pattern = {
+				attributes: {
+					style: true
+				}
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-pattern-deprecated-attributes-style-key',
+				pattern.attributes
+			);
+		} );
+
+		it( 'should display warning when using deprecated class attribute with key->value pattern', () => {
+			const pattern = {
+				attributes: {
+					class: true
+				}
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foobar' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-pattern-deprecated-attributes-class-key',
+				pattern.attributes
+			);
+		} );
+
+		it( 'should match style and class attributes using mixed pattern', () => {
+			const pattern = {
+				attributes: true,
+				classes: true,
+				styles: true
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color:red;', class: 'foobar', 'data-foo': 'foo' } );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes ).to.deep.equal( [ 'data-foo' ] );
+
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles.length ).equal( 1 );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
+
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 1 );
+			expect( result.match.classes ).to.deep.equal( [ 'foobar' ] );
+		} );
+
+		it( 'should match all element attributes using RegExp', () => {
+			const pattern = {
+				attributes: /data-.*/
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 2 );
+			expect( result.match.attributes ).to.deep.equal( [ 'data-foo', 'data-bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match all element attributes using key->value, where key is a RegExp object and value is a boolean', () => {
+			const pattern = {
+				attributes: [
+					{ key: /data-b.*/, value: true }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes ).to.deep.equal( [ 'data-bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match all element attributes using key->value, where key is a RegExp object and value is a string', () => {
+			const pattern = {
+				attributes: [
+					{ key: /data-.*/, value: 'bar' }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes ).to.deep.equal( [ 'data-bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match all element attributes using key->value, where both are RegExp objects', () => {
+			const pattern = {
+				attributes: [
+					{ key: /data-.*/, value: /b.*?r/ }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+			const el2 = new Element( document, 'p', { title: 'foobar' } );
+			const el3 = new Element( document, 'p' );
+
+			const result = matcher.match( el1 );
+
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).and.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
+			expect( result.match.attributes.length ).equal( 1 );
+			expect( result.match.attributes ).to.deep.equal( [ 'data-bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match nothing if pattern is incorrect', () => {
+			const pattern = {
+				// A stub for a non-plain object.
+				attributes: 1
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { 'data-foo': 'foo', 'data-bar': 'bar', title: 'other' } );
+
+			expect( matcher.match( el1 ) ).to.be.null;
+		} );
+
+		it( 'should match element attributes using String', () => {
 			const pattern = {
 				attributes: {
 					title: 'foobar'
@@ -102,7 +377,7 @@ describe( 'Matcher', () => {
 
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
 
-			expect( result.match.attributes[ 0 ] ).equal( 'title' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
 			expect( matcher.match( el2 ) ).to.be.null;
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
@@ -123,14 +398,14 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
-			expect( result.match.attributes[ 0 ] ).equal( 'title' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
 
 			result = matcher.match( el2 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el2 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
-			expect( result.match.attributes[ 0 ] ).equal( 'title' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
@@ -150,14 +425,14 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
-			expect( result.match.attributes[ 0 ] ).equal( 'title' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
 
 			result = matcher.match( el2 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el2 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attributes' ).that.is.an( 'array' );
-			expect( result.match.attributes[ 0 ] ).equal( 'title' );
+			expect( result.match.attributes ).to.deep.equal( [ 'title' ] );
 
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
@@ -172,8 +447,77 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
-			expect( result.match.classes[ 0 ] ).equal( 'foobar' );
+			expect( result.match.classes ).to.deep.equal( [ 'foobar' ] );
 			expect( new Matcher( { classes: 'baz' } ).match( el1 ) ).to.be.null;
+		} );
+
+		it( 'should match element class names using an array', () => {
+			const pattern = { classes: [ 'foo', 'bar' ] };
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foo bar' } );
+			const el2 = new Element( document, 'p', { class: 'bar'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 2 );
+			expect( result.match.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element class names using an object', () => {
+			const pattern = {
+				classes: {
+					foo: true,
+					bar: true
+				}
+			};
+
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foo bar' } );
+			const el2 = new Element( document, 'p', { class: 'bar'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 2 );
+			expect( result.match.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element class names using key->value pairs', () => {
+			const pattern = {
+				classes: [
+					{ key: 'foo', value: true },
+					{ key: /^b.*$/, value: true }
+				]
+			};
+
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { class: 'foo bar' } );
+			const el2 = new Element( document, 'p', { class: 'bar'	} );
+			const el3 = new Element( document, 'p', { class: 'qux'	} );
+
+			const result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
+			expect( result.match.classes.length ).equal( 2 );
+			expect( result.match.classes ).to.deep.equal( [ 'foo', 'bar' ] );
+
+			expect( matcher.match( el2 ) ).to.be.null;
+			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
 		it( 'should match element class names using RegExp', () => {
@@ -188,14 +532,14 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
-			expect( result.match.classes[ 0 ] ).equal( 'foobar' );
+			expect( result.match.classes ).to.deep.equal( [ 'foobar' ] );
 
 			result = matcher.match( el2 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el2 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'classes' ).that.is.an( 'array' );
-			expect( result.match.classes[ 0 ] ).equal( 'foobaz' );
+			expect( result.match.classes ).to.deep.equal( [ 'foobaz' ] );
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
@@ -214,9 +558,150 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
-			expect( result.match.styles[ 0 ] ).equal( 'color' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
 			expect( matcher.match( el2 ) ).to.be.null;
 			expect( new Matcher( { styles: { color: 'blue' } } ).match( el1 ) ).to.be.null;
+		} );
+
+		it( 'should match element styles using boolean', () => {
+			const pattern = {
+				styles: {
+					color: true
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color: blue' } );
+			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element styles when CSS shorthand is used', () => {
+			const pattern = {
+				styles: {
+					'margin-left': /.*/
+				}
+			};
+			const matcher = new Matcher( pattern );
+
+			const el1 = new Element( document, 'p', { style: 'margin: 1px' } );
+			const el2 = new Element( document, 'p', { style: 'margin-left: 10px' } );
+			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'margin-left' ] );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'margin-left' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element expanded styles', () => {
+			const pattern = {
+				styles: {
+					'border-left-style': /.*/
+				}
+			};
+			const matcher = new Matcher( pattern );
+
+			const el1 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el2 = new Element( document, 'p', { style: 'border-style: solid' } );
+			const el3 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'border-left-style' ] );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'border-left-style' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element expanded styles when CSS shorthand is used', () => {
+			const pattern = {
+				styles: {
+					'border-left': /.*/
+				}
+			};
+			const matcher = new Matcher( pattern );
+
+			const el1 = new Element( document, 'p', { style: 'border: 1px solid' } );
+			const el2 = new Element( document, 'p', { style: 'border-style: solid' } );
+			const el3 = new Element( document, 'p', { style: 'margin-left: darkblue' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'border-left' ] );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'border-left' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element styles using an array', () => {
+			const pattern = {
+				styles: [ 'color' ]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'color: blue' } );
+			const el2 = new Element( document, 'p', { style: 'color: darkblue' } );
+			const el3 = new Element( document, 'p', { style: 'border: 1px solid' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
 		it( 'should match element styles using RegExp', () => {
@@ -235,15 +720,93 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'element' ).that.equal( el1 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
-			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
 
 			result = matcher.match( el2 );
 			expect( result ).to.be.an( 'object' );
 			expect( result ).to.have.property( 'element' ).that.equal( el2 );
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
-			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
+			expect( result.match.styles ).to.deep.equal( [ 'color' ] );
 			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match element styles using key->value, where both are RegExp objects', () => {
+			const pattern = {
+				styles: [
+					{ key: /border-.*/, value: /.*/ }
+				]
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+			const el2 = new Element( document, 'p', { style: 'border-top-width: 3px' } );
+			const el3 = new Element( document, 'p', { style: 'color: red' } );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [
+				'border-color',
+				'border-style',
+				'border-width',
+				'border-top',
+				'border-top-color',
+				'border-top-style',
+				'border-top-width'
+			] );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'styles' ).that.is.an( 'array' );
+			expect( result.match.styles ).to.deep.equal( [
+				'border-width',
+				'border-top',
+				'border-top-width'
+			] );
+
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should display warning when key->value pattern is missing key', () => {
+			const pattern = {
+				styles: [
+					{ key: /border-.*/ }
+				]
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-pattern-missing-key-or-value',
+				pattern.styles[ 0 ]
+			);
+		} );
+
+		it( 'should display warning when key->value pattern is missing value', () => {
+			const pattern = {
+				styles: [
+					{ value: 'red' }
+				]
+			};
+			const warnStub = sinon.stub( console, 'warn' );
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p', { style: 'border-top: 1px solid blue' } );
+
+			matcher.match( el1 );
+
+			sinon.assert.calledOnceWithMatch(
+				warnStub,
+				'matcher-pattern-missing-key-or-value',
+				pattern.styles[ 0 ]
+			);
 		} );
 
 		it( 'should allow to use function as a pattern', () => {
@@ -303,8 +866,7 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.is.an( 'object' );
 			expect( result.match ).to.have.property( 'attributes' ).that.is.an( 'array' );
-			expect( result.match.attributes[ 0 ] ).to.equal( 'name' );
-			expect( result.match.attributes[ 1 ] ).to.equal( 'title' );
+			expect( result.match.attributes ).to.deep.equal( [ 'name', 'title' ] );
 		} );
 
 		it( 'should match multiple classes', () => {
@@ -322,8 +884,7 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.is.an( 'object' );
 			expect( result.match ).to.have.property( 'classes' ).that.is.an( 'array' );
-			expect( result.match.classes[ 0 ] ).to.equal( 'foo' );
-			expect( result.match.classes[ 1 ] ).to.equal( 'bar' );
+			expect( result.match.classes ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
 
 		it( 'should match multiple styles', () => {
@@ -347,8 +908,7 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.is.an( 'object' );
 			expect( result.match ).to.have.property( 'styles' ).that.is.an( 'array' );
-			expect( result.match.styles[ 0 ] ).to.equal( 'color' );
-			expect( result.match.styles[ 1 ] ).to.equal( 'position' );
+			expect( result.match.styles ).to.deep.equal( [ 'color', 'position' ] );
 		} );
 	} );
 

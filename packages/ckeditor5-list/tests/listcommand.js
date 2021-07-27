@@ -305,7 +305,7 @@ describe( 'ListCommand', () => {
 				} );
 
 				it( 'should not rename blocks which cannot become listItems (block is an object)', () => {
-					model.schema.register( 'image', {
+					model.schema.register( 'imageBlock', {
 						isBlock: true,
 						isObject: true,
 						allowIn: '$root'
@@ -314,7 +314,7 @@ describe( 'ListCommand', () => {
 					setData(
 						model,
 						'<paragraph>a[bc</paragraph>' +
-						'<image></image>' +
+						'<imageBlock></imageBlock>' +
 						'<paragraph>de]f</paragraph>'
 					);
 
@@ -322,7 +322,7 @@ describe( 'ListCommand', () => {
 
 					expect( getData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
-						'<image></image>' +
+						'<imageBlock></imageBlock>' +
 						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
 					);
 				} );

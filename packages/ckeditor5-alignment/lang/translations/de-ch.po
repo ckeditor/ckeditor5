@@ -38,4 +38,4 @@ msgstr "Textausrichtung"
 
 msgctxt "Label used by assistive technologies describing the text alignment feature toolbar."
 msgid "Text alignment toolbar"
-msgstr "Text-Ausrichtung Toolbar"
+msgstr "Textausrichtung Werkzeugleiste"

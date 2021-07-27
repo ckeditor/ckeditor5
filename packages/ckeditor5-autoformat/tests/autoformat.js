@@ -550,6 +550,25 @@ describe( 'Autoformat', () => {
 
 			expect( getData( model ) ).to.equal( '<codeBlock language="plaintext">```[]</codeBlock>' );
 		} );
+
+		it( 'should remember the last used language', () => {
+			setData( model, '<paragraph>[]</paragraph>' );
+
+			// Mock the UI usage: execute the command with the specified language.
+			editor.execute( 'codeBlock', { language: 'cpp' } );
+			editor.execute( 'codeBlock' );
+
+			// Typing '```' in a single change does not trigger the autoformat feature.
+			model.change( writer => {
+				writer.insertText( '``', doc.selection.getFirstPosition() );
+			} );
+
+			model.change( writer => {
+				writer.insertText( '`', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<codeBlock language="cpp">[]</codeBlock>' );
+		} );
 	} );
 
 	describe( 'Horizontal line', () => {

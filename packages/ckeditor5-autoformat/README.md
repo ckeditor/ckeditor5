@@ -2,14 +2,14 @@ CKEditor 5 autoformat feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-autoformat.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-autoformat/status.svg)](https://david-dm.org/ckeditor/ckeditor5-autoformat)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-autoformat/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-autoformat?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the autoformatting feature for CKEditor 5. It allows styling text by typing sequences like `**bold this**`.
 
 ## Demo
 
-Check out the demo in the [Autoformat feature](https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html) guide.
+Check out the [demo in the autoformat feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/autoformat.html#demo).
 
 ## Documentation
 

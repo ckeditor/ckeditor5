@@ -22,7 +22,7 @@ describe( 'Integration test Font', () => {
 			.create( element, {
 				plugins: [ Font, ArticlePluginSet ],
 				image: {
-					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 				}
 			} )
 			.then( newEditor => {
@@ -72,7 +72,7 @@ describe( 'Integration test Font', () => {
 						supportAllValues: true
 					},
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {
@@ -118,7 +118,7 @@ describe( 'Integration test Font', () => {
 						supportAllValues: true
 					},
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {
@@ -182,7 +182,7 @@ describe( 'Integration test Font', () => {
 						supportAllValues: true
 					},
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 					}
 				} )
 				.then( editor => {

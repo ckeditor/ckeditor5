@@ -42,6 +42,10 @@
 
 	/* https://github.com/ckeditor/ckeditor5/issues/847 */
 	& > *:last-child {
+		/*
+		 * This value should match with the default margins of the block elements (like .media or .image)
+		 * to avoid a content jumping when the fake selection container shows up (See https://github.com/ckeditor/ckeditor5/issues/9825).
+		 */
 		margin-bottom: var(--ck-spacing-large);
 	}
 

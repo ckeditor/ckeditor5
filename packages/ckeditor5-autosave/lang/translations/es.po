@@ -18,4 +18,4 @@ msgstr ""
 
 msgctxt "A message that the data is being saved."
 msgid "Saving changes"
-msgstr "Guardando Cambios"
+msgstr "Guardando cambios"

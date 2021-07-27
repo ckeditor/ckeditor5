@@ -1,8 +1,39 @@
-<div id="snippet-image-resize-buttons">
-	<p>Click me and resize using the image toolbar buttons!</p>
+<style>
+	#snippet-image-resize-buttons + .ck .ck-content .image {
+		margin: none !important;
+		display: inline-block;
+	}
+	#snippet-image-resize-buttons + .ck .ck-content h2 {
+		border-bottom: 4px solid black;
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+	#snippet-image-resize-buttons + .ck .ck-content hr {
+		background-color: black;
+	}
+	#snippet-image-resize-buttons + .ck .ck-content .ck-horizontal-line {
+		margin-top: -12px;
+	}
+</style>
 
-	<figure class="image">
-		<img src="%BASE_PATH%/assets/img/fields.jpg" alt="Autumn fields">
-		<figcaption>Autumn fields by Aleksander Nowodziński</figcaption>
+<div id="snippet-image-resize-buttons">
+	<h2>Being a bee-eater can be fancy!</h2>
+
+	<figure class="image image_resized" style="width: 20%">
+		<img src="%BASE_PATH%/assets/img/birds/bee-eater_2.jpg" srcset="%BASE_PATH%/assets/img/birds/bee-eater_2.jpg, %BASE_PATH%/assets/img/birds/bee-eater_2_2x.jpg 2x">
 	</figure>
+
+	<figure class="image image_resized" style="width: 40%">
+		<img src="%BASE_PATH%/assets/img/birds/bee-eater_1.jpg" srcset="%BASE_PATH%/assets/img/birds/bee-eater_1.jpg, %BASE_PATH%/assets/img/birds/bee-eater_1_2x.jpg 2x">
+	</figure>
+
+	<figure class="image image_resized" style="width: 40%">
+		<img src="%BASE_PATH%/assets/img/birds/bee-eater.jpg" srcset="%BASE_PATH%/assets/img/birds/bee-eater.jpg, %BASE_PATH%/assets/img/birds/bee-eater_2x.jpg 2x">
+	</figure>
+
+	<hr/>
+
+	<p>Bee-eaters are moderately large birds (depending on the species they reach 6 to 14 inches) that can be found in tropical and subtropical areas of Europe, Asia, Africa and Australia. They are predominantly brilliant green with additional red, yellow, purple and blue tones.</p>
+	<p>They use their strong, medium length, pointed beaks to catch insects &mdash; mostly bees (hence the name) and wasps but not only. Bee-eaters are fierce hunters, having to catch their meal mid-air. They are also very social birds &mdash; their colonies are large, usually with over 100 members, sometimes as many as 200 if the conditions permit it. The scientists believe the bee-eaters can recognize their keen &mdash; parents, siblings &mdash; by voice.</p>
 </div>
+
