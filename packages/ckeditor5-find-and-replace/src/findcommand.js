@@ -61,17 +61,18 @@ export default class FindCommand extends Command {
 			findCallback = callbackOrText;
 		}
 
-		// Initial search is done on all nodes inside the content.
-		const range = model.createRangeIn( model.document.getRoot() );
-
-		const ret = {
-			results: updateFindResultFromRange( range, model, findCallback ),
-			findCallback
-		};
+		// Initial search is done on all nodes in all roots inside the content.
+		const results = model.document.getRootNames()
+			.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+				model.createRangeIn( model.document.getRoot( rootName ) ),
+				model,
+				findCallback,
+				currentResults
+			) ), null );
 
 		this.state.clear( model );
-		this.state.results.addMany( Array.from( ret.results ) );
-		this.state.highlightedResult = ret.results.get( 0 );
+		this.state.results.addMany( Array.from( results ) );
+		this.state.highlightedResult = results.get( 0 );
 
 		if ( typeof callbackOrText === 'string' ) {
 			this.state.searchText = callbackOrText;
@@ -80,6 +81,9 @@ export default class FindCommand extends Command {
 		this.state.matchCase = !!matchCase;
 		this.state.matchWholeWords = !!wholeWords;
 
-		return ret;
+		return {
+			results,
+			findCallback
+		};
 	}
 }
