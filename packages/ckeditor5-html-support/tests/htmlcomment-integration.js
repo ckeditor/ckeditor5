@@ -969,7 +969,8 @@ describe( 'HtmlComment integration', () => {
 
 			editor.execute( 'delete' );
 
-			// The following output will be also correct:
+			// The following output could be considered as the correct and expected one,
+			// but currently the comment 4 is not removed, because it is not located at the limit element's boundary:
 			// expect( editor.getData() ).to.equal(
 			// 	'<p>' +
 			// 		'<!-- comment 1 -->' +
