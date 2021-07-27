@@ -12,7 +12,7 @@ import { range } from 'lodash-es';
 
 /* global document */
 
-describe.only( 'MediaEmbedElementSupport', () => {
+describe( 'MediaEmbedElementSupport', () => {
 	describe( 'MediaEmbed feature is available', () => {
 		let editor, model, editorElement, dataFilter;
 
@@ -289,6 +289,49 @@ describe.only( 'MediaEmbedElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should not consume media figure element that is already consumed (upcast)', () => {
+			editor.conversion.for( 'upcast' )
+				.add( dispatcher => {
+					dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } );
+					}, { priority: 'highest' } );
+				} );
+
+			dataFilter.allowElement( /^(figure|oembed)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(figure|oembed)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></oembed>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal( '' );
+		} );
+
+		it( 'should not consume media element that is already consumed (upcast)', () => {
+			dataFilter.allowElement( /^(figure|oembed)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(figure|oembed)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo">' +
+					'<p>foobar</p>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure data-foo="foo">' +
+					'<p>foobar</p>' +
+				'</figure>'
+			);
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
@@ -603,6 +646,49 @@ describe.only( 'MediaEmbedElementSupport', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should not consume media figure element that is already consumed (upcast)', () => {
+			editor.conversion.for( 'upcast' )
+				.add( dispatcher => {
+					dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } );
+					}, { priority: 'highest' } );
+				} );
+
+			dataFilter.allowElement( /^(figure|custom-oembed)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(figure|custom-oembed)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo">' +
+					'<custom-oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk" data-foo="foo"></custom-oembed>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal( '' );
+		} );
+
+		it( 'should not consume media element that is already consumed (upcast)', () => {
+			dataFilter.allowElement( /^(figure|custom-oembed)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(figure|custom-oembed)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<figure class="media" data-foo="foo">' +
+					'<p>foobar</p>' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure data-foo="foo">' +
+					'<p>foobar</p>' +
+				'</figure>'
+			);
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {

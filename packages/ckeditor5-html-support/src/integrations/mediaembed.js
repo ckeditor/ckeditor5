@@ -80,7 +80,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 		const viewFigureElement = data.viewItem;
 
 		// Convert only "media figure" elements.
-		if ( !conversionApi.consumable.test( viewFigureElement, { name: true, class: 'media' } ) ) {
+		if ( !conversionApi.consumable.test( viewFigureElement, { name: true, classes: 'media' } ) ) {
 			return;
 		}
 
@@ -89,7 +89,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 			.find( item => item.is( 'element', mediaElementName ) );
 
 		// Do not convert if media element is absent or was already converted.
-		if ( !viewMediaElement || !conversionApi.consumable.test( viewMediaElement, { name: true } ) ) {
+		if ( !viewMediaElement ) {
 			return;
 		}
 
