@@ -235,19 +235,32 @@ htmlSupport: {
 
 The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 
+## Known issues
+
+It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.).
+
+Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes:
+
+* Some of the table markup [#9914](https://github.com/ckeditor/ckeditor5/issues/9914).
+* Some of the image features' markup [#9916](https://github.com/ckeditor/ckeditor5/issues/9916).
+* Some of the media embed features' markup [#9918](https://github.com/ckeditor/ckeditor5/issues/9918).
+* The `<ul>` and `<ol>` elements of the list feature [#9917](https://github.com/ckeditor/ckeditor5/issues/9917).
+
+We're open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
+
 ## HTML comments
 
 By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. during {@link builds/guides/integration/saving-data saving the editor data}. Comments are transparent from the user point of view and they are not displayed in the editable element.
 
-Please note that the support for HTML comments is at the basic level so far - see the [known issues](#known-issues) section below.
-
 <info-box>
 	The HTML comment feature is **experimental and not yet production-ready**.
+
+	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues-2) section below.
 </info-box>
 
 ### Demo
 
-The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that HTML comments are present in the document source. You can uncomment the paragraph that is below the picture and after leaving the source editing mode, you will see this paragraph in the editable area.
+The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that HTML comment is present in the document source. You can uncomment the paragraph that is below the picture and after leaving the source editing mode, you will see this paragraph in the editable area.
 
 {@snippet features/html-comment}
 
@@ -278,18 +291,9 @@ ClassicEditor
 
 HTML comment feature does not require any configuration.
 
-## Known issues
+### Known issues
 
-It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.).
-
-Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes:
-
-* Some of the table markup [#9914](https://github.com/ckeditor/ckeditor5/issues/9914).
-* Some of the image features' markup [#9916](https://github.com/ckeditor/ckeditor5/issues/9916).
-* Some of the media embed features' markup [#9918](https://github.com/ckeditor/ckeditor5/issues/9918).
-* The `<ul>` and `<ol>` elements of the list feature [#9917](https://github.com/ckeditor/ckeditor5/issues/9917).
-
-The main issue in HTML comment feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119).
+The main issue in HTML comment feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
 
 We're open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 

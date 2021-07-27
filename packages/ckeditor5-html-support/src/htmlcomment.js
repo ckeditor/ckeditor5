@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { uid } from 'ckeditor5/src/utils';
 
 /**
- * The HTML comment feature.
+ * The HTML comment feature. It preserves HTML comments (<!-- -->) in the editor data.
  *
  * For a detailed overview, check the {@glink features/general-html-support#html-comments HTML comment feature documentation}.
  *
