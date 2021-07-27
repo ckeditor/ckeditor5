@@ -1158,7 +1158,7 @@ export default class DomConverter {
 		data = data.replace( / \u00A0/g, '  ' );
 
 		const isNextNodeInlineObjectElement = nextNode && this.isElement( nextNode ) && nextNode.tagName != 'BR';
-		const isNextNodeStaringWithSpace = nextNode && isText( nextNode ) && nextNode.data.charAt( 0 ) == ' ';
+		const isNextNodeStartingWithSpace = nextNode && isText( nextNode ) && nextNode.data.charAt( 0 ) == ' ';
 
 		// Then, let's change the last nbsp to a space.
 		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || isNextNodeInlineObjectElement || isNextNodeStaringWithSpace ) {
