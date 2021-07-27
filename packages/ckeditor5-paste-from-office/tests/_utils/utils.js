@@ -248,6 +248,8 @@ function generateIntegrationTests( title, fixtures, editorConfig, skip ) {
 // these images are extracted (so HTML diff is readable) and compared
 // one by one separately (so it is visible if base64 representation is malformed).
 //
+// Comments are removed from the expected HTML struture, to be consistent with the actual pasted data in the plugin.
+//
 // This function is designed for comparing normalized data so expected input is preprocessed before comparing:
 //
 //		* Tabs on the lines beginnings are removed.
@@ -274,7 +276,7 @@ function expectNormalized( actualView, expectedHtml ) {
 	// We are ok with both spaces and non-breaking spaces in the actual content.
 	// Replace `&nbsp;` with regular spaces to align with expected content.
 	const actualNormalized = stringifyView( actualView ).replace( /\u00A0/g, ' ' );
-	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ) );
+	const expectedNormalized = normalizeHtml( inlineData( expectedHtml ), { skipComments: true } );
 
 	compareContentWithBase64Images( actualNormalized, expectedNormalized );
 }

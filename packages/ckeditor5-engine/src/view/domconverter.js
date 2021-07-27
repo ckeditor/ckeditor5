@@ -411,7 +411,9 @@ export default class DomConverter {
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
-	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
+	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converted to lower case.
+	 * @param {Boolean} [options.skipComments=false] If `false`, comment nodes will be converted to `$comment`
+	 * {@link module:engine/view/uielement~UIElement view UI elements}.
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
@@ -425,6 +427,10 @@ export default class DomConverter {
 
 		if ( hostElement ) {
 			return hostElement;
+		}
+
+		if ( this.isComment( domNode ) && options.skipComments ) {
+			return null;
 		}
 
 		if ( isText( domNode ) ) {

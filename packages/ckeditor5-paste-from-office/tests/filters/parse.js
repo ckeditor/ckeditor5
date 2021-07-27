@@ -161,6 +161,17 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( stylesString ).to.equal( '' );
 			} );
+
+			it( 'should remove all comments', () => {
+				const html = '<body><!--c1--><p>Foo Bar</p><!--c2--></body>';
+				const { body } = parseHtml( html );
+
+				expect( body ).to.instanceof( DocumentFragment );
+
+				expect( body.childCount ).to.equal( 1 );
+
+				expect( body.getChild( 0 ).name ).to.equal( 'p' );
+			} );
 		} );
 	} );
 } );
