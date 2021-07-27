@@ -41,7 +41,9 @@ require( '@ckeditor/ckeditor5-dev-env' )
 		},
 		customReleasesFiles: {
 			ckeditor5: [
-				'src/*.js'
+				'src/*.js',
+				'build/ckeditor5-dll.js',
+				'build/ckeditor5-dll.manifest.json'
 			]
 		},
 		dryRun: process.argv.includes( '--dry-run' )

@@ -81,7 +81,6 @@ export default class LinkImageEditing extends Plugin {
 	_enableManualDecorators() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'link' );
-		const manualDecorators = command.manualDecorators;
 
 		for ( const decorator of command.manualDecorators ) {
 			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
@@ -92,8 +91,8 @@ export default class LinkImageEditing extends Plugin {
 				editor.model.schema.extend( 'imageInline', { allowAttributes: decorator.id } );
 			}
 
-			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator ) );
-			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( editor, manualDecorators, decorator ) );
+			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( decorator ) );
+			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( editor, decorator ) );
 		}
 	}
 }
@@ -220,10 +219,9 @@ function downcastImageLink( editor ) {
 //
 // @private
 // @returns {Function}
-function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
+function downcastImageLinkManualDecorator( decorator ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
-			const attributes = manualDecorators.get( decorator.id ).attributes;
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
@@ -234,8 +232,16 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 				return;
 			}
 
-			for ( const [ key, val ] of toMap( attributes ) ) {
+			for ( const [ key, val ] of toMap( decorator.attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );
+			}
+
+			if ( decorator.classes ) {
+				conversionApi.writer.addClass( decorator.classes, linkInImage );
+			}
+
+			for ( const key in decorator.styles ) {
+				conversionApi.writer.setStyle( key, decorator.styles[ key ], linkInImage );
 			}
 		} );
 	};
@@ -245,7 +251,7 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 //
 // @private
 // @returns {Function}
-function upcastImageLinkManualDecorator( editor, manualDecorators, decorator ) {
+function upcastImageLinkManualDecorator( editor, decorator ) {
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
@@ -259,11 +265,7 @@ function upcastImageLinkManualDecorator( editor, manualDecorators, decorator ) {
 				return;
 			}
 
-			const consumableAttributes = {
-				attributes: manualDecorators.get( decorator.id ).attributes
-			};
-
-			const matcher = new Matcher( consumableAttributes );
+			const matcher = new Matcher( decorator._createPattern() );
 			const result = matcher.match( viewLink );
 
 			// The link element does not have required attributes or/and proper values.

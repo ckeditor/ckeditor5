@@ -121,7 +121,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				itemView.buttonView.fire( 'execute' );
@@ -137,7 +137,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
@@ -162,7 +162,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
@@ -182,7 +182,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				itemView.buttonView.arrowView.fire( 'execute' );
@@ -201,7 +201,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
@@ -221,7 +221,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
@@ -240,7 +240,7 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				itemView.buttonView.fire( 'execute' );

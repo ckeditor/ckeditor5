@@ -633,7 +633,7 @@ describe( 'LinkImageEditing', () => {
 						url: 'relative/url.html',
 						attributes: {}
 					}, {
-						url: 'http://exmaple.com',
+						url: 'http://example.com',
 						attributes: {
 							target: '_blank'
 						}
@@ -647,6 +647,12 @@ describe( 'LinkImageEditing', () => {
 						url: 'mailto:some@person.io',
 						attributes: {
 							class: 'mail-url'
+						}
+					}, {
+						url: 'ftp://example.com',
+						attributes: {
+							class: 'file',
+							style: 'text-decoration:underline;'
 						}
 					}
 				];
@@ -677,6 +683,14 @@ describe( 'LinkImageEditing', () => {
 									attributes: {
 										class: 'mail-url'
 									}
+								},
+								isFile: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'ftp' ),
+									classes: 'file',
+									styles: {
+										'text-decoration': 'underline'
+									}
 								}
 							}
 						}
@@ -691,7 +705,7 @@ describe( 'LinkImageEditing', () => {
 
 				testLinks.forEach( link => {
 					it( `Link: ${ link.url } should get attributes: ${ JSON.stringify( link.attributes ) }`, () => {
-						const ORDER = [ 'class', 'href', 'target', 'download' ];
+						const ORDER = [ 'class', 'style', 'href', 'target', 'download' ];
 						const attributes = Object.assign( {}, link.attributes, {
 							href: link.url
 						} );
@@ -749,8 +763,14 @@ describe( 'LinkImageEditing', () => {
 								isGallery: {
 									mode: 'manual',
 									label: 'Gallery link',
-									attributes: {
-										class: 'gallery'
+									classes: 'gallery'
+								},
+								isHighlighted: {
+									mode: 'manual',
+									label: 'Important',
+									classes: 'highlighted',
+									styles: {
+										'text-decoration': 'underline'
 									}
 								}
 							}
@@ -801,14 +821,16 @@ describe( 'LinkImageEditing', () => {
 			it( 'should upcast attributes', async () => {
 				editor.setData(
 					'<figure class="image">' +
-						'<a href="url" target="_blank" rel="noopener noreferrer" download="download">' +
+						'<a href="url" target="_blank" rel="noopener noreferrer" download="download" ' +
+						'class="highlighted" style="text-decoration:underline;">' +
 							'<img src="/assets/sample.png">' +
 						'</a>' +
 					'</figure>'
 				);
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<imageBlock linkHref="url" linkIsDownloadable="true" linkIsExternal="true" src="/assets/sample.png"></imageBlock>'
+					'<imageBlock linkHref="url" linkIsDownloadable="true" linkIsExternal="true" ' +
+					'linkIsHighlighted="true" src="/assets/sample.png"></imageBlock>'
 				);
 
 				await editor.destroy();
@@ -855,7 +877,8 @@ describe( 'LinkImageEditing', () => {
 				// (#7975)
 				editor.setData(
 					'<figure class="image">' +
-						'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+						'<a class="gallery highlighted" href="https://cksource.com" target="_blank" ' +
+						'rel="noopener noreferrer" download="download" style="text-decoration:underline;">' +
 							'<img src="sample.jpg" alt="bar">' +
 						'</a>' +
 						'<figcaption>Caption</figcaption>' +
@@ -873,6 +896,7 @@ describe( 'LinkImageEditing', () => {
 						'linkIsDownloadable="true" ' +
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
+						'linkIsHighlighted="true" ' +
 						'src="sample.jpg">' +
 					'</imageBlock>' +
 					'<paragraph>' +
@@ -886,7 +910,8 @@ describe( 'LinkImageEditing', () => {
 			it( 'should upcast the decorators when linked image (a > img)', () => {
 				// (#7975)
 				editor.setData(
-					'<a class="gallery" href="https://cksource.com" target="_blank" rel="noopener noreferrer" download="download">' +
+					'<a class="gallery highlighted" href="https://cksource.com" target="_blank" rel="noopener noreferrer"' +
+					'download="download" style="text-decoration:underline;">' +
 						'<img src="sample.jpg" alt="bar">' +
 					'</a>' +
 					'<p>' +
@@ -902,6 +927,7 @@ describe( 'LinkImageEditing', () => {
 						'linkIsDownloadable="true" ' +
 						'linkIsExternal="true" ' +
 						'linkIsGallery="true" ' +
+						'linkIsHighlighted="true" ' +
 						'src="sample.jpg">' +
 					'</imageBlock>' +
 					'<paragraph>' +
@@ -940,8 +966,14 @@ describe( 'LinkImageEditing', () => {
 								isGallery: {
 									mode: 'manual',
 									label: 'Gallery link',
-									attributes: {
-										class: 'gallery'
+									classes: 'gallery'
+								},
+								isHighlighted: {
+									mode: 'manual',
+									label: 'Important',
+									classes: 'highlighted',
+									styles: {
+										'text-decoration': 'underline'
 									}
 								}
 							}
@@ -968,7 +1000,8 @@ describe( 'LinkImageEditing', () => {
 				editor.execute( 'link', 'https://cksource.com', {
 					linkIsDownloadable: true,
 					linkIsExternal: true,
-					linkIsGallery: true
+					linkIsGallery: true,
+					linkIsHighlighted: true
 				} );
 
 				model.change( writer => {
@@ -978,17 +1011,20 @@ describe( 'LinkImageEditing', () => {
 				editor.execute( 'link', 'https://cksource.com', {
 					linkIsDownloadable: true,
 					linkIsExternal: true,
-					linkIsGallery: true
+					linkIsGallery: true,
+					linkIsHighlighted: true
 				} );
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<a class="gallery" href="https://cksource.com" download="download" target="_blank" rel="noopener noreferrer">' +
+						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
+						'download="download" target="_blank" rel="noopener noreferrer">' +
 							'<img src="sample.jpg" alt="bar">' +
 						'</a>' +
 					'</figure>' +
 					'<p>' +
-						'<a class="gallery" href="https://cksource.com" download="download" target="_blank" rel="noopener noreferrer">' +
+						'<a class="gallery highlighted" style="text-decoration:underline;" href="https://cksource.com" ' +
+						'download="download" target="_blank" rel="noopener noreferrer">' +
 							'https://cksource.com' +
 						'</a>' +
 					'</p>'
@@ -1004,7 +1040,8 @@ describe( 'LinkImageEditing', () => {
 				editor.execute( 'link', 'https://cksource.com', {
 					linkIsDownloadable: true,
 					linkIsExternal: true,
-					linkIsGallery: true
+					linkIsGallery: true,
+					linkIsHighlighted: true
 				} );
 
 				// Attributes will be removed along with the link, but the downcast will be fired.
@@ -1013,7 +1050,8 @@ describe( 'LinkImageEditing', () => {
 					editor.execute( 'unlink', 'https://cksource.com', {
 						linkIsDownloadable: true,
 						linkIsExternal: true,
-						linkIsGallery: true
+						linkIsGallery: true,
+						linkIsHighlighted: true
 					} );
 				} ).to.not.throw();
 

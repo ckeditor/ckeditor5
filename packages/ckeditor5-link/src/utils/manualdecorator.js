@@ -28,7 +28,7 @@ export default class ManualDecorator {
 	 * Attributes should keep the format of attributes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
 	 * @param {Boolean} [config.defaultValue] Controls whether the decorator is "on" by default.
 	 */
-	constructor( { id, label, attributes, defaultValue } ) {
+	constructor( { id, label, attributes, classes, styles, defaultValue } ) {
 		/**
 		 * An ID of a manual decorator which is the name of the attribute in the model, for example: 'linkManualDecorator0'.
 		 *
@@ -65,6 +65,36 @@ export default class ManualDecorator {
 		 * @type {Object}
 		 */
 		this.attributes = attributes;
+
+		/**
+		 * A set of classes added to downcasted data when the decorator is activated for a specific link.
+		 * Classes should be added in a form of classes defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
+		 *
+		 * @type {Object}
+		 */
+		this.classes = classes;
+
+		/**
+		 * A set of styles added to downcasted data when the decorator is activated for a specific link.
+		 * Styles should be added in a form of styles defined in {@link module:engine/view/elementdefinition~ElementDefinition}.
+		 *
+		 * @type {Object}
+		 */
+		this.styles = styles;
+	}
+
+	/**
+	 * Returns {@link module:engine/view/matcher~MatcherPattern} with decorator attributes.
+	 *
+	 * @protected
+	 * @returns {module:engine/view/matcher~MatcherPattern}
+	 */
+	_createPattern() {
+		return {
+			attributes: this.attributes,
+			classes: this.classes,
+			styles: this.styles
+		};
 	}
 }
 
