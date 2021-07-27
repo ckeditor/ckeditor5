@@ -33,13 +33,21 @@ ClassicEditor
 			allow: [
 				{
 					name: /^(figure|oembed)$/,
-					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
+					attributes: [ 'data-validation-allow', 'data-validation-disallow' ],
+					classes: [ 'allowed-class' ],
+					styles: {
+						color: 'blue'
+					}
 				}
 			],
 			disallow: [
 				{
 					name: /^(figure|oembed)$/,
-					attributes: 'data-validation-disallow'
+					attributes: 'data-validation-disallow',
+					classes: [ 'disallowed-class' ],
+					styles: {
+						color: 'red'
+					}
 				}
 			]
 		}
@@ -71,13 +79,21 @@ ClassicEditor
 			allow: [
 				{
 					name: /^(figure|custom-oembed)$/,
-					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
+					attributes: [ 'data-validation-allow', 'data-validation-disallow' ],
+					classes: [ 'allowed-class' ],
+					styles: {
+						color: 'blue'
+					}
 				}
 			],
 			disallow: [
 				{
 					name: /^(figure|custom-oembed)$/,
-					attributes: 'data-validation-disallow'
+					attributes: 'data-validation-disallow',
+					classes: [ 'disallowed-class' ],
+					styles: {
+						color: 'red'
+					}
 				}
 			]
 		}
