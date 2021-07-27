@@ -13,7 +13,7 @@ import { uid } from 'ckeditor5/src/utils';
 /**
  * The HTML comment feature.
  *
- * For a detailed overview, check the {@glink features/html-comment HTML comment feature documentation}.
+ * For a detailed overview, check the {@glink features/general-html-support#html-comments HTML comment feature documentation}.
  *
  * @extends module:core/plugin~Plugin
  */

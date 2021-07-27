@@ -3,56 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
-
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+/* globals console, window, document, ClassicEditor, GeneralHtmlSupport */
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-general-html-support' ), {
-		plugins: [
-			ArticlePluginSet,
-			Code,
-			EasyImage,
-			ImageUpload,
-			CloudServices,
-			SourceEditing,
-			GeneralHtmlSupport
-		],
-		toolbar: {
-			items: [
-				'sourceEditing',
-				'|',
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'code',
-				'bulletedList',
-				'numberedList',
-				'|',
-				'outdent',
-				'indent',
-				'|',
-				'blockQuote',
-				'link',
-				'mediaEmbed',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
-		},
+		extraPlugins: [ GeneralHtmlSupport ],
 		image: {
 			toolbar: [
 				'imageStyle:inline',
@@ -66,8 +21,6 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
-		cloudServices: CS_CONFIG,
-
 		htmlSupport: {
 			allow: [
 				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
