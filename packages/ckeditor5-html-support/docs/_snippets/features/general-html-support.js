@@ -17,6 +17,8 @@ import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices'
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
+import './general-html-support.css';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-general-html-support' ), {
 		plugins: [
