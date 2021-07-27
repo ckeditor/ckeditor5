@@ -8,9 +8,10 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
+
 import { disallowedAttributesConverter } from '../converters';
 import { setViewAttributes } from '../conversionutils.js';
-
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
 
@@ -40,17 +41,13 @@ export default class MediaEmbedElementSupport extends Plugin {
 		const mediaElementName = editor.config.get( 'mediaEmbed.elementName' );
 
 		// Overwrite GHS schema definition for a given elementName.
-		dataSchema.registerInlineElement( {
-			model: 'htmlOembed',
-			view: mediaElementName,
-			isObject: true,
-			modelSchema: {
-				inheritAllFrom: '$htmlObjectInline'
-			}
+		dataSchema.registerBlockElement( {
+			model: 'media',
+			view: mediaElementName
 		} );
 
 		dataFilter.on( `register:${ mediaElementName }`, ( evt, definition ) => {
-			if ( definition.model !== 'htmlOembed' ) {
+			if ( definition.model !== 'media' ) {
 				return;
 			}
 
@@ -74,22 +71,41 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 			const viewFigureElement = data.viewItem;
-			const viewMediaElement = Array.from( viewFigureElement.getChildren() )
-				.find( item => item.is( 'element', mediaElementName ) );
 
-			if ( !viewMediaElement ) {
+			// Convert only "media figure" elements.
+			if ( !conversionApi.consumable.test( viewFigureElement, { name: true, class: 'media' } ) ) {
 				return;
 			}
 
-			// If the range is not created yet, let's create it by converting children of the current node first.
-			if ( !data.modelRange ) {
-				// Convert children and set conversion result as a current data.
-				Object.assign( data, conversionApi.convertChildren( viewFigureElement, data.modelCursor ) );
+			// Find media element.
+			const viewMediaElement = Array.from( viewFigureElement.getChildren() )
+				.find( item => item.is( 'element', mediaElementName ) );
+
+			// Do not convert if media element is absent or was already converted.
+			if ( !viewMediaElement || !conversionApi.consumable.test( viewMediaElement, { name: true } ) ) {
+				return;
 			}
+
+			// Convert view figure to model figure.
+			const conversionResult = conversionApi.convertItem( viewMediaElement, data.modelCursor );
+
+			// Get media element from conversion result.
+			const modelMediaElement = first( conversionResult.modelRange.getItems() );
+
+			// When media wasn't successfully converted then finish conversion.
+			if ( !modelMediaElement ) {
+				return;
+			}
+
+			// Convert the rest of the figure element's children as an media children.
+			conversionApi.convertChildren( viewFigureElement, conversionApi.writer.createPositionAt( modelMediaElement, 'end' ) );
+
+			conversionApi.updateConversionResult( modelMediaElement, data );
 
 			preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
 			preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
 
+			// Consume the figure to prevent converting it to `htmlFigure` by default GHS converters.
 			conversionApi.consumable.consume( viewFigureElement, { name: true } );
 
 			function preserveElementAttributes( viewElement, attributeName ) {
@@ -99,7 +115,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
-		} );
+		}, { priority: 'high' } );
 
 		// Handle media elements without `<figure>` container.
 		dispatcher.on( `element:${ mediaElementName }`, ( evt, data, conversionApi ) => {

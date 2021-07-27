@@ -12,7 +12,7 @@ import { range } from 'lodash-es';
 
 /* global document */
 
-describe( 'MediaEmbedElementSupport', () => {
+describe.only( 'MediaEmbedElementSupport', () => {
 	describe( 'MediaEmbed feature is available', () => {
 		let editor, model, editorElement, dataFilter;
 
