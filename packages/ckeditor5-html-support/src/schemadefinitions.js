@@ -789,6 +789,14 @@ export default {
 			}
 		},
 		{
+			model: 'htmlOembed',
+			view: 'oembed',
+			isObject: true,
+			modelSchema: {
+				inheritAllFrom: '$htmlObjectInline'
+			}
+		},
+		{
 			model: 'htmlAudio',
 			view: 'audio',
 			isObject: true,
