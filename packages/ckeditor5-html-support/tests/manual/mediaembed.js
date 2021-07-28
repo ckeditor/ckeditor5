@@ -33,7 +33,7 @@ ClassicEditor
 			allow: [
 				{
 					name: /^(figure|oembed)$/,
-					attributes: [ 'data-validation-allow', 'data-validation-disallow' ],
+					attributes: [ 'data-validation-allow' ],
 					classes: [ 'allowed-class' ],
 					styles: {
 						color: 'blue'
@@ -79,7 +79,7 @@ ClassicEditor
 			allow: [
 				{
 					name: /^(figure|custom-oembed)$/,
-					attributes: [ 'data-validation-allow', 'data-validation-disallow' ],
+					attributes: [ 'data-validation-allow' ],
 					classes: [ 'allowed-class' ],
 					styles: {
 						color: 'blue'
