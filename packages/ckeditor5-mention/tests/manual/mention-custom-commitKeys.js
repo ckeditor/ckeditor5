@@ -125,7 +125,7 @@ ClassicEditor
 			tableToolbar: [ 'bold', 'italic' ]
 		},
 		mention: {
-			commitKeys: [ keyCodes.a, keyCodes.space, keyCodes.space ],
+			commitKeys: [ keyCodes.a, keyCodes.space ],
 			feeds: [
 				{
 					marker: '@',

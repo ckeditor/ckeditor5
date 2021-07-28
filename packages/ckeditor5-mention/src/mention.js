@@ -106,7 +106,7 @@ export default class Mention extends Plugin {
  */
 
 /**
- * The configuration of the custom commitKeys support by the editor
+ * The configuration of the custom commit keys support by the editor
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -122,10 +122,14 @@ export default class Mention extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * You can use as many mention commitKeys, but they have to use different keyCodes.
- * For example, you can use the custom configuration to commit by using either `keyCode.enter` or `keyCode.space`.
+ * Custom commit keys configuration allows you to customize how users will confirm the selection of mentions from the dropdown list.
+ * You can add as many mention commit keys as you need, but they all have to use different
+ * {@link module:engine/view/observer/keyobserver~KeyEventData#keyCode} keyCodes and only
+ * key names included in the {@link module:utils/keyboard~keyCodes}.
+ * For example, you can add custom configuration to select mentions by using either `keyCode.enter` or `keyCode.space` as shown above.
  *
  * @member {Array.<module:mention/mention~MentionFeed>} module:mention/mention~MentionConfig#commitKeys
+ * @default [ 'enter', 'tab' ]
  */
 
 /**

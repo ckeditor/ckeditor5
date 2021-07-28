@@ -94,8 +94,7 @@ export default class MentionUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		const configCommitKeys = editor.config.get( 'mention.commitKeys' );
-		const commitKeys = Array.isArray( configCommitKeys ) ? configCommitKeys : defaultCommitKeyCodes;
+		const commitKeys = editor.config.get( 'mention.commitKeys' ) || defaultCommitKeyCodes;
 		const handledKeyCodes = defaultHandledKeyCodes.concat( commitKeys );
 
 		/**
