@@ -12,12 +12,15 @@ import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imag
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 import PictureEditing from '@ckeditor/ckeditor5-image/src/pictureediting';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import LinkImageEditing from '../src/linkimageediting';
 import LinkEditing from '../src/linkediting';
 
 describe( 'LinkImageEditing', () => {
 	let editor, model, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -108,6 +111,23 @@ describe( 'LinkImageEditing', () => {
 						'</a>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'should be overridable', () => {
+				const spy = sinon.spy();
+
+				editor.data.downcastDispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, { consumable } ) => {
+					consumable.consume( data.item, evt.name );
+
+					spy();
+				}, { priority: 'highest' } );
+
+				setModelData( model, '<imageBlock src="/assets/sample.png" alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
+
+				expect( editor.getData() ).to.equal(
+					'<figure class="image"><img alt="alt text" src="/assets/sample.png"></figure>'
+				);
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'should convert a link containing an inline image as a single anchor element in data', async () => {
@@ -433,6 +453,25 @@ describe( 'LinkImageEditing', () => {
 						'<img alt="alt text" src="/assets/sample.png"></img>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'should be overridable', () => {
+				const spy = sinon.spy();
+
+				editor.editing.downcastDispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, { consumable } ) => {
+					consumable.consume( data.item, evt.name );
+
+					spy();
+				}, { priority: 'highest' } );
+
+				setModelData( model, '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png" alt="alt text"></imageBlock>' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<figure class="ck-widget image" contenteditable="false">' +
+						'<img alt="alt text" src="/assets/sample.png"></img>' +
+					'</figure>'
+				);
+				expect( spy.calledOnce ).to.be.true;
 			} );
 
 			it( 'should link a text including an inline image as a single anchor element', async () => {

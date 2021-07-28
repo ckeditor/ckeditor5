@@ -182,6 +182,10 @@ function downcastImageLink( editor ) {
 
 	return dispatcher => {
 		dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				return;
+			}
+
 			// The image will be already converted - so it will be present in the view.
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const writer = conversionApi.writer;
@@ -211,7 +215,7 @@ function downcastImageLink( editor ) {
 				// 3. Move the image to the link.
 				writer.move( writer.createRangeOn( viewImgOrPicture ), writer.createPositionAt( linkElement, 0 ) );
 			}
-		} );
+		}, { priority: 'high' } );
 	};
 }
 
