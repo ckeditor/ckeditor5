@@ -250,7 +250,7 @@ We're open for feedback, so if you find any issue, feel free to report it in the
 
 ## HTML comments
 
-By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. during {@link builds/guides/integration/saving-data saving the editor data}. Comments are transparent from the user point of view and they are not displayed in the editable element.
+By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link builds/guides/integration/saving-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
 
 <info-box>
 	The HTML comment feature is **experimental and not yet production-ready**.
@@ -260,7 +260,7 @@ By default, all HTML comments are filtered out during the editor initialization.
 
 ### Demo
 
-The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that HTML comment is present in the document source. You can uncomment the paragraph that is below the picture and after leaving the source editing mode, you will see this paragraph in the editable area.
+The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that the HTML comment is present in the document source. You can uncomment the paragraph below the picture and upon leaving the source editing mode, you will see this paragraph in the editable area.
 
 {@snippet features/html-comment}
 
@@ -293,9 +293,9 @@ HTML comment feature does not require any configuration.
 
 ### Known issues
 
-The main issue in HTML comment feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
+The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
 
-We're open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
+We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 
 ## Related features
 
