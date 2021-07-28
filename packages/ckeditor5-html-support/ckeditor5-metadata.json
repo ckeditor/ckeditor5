@@ -40,7 +40,7 @@
 		{
 			"name": "HTML comment",
 			"className": "HtmlComment",
-			"description": "Preserves HTML comments in the editor data.",
+			"description": "Preserves the HTML comments in the editor data.",
 			"docs": "features/general-html-support.html#html-comments",
 			"path": "src/htmlcomment.js"
 		}
