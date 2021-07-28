@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Range, DocumentFragment, HTMLElement, document, Text */
+/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text */
 
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
+import ViewUIElement from '../../../src/view/uielement';
 import ViewPosition from '../../../src/view/position';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttributeElement from '../../../src/view/attributeelement';
@@ -184,6 +185,34 @@ describe( 'DomConverter', () => {
 			const domSvg = converter.viewToDom( viewSvg, document );
 
 			expect( domSvg.createSVGRect ).to.be.a( 'function' );
+		} );
+
+		it( 'should create a DOM comment node from a view `$comment` UIElement', () => {
+			const viewComment = new ViewUIElement( viewDocument, '$comment' );
+
+			viewComment._setCustomProperty( '$rawContent', 'foo' );
+
+			const domComment = converter.viewToDom( viewComment, document );
+
+			expect( domComment ).to.be.an.instanceof( Comment );
+			expect( domComment.nodeName ).to.equal( '#comment' );
+			expect( domComment.data ).to.equal( 'foo' );
+
+			expect( converter.mapDomToView( domComment ) ).to.not.equal( viewComment );
+		} );
+
+		it( 'should create a DOM comment node from a view `$comment` UIElement and bind them', () => {
+			const viewComment = new ViewUIElement( viewDocument, '$comment' );
+
+			viewComment._setCustomProperty( '$rawContent', 'foo' );
+
+			const domComment = converter.viewToDom( viewComment, document, { bind: true } );
+
+			expect( domComment ).to.be.an.instanceof( Comment );
+			expect( domComment.nodeName ).to.equal( '#comment' );
+			expect( domComment.data ).to.equal( 'foo' );
+
+			expect( converter.mapDomToView( domComment ) ).to.equal( viewComment );
 		} );
 
 		describe( 'it should convert spaces to &nbsp;', () => {

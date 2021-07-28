@@ -224,4 +224,62 @@ describe( 'Table feature – integration with markers', () => {
 		expect( getModelData( editor.model, { withoutSelection: true } ) )
 			.to.equal( '<table><tableRow><tableCell><paragraph></paragraph></tableCell></tableRow></table>' );
 	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/10116
+	describe( 'markers converted to UI elements and vice versa', () => {
+		function CustomPlugin( editor ) {
+			editor.conversion.for( 'upcast' ).elementToMarker( { view: 'foo', model: 'bar' } );
+			editor.conversion.for( 'dataDowncast' ).markerToElement( { view: 'foo', model: 'bar' } );
+		}
+
+		beforeEach( async () => {
+			editor = await ClassicTestEditor.create( '', { plugins: [ CustomPlugin, Paragraph, TableEditing ] } );
+		} );
+
+		it( 'should not throw if marker is inside an empty table cell', async () => {
+			editor.setData( '<table><tr><td><foo></foo></td></tr></table>' );
+
+			expect( () => editor.getData() ).to.not.throw();
+		} );
+
+		it( 'should adjust the model position mapping - table cell containing marker only', async () => {
+			editor.setData( '<table><tr><td><foo></foo></td></tr></table>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should adjust the model position mapping - table cell containing marker preceded by an empty paragraph', async () => {
+			editor.setData( '<table><tr><td><p></p><foo></foo></td></tr></table>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should adjust the model position mapping - table cell containing marker followed by an empty paragraph', async () => {
+			editor.setData( '<table><tr><td><foo></foo><p></p></td></tr></table>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td><foo></foo>&nbsp;</td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should adjust the model position mapping - table cell containing marker preceded by a non-empty paragraph', async () => {
+			editor.setData( '<table><tr><td><p>foobar</p><foo></foo></td></tr></table>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td>foobar<foo></foo></td></tr></tbody></table></figure>'
+			);
+		} );
+
+		it( 'should adjust the model position mapping - table cell containing marker followed by a non-empty paragraph', async () => {
+			editor.setData( '<table><tr><td><foo></foo><p>foobar</p></td></tr></table>' );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="table"><table><tbody><tr><td><foo></foo>foobar</td></tr></tbody></table></figure>'
+			);
+		} );
+	} );
 } );
