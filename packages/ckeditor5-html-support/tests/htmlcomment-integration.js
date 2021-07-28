@@ -569,7 +569,7 @@ describe( 'HtmlComment integration', () => {
 				'<p>' +
 					'<!-- c1 -->' +
 					'<a href="path/to/resource">' +
-						'Link with inline image:' +
+						'Link with inline image: ' +
 						'<!-- c2 -->' +
 						'<img src="/assets/sample.png" alt="Example image">' +
 					'</a>' +
@@ -595,7 +595,7 @@ describe( 'HtmlComment integration', () => {
 				'<p>' +
 					'<!-- c1 -->' +
 					'<a target="_blank" rel="noopener noreferrer" href="http://example.com">' +
-						'External link with inline image:' +
+						'External link with inline image: ' +
 						'<!-- c2 -->' +
 						'<img src="/assets/sample.png" alt="Example image">' +
 					'</a>' +
