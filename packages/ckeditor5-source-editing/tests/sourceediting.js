@@ -164,6 +164,34 @@ describe( 'SourceEditing', () => {
 
 			await editor.destroy();
 		} );
+
+		it( 'should display a warning in the console if restricted editing plugin is loaded', async () => {
+			sinon.stub( console, 'warn' );
+
+			class RestrictedEditingModeEditing extends Plugin {
+				static get pluginName() {
+					return 'RestrictedEditingModeEditing';
+				}
+			}
+
+			const editorElement = document.body.appendChild( document.createElement( 'div' ) );
+
+			const editor = await ClassicTestEditor.create( editorElement, {
+				plugins: [ SourceEditing, Paragraph, Essentials, RestrictedEditingModeEditing ],
+				initialData: '<p>Foo</p>'
+			} );
+
+			expect( console.warn.calledOnce ).to.be.true;
+			expect( console.warn.firstCall.args[ 0 ] ).to.equal(
+				'You initialized the editor with the source editing feature and restricted editing feature. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the restricted editing feature.'
+			);
+
+			editorElement.remove();
+
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'default listener', () => {
