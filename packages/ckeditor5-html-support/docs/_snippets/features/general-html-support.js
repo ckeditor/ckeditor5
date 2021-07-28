@@ -3,29 +3,16 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, ClassicEditor, GeneralHtmlSupport, ArticlePluginSet */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 import './general-html-support.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-general-html-support' ), {
-		plugins: [
+		extraPlugins: [
 			ArticlePluginSet,
-			Code,
-			EasyImage,
-			ImageUpload,
-			CloudServices,
-			SourceEditing,
 			GeneralHtmlSupport
 		],
 		toolbar: {

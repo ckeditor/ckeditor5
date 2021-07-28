@@ -16,6 +16,7 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 
 import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 ClassicEditor.builtinPlugins.push(
 	CloudServices,
@@ -55,3 +56,4 @@ ClassicEditor.defaultConfig = {
 window.ClassicEditor = ClassicEditor;
 window.GeneralHtmlSupport = GeneralHtmlSupport;
 window.HtmlComment = HtmlComment;
+window.ArticlePluginSet = ArticlePluginSet;
