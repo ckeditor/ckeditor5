@@ -18,7 +18,7 @@
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-dev-utils": "^25.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^25.3.0",
     "@ckeditor/ckeditor5-basic-styles": "^29.0.0",
     "@ckeditor/ckeditor5-core": "^29.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^29.0.0",
