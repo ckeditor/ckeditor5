@@ -88,7 +88,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 		const viewMediaElement = Array.from( viewFigureElement.getChildren() )
 			.find( item => item.is( 'element', mediaElementName ) );
 
-		// Do not convert if media element is absent or was already converted.
+		// Do not convert if media element is absent.
 		if ( !viewMediaElement ) {
 			return;
 		}
