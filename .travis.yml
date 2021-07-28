@@ -8,7 +8,6 @@ branches:
   - stable
   - release
   - /^v\d+\.\d+\.\d+$/
-  - ck/8822-html-comment
 services:
 - xvfb
 node_js:
