@@ -431,6 +431,11 @@ BalloonPanelView.arrowHorizontalOffset = 25;
 BalloonPanelView.arrowVerticalOffset = 10;
 
 /**
+ * TODO
+ */
+BalloonPanelView.stickyVerticalOffset = 20;
+
+/**
  * Function used to calculate the optimal position for the balloon.
  *
  * @protected
@@ -946,7 +951,7 @@ BalloonPanelView.defaultPositions = {
 		}
 
 		return {
-			top: viewportRect.top + 10,
+			top: viewportRect.top + BalloonPanelView.stickyVerticalOffset,
 			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 			name: 'arrow_less',
 			withArrow: false

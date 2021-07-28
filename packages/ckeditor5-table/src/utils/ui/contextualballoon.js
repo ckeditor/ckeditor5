@@ -7,7 +7,6 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { centeredBalloonPositionForLongWidgets } from 'ckeditor5/src/widget';
 import { Rect } from 'ckeditor5/src/utils';
 import { BalloonPanelView } from 'ckeditor5/src/ui';
 
@@ -31,39 +30,8 @@ const TABLE_CELL_PROPS_BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast,
-
-	( targetRect, balloonRect, viewportRect ) => {
-		if ( targetRect.bottom > viewportRect.top ) {
-			return null;
-		}
-
-		return {
-			top: viewportRect.top + 10,
-			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 'arrow_less',
-			withArrow: false
-		};
-	},
-
-	( targetRect, balloonRect, viewportRect ) => {
-		if ( targetRect.top < viewportRect.bottom ) {
-			return null;
-		}
-
-		return {
-			top: viewportRect.bottom - balloonRect.height - 10,
-			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 'arrow_less',
-			withArrow: false
-		};
-	}
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
 ];
-
-// const TABLE_PROPERTIES_BALLOON_POSITIONS = [
-// 	...BALLOON_POSITIONS,
-// 	centeredBalloonPositionForLongWidgets
-// ];
 
 /**
  * A helper utility that positions the
