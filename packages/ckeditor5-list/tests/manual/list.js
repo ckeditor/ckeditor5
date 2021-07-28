@@ -51,30 +51,28 @@ ClassicEditor
 
 const actions = {
 	'Reset': () => setData(),
-	'Indent at 1': ( writer, root ) => {
-		writer.setAttribute( 'listIndent', 1, root.getChild( 1 ) );
+	'Set attribute at 0': ( writer, root ) => {
+		writer.setAttribute( 'listItem', uid(), root.getChild( 0 ) );
+	},
+	'Set attribute at 1': ( writer, root ) => {
 		writer.setAttribute( 'listItem', uid(), root.getChild( 1 ) );
 	},
-	'Make list item at 0': ( writer, root ) => {
-		const id = uid();
-
-		writer.setAttribute( 'listItem', id, root.getChild( 0 ) );
+	'Set attribute at 2': ( writer, root ) => {
+		writer.setAttribute( 'listItem', uid(), root.getChild( 2 ) );
 	},
-	'Make list item at 1': ( writer, root ) => {
-		const id = uid();
-
-		writer.setAttribute( 'listItem', id, root.getChild( 1 ) );
-	},
-	'Remove list attr at 0': ( writer, root ) => {
+	'Remove attribute at 0': ( writer, root ) => {
 		writer.removeAttribute( 'listItem', root.getChild( 0 ) );
 	},
-	'Remove list attr at 1': ( writer, root ) => {
+	'Remove attribute at 1': ( writer, root ) => {
 		writer.removeAttribute( 'listItem', root.getChild( 1 ) );
 	},
-	'Remove list attr at 2': ( writer, root ) => {
+	'Remove attribute at 2': ( writer, root ) => {
 		writer.removeAttribute( 'listItem', root.getChild( 2 ) );
 	},
-	'Remove list attr at 2 & 3': ( writer, root ) => {
+	'Remove attribute at 3': ( writer, root ) => {
+		writer.removeAttribute( 'listItem', root.getChild( 3 ) );
+	},
+	'Remove attribute at 2 & 3': ( writer, root ) => {
 		writer.removeAttribute( 'listItem', root.getChild( 2 ) );
 		writer.removeAttribute( 'listItem', root.getChild( 3 ) );
 	},
@@ -86,6 +84,9 @@ const actions = {
 	},
 	'Remove at 2': ( writer, root ) => {
 		writer.remove( root.getChild( 2 ) );
+	},
+	'Insert at 2': ( writer, root ) => {
+		writer.insertElement( 'paragraph', root, 2 );
 	},
 	'Insert list at 2': ( writer, root ) => {
 		writer.insertElement( 'paragraph', { listItem: uid() }, root, 2 );
@@ -121,7 +122,7 @@ function setData() {
 		'<paragraph listIndent="0" listItem="a0" listType="bulleted">Foo</paragraph>' +
 		'<paragraph listIndent="0" listItem="a1" listType="bulleted">Bar</paragraph>' +
 		// '<paragraph listIndent="0" listItem="a2" listType="bulleted">zzz</paragraph>' +
-		'<paragraph>plain</paragraph>' +
+		'<paragraph>after</paragraph>' +
 		// '</blockQuote>' +
 
 		// '<heading1 listIndent="0" listItem="b" listType="bulleted">Aaa</heading1>' +

@@ -29,6 +29,14 @@ export default class MappedRangeCollection {
 		 * @private
 		 */
 		this._changedRanges = new Map();
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._affectedChanges = new Map();
+
+		this._removeRanges = new Map();
 	}
 
 	/**
@@ -64,6 +72,7 @@ export default class MappedRangeCollection {
 								// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
 								this._updateRange( mappedRange, newRange, true );
+								this._affectedChanges.set( change, null );
 								wasHandled = true;
 							} else if ( !newRange.isEqual( mappedRange ) ) {
 								// @if CK_DEBUG // console.log( '-- range move',
@@ -100,6 +109,7 @@ export default class MappedRangeCollection {
 						// @if CK_DEBUG // console.log( '-- new range', range.start.path + '-' + range.end.path );
 
 						this._createRange( range );
+						this._affectedChanges.set( change, null );
 					}
 				}
 			} else if ( change.type == 'remove' ) {
@@ -114,6 +124,7 @@ export default class MappedRangeCollection {
 						// @if CK_DEBUG // console.log( '-- range removed', mappedRange.start.path + '-' + mappedRange.end.path );
 
 						this._deleteRange( mappedRange );
+						this._affectedChanges.set( change, null );
 
 						continue;
 					}
@@ -128,6 +139,7 @@ export default class MappedRangeCollection {
 						// @if CK_DEBUG // 		'to', newRange.start.path + '-' + newRange.end.path );
 
 						this._updateRange( mappedRange, newRange, true );
+						this._affectedChanges.set( change, null );
 					} else {
 						// @if CK_DEBUG // console.log( '-- range move',
 						// @if CK_DEBUG // 		mappedRange.start.path + '-' + mappedRange.end.path,
@@ -163,6 +175,7 @@ export default class MappedRangeCollection {
 								// @if CK_DEBUG // 		mappedRange.start.path + '-' + mappedRange.end.path );
 
 								this._updateRange( mappedRange, mappedRange, true );
+								this._affectedChanges.set( change, null );
 								wasHandled = true;
 							}
 						}
@@ -184,17 +197,37 @@ export default class MappedRangeCollection {
 
 								this._updateRange( mappedRange, newRanges[ 0 ], true );
 								this._createRange( newRanges[ 1 ] );
+
+								this._affectedChanges.set( change, {
+									type: 'insert',
+									name: changedRange.start.nodeAfter.name,
+									position: changedRange.start,
+									length: 1
+								} );
 							} else if ( newRanges.length ) {
 								// @if CK_DEBUG // console.log( '-- range shrink',
 								// @if CK_DEBUG // 		mappedRange.start.path + '-' + mappedRange.end.path,
 								// @if CK_DEBUG // 		'to', newRanges[ 0 ].start.path + '-' + newRanges[ 0 ].end.path );
 
 								this._updateRange( mappedRange, newRanges[ 0 ], true );
+
+								this._affectedChanges.set( change, {
+									type: 'insert',
+									name: changedRange.start.nodeAfter.name,
+									position: changedRange.start,
+									length: 1
+								} );
 							} else {
 								// @if CK_DEBUG // console.log( '-- range removed',
 								// @if CK_DEBUG // 		mappedRange.start.path + '-' + mappedRange.end.path );
 
 								this._deleteRange( mappedRange );
+								this._affectedChanges.set( change, {
+									type: 'insert',
+									name: changedRange.start.nodeAfter.name,
+									position: changedRange.start,
+									length: 1
+								} );
 							}
 						}
 
@@ -204,6 +237,7 @@ export default class MappedRangeCollection {
 							// @if CK_DEBUG // 		mappedRange.start.path + '-' + mappedRange.end.path );
 
 							this._updateRange( mappedRange, mappedRange, true );
+							this._affectedChanges.set( change, null );
 						}
 					}
 
@@ -212,6 +246,12 @@ export default class MappedRangeCollection {
 						// @if CK_DEBUG // console.log( '-- new range', changedRange.start.path + '-' + changedRange.end.path );
 
 						this._createRange( changedRange );
+						this._affectedChanges.set( change, {
+							type: 'remove',
+							name: changedRange.start.nodeAfter.name,
+							position: changedRange.start,
+							length: 1
+						} );
 					}
 				}
 			}
@@ -228,16 +268,111 @@ export default class MappedRangeCollection {
 
 	getRangesChanges() {
 		return Array.from( this._changedRanges.entries() )
-			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path )
+			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path );
 	}
 
-	getReducedChanges( name, changes ) {
-		// TODO
-		return changes;
+	getReducedChanges( changes ) {
+		const replacedChanges = [];
+
+		for ( const change of changes ) {
+			if ( this._affectedChanges.has( change ) ) {
+				const newChange = this._affectedChanges.get( change );
+
+				if ( newChange ) {
+					replacedChanges.push( newChange );
+				}
+			} else {
+				replacedChanges.push( change );
+			}
+		}
+
+		const insertRanges = new Set();
+		const removeRanges = new Set();
+
+		for ( const [ range, type ] of this._changedRanges.entries() ) {
+			if ( type != 'create' ) {
+				removeRanges.add( range );
+			}
+			if ( type != 'delete' ) {
+				insertRanges.add( range );
+			}
+		}
+
+		const reduceDeletions = ( changes, removeRanges ) => {
+			const reducedChanges = [];
+
+			for ( let i = 0; i <= changes.length; i++ ) {
+				const change = i < changes.length ? changes[ i ] : null;
+				const position = change ? change.position || change.range.start : null;
+				let wasHandled = false;
+
+				for ( const range of Array.from( removeRanges ) ) {
+					const originalRange = this._removeRanges.get( range );
+
+					if ( !change || position.isEqual( originalRange.start ) || position.isAfter( originalRange.start ) ) {
+						if ( change && position.isEqual( originalRange.start ) ) {
+							reducedChanges.push( change );
+							wasHandled = true;
+						}
+
+						reducedChanges.push( {
+							type: 'removeRange',
+							range
+						} );
+
+						removeRanges.delete( range );
+					}
+				}
+
+				if ( !wasHandled && change ) {
+					reducedChanges.push( change );
+				}
+			}
+
+			return reducedChanges;
+		};
+
+		const reduceInsertions = ( changes, insertRanges ) => {
+			const reducedChanges = [];
+
+			for ( let i = changes.length - 1; i >= -1; i-- ) {
+				const change = i >= 0 ? changes[ i ] : null;
+				const position = change ? change.position || change.range.start : null;
+				let wasHandled = false;
+
+				for ( const range of Array.from( insertRanges ) ) {
+					if ( !change || range == change.range || position.isEqual( range.end ) || position.isBefore( range.end ) ) {
+						if ( change && range != change.range && position.isEqual( range.end ) ) {
+							reducedChanges.push( change );
+							wasHandled = true;
+						}
+
+						reducedChanges.push( {
+							type: 'insertRange',
+							range
+						} );
+
+						insertRanges.delete( range );
+					}
+				}
+
+				if ( !wasHandled && change ) {
+					reducedChanges.push( change );
+				}
+			}
+
+			return reducedChanges.reverse();
+		}
+
+		const changesWithDeletions = reduceDeletions( replacedChanges, removeRanges );
+		const reducedChanges = reduceInsertions( changesWithDeletions, insertRanges );
+
+		return reducedChanges;
 	}
 
 	clearChanges() {
 		this._changedRanges.clear();
+		this._affectedChanges.clear();
 	}
 
 	_createRange( range ) {
@@ -253,7 +388,7 @@ export default class MappedRangeCollection {
 			return;
 		}
 
-		const mappedRange = MappedRange._createMappedRange( range.start, range.end );
+		const mappedRange = MappedRange._createMappedRange( range.start, range.end, 'list' );
 
 		this._ranges.push( mappedRange );
 		this._changedRanges.set( mappedRange, 'create' );
@@ -277,24 +412,36 @@ export default class MappedRangeCollection {
 			return;
 		}
 
+		if ( triggerReconversion && !this._changedRanges.has( mappedRange ) ) {
+			this._changedRanges.set( mappedRange, 'update' );
+			this._removeRanges.set( mappedRange, MappedRange._createMappedRange( mappedRange.start, mappedRange.start, mappedRange.name ) );
+		}
+
 		// TODO custom protected setters (those are read only in Range).
 		mappedRange.start = newRange.start;
 		mappedRange.end = newRange.end;
-
-		if ( triggerReconversion && !this._changedRanges.has( mappedRange ) ) {
-			this._changedRanges.set( mappedRange, 'update' );
-		}
 	}
 
 	_deleteRange( mappedRange ) {
 		this._ranges.splice( this._ranges.indexOf( mappedRange ), 1 );
 		this._changedRanges.set( mappedRange, 'delete' );
+		this._removeRanges.set( mappedRange, mappedRange );
 	}
 }
 
 class MappedRange extends Range {
-	static _createMappedRange( start, end ) {
-		return new this( start, end );
+	constructor( start, end, name ) {
+		super( start, end );
+
+		/**
+		 * TODO
+		 * @readonly
+		 */
+		this.name = name;
+	}
+
+	static _createMappedRange( start, end, name ) {
+		return new this( start, end, name );
 	}
 }
 

@@ -1081,11 +1081,11 @@ function insertStructure( elementCreator ) {
 	};
 }
 
-export function insertSlotted( data, conversionApi, elementCreator ) {
+export function insertSlotted( range, conversionApi, elementCreator ) {
 	const { writer, mapper, consumable } = conversionApi;
 
 	// Scan for elements and it's current mapped view elements.
-	const elements = Array.from( data.range.getItems( { shallow: true } ) );
+	const elements = Array.from( range.getItems( { shallow: true } ) );
 	// const consumables = data.consumables || elements.map( element => [ element, 'insert' ] );
 	const consumables = []; // TODO
 
@@ -1126,7 +1126,7 @@ export function insertSlotted( data, conversionApi, elementCreator ) {
 		}
 	}
 
-	const viewPosition = mapper.toViewPosition( data.range.start );
+	const viewPosition = mapper.toViewPosition( range.start );
 
 	// TODO make sure that provided viewElement has no bindings (else there could be an infinite loop).
 
@@ -1147,7 +1147,7 @@ export function insertSlotted( data, conversionApi, elementCreator ) {
 				for ( const modelChildNode of element.getChildren() ) {
 					const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
 
-					if ( data.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
+					if ( range.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) { // TODO ???
 						writer.move(
 							writer.createRangeOn( viewChildNode ),
 							mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
@@ -1172,7 +1172,7 @@ export function insertSlotted( data, conversionApi, elementCreator ) {
 				// TODO probably all parents that have no mapping yet (so excluding main viewElement)
 				mapper.bindElements( element, slot.parent );
 
-				// if ( data.reconversion && currentViewElement && currentViewElement.root != viewElement.root ) {
+				// if ( range.reconversion && currentViewElement && currentViewElement.root != viewElement.root ) { // TODO ???
 				// 	writer.move(
 				// 		writer.createRangeOn( currentViewElement ),
 				// 		mapper.toViewPosition( ModelPosition._createBefore( element ) )

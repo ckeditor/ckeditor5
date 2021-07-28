@@ -166,9 +166,9 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'reconvert' ) {
 				this.reconvertElement( entry.element, entry.related, writer );
 			} else if ( entry.type === 'insertRange' ) {
-				this.convertInsertRange( entry.list.range, entry, writer );
+				this.convertInsertRange( entry.range, writer );
 			} else if ( entry.type === 'removeRange' ) {
-				this.convertRemoveRange( entry, writer );
+				this.convertRemoveRange( entry.range, writer );
 			} else if ( entry.type === 'attribute' ) {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -300,7 +300,7 @@ export default class DowncastDispatcher {
 	/**
 	 * TODO
 	 */
-	convertInsertRange( range, data, writer ) {
+	convertInsertRange( range, writer ) {
 		const mapper = this.conversionApi.mapper;
 
 		this.conversionApi.writer = writer;
@@ -311,11 +311,7 @@ export default class DowncastDispatcher {
 		const elements = Array.from( range.getItems( { shallow: true } ) );
 
 		// Trigger single insert for magic conversion.
-		this.fire( 'insertRange:' + data.magicUid, {
-			...data,
-			range,
-			reconversion: !!mapper.toViewElement( elements[ 0 ] ) // TODO is this needed?
-		}, this.conversionApi );
+		this.fire( `insertRange:${ range.name }`, { range }, this.conversionApi );
 
 		// Convert the element - without converting children.
 		for ( const element of elements ) {
@@ -340,10 +336,10 @@ export default class DowncastDispatcher {
 	/**
 	 * TODO
 	 */
-	convertRemoveRange( data, writer ) {
+	convertRemoveRange( range, writer ) {
 		this.conversionApi.writer = writer;
 
-		this.fire( 'removeRange:' + data.magicUid, { list: data.list }, this.conversionApi );
+		this.fire( 'removeRange:' + range.name, { range }, this.conversionApi );
 
 		this._clearConversionApi();
 	}

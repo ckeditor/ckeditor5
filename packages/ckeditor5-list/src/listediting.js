@@ -129,10 +129,10 @@ export default class ListEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			// An abstract name of the model structure conversion.
-			const magicUid = uid();
+			const magicUid = 'list';
 
 			dispatcher.on( 'reduceChanges', ( evt, data ) => {
-				const reducedChanges = editor.model.document.mappedRanges.getReducedChanges( 'list', data.changes );
+				const reducedChanges = editor.model.document.mappedRanges.getReducedChanges( data.changes );
 
 				// for ( const change of changes ) {
 				// 	const position = change.position || change.range.start;
@@ -212,21 +212,52 @@ export default class ListEditing extends Plugin {
 
 				data.changes = reducedChanges;
 			} );
+			//
+			// dispatcher.on( `insertRange:${ magicUid }`, ( evt, data, conversionApi ) => {
+			// 	const viewElement = insertSlotted( data, conversionApi, conversionApi => (
+			// 		buildViewForRange( data.range, conversionApi.writer, conversionApi.slotFor )
+			// 	) );
+			//
+			// 	data.list.view = viewElement;
+			// } );
+			//
+			// dispatcher.on( `removeRange:${ magicUid }`, ( evt, data, conversionApi ) => {
+			// 	if ( !data.list.view ) {
+			// 		return;
+			// 	}
+			//
+			// 	const removed = conversionApi.writer.remove( data.list.view );
+			//
+			// 	// After the range is removed, unbind all view elements from the model.
+			// 	// Range inside view document fragment is used to unbind deeply.
+			// 	for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
+			// 		// TODO should conversionApi.unbindViewElement() be called to collect all the mappings before real removal?
+			// 		conversionApi.mapper.unbindViewElement( child );
+			// 	}
+			// } );
 
 			dispatcher.on( `insertRange:${ magicUid }`, ( evt, data, conversionApi ) => {
-				const viewElement = insertSlotted( data, conversionApi, conversionApi => (
+				const viewElement = insertSlotted( data.range, conversionApi, conversionApi => (
 					buildViewForRange( data.range, conversionApi.writer, conversionApi.slotFor )
 				) );
 
-				data.list.view = viewElement;
+				if ( !this._aaa ) {
+					this._aaa = new WeakMap();
+				}
+
+				this._aaa.set( data.range, viewElement );
 			} );
 
 			dispatcher.on( `removeRange:${ magicUid }`, ( evt, data, conversionApi ) => {
-				if ( !data.list.view ) {
+				const viewElement = this._aaa.get( data.range );
+
+				if ( !viewElement ) {
 					return;
 				}
 
-				const removed = conversionApi.writer.remove( data.list.view );
+				this._aaa.delete( data.range );
+
+				const removed = conversionApi.writer.remove( viewElement );
 
 				// After the range is removed, unbind all view elements from the model.
 				// Range inside view document fragment is used to unbind deeply.
