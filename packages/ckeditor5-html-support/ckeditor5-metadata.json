@@ -36,6 +36,13 @@
 			"className": "DataSchema",
 			"description": "Holds representation of the extended HTML document type definitions. Part of General HTML Support feature.",
 			"path": "src/dataschema.js"
+		},
+		{
+			"name": "HTML comment",
+			"className": "HtmlComment",
+			"description": "Preserves HTML comments in the editor data.",
+			"docs": "features/general-html-support.html#html-comments",
+			"path": "src/htmlcomment.js"
 		}
 	]
 }
