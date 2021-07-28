@@ -972,6 +972,21 @@ The data used to generate the following tables comes from the package metadata. 
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/general-html-support.html#html-comments">HTML comment</a>
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_htmlcomment-HtmlComment.html"><code>HtmlComment</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					The plugin can output the HTML comments that exist in the editor data.
+				</p>
+			</td>
+		</tr>
 	</tbody>
 </table>
 <h3 id="ckeditor5-image"><code>ckeditor5-image</code></h3>
