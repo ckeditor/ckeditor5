@@ -45,7 +45,7 @@
 			"path": "src/htmlcomment.js",
 			"htmlOutput": [
 				{
-					"_comment": "The plugin can output the HTML comments that exist in the editor data."
+					"_comment": "The plugin can output HTML comments that were added from the editor inital data or by the plugin API."
 				}
 			]
 		}
