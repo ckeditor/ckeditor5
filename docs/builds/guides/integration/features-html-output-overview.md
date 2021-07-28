@@ -65,7 +65,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
+					<a href="../../../features/images/image-upload/image-upload.html#ckfinder">CKFinder Upload Adapter</a>
 				</p>
 				<p>
 					<a href="../../../api/module_adapter-ckfinder_uploadadapter-CKFinderUploadAdapter.html"><code>CKFinderUploadAdapter</code></a>
@@ -1913,7 +1913,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/collaboration/revision-history" data-skip-validation>Revision History</a>
+					<a href="../../../features/revision-history/revision-history.html" data-skip-validation>Revision History</a>
 				</p>
 				<p>
 					<a href="../../../api/module_revision-history_revisionhistory-RevisionHistory.html" data-skip-validation><code>RevisionHistory</code></a>
