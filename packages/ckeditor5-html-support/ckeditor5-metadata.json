@@ -42,7 +42,12 @@
 			"className": "HtmlComment",
 			"description": "Preserves the HTML comments in the editor data.",
 			"docs": "features/general-html-support.html#html-comments",
-			"path": "src/htmlcomment.js"
+			"path": "src/htmlcomment.js",
+			"htmlOutput": [
+				{
+					"_comment": "The plugin can output the HTML comments that exist in the editor data."
+				}
+			]
 		}
 	]
 }

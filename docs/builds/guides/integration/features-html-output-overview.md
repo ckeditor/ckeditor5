@@ -983,7 +983,7 @@ The data used to generate the following tables comes from the package metadata. 
 			</td>
 			<td class="html-output">
 				<p>
-					None.
+					The plugin can output the HTML comments that exist in the editor data.
 				</p>
 			</td>
 		</tr>
