@@ -4,6 +4,7 @@ menu-title: Source editing
 modified_at: 2021-05-28
 ---
 # Source editing
+{@snippet features/source-editing-imports}
 
 The {@link module:source-editing/sourceediting~SourceEditing} feature provides the ability for viewing and editing the source of the document. The source editing plugin is a low-level document editing interface, while all the buttons and dropdowns located in a editor's toolbar are high-level ones.
 
@@ -15,13 +16,13 @@ The changes made to the document source will be applied to the editor's {@link f
 
 ## Demo
 
-Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or unordered list), and go back to see that they are present in the document content.
-
-{@snippet features/source-editing-imports}
+Use the editor below to see the source editing plugin in action. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing}, make some changes in the HTML code (i.e. add new paragraphs or an ordered list), and go back to see that they are present in the document content. Alternatively use one of the numerous CKEditor 5 features available via the toolbar and observe how they render in the HTML source. Also notice the collapsible table of contents, available thanks to the {@link features/general-html-support General HTML support} feature and introducing HTML elements not covered by official plugins.
 
 {@snippet features/source-editing}
 
-The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. It is enough to add the plugin to the editor to change the source editing mode. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
+## Markdown source view
+
+The source editing plugin also works well with the {@link features/markdown Markdown output} plugin. It is enough to add the plugin to the editor to change the source editing mode. Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 &ndash; either native or introduced via the GHS feature &ndash; can thus be only presented as native HTML as they have no Markdown equivalent and will be stripped in the source view below.
 
 {@snippet features/source-editing-with-markdown}
 
@@ -29,8 +30,10 @@ The source editing plugin also works well with the {@link features/markdown Mark
 
 There are other source-related CKEditor 5 features you may want to check:
 
-* {@link features/general-html-support General HTML support} &ndash; Allows enabling a generic support for additional HTML features.
+* {@link features/general-html-support General HTML support} &ndash; Allows enabling a generic support for additional HTML features not yet covered by official plugins.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor.
+* {@link features/autoformat Autoformatting} &ndash; Allows using Markdown-like shortcodes to format the content on the go.
+* {@link features/markdown Markdown output} &ndash; Allows for Markdown output instead of HTML output.
 
 
 ## Installation
@@ -55,7 +58,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-To achieve Markdown source editing mode just add the {@link module:markdown-gfm/markdown~Markdown} Markdown plugin to the editor.
+To utilize the Markdown source editing mode just add the {@link features/markdown Markdown output} plugin to the editor.
 
 ```js
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
