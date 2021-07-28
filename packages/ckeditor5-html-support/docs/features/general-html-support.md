@@ -6,7 +6,9 @@ updated_at: 2021-06-14
 
 # General HTML Support
 
-The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins. It acts similarly to the {@link @ckeditor4 /guide/dev/acf/README Advanced Content Filtering} feature from CKEditor 4, letting the user expand the list of supported HTML markup in the content.
+{@snippet features/general-html-support-source}
+
+The General HTML Support ("GHS") feature allows developers to easily enable HTML features that are not explicitly supported by any other dedicated CKEditor 5 plugins. It acts similarly to the {@link @ckeditor4 guide/dev/acf/README Advanced Content Filtering} feature from CKEditor 4, letting the user expand the list of supported HTML markup in the content.
 
 Some examples of HTML features that can be easily enabled using General HTML Support include:
 
@@ -27,9 +29,11 @@ The enabled HTML features can be loaded (e.g. via `editor.setData()`), pasted, o
 
 ## Demo
 
-The General HTML Support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.
+Use the {@link features/source-editing source editing feature} toolbar button {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to view and edit the HTML source of the document in the demo below. The configuration of this snippet can be found below the demo editor window.
 
-The demo below uses the following configuration:
+{@snippet features/general-html-support}
+
+The General HTML Support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.  The demo above uses the following configuration:
 
 ```js
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
@@ -75,9 +79,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-{@snippet features/general-html-support-source}
+## Related features
 
-{@snippet features/general-html-support}
+There is a closely related {@link features/source-editing source editing feature} which allows access and edition of the HTML source code of the document. When paired, these two plugins let the user gain powerful control over the content editing.
 
 ## Level of support
 
