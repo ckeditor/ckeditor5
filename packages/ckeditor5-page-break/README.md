@@ -9,11 +9,11 @@ This package implements the page break feature for CKEditor 5.
 
 ## Demo
 
-Check out the demo in the [Page Break feature](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) guide.
+Check out the demo in the [page break feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-page-break` package](https://ckeditor.com/docs/ckeditor5/latest/api/page-break.html) page as well as the [Page break feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-page-break` package](https://ckeditor.com/docs/ckeditor5/latest/api/page-break.html) page as well as the [page break feature](https://ckeditor.com/docs/ckeditor5/latest/features/page-break.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

@@ -7,7 +7,8 @@
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin"
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {

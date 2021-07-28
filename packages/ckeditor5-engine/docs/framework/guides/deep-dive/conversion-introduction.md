@@ -10,7 +10,7 @@ order: 10
 
 # Advanced conversion concepts &mdash; attributes
 
-This guide extends the {@link framework/guides/architecture/editing-engine Introduction to CKEditor 5 editing engine architecture} guide, which we highly recommend reading first. Also, the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials explain the basics of conversion with examples, hence reading them is recommended as well.
+This guide extends the {@link framework/guides/architecture/editing-engine Introduction to CKEditor 5 editing engine architecture guide}, which we highly recommend reading first. Also, the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials explain the basics of conversion with examples, hence reading them is recommended as well.
 
 In this guide we will dive deeper into some of the conversion concepts.
 

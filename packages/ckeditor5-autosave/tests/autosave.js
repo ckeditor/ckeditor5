@@ -70,24 +70,26 @@ describe( 'Autosave', () => {
 	} );
 
 	describe( 'config.autosave.save', () => {
+		let spy;
+
 		beforeEach( () => {
 			element = document.createElement( 'div' );
 			document.body.appendChild( element );
+
+			spy = sinon.spy();
 
 			return ClassicTestEditor
 				.create( element, {
 					plugins: [ Autosave, Paragraph ],
 					autosave: {
-						save: sinon.spy()
-					}
+						save: spy
+					},
+					initialData: '<p>Foo</p>'
 				} )
 				.then( _editor => {
 					editor = _editor;
 
 					autosave = editor.plugins.get( Autosave );
-
-					const data = '<p>paragraph1</p><p>paragraph2</p>';
-					editor.setData( data );
 				} );
 		} );
 
@@ -95,6 +97,14 @@ describe( 'Autosave', () => {
 			document.body.removeChild( element );
 
 			return editor.destroy();
+		} );
+
+		it( 'should not call autosave callback while editor is being initialized', () => {
+			sinon.clock.tick( 1000 );
+
+			return Promise.resolve().then( () => {
+				expect( spy.called ).to.be.false;
+			} );
 		} );
 
 		it( 'should enable providing callback via the config', () => {
@@ -662,6 +672,72 @@ describe( 'Autosave', () => {
 					sinon.assert.calledTwice( serverActionStub );
 					sinon.assert.calledOnce( successServerActionSpy );
 				} );
+		} );
+	} );
+
+	describe( 'save()', () => {
+		let spy;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			spy = sinon.spy();
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Autosave, Paragraph ],
+					autosave: {
+						save: spy
+					},
+					initialData: '<p>Foo</p>'
+				} )
+				.then( _editor => {
+					editor = _editor;
+					autosave = editor.plugins.get( Autosave );
+				} );
+		} );
+
+		afterEach( () => {
+			document.body.removeChild( element );
+
+			return editor.destroy();
+		} );
+
+		it( 'shout not call autosave callback if nothing changed', () => {
+			expect( spy.called ).to.be.false;
+
+			autosave.save();
+
+			expect( spy.called ).to.be.false;
+		} );
+
+		it( 'should call autosave callback', () => {
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			autosave.save();
+
+			return Promise.resolve().then( () => {
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		it( 'should cancel delayed autosave callback', () => {
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			autosave.save();
+
+			sinon.clock.tick( 1000 );
+
+			return Promise.resolve().then( () => {
+				expect( spy.calledOnce ).to.be.true;
+			} );
 		} );
 	} );
 

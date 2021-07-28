@@ -26,7 +26,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData, stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
-import { modelToViewAttributeConverter } from '../../src/image/converters';
+import { downcastImageAttribute } from '../../src/image/converters';
 
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
@@ -835,7 +835,7 @@ describe( 'ImageUploadEditing', () => {
 			editor.model.schema.extend( 'imageBlock', { allowAttributes: 'data-original' } );
 
 			editor.conversion.for( 'downcast' )
-				.add( modelToViewAttributeConverter( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );
+				.add( downcastImageAttribute( editor.plugins.get( 'ImageUtils' ), 'data-original' ) );
 
 			editor.conversion.for( 'upcast' )
 				.attributeToAttribute( {

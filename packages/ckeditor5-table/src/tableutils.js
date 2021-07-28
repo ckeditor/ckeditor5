@@ -106,11 +106,11 @@ export default class TableUtils extends Plugin {
 		createEmptyRows( writer, table, 0, rows, columns );
 
 		if ( options.headingRows ) {
-			updateNumericAttribute( 'headingRows', options.headingRows, table, writer, 0 );
+			updateNumericAttribute( 'headingRows', Math.min( options.headingRows, rows ), table, writer, 0 );
 		}
 
 		if ( options.headingColumns ) {
-			updateNumericAttribute( 'headingColumns', options.headingColumns, table, writer, 0 );
+			updateNumericAttribute( 'headingColumns', Math.min( options.headingColumns, columns ), table, writer, 0 );
 		}
 
 		return table;

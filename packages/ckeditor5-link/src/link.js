@@ -215,9 +215,15 @@ export default class Link extends Plugin {
  * @typedef {Object} module:link/link~LinkDecoratorAutomaticDefinition
  * @property {'automatic'} mode Link decorator type. It is `'automatic'` for all automatic decorators.
  * @property {Function} callback Takes a `url` as a parameter and returns `true` if the `attributes` should be applied to the link.
- * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
+ * @property {Object} [attributes] Key-value pairs used as link attributes added to the output during the
  * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
  * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+ * @property {Object} [styles] Key-value pairs used as link styles added to the output during the
+ * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+ * Styles should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+ * @property {String|Array.<String>} [classes] Class names used as link classes added to the output during the
+ * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+ * Classes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
  */
 
 /**
@@ -241,8 +247,14 @@ export default class Link extends Plugin {
  * @typedef {Object} module:link/link~LinkDecoratorManualDefinition
  * @property {'manual'} mode Link decorator type. It is `'manual'` for all manual decorators.
  * @property {String} label The label of the UI button that the user can use to control the presence of link attributes.
- * @property {Object} attributes Key-value pairs used as link attributes added to the output during the
+ * @property {Object} [attributes] Key-value pairs used as link attributes added to the output during the
  * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
  * Attributes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+ * @property {Object} [styles] Key-value pairs used as link styles added to the output during the
+ * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+ * Styles should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
+ * @property {String|Array.<String>} [classes] Class names used as link classes added to the output during the
+ * {@glink framework/guides/architecture/editing-engine#conversion downcasting}.
+ * Classes should follow the {@link module:engine/view/elementdefinition~ElementDefinition} syntax.
  * @property {Boolean} [defaultValue] Controls whether the decorator is "on" by default.
  */

@@ -114,8 +114,17 @@ export default class TableEditing extends Plugin {
 		} );
 
 		// Table attributes conversion.
-		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		conversion.for( 'downcast' ).attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			model: { key: 'colspan', value: upcastCellSpan( 'colspan' ) },
+			view: 'colspan'
+		} );
+
+		conversion.for( 'downcast' ).attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			model: { key: 'rowspan', value: upcastCellSpan( 'rowspan' ) },
+			view: 'rowspan'
+		} );
 
 		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
@@ -124,6 +133,10 @@ export default class TableEditing extends Plugin {
 		// to its parent (to the table cell). This custom model-to-view position mapping is necessary in data pipeline only,
 		// because only during this conversion a paragraph can be bound to its parent.
 		editor.data.mapper.on( 'modelToViewPosition', mapTableCellModelPositionToView() );
+
+		// Define the config.
+		editor.config.define( 'table.defaultHeadings.rows', 0 );
+		editor.config.define( 'table.defaultHeadings.columns', 0 );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -196,5 +209,22 @@ function mapTableCellModelPositionToView() {
 			// max offset, so it points to the place which should normally (in all other cases) be the end position of this paragraph.
 			data.viewPosition = data.mapper.findPositionIn( viewParent, modelNodeBefore.maxOffset );
 		}
+	};
+}
+
+// Returns fixed colspan and rowspan attrbutes values.
+//
+// @private
+// @param {String} type colspan or rowspan.
+// @returns {Function} conversion value function.
+function upcastCellSpan( type ) {
+	return cell => {
+		const span = parseInt( cell.getAttribute( type ) );
+
+		if ( Number.isNaN( span ) || span <= 0 ) {
+			return null;
+		}
+
+		return span;
 	};
 }

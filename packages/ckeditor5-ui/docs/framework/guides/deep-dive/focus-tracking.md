@@ -43,7 +43,7 @@ The main editable area of CKEditor 5 WYSIWYG editor can be focused thanks to the
 Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/guides/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
 
 <info-box>
-	Already confused? Take a look at our {@link framework/guides/architecture/editing-engine#observers Editing engine} guide that explains what the editing view, editables and other building blocks of CKEditor 5 are.
+	Already confused? Take a look at our {@link framework/guides/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor 5 are.
 </info-box>
 
 ### Checking if the view document is focused
@@ -91,7 +91,7 @@ If you read the [previous section](#focus-in-the-editor-engine) of this guide yo
 As for the user interface of CKEditor 5, it is a composition of multiple components {@link framework/guides/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
 
 <info-box>
-	Feeling overwhelmed? Take a look at the {@link framework/guides/architecture/ui-library UI library} guide and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
+	Feeling overwhelmed? Take a look at the {@link framework/guides/architecture/ui-library UI library guide} and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
 </info-box>
 
 To sum up, there are two main reasons why focus is being tracked separately on the UI level:

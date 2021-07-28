@@ -10,11 +10,11 @@ This package implements the restricted editing feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/restricted-editing#demo demo in the restricted editing feature} guide.
+Check out the {@link features/restricted-editing#demo demo in the restricted editing feature guide}.
 
 ## Documentation
 
-See the {@link features/restricted-editing restricted editing feature} guide as well as the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} and {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugins documentation.
+See the {@link features/restricted-editing restricted editing feature guide} as well as the {@link module:restricted-editing/restrictededitingmode~RestrictedEditingMode} and {@link module:restricted-editing/standardeditingmode~StandardEditingMode} plugins documentation.
 
 ## Installation
 

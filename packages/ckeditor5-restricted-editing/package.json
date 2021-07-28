@@ -1,12 +1,13 @@
 {
   "name": "@ckeditor/ckeditor5-restricted-editing",
   "version": "29.0.0",
-  "description": "A restricted editing feature for CKEditor 5 editors.",
+  "description": "Restricted editing feature for CKEditor 5 editors.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "ckeditor5-lib"
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {

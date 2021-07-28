@@ -42,7 +42,7 @@ export default class FindCommand extends Command {
 	 *
 	 * @param {Function|String} callbackOrText
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be ignored.
+	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be matched.
 	 * @param {Boolean} [options.wholeWords=false] If set to `true`, only whole words that match `callbackOrText` will be matched.
 	 * @fires execute
 	 */
@@ -58,33 +58,32 @@ export default class FindCommand extends Command {
 
 			this.state.searchText = callbackOrText;
 		} else {
-			// @todo: disable callback version
 			findCallback = callbackOrText;
 		}
 
-		// Initial search is done on all nodes inside the content.
-		const range = model.createRangeIn( model.document.getRoot() );
-
-		// @todo: fix me
-		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
-
-		const ret = {
-			results: updateFindResultFromRange( range, model, findCallback ),
-			findCallback
-		};
+		// Initial search is done on all nodes in all roots inside the content.
+		const results = model.document.getRootNames()
+			.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+				model.createRangeIn( model.document.getRoot( rootName ) ),
+				model,
+				findCallback,
+				currentResults
+			) ), null );
 
 		this.state.clear( model );
-		this.state.results.addMany( Array.from( ret.results ) );
-		this.state.highlightedResult = ret.results.get( 0 );
+		this.state.results.addMany( Array.from( results ) );
+		this.state.highlightedResult = results.get( 0 );
 
 		if ( typeof callbackOrText === 'string' ) {
-			// @todo: eliminate this code repetition. Done to fix unit tests.
 			this.state.searchText = callbackOrText;
 		}
 
 		this.state.matchCase = !!matchCase;
 		this.state.matchWholeWords = !!wholeWords;
 
-		return ret;
+		return {
+			results,
+			findCallback
+		};
 	}
 }

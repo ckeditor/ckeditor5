@@ -9,7 +9,7 @@ This package implements block indentation support for CKEditor 5.
 
 ## Demo
 
-Check out the [demo in the Block indentation feature](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#demo) guide.
+Check out the [demo in the Block indentation feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/indent.html#demo).
 
 ## Documentation
 
