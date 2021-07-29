@@ -79,10 +79,6 @@ ClassicEditor
 	.catch( ... );
 ```
 
-## Related features
-
-There is a closely related {@link features/source-editing source editing feature} which allows access and edition of the HTML source code of the document. When paired, these two plugins let the user gain powerful control over the content editing.
-
 ## Level of support
 
 The difference between specific CKEditor 5 features such as {@link features/basic-styles basic styles} or {@link features/headings headings} and the HTML features enabled by GHS is that a plugin that supports a specific HTML feature provides a complete user experience for that feature, whereas GHS ensures only that such a content is accepted by the editor.
@@ -305,7 +301,7 @@ We are open for feedback, so if you find any issue, feel free to report it in th
 
 There are other HTML editing related CKEditor 5 features you may want to check:
 
-* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
 
 ## Contribute
