@@ -137,6 +137,31 @@ export default class Differ {
 	}
 
 	/**
+	 * TODO
+	 */
+	refreshRange( range ) {
+		const parent = range.getCommonAncestor();
+
+		if ( this._isInInsertedElement( parent ) ) {
+			return;
+		}
+
+		for ( const { item } of range.getWalker( { shallow: true } ) ) {
+			this._markRemove( item.parent, item.startOffset, item.offsetSize );
+			this._markInsert( item.parent, item.startOffset, item.offsetSize );
+		}
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
+		this._cachedChanges = null;
+	}
+
+	/**
 	 * Buffers the given operation. An operation has to be buffered before it is executed.
 	 *
 	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`

@@ -93,6 +93,13 @@ export default class EditingController {
 			this.view.change( writer => {
 				doc.mappedRanges.applyChanges( doc.differ.getChanges() );
 
+				for ( const range of doc.mappedRanges._removeRanges.values() ) {
+					doc.differ.refreshRange( range );
+				}
+				for ( const [ range, type ] of doc.mappedRanges._changedRanges.entries() ) {
+					doc.differ.refreshRange( range );
+				}
+
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );
 				this.downcastDispatcher.convertSelection( selection, markers, writer );
 

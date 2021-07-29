@@ -116,7 +116,7 @@ for ( const [ name, callback ] of Object.entries( actions ) ) {
 function setData() {
 	const modelData =
 		// eslint-disable-next-line
-		'<paragraph>before</paragraph>' +
+		'<paragraph listItem="a">before</paragraph>' +
 		// '<blockQuote>' +
 		'<paragraph></paragraph>' +
 		'<paragraph listIndent="0" listItem="a0" listType="bulleted">Foo</paragraph>' +

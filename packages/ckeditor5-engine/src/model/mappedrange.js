@@ -9,6 +9,7 @@
 
 import Range from './range';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
+import { remove } from '../conversion/downcasthelpers';
 
 /**
  * TODO
@@ -272,100 +273,69 @@ export default class MappedRangeCollection {
 	}
 
 	getReducedChanges( changes ) {
-		const replacedChanges = [];
-
-		for ( const change of changes ) {
-			if ( this._affectedChanges.has( change ) ) {
-				const newChange = this._affectedChanges.get( change );
-
-				if ( newChange ) {
-					replacedChanges.push( newChange );
-				}
-			} else {
-				replacedChanges.push( change );
-			}
-		}
-
 		const insertRanges = new Set();
-		const removeRanges = new Set();
+		const removeRanges = new Set( this._removeRanges.values() );
 
 		for ( const [ range, type ] of this._changedRanges.entries() ) {
-			if ( type != 'create' ) {
-				removeRanges.add( range );
-			}
+			// if ( type != 'create' ) {
+			// 	removeRanges.add( range );
+			// }
 			if ( type != 'delete' ) {
 				insertRanges.add( range );
 			}
 		}
 
-		const reduceDeletions = ( changes, removeRanges ) => {
-			const reducedChanges = [];
+		const reducedChanges = [];
+		const removedRanges = new Set();
 
-			for ( let i = 0; i <= changes.length; i++ ) {
-				const change = i < changes.length ? changes[ i ] : null;
-				const position = change ? change.position || change.range.start : null;
-				let wasHandled = false;
+		for ( const change of changes ) {
+			if ( change.type == 'attribute' ) {
+				reducedChanges.push( change );
 
-				for ( const range of Array.from( removeRanges ) ) {
-					const originalRange = this._removeRanges.get( range );
-
-					if ( !change || position.isEqual( originalRange.start ) || position.isAfter( originalRange.start ) ) {
-						if ( change && position.isEqual( originalRange.start ) ) {
-							reducedChanges.push( change );
-							wasHandled = true;
-						}
-
-						reducedChanges.push( {
-							type: 'removeRange',
-							range
-						} );
-
-						removeRanges.delete( range );
-					}
-				}
-
-				if ( !wasHandled && change ) {
-					reducedChanges.push( change );
-				}
+				continue;
 			}
 
-			return reducedChanges;
-		};
+			const range = Array.from( change.type == 'insert' ? insertRanges : removeRanges ).find( range => {
+				const virtualRange = range.virtualRange || range;
 
-		const reduceInsertions = ( changes, insertRanges ) => {
-			const reducedChanges = [];
+				if ( change.type == 'insert' ) {
+					return change.position.isEqual( virtualRange.start ) ||
+						virtualRange.containsPosition( change.position ) && compareArrays( virtualRange.start, change.position ) == 'same';
 
-			for ( let i = changes.length - 1; i >= -1; i-- ) {
-				const change = i >= 0 ? changes[ i ] : null;
-				const position = change ? change.position || change.range.start : null;
-				let wasHandled = false;
-
-				for ( const range of Array.from( insertRanges ) ) {
-					if ( !change || range == change.range || position.isEqual( range.end ) || position.isBefore( range.end ) ) {
-						if ( change && range != change.range && position.isEqual( range.end ) ) {
-							reducedChanges.push( change );
-							wasHandled = true;
-						}
-
-						reducedChanges.push( {
-							type: 'insertRange',
-							range
-						} );
-
-						insertRanges.delete( range );
-					}
+				} else {
+					return change.position.isEqual( virtualRange.start );
 				}
+			} );
 
-				if ( !wasHandled && change ) {
-					reducedChanges.push( change );
+			if ( range ) {
+				if ( change.position.isEqual( range.start ) && !removedRanges.has( range ) ) {
+					reducedChanges.push( {
+						type: change.type == 'insert' ? 'insertRange' : 'removeRange',
+						range
+					} );
+
+					removeRanges.add( range );
 				}
+			} else {
+				reducedChanges.push( change );
 			}
 
-			return reducedChanges.reverse();
+			if ( change.type == 'remove' ) {
+				for ( const range of removeRanges ) {
+					range.virtuaRange = ( range.virtualRange || range )._getTransformedByDeletion( change.position, change.length );
+				}
+				for ( const range of insertRanges ) {
+					range.virtuaRange = ( range.virtualRange || range )._getTransformedByDeletion( change.position, change.length );
+				}
+			} else {
+				for ( const range of removeRanges ) {
+					range.virtualStart = ( range.virtualRange || range )._getTransformedByInsertion( change.position, change.length );
+				}
+				for ( const range of insertRanges ) {
+					range.virtualStart = ( range.virtualRange || range )._getTransformedByInsertion( change.position, change.length );
+				}
+			}
 		}
-
-		const changesWithDeletions = reduceDeletions( replacedChanges, removeRanges );
-		const reducedChanges = reduceInsertions( changesWithDeletions, insertRanges );
 
 		return reducedChanges;
 	}
@@ -373,6 +343,7 @@ export default class MappedRangeCollection {
 	clearChanges() {
 		this._changedRanges.clear();
 		this._affectedChanges.clear();
+		this._removeRanges.clear();
 	}
 
 	_createRange( range ) {
@@ -414,7 +385,7 @@ export default class MappedRangeCollection {
 
 		if ( triggerReconversion && !this._changedRanges.has( mappedRange ) ) {
 			this._changedRanges.set( mappedRange, 'update' );
-			this._removeRanges.set( mappedRange, MappedRange._createMappedRange( mappedRange.start, mappedRange.start, mappedRange.name ) );
+			this._removeRanges.set( mappedRange, new Range( mappedRange.start, mappedRange.end ) );
 		}
 
 		// TODO custom protected setters (those are read only in Range).
@@ -425,7 +396,7 @@ export default class MappedRangeCollection {
 	_deleteRange( mappedRange ) {
 		this._ranges.splice( this._ranges.indexOf( mappedRange ), 1 );
 		this._changedRanges.set( mappedRange, 'delete' );
-		this._removeRanges.set( mappedRange, mappedRange );
+		this._removeRanges.set( mappedRange, new Range( mappedRange.start, mappedRange.end ) );
 	}
 }
 
