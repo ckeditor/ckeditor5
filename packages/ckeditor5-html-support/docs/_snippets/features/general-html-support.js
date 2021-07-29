@@ -72,32 +72,12 @@ ClassicEditor
 
 		htmlSupport: {
 			allow: [
-				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
+				// Enables all HTML features.
 				{
-					name: /^(div|details|summary)$/,
-					styles: true,
+					name: /.*/,
+					attributes: true,
 					classes: true,
-					attributes: true
-				},
-
-				// Extends the existing Paragraph and Heading features
-				// with classes and data-* attributes.
-				{
-					name: /^(p|h[2-4])$/,
-					classes: true,
-					attributes: /^data-/
-				},
-
-				// Enables <span>s with any inline styles.
-				{
-					name: 'span',
 					styles: true
-				},
-
-				// Enables <abbr>s with the title attribute.
-				{
-					name: 'abbr',
-					attributes: [ 'title' ]
 				}
 			]
 		}
