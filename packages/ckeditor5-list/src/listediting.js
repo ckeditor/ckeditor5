@@ -13,11 +13,13 @@ import IndentCommand from './indentcommand';
 import { Plugin } from 'ckeditor5/src/core';
 import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
+import { priorities } from 'ckeditor5/src/utils';
 
 import {
 	cleanList,
 	cleanListItem,
 	modelViewInsertion,
+	modelViewMergeAfterInsertion,
 	modelViewChangeType,
 	modelViewMergeAfterChangeType,
 	modelViewMergeAfter,
@@ -81,10 +83,15 @@ export default class ListEditing extends Plugin {
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
+		// Merge after insertion should be done with lower priority, so other converters
+		// have a change to process list attributes.
+		const mergeAfterInsertionPriority = priorities.get( 'normal' ) - 2;
+
 		editor.conversion.for( 'editingDowncast' )
 			.add( dispatcher => {
 				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on( 'insert:listItem', modelViewMergeAfterInsertion(), { priority: mergeAfterInsertionPriority } );
 				dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
 				dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
 				dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
@@ -96,6 +103,7 @@ export default class ListEditing extends Plugin {
 			.add( dispatcher => {
 				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on( 'insert:listItem', modelViewMergeAfterInsertion(), { priority: mergeAfterInsertionPriority } );
 			} );
 
 		editor.conversion.for( 'upcast' )

@@ -9,6 +9,7 @@
 
 import { TreeWalker, getFillerOffset } from 'ckeditor5/src/engine';
 import { ButtonView } from 'ckeditor5/src/ui';
+import { isEqual } from 'lodash-es';
 
 /**
  * Creates a list item {@link module:engine/view/containerelement~ContainerElement}.
@@ -112,52 +113,6 @@ export function injectViewList( modelItem, injectedItem, conversionApi, model ) 
 
 	// Insert the view item.
 	viewWriter.insert( insertPosition, injectedList );
-
-	// 2. Handle possible children of the injected model item.
-	if ( prevItem && prevItem.name == 'listItem' ) {
-		const prevView = mapper.toViewElement( prevItem );
-
-		const walkerBoundaries = viewWriter.createRange( viewWriter.createPositionAt( prevView, 0 ), insertPosition );
-		const walker = walkerBoundaries.getWalker( { ignoreElementEnd: true } );
-
-		for ( const value of walker ) {
-			if ( value.item.is( 'element', 'li' ) ) {
-				const breakPosition = viewWriter.breakContainer( viewWriter.createPositionBefore( value.item ) );
-				const viewList = value.item.parent;
-
-				const targetPosition = viewWriter.createPositionAt( injectedItem, 'end' );
-				mergeViewLists( viewWriter, targetPosition.nodeBefore, targetPosition.nodeAfter );
-				viewWriter.move( viewWriter.createRangeOn( viewList ), targetPosition );
-
-				walker.position = breakPosition;
-			}
-		}
-	} else {
-		const nextViewList = injectedList.nextSibling;
-
-		if ( nextViewList && ( nextViewList.is( 'element', 'ul' ) || nextViewList.is( 'element', 'ol' ) ) ) {
-			let lastSubChild = null;
-
-			for ( const child of nextViewList.getChildren() ) {
-				const modelChild = mapper.toModelElement( child );
-
-				if ( modelChild && modelChild.getAttribute( 'listIndent' ) > modelItem.getAttribute( 'listIndent' ) ) {
-					lastSubChild = child;
-				} else {
-					break;
-				}
-			}
-
-			if ( lastSubChild ) {
-				viewWriter.breakContainer( viewWriter.createPositionAfter( lastSubChild ) );
-				viewWriter.move( viewWriter.createRangeOn( lastSubChild.parent ), viewWriter.createPositionAt( injectedItem, 'end' ) );
-			}
-		}
-	}
-
-	// Merge the inserted view list with its possible neighbor lists.
-	mergeViewLists( viewWriter, injectedList, injectedList.nextSibling );
-	mergeViewLists( viewWriter, injectedList.previousSibling, injectedList );
 }
 
 /**
@@ -176,11 +131,17 @@ export function mergeViewLists( viewWriter, firstList, secondList ) {
 	}
 
 	// Both parameters are list elements, so compare types now.
-	if ( firstList.name != secondList.name || firstList.getAttribute( 'class' ) !== secondList.getAttribute( 'class' ) ) {
+	if ( !listsAreSame( firstList, secondList ) ) {
 		return null;
 	}
 
 	return viewWriter.mergeContainers( viewWriter.createPositionAfter( firstList ) );
+}
+
+// TODO
+function listsAreSame( firstList, secondList ) {
+	return firstList.name == secondList.name &&
+		isEqual( Object.fromEntries( firstList.getAttributes() ), Object.fromEntries( secondList.getAttributes() ) );
 }
 
 /**

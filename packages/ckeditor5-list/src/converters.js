@@ -50,6 +50,66 @@ export function modelViewInsertion( model ) {
 }
 
 /**
+ * TODO
+ */
+export function modelViewMergeAfterInsertion() {
+	return ( evt, data, conversionApi ) => {
+		const viewWriter = conversionApi.writer;
+		const mapper = conversionApi.mapper;
+		const modelItem = data.item;
+		const injectedItem = mapper.toViewElement( modelItem );
+		const prevItem	= injectedItem.previousSibling;
+		const injectedList = injectedItem.parent;
+		const insertPosition = viewWriter.createPositionAt( injectedList, 'end' );
+
+		// 2. Handle possible children of the injected model item.
+		if ( prevItem && prevItem.name == 'listItem' ) {
+			const prevView = mapper.toViewElement( prevItem );
+			const walkerBoundaries = viewWriter.createRange( viewWriter.createPositionAt( prevView, 0 ), insertPosition );
+			const walker = walkerBoundaries.getWalker( { ignoreElementEnd: true } );
+
+			for ( const value of walker ) {
+				if ( value.item.is( 'element', 'li' ) ) {
+					const breakPosition = viewWriter.breakContainer( viewWriter.createPositionBefore( value.item ) );
+					const viewList = value.item.parent;
+
+					const targetPosition = viewWriter.createPositionAt( injectedItem, 'end' );
+					mergeViewLists( viewWriter, targetPosition.nodeBefore, targetPosition.nodeAfter );
+					viewWriter.move( viewWriter.createRangeOn( viewList ), targetPosition );
+
+					walker.position = breakPosition;
+				}
+			}
+		} else {
+			const nextViewList = injectedList.nextSibling;
+
+			if ( nextViewList && ( nextViewList.is( 'element', 'ul' ) || nextViewList.is( 'element', 'ol' ) ) ) {
+				let lastSubChild = null;
+
+				for ( const child of nextViewList.getChildren() ) {
+					const modelChild = mapper.toModelElement( child );
+
+					if ( modelChild && modelChild.getAttribute( 'listIndent' ) > modelItem.getAttribute( 'listIndent' ) ) {
+						lastSubChild = child;
+					} else {
+						break;
+					}
+				}
+
+				if ( lastSubChild ) {
+					viewWriter.breakContainer( viewWriter.createPositionAfter( lastSubChild ) );
+					viewWriter.move( viewWriter.createRangeOn( lastSubChild.parent ), viewWriter.createPositionAt( injectedItem, 'end' ) );
+				}
+			}
+		}
+
+		// Merge the inserted view list with its possible neighbor lists.
+		mergeViewLists( viewWriter, injectedList, injectedList.nextSibling );
+		mergeViewLists( viewWriter, injectedList.previousSibling, injectedList );
+	};
+}
+
+/**
  * A model-to-view converter for the `listItem` model element removal.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
