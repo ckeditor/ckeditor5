@@ -140,7 +140,11 @@ export default class Differ {
 	 * TODO
 	 */
 	refreshRange( range ) {
-		const parent = range.getCommonAncestor();
+		if ( !range.isFlat ) {
+			throw new Error( '!!!' ); // TODO
+		}
+
+		const parent = range.start.parent;
 
 		if ( this._isInInsertedElement( parent ) ) {
 			return;
@@ -460,7 +464,7 @@ export default class Differ {
 					i++;
 				} else if ( action === 'r' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ] ) );
+					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ], j ) );
 
 					j++;
 				} else if ( action === 'a' ) {
@@ -952,10 +956,11 @@ export default class Differ {
 	 * @param {module:engine/model/element~Element} elementSnapshot.element The inserted element reference.
 	 * @returns {Object} The diff item.
 	 */
-	_getRemoveDiff( parent, offset, elementSnapshot ) {
+	_getRemoveDiff( parent, offset, elementSnapshot, oldOffset ) {
 		return {
 			type: 'remove',
 			position: Position._createAt( parent, offset ),
+			oldPosition: Position._createAt( parent, oldOffset ),
 			name: elementSnapshot.name,
 			attributes: new Map( elementSnapshot.attributes ),
 			element: elementSnapshot.element,

@@ -10,6 +10,7 @@
 import Range from './range';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 import { remove } from '../conversion/downcasthelpers';
+import { uid } from '@ckeditor/ckeditor5-utils';
 
 /**
  * TODO
@@ -38,12 +39,16 @@ export default class MappedRangeCollection {
 		this._affectedChanges = new Map();
 
 		this._removeRanges = new Map();
+
+		this._rangesSnapshot = [];
 	}
 
 	/**
 	 * TODO
 	 */
 	applyChanges( changes ) {
+		this._rangesSnapshot = this._ranges.map( range => range.clone() );
+
 		for ( const change of changes ) {
 			if ( change.type == 'insert' ) {
 				const insertionRange = Range._createFromPositionAndShift( change.position, change.length );
@@ -258,9 +263,10 @@ export default class MappedRangeCollection {
 			}
 		}
 
-		console.log( 'ranges:', ...this._ranges.map( range => range.start.path + '-' + range.end.path ) );
+		console.log( 'old ranges:', ...this._rangesSnapshot.map( range => range.name + ':' + range.start.path + '-' + range.end.path ) );
+		console.log( 'ranges:', ...this._ranges.map( range => range.name + ':' + range.start.path + '-' + range.end.path ) );
 		console.log( 'range changes:', ...Array.from( this._changedRanges.entries() )
-			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path ) );
+			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path + ' ' + range.name ) );
 	}
 
 	getRanges() {
@@ -272,78 +278,100 @@ export default class MappedRangeCollection {
 			.map( ( [ range, type ] ) => type + ': ' + range.start.path + '-' + range.end.path );
 	}
 
-	getReducedChanges( changes ) {
-		const insertRanges = new Set();
-		const removeRanges = new Set( this._removeRanges.values() );
+	getRangeSnapshot( name ) {
+		return this._rangesSnapshot.find( range => range.name == name );
+	}
 
-		for ( const [ range, type ] of this._changedRanges.entries() ) {
-			// if ( type != 'create' ) {
-			// 	removeRanges.add( range );
-			// }
-			if ( type != 'delete' ) {
-				insertRanges.add( range );
-			}
-		}
+	getReducedChanges( changes ) {
+		const changesWithDeletions = this._getReducedDeletionChanges( changes );
+		const reducedChanges = this._getReducedInsertionChanges( changesWithDeletions );
+
+		return reducedChanges;
+	}
+
+	_getReducedDeletionChanges( changes ) {
+		const removeRanges = this._rangesSnapshot;
 
 		const reducedChanges = [];
-		const removedRanges = new Set();
+		const handledRanges = new Set();
 
 		for ( const change of changes ) {
-			if ( change.type == 'attribute' ) {
+			if ( change.type != 'remove' ) {
 				reducedChanges.push( change );
 
 				continue;
 			}
 
-			const range = Array.from( change.type == 'insert' ? insertRanges : removeRanges ).find( range => {
-				const virtualRange = range.virtualRange || range;
-
-				if ( change.type == 'insert' ) {
-					return change.position.isEqual( virtualRange.start ) ||
-						virtualRange.containsPosition( change.position ) && compareArrays( virtualRange.start, change.position ) == 'same';
-
-				} else {
-					return change.position.isEqual( virtualRange.start );
-				}
+			const range = removeRanges.find( range => {
+				return change.oldPosition.isEqual( range.start ) ||
+					range.containsPosition( change.oldPosition ) &&
+					compareArrays( range.start, change.oldPosition ) == 'same';
 			} );
 
 			if ( range ) {
-				if ( change.position.isEqual( range.start ) && !removedRanges.has( range ) ) {
+				if ( !handledRanges.has( range ) ) {
 					reducedChanges.push( {
-						type: change.type == 'insert' ? 'insertRange' : 'removeRange',
-						range
+						type: 'removeRange',
+						range: Array.from( this._removeRanges.keys() ).find( item => item.name == range.name )
 					} );
 
-					removeRanges.add( range );
+					handledRanges.add( range );
 				}
 			} else {
 				reducedChanges.push( change );
-			}
-
-			if ( change.type == 'remove' ) {
-				for ( const range of removeRanges ) {
-					range.virtuaRange = ( range.virtualRange || range )._getTransformedByDeletion( change.position, change.length );
-				}
-				for ( const range of insertRanges ) {
-					range.virtuaRange = ( range.virtualRange || range )._getTransformedByDeletion( change.position, change.length );
-				}
-			} else {
-				for ( const range of removeRanges ) {
-					range.virtualStart = ( range.virtualRange || range )._getTransformedByInsertion( change.position, change.length );
-				}
-				for ( const range of insertRanges ) {
-					range.virtualStart = ( range.virtualRange || range )._getTransformedByInsertion( change.position, change.length );
-				}
 			}
 		}
 
 		return reducedChanges;
 	}
 
+	_getReducedInsertionChanges( changes ) {
+		const insertRanges = [];
+
+		for ( const [ range, type ] of this._changedRanges.entries() ) {
+			if ( type != 'delete' ) {
+				insertRanges.push( range );
+			}
+		}
+
+		const reducedChanges = [];
+		const handledRanges = new Set();
+
+		for ( const change of Array.from( changes ).reverse() ) {
+			if ( change.type != 'insert' ) {
+				reducedChanges.push( change );
+
+				continue;
+			}
+
+			const range = insertRanges.find( range => {
+				return change.position.isEqual( range.start ) ||
+					range.containsPosition( change.position ) &&
+					compareArrays( range.start, change.position ) == 'same';
+			} );
+
+			if ( range ) {
+				if ( !handledRanges.has( range ) ) {
+					reducedChanges.push( {
+						type: 'insertRange',
+						range
+					} );
+
+					handledRanges.add( range );
+				}
+			} else {
+				reducedChanges.push( change );
+			}
+		}
+
+		return reducedChanges.reverse();
+	}
+
 	clearChanges() {
 		this._changedRanges.clear();
 		this._affectedChanges.clear();
 		this._removeRanges.clear();
+		this._rangesSnapshot.length = 0;
 	}
 
 	_createRange( range ) {
@@ -359,7 +387,7 @@ export default class MappedRangeCollection {
 			return;
 		}
 
-		const mappedRange = MappedRange._createMappedRange( range.start, range.end, 'list' );
+		const mappedRange = MappedRange._createMappedRange( `list:${ uid() }`, range.start, range.end );
 
 		this._ranges.push( mappedRange );
 		this._changedRanges.set( mappedRange, 'create' );
@@ -385,7 +413,7 @@ export default class MappedRangeCollection {
 
 		if ( triggerReconversion && !this._changedRanges.has( mappedRange ) ) {
 			this._changedRanges.set( mappedRange, 'update' );
-			this._removeRanges.set( mappedRange, new Range( mappedRange.start, mappedRange.end ) );
+			this._removeRanges.set( mappedRange, mappedRange.clone() );
 		}
 
 		// TODO custom protected setters (those are read only in Range).
@@ -396,12 +424,12 @@ export default class MappedRangeCollection {
 	_deleteRange( mappedRange ) {
 		this._ranges.splice( this._ranges.indexOf( mappedRange ), 1 );
 		this._changedRanges.set( mappedRange, 'delete' );
-		this._removeRanges.set( mappedRange, new Range( mappedRange.start, mappedRange.end ) );
+		this._removeRanges.set( mappedRange, mappedRange.clone() );
 	}
 }
 
 class MappedRange extends Range {
-	constructor( start, end, name ) {
+	constructor( name, start, end ) {
 		super( start, end );
 
 		/**
@@ -411,8 +439,12 @@ class MappedRange extends Range {
 		this.name = name;
 	}
 
-	static _createMappedRange( start, end, name ) {
-		return new this( start, end, name );
+	static _createMappedRange( name, start, end ) {
+		return new this( name, start, end );
+	}
+
+	clone() {
+		return new this.constructor( this.name, this.start, this.end );
 	}
 }
 

@@ -96,8 +96,11 @@ export default class EditingController {
 				for ( const range of doc.mappedRanges._removeRanges.values() ) {
 					doc.differ.refreshRange( range );
 				}
+
 				for ( const [ range, type ] of doc.mappedRanges._changedRanges.entries() ) {
-					doc.differ.refreshRange( range );
+					if ( type != 'delete' ) {
+						doc.differ.refreshRange( range );
+					}
 				}
 
 				this.downcastDispatcher.convertChanges( doc.differ, markers, writer );

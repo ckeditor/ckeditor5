@@ -85,6 +85,10 @@ const actions = {
 	'Remove at 2': ( writer, root ) => {
 		writer.remove( root.getChild( 2 ) );
 	},
+	'Remove at 1 & 2': ( writer, root ) => {
+		writer.remove( root.getChild( 1 ) );
+		writer.remove( root.getChild( 1 ) );
+	},
 	'Insert at 2': ( writer, root ) => {
 		writer.insertElement( 'paragraph', root, 2 );
 	},
