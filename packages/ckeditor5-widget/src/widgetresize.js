@@ -94,14 +94,15 @@ export default class WidgetResize extends Plugin {
 
 		// Remove view widget-resizer mappings for widgets that have been removed from the document.
 		// https://github.com/ckeditor/ckeditor5/issues/10156
+		// https://github.com/ckeditor/ckeditor5/issues/10266
 		this.editor.model.document.on( 'change', () => {
 			for ( const [ viewElement, resizer ] of this._resizers ) {
-				if ( editing.mapper.toModelElement( viewElement ).root.rootName === '$graveyard' ) {
+				if ( !viewElement.isAttached() ) {
 					this._resizers.delete( viewElement );
 					resizer.destroy();
 				}
 			}
-		} );
+		}, { priority: 'lowest' } );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
 		this._observer.listenTo( global.window, 'resize', this._redrawFocusedResizerThrottled );
