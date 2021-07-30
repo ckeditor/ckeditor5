@@ -127,7 +127,7 @@ export default class Mention extends Plugin {
  * You can add as many mention commit keys as you need. For instance, in the snippet above new mentions will be committed by pressing
  * either <kbd>Enter</kbd> or <kbd>Space</kbd> (13 and 32 key codes respectively).
  *
- * @member {Array.<module:mention/mention~MentionFeed>} module:mention/mention~MentionConfig#commitKeys
+ * @member {Array.<Number>} module:mention/mention~MentionConfig#commitKeys
  * @default [ 13, 9 ] // [ Enter, Tab ]
  */
 
