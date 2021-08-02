@@ -31,6 +31,13 @@ export default class HtmlComment extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		// Allow storing comment's content as the $root attribute with the name `$comment:<unique id>`.
+		editor.model.schema.addAttributeCheck( ( context, attributeName ) => {
+			if ( context.endsWith( '$root' ) && attributeName.startsWith( '$comment' ) ) {
+				return true;
+			}
+		} );
+
 		// Convert the `$comment` view element to `$comment:<unique id>` marker and store its content (the comment itself) as a $root
 		// attribute. The comment content is needed in the `dataDowncast` pipeline to re-create the comment node.
 		editor.conversion.for( 'upcast' ).elementToMarker( {
