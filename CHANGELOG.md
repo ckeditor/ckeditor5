@@ -5,13 +5,13 @@ Changelog
 
 ### Release highlights
 
-We are happy to announce the release of CKEditor 5 v29.0.0.
+We are happy to announce the release of CKEditor 5 v29.1.0.
 
 This release introduces several new features:
 
 * The [Content minimap](https://github.com/ckeditor/ckeditor5/issues/10079) feature. [**Read more**](https://ckeditor.com/blog/document-navigation-made-easy-previewing-the-content-minimap-in-ckeditor-5/).
 * Support for [HTML comments](https://github.com/ckeditor/ckeditor5/issues/8822)
-* Autosave in revision history.
+* Integration with the `Autosave` plugin in Revision history.
 * [Possibility to enforce tables to contain a header row by default](https://github.com/ckeditor/ckeditor5/issues/10039)
 * Several improvements for the [Find and replace](https://github.com/ckeditor/ckeditor5/issues/10024) feature.
 
