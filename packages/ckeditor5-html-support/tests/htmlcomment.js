@@ -39,6 +39,18 @@ describe( 'HtmlComment', () => {
 		expect( editor.plugins.get( 'HtmlComment' ) ).to.be.instanceOf( HtmlComment );
 	} );
 
+	describe( 'schema', () => {
+		it( 'should allow root attributes containing comment\'s content in the schema', () => {
+			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
+
+			model.change( writer => {
+				model.schema.removeDisallowedAttributes( [ root ], writer );
+
+				expect( editor.getData() ).to.equal( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
+			} );
+		} );
+	} );
+
 	describe( 'upcast conversion', () => {
 		it( 'should convert each comment node to a collapsed marker', () => {
 			editor.setData( '<p><!-- comment 1 -->Foo<!-- comment 2 --></p>' );
