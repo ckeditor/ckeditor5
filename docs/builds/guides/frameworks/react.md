@@ -91,7 +91,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 
 ## Context feature
 
-The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the [context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
+The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
 
 ```jsx
 // This sample assumes that the application is using a CKEditor 5 editor built from source.
@@ -237,7 +237,7 @@ export default App;
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate [collaboration plugins](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) in a React application is to build the editor from source including the collaboration plugins together with the React application.
+The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
 For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
 
