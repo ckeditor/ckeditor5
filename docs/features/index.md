@@ -53,7 +53,7 @@ Enrich you content further by {@link features/html-embed embedding HTML code} - 
 
 ### Productivity features
 
-Keep full control of your work. Be safe and never lose anything thanks to the [autosave plugin](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/real-time-collaboration/real-time-collaboration-integration.html#the-autosave-plugin). Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link builds/index editor build} to suit your needs.
+Keep full control of your work. Be safe and never lose anything thanks to the {@link features/real-time-collaboration-integration#the-autosave-plugin autosave plugin}. Configure {@link features/toolbar the toolbar} any way you like, use an additional {@link features/blocktoolbar block toolbar} and choose the right {@link builds/index editor build} to suit your needs.
 
 The {@link features/word-count words and characters counter} will help you track progress and control the volume of the content.
 
@@ -61,17 +61,17 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 {@img assets/img/features-spellcheck-multilanguage.png 800 CKEditor 5 spell-checking feature.}
 
-Track your progress and changes done in the content with the [revision history](https://ckeditor.com/docs/ckeditor5/latest/features/revision-history/revision-history.html) feature. This modern and robust document versioning tool lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
+Track your progress and changes done in the content with the {@link features/revision-history revision history} feature. This modern and robust document versioning tool lets you create named versions, compare changes and restore previous document versions at ease, tracking all progress &mdash; also when multiple editors work together.
 
 {@img assets/img/features-revision-history.png 800 CKEditor 5 document versioning feature.}
 
 ### Collaboration
 
-The {@link framework/index CKEditor 5 Framework} was created with [collaboration](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) in mind.
+The {@link framework/index CKEditor 5 Framework} was created with {@link features/collaboration collaboration} in mind.
 
-The [users API](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/users.html) is used by functions such as [track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html), that allow the users to follow any changes made to the edited document in real time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
+The {@link features/users users API} is used by functions such as {@link features/track-changes track changes}, that allow the users to follow any changes made to the edited document in real time. Accepting or rejecting those changes is done with a single click from a convenient side panel.
 
-Where tracking changes is not enough, the [comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) come in, offering perfect collaboration communication platform for writing and editing as a team.
+Where tracking changes is not enough, the {@link features/comments comments} come in, offering perfect collaboration communication platform for writing and editing as a team.
 
 Additionally, CKEditor 5 offers the {@link features/restricted-editing restricted editing mode} where only selected part of the content may be edited by selected users, based on permissions system. And when there is a need for even more control, there is the {@link features/read-only read-only editor mode} that lets the user access the content, but not edit it.
 
@@ -93,7 +93,7 @@ Do not get stopped by technology differences - CKEditor 5 offers cross-platform 
 
 Writing and editing content is one thing, sharing it is another. The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text.
 
-If you need to share the document, use [export to PDF feature](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the [export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) instead - and keep your comments and changes in the resulting document, ready to be edited further.
+If you need to share the document, use the {@link features/export-pdf export to PDF} feature to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word} feature instead - and keep your comments and changes in the resulting document, ready to be edited further.
 
 {@img assets/img/features-output.png 800 CKEditor 5 output features.}
 
