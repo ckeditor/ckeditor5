@@ -5,43 +5,46 @@
 
 /* globals console:false, window, document */
 
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Image from '@ckeditor/ckeditor5-image/src/image';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			Bold,
-			Heading,
-			Essentials,
-			GeneralHtmlSupport,
-			Italic,
-			Paragraph,
+			ArticlePluginSet,
 			SourceEditing,
-			Strikethrough,
-			Image
+			GeneralHtmlSupport
 		],
-		toolbar: [ 'image', '|', 'bold', 'italic', 'strikethrough', '|', 'sourceEditing' ],
+		toolbar: [ 'sourceEditing', '|', 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
+		image: {
+			toolbar: [
+				'toggleImageCaption', '|',
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
+				'imageTextAlternative'
+			]
+		},
 		htmlSupport: {
 			allow: [
 				{
 					name: /^(figure|img|caption|figcaption)$/,
-					attributes: [ 'data-validation-allow', 'data-validation-disallow' ]
+					attributes: [ 'data-validation-allow', 'data-validation-disallow' ],
+					classes: [ 'allowed-class' ],
+					styles: {
+						'border': '1px solid blue'
+					}
 				}
 			],
 			disallow: [
 				{
 					name: /^(figure|img|caption|figcaption)$/,
-					attributes: 'data-validation-disallow'
+					attributes: 'data-validation-disallow',
+					class: [ 'disallowed-class' ],
+					styles: {
+						'border': '1px solid red'
+					}
 				}
 			]
 		}

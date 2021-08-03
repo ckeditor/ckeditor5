@@ -17,14 +17,24 @@
 	<h3>Inline Image</h3>
 
 	<p>
-		<img src="./sample.jpg">
+		This image should have blue border style applied.
+		<img class="allowed-class disallowed-class" data-validaton-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute" style="border: 1px solid blue" src="./sample.jpg">
+	</p>
+	<p>
+		This image should not have style applied.
+		<img class="allowed-class disallowed-class" data-validaton-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute" style="border: 1px solid red" src="./sample.jpg">
 	</p>
 
 	<h3>Block Image</h3>
 
-	<figure class="image">
-		<img src="./sample.jpg">
-		<figcaption>figcaption</figcaption>
+	<figure class="image allowed-class disallowed-class" data-validaton-allow="Allowed attribute"
+		data-validation-disallow="Disallowed attribute">
+		<img src="./sample.jpg" class="allowed-class disallowed-class" data-validaton-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute">
+		<figcaption class="allowed-class disallowed-class" data-validaton-allow="Allowed attribute"
+			data-validation-disallow="Disallowed attribute">figcaption</figcaption>
 	</figure>
 </div>
 <script>
