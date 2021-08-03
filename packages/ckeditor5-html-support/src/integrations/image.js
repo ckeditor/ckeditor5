@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { disallowedAttributesConverter } from '../converters';
+// import { disallowedAttributesConverter } from '../converters';
 import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
@@ -65,7 +65,7 @@ export default class ImageElementSupport extends Plugin {
 				]
 			} );
 
-			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
+			// conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
 
@@ -87,11 +87,11 @@ export default class ImageElementSupport extends Plugin {
 function viewToModelImageAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
-			const viewTableElement = data.viewItem;
+			const viewImageElement = data.viewItem;
 
-			preserveElementAttributes( viewTableElement, 'htmlAttributes' );
+			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
 
-			const viewFigureElement = viewTableElement.parent;
+			const viewFigureElement = viewImageElement.parent;
 			if ( viewFigureElement.is( 'element', 'figure' ) ) {
 				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
 			}
@@ -128,7 +128,18 @@ function modelToViewImageAttributeConverter() {
 		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
 
 		function addAttributeConversionDispatcherHandler( elementName, attributeName ) {
-			dispatcher.on( `attribute:${ attributeName }:img`, ( evt, data, conversionApi ) => {
+			dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+					return;
+				}
+
+				const containerElement = conversionApi.mapper.toViewElement( data.item );
+				const viewElement = getDescendantElement( conversionApi, containerElement, elementName );
+
+				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
+			} );
+
+			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
