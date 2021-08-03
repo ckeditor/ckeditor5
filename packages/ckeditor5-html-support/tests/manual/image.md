@@ -1,5 +1,7 @@
 ## Image
 
-**Case 1:** Has its own `data-validation-allow` attribute, `allowed-class` class and blue border.
+**Case 1:** Has its own `data-validation-allow` attribute and blue border.
+Also, in Source Editing mode you can see class `allowed-class` and style `color: blue`.
 
-**Case 2:** Doesn't have `data-validation-disallow` attribute, `disallowed-class` class or red border.
+**Case 2:** Doesn't have `data-validation-disallow` attribute or red border.
+Also, in Source Editing mode you must not see class `disallowed-class` and style `color: red`.

@@ -30,10 +30,10 @@ ClassicEditor
 			allow: [
 				{
 					name: /^(figure|img|caption|figcaption)$/,
-					attributes: [ 'data-validation-allow' ],
+					attributes: [ 'alt', 'data-validation-allow' ],
 					classes: [ 'allowed-class' ],
 					styles: {
-						'border': '1px solid blue'
+						'color': 'blue'
 					}
 				}
 			],
@@ -43,7 +43,7 @@ ClassicEditor
 					attributes: [ 'data-validation-disallow' ],
 					classes: [ 'disallowed-class' ],
 					styles: {
-						'border': '1px solid red'
+						'color': 'red'
 					}
 				}
 			]
