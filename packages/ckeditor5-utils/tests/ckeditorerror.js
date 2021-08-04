@@ -72,6 +72,26 @@ describe( 'CKEditorError', () => {
 		expect( error ).to.have.property( 'data', data );
 	} );
 
+	it( 'appends correctly stringified data to the message in case of circular reference', () => {
+		class Foo {}
+
+		const data = {
+			bar: 'a',
+			bom: new Foo()
+		};
+		data.bom.bar = data.bom;
+		data.bim = data;
+
+		const error = new CKEditorError( 'foo', null, data );
+
+		expect( error ).to.have.property(
+			'message',
+			'foo {"bar":"a","bom":{"bar":"[object Foo]"},"bim":"[object Object]"}' +
+			`\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+		);
+		expect( error ).to.have.property( 'data', data );
+	} );
+
 	it( 'contains a link which leads to the documentation', () => {
 		const error = new CKEditorError( 'model-schema-no-item', null );
 

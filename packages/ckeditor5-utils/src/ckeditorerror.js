@@ -59,7 +59,11 @@ export default class CKEditorError extends Error {
 	 * data object will also be later available under the {@link #data} property.
 	 */
 	constructor( errorName, context, data ) {
-		const message = `${ errorName }${ ( data ? ` ${ JSON.stringify( data ) }` : '' ) }${ getLinkToDocumentationMessage( errorName ) }`;
+		let message = errorName;
+		if ( data ) {
+			message += ' ' + stringifyForErrorMessage( data );
+		}
+		message += getLinkToDocumentationMessage( errorName );
 
 		super( message );
 
@@ -122,6 +126,29 @@ export default class CKEditorError extends Error {
 
 		throw error;
 	}
+}
+
+function stringifyForErrorMessage( data ) {
+	/**
+	 * Replacing circular values is needed for avoiding errors of type:
+	 * TypeError: cyclic object value
+	 */
+	const getCircularReplacer = () => {
+		const seen = new WeakSet();
+		return ( key, value ) => {
+			if ( typeof value === 'object' && value !== null ) {
+				if ( seen.has( value ) ) {
+					return `[object ${ value.constructor.name }]`;
+				}
+
+				seen.add( value );
+			}
+
+			return value;
+		};
+	};
+
+	return JSON.stringify( data, getCircularReplacer() );
 }
 
 /**
