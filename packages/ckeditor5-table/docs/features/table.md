@@ -123,6 +123,7 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+See the table in the demo below with default headers applied to both the first row and the first column. Click on either of these and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the header.
 
 {@snippet features/table-default-headings}
 
