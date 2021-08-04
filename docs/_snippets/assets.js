@@ -6,6 +6,7 @@
 /* global console, window, document */
 
 import tippy from 'tippy.js';
+import isRelativeUrl from 'is-relative-url';
 
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/themes/light-border.css';
@@ -128,3 +129,18 @@ window.findToolbarItem = function( toolbarView, indexOrCallback ) {
 
 	return item ? item.element : undefined;
 };
+
+// Replaces all relative paths inside the content container with absolute URLs
+// to avoid a broken user experience when copying images between editors.
+( () => {
+	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
+		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
+		.forEach( img => {
+			const { src } = img;
+			const srcAttr = img.getAttribute( 'src' );
+
+			if ( src !== srcAttr ) {
+				img.setAttribute( 'src', src );
+			}
+		} );
+} )();
