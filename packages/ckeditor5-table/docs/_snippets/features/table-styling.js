@@ -23,6 +23,14 @@ ClassicEditor
 				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
+		toolbar: {
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
 	.then( editor => {

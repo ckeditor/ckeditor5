@@ -5,6 +5,8 @@
 
 /* globals ClassicEditor, console, window, document */
 
+console.log( window.getViewportTopOffsetConfig() );
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-table' ), {
 		table: {
@@ -19,6 +21,14 @@ ClassicEditor
 				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
+		toolbar: {
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
 	.then( editor => {

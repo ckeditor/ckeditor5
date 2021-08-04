@@ -41,7 +41,12 @@ ClassicEditor.defaultConfig = {
 		],
 		viewportTopOffset: window.getViewportTopOffsetConfig()
 	},
-	indentBlock: { offset: 30, unit: 'px' }
+	indentBlock: { offset: 30, unit: 'px' },
+	ui: {
+		viewportOffset: {
+			top: window.getViewportTopOffsetConfig()
+		}
+	}
 };
 
 window.ClassicEditor = ClassicEditor;
