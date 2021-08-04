@@ -48,8 +48,8 @@ Below there is a full list of content styles used by the editor features. You ca
 
 ```css
 /*
- * CKEditor 5 (v29.0.0) content styles.
- * Generated on Wed, 07 Jul 2021 07:00:21 GMT.
+ * CKEditor 5 (v29.1.0) content styles.
+ * Generated on Wed, 04 Aug 2021 06:50:03 GMT.
  * For more information, check out https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html
  */
 
@@ -71,105 +71,6 @@ Below there is a full list of content styles used by the editor features. You ca
 	--ck-todo-list-checkmark-size: 16px;
 }
 
-/* ckeditor5-font/theme/fontsize.css */
-.ck-content .text-tiny {
-	font-size: .7em;
-}
-/* ckeditor5-font/theme/fontsize.css */
-.ck-content .text-small {
-	font-size: .85em;
-}
-/* ckeditor5-font/theme/fontsize.css */
-.ck-content .text-big {
-	font-size: 1.4em;
-}
-/* ckeditor5-font/theme/fontsize.css */
-.ck-content .text-huge {
-	font-size: 1.8em;
-}
-/* ckeditor5-highlight/theme/highlight.css */
-.ck-content .marker-yellow {
-	background-color: var(--ck-highlight-marker-yellow);
-}
-/* ckeditor5-highlight/theme/highlight.css */
-.ck-content .marker-green {
-	background-color: var(--ck-highlight-marker-green);
-}
-/* ckeditor5-highlight/theme/highlight.css */
-.ck-content .marker-pink {
-	background-color: var(--ck-highlight-marker-pink);
-}
-/* ckeditor5-highlight/theme/highlight.css */
-.ck-content .marker-blue {
-	background-color: var(--ck-highlight-marker-blue);
-}
-/* ckeditor5-highlight/theme/highlight.css */
-.ck-content .pen-red {
-	color: var(--ck-highlight-pen-red);
-	background-color: transparent;
-}
-/* ckeditor5-highlight/theme/highlight.css */
-.ck-content .pen-green {
-	color: var(--ck-highlight-pen-green);
-	background-color: transparent;
-}
-/* ckeditor5-image/theme/image.css */
-.ck-content .image {
-	display: table;
-	clear: both;
-	text-align: center;
-	margin: 0.9em auto;
-	min-width: 50px;
-}
-/* ckeditor5-image/theme/image.css */
-.ck-content .image img {
-	display: block;
-	margin: 0 auto;
-	max-width: 100%;
-	min-width: 100%;
-}
-/* ckeditor5-image/theme/image.css */
-.ck-content .image-inline {
-	/*
-	 * Normally, the .image-inline would have "display: inline-block" and "img { width: 100% }" (to follow the wrapper while resizing).;
-	 * Unfortunately, together with "srcset", it gets automatically stretched up to the width of the editing root.
-	 * This strange behavior does not happen with inline-flex.
-	 */
-	display: inline-flex;
-	max-width: 100%;
-	align-items: flex-start;
-}
-/* ckeditor5-image/theme/image.css */
-.ck-content .image-inline img {
-	flex-grow: 1;
-	flex-shrink: 1;
-	max-width: 100%;
-}
-/* ckeditor5-image/theme/imagecaption.css */
-.ck-content .image > figcaption {
-	display: table-caption;
-	caption-side: bottom;
-	word-break: break-word;
-	color: var(--ck-color-image-caption-text);
-	background-color: var(--ck-color-image-caption-background);
-	padding: .6em;
-	font-size: .75em;
-	outline-offset: -1px;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized {
-	max-width: 100%;
-	display: block;
-	box-sizing: border-box;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized img {
-	width: 100%;
-}
-/* ckeditor5-image/theme/imageresize.css */
-.ck-content .image.image_resized > figcaption {
-	display: block;
-}
 /* ckeditor5-image/theme/imagestyle.css */
 .ck-content .image-style-block-align-left,
 .ck-content .image-style-block-align-right {
@@ -231,18 +132,116 @@ Below there is a full list of content styles used by the editor features. You ca
 .ck-content .image-inline.image-style-align-right {
 	margin-left: var(--ck-inline-image-style-spacing);
 }
+/* ckeditor5-image/theme/imagecaption.css */
+.ck-content .image > figcaption {
+	display: table-caption;
+	caption-side: bottom;
+	word-break: break-word;
+	color: var(--ck-color-image-caption-text);
+	background-color: var(--ck-color-image-caption-background);
+	padding: .6em;
+	font-size: .75em;
+	outline-offset: -1px;
+}
+/* ckeditor5-font/theme/fontsize.css */
+.ck-content .text-tiny {
+	font-size: .7em;
+}
+/* ckeditor5-font/theme/fontsize.css */
+.ck-content .text-small {
+	font-size: .85em;
+}
+/* ckeditor5-font/theme/fontsize.css */
+.ck-content .text-big {
+	font-size: 1.4em;
+}
+/* ckeditor5-font/theme/fontsize.css */
+.ck-content .text-huge {
+	font-size: 1.8em;
+}
+/* ckeditor5-highlight/theme/highlight.css */
+.ck-content .marker-yellow {
+	background-color: var(--ck-highlight-marker-yellow);
+}
+/* ckeditor5-highlight/theme/highlight.css */
+.ck-content .marker-green {
+	background-color: var(--ck-highlight-marker-green);
+}
+/* ckeditor5-highlight/theme/highlight.css */
+.ck-content .marker-pink {
+	background-color: var(--ck-highlight-marker-pink);
+}
+/* ckeditor5-highlight/theme/highlight.css */
+.ck-content .marker-blue {
+	background-color: var(--ck-highlight-marker-blue);
+}
+/* ckeditor5-highlight/theme/highlight.css */
+.ck-content .pen-red {
+	color: var(--ck-highlight-pen-red);
+	background-color: transparent;
+}
+/* ckeditor5-highlight/theme/highlight.css */
+.ck-content .pen-green {
+	color: var(--ck-highlight-pen-green);
+	background-color: transparent;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized {
+	max-width: 100%;
+	display: block;
+	box-sizing: border-box;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized img {
+	width: 100%;
+}
+/* ckeditor5-image/theme/imageresize.css */
+.ck-content .image.image_resized > figcaption {
+	display: block;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image {
+	display: table;
+	clear: both;
+	text-align: center;
+	margin: 0.9em auto;
+	min-width: 50px;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image img {
+	display: block;
+	margin: 0 auto;
+	max-width: 100%;
+	min-width: 100%;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image-inline {
+	/*
+	 * Normally, the .image-inline would have "display: inline-block" and "img { width: 100% }" (to follow the wrapper while resizing).;
+	 * Unfortunately, together with "srcset", it gets automatically stretched up to the width of the editing root.
+	 * This strange behavior does not happen with inline-flex.
+	 */
+	display: inline-flex;
+	max-width: 100%;
+	align-items: flex-start;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image-inline picture {
+	display: flex;
+}
+/* ckeditor5-image/theme/image.css */
+.ck-content .image-inline picture,
+.ck-content .image-inline img {
+	flex-grow: 1;
+	flex-shrink: 1;
+	max-width: 100%;
+}
 /* ckeditor5-horizontal-line/theme/horizontalline.css */
 .ck-content hr {
 	margin: 15px 0;
 	height: 4px;
 	background: hsl(0, 0%, 87%);
 	border: 0;
-}
-/* ckeditor5-basic-styles/theme/code.css */
-.ck-content code {
-	background-color: hsla(0, 0%, 78%, 0.3);
-	padding: .15em;
-	border-radius: 2px;
 }
 /* ckeditor5-block-quote/theme/blockquote.css */
 .ck-content blockquote {
@@ -258,6 +257,12 @@ Below there is a full list of content styles used by the editor features. You ca
 .ck-content[dir="rtl"] blockquote {
 	border-left: 0;
 	border-right: solid 5px hsl(0, 0%, 80%);
+}
+/* ckeditor5-basic-styles/theme/code.css */
+.ck-content code {
+	background-color: hsla(0, 0%, 78%, 0.3);
+	padding: .15em;
+	border-radius: 2px;
 }
 /* ckeditor5-table/theme/table.css */
 .ck-content .table {

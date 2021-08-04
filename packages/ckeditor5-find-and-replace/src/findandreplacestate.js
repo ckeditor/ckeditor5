@@ -7,17 +7,14 @@
  * @module find-and-replace/findandreplacestate
  */
 
-import { Plugin } from 'ckeditor5/src/core';
 import { ObservableMixin, mix, Collection } from 'ckeditor5/src/utils';
 
 /**
  * The object storing find and replace plugin state for a given editor instance.
  *
  */
-export default class FindAndReplaceState extends Plugin {
+export default class FindAndReplaceState {
 	constructor( model ) {
-		super();
-
 		/**
 		 * A collection of find matches.
 		 *
