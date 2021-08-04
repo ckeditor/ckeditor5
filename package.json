@@ -155,7 +155,6 @@
     "docs": "node --max-old-space-size=4096 ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
     "docs:content-styles": "node ./scripts/docs/build-content-styles.js",
-    "docs:features-html-output": "node ./scripts/docs/features-html-output/build-features-html-output.js",
     "docs:serve": "http-server ./build/docs/",
     "docs:verify": "node ./scripts/web-crawler/index.js --docs",
     "translations:collect": "ckeditor5-dev-env-translations collect",
