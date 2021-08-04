@@ -32,7 +32,6 @@ describe( 'FindAndReplaceState', () => {
 
 	afterEach( async () => {
 		await editor.destroy();
-		await state.destroy();
 	} );
 
 	describe( 'State initiall value', () => {

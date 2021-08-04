@@ -104,6 +104,29 @@ ClassicEditor
 	.catch( ... );
 ```
 
+### Default table headers
+
+In order to make every inserted table to have `n` number of rows and columns as table headers by default, set an optional table config property `defaultHeadings` as follows:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, Bold, ... ],
+		toolbar: [ 'insertTable', ... ],
+		table: {
+			defaultHeadings: { rows: 1, columns: 1 }
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
+
+{@snippet features/table-default-headings}
+
 ### Table and cell styling tools
 
 To enable not only the [basic table features](#basic-table-features-2) but also the rich table and cell styling tools in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:

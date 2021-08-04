@@ -225,7 +225,6 @@ It is possible to add support for arbitrary styles, classes and other attributes
 
 Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes:
 
-* Some of the table markup [#9914](https://github.com/ckeditor/ckeditor5/issues/9914).
 * Some of the image features' markup [#9916](https://github.com/ckeditor/ckeditor5/issues/9916).
 * Some of the media embed features' markup [#9918](https://github.com/ckeditor/ckeditor5/issues/9918).
 * The `<ul>` and `<ol>` elements of the list feature [#9917](https://github.com/ckeditor/ckeditor5/issues/9917).
@@ -285,7 +284,7 @@ We are open for feedback, so if you find any issue, feel free to report it in th
 
 There are other HTML editing related CKEditor 5 features you may want to check:
 
-* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document.
+* {@link features/source-editing Source editing} &ndash; Provides the ability for viewing and editing the source of the document. When paired, these two plugins let the user gain powerful control over the content editing.
 * {@link features/html-embed HTML embed} &ndash; Allows embedding an arbitrary HTML snippet in the editor. It is a more constrained and controllable approach to arbitrary HTML than GHS.
 
 ## Contribute
