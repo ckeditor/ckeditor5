@@ -9,7 +9,6 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
-import Position, { getNodeAfterPosition, getTextNodeAtPosition } from '../model/position';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -123,14 +122,6 @@ export default class DowncastDispatcher {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
 		this.conversionApi = Object.assign( { dispatcher: this }, conversionApi );
-
-		/**
-		 * Maps conversion event names that will trigger element reconversion for a given element name.
-		 *
-		 * @type {Map<String, String>}
-		 * @private
-		 */
-		this._reconversionEventsMapping = new Map();
 	}
 
 	/**
@@ -146,7 +137,13 @@ export default class DowncastDispatcher {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
-		const changes = this._mapChangesWithAutomaticReconversion( differ );
+		const reduceChangesData = {
+			changes: differ.getChanges()
+		};
+
+		this.fire( 'reduceChanges', reduceChangesData );
+
+		const changes = reduceChangesData.changes;
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
@@ -155,7 +152,7 @@ export default class DowncastDispatcher {
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertElement( entry.element, writer );
+				this.reconvertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -173,6 +170,8 @@ export default class DowncastDispatcher {
 		for ( const change of differ.getMarkersToAdd() ) {
 			this.convertMarkerAdd( change.name, change.range, writer );
 		}
+
+		this.conversionApi.mapper.flushTemporaryMappings();
 	}
 
 	/**
@@ -192,10 +191,7 @@ export default class DowncastDispatcher {
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( data );
-		}
+		this._convertInsert( range );
 
 		this._clearConversionApi();
 	}
@@ -253,6 +249,8 @@ export default class DowncastDispatcher {
 	}
 
 	/**
+	 * TODO
+	 *
 	 * Starts the reconversion of an element. It will:
 	 *
 	 * * Fire an {@link #event:insert `insert` event} for the element to reconvert.
@@ -269,53 +267,20 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/element~Element} element The element to be reconverted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertElement( element, writer ) {
-		const elementRange = Range._createOn( element );
-
+	reconvertInsert( range, writer ) {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this.conversionApi.consumable = this._createInsertConsumable( elementRange );
+		this.conversionApi.consumable = this._createInsertConsumable( range );
 
-		const mapper = this.conversionApi.mapper;
-		const currentView = mapper.toViewElement( element );
-
-		// Remove the old view but do not remove mapper mappings - those will be used to revive existing elements.
-		writer.remove( currentView );
-
-		// Convert the element - without converting children.
-		this._convertInsertWithAttributes( {
-			item: element,
-			range: elementRange
-		} );
-
-		const convertedViewElement = mapper.toViewElement( element );
-
-		// Iterate over children of reconverted element in order to...
-		for ( const value of Range._createIn( element ) ) {
-			const { item } = value;
-
-			const view = elementOrTextProxyToView( item, mapper );
-
-			// ...either bring back previously converted view...
-			if ( view ) {
-				// Do not move views that are already in converted element - those might be created by the main element converter in case
-				// when main element converts also its direct children.
-				if ( view.root !== convertedViewElement.root ) {
-					writer.move(
-						writer.createRangeOn( view ),
-						mapper.toViewPosition( Position._createBefore( item ) )
-					);
-				}
-			}
-			// ... or by converting newly inserted elements.
-			else {
-				this._convertInsertWithAttributes( walkerValueToEventData( value ) );
-			}
+		// Convert the elements - without converting children.
+		// Fire a separate insert event for each node and text fragment contained in the range.
+		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
+			this._convertInsertWithAttributes( {
+				...data,
+				reconversion: true
+			} );
 		}
-
-		// After reconversion is done we can unbind the old view.
-		mapper.unbindViewElement( currentView );
 
 		this._clearConversionApi();
 	}
@@ -462,22 +427,15 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Maps the model element "insert" reconversion for given event names. The event names must be fully specified:
-	 *
-	 * * For "attribute" change event, it should include the main element name, i.e: `'attribute:attributeName:elementName'`.
-	 * * For child node change events, these should use the child event name as well, i.e:
-	 *     * For adding a node: `'insert:childElementName'`.
-	 *     * For removing a node: `'remove:childElementName'`.
-	 *
-	 * **Note**: This method should not be used directly. The reconversion is defined by the `triggerBy()` configuration of the
-	 * `elementToElement()` conversion helper.
+	 * TODO maybe this should be sth like convertNestedInsert to indicate that it's inside the current outer conversion block?
 	 *
 	 * @protected
-	 * @param {String} modelName The name of the main model element for which the events will trigger the reconversion.
-	 * @param {String} eventName The name of an event that would trigger conversion for a given model element.
 	 */
-	_mapReconversionTriggerEvent( modelName, eventName ) {
-		this._reconversionEventsMapping.set( eventName, modelName );
+	_convertInsert( range ) {
+		// Fire a separate insert event for each node and text fragment contained in the range.
+		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
+			this._convertInsertWithAttributes( data );
+		}
 	}
 
 	/**
@@ -595,103 +553,6 @@ export default class DowncastDispatcher {
 
 			this._testAndFire( `attribute:${ key }`, data );
 		}
-	}
-
-	/**
-	 * Returns differ changes together with added "reconvert" type changes for {@link #reconvertElement}. These are defined by
-	 * a the `triggerBy()` configuration for the
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
-	 *
-	 * This method will remove every mapped insert or remove change with a single "reconvert" change.
-	 *
-	 * For instance: Having a `triggerBy()` configuration defined for the `<complex>` element that issues this element reconversion on
-	 * `foo` and `bar` attributes change, and a set of changes for this element:
-	 *
-	 *		const differChanges = [
-	 *			{ type: 'attribute', attributeKey: 'foo', ... },
-	 *			{ type: 'attribute', attributeKey: 'bar', ... },
-	 *			{ type: 'attribute', attributeKey: 'baz', ... }
-	 *		];
-	 *
-	 * This method will return:
-	 *
-	 *		const updatedChanges = [
-	 *			{ type: 'reconvert', element: complexElementInstance },
-	 *			{ type: 'attribute', attributeKey: 'baz', ... }
-	 *		];
-	 *
-	 * In the example above, the `'baz'` attribute change will fire an {@link #event:attribute attribute event}
-	 *
-	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
-	 * @returns {Array.<Object>} Updated set of changes.
-	 * @private
-	 */
-	_mapChangesWithAutomaticReconversion( differ ) {
-		const itemsToReconvert = new Set();
-		const updated = [];
-
-		for ( const entry of differ.getChanges() ) {
-			const position = entry.position || entry.range.start;
-			// Cached parent - just in case. See https://github.com/ckeditor/ckeditor5/issues/6579.
-			const positionParent = position.parent;
-			const textNode = getTextNodeAtPosition( position, positionParent );
-
-			// Reconversion is done only on elements so skip text changes.
-			if ( textNode ) {
-				updated.push( entry );
-
-				continue;
-			}
-
-			const element = entry.type === 'attribute' ? getNodeAfterPosition( position, positionParent, null ) : positionParent;
-
-			// Case of text node set directly in root. For now used only in tests but can be possible when enabled in paragraph-like roots.
-			// See: https://github.com/ckeditor/ckeditor5/issues/762.
-			if ( element.is( '$text' ) ) {
-				updated.push( entry );
-
-				continue;
-			}
-
-			let eventName;
-
-			if ( entry.type === 'attribute' ) {
-				eventName = `attribute:${ entry.attributeKey }:${ element.name }`;
-			} else {
-				eventName = `${ entry.type }:${ entry.name }`;
-			}
-
-			if ( this._isReconvertTriggerEvent( eventName, element.name ) ) {
-				if ( itemsToReconvert.has( element ) ) {
-					// Element is already reconverted, so skip this change.
-					continue;
-				}
-
-				itemsToReconvert.add( element );
-
-				// Add special "reconvert" change.
-				updated.push( { type: 'reconvert', element } );
-			} else {
-				updated.push( entry );
-			}
-		}
-
-		return updated;
-	}
-
-	/**
-	 * Checks if the resulting change should trigger element reconversion.
-	 *
-	 * These are defined by a `triggerBy()` configuration for the
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
-	 *
-	 * @private
-	 * @param {String} eventName The event name to check.
-	 * @param {String} elementName The element name to check.
-	 * @returns {Boolean}
-	 */
-	_isReconvertTriggerEvent( eventName, elementName ) {
-		return this._reconversionEventsMapping.get( eventName ) === elementName;
 	}
 
 	/**
@@ -855,17 +716,6 @@ function walkerValueToEventData( value ) {
 		item,
 		range: itemRange
 	};
-}
-
-function elementOrTextProxyToView( item, mapper ) {
-	if ( item.is( 'textProxy' ) ) {
-		const mappedPosition = mapper.toViewPosition( Position._createBefore( item ) );
-		const positionParent = mappedPosition.parent;
-
-		return positionParent.is( '$text' ) ? positionParent : null;
-	}
-
-	return mapper.toViewElement( item );
 }
 
 /**

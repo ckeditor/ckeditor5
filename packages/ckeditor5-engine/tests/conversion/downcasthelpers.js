@@ -430,7 +430,7 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert on adding a child (in the middle)', () => {
 					setModelData( model,
 						'<simpleBlock toStyle="display:block">' +
-							'<paragraph>foo</paragraph><paragraph>bar</paragraph>' +
+						'<paragraph>foo</paragraph><paragraph>bar</paragraph>' +
 						'</simpleBlock>' );
 
 					const [ viewBefore, paraFooBefore, textFooBefore, paraBarBefore, textBarBefore ] = getNodes();
@@ -495,6 +495,85 @@ describe( 'DowncastHelpers', () => {
 					expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
 					expect( paraAfter, 'para' ).to.equal( paraBefore );
 					expect( textAfter, 'text' ).to.equal( textBefore );
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/9641
+				it( 'should convert on multiple similar child hooks', () => {
+					model.schema.register( 'simpleBlock2', {
+						allowIn: '$root',
+						allowChildren: 'paragraph'
+					} );
+					downcastHelpers.elementToElement( {
+						model: 'simpleBlock2',
+						view: { name: 'div', classes: 'second' },
+						triggerBy: {
+							children: [ 'paragraph' ]
+						}
+					} );
+
+					setModelData( model,
+						'<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' +
+						'<simpleBlock2 toStyle="display:block"><paragraph>bar</paragraph></simpleBlock2>'
+					);
+
+					const [ viewBefore0, paraBefore0, textBefore0 ] = getNodes( 0 );
+					const [ viewBefore1, paraBefore1, textBefore1 ] = getNodes( 1 );
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( 'abc' );
+
+						writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfter0, paraAfter0, textAfter0 ] = getNodes( 0 );
+					const [ viewAfter1, paraAfter1, textAfter1 ] = getNodes( 1 );
+
+					expectResult(
+						'<div><p>foo</p><p>abc</p></div>' +
+						'<div class="second"><p>bar</p></div>'
+					);
+
+					expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+					expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
+					expect( textAfter0, 'text' ).to.equal( textBefore0 );
+
+					expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
+					expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
+					expect( textAfter1, 'text' ).to.equal( textBefore1 );
+
+					model.change( writer => {
+						const paragraph = writer.createElement( 'paragraph' );
+						const text = writer.createText( '123' );
+
+						writer.insert( paragraph, modelRoot.getChild( 1 ), 1 );
+						writer.insert( text, paragraph, 0 );
+					} );
+
+					const [ viewAfterAfter0, paraAfterAfter0, textAfterAfter0 ] = getNodes( 0 );
+					const [ viewAfterAfter1, paraAfterAfter1, textAfterAfter1 ] = getNodes( 1 );
+
+					expectResult(
+						'<div><p>foo</p><p>abc</p></div>' +
+						'<div class="second"><p>bar</p><p>123</p></div>'
+					);
+
+					expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+					expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
+					expect( textAfter0, 'text' ).to.equal( textBefore0 );
+
+					expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
+					expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
+					expect( textAfter1, 'text' ).to.equal( textBefore1 );
+
+					expect( viewAfterAfter0, 'simpleBlock' ).to.equal( viewAfter0 );
+					expect( paraAfterAfter0, 'para' ).to.equal( paraAfter0 );
+					expect( textAfterAfter0, 'text' ).to.equal( textAfter0 );
+
+					expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
+					expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
+					expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
 				} );
 			} );
 
@@ -707,15 +786,16 @@ describe( 'DowncastHelpers', () => {
 				} );
 			} );
 
+			// TODO those tests are for elementToStructure
 			describe( 'with complex view structure (slot conversion)', () => {
 				beforeEach( () => {
 					model.schema.register( 'complex', {
 						allowIn: '$root',
 						allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
 					} );
-					downcastHelpers.elementToElement( {
+					downcastHelpers.elementToStructure( {
 						model: 'complex',
-						view: ( modelElement, { writer, mapper } ) => {
+						view: ( modelElement, { writer, mapper, slotFor } ) => {
 							const classForMain = !!modelElement.getAttribute( 'classForMain' );
 							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
 							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
@@ -735,12 +815,14 @@ describe( 'DowncastHelpers', () => {
 							writer.insert( writer.createPositionAt( outer, 'end' ), inner );
 							mapper.bindElements( modelElement, inner );
 
-							for ( const slot of modelElement.getChildren() ) {
-								const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
+							writer.insert( writer.createPositionAt( inner, 0 ), slotFor( modelElement, 'children' ) );
 
-								writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
-								mapper.bindElements( slot, viewSlot );
-							}
+							// for ( const slot of modelElement.getChildren() ) {
+							// 	const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
+							//
+							// 	writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
+							// 	mapper.bindElements( slot, viewSlot );
+							// }
 
 							return outer;
 						},
@@ -748,6 +830,11 @@ describe( 'DowncastHelpers', () => {
 							attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ],
 							children: [ 'slot' ]
 						}
+					} );
+
+					downcastHelpers.elementToElement( {
+						model: 'slot',
+						view: { name: 'div', classes: 'slot' }
 					} );
 
 					model.schema.register( 'slot', {
@@ -802,16 +889,16 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element with slots', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -819,8 +906,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on adding slot', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -829,11 +916,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-								'<div class="slot"><p>baz</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -841,8 +928,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on removing slot', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -851,9 +938,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -861,8 +948,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (remove + insert)', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -873,9 +960,9 @@ describe( 'DowncastHelpers', () => {
 					expectResult(
 						'<div class="complex-slots">' +
 						'<div class="slots">' +
-								'<div class="slot"><p>bar</p></div>' +
-								'<div class="slot"><p>baz</p></div>' +
-							'</div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -883,8 +970,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (remove + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -894,9 +981,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -904,8 +991,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on multiple triggers (insert + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -915,11 +1002,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-								'<div class="slot"><p>baz</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -948,8 +1035,8 @@ describe( 'DowncastHelpers', () => {
 
 					setModelData( model,
 						'<other>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</other>'
 					);
 					const otherView = viewRoot.getChild( 0 );
@@ -960,9 +1047,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="other">' +
-							'<div class="slot"><p>foo</p></div>' +
-							'<div class="slot"><p>bar</p></div>' +
-							'<div class="slot"><p>baz</p></div>' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
 						'</div>'
 					);
 					const otherViewAfter = viewRoot.getChild( 0 );
@@ -973,8 +1060,8 @@ describe( 'DowncastHelpers', () => {
 				describe( 'memoization', () => {
 					it( 'should create new element on re-converting element', () => {
 						setModelData( model, '<complex>' +
-								'<slot><paragraph>foo</paragraph></slot>' +
-								'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -991,8 +1078,8 @@ describe( 'DowncastHelpers', () => {
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (attribute changed)', () => {
 						setModelData( model, '<complex>' +
-								'<slot><paragraph>foo</paragraph></slot>' +
-								'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -1009,8 +1096,8 @@ describe( 'DowncastHelpers', () => {
 							slotTwoAfter, paraTwoAfter, textNodeTwoAfter ] = getNodes();
 
 						expect( mainAfter, 'main view' ).to.not.equal( main );
-						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
-						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
+						expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
+						expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
 						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
 						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
 						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
@@ -1019,8 +1106,8 @@ describe( 'DowncastHelpers', () => {
 
 					it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
 						setModelData( model, '<complex>' +
-								'<slot><paragraph>foo</paragraph></slot>' +
-								'<slot><paragraph>bar</paragraph></slot>' +
+							'<slot><paragraph>foo</paragraph></slot>' +
+							'<slot><paragraph>bar</paragraph></slot>' +
 							'</complex>'
 						);
 
@@ -1043,8 +1130,8 @@ describe( 'DowncastHelpers', () => {
 						] = getNodes();
 
 						expect( mainAfter, 'main view' ).to.not.equal( main );
-						expect( slotOneAfter, 'first slot view' ).to.not.equal( slotOne );
-						expect( slotTwoAfter, 'second slot view' ).to.not.equal( slotTwo );
+						expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
+						expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
 						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
 						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
 						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
@@ -1167,16 +1254,16 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element with slots', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -1184,8 +1271,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should not convert element on adding slot', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -1198,11 +1285,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-								'<div class="slot"><p>baz</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -1210,8 +1297,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should not convert element on removing slot', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -1220,9 +1307,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -1230,8 +1317,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on a trigger and block atomic converters (remove + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -1241,9 +1328,9 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>bar</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>bar</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -1251,8 +1338,8 @@ describe( 'DowncastHelpers', () => {
 				it( 'should convert element on a trigger and block atomic converters (insert + attribute)', () => {
 					setModelData( model,
 						'<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
 						'</complex>' );
 
 					model.change( writer => {
@@ -1262,11 +1349,11 @@ describe( 'DowncastHelpers', () => {
 
 					expectResult(
 						'<div class="complex-slots with-class">' +
-							'<div class="slots">' +
-								'<div class="slot"><p>foo</p></div>' +
-								'<div class="slot"><p>bar</p></div>' +
-								'<div class="slot"><p>baz</p></div>' +
-							'</div>' +
+						'<div class="slots">' +
+						'<div class="slot"><p>foo</p></div>' +
+						'<div class="slot"><p>bar</p></div>' +
+						'<div class="slot"><p>baz</p></div>' +
+						'</div>' +
 						'</div>'
 					);
 				} );
@@ -1290,8 +1377,8 @@ describe( 'DowncastHelpers', () => {
 				writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
 			}
 
-			function* getNodes() {
-				const main = viewRoot.getChild( 0 );
+			function* getNodes( childIndex = 0 ) {
+				const main = viewRoot.getChild( childIndex );
 				yield main;
 
 				for ( const { item } of controller.view.createRangeIn( main ) ) {

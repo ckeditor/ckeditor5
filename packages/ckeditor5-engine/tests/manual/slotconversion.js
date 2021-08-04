@@ -87,12 +87,11 @@ function getBoxUpcastConverter( editor ) {
 }
 
 function downcastBox( modelElement, conversionApi ) {
-	const { writer } = conversionApi;
+	const { writer, slotFor } = conversionApi;
 
 	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
-	conversionApi.mapper.bindElements( modelElement, viewBox );
-
 	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
+
 	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
 
 	for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
@@ -117,38 +116,7 @@ function downcastBox( modelElement, conversionApi ) {
 		}
 	}
 
-	for ( const field of modelElement.getChildren() ) {
-		const viewField = writer.createContainerElement( 'div', { class: 'box-content-field' } );
-
-		writer.insert( writer.createPositionAt( contentWrap, field.index ), viewField );
-		conversionApi.mapper.bindElements( field, viewField );
-		conversionApi.consumable.consume( field, 'insert' );
-
-		// Might be simplified to:
-		//
-		// writer.defineSlot( field, viewField, field.index );
-		//
-		// but would require a converter:
-		//
-		// editor.conversion.for( 'downcast' ).elementToElement( {	// .slotToElement()?
-		// 		model: 'viewField',
-		// 		view: { name: 'div', class: 'box-content-field' }
-		// 	} );
-	}
-
-	// At this point we're inserting whole "component". Equivalent to (JSX-like notation):
-	//
-	//	"rendered" view																					Mapping/source
-	//
-	//	<div:container class="box">												<-- top-level			box
-	//		<div:raw class="box-meta box-meta-header">...</div:raw>										box[meta.header]
-	//		<div:container class="box-content">
-	//			<div:container class="box-content-field">...</div:container>	<-- this is "slot"		boxField
-	//			... many
-	//			<div:container class="box-content-field">...</div:container>	<-- this is "slot"		boxField
-	//		</div:container>
-	//		<div:raw class="box-meta box-meta-author">...</div:raw>										box[meta.author]
-	//	</div:container>
+	writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( modelElement, 'children' ) );
 
 	return viewBox;
 }
@@ -199,13 +167,18 @@ function Box( editor ) {
 
 	editor.conversion.for( 'upcast' ).add( getBoxUpcastConverter( editor ) );
 
-	editor.conversion.for( 'downcast' ).elementToElement( {
+	editor.conversion.for( 'downcast' ).elementToStructure( {
 		model: 'box',
 		view: downcastBox,
 		triggerBy: {
 			attributes: [ 'meta' ],
 			children: [ 'boxField' ]
 		}
+	} );
+
+	editor.conversion.for( 'downcast' ).elementToElement( {
+		model: 'boxField',
+		view: { name: 'div', classes: 'box-content-field' }
 	} );
 
 	addBoxMetaButton( editor, 'boxTitle', 'Box title', () => ( {

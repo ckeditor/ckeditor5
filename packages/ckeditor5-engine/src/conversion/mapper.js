@@ -89,6 +89,12 @@ export default class Mapper {
 		this._elementToMarkerNames = new Map();
 
 		/**
+		 * TODO
+		 * @private
+		 */
+		this._removedViewElements = new Set();
+
+		/**
 		 * Stores marker names of markers which has changed due to unbinding a view element (so it is assumed that the view element
 		 * has been removed, moved or renamed).
 		 *
@@ -147,10 +153,8 @@ export default class Mapper {
 	 *
 	 * @param {module:engine/view/element~Element} viewElement View element to unbind.
 	 */
-	unbindViewElement( viewElement ) {
+	unbindViewElement( viewElement, immediate = true ) {
 		const modelElement = this.toModelElement( viewElement );
-
-		this._viewToModelMapping.delete( viewElement );
 
 		if ( this._elementToMarkerNames.has( viewElement ) ) {
 			for ( const markerName of this._elementToMarkerNames.get( viewElement ) ) {
@@ -158,8 +162,14 @@ export default class Mapper {
 			}
 		}
 
-		if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
-			this._modelToViewMapping.delete( modelElement );
+		if ( immediate ) {
+			this._viewToModelMapping.delete( viewElement );
+
+			if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
+				this._modelToViewMapping.delete( modelElement );
+			}
+		} else {
+			this._removedViewElements.add( [ viewElement, viewElement.root ] );
 		}
 	}
 
@@ -245,6 +255,20 @@ export default class Mapper {
 	}
 
 	/**
+	 * TODO
+	 */
+	flushTemporaryMappings() {
+		for ( const [ viewElement, root ] of this._removedViewElements ) {
+			// Unbind it only if it wasn't re-attached to some root or document fragment.
+			if ( viewElement.root == root ) {
+				this.unbindViewElement( viewElement, true );
+			}
+		}
+
+		this._removedViewElements = new Set();
+	}
+
+	/**
 	 * Removes all model to view and view to model bindings.
 	 */
 	clearBindings() {
@@ -253,6 +277,7 @@ export default class Mapper {
 		this._markerNameToElements = new Map();
 		this._elementToMarkerNames = new Map();
 		this._unboundMarkerNames = new Set();
+		this._removedViewElements = new Set();
 	}
 
 	/**

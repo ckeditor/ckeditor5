@@ -12,6 +12,7 @@
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
+import ModelPosition from '../model/position';
 
 import ViewAttributeElement from '../view/attributeelement';
 import DocumentSelection from '../model/documentselection';
@@ -94,6 +95,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 */
 	elementToElement( config ) {
 		return this.add( downcastElementToElement( config ) );
+	}
+
+	/**
+	 * TODO
+	 */
+	elementToStructure( config ) {
+		return this.add( downcastElementToStructure( config ) );
 	}
 
 	/**
@@ -565,7 +573,7 @@ export function remove() {
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
 		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
-			conversionApi.mapper.unbindViewElement( child );
+			conversionApi.mapper.unbindViewElement( child, false );
 		}
 	};
 }
@@ -824,6 +832,175 @@ export function insertElement( elementCreator ) {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
+
+		// Fill with nested view nodes.
+		for ( const modelChildNode of data.item.getChildren() ) {
+			const viewChildNode = elementOrTextProxyToView( modelChildNode, conversionApi.mapper );
+
+			if ( data.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
+				conversionApi.writer.move(
+					conversionApi.writer.createRangeOn( viewChildNode ),
+					conversionApi.mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+				);
+				// conversionApi.mapper.bindElements( modelChildNode, viewChildNode );
+			} else {
+				// TODO this should be exposed by conversionApi?
+				// Note that this is not creating another consumable, it's using the current one.
+				conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+			}
+		}
+	};
+}
+
+/**
+ * TODO
+ */
+function insertStructure( elementCreator ) {
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper, consumable } = conversionApi;
+
+		// Scan for elements and it's current mapped view elements.
+		const elements = Array.from( data.range.getItems( { shallow: true } ) );
+		// const consumables = data.consumables || elements.map( element => [ element, 'insert' ] );
+		const consumables = []; // TODO
+
+		// Verify if all consumables are available to be consumed.
+		for ( const [ item, eventName ] of consumables ) {
+			if ( !consumable.test( item, eventName ) ) {
+				return;
+			}
+		}
+
+		const slotsMap = new Map();
+
+		// View creation.
+		const viewElement = elementCreator( data.range, {
+			...conversionApi,
+			slotFor( element, mode = 'children' ) {
+				const slot = writer.createContainerElement( '$slot' );
+
+				if ( slotsMap.has( element ) ) {
+					slotsMap.get( element ).push( { slot, mode } );
+				} else {
+					slotsMap.set( element, [ { slot, mode } ] );
+				}
+
+				return slot;
+			}
+		} );
+
+		// Insert the new structure if any was created. Otherwise it's removed.
+		if ( !viewElement ) {
+			return;
+		}
+
+		// Consume consumables.
+		for ( const [ item, eventName ] of consumables ) {
+			if ( !consumable.consume( item, eventName ) ) {
+				return;
+			}
+		}
+
+		const viewPosition = mapper.toViewPosition( data.range.start );
+
+		// TODO make sure that provided viewElement has no bindings (else there could be an infinite loop).
+
+		mapper.bindElements( elements[ 0 ], viewElement );
+		writer.insert( viewPosition, viewElement );
+
+		// mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'high' } );
+
+		// Fill slots with nested view nodes.
+		for ( const [ element, elementSlots ] of slotsMap.entries() ) {
+			for ( const { slot, mode } of elementSlots ) {
+				// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
+
+				if ( mode == 'children' ) {
+					// Bind slot with element so children will be down-casted into it.
+					// TODO use temporary modelToViewPosition mapping
+					mapper.bindElements( element, slot );
+
+					for ( const modelChildNode of element.getChildren() ) {
+						const viewChildNode = elementOrTextProxyToView( modelChildNode, mapper );
+
+						if ( data.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) { // TODO ???
+							writer.move(
+								writer.createRangeOn( viewChildNode ),
+								mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+							);
+							// console.log( 'reused old view for', modelChildNode );
+							// mapper.bindElements( modelChildNode, viewChildNode );
+						} else {
+							// TODO this should be exposed by conversionApi?
+							// Note that this is not creating another consumable, it's using the current one.
+							conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+						}
+					}
+
+					writer.move( writer.createRangeIn( slot ), writer.createPositionBefore( slot ) );
+					mapper.unbindViewElement( slot );
+					writer.remove( slot );
+
+					// Rebind the original view element to the correct model element.
+					mapper.bindElements( element, viewElement );
+				// } else if ( mode == 'self' ) {
+				// 	// const currentViewElement = currentMapping.get( element );
+				//
+				// 	// Bind slot parents to the element so they could be found while reconverting.
+				// 	// TODO probably all parents that have no mapping yet (so excluding main viewElement)
+				// 	mapper.bindElements( element, slot.parent );
+				//
+				// 	// if ( range.reconversion && currentViewElement && currentViewElement.root != viewElement.root ) { // TODO ???
+				// 	// 	writer.move(
+				// 	// 		writer.createRangeOn( currentViewElement ),
+				// 	// 		mapper.toViewPosition( ModelPosition._createBefore( element ) )
+				// 	// 	);
+				// 	// 	console.log( 'reused old view for element at',
+					// 		ModelPosition._createBefore( element ).path, '->', currentViewElement );
+				// 	//
+				// 	// 	// Rebind the original view element to the correct model element.
+				// 	// 	mapper.bindElements( element, currentViewElement );
+				// 	// } else {
+				// 	// TODO this should be exposed by conversionApi?
+				// 	// Note that this is not creating another consumable, it's using the current one.
+				// 	conversionApi.dispatcher._convertInsert( ModelRange._createOn( element ) );
+				// 	// }
+				//
+				// 	writer.remove( slot );
+				} else {
+					// TODO callback check (for example tbody vs thead)
+				}
+			}
+		}
+
+		// mapper.off( 'modelToViewPosition', toViewPositionMapping );
+
+		// // After reconversion is done we can unbind the old view.
+		// for ( const currentView of currentViewElements ) {
+		// 	if ( currentView.root != viewElement.root ) {
+		// 		mapper.unbindViewElement( currentView );
+		// 	}
+		// }
+
+		// function toViewPositionMapping( evt, data ) {
+		// 	if ( data.isPhantom || data.viewPosition ) {
+		// 		return;
+		// 	}
+		//
+		// 	const elementSlots = slotsMap.get( data.modelPosition.nodeAfter );
+		//
+		// 	if ( !elementSlots ) {
+		// 		return;
+		// 	}
+		//
+		// 	// TODO conditional slots?
+		//
+		// 	if ( elementSlots[ 0 ].mode == 'self' ) {
+		// 		data.viewPosition = writer.createPositionBefore( elementSlots[ 0 ].slot );
+		// 	}
+		// }
+
+		return viewElement;
 	};
 }
 
@@ -1381,18 +1558,25 @@ function downcastElementToElement( config ) {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
 		if ( config.triggerBy ) {
-			if ( config.triggerBy.attributes ) {
-				for ( const attributeKey of config.triggerBy.attributes ) {
-					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
-				}
-			}
+			dispatcher.on( 'reduceChanges', createTriggerByHandler( config ) );
+		}
+	};
+}
 
-			if ( config.triggerBy.children ) {
-				for ( const childName of config.triggerBy.children ) {
-					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
-					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
-				}
-			}
+// TODO
+function downcastElementToStructure( config ) {
+	config = cloneDeep( config );
+
+	const elementCreator = normalizeToElementConfig( config.view, 'container' );
+
+	// TODO The elementCreator expects model element here but insertStructure operates on ranges.
+	config.view = ( range, ...rest ) => elementCreator( range.start.nodeAfter, ...rest );
+
+	return dispatcher => {
+		dispatcher.on( 'insert:' + config.model, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			dispatcher.on( 'reduceChanges', createTriggerByHandler( config ) );
 		}
 	};
 }
@@ -1668,6 +1852,67 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 	}
 
 	return descriptor;
+}
+
+// TODO
+function createTriggerByHandler( config ) {
+	return ( evt, data ) => {
+		const reducedChanges = [];
+		const reconvertedElements = new Set();
+
+		for ( const diffItem of data.changes ) {
+			// For attribute use node affected by the change.
+			// For insert or remove use parent element because we need to check if it's added/removed child.
+			const element = diffItem.position ? diffItem.position.parent : diffItem.range.start.nodeAfter;
+
+			if ( element.name != config.model ) {
+				return;
+			}
+
+			if ( diffItem.type == 'attribute' ) {
+				if ( !config.triggerBy.attributes || !config.triggerBy.attributes.includes( diffItem.attributeKey ) ) {
+					return;
+				}
+			} else {
+				if ( !config.triggerBy.children || !config.triggerBy.children.includes( diffItem.name ) ) {
+					return;
+				}
+			}
+
+			// If it's already marked for reconversion, so skip this change.
+			if ( reconvertedElements.has( element ) ) {
+				continue;
+			}
+
+			reconvertedElements.add( element );
+
+			const position = ModelPosition._createBefore( element );
+
+			reducedChanges.push( {
+				type: 'remove',
+				position,
+				length: 1
+			}, {
+				type: 'reconvert', // TODO is this needed? what about element renaming ( paragraph => heading1 )
+				position,
+				length: 1
+			} );
+		}
+
+		data.changes = reducedChanges;
+	};
+}
+
+// TODO
+function elementOrTextProxyToView( item, mapper ) {
+	if ( item.is( '$text' ) ) {
+		const viewPosition = mapper.toViewPosition( ModelPosition._createBefore( item ) );
+		const viewPositionParent = viewPosition.parent;
+
+		return viewPositionParent.is( '$text' ) ? viewPositionParent : null;
+	}
+
+	return mapper.toViewElement( item );
 }
 
 /**
