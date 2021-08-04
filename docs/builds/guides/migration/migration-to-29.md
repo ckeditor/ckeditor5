@@ -8,7 +8,88 @@ modified_at: 2021-07-25
 
 # Migration to CKEditor 5 v29.x
 
+## Migration to CKEditor 5 v29.1.0
+
+For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v29.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2910-2021-08-02).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v29.1.0.
+
+### Matcher pattern API change
+
+Starting from v29.1.0, the {@link module:engine/view/matcher~Matcher} feature deprecated matching `style` and `class` HTML attributes using `attributes` key-value pairs pattern.
+
+The {@link module:engine/view/matcher~Matcher} feature allows to match styles and classes by using dedicated `styles` and `classes` patterns. Since v29.0.0 it's also possible to match every possible value for these attributes by using Boolean type with `true` value. Therefore, to avoid confusion which pattern should be used to match classes and styles, we decided to deprecate matching classes and styles using `attributes` pattern.
+
+Here is an example of changes you may need for proper integration with the {@link module:engine/view/matcher~Matcher} feature new API:
+
+```js
+// Old code.
+new Matcher( {
+	name: 'a',
+	attributes: {
+		'data-custom-attribute-1': /.*/,
+		'data-custom-attribute-2': /.*/,
+		style: true,
+		class: true
+	}
+} );
+
+// New code.
+new Matcher( {
+	name: 'a',
+	attributes: {
+		'data-custom-attribute-1': /.*/,
+		'data-custom-attribute-2': /.*/
+	},
+	styles: true,
+	classes: true
+} );
+```
+
+### Link decorators API change
+
+{@link builds/guides/migration/migration-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/link~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/link~LinkDecoratorManualDefinition manual decorator} and {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorator}). Similary to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
+
+Here is an example of changes you may need for proper integration with the {@link module:link/link~LinkDecoratorDefinition link decorators} API change:
+
+```js
+// Old code.
+ClassicEditor
+    .create( ..., {
+        // ...
+        link: {
+            decorators: {
+                addGreenLink: {
+                    mode: 'automatic',
+                    attributes: {
+                        class: 'my-green-link',
+						style: 'color:green;'
+                    }
+                }
+            }
+        }
+    } )
+// New code.
+ClassicEditor
+    .create( ..., {
+        // ...
+        link: {
+            decorators: {
+                addGreenLink: {
+                    mode: 'automatic',
+                    classes: 'my-green-link',
+					styles: {
+						color: 'green'
+					}
+                }
+            }
+        }
+    } )
+```
+
 ## Migration to CKEditor 5 v29.0.0
+
+For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2900-2021-07-05).
 
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
@@ -275,82 +356,3 @@ ClassicEditor
 	.catch( ... );
 ```
 Check out the comprehensive {@link features/images-installation installation guide to images} in CKEditor 5 to learn more.
-
-## Migration to CKEditor 5 v29.1.0
-
-For the entire list of changes introduced in version 30.0.0, see the changelog for CKEditor 5 v29.1.0.
-
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v29.1.0.
-
-### Matcher pattern API change
-
-Starting from v29.1.0, the {@link module:engine/view/matcher~Matcher} feature deprecated matching `style` and `class` HTML attributes using `attributes` key-value pairs pattern.
-
-The {@link module:engine/view/matcher~Matcher} feature allows to match styles and classes by using dedicated `styles` and `classes` patterns. Since v29.0.0 it's also possible to match every possible value for these attributes by using Boolean type with `true` value. Therefore, to avoid confusion which pattern should be used to match classes and styles, we decided to deprecate matching classes and styles using `attributes` pattern.
-
-Here is an example of changes you may need for proper integration with the {@link module:engine/view/matcher~Matcher} feature new API:
-
-```js
-// Old code.
-new Matcher( {
-	name: 'a',
-	attributes: {
-		'data-custom-attribute-1': /.*/,
-		'data-custom-attribute-2': /.*/,
-		style: true,
-		class: true
-	}
-} );
-
-// New code.
-new Matcher( {
-	name: 'a',
-	attributes: {
-		'data-custom-attribute-1': /.*/,
-		'data-custom-attribute-2': /.*/
-	},
-	styles: true,
-	classes: true
-} );
-```
-
-### Link decorators API change
-
-{@link builds/guides/migration/migration-to-29#matcher-pattern-api-change Matcher pattern API change} also improves how the {@link module:link/link~LinkDecoratorDefinition link decorators} should be defined (both {@link module:link/link~LinkDecoratorManualDefinition manual decorator} and {@link module:link/link~LinkDecoratorAutomaticDefinition automatic decorator}). Similary to the {@link module:engine/view/matcher~Matcher} feature API, `style` and `class` HTML attributes should be defined using respectively `classes` and `styles` properties.
-
-Here is an example of changes you may need for proper integration with the {@link module:link/link~LinkDecoratorDefinition link decorators} API change:
-
-```js
-// Old code.
-ClassicEditor
-    .create( ..., {
-        // ...
-        link: {
-            decorators: {
-                addGreenLink: {
-                    mode: 'automatic',
-                    attributes: {
-                        class: 'my-green-link',
-						style: 'color:green;'
-                    }
-                }
-            }
-        }
-    } )
-// New code.
-ClassicEditor
-    .create( ..., {
-        // ...
-        link: {
-            decorators: {
-                addGreenLink: {
-                    mode: 'automatic',
-                    classes: 'my-green-link',
-					styles: {
-						color: 'green'
-					}
-                }
-            }
-        }
-    } )
-```
