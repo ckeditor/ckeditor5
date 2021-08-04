@@ -2,7 +2,7 @@
 category: builds-migration
 menu-title: Migration to v28.x
 order: 96
-modified_at: 2021-06-07
+modified_at: 2021-06-01
 ---
 
 # Migration to CKEditor 5 v28.0.0
