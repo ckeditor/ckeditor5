@@ -14,7 +14,7 @@ Check out the {@link features/find-and-replace#demo showcase demo} in the Find a
 
 ## Documentation
 
-See the {@link features/find-and-replace Find and replace feature} guide and the {@link module:find-and-replace/findandreplace~FindAndReplace} plugin documentation.
+See the {@link features/find-and-replace find and replace feature guide} and the {@link module:find-and-replace/findandreplace~FindAndReplace} plugin documentation.
 
 ## Installation
 

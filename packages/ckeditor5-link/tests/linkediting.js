@@ -711,6 +711,11 @@ describe( 'LinkEditing', () => {
 						attributes: {
 							class: 'mail-url'
 						}
+					}, {
+						url: 'ftp://example.com',
+						attributes: {
+							style: 'background:blue;color:yellow;'
+						}
 					}
 				];
 
@@ -739,8 +744,14 @@ describe( 'LinkEditing', () => {
 								isMail: {
 									mode: 'automatic',
 									callback: url => url.startsWith( 'mailto:' ),
-									attributes: {
-										class: 'mail-url'
+									classes: 'mail-url'
+								},
+								isFile: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'ftp' ),
+									styles: {
+										color: 'yellow',
+										background: 'blue'
 									}
 								}
 							}
@@ -774,7 +785,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				it( 'stores decorators in LinkCommand#automaticDecorators collection', () => {
-					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 3 );
+					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 4 );
 				} );
 			} );
 		} );
@@ -844,7 +855,8 @@ describe( 'LinkEditing', () => {
 			it( 'should upcast attributes from initial data', async () => {
 				editor = await ClassicTestEditor.create( element, {
 					initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
-						'<a href="example.com" download="file">Bar</a></p>',
+						'<a href="example.com" class="file" style="text-decoration:underline;">Bar</a>' +
+						'<a href="example.com" download="file">Baz</a></p>',
 					plugins: [ Paragraph, LinkEditing, Enter ],
 					link: {
 						decorators: {
@@ -862,6 +874,14 @@ describe( 'LinkEditing', () => {
 								attributes: {
 									download: 'file'
 								}
+							},
+							isFile: {
+								mode: 'manual',
+								label: 'File',
+								classes: 'file',
+								styles: {
+									'text-decoration': 'underline'
+								}
 							}
 						}
 					}
@@ -872,7 +892,8 @@ describe( 'LinkEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
 						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
-						'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
 					'</paragraph>'
 				);
 

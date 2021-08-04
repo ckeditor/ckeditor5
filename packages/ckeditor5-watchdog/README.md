@@ -9,7 +9,7 @@ This package implements the watchdog feature for CKEditor 5. It keeps a CKEditor
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-watchdog` package](https://ckeditor.com/docs/ckeditor5/latest/api/watchdog.html) page as well as the [Watchdog feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-watchdog` package](https://ckeditor.com/docs/ckeditor5/latest/api/watchdog.html) page as well as the [Watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

@@ -470,7 +470,7 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<code>&lt;<strong>*</strong><br>    <strong>data-comment-end-after</strong>="*"<br>    <strong>data-comment-start-before</strong>="*"<br>&gt;</code>
 				<p>
-					The plugin adds <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which comments starts or ends.
+					The plugin adds the <code>data-comment-end-after</code> and <code>data-comment-start-before</code> attributes to other elements on which the comment starts or ends.
 				</p>
 			</td>
 		</tr>
@@ -969,6 +969,21 @@ The data used to generate the following tables comes from the package metadata. 
 			<td class="html-output">
 				<p>
 					None.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/general-html-support.html#html-comments">HTML comment</a>
+				</p>
+				<p>
+					<a href="../../../api/module_html-support_htmlcomment-HtmlComment.html"><code>HtmlComment</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					The plugin can output HTML comments that were added from the editor inital data or by the plugin API.
 				</p>
 			</td>
 		</tr>
@@ -1551,6 +1566,39 @@ The data used to generate the following tables comes from the package metadata. 
 		</tr>
 	</tbody>
 </table>
+<h3 id="ckeditor5-minimap"><code>ckeditor5-minimap</code></h3>
+<p>
+	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-minimap/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-minimap/ckeditor5-metadata.json</code></a>
+</p>
+<table class="features-html-output">
+	<thead>
+		<tr>
+			<th class="plugin">
+				Plugin
+			</th>
+			<th class="html-output">
+				HTML output
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="plugin">
+				<p>
+					<a href="../../../features/minimap.html">Content minimap</a>
+				</p>
+				<p>
+					<a href="../../../api/module_minimap_minimap-Minimap.html"><code>Minimap</code></a>
+				</p>
+			</td>
+			<td class="html-output">
+				<p>
+					None.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
 <h3 id="ckeditor5-page-break"><code>ckeditor5-page-break</code></h3>
 <p>
 	Source file: <a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-page-break/ckeditor5-metadata.json"><code>@ckeditor/ckeditor5-page-break/ckeditor5-metadata.json</code></a>
@@ -1865,7 +1913,7 @@ The data used to generate the following tables comes from the package metadata. 
 		<tr>
 			<td class="plugin">
 				<p>
-					<a href="../../../features/revision-history/revision-history" data-skip-validation>Revision History</a>
+					<a href="../../../features/revision-history/revision-history.html" data-skip-validation>Revision History</a>
 				</p>
 				<p>
 					<a href="../../../api/module_revision-history_revisionhistory-RevisionHistory.html" data-skip-validation><code>RevisionHistory</code></a>

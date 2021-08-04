@@ -34,6 +34,8 @@ export { default as FocusCycler } from './focuscycler';
 export { default as IconView } from './icon/iconview';
 export { default as InputTextView } from './inputtext/inputtextview';
 
+export { default as IframeView } from './iframe/iframeview';
+
 export { default as LabelView } from './label/labelview';
 export { default as LabeledFieldView } from './labeledfield/labeledfieldview';
 export * from './labeledfield/utils';

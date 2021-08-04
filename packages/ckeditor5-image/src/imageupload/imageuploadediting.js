@@ -291,7 +291,7 @@ export default class ImageUploadEditing extends Plugin {
 				/* istanbul ignore next */
 				if ( env.isSafari ) {
 					const viewFigure = editor.editing.mapper.toViewElement( imageElement );
-					const viewImg = imageUtils.getViewImageFromWidget( viewFigure );
+					const viewImg = imageUtils.findViewImgElement( viewFigure );
 
 					editor.editing.view.once( 'render', () => {
 						// Early returns just to be safe. There might be some code ran

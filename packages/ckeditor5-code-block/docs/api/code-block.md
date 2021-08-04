@@ -10,11 +10,11 @@ This package implements the code block feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/code-blocks#demo demo in the Code block feature} guide.
+Check out the {@link features/code-blocks#demo demo in the code block feature guide}.
 
 ## Documentation
 
-See the {@link features/code-blocks Code block feature} guide and the {@link module:code-block/codeblock~CodeBlock} plugin documentation.
+See the {@link features/code-blocks code block feature guide} and the {@link module:code-block/codeblock~CodeBlock} plugin documentation.
 
 ## Installation
 

@@ -7,10 +7,11 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, NodeFilter, Text */
+/* globals document, Node, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
+import ViewUIElement from './uielement';
 import ViewPosition from './position';
 import ViewRange from './range';
 import ViewSelection from './selection';
@@ -25,9 +26,7 @@ import {
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
-import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import { isElement } from 'lodash-es';
 
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
@@ -92,6 +91,23 @@ export default class DomConverter {
 			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
 			'hgroup', 'legend', 'li', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'summary', 'table', 'tbody',
 			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
+		];
+
+		/**
+		 * A list of elements that exist inline (in text) but their inner structure cannot be edited because
+		 * of the way they are rendered by the browser. They are mostly HTML form elements but there are other
+		 * elements such as `<img>` or `<iframe>` that also have non-editable children or no children whatsoever.
+		 *
+		 * Whether an element is considered an inline object has an impact on white space rendering (trimming)
+		 * around (and inside of it). In short, white spaces in text nodes next to inline objects are not trimmed.
+		 *
+		 * You can extend this array if you introduce support for inline object elements which are not yet recognized here.
+		 *
+		 * @readonly
+		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#inlineObjectElements
+		 */
+		this.inlineObjectElements = [
+			'object', 'iframe', 'input', 'button', 'textarea', 'select', 'option', 'video', 'embed', 'audio', 'img', 'canvas'
 		];
 
 		/**
@@ -237,8 +253,12 @@ export default class DomConverter {
 					this.bindDocumentFragments( domElement, viewNode );
 				}
 			} else if ( viewNode.is( 'uiElement' ) ) {
-				// UIElement has its own render() method (see #799).
-				domElement = viewNode.render( domDocument );
+				if ( viewNode.name === '$comment' ) {
+					domElement = domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) );
+				} else {
+					// UIElement has its own render() method (see #799).
+					domElement = viewNode.render( domDocument );
+				}
 
 				if ( options.bind ) {
 					this.bindElements( domElement, viewNode );
@@ -406,7 +426,9 @@ export default class DomConverter {
 	 * @param {Object} [options] Conversion options.
 	 * @param {Boolean} [options.bind=false] Determines whether new elements will be bound.
 	 * @param {Boolean} [options.withChildren=true] If `true`, node's and document fragment's children will be converted too.
-	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converter to lower case.
+	 * @param {Boolean} [options.keepOriginalCase=false] If `false`, node's tag name will be converted to lower case.
+	 * @param {Boolean} [options.skipComments=false] If `false`, comment nodes will be converted to `$comment`
+	 * {@link module:engine/view/uielement~UIElement view UI elements}.
 	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted node or document fragment
 	 * or `null` if DOM node is a {@link module:engine/view/filler filler} or the given node is an empty text node.
 	 */
@@ -422,6 +444,10 @@ export default class DomConverter {
 			return hostElement;
 		}
 
+		if ( this.isComment( domNode ) && options.skipComments ) {
+			return null;
+		}
+
 		if ( isText( domNode ) ) {
 			if ( isInlineFiller( domNode ) ) {
 				return null;
@@ -430,8 +456,6 @@ export default class DomConverter {
 
 				return textData === '' ? null : new ViewText( this.document, textData );
 			}
-		} else if ( this.isComment( domNode ) ) {
-			return null;
 		} else {
 			if ( this.mapDomToView( domNode ) ) {
 				return this.mapDomToView( domNode );
@@ -448,8 +472,7 @@ export default class DomConverter {
 				}
 			} else {
 				// Create view element.
-				const viewName = options.keepOriginalCase ? domNode.tagName : domNode.tagName.toLowerCase();
-				viewElement = new ViewElement( this.document, viewName );
+				viewElement = this._createViewElement( domNode, options );
 
 				if ( options.bind ) {
 					this.bindElements( domNode, viewElement );
@@ -458,13 +481,18 @@ export default class DomConverter {
 				// Copy element's attributes.
 				const attrs = domNode.attributes;
 
-				for ( let i = attrs.length - 1; i >= 0; i-- ) {
-					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
+				if ( attrs ) {
+					for ( let i = attrs.length - 1; i >= 0; i-- ) {
+						viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
+					}
 				}
 
 				// Treat this element's content as a raw data if it was registered as such.
-				if ( options.withChildren !== false && this._rawContentElementMatcher.match( viewElement ) ) {
-					viewElement._setCustomProperty( '$rawContent', domNode.innerHTML );
+				// Comment node is also treated as an element with raw data.
+				if ( this._isViewElementWithRawContent( viewElement, options ) || this.isComment( domNode ) ) {
+					const rawContent = this.isComment( domNode ) ? domNode.data : domNode.innerHTML;
+
+					viewElement._setCustomProperty( '$rawContent', rawContent );
 
 					// Store a DOM node to prevent left trimming of the following text node.
 					this._encounteredRawContentDomNodes.add( domNode );
@@ -1034,8 +1062,8 @@ export default class DomConverter {
 		// 1. Replace the first space with a nbsp if the previous node ends with a space or there is no previous node
 		// (container element boundary).
 		if ( data.charAt( 0 ) == ' ' ) {
-			const prevNode = this._getTouchingViewTextNode( node, false );
-			const prevEndsWithSpace = prevNode && this._nodeEndsWithSpace( prevNode );
+			const prevNode = this._getTouchingInlineViewNode( node, false );
+			const prevEndsWithSpace = prevNode && prevNode.is( '$textProxy' ) && this._nodeEndsWithSpace( prevNode );
 
 			if ( prevEndsWithSpace || !prevNode ) {
 				data = '\u00A0' + data.substr( 1 );
@@ -1052,9 +1080,10 @@ export default class DomConverter {
 		//
 		// More here: https://github.com/ckeditor/ckeditor5-engine/issues/1747.
 		if ( data.charAt( data.length - 1 ) == ' ' ) {
-			const nextNode = this._getTouchingViewTextNode( node, true );
+			const nextNode = this._getTouchingInlineViewNode( node, true );
+			const nextStartsWithSpace = nextNode && nextNode.is( '$textProxy' ) && nextNode.data.charAt( 0 ) == ' ';
 
-			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextNode.data.charAt( 0 ) == ' ' ) {
+			if ( data.charAt( data.length - 2 ) == ' ' || !nextNode || nextStartsWithSpace ) {
 				data = data.substr( 0, data.length - 1 ) + '\u00A0';
 			}
 		}
@@ -1141,14 +1170,17 @@ export default class DomConverter {
 		// ` \u00A0` to ensure proper rendering. Since here we convert back, we recognize those pairs and change them back to `  `.
 		data = data.replace( / \u00A0/g, '  ' );
 
+		const isNextNodeInlineObjectElement = nextNode && this.isElement( nextNode ) && nextNode.tagName != 'BR';
+		const isNextNodeStartingWithSpace = nextNode && isText( nextNode ) && nextNode.data.charAt( 0 ) == ' ';
+
 		// Then, let's change the last nbsp to a space.
-		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || ( nextNode.data && nextNode.data.charAt( 0 ) == ' ' ) ) {
+		if ( /( |\u00A0)\u00A0$/.test( data ) || !nextNode || isNextNodeInlineObjectElement || isNextNodeStartingWithSpace ) {
 			data = data.replace( /\u00A0$/, ' ' );
 		}
 
 		// Then, change &nbsp; character that is at the beginning of the text node to space character.
 		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
-		if ( shouldLeftTrim ) {
+		if ( shouldLeftTrim || prevNode && this.isElement( prevNode ) && prevNode.tagName != 'BR' ) {
 			data = data.replace( /^\u00A0/, ' ' );
 		}
 
@@ -1163,15 +1195,15 @@ export default class DomConverter {
 	 *
 	 * @private
 	 * @param {Node} node
-	 * @param {Node} prevNode
+	 * @param {Node} prevNode Either DOM text or `<br>` or one of `#inlineObjectElements`.
 	 */
 	_checkShouldLeftTrimDomText( node, prevNode ) {
 		if ( !prevNode ) {
 			return true;
 		}
 
-		if ( isElement( prevNode ) ) {
-			return true;
+		if ( this.isElement( prevNode ) ) {
+			return prevNode.tagName === 'BR';
 		}
 
 		// Shouldn't left trim if previous node is a node that was encountered as a raw content node.
@@ -1188,7 +1220,7 @@ export default class DomConverter {
 	 *
 	 * @private
 	 * @param {Node} node
-	 * @param {Node} nextNode
+	 * @param {Node} nextNode Either DOM text or `<br>` or one of `#inlineObjectElements`.
 	 */
 	_checkShouldRightTrimDomText( node, nextNode ) {
 		if ( nextNode ) {
@@ -1205,18 +1237,23 @@ export default class DomConverter {
 	 * @private
 	 * @param {module:engine/view/text~Text} node Reference node.
 	 * @param {Boolean} getNext
-	 * @returns {module:engine/view/text~Text|null} Touching text node or `null` if there is no next or previous touching text node.
+	 * @returns {module:engine/view/text~Text|module:engine/view/element~Element|null} Touching text node, an inline object
+	 * or `null` if there is no next or previous touching text node.
 	 */
-	_getTouchingViewTextNode( node, getNext ) {
+	_getTouchingInlineViewNode( node, getNext ) {
 		const treeWalker = new ViewTreeWalker( {
 			startPosition: getNext ? ViewPosition._createAfter( node ) : ViewPosition._createBefore( node ),
 			direction: getNext ? 'forward' : 'backward'
 		} );
 
 		for ( const value of treeWalker ) {
+			// Found an inline object (for example an image).
+			if ( value.item.is( 'element' ) && this.inlineObjectElements.includes( value.item.name ) ) {
+				return value.item;
+			}
 			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 			// text node in its container element.
-			if ( value.item.is( 'containerElement' ) ) {
+			else if ( value.item.is( 'containerElement' ) ) {
 				return null;
 			}
 			// <br> found – it works like a block boundary, so do not scan further.
@@ -1234,10 +1271,11 @@ export default class DomConverter {
 
 	/**
 	 * Helper function. For the given text node, it finds the closest touching node which is either
-	 * a text node or a `<br>`. The search is terminated at block element boundaries and if a matching node
-	 * wasn't found so far, `null` is returned.
+	 * a text, `<br>` or an {@link #inlineObjectElements inline object}.
 	 *
-	 * In the following DOM structure:
+	 * If no such node is found, `null` is returned.
+	 *
+	 * For instance, in the following DOM structure:
 	 *
 	 *		<p>foo<b>bar</b><br>bom</p>
 	 *
@@ -1258,45 +1296,82 @@ export default class DomConverter {
 			return null;
 		}
 
-		const direction = getNext ? 'nextNode' : 'previousNode';
-		const document = node.ownerDocument;
-		const topmostParent = getAncestors( node )[ 0 ];
+		const stepInto = getNext ? 'firstChild' : 'lastChild';
+		const stepOver = getNext ? 'nextSibling' : 'previousSibling';
 
-		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
-			acceptNode( node ) {
-				if ( isText( node ) ) {
-					return NodeFilter.FILTER_ACCEPT;
-				}
+		let skipChildren = true;
 
-				if ( node.tagName == 'BR' ) {
-					return NodeFilter.FILTER_ACCEPT;
-				}
-
-				return NodeFilter.FILTER_SKIP;
+		do {
+			if ( !skipChildren && node[ stepInto ] ) {
+				node = node[ stepInto ];
+			} else if ( node[ stepOver ] ) {
+				node = node[ stepOver ];
+				skipChildren = false;
+			} else {
+				node = node.parentNode;
+				skipChildren = true;
 			}
-		} );
 
-		treeWalker.currentNode = node;
-
-		const touchingNode = treeWalker[ direction ]();
-
-		if ( touchingNode !== null ) {
-			const lca = getCommonAncestor( node, touchingNode );
-
-			// If there is common ancestor between the text node and next/prev text node,
-			// and there are no block elements on a way from the text node to that ancestor,
-			// and there are no block elements on a way from next/prev text node to that ancestor...
-			if (
-				lca &&
-				!_hasDomParentOfType( node, this.blockElements, lca ) &&
-				!_hasDomParentOfType( touchingNode, this.blockElements, lca )
-			) {
-				// Then they are in the same container element.
-				return touchingNode;
+			if ( !node || this._isBlockElement( node ) ) {
+				return null;
 			}
+		} while (
+			!( isText( node ) || node.tagName == 'BR' || this._isInlineObjectElement( node ) )
+		);
+
+		return node;
+	}
+
+	/**
+	 * Returns `true` if a DOM node belongs to {@link #blockElements}. `false` otherwise.
+	 *
+	 * @private
+	 * @param {Node} node
+	 * @returns {Boolean}
+	 */
+	_isBlockElement( node ) {
+		return this.isElement( node ) && this.blockElements.includes( node.tagName.toLowerCase() );
+	}
+
+	/**
+	 * Returns `true` if a DOM node belongs to {@link #inlineObjectElements}. `false` otherwise.
+	 *
+	 * @private
+	 * @param {Node} node
+	 * @returns {Boolean}
+	 */
+	_isInlineObjectElement( node ) {
+		return this.isElement( node ) && this.inlineObjectElements.includes( node.tagName.toLowerCase() );
+	}
+
+	/**
+	 * Creates view element basing on the node type.
+	 *
+	 * @private
+	 * @param {Node} node DOM node to check.
+	 * @param {Object} options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @returns {Element}
+	 */
+	_createViewElement( node, options ) {
+		if ( this.isComment( node ) ) {
+			return new ViewUIElement( this.document, '$comment' );
 		}
 
-		return null;
+		const viewName = options.keepOriginalCase ? node.tagName : node.tagName.toLowerCase();
+
+		return new ViewElement( this.document, viewName );
+	}
+
+	/**
+	 * Checks if view element's content should be treated as a raw data.
+	 *
+	 * @private
+	 * @param {Element} viewElement View element to check.
+	 * @param {Object} options Conversion options. See {@link module:engine/view/domconverter~DomConverter#domToView} options parameter.
+	 * @returns {Boolean}
+	 */
+	_isViewElementWithRawContent( viewElement, options ) {
+		return options.withChildren !== false && this._rawContentElementMatcher.match( viewElement );
 	}
 }
 
@@ -1305,14 +1380,9 @@ export default class DomConverter {
 //
 // @param {Node} node
 // @param {Array.<String>} types
-// @param {Boolean} [boundaryParent] Can be given if parents should be checked up to a given element (excluding that element).
 // @returns {Boolean} `true` if such parent exists or `false` if it does not.
-function _hasDomParentOfType( node, types, boundaryParent ) {
-	let parents = getAncestors( node );
-
-	if ( boundaryParent ) {
-		parents = parents.slice( parents.indexOf( boundaryParent ) + 1 );
-	}
+function _hasDomParentOfType( node, types ) {
+	const parents = getAncestors( node );
 
 	return parents.some( parent => parent.tagName && types.includes( parent.tagName.toLowerCase() ) );
 }

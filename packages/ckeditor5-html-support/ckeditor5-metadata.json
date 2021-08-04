@@ -36,6 +36,18 @@
 			"className": "DataSchema",
 			"description": "Holds representation of the extended HTML document type definitions. Part of General HTML Support feature.",
 			"path": "src/dataschema.js"
+		},
+		{
+			"name": "HTML comment",
+			"className": "HtmlComment",
+			"description": "Preserves the HTML comments in the editor data.",
+			"docs": "features/general-html-support.html#html-comments",
+			"path": "src/htmlcomment.js",
+			"htmlOutput": [
+				{
+					"_comment": "The plugin can output HTML comments that were added from the editor inital data or by the plugin API."
+				}
+			]
 		}
 	]
 }

@@ -37,13 +37,18 @@ export default class ReplaceAllCommand extends ReplaceCommand {
 	execute( newText, textToReplace ) {
 		const { editor } = this;
 		const { model } = editor;
-		const range = model.createRangeIn( model.document.getRoot() );
 
 		const results = textToReplace instanceof Collection ?
-			textToReplace : updateFindResultFromRange( range, model, findByTextCallback( textToReplace, this._state ) );
+			textToReplace : model.document.getRootNames()
+				.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+					model.createRangeIn( model.document.getRoot( rootName ) ),
+					model,
+					findByTextCallback( textToReplace, this._state ),
+					currentResults
+				) ), null );
 
 		if ( results.length ) {
-			this.editor.model.change( () => {
+			model.change( () => {
 				[ ...results ].forEach( searchResult => {
 					// Just reuse logic from the replace command to replace a single match.
 					super.execute( newText, searchResult );

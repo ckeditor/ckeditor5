@@ -56,7 +56,7 @@ export function parseHtml( htmlString, stylesProcessor ) {
 	};
 }
 
-// Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}.
+// Transforms native `Document` object into {@link module:engine/view/documentfragment~DocumentFragment}. Comments are skipped.
 //
 // @param {Document} htmlDocument Native `Document` object to be transformed.
 // @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
@@ -71,7 +71,7 @@ function documentToView( htmlDocument, stylesProcessor ) {
 		fragment.appendChild( nodes[ 0 ] );
 	}
 
-	return domConverter.domToView( fragment );
+	return domConverter.domToView( fragment, { skipComments: true } );
 }
 
 // Extracts both `CSSStyleSheet` and string representation from all `style` elements available in a provided `htmlDocument`.

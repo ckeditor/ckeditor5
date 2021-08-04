@@ -10,11 +10,11 @@ This package implements the GitHub Flavored Markdown data processor for CKEditor
 
 ## Demo
 
-Check out the {@link features/markdown#demo demo in the Markdown output feature} guide.
+Check out the {@link features/markdown#demo demo in the Markdown output feature guide}.
 
 ## Documentation
 
-See the {@link features/markdown Markdown output} guide and the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} documentation.
+See the {@link features/markdown Markdown output guide} and the {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} documentation.
 
 ## Installation
 

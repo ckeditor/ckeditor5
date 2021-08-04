@@ -121,10 +121,10 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 
 				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.false;
 				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
@@ -137,18 +137,18 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 				// Close the panel.
 				itemView.isOpen = false;
 
 				// Second search, should retain search text.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 
 				expect( findAndReplaceUI.formView.findInputView.fieldView.value ).to.equal( 'cake' );
 				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.true;
@@ -162,11 +162,11 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'nothingtobefound';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -176,17 +176,36 @@ describe( 'FindAndReplace', () => {
 				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
 			} );
 
+			it( 'shows counter with 0 of 0 when no results were found', () => {
+				// (#10014).
+				editor.setData( LONG_TEXT );
+
+				const itemView = Array.from( editor.ui.view.toolbar.items )
+					.filter( item =>
+						item.buttonView && item.buttonView.label == 'Find and replace'
+					)[ 0 ];
+
+				itemView.buttonView.arrowView.fire( 'execute' );
+				findAndReplaceUI.formView.findInputView.fieldView.value = 'nothingtobefound';
+				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
+
+				const domMatchCounter = findAndReplaceUI.formView.findView.element.querySelector( '.ck-results-counter' );
+
+				expect( findAndReplaceUI.formView.isCounterHidden, 'isCounterHidden' ).to.be.false;
+				expect( domMatchCounter.innerText ).to.be.equal( '0 of 0' );
+			} );
+
 			it( 'has a proper state when a single result was found', () => {
 				// "No/one result found" mock.
 				editor.setData( LONG_TEXT );
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'jujubes';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -202,11 +221,11 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
 				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
 
@@ -221,10 +240,10 @@ describe( 'FindAndReplace', () => {
 
 				const itemView = Array.from( editor.ui.view.toolbar.items )
 					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
+						item.buttonView && item.buttonView.label == 'Find and replace'
 					)[ 0 ];
 
-				itemView.buttonView.arrowView.fire( 'execute' );
+				itemView.buttonView.fire( 'execute' );
 
 				expect( itemView.panelView.isVisible ).to.be.true;
 			} );
