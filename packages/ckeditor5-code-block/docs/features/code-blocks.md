@@ -16,7 +16,7 @@ Code blocks is a perfect feature to present programming- or software-related iss
 
 ## Demo
 
-Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just use the double caret function (press <kbd>Enter</kbd> twice).
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
 
@@ -96,11 +96,11 @@ The code language {@link module:code-block/codeblock~CodeBlockConfig#languages c
 
 There could be situations when there is no obvious way to set the caret before or after a block of code and type. This can happen when the code block is preceded or followed by a widget (e.g. a table) or when the code block is the first or the last child of the document (or both).
 
-* To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. A new paragraph that you can type in will be created before the code block.
+* To type **before the code block**: Put the selection at the beginning of the first line of the code block and press <kbd>Enter</kbd>. Move the selection to the empty line that has been created and press <kbd>Enter</kbd> again. If you do this twice, a new paragraph that you can type in will be created before the code block.
 
 	{@img assets/img/code-blocks-typing-before.gif 770 The animation shows typing before the code blocks in CKEditor 5 rich text editor.}
 
-* To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph that you can type in will be created after the code block.
+* To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> three times. A new paragraph that you can type in will be created after the code block.
 
 	{@img assets/img/code-blocks-typing-after.gif 770 The animation shows typing after the code blocks in CKEditor 5 rich text editor.}
 
