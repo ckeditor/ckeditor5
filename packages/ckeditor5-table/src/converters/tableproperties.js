@@ -14,7 +14,7 @@
  * @param {Object} options
  * @param {String} options.modelAttribute The attribute to set.
  * @param {String} options.styleName The style name to convert.
- * @param {String} options.viewElement The view element name that should be converted.
+ * @param {module:engine/view/element~Element} options.viewElement The view element name that should be converted.
  * @param {String} options.defaultValue The default value for the specified `modelAttribute`.
  * @param {Boolean} [options.reduceBoxSides=false]
  */
