@@ -7,6 +7,10 @@ CKEditor 5 block quote feature
 
 This package implements block quote support for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the block quote feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/block-quote.html#demo).
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-block-quote` package](https://ckeditor.com/docs/ckeditor5/latest/api/block-quote.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

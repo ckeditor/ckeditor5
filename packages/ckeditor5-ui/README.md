@@ -7,6 +7,10 @@ CKEditor 5 UI framework
 
 This package implements a simple UI framework and CKEditor 5's standard UI library.
 
+## Demo
+
+Check out the [editor toolbar demo](https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/toolbar.html#demo) and [block toolbar demo](https://ckeditor.com/docs/ckeditor5/latest/features/toolbar/blocktoolbar.html#demo) in CKEditor 5 documentation.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-ui` package](https://ckeditor.com/docs/ckeditor5/latest/api/ui.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

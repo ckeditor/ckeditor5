@@ -52,9 +52,10 @@ describe( 'DOMConverter raw content matcher', () => {
 				expect( viewDiv.getChild( 0 ).name ).to.equal( 'img' );
 				expect( viewDiv.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- foo --><img>bar\n123' );
 				expect( viewDiv.getChild( 2 ).getCustomProperty( '$rawContent' ) ).to.be.undefined;
-				expect( viewDiv.getChild( 2 ).childCount ).to.equal( 2 );
-				expect( viewDiv.getChild( 2 ).getChild( 0 ).name ).to.equal( 'img' );
-				expect( viewDiv.getChild( 2 ).getChild( 1 ).data ).to.equal( 'bar 123' );
+				expect( viewDiv.getChild( 2 ).childCount ).to.equal( 3 );
+				expect( viewDiv.getChild( 2 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 2 ).getChild( 1 ).name ).to.equal( 'img' );
+				expect( viewDiv.getChild( 2 ).getChild( 2 ).data ).to.equal( 'bar 123' );
 				expect( viewDiv.getChild( 3 ).data ).to.equal( 'abc' );
 			} );
 
@@ -92,9 +93,10 @@ describe( 'DOMConverter raw content matcher', () => {
 				expect( viewDiv.getChild( 0 ).name ).to.equal( 'img' );
 				expect( viewDiv.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- foo --><img>bar\n123' );
 				expect( viewDiv.getChild( 2 ).getCustomProperty( '$rawContent' ) ).to.be.undefined;
-				expect( viewDiv.getChild( 2 ).childCount ).to.equal( 2 );
-				expect( viewDiv.getChild( 2 ).getChild( 0 ).name ).to.equal( 'img' );
-				expect( viewDiv.getChild( 2 ).getChild( 1 ).data ).to.equal( 'bar 123' );
+				expect( viewDiv.getChild( 2 ).childCount ).to.equal( 3 );
+				expect( viewDiv.getChild( 2 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 2 ).getChild( 1 ).name ).to.equal( 'img' );
+				expect( viewDiv.getChild( 2 ).getChild( 2 ).data ).to.equal( 'bar 123' );
 				expect( viewDiv.getChild( 3 ).data ).to.equal( 'abc' );
 			} );
 
@@ -148,9 +150,10 @@ describe( 'DOMConverter raw content matcher', () => {
 					'<!-- foo --><img><span data-foo="bar">nested span</span>bar\n123'
 				);
 				expect( viewDiv.getChild( 2 ).getCustomProperty( '$rawContent' ) ).to.be.undefined;
-				expect( viewDiv.getChild( 2 ).childCount ).to.equal( 2 );
-				expect( viewDiv.getChild( 2 ).getChild( 0 ).name ).to.equal( 'img' );
-				expect( viewDiv.getChild( 2 ).getChild( 1 ).data ).to.equal( 'bar 123' );
+				expect( viewDiv.getChild( 2 ).childCount ).to.equal( 3 );
+				expect( viewDiv.getChild( 2 ).getChild( 0 ).getCustomProperty( '$rawContent' ) ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 2 ).getChild( 1 ).name ).to.equal( 'img' );
+				expect( viewDiv.getChild( 2 ).getChild( 2 ).data ).to.equal( 'bar 123' );
 				expect( viewDiv.getChild( 3 ).getCustomProperty( '$rawContent' ) ).to.equal( 'some span' );
 				expect( viewDiv.getChild( 4 ).name ).to.equal( 'span' );
 				expect( viewDiv.getChild( 4 ).getChild( 0 ).data ).to.equal( 'other span' );

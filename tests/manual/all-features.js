@@ -21,6 +21,7 @@ import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
+import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
@@ -54,7 +55,7 @@ ClassicEditor
 			ArticlePluginSet, Underline, Strikethrough, Superscript, Subscript, Code, RemoveFormat,
 			FindAndReplace, FontColor, FontBackgroundColor, FontFamily, FontSize, Highlight,
 			CodeBlock, TodoList, ListStyle, TableProperties, TableCellProperties, TableCaption,
-			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed,
+			EasyImage, ImageResize, LinkImage, AutoImage, HtmlEmbed, HtmlComment,
 			AutoLink, Mention, TextTransformation,
 			Alignment, IndentBlock,
 			PasteFromOffice, PageBreak, HorizontalLine,

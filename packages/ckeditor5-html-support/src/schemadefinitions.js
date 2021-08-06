@@ -87,6 +87,30 @@ export default {
 			model: 'rawHtml',
 			view: 'div'
 		},
+		{
+			model: 'table',
+			view: 'table'
+		},
+		{
+			model: 'tableRow',
+			view: 'tr'
+		},
+		{
+			model: 'tableCell',
+			view: 'td'
+		},
+		{
+			model: 'tableCell',
+			view: 'th'
+		},
+		{
+			model: 'caption',
+			view: 'caption'
+		},
+		{
+			model: 'caption',
+			view: 'figcaption'
+		},
 
 		// Compatibility features
 		{
@@ -240,10 +264,10 @@ export default {
 				isBlock: true
 			}
 		},
-		// TODO can also include text.
 		{
 			model: 'htmlDiv',
 			view: 'div',
+			paragraphLikeModel: 'htmlDivParagraph',
 			modelSchema: {
 				inheritAllFrom: '$htmlSection'
 			}

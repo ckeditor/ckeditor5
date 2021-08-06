@@ -44,6 +44,8 @@ This feature comes pre-configured with a set of the most popular transformations
 
 While most often this feature is used to easily insert special characters that are not present on your keyboard, it can also be used to achieve other goals. For instance, you can improve the users' productivity by configuring it to expand some abbreviations (e.g. team or company names) into their full forms.
 
+You may find additional interesting details and usage examples in the [Automatic text transformation in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-automatic-text-transformation-in-ckeditor-5/) blog post after reading this guide.
+
 ## Demo
 
 Type snippets such as `(c)`, `3/4`, `!=`, `---`, `"foo"` into the rich-text editor below and see how they get transformed into their typographically nicer forms. You can see the complete list of predefined transformations in the {@link module:typing/texttransformation~TextTransformationConfig} documentation.

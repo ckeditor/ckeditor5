@@ -7,6 +7,10 @@ CKEditor 5 remove format feature
 
 This package implements remove format support for CKEditor 5.
 
+## Demo
+
+Check out the demo in the [remove formatting feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/remove-format.html#demo).
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-remove-format` package](https://ckeditor.com/docs/ckeditor5/latest/api/remove-format.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

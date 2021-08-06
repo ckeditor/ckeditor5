@@ -225,18 +225,28 @@ function findBulletedListStyle( element ) {
 // @param {module:engine/view/element~Element} element
 // @returns {module:engine/view/text~Text|null}
 function findListMarkerNode( element ) {
-	// If the first child is a text node, it is a value for the element.
+	// If the first child is a text node, it is the data for the element.
+	// The list-style marker is not present here.
 	if ( element.getChild( 0 ).is( '$text' ) ) {
 		return null;
 	}
 
-	const textNodeOrElement = element.getChild( 0 ).getChild( 0 );
+	for ( const childNode of element.getChildren() ) {
+		// The list-style marker will be inside the `<span>` element. Let's ignore all non-span elements.
+		// It may happen that the `<a>` element is added as the first child. Most probably, it's an anchor element.
+		if ( !childNode.is( 'element', 'span' ) ) {
+			continue;
+		}
 
-	if ( textNodeOrElement.is( '$text' ) ) {
-		return textNodeOrElement;
+		const textNodeOrElement = childNode.getChild( 0 );
+
+		// If already found the marker element, use it.
+		if ( textNodeOrElement.is( '$text' ) ) {
+			return textNodeOrElement;
+		}
+
+		return textNodeOrElement.getChild( 0 );
 	}
-
-	return textNodeOrElement.getChild( 0 );
 }
 
 // Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.

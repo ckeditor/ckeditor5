@@ -10,7 +10,7 @@ This package implements the headings and title features for CKEditor 5.
 
 ## Documentation
 
-See the {@link features/headings Headings} and {@link features/title Document title} feature guides and the documentation of the following plugins:
+See the {@link features/headings Headings} and {@link features/title document title feature guides} and the documentation of the following plugins:
 
 * {@link module:heading/heading~Heading},
 * {@link module:heading/headingbuttonsui~HeadingButtonsUI},

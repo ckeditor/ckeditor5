@@ -9,7 +9,7 @@ This package implements the image feature for CKEditor 5. The feature is introdu
 
 ## Demo
 
-Check out the demos in the [Image feature](https://ckeditor.com/docs/ckeditor5/latest/features/image.html) guide.
+Check out the demos in the [image feature guides](https://ckeditor.com/docs/ckeditor5/latest/features/images/images-overview.html#demo).
 
 ## Documentation
 

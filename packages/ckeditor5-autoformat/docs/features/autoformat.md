@@ -44,7 +44,7 @@ Use the editor provided below to test the autoformatting feature. Try using Mark
 
 {@snippet features/autoformat}
 
-## Related productivity features
+## Related features
 
 In addition to enabling automatic text formatting, you may want to check the following productivity features:
 
@@ -52,6 +52,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
 * {@link features/markdown Markdown output} &ndash; Lets the user output the content as Markdown instead of HTML and [use CKEditor 5 as a WYSIWYG Markdown editor](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
+* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 
 ## Installation
 
