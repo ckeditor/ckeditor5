@@ -149,10 +149,10 @@ export default class DowncastDispatcher {
 		for ( const entry of changes ) {
 			if ( entry.type === 'insert' ) {
 				this.convertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
+			} else if ( entry.type === 'reinsert' ) {
+				this.convertReinsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type === 'remove' ) {
 				this.convertRemove( entry.position, entry.length, entry.name, writer );
-			} else if ( entry.type === 'reconvert' ) {
-				this.reconvertInsert( Range._createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else {
 				// Defaults to 'attribute' change.
 				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
@@ -264,22 +264,20 @@ export default class DowncastDispatcher {
 	 *
 	 * @fires insert
 	 * @fires attribute
-	 * @param {module:engine/model/element~Element} element The element to be reconverted.
+	 * @param {module:engine/model/range~Range} range The range to reinsert.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
-	reconvertInsert( range, writer ) {
+	convertReinsert( range, writer ) {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
 		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Convert the elements - without converting children.
+		//
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( {
-				...data,
-				reconversion: true
-			} );
+			this._convertInsertWithAttributes( data );
 		}
 
 		this._clearConversionApi();

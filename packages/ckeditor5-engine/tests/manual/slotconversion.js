@@ -116,7 +116,17 @@ function downcastBox( modelElement, conversionApi ) {
 		}
 	}
 
-	writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( modelElement, 'children' ) );
+	// switch for testing filtered vs all children
+	if ( 0 ) {
+		writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( 'children' ) );
+	} else {
+		writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( element => element.index < 2 ) );
+
+		const contentWrap2 = writer.createContainerElement( 'div', { class: 'box-content' } );
+
+		writer.insert( writer.createPositionAt( viewBox, 'end' ), contentWrap2 );
+		writer.insert( writer.createPositionAt( contentWrap2, 0 ), slotFor( element => element.index >= 2 ) );
+	}
 
 	return viewBox;
 }
