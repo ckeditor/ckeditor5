@@ -12,6 +12,7 @@ import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import CloudinaryUploadAdapter from '../plugins/CloudinaryUploadAdapterPlugin';
 import Emoji from '@wwalc/ckeditor5-emoji/src/emoji';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
@@ -41,6 +42,7 @@ LeetchiEditor.builtinPlugins = [
 	AutoLink,
 	BlockQuote,
 	Bold,
+	CloudinaryUploadAdapter,
 	Emoji,
 	Essentials,
 	Heading,
