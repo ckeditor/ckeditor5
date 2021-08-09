@@ -48,6 +48,14 @@
 					serverName: "cloudinary-server-name",
 					unsignedUploadPreset: "cloudinary-unsigned-preset",
 				},
+				cloudinaryTrackImage: {
+					removedImageCallBack: (imageUrl) => {
+						console.log("removedImageCallBack", imageUrl);
+					},
+					insertedImageCallBack: (imageUrl) => {
+						console.log("insertedImageCallBack", imageUrl);
+					},
+				},
 			})
 				.then((editor) => {
 					window.editor = editor;
