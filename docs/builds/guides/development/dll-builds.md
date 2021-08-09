@@ -155,11 +155,13 @@ By default, all DLL builds use the default (English) translation files. However,
 
 The base DLL build produces translation files for several packages core packages. The DLL-compatible package builds contain own translations files per a package.
 
-To create the editor with localized UI, you need to load necessary translation files (similar to loading DLL builds).
-
 <info-box info>
 	Some of the CKEditor 5 features do not provide translation files as they do not offer UI elements or toolbar items.
 </info-box>
+
+To create the editor with localized UI, you need to load necessary translation files (similar to loading DLL builds).
+
+For example:
 
 ```html
 <!-- Base DLL build. -->
