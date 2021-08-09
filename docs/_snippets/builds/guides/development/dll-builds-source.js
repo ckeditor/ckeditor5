@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global window */
+
 /* config { "type": "DLL" } */
 
 // Dll core.
@@ -29,20 +31,6 @@ import '@ckeditor/ckeditor5-paste-from-office/build/paste-from-office';
 import '@ckeditor/ckeditor5-table/build/table';
 import '@ckeditor/ckeditor5-cloud-services/build/cloud-services';
 
-// Translations:DE.
-import 'ckeditor5/build/translations/de';
-import '@ckeditor/ckeditor5-adapter-ckfinder/build/translations/de';
-import '@ckeditor/ckeditor5-basic-styles/build/translations/de';
-import '@ckeditor/ckeditor5-block-quote/build/translations/de';
-import '@ckeditor/ckeditor5-ckfinder/build/translations/de';
-import '@ckeditor/ckeditor5-heading/build/translations/de';
-import '@ckeditor/ckeditor5-image/build/translations/de';
-import '@ckeditor/ckeditor5-indent/build/translations/de';
-import '@ckeditor/ckeditor5-link/build/translations/de';
-import '@ckeditor/ckeditor5-list/build/translations/de';
-import '@ckeditor/ckeditor5-media-embed/build/translations/de';
-import '@ckeditor/ckeditor5-table/build/translations/de';
-
 // Translations:ES.
 import 'ckeditor5/build/translations/es';
 import '@ckeditor/ckeditor5-adapter-ckfinder/build/translations/es';
@@ -56,3 +44,5 @@ import '@ckeditor/ckeditor5-link/build/translations/es';
 import '@ckeditor/ckeditor5-list/build/translations/es';
 import '@ckeditor/ckeditor5-media-embed/build/translations/es';
 import '@ckeditor/ckeditor5-table/build/translations/es';
+
+window.editors = {};

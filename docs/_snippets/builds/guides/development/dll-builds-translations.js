@@ -103,7 +103,7 @@ ClassicEditor
 		language: 'es'
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editors.es = editor;
 	} )
 	.catch( err => {
 		console.error( err );

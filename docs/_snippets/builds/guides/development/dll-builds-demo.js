@@ -102,7 +102,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editors.en = editor;
 	} )
 	.catch( err => {
 		console.error( err );
