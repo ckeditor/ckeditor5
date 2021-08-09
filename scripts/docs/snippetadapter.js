@@ -19,8 +19,6 @@ const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
-const DEFAULT_SNIPPET_TYPE = 'source';
-const DLL_SNIPPET_TYPE = 'DLL';
 
 /**
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -43,7 +41,6 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 		snippetData.snippetConfig = readSnippetConfig( snippetData.snippetSources.js );
 		snippetData.snippetConfig.language = snippetData.snippetConfig.language || DEFAULT_LANGUAGE;
-		snippetData.snippetConfig.type = snippetData.snippetConfig.type || DEFAULT_SNIPPET_TYPE;
 
 		// If, in order to work, a snippet requires another snippet to be built, and the other snippet
 		// isn't included in any guide via `{@snippet ...}`, then that other snippet need to be marked
@@ -94,26 +91,30 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 	console.log( `Building ${ countUniqueSnippets( snippets ) } snippets...` );
 
-	const groupedSnippets = getGroupedSnippets( snippets );
+	const groupedSnippetsByLanguage = {};
+
 	const constantDefinitions = getConstantDefinitions( snippets );
 
+	// Group snippets by language. There is no way to build different languages in a single Webpack process.
+	// Webpack must be called as many times as different languages are being used in snippets.
+	for ( const snippetData of snippets ) {
+		// Multi-languages editors must be built separately.
+		if ( snippetData.snippetConfig.additionalLanguages ) {
+			snippetData.snippetConfig.additionalLanguages.push( snippetData.snippetConfig.language );
+			snippetData.snippetConfig.language = MULTI_LANGUAGE;
+		}
+
+		if ( !groupedSnippetsByLanguage[ snippetData.snippetConfig.language ] ) {
+			groupedSnippetsByLanguage[ snippetData.snippetConfig.language ] = new Set();
+		}
+
+		groupedSnippetsByLanguage[ snippetData.snippetConfig.language ].add( snippetData );
+	}
+
 	// For each language prepare own Webpack configuration.
-	const webpackConfigs = Object.keys( groupedSnippets )
-		.map( groupName => {
-			let language;
-
-			// If a group starts with the `lang` prefix, it means the language is specified.
-			// The snippet adapter supports building DLL snippets that should not produce translations files.
-			// If such a case, use the `type` prefix set to `'DLL'`.
-			if ( groupName.startsWith( 'lang' ) ) {
-				language = groupName.split( ':' )[ 1 ];
-			} else if ( groupName.startsWith( 'type' ) ) {
-				language = false;
-			} else {
-				throw new Error( `Specified group of the snippets ("${ groupName }") is not supported.` );
-			}
-
-			return getWebpackConfig( groupedSnippets[ groupName ], {
+	const webpackConfigs = Object.keys( groupedSnippetsByLanguage )
+		.map( language => {
+			return getWebpackConfig( groupedSnippetsByLanguage[ language ], {
 				language,
 				production: options.production,
 				definitions: {
@@ -239,54 +240,6 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 };
 
 /**
- * Returns a prefix that will be used when grouping snippets.
- *
- * @param {Snippet} snippet
- * @returns {String}
- */
-function getSnippetGroupPrefix( snippet ) {
-	if ( snippet.snippetConfig.type === DLL_SNIPPET_TYPE ) {
-		return 'type:DLL';
-	}
-
-	return `lang:${ snippet.snippetConfig.language }`;
-}
-
-/**
- * Groups snippets by the type of snippets (DLL / source) and languages.
- *
- * When processing the DLL snippets, the translation files should not be produced as DLL builds offer these.
- *
- * @param {Set.<Snippet>} snippets
- * @return {Object.<String, Set.<Snippet>>}
- */
-function getGroupedSnippets( snippets ) {
-	const groupedSnippets = {};
-
-	// Group snippets by type and language. There is no way to build different languages in a single webpack process.
-	// Webpack must be called as many times as different languages are being used in snippets.
-	// Also, when building DLL samples, they should be processed in s separate process as webpack should not produce additional
-	// language/translation files.
-	for ( const snippetData of snippets ) {
-		// Multi-languages editors must be built separately.
-		if ( snippetData.snippetConfig.additionalLanguages ) {
-			snippetData.snippetConfig.additionalLanguages.push( snippetData.snippetConfig.language );
-			snippetData.snippetConfig.language = MULTI_LANGUAGE;
-		}
-
-		const prefix = getSnippetGroupPrefix( snippetData );
-
-		if ( !groupedSnippets[ prefix ] ) {
-			groupedSnippets[ prefix ] = new Set();
-		}
-
-		groupedSnippets[ prefix ].add( snippetData );
-	}
-
-	return groupedSnippets;
-}
-
-/**
  * Removes snippets that names do not match to patterns specified in `allowedSnippets` array.
  *
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -297,11 +250,11 @@ function filterAllowedSnippets( snippets, allowedSnippets ) {
 
 	// Find all snippets that matched to specified criteria.
 	for ( const snippetData of snippets ) {
-		const shouldBeProcessed = allowedSnippets.some( pattern => {
+		const shouldBeBuilt = allowedSnippets.some( pattern => {
 			return minimatch( snippetData.snippetName, pattern ) || snippetData.snippetName.includes( pattern );
 		} );
 
-		if ( shouldBeProcessed ) {
+		if ( shouldBeBuilt ) {
 			snippetsToBuild.add( snippetData );
 		}
 	}
@@ -381,8 +334,7 @@ function getConstantDefinitions( snippets ) {
  *
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
  * @param {Object} config
- * @param {String|Boolean} config.language Language for the build. When set to `false`, the CKEditor 5 Webpack plugin for translations
- * will not be added to the plugin list.
+ * @param {String} config.language Language for the build.
  * @param {Boolean} config.production Whether to build for production.
  * @param {Object} config.definitions
  * @returns {Object}
@@ -394,6 +346,30 @@ function getWebpackConfig( snippets, config ) {
 
 	for ( const definitionKey in config.definitions ) {
 		definitions[ definitionKey ] = JSON.stringify( config.definitions[ definitionKey ] );
+	}
+
+	const ckeditorWebpackPluginOptions = {
+		// All translation files are added to HTML files directly later.
+		buildAllTranslationsToSeparateFiles: true
+	};
+
+	if ( config.language === MULTI_LANGUAGE ) {
+		const additionalLanguages = new Set();
+
+		// Find all additional languages that must be built.
+		for ( const snippetData of snippets ) {
+			for ( const language of snippetData.snippetConfig.additionalLanguages ) {
+				additionalLanguages.add( language );
+			}
+		}
+
+		// Pass unique values of `additionalLanguages` to `CKEditorWebpackPlugin`.
+		ckeditorWebpackPluginOptions.additionalLanguages = [ ...additionalLanguages ];
+
+		// Also, set the default language because of the warning that comes from the plugin.
+		ckeditorWebpackPluginOptions.language = DEFAULT_LANGUAGE;
+	} else {
+		ckeditorWebpackPluginOptions.language = config.language;
 	}
 
 	const webpackConfig = {
@@ -422,6 +398,7 @@ function getWebpackConfig( snippets, config ) {
 
 		plugins: [
 			new MiniCssExtractPlugin( { filename: '[name]/snippet.css' } ),
+			new CKEditorWebpackPlugin( ckeditorWebpackPluginOptions ),
 			new webpack.BannerPlugin( {
 				banner: bundler.getLicenseBanner(),
 				raw: true
@@ -470,36 +447,6 @@ function getWebpackConfig( snippets, config ) {
 			]
 		}
 	};
-
-	// The `CKEditorWebpackPlugin` plugin should not be added when processing DLL snippets as DLL are already built.
-	// Otherwise, configure the plugin.
-	if ( config.language ) {
-		const ckeditorWebpackPluginOptions = {
-			// All translation files are added to HTML files directly later.
-			buildAllTranslationsToSeparateFiles: true
-		};
-
-		if ( config.language === MULTI_LANGUAGE ) {
-			const additionalLanguages = new Set();
-
-			// Find all additional languages that must be built.
-			for ( const snippetData of snippets ) {
-				for ( const language of snippetData.snippetConfig.additionalLanguages ) {
-					additionalLanguages.add( language );
-				}
-			}
-
-			// Pass unique values of `additionalLanguages` to `CKEditorWebpackPlugin`.
-			ckeditorWebpackPluginOptions.additionalLanguages = [ ...additionalLanguages ];
-
-			// Also, set the default language because of the warning that comes from the plugin.
-			ckeditorWebpackPluginOptions.language = DEFAULT_LANGUAGE;
-		} else {
-			ckeditorWebpackPluginOptions.language = config.language;
-		}
-
-		webpackConfig.plugins.push( new CKEditorWebpackPlugin( ckeditorWebpackPluginOptions ) );
-	}
 
 	for ( const snippetData of snippets ) {
 		if ( !webpackConfig.output.path ) {
@@ -719,11 +666,7 @@ function getWebpackConfigForAssets( config ) {
 /**
  * @typedef {Object} SnippetConfiguration
  *
- * @property {String} [language='en'] A language that will be used for building the editor. If not specified, the default `en` language
- * will be used.
- *
- * @property {String} [type='source'] When building a snippet that uses DLL files, mark the snippet to avoid
- * creating unnecessary translation files.
+ * @property {String} [language] A language that will be used for building the editor.
  *
  * @property {Array.<String>} [dependencies] Names of samples that are required to working.
  *
