@@ -6,6 +6,8 @@ order: 30
 
 # CKEditor 5 DLL builds
 
+{@snippet builds/guides/development/dll-builds-source}
+
 The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.
 
 So far, the two most common integration methods included:
@@ -148,6 +150,22 @@ For example:
 			window.editor = editor;
 		} );
 ```
+
+### Demo
+
+This demo shows an editor created using the DLL approach.
+
+{@snippet builds/guides/development/dll-builds-demo}
+
+## Localization
+
+How to?
+
+### Demo
+
+See the demo of the editor in Spanish using the DLL approach:
+
+{@snippet builds/guides/development/dll-builds-translations}
 
 <!--
 
