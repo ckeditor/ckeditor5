@@ -50,7 +50,7 @@ export default class Command {
 		 * A concrete command class should control this value by overriding the {@link #refresh `refresh()`} method.
 		 *
 		 * @observable
-		 * @readonly
+		 * @protected
 		 * @member #value
 		 */
 		this.set( 'value', undefined );
@@ -91,7 +91,7 @@ export default class Command {
 		 *		enableBold();
 		 *
 		 * @observable
-		 * @readonly
+		 * @protected
 		 * @member {Boolean} #isEnabled
 		 */
 		this.set( 'isEnabled', false );
