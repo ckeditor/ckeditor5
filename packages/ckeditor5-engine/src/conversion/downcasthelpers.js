@@ -836,9 +836,9 @@ export function insertElement( elementCreator ) {
 		// Trigger recursive reinsertion if the element creator created more than a single element.
 		if ( !viewElement.isEmpty ) {
 			// TODO this is a legacy reconversion and might throw an error instead of handling this case.
-			reinsertRecursive( data.item, conversionApi );
+			reinsertRecursive( data.item, conversionApi, data.reconversion );
 		} else {
-			reinsertNodes( viewElement, data.item.getChildren(), conversionApi );
+			reinsertNodes( viewElement, data.item.getChildren(), conversionApi, data.reconversion );
 		}
 	};
 }
@@ -886,6 +886,8 @@ function insertStructure( elementCreator ) {
 			return;
 		}
 
+		// TODO consume attributes that were watched to trigger this conversion
+
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
@@ -901,7 +903,7 @@ function insertStructure( elementCreator ) {
 		for ( const [ slot, nodes ] of slotsMap ) {
 			currentSlot = slot;
 
-			reinsertNodes( viewElement, nodes, conversionApi );
+			reinsertNodes( viewElement, nodes, conversionApi, data.reconversion );
 
 			if ( !debugSlots ) {
 				conversionApi.writer.move( conversionApi.writer.createRangeIn( slot ), conversionApi.writer.createPositionBefore( slot ) );
@@ -922,7 +924,7 @@ function insertStructure( elementCreator ) {
 				return;
 			}
 
-			const index = slotsMap.get( currentSlot ).findIndex( element => element == nodeAfter );
+			const index = slotsMap.get( currentSlot ).indexOf( nodeAfter );
 
 			if ( index < 0 ) {
 				return;
@@ -930,8 +932,6 @@ function insertStructure( elementCreator ) {
 
 			data.viewPosition = data.mapper.findPositionIn( currentSlot, index );
 		}
-
-		return viewElement;
 	};
 }
 
@@ -1483,13 +1483,32 @@ function removeHighlight( highlightDescriptor ) {
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
+	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'insert:' + config.model.name, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.model.children || config.model.attributes.length ) {
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
+		}
 
 		if ( config.triggerBy ) {
-			dispatcher.on( 'reduceChanges', createTriggerByHandler( config ) );
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model, ( node, change ) => {
+				if ( !config.triggerBy( node, change ) ) {
+					return null;
+				}
+
+				const elements = [];
+
+				for ( const { item } of ModelRange._createOn( node ) ) {
+					if ( item.is( 'element', config.model.name ) ) {
+						elements.push( item );
+					}
+				}
+
+				return { elements, keepChange: true };
+			} ) );
 		}
 	};
 }
@@ -1498,13 +1517,14 @@ function downcastElementToElement( config ) {
 function downcastElementToStructure( config ) {
 	config = cloneDeep( config );
 
+	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'insert:' + config.model.name, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );
 
-		if ( config.triggerBy ) {
-			dispatcher.on( 'reduceChanges', createTriggerByHandler( config ) );
+		if ( config.model.children || config.model.attributes.length ) {
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
 		}
 	};
 }
@@ -1653,6 +1673,25 @@ function downcastMarkerToHighlight( config ) {
 	};
 }
 
+// TODO
+function normalizeModelElementConfig( model ) {
+	if ( typeof model == 'string' ) {
+		model = { name: model };
+	}
+
+	// List of attributes that should trigger reconversion.
+	if ( !model.attributes ) {
+		model.attributes = [];
+	} else if ( !Array.isArray( model.attributes ) ) {
+		model.attributes = [ model.attributes ];
+	}
+
+	// Whether a children insertion/deletion should trigger reconversion.
+	model.children = !!model.children;
+
+	return model;
+}
+
 // Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ElementDefinition}, converts it
 // to a function (because lower level converters accept only element creator functions).
 //
@@ -1783,51 +1822,74 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 }
 
 // TODO
-function createTriggerByHandler( config ) {
+function createChangeReducerCallback( model ) {
+	return ( node, change ) => {
+		if ( !node.is( 'element', model.name ) ) {
+			return null;
+		}
+
+		if ( change.type == 'attribute' ) {
+			if ( !model.attributes.includes( change.attributeKey ) ) {
+				return null;
+			}
+		} else {
+			if ( !model.children ) {
+				return null;
+			}
+		}
+
+		return { elements: [ node ] };
+	};
+}
+
+// TODO
+function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
 	return ( evt, data ) => {
 		const reducedChanges = [];
-		const reconvertedElements = new Set();
 
-		for ( const diffItem of data.changes ) {
+		if ( !data.reconvertedElements ) {
+			data.reconvertedElements = new Set();
+		}
+
+		for ( const change of data.changes ) {
 			// For attribute use node affected by the change.
 			// For insert or remove use parent element because we need to check if it's added/removed child.
-			const element = diffItem.position ? diffItem.position.parent : diffItem.range.start.nodeAfter;
+			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			if ( element.name != config.model ) {
-				return;
-			}
+			const { elements, keepChange } = callback( node, change ) || {};
 
-			if ( diffItem.type == 'attribute' ) {
-				if ( !config.triggerBy.attributes || !config.triggerBy.attributes.includes( diffItem.attributeKey ) ) {
-					return;
-				}
-			} else {
-				// TODO trigger reconversion on any child node change
-				// if ( !config.triggerBy.children || !config.triggerBy.children.includes( diffItem.name ) ) {
-				// 	return;
-				// }
-			}
+			if ( !elements ) {
+				reducedChanges.push( change );
 
-			// If it's already marked for reconversion, so skip this change.
-			if ( reconvertedElements.has( element ) ) {
 				continue;
 			}
 
-			reconvertedElements.add( element );
+			if ( keepChange ) {
+				reducedChanges.push( change );
+			}
 
-			const position = ModelPosition._createBefore( element );
+			for ( const element of elements ) {
+				// If it's already marked for reconversion, so skip this change.
+				if ( data.reconvertedElements.has( element ) ) {
+					continue;
+				}
 
-			reducedChanges.push( {
-				type: 'remove',
-				name: element.name,
-				position,
-				length: 1
-			}, {
-				type: 'reinsert',
-				name: element.name,
-				position,
-				length: 1
-			} );
+				data.reconvertedElements.add( element );
+
+				const position = ModelPosition._createBefore( element );
+
+				reducedChanges.push( {
+					type: 'remove',
+					name: element.name,
+					position,
+					length: 1
+				}, {
+					type: 'reinsert',
+					name: element.name,
+					position,
+					length: 1
+				} );
+			}
 		}
 
 		data.changes = reducedChanges;
@@ -1835,12 +1897,12 @@ function createTriggerByHandler( config ) {
 }
 
 // TODO
-function reinsertNodes( viewElement, nodes, conversionApi ) {
+function reinsertNodes( viewElement, nodes, conversionApi, reconversion ) {
 	// Fill with nested view nodes.
 	for ( const modelChildNode of nodes ) {
 		const viewChildNode = elementOrTextProxyToView( modelChildNode, conversionApi.mapper );
 
-		if ( viewChildNode && viewChildNode.root != viewElement.root ) {
+		if ( reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
 			if ( conversionApi.consumable.consume( modelChildNode, 'insert' ) ) {
 				conversionApi.writer.move(
 					conversionApi.writer.createRangeOn( viewChildNode ),
@@ -1857,7 +1919,7 @@ function reinsertNodes( viewElement, nodes, conversionApi ) {
 
 // TODO docs
 // TODO this is the old way of reconverting (but tuned to make it recursive instead of iterating over the range)
-function reinsertRecursive( modelElement, conversionApi ) {
+function reinsertRecursive( modelElement, conversionApi, reconversion ) {
 	const viewElement = conversionApi.mapper.toViewElement( modelElement );
 
 	const items = Array.from( modelElement.getChildren() );
@@ -1867,7 +1929,7 @@ function reinsertRecursive( modelElement, conversionApi ) {
 		const viewChildNode = elementOrTextProxyToView( modelChildNode, conversionApi.mapper );
 
 		// ...either bring back previously converted view...
-		if ( viewChildNode ) {
+		if ( reconversion && viewChildNode ) {
 			// Do not move views that are already in converted element - those might be created by the main element converter
 			// in case when main element converts also its direct children.
 			if ( viewChildNode.root != viewElement.root ) {

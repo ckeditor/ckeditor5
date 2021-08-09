@@ -175,14 +175,13 @@ function Box( editor ) {
 
 	editor.conversion.for( 'upcast' ).add( getBoxUpcastConverter( editor ) );
 
-	// editor.conversion.for( 'downcast' ).elementToStructure( {
 	editor.conversion.for( 'downcast' ).elementToElement( {
-		model: 'box',
-		view: downcastBox,
-		triggerBy: {
+		model: {
+			name: 'box',
 			attributes: [ 'meta' ],
-			children: [ 'boxField' ]
-		}
+			children: true
+		},
+		view: downcastBox
 	} );
 
 	// editor.conversion.for( 'downcast' ).elementToElement( {

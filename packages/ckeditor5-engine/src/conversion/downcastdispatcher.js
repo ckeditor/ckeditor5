@@ -137,13 +137,8 @@ export default class DowncastDispatcher {
 			this.convertMarkerRemove( change.name, change.range, writer );
 		}
 
-		const reduceChangesData = {
-			changes: differ.getChanges()
-		};
-
-		this.fire( 'reduceChanges', reduceChangesData );
-
-		const changes = reduceChangesData.changes;
+		// Let features modify the change list (for example to allow reconversion).
+		const changes = this._reduceChanges( differ.getChanges() );
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {
@@ -171,6 +166,7 @@ export default class DowncastDispatcher {
 			this.convertMarkerAdd( change.name, change.range, writer );
 		}
 
+		// Remove mappings for all removed view elements.
 		this.conversionApi.mapper.flushTemporaryMappings();
 	}
 
@@ -277,7 +273,7 @@ export default class DowncastDispatcher {
 		//
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( data );
+			this._convertInsertWithAttributes( { ...data, reconversion: true } );
 		}
 
 		this._clearConversionApi();
@@ -434,6 +430,21 @@ export default class DowncastDispatcher {
 		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
 			this._convertInsertWithAttributes( data );
 		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {Iterable.<module:engine/model/differ~DiffItem>} changes
+	 * @returns {Iterable.<module:engine/model/differ~DiffItem>}
+	 */
+	_reduceChanges( changes ) {
+		const data = { changes };
+
+		this.fire( 'reduceChanges', data );
+
+		return data.changes;
 	}
 
 	/**
