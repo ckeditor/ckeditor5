@@ -153,7 +153,7 @@ For example:
 
 By default, all DLL builds use the default (English) translation files. However, the editor can be localized.
 
-The base DLL build produces translation files for several packages core packages. The DLL-compatible package builds contain own translations files per a package.
+The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain own translations files per a package.
 
 <info-box info>
 	Some of the CKEditor 5 features do not provide translation files as they do not offer UI elements or toolbar items.
