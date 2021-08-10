@@ -848,13 +848,7 @@ export function insertElement( elementCreator ) {
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		// Trigger recursive reinsertion if the element creator created more than a single element.
-		if ( !viewElement.isEmpty ) {
-			// TODO this is a legacy reconversion and might throw an error instead of handling this case.
-			reinsertRecursive( data.item, conversionApi, data.reconversion );
-		} else {
-			reinsertNodes( viewElement, data.item.getChildren(), conversionApi, data.reconversion );
-		}
+		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, data.reconversion );
 	};
 }
 
@@ -1924,7 +1918,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 function reinsertNodes( viewElement, nodes, conversionApi, reconversion ) {
 	// Fill with nested view nodes.
 	for ( const modelChildNode of nodes ) {
-		const viewChildNode = elementOrTextProxyToView( modelChildNode, conversionApi.mapper );
+		const viewChildNode = conversionApi.mapper.toViewElement( modelChildNode );
 
 		if ( reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
 			if ( conversionApi.consumable.consume( modelChildNode, 'insert' ) ) {
@@ -1939,54 +1933,6 @@ function reinsertNodes( viewElement, nodes, conversionApi, reconversion ) {
 			conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
 		}
 	}
-}
-
-// TODO docs
-// TODO this is the old way of reconverting (but tuned to make it recursive instead of iterating over the range)
-function reinsertRecursive( modelElement, conversionApi, reconversion ) {
-	const viewElement = conversionApi.mapper.toViewElement( modelElement );
-
-	const items = Array.from( modelElement.getChildren() );
-
-	// Iterate over children of reconverted element in order to...
-	for ( const modelChildNode of items ) {
-		const viewChildNode = elementOrTextProxyToView( modelChildNode, conversionApi.mapper );
-
-		// ...either bring back previously converted view...
-		if ( reconversion && viewChildNode ) {
-			// Do not move views that are already in converted element - those might be created by the main element converter
-			// in case when main element converts also its direct children.
-			if ( viewChildNode.root != viewElement.root ) {
-				if ( conversionApi.consumable.consume( modelChildNode, 'insert' ) ) {
-					conversionApi.writer.move(
-						conversionApi.writer.createRangeOn( viewChildNode ),
-						conversionApi.mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
-					);
-				}
-			} else {
-				// ... but then check if there are any children of it to reinsert.
-				items.push( ...modelChildNode.getChildren() );
-			}
-		}
-		// ... or by converting newly inserted elements.
-		else {
-			// TODO this should be exposed by conversionApi?
-			// Note that this is not creating another consumable, it's using the current one.
-			conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
-		}
-	}
-}
-
-// TODO
-function elementOrTextProxyToView( item, mapper ) {
-	if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
-		const viewPosition = mapper.toViewPosition( ModelPosition._createBefore( item ) );
-		const viewPositionParent = viewPosition.parent;
-
-		return viewPositionParent.is( '$text' ) ? viewPositionParent : null;
-	}
-
-	return mapper.toViewElement( item );
 }
 
 /**
