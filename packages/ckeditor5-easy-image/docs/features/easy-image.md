@@ -15,7 +15,7 @@ CKEditor 5 introduces a new way of handling images, with a strong focus on the e
 Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product which:
 
 * securely uploads images,
-* takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images),
+* takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images), <!-- absolute link -->
 * delivers uploaded images through a blazing-fast CDN.
 
 All that with virtually zero server setup.
@@ -153,7 +153,7 @@ ClassicEditor
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
-See the {@link features/images-overview Image feature guide} to find out more about handling images in CKEditor 5.
+See the {@link features/images-overview Image feature} guide to find out more about handling images in CKEditor 5.
 
 ## Contribute
 
