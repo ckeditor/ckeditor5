@@ -232,13 +232,16 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthMiddleWest,
 				defaultPositions.northArrowSouthMiddleEast,
 				defaultPositions.northArrowSouthWest,
-				defaultPositions.northArrowSouthEast
+				defaultPositions.northArrowSouthEast,
+				defaultPositions.viewportStickyNorth
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
 		}, options );
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
+
+		console.log( optimalPosition );
 
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
@@ -424,6 +427,9 @@ BalloonPanelView.arrowHorizontalOffset = 25;
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
 BalloonPanelView.arrowVerticalOffset = 10;
+
+// TODO
+BalloonPanelView.stickyVerticalOffset = 20;
 
 /**
  * Function used to calculate the optimal position for the balloon.
@@ -702,6 +708,22 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		|     Balloon     |
  *		+-----------------+
  *
+ * * `viewportStickyNorth`
+ *
+ *		+---------------------------+
+ *		|		 [ Target ]			|
+ *		|							|
+ *	+-----------------------------------+
+ *	|	|	 +-----------------+	|	|
+ *	|	|	 |     Balloon     |	|	|
+ *	|	|	 +-----------------+	|	|
+ *	|	|        					|	|
+ *	|	|							|	|
+ *	|	|							|	|
+ * 	|	|							|	|
+ *	|	+---------------------------+	|
+ * 	|			  Viewport				|
+ *	+-----------------------------------+
  *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
@@ -791,6 +813,7 @@ BalloonPanelView.defaultPositions = {
 		left: targetRect.right - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_smw'
 	} ),
+
 	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
 		left: targetRect.right - balloonRect.width / 2,
@@ -808,6 +831,7 @@ BalloonPanelView.defaultPositions = {
 		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_se'
 	} ),
+
 	// ------- South west
 
 	southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
@@ -901,8 +925,22 @@ BalloonPanelView.defaultPositions = {
 		top: getSouthTop( targetRect, balloonRect ),
 		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_ne'
-	} )
+	} ),
 
+	// ------- Sticky
+
+	viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
+		if ( !targetRect.getIntersection( viewportRect ) ) {
+			return null;
+		}
+
+		return {
+			top: viewportRect.top + BalloonPanelView.stickyVerticalOffset,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 'arrowless',
+			withArrow: false
+		};
+	}
 };
 
 // Returns the top coordinate for positions starting with `north*`.
