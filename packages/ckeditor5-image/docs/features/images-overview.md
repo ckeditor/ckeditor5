@@ -164,13 +164,13 @@ ClassicEditor
 		}
 	} )
 ```
-Refer to the {@link features/images-installation image installation guide} for more details on configuring the features available in the toolbar and to the {@link builds/guides/migration/migration-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link features/toolbar editor toolbar guide}.
+Refer to the {@link features/images-installation image installation} guide for more details on configuring the features available in the toolbar and to the {@link builds/guides/migration/migration-to-29#image-toolbar toolbar section} of the Migration to v29.x guide, as important changes were introduced in that version. You can also check the {@link features/toolbar editor toolbar} guide.
 
 See the common API of image-related features such as {@link module:image/imagestyle~ImageStyle}, {@link module:image/imageresize~ImageResize}, and {@link module:link/linkimage~LinkImage} to learn more about available image toolbar buttons.
 
 ## Responsive images
 
-Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration guide} to learn how to use the feature in your project.
+Support for responsive images in CKEditor 5 is brought by the {@link features/easy-image Easy Image} feature without any additional configuration. Refer to the {@link features/easy-image#responsive-images Easy Image integration} guide to learn how to use the feature in your project.
 
 ## Contribute
 
