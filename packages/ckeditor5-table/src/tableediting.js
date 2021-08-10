@@ -108,7 +108,12 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
-		conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
+		conversion.for( 'downcast' ).elementToElement( {
+			model: 'tableRow',
+			view: ( modelElement, { writer } ) => (
+				modelElement.isEmpty ? writer.createEmptyElement( 'tr' ) : writer.createContainerElement( 'tr' )
+			)
+		} );
 
 		// Table cell conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
@@ -133,11 +138,22 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
 			view: convertParagraphInTableCell( { asWidget: true } ),
-			converterPriority: 'high',
-			triggerBy: ( node, change ) => (
-				node.is( 'element', 'tableCell' ) && change.type != 'attribute' ||
-				node.is( 'element', 'paragraph' ) && node.parent.is( 'element', 'tableCell' ) && change.type == 'attribute'
-			)
+			triggerBy: ( node, change ) => {
+				if ( node.is( 'element', 'tableCell' ) ) {
+					const isReducedToSingleParagraph = node.childCount == 1 && change.type == 'remove';
+					const isExtendedFromSingleParagraph = node.childCount > 1 && change.type == 'insert' && change.position.offset <= 1;
+
+					return isReducedToSingleParagraph || isExtendedFromSingleParagraph;
+				} else if ( change.type == 'attribute' && node.is( 'element', 'paragraph' ) && node.parent.is( 'element', 'tableCell' ) ) {
+					const isSingleChildElement = node.parent.childCount == 1;
+					const isAttributeSetOrClear = change.attributeOldValue == null || change.attributeNewValue == null;
+
+					// TODO maybe we should be able to access the old attributes (from differ)
+					//  to check if there were no attributes and now there is any
+					return isSingleChildElement && isAttributeSetOrClear;
+				}
+			},
+			converterPriority: 'high'
 		} );
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'paragraph',

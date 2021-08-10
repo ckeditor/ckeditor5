@@ -824,11 +824,26 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
+		// TODO throw if viewElement has any children - this should be handled by toStructure converters
+
 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+		// Bring back the old view element if it's same as the previous one.
+		// TODO this is useless if any of the attributes are converted separately
+		//  but helps with replacing table cells that do not need to be replaced (but still useless for col/row span).
+		if ( data.reconversion ) {
+			const oldViewElement = conversionApi.mapper.toViewElement( data.item );
+
+			if ( oldViewElement && oldViewElement.isSimilar( viewElement ) && oldViewElement.root != viewPosition.root ) {
+				conversionApi.writer.move( conversionApi.writer.createRangeOn( oldViewElement ), viewPosition );
+
+				return;
+			}
+		}
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
@@ -1846,6 +1861,7 @@ function createChangeReducerCallback( model ) {
 function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
 	return ( evt, data ) => {
 		const reducedChanges = [];
+		const additionalChanges = [];
 
 		if ( !data.reconvertedElements ) {
 			data.reconvertedElements = new Set();
@@ -1869,6 +1885,14 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			}
 
 			for ( const element of elements ) {
+				// Do not reconvert just inserted elements.
+				// This is needed for the reconversion triggered by some other change (for example a paragraph inside a table cell).
+				const positionBefore = ModelPosition._createBefore( element );
+
+				if ( data.changes.find( change => change.type == 'insert' && change.position.isEqual( positionBefore ) ) ) {
+					continue;
+				}
+
 				// If it's already marked for reconversion, so skip this change.
 				if ( data.reconvertedElements.has( element ) ) {
 					continue;
@@ -1878,7 +1902,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 
 				const position = ModelPosition._createBefore( element );
 
-				reducedChanges.push( {
+				( keepChange ? additionalChanges : reducedChanges ).push( {
 					type: 'remove',
 					name: element.name,
 					position,
@@ -1892,7 +1916,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			}
 		}
 
-		data.changes = reducedChanges;
+		data.changes = [ ...reducedChanges, ...additionalChanges ];
 	};
 }
 

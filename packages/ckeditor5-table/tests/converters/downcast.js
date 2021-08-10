@@ -213,7 +213,7 @@ describe( 'downcast converters', () => {
 
 				assertEqualMarkup( editor.getData(),
 					'<table foo="bar">' +
-						'<tr><td><p>&nbsp;</p></td></tr>' +
+						'<tr><td>&nbsp;</td></tr>' +
 					'</table>'
 				);
 			} );
@@ -472,6 +472,8 @@ describe( 'downcast converters', () => {
 
 				model.change( writer => {
 					const row = writer.createElement( 'tableRow' );
+
+					writer.setAttribute( 'headingRows', 3, table );
 
 					writer.insert( row, table, 1 );
 
