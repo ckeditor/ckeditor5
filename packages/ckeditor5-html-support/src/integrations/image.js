@@ -8,7 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-// import { disallowedAttributesConverter } from '../converters';
+import { disallowedAttributesConverter } from '../converters';
 import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
@@ -45,27 +45,26 @@ export default class ImageElementSupport extends Plugin {
 				return;
 			}
 
-			// TODO Add check for imageBlock schema existence.
-			schema.extend( 'imageBlock', {
-				allowAttributes: [
-					'htmlAttributes',
-					// Figure doesn't have model counterpart.
-					// We will be preserving attributes on image model element using these attribute keys.
-					'htmlFigureAttributes'
-				]
-			} );
+			if ( schema.isRegistered( 'imageBlock' ) ) {
+				schema.extend( 'imageBlock', {
+					allowAttributes: [
+						'htmlAttributes',
+						// Figure doesn't have model counterpart.
+						// We will be preserving attributes on image model element using these attribute keys.
+						'htmlFigureAttributes'
+					]
+				} );
+			}
 
-			// TODO Add check for imageInline schema existence.
-			schema.extend( 'imageInline', {
-				allowAttributes: [
-					'htmlAttributes',
-					// Figure doesn't have model counterpart.
-					// We will be preserving attributes on image model element using these attribute keys.
-					'htmlFigureAttributes'
-				]
-			} );
+			if ( schema.isRegistered( 'imageInline' ) ) {
+				schema.extend( 'imageInline', {
+					allowAttributes: [
+						'htmlAttributes'
+					]
+				} );
+			}
 
-			// conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
+			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
 
@@ -92,19 +91,16 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
 
 			const viewFigureElement = viewImageElement.parent;
+
 			if ( viewFigureElement.is( 'element', 'figure' ) ) {
 				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
+			} else if (
+				// If we're in a link, then the `<figure>` element should be one level higher.
+				viewFigureElement.is( 'element', 'a' ) &&
+				viewFigureElement.parent.is( 'element', 'figure' )
+			) {
+				preserveElementAttributes( viewFigureElement.parent, 'htmlFigureAttributes' );
 			}
-
-			// for ( const childNode of viewTableElement.getChildren() ) {
-			// 	if ( childNode.is( 'element', 'thead' ) ) {
-			// 		preserveElementAttributes( childNode, 'htmlTheadAttributes' );
-			// 	}
-
-			// 	if ( childNode.is( 'element', 'tbody' ) ) {
-			// 		preserveElementAttributes( childNode, 'htmlTbodyAttributes' );
-			// 	}
-			// }
 
 			function preserveElementAttributes( viewElement, attributeName ) {
 				const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
@@ -133,8 +129,7 @@ function modelToViewImageAttributeConverter() {
 					return;
 				}
 
-				const containerElement = conversionApi.mapper.toViewElement( data.item );
-				const viewElement = getDescendantElement( conversionApi, containerElement, elementName );
+				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
 			} );

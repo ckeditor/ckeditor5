@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
@@ -15,12 +16,14 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			ArticlePluginSet,
+			LinkImage,
 			SourceEditing,
 			GeneralHtmlSupport
 		],
-		toolbar: [ 'sourceEditing', '|', 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
+		toolbar: [ 'sourceEditing', '|', 'link', '|', 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
 		image: {
 			toolbar: [
+				'linkImage', '|',
 				'toggleImageCaption', '|',
 				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|',
 				'imageTextAlternative'
@@ -29,9 +32,9 @@ ClassicEditor
 		htmlSupport: {
 			allow: [
 				{
-					name: /^(figure|img|caption|figcaption)$/,
+					name: /^(figure|img|caption|figcaption|a)$/,
 					attributes: [ 'alt', 'data-validation-allow' ],
-					classes: [ 'allowed-class' ],
+					classes: [ 'allowed-class', 'allowed-class-second' ],
 					styles: {
 						'color': 'blue'
 					}
@@ -39,7 +42,7 @@ ClassicEditor
 			],
 			disallow: [
 				{
-					name: /^(figure|img|caption|figcaption)$/,
+					name: /^(figure|img|caption|figcaption|a)$/,
 					attributes: [ 'data-validation-disallow' ],
 					classes: [ 'disallowed-class' ],
 					styles: {
