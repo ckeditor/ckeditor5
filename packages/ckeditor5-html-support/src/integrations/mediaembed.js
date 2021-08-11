@@ -100,7 +100,7 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 		preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
 
 		// Consume the figure to prevent converting it to `htmlFigure` by default GHS converters.
-		conversionApi.consumable.consume( viewFigureElement, { name: true } );
+		conversionApi.consumable.consume( viewFigureElement, { name: true, classes: 'media' } );
 
 		function preserveElementAttributes( viewElement, attributeName ) {
 			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
