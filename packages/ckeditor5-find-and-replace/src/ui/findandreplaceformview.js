@@ -8,27 +8,39 @@
  */
 
 import {
-	ButtonView,
-	FocusCycler,
-	LabeledFieldView,
-	createLabeledInputText,
 	View,
+	ButtonView,
+	FormHeaderView,
+	LabeledFieldView,
+
+	Model,
+	FocusCycler,
+	createLabeledInputText,
 	submitHandler,
 	ViewCollection,
-	injectCssTransitionDisabler
+	injectCssTransitionDisabler,
+
+	createDropdown,
+	addListToDropdown
 } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler, uid } from 'ckeditor5/src/utils';
+
+import {
+	FocusTracker,
+	KeystrokeHandler,
+	Collection
+} from 'ckeditor5/src/utils';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
 import '../../theme/findandreplaceform.css';
+
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import findArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
-import CheckboxView from './checkboxview';
+import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import cogIcon from '../../theme/icons/cog.svg';
 
 /**
- * The find and replace form view controller class.
+ * The find and replace form view class.
  *
  * See {@link module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView}.
  *
@@ -39,70 +51,11 @@ export default class FindAndReplaceFormView extends View {
 	 * Creates a view of find and replace form.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state State object.
 	 */
-	constructor( locale, state ) {
+	constructor( locale ) {
 		super( locale );
 
 		const t = locale.t;
-
-		/**
-		 * Indicates that the form is in active searching state.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isSearching
-		 */
-		this.set( 'isSearching', false );
-
-		/**
-		 * Searched text value.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {String} #searchText
-		 */
-		this.set( 'searchText', '' );
-
-		/**
-		  * Replace text value.
-		  *
-		  * @readonly
-		  * @observable
-		  * @member {String} #replaceText
-		  */
-		this.set( 'replaceText', '' );
-
-		/**
-		 * Indicates whether search text, match case or whole word checkbox in form
-		 * is different from the values in
-		 * {@link module:find-and-replace/findandreplaceediting~FindAndReplaceEditing#state the editing state}.
-		 *
-		 * If `true` it means that the user made some changes to the form without actually triggering the search.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isDirty
-		 */
-		this.set( 'isDirty', false );
-
-		/**
-		 * Indicates if the matchCase checkbox has been checked.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #matchCase
-		 */
-		this.set( 'matchCase', false );
-
-		/**
-		  * Indicates if the matchWholeWords checkbox has been checked.
-		  *
-		  * @readonly
-		  * @observable
-		  * @member {Boolean} #matchWholeWords
-		  */
-		this.set( 'matchWholeWords', false );
 
 		/**
 		 * Stores the number of matched search results.
@@ -124,177 +77,159 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'highlightOffset', null );
 
 		/**
-		 * Whether the search results counter should be visible.
+		 * TODO
 		 *
-		 * @private
 		 * @readonly
 		 * @observable
-		 * @member {Boolean} #isCounterHidden
+		 * @member {Boolean} #matchCase
 		 */
-		this.set( 'isCounterHidden', true );
+		this.set( 'matchCase', false );
 
-		this._assignViews( t );
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #wholeWordsOnly
+		 */
+		this.set( 'wholeWordsOnly', false );
 
-		this._initFocusables();
+		/**
+		 * TODO
+		 */
+		this.set( 'isFindNextCommandEnabled', false );
 
-		this.bind( 'isDirty' ).to(
-			this, 'searchText', state, 'searchText',
-			this.matchCaseView, 'isChecked', state, 'matchCase',
-			this.matchWholeWordsView, 'isChecked', state, 'matchWholeWords',
-			( formSearchText, stateSearchText, formMatchCase, stateMatchCase, formMatchWholeWords, stateMatchWholeWords ) => {
-				return formSearchText !== stateSearchText ||
-				formMatchCase !== stateMatchCase ||
-				formMatchWholeWords !== stateMatchWholeWords;
+		/**
+		 * TODO
+		 */
+		this.set( 'isFindPreviousCommandEnabled', false );
+
+		/**
+		 * TODO
+		 */
+		this.set( 'isReplaceCommandEnabled', false );
+
+		/**
+		 * TODO
+		 */
+		this.set( 'isReplaceAllCommandEnabled', false );
+
+		/**
+		 * TODO
+		 */
+		this.set( 'isDirty', false );
+
+		/**
+		 * TODO
+		 */
+		this.bind( '_searchResultsFound' ).to(
+			this, 'matchCount',
+			this, 'isDirty',
+			( matchCount, isDirty ) => {
+				return matchCount > 0 && !isDirty;
 			}
 		);
 
-		this.bind( 'searchText' ).to( this.findInputView.fieldView, 'value', enforceStringValue );
-		this.findButtonView.bind( 'isEnabled' ).to( this.findInputView.fieldView, 'isEmpty', value => !value );
-		this.bind( 'replaceText' ).to( this.replaceInputView.fieldView, 'value', enforceStringValue );
-		this.replaceButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
-		this.replaceAllButtonView.bind( 'isEnabled' ).to( this, 'isSearching' );
-
-		this.bind( 'isCounterHidden' ).to( state, 'searchText', this, 'isDirty', ( searchText, isDirty ) => {
-			return searchText == '' || isDirty;
+		/**
+		 * TODO
+		 */
+		this._headerView = new FormHeaderView( locale, {
+			label: t( 'Find and replace' )
 		} );
 
-		this.bind( 'isSearching' ).to(
-			this, 'matchCount', this, 'isDirty',
-			( count, isDirty ) => {
-				return count > 0 && !isDirty;
-			}
-		);
+		/**
+		 * The find in text input view that stores the searched string.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
+		this._findInputView = this._createInputField( t( 'Find in text…' ) );
 
-		this.setTemplate( {
-			tag: 'form',
+		/**
+		 * The replace input view.
+		 *
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 */
+		this._replaceInputView = this._createInputField( t( 'Replace with…' ) );
 
-			attributes: {
-				class: [
-					'ck',
-					'ck-find-and-replace-form'
-				]
-			},
-
-			children: [
-				this.findView,
-				this.replaceView
-			]
+		/**
+		 * The find button view that initializes the search process.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this._findButtonView = this._createButton( {
+			label: t( 'Find' ),
+			class: 'ck-button-find ck-button-action',
+			withText: true
 		} );
 
-		function enforceStringValue( value ) {
-			// For search / replace text let's enforce strings for easier comparison.
-			return value === undefined ? '' : value;
-		}
-
-		injectCssTransitionDisabler( this );
-	}
-
-	render() {
-		super.render();
-
-		submitHandler( {
-			view: this
+		/**
+		 * The find previous button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this._findPrevButtonView = this._createButton( {
+			label: t( 'Previous result' ),
+			class: 'ck-button-prev',
+			icon: previousArrow,
+			tooltip: true
 		} );
 
-		const childViews = [
-			this.findInputView,
-			this.matchCaseView,
-			this.matchWholeWordsView,
-			this.findButtonView,
-			this.findPrevButtonView,
-			this.findNextButtonView,
-			this.replaceInputView,
-			this.replaceAllButtonView,
-			this.replaceButtonView
-		];
-
-		childViews.forEach( v => {
-			// Register the view as focusable.
-			this._focusables.add( v );
-
-			// Register the view in the focus tracker.
-			this.focusTracker.add( v.element );
+		/**
+		 * The find next button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this._findNextButtonView = this._createButton( {
+			label: t( 'Next result' ),
+			class: 'ck-button-next',
+			icon: previousArrow,
+			tooltip: true
 		} );
 
-		// Start listening for the keystrokes coming from #element.
-		this.keystrokes.listenTo( this.element );
+		/**
+		 * TODO
+		 */
+		this._optionsDropdown = this._createOptionsDropdown();
 
-		const stopPropagation = data => data.stopPropagation();
-		const stopPropagationAndPreventDefault = data => {
-			data.stopPropagation();
-			data.preventDefault();
-		};
-
-		this.keystrokes.set( 'f3', event => {
-			stopPropagationAndPreventDefault( event );
-
-			this.findNextButtonView.fire( 'execute' );
+		/**
+		 * The replace button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this._replaceButtonView = this._createButton( {
+			label: t( 'Replace' ),
+			class: 'ck-button-replace',
+			withText: true
 		} );
 
-		this.keystrokes.set( 'shift+f3', event => {
-			stopPropagationAndPreventDefault( event );
-
-			this.findPrevButtonView.fire( 'execute' );
+		/**
+		 * The replace all button view.
+		 *
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
+		this._replaceAllButtonView = this._createButton( {
+			label: t( 'Replace all' ),
+			class: 'ck-button-replaceall',
+			withText: true
 		} );
 
-		this.keystrokes.set( 'enter', event => {
-			const target = event.target;
+		/**
+		 * TODO
+		 */
+		this._findFieldsetView = this._createFindFieldset();
 
-			if ( target.classList.contains( 'ck-input-text' ) ) {
-				if (
-					target.parentElement.parentElement.parentElement.classList.contains( 'ck-find-form__wrapper' ) &&
-					this.findButtonView.isEnabled
-				) {
-					this.findButtonView.fire( 'execute' );
-					stopPropagationAndPreventDefault( event );
-				} else if (
-					target.parentElement.parentElement.parentElement.classList.contains( 'ck-replace-form__wrapper' ) &&
-					this.replaceButtonView.isEnabled
-				) {
-					this.replaceButtonView.fire( 'execute' );
-					stopPropagationAndPreventDefault( event );
-				}
-			}
-		} );
+		/**
+		 * TODO
+		 */
+		this._replaceFieldsetView = this._createReplaceFieldset();
 
-		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
-		// keystroke handler would take over the key management in the URL input.
-		// We need to prevent this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
-		this.keystrokes.set( 'arrowright', stopPropagation );
-		this.keystrokes.set( 'arrowleft', stopPropagation );
-		this.keystrokes.set( 'arrowup', stopPropagation );
-		this.keystrokes.set( 'arrowdown', stopPropagation );
-
-		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView.
-		this.listenTo( this.findInputView.element, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
-		this.listenTo( this.replaceInputView.element, 'selectstart', ( evt, domEvt ) => {
-			domEvt.stopPropagation();
-		}, { priority: 'high' } );
-	}
-
-	/**
-	 * Focuses the fist {@link #_focusables} in the form.
-	 */
-	focus() {
-		this._focusCycler.focusFirst();
-	}
-
-	/**
-	 * Initialization of focusables elements of the form.
-	 *
-	 * @private
-	 */
-	_initFocusables() {
 		/**
 		 * Tracks information about the DOM focus in the form.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
 		 */
-		this.focusTracker = new FocusTracker();
+		this._focusTracker = new FocusTracker();
 
 		/**
 		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
@@ -302,7 +237,7 @@ export default class FindAndReplaceFormView extends View {
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
-		this.keystrokes = new KeystrokeHandler();
+		this._keystrokes = new KeystrokeHandler();
 
 		/**
 		 * A collection of views that can be focused in the form.
@@ -322,8 +257,8 @@ export default class FindAndReplaceFormView extends View {
 		 */
 		this._focusCycler = new FocusCycler( {
 			focusables: this._focusables,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
+			focusTracker: this._focusTracker,
+			keystrokeHandler: this._keystrokes,
 			actions: {
 				// Navigate form fields backwards using the <kbd>Shift</kbd> + <kbd>Tab</kbd> keystroke.
 				focusPrevious: 'shift + tab',
@@ -332,292 +267,390 @@ export default class FindAndReplaceFormView extends View {
 				focusNext: 'tab'
 			}
 		} );
+
+		this.setTemplate( {
+			tag: 'form',
+			attributes: {
+				class: [
+					'ck',
+					'ck-find-and-replace-form'
+				],
+
+				tabindex: '-1'
+			},
+			children: [
+				this._headerView,
+				this._findFieldsetView,
+				this._replaceFieldsetView
+			]
+		} );
+
+		injectCssTransitionDisabler( this );
 	}
 
 	/**
-	 * Assigning form element views.
+	 * @inheritDoc
+	 */
+	render() {
+		super.render();
+
+		submitHandler( { view: this } );
+
+		this._initFocusCycling();
+		this._initKeystrokeHandling();
+	}
+
+	/**
+	 * Focuses the fist {@link #_focusables} in the form.
+	 */
+	focus() {
+		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * TODO
+	 */
+	reset() {
+		this._findInputView.errorText = null;
+		this.isDirty = true;
+	}
+
+	/**
+	 * TODO
+	 */
+	get textToFind() {
+		return this._findInputView.fieldView.element.value;
+	}
+
+	/**
+	 * TODO
+	 */
+	get textToReplace() {
+		return this._replaceInputView.fieldView.element.value;
+	}
+
+	/**
+	 * TODO
 	 *
 	 * @private
-	 * @param {Function} t Used for translating message to the uiLanguage.
+	 * @returns
 	 */
-	_assignViews( t ) {
-		/**
-		 * The find in text input view that stores the searched string.
-		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
-		this.findInputView = this._createInputField( t( 'Find in text…' ) );
+	_createFindFieldset() {
+		const locale = this.locale;
+		const t = locale.t;
+		const fieldsetView = new View( locale );
+		const resultsCounterView = new View( locale );
+		const bind = this.bindTemplate;
 
-		/**
-		 * The find button view that initializes the search process.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.findButtonView = this._createButton( t( 'Find' ), 'ck-button-find' );
-		this.findButtonView.on( 'execute', () => {
-			this.fire( 'findNext', {
-				searchText: this.searchText,
-				matchCase: this.matchCaseView.isChecked,
-				wholeWords: this.matchWholeWordsView.isChecked
+		this._findInputView.fieldView.on( 'input', () => {
+			this.isDirty = true;
+		} );
+
+		this._findButtonView.on( 'execute', this._onFindButtonExecute.bind( this ) );
+
+		this._findPrevButtonView.delegate( 'execute' ).to( this, 'findPrevious' );
+		this._findNextButtonView.delegate( 'execute' ).to( this, 'findNext' );
+
+		this._findPrevButtonView.bind( 'isEnabled' ).to( this, 'isFindPreviousCommandEnabled' );
+		this._findNextButtonView.bind( 'isEnabled' ).to( this, 'isFindNextCommandEnabled' );
+		this._findNextButtonView.keystroke = 'F3';
+		this._findPrevButtonView.keystroke = 'Shift+F3';
+
+		resultsCounterView.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: [
+					'ck-results-counter',
+					bind.if( 'isDirty', 'ck-hidden' )
+				]
+			},
+			children: [
+				{
+					text: bind.to( 'highlightOffset', highlightOffset => highlightOffset || 0 )
+				},
+				t( ' of ' ),
+				{
+					text: bind.to( 'matchCount' )
+				}
+			]
+		} );
+
+		this._findInputView.template.children[ 0 ].children.push( resultsCounterView );
+
+		fieldsetView.setTemplate( {
+			tag: 'fieldset',
+			attributes: {
+				class: [ 'ck', 'ck-find-and-replace-form__find' ]
+			},
+			children: [
+				this._findInputView,
+				this._findButtonView,
+				this._findPrevButtonView,
+				this._findNextButtonView
+			]
+		} );
+
+		return fieldsetView;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @returns TODO
+	 */
+	_createReplaceFieldset() {
+		const locale = this.locale;
+		const t = locale.t;
+		const fieldsetView = new View( locale );
+
+		fieldsetView.setTemplate( {
+			tag: 'fieldset',
+			attributes: {
+				class: [ 'ck', 'ck-find-and-replace-form__replace' ]
+			},
+			children: [
+				this._replaceInputView,
+				this._optionsDropdown,
+				this._replaceButtonView,
+				this._replaceAllButtonView
+			]
+		} );
+
+		this._replaceButtonView.bind( 'isEnabled' ).to(
+			this, 'isReplaceCommandEnabled',
+			this, '_searchResultsFound',
+			( commandEnabled, resultsFound ) => commandEnabled && resultsFound );
+
+		this._replaceAllButtonView.bind( 'isEnabled' ).to(
+			this, 'isReplaceAllCommandEnabled',
+			this, '_searchResultsFound',
+			( commandEnabled, resultsFound ) => commandEnabled && resultsFound );
+
+		this._replaceInputView.bind( 'isEnabled' ).to(
+			this, 'isReplaceCommandEnabled',
+			this, '_searchResultsFound',
+			( commandEnabled, resultsFound ) => commandEnabled && resultsFound );
+
+		this._replaceInputView.bind( 'infoText' ).to(
+			this._replaceInputView, 'isEnabled',
+			this._replaceInputView, 'isFocused',
+			( isEnabled, isFocused ) => {
+				if ( isEnabled || !isFocused ) {
+					return '';
+				}
+
+				return t( 'Tip: Find some text first in order to replace it.' );
+			} );
+
+		this._replaceButtonView.on( 'execute', () => {
+			this.fire( 'replace', {
+				searchText: this.textToFind,
+				replaceText: this.textToReplace
 			} );
 		} );
 
-		/**
-		 * The find previous button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.findPrevButtonView = this._createButton( t( 'Previous result' ), 'ck-button-prev', findArrowIcon, false );
-		this.findPrevButtonView.on( 'execute', () => {
-			this.fire( 'findPrevious' );
+		this._replaceAllButtonView.on( 'execute', () => {
+			this.fire( 'replaceAll', {
+				searchText: this.textToFind,
+				replaceText: this.textToReplace
+			} );
+
+			this.focus();
 		} );
 
-		/**
-		 * The find next button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.findNextButtonView = this._createButton( t( 'Next result' ), 'ck-button-next', findArrowIcon, false );
-		this.findNextButtonView.on( 'execute', () => {
-			this.fire( 'findNext' );
-		} );
-
-		/**
-		 * The replace button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.replaceButtonView = this._createButton( t( 'Replace' ), 'ck-button-replace' );
-		this.replaceButtonView.on( 'execute', () => {
-			this.fire( 'replace', { searchText: this.searchText, replaceText: this.replaceText } );
-		} );
-
-		/**
-		 * The replace all button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.replaceAllButtonView = this._createButton( t( 'Replace all' ), 'ck-button-replaceall' );
-		this.replaceAllButtonView.on( 'execute', () => {
-			this.fire( 'replaceAll', { searchText: this.searchText, replaceText: this.replaceText } );
-		} );
-
-		/**
-		 * The match case checkbox view.
-		 *
-		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
-	 	*/
-		this.matchCaseView = this._createCheckbox( t( 'Match case' ) );
-
-		/**
-		 * The whole words only checkbox view.
-		 *
-		 * @member {module:find-and-replace/ui/checkboxview~CheckboxView}
-	 	 */
-		this.matchWholeWordsView = this._createCheckbox( t( 'Whole words only' ) );
-
-		/**
-		 * The replace input view.
-		 *
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
-		 */
-		this.replaceInputView = this._createInputField( t( 'Replace with…' ) );
-
-		/**
-		 * Stores gathered views related to find functionality of the feature.
-		 *
-		 * @member {module:ui/view~View}
-		 */
-		this.findView = this._createFindView();
-
-		/**
-		 * Stores gathered views related to replace functionality of the feature.
-		 *
-		 * @member {module:ui/view~View}
-		 */
-		this.replaceView = this._createReplaceView();
+		return fieldsetView;
 	}
 
 	/**
-	 * A collection of views for the 'find' functionality of the feature.
+	 * TODO
 	 *
 	 * @private
-	 * @return {module:ui/view~View} The find view instance.
+	 * @returns TODO
 	 */
+	_createOptionsDropdown() {
+		const locale = this.locale;
+		const t = locale.t;
+		const dropdownView = createDropdown( locale );
 
-	_createFindView() {
-		const findView = new View();
+		dropdownView.class = 'ck-options-dropdown';
 
-		const bind = this.bindTemplate;
-		const t = this.locale.t;
-
-		findView.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-find-form__wrapper',
-					'ck-responsive-form',
-					bind.if( 'isSearching', 'ck-is-searching' )
-				],
-				tabindex: '-1'
-			},
-			children: [
-				this.findInputView,
-				{ tag: 'span',
-					attributes: {
-						class: [
-							'ck-results-counter',
-							bind.if( 'isCounterHidden', 'ck-hidden' )
-						]
-					},
-					children: [
-						{
-							text: bind.to( 'highlightOffset', highlightOffset => highlightOffset || 0 )
-						},
-						t( ' of ' ),
-						{
-							text: bind.to( 'matchCount' )
-						}
-					]
-				},
-				{
-					tag: 'div',
-					attributes: {
-						class: [ 'ck-find-checkboxes' ]
-					},
-					children: [
-						this.matchCaseView,
-						this.matchWholeWordsView
-					]
-				},
-				{
-					tag: 'div',
-					attributes: {
-						class: [
-							'ck-find-buttons'
-						]
-					},
-					children: [
-						this.findButtonView,
-						this.findPrevButtonView,
-						this.findNextButtonView
-					]
-				}
-			]
+		dropdownView.buttonView.set( {
+			withText: false,
+			label: t( 'Show options' ),
+			icon: cogIcon,
+			tooltip: true
 		} );
 
-		return findView;
+		const matchCaseModel = new Model( {
+			withText: true,
+			label: t( 'Match case' ),
+
+			// A dummy prop to make it easier to tell which switch was toggled.
+			_isMatchCaseSwitch: true
+		} );
+
+		const wholeWordsOnlyModel = new Model( {
+			withText: true,
+			label: t( 'Whole words only' )
+		} );
+
+		matchCaseModel.bind( 'isOn' ).to( this, 'matchCase' );
+		wholeWordsOnlyModel.bind( 'isOn' ).to( this, 'wholeWordsOnly' );
+
+		// Update the state of the view when a toggle switch is being toggled.
+		dropdownView.on( 'execute', evt => {
+			if ( evt.source._isMatchCaseSwitch ) {
+				this.matchCase = !this.matchCase;
+			} else {
+				this.wholeWordsOnly = !this.wholeWordsOnly;
+			}
+
+			this.isDirty = true;
+		} );
+
+		addListToDropdown( dropdownView, new Collection( [
+			{ type: 'switchbutton', model: matchCaseModel },
+			{ type: 'switchbutton', model: wholeWordsOnlyModel }
+		] ) );
+
+		return dropdownView;
 	}
 
 	/**
-	 * A collection of views for the 'replace' functionality of the feature.
+	 * TODO
 	 *
 	 * @private
-	 * @returns {module:ui/view~View} The replace view instance.
 	 */
-	_createReplaceView() {
-		const replaceView = new View();
-		const bind = this.bindTemplate;
+	_initFocusCycling() {
+		const childViews = [
+			this._findInputView,
+			this._findButtonView,
+			this._findPrevButtonView,
+			this._findNextButtonView,
+			this._replaceInputView,
+			this._optionsDropdown,
+			this._replaceButtonView,
+			this._replaceAllButtonView
+		];
 
-		replaceView.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-replace-form__wrapper',
-					'ck-responsive-form',
-					bind.if( 'isSearching', 'ck-is-searching' )
-				],
-				tabindex: '-1'
-			},
-			children: [
-				this.replaceInputView,
-				{
-					tag: 'div',
-					attributes: {
-						class: [
-							'ck-replace-buttons'
-						]
-					},
-					children: [
-						this.replaceAllButtonView,
-						this.replaceButtonView
-					]
-				}
-			]
+		childViews.forEach( v => {
+			// Register the view as focusable.
+			this._focusables.add( v );
+
+			// Register the view in the focus tracker.
+			this._focusTracker.add( v.element );
 		} );
-		return replaceView;
+
+		// Start listening for the keystrokes coming from #element.
+		this._keystrokes.listenTo( this.element );
 	}
 
 	/**
-	 * Creates a labeled input view.
+	 * TODO
 	 *
 	 * @private
-	 * @param {String} infoText The input label.
-	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} The labeled input view instance.
 	 */
-	_createInputField( infoText ) {
-		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
-		const inputField = labeledInput.fieldView;
+	_initKeystrokeHandling() {
+		const stopPropagation = data => data.stopPropagation();
+		const stopPropagationAndPreventDefault = data => {
+			data.stopPropagation();
+			data.preventDefault();
+		};
 
-		inputField.on( 'input', () => {
-			inputField.value = inputField.element.value;
+		this._keystrokes.set( 'f3', event => {
+			stopPropagationAndPreventDefault( event );
+
+			this._findNextButtonView.fire( 'execute' );
 		} );
 
-		labeledInput.label = infoText;
-		labeledInput.render();
+		this._keystrokes.set( 'shift+f3', event => {
+			stopPropagationAndPreventDefault( event );
 
-		return labeledInput;
+			this._findPrevButtonView.fire( 'execute' );
+		} );
+
+		this._keystrokes.set( 'enter', event => {
+			const target = event.target;
+
+			if ( target === this._findInputView.fieldView.element ) {
+				this._findButtonView.fire( 'execute' );
+				stopPropagationAndPreventDefault( event );
+			} else if ( target === this._replaceInputView.fieldView.element ) {
+				this._replaceButtonView.fire( 'execute' );
+				stopPropagationAndPreventDefault( event );
+			}
+		} );
+
+		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
+		// keystroke handler would take over the key management in the URL input.
+		// We need to prevent this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
+		this._keystrokes.set( 'arrowright', stopPropagation );
+		this._keystrokes.set( 'arrowleft', stopPropagation );
+		this._keystrokes.set( 'arrowup', stopPropagation );
+		this._keystrokes.set( 'arrowdown', stopPropagation );
+
+		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
+		// of the DropdownView#panelView.
+		this.listenTo( this._findInputView.element, 'selectstart', ( evt, domEvt ) => {
+			domEvt.stopPropagation();
+		}, { priority: 'high' } );
+		this.listenTo( this._replaceInputView.element, 'selectstart', ( evt, domEvt ) => {
+			domEvt.stopPropagation();
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @returns TODO
+	 */
+	_onFindButtonExecute() {
+		if ( !this.textToFind ) {
+			const t = this.t;
+
+			this._findInputView.errorText = t( 'Text to find must not be empty.' );
+
+			return;
+		}
+
+		this.fire( 'findNext', {
+			searchText: this.textToFind,
+			matchCase: this.matchCase,
+			wholeWords: this.wholeWordsOnly
+		} );
+
+		this.isDirty = false;
 	}
 
 	/**
 	 * Creates a button view.
 	 *
 	 * @private
-	 * @param {String} label The button label.
-	 * @param {String} className The individual button CSS class name.
-	 * @param {String} icon An SVG image of icon to be used in button.
-	 * @param {Boolean} withText Whether the text should be shown.
+	 * @param {Object} options The properties of the `ButtonView`.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, className, icon, withText = true ) {
+	_createButton( options ) {
 		const button = new ButtonView( this.locale );
 
-		button.set( {
-			label,
-			icon,
-			withText
-		} );
-
-		button.extendTemplate( {
-			attributes: {
-				class: className
-			}
-		} );
+		button.set( options );
 
 		return button;
 	}
 
 	/**
-	 * Creates a view for the checkboxes.
+	 * Creates a labeled input view.
 	 *
 	 * @private
-	 * @param {String} label The checkbox label.
-	 * @returns {module:ui/view~View} The checkbox view instance.
+	 * @param {String} label The input label.
+	 * @returns {module:ui/labeledfield/labeledfieldview~LabeledFieldView} The labeled input view instance.
 	 */
-	_createCheckbox( label ) {
-		const checkboxView = new CheckboxView( this.locale );
+	_createInputField( label ) {
+		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		checkboxView.set( {
-			isVisible: true,
-			tooltip: true,
-			class: 'ck-find-checkboxes__box',
-			id: uid(),
-			label
-		} );
+		labeledInput.label = label;
 
-		return checkboxView;
+		return labeledInput;
 	}
 }
 

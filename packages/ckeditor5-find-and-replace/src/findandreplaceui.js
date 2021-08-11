@@ -10,10 +10,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { createDropdown } from 'ckeditor5/src/ui';
 import FindAndReplaceFormView from './ui/findandreplaceformview';
-// See: #8833.
-// eslint-disable-next-line ckeditor5-rules/ckeditor-imports
-import '@ckeditor/ckeditor5-ui/theme/components/responsive-form/responsiveform.css';
-import '../theme/findandreplaceform.css';
 
 import loupeIcon from '../theme/icons/find-replace.svg';
 
@@ -40,114 +36,62 @@ export default class FindAndReplaceUI extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		this.set( 'searchText' );
-		this.set( 'replaceText' );
-
+		/**
+		 * TODO
+		 */
 		this.set( 'matchCount', null );
-		this.set( 'highlightOffset', null );
 
 		/**
-		 * The form view will only be assigned if the find and replace toolbar button was added.
-		 *
-		 * @member {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView|null} #formView
+		 * TODO
 		 */
-		this.formView = null;
+		this.set( 'highlightOffset', null );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		this.findAndReplacePlugin = this.editor.plugins.get( 'FindAndReplace' );
-
 		const editor = this.editor;
 
+		// Register the toolbar dropdown component.
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const dropdown = createDropdown( locale );
-
-			const formView = new FindAndReplaceFormView( editor.locale, this._state );
-
-			formView.delegate( 'findNext' ).to( this );
-			formView.delegate( 'findPrevious' ).to( this );
-			formView.delegate( 'replace' ).to( this );
-			formView.delegate( 'replaceAll' ).to( this );
-
-			formView.bind( 'matchCount' ).to( this );
-			formView.bind( 'highlightOffset' ).to( this );
-
-			this._createToolbarDropdown( dropdown, loupeIcon, formView );
-
-			dropdown.panelView.children.add( formView );
-
-			dropdown.on( 'change:isOpen', ( event, name, value ) => {
-				if ( !value ) {
-					this.fire( 'dropdown:closed' );
-				}
-			} );
-
-			this.formView = formView;
-
-			editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
-				dropdown.buttonView.fire( 'execute' );
-
-				cancelEvent();
-			} );
+			const formView = new FindAndReplaceFormView( editor.locale );
 
 			// Dropdown should be disabled when in source editing mode. See #10001.
 			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
+			dropdown.panelView.children.add( formView );
+			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
+				formView.reset();
+
+				if ( !isOpen ) {
+					// Preserve the focus in the editor when the UI was closed.
+					editor.editing.view.focus();
+
+					// Let the feature know that search results are no longer relevant because the user left the UI.
+					this.fire( 'searchReseted' );
+				}
+			} );
+
+			this._setupDropdownButton( dropdown.buttonView, formView );
+			this._setupFormView( formView );
 
 			return dropdown;
 		} );
 	}
 
 	/**
-	 * Sets the observed state object. It is used to display search result count etc.
-	 *
-	 * @protected
-	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state State object to be tracked.
-	 */
-	_setState( state ) {
-		this._state = state;
-
-		this.listenTo( state.results, 'change', () => {
-			this.set( 'matchCount', state.results.length );
-		} );
-
-		this.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
-			if ( !highlightedResult ) {
-				return null;
-			}
-
-			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
-				const mapping = {
-					before: -1,
-					same: 0,
-					after: 1
-				};
-
-				return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
-			} );
-
-			const index = sortedResults.indexOf( highlightedResult );
-
-			return index === -1 ?
-				null : index + 1;
-		} );
-	}
-
-	/**
 	 * @private
-	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
-	 * @param {String} icon An icon to be assigned to the button.
+	 * @param {module:ui/button/buttonview~ButtonView} buttonView
 	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView A related form view.
 	 */
-	_createToolbarDropdown( dropdown, icon, formView ) {
-		const t = this.editor.locale.t;
-		const buttonView = dropdown.buttonView;
+	_setupDropdownButton( buttonView, formView ) {
+		const editor = this.editor;
+		const t = editor.locale.t;
 
 		// Configure the dropdown's button properties:
 		buttonView.set( {
-			icon,
+			icon: loupeIcon,
 			label: t( 'Find and replace' ),
 			keystroke: 'CTRL+F',
 			tooltip: true
@@ -160,11 +104,44 @@ export default class FindAndReplaceUI extends Plugin {
 		buttonView.on( 'open', () => {
 			formView.disableCssTransitions();
 
-			formView.findInputView.fieldView.select();
+			formView._findInputView.fieldView.select();
 			formView.focus();
 
 			formView.enableCssTransitions();
 		}, { priority: 'low' } );
+
+		editor.keystrokes.set( 'Ctrl+F', ( data, cancelEvent ) => {
+			buttonView.fire( 'execute' );
+
+			cancelEvent();
+		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView A related form view.
+	 */
+	_setupFormView( formView ) {
+		const editor = this.editor;
+		const commands = editor.commands;
+
+		formView.bind( 'matchCount', 'highlightOffset' ).to( this );
+		formView.bind( 'isFindNextCommandEnabled' ).to( commands.get( 'findNext' ), 'isEnabled' );
+		formView.bind( 'isFindPreviousCommandEnabled' ).to( commands.get( 'findPrevious' ), 'isEnabled' );
+		formView.bind( 'isReplaceCommandEnabled' ).to( commands.get( 'replace' ), 'isEnabled' );
+		formView.bind( 'isReplaceAllCommandEnabled' ).to( commands.get( 'replaceAll' ), 'isEnabled' );
+
+		formView.delegate( 'findNext', 'findPrevious', 'replace', 'replaceAll' ).to( this );
+
+		// Let the feature know that search results are no longer relevant because the user changed the searched phrase
+		// but didn't hit the "Find" button yet (e.g. still typing).
+		formView.on( 'change:isDirty', ( evt, data, isDirty ) => {
+			if ( isDirty ) {
+				this.fire( 'searchReseted' );
+			}
+		} );
 	}
 }
 
@@ -197,7 +174,8 @@ export default class FindAndReplaceUI extends Plugin {
  */
 
 /**
- * Fired when the toolbar dropdown gets closed.
+ * Fired when the UI was reset and the search results marked in the content
+ * should be invalidated.
  *
- * @event dropdown:closed
+ * @event searchReseted
  */

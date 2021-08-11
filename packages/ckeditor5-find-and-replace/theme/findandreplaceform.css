@@ -3,224 +3,158 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* stylelint-disable no-descending-specificity */
-
-/* disabled buttons bg color: #C3C3C3 */
-/* button color #4E8AE4 */
-
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_rwd.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
-.ck .ck-find-and-replace-form .ck-find-form__wrapper,
-.ck .ck-find-and-replace-form .ck-replace-form__wrapper {
-	display: flex;
-	align-items: flex-start;
-	flex-direction: row;
-	flex-wrap: wrap;
+.ck.ck-find-and-replace-form {
+	width: 400px;
+	max-width: 100%;
 
-	& .ck-button {
-		margin-top: var(--ck-spacing-standard);
-		background-color: var(--ck-color-base-active);
-		padding: 5px 10px;
-		text-transform: uppercase;
-
-		&.ck-disabled {
-			background-color: var(--ck-color-switch-button-off-background);
-		}
-
-		&:not(.ck-disabled) {
-			color: var(--ck-color-base-background);
-
-			&:hover {
-				background-color: var(--ck-color-base-focus);
-				cursor: pointer;
-			}
-		}
-	}
-
-	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
-		padding: var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
-	}
-
-	@mixin ck-media-phone {
-		flex-wrap: wrap;
-
-		& .ck-labeled-field-view {
-			flex-basis: 100%;
-		}
-
-		& .ck-button {
-			flex-basis: 50%;
-		}
-	}
-}
-
-.ck .ck-find-and-replace-form  .ck-replace-form__wrapper {
-	justify-content: flex-end;
-	border-top: 1px solid var(--ck-color-base-border);
-
-	& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
-		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
-	}
-
-	& .ck-button {
-		border-radius: 5px;
-		font-size: calc(var(--ck-font-size-normal) * 0.9);
-
-		&:last-child {
-			margin-left: var(--ck-spacing-standard)
-		}
-
-		& .ck.ck-button__label {
-			line-height: 20px;
-		}
-	}
-}
-
-.ck .ck-find-and-replace-form .ck-find-form__wrapper {
-	justify-content: space-between;
-
-	& .ck-button.ck-button-prev,
-	& .ck-button.ck-button-next {
-		margin-left: 1px;
-	}
-
-	& span.ck-results-counter {
-		position: absolute;
-		top: calc(var(--ck-spacing-standard) * 2);
-		right: calc(var(--ck-spacing-standard) * 3);
-		color: var(--ck-color-base-border)
-	}
-
-	& .ck-find-buttons {
+	& fieldset {
 		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
 		align-items: center;
+		align-content: stretch;
 
-		& .ck-button {
-			border-radius: 5px;
-			padding: 5px;
-
-			& svg.ck-button__icon {
-				margin: 0;
-			}
-
-			&.ck-button-find {
-				padding: 4px 16px;
-			}
-
-			&.ck-button-prev {
-				border-radius: 5px 0 0 5px;
-
-				& svg {
-					transform: rotate(180deg) translateY(-2px);
-				}
-			}
-
-			&.ck-button-next {
-				border-radius: 0 5px 5px 0;
-
-				& svg {
-					transform: translateY(-1px);
-				}
-			}
-		}
-	}
-
-	&.ck-is-searching {
-		& .ck-button.ck-button-find {
-			display: none;
-		}
-	}
-
-	&:not(.ck-is-searching) {
-		& .ck-button.ck-button-prev,
-		& .ck-button.ck-button-next {
-			display: none;
-		}
-
-		& .ck-button.ck-button-find {
-			display: flex;
-		}
-	}
-
-	&.ck-responsive-form .ck-find-checkboxes {
+		padding: var(--ck-spacing-large);
+		border: 0;
 		margin: 0;
 
-		& .ck-find-checkboxes__box {
-			display: flex;
-			align-items: center;
-			max-width: 150px;
-			overflow: hidden;
-
-			& label {
-				margin-left: 5px;
-				line-height: calc(var(--ck-spacing-standard) * 2.2);
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			& label:hover,
-			& input[type=checkbox]:hover
-			 {
-				cursor: pointer;
-			}
-
-			&:first-child {
-				margin-top: var(--ck-spacing-medium);
-			}
-
-			& input[type=checkbox]:disabled+label {
-				color: var(--ck-color-switch-button-off-background);
-			}
-		}
-	}
-}
-
-.ck[dir='rtl'] {
-	& .ck .ck-find-and-replace-form .ck-find-form__wrapper .ck-labeled-field-view__input-wrapper .ck.ck-input-text {
-		padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium) var(--ck-spacing-extra-tiny) calc(var(--ck-spacing-medium) * 8);
-	}
-
-	& .ck .ck-find-and-replace-form .ck-replace-form__wrapper {
-		& .ck-replace-buttons {
-			display: flex;
-			flex-flow: row-reverse;
-
-			& .ck-button:last-child {
+		@mixin ck-dir ltr {
+			& > * + * {
 				margin-left: var(--ck-spacing-standard);
 			}
 		}
-		& .ck-labeled-field-view__input-wrapper .ck.ck-input-text{
-			padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
-		}
-	}
 
-	& .ck.ck-responsive-form > :not(:last-child) {
-		margin-left: 0;
-	}
-
-	& .ck .ck-find-and-replace-form .ck-find-form__wrapper {
-		& .ck-button.ck-button-prev,
-		& .ck-button.ck-button-next {
-			margin-right: 1px;
-			margin-left: 0;
+		@mixin ck-dir rtl {
+			& > * + * {
+				margin-right: var(--ck-spacing-standard);
+			}
 		}
 
-		& span.ck-results-counter {
-			left: calc(var(--ck-spacing-standard) * 3);
+		& > .ck-button {
+			flex: 0 0 auto;
 		}
 
-		& .ck-find-buttons {
-			flex-flow: row-reverse;
+		& .ck-labeled-field-view {
+			flex: 1 1 auto;
+
+			& .ck-input {
+				width: 100%;
+				min-width: 50px;
+			}
 		}
 
-		&.ck-responsive-form .ck-find-checkboxes {
-			margin: 0;
+		/* The find fieldset */
+		&.ck-find-and-replace-form__find {
+			/* To display all controls in line when there's an error under the input */
+			align-items: flex-start;
 
-			& .ck-find-checkboxes__box label {
-				margin-right: 5px;
+			& > .ck-button-find {
+				font-weight: bold;
+
+				/* Beef the find button up a little. It's the main action button in the form */
+				& .ck-button__label {
+					padding-left: var(--ck-spacing-large);
+					padding-right: var(--ck-spacing-large);
+				}
+			}
+
+			& > .ck-button-prev > .ck-icon {
+				transform: rotate(90deg);
+			}
+
+			& > .ck-button-next > .ck-icon {
+				transform: rotate(-90deg);
+			}
+
+			& > .ck-labeled-field-view .ck-input {
+				padding-right: calc( 5 * var(--ck-spacing-large) );
+			}
+
+			& .ck-results-counter {
+				position: absolute;
+				top: 50%;
+				transform: translateY(-50%);
+				right: var(--ck-spacing-standard);
+				color: var(--ck-color-base-border);
+			}
+		}
+
+		/* The replace fieldset */
+		&.ck-find-and-replace-form__replace {
+			flex-wrap: wrap;
+			justify-content: flex-end;
+			margin-top: calc( -1 * var(--ck-spacing-large) );
+
+			& > .ck-labeled-field-view {
+				margin-bottom: var(--ck-spacing-large);
+			}
+
+			& > .ck-options-dropdown {
+				margin-right: auto;
+				margin-left: 0;
+			}
+
+			& > .ck-labeled-field-view,
+			& > .ck-labeled-field-view .ck-input {
+				width: 100%;
 			}
 		}
 	}
 }
 
-/* stylelint-enable no-descending-specificity */
+@mixin ck-media-phone {
+	.ck.ck-find-and-replace-form {
+		width: 300px;
+
+		& fieldset {
+			flex-wrap: wrap;
+
+			/* The find fieldset */
+			&.ck-find-and-replace-form__find {
+				& .ck-labeled-field-view {
+					flex: 1 0 auto;
+					width: 100%;
+					margin-bottom: var(--ck-spacing-standard);
+				}
+
+				& > .ck-button {
+					text-align: center;
+
+					&:first-of-type {
+						flex: 1 1 auto;
+
+						@mixin ck-dir ltr {
+							margin-left: 0;
+						}
+
+						@mixin ck-dir rtl {
+							margin-right: 0;
+						}
+
+						& .ck-button__label {
+							width: 100%;
+							text-align: center;
+						}
+					}
+				}
+			}
+
+			/* The replace fieldset */
+			&.ck-find-and-replace-form__replace > :not(.ck-labeled-field-view) {
+				flex: 1 1 auto;
+
+				&.ck-dropdown {
+					flex-grow: 0;
+				}
+
+				&.ck-button > .ck-button__label {
+					width: 100%;
+					text-align: center;
+				}
+			}
+		}
+	}
+}
