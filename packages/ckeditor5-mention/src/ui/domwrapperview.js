@@ -22,7 +22,7 @@ export default class DomWrapperView extends View {
 	 *
 	 * Also see {@link #render}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
 	 * @param {Element} domElement
 	 */
 	constructor( locale, domElement ) {
