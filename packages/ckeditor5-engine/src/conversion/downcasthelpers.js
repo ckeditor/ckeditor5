@@ -1928,9 +1928,8 @@ function reinsertNodes( viewElement, nodes, conversionApi, reconversion ) {
 				);
 			}
 		} else {
-			// TODO this should be exposed by conversionApi?
 			// Note that this is not creating another consumable, it's using the current one.
-			conversionApi.dispatcher._convertInsert( ModelRange._createOn( modelChildNode ) );
+			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
 		}
 	}
 }

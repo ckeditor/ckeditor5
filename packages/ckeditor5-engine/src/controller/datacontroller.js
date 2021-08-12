@@ -241,13 +241,7 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// Make additional options available during conversion process through `conversionApi`.
-		this.downcastDispatcher.conversionApi.options = options;
-
-		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
-		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
-
-		// Convert markers.
+		// Prepare list of markers.
 		// For document fragment, simply take the markers assigned to this document fragment.
 		// For model root, all markers in that root will be taken.
 		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
@@ -256,12 +250,8 @@ export default class DataController {
 			Array.from( modelElementOrFragment.markers ) :
 			_getMarkersRelativeToElement( modelElementOrFragment );
 
-		for ( const [ name, range ] of markers ) {
-			this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
-		}
-
-		// Clean `conversionApi`.
-		delete this.downcastDispatcher.conversionApi.options;
+		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
+		this.downcastDispatcher.convertInsert( modelRange, markers, viewWriter, options );
 
 		return viewDocumentFragment;
 	}

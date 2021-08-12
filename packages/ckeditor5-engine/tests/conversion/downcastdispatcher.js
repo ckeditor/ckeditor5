@@ -44,8 +44,8 @@ describe( 'DowncastDispatcher', () => {
 	} );
 
 	describe( 'convertChanges', () => {
-		it( 'should call convertInsert for insert change', () => {
-			sinon.stub( dispatcher, 'convertInsert' );
+		it( 'should call _convertInsert for insert change', () => {
+			sinon.stub( dispatcher, '_convertInsert' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 			const range = ModelRange._createFromPositionAndShift( position, 1 );
@@ -56,15 +56,15 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
-			expect( dispatcher.convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
+			expect( dispatcher._convertInsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertRemove for remove change', () => {
-			sinon.stub( dispatcher, 'convertRemove' );
+		it( 'should call _convertRemove for remove change', () => {
+			sinon.stub( dispatcher, '_convertRemove' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 
@@ -74,15 +74,14 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
+			expect( dispatcher._convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it.skip( 'should call convertAttribute for attribute change', () => {
-			sinon.stub( dispatcher, 'convertAttribute' );
-			sinon.stub( dispatcher, '_mapChangesWithAutomaticReconversion' ).callsFake( differ => differ.getChanges() );
+		it.skip( 'should call _convertAttribute for attribute change', () => {
+			sinon.stub( dispatcher, '_convertAttribute' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 			const range = ModelRange._createFromPositionAndShift( position, 1 );
@@ -95,17 +94,16 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
+			expect( dispatcher._convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it.skip( 'should handle multiple changes', () => {
-			sinon.stub( dispatcher, 'convertInsert' );
-			sinon.stub( dispatcher, 'convertRemove' );
-			sinon.stub( dispatcher, 'convertAttribute' );
-			sinon.stub( dispatcher, '_mapChangesWithAutomaticReconversion' ).callsFake( differ => differ.getChanges() );
+			sinon.stub( dispatcher, '_convertInsert' );
+			sinon.stub( dispatcher, '_convertRemove' );
+			sinon.stub( dispatcher, '_convertAttribute' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 			const range = ModelRange._createFromPositionAndShift( position, 1 );
@@ -121,16 +119,16 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
-			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
-			expect( dispatcher.convertAttribute.calledOnce ).to.be.true;
+			expect( dispatcher._convertInsert.calledTwice ).to.be.true;
+			expect( dispatcher._convertRemove.calledOnce ).to.be.true;
+			expect( dispatcher._convertAttribute.calledOnce ).to.be.true;
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertMarkerAdd when markers are added', () => {
-			sinon.stub( dispatcher, 'convertMarkerAdd' );
+		it( 'should call _convertMarkerAdd when markers are added', () => {
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
 
 			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
 			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
@@ -144,15 +142,15 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'bar', barRange ) );
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertMarkerRemove when markers are removed', () => {
-			sinon.stub( dispatcher, 'convertMarkerRemove' );
+		it( 'should call _convertMarkerRemove when markers are removed', () => {
+			sinon.stub( dispatcher, '_convertMarkerRemove' );
 
 			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
 			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
@@ -166,16 +164,16 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'bar', barRange ) );
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should re-render markers which view elements got unbound during conversion', () => {
-			sinon.stub( dispatcher, 'convertMarkerRemove' );
-			sinon.stub( dispatcher, 'convertMarkerAdd' );
+			sinon.stub( dispatcher, '_convertMarkerRemove' );
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
 
 			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
 			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
@@ -190,10 +188,10 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
-			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'bar', barRange ) );
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
@@ -240,7 +238,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
 			} );
 
-			dispatcher.convertInsert( range );
+			dispatcher.convertInsert( range, [] );
 
 			// Check the data passed to called events and the order of them.
 			expect( loggedEvents ).to.deep.equal( [
@@ -274,7 +272,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const range = model.createRangeIn( root );
 
-			dispatcher.convertInsert( range );
+			dispatcher.convertInsert( range, [] );
 
 			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
@@ -298,7 +296,7 @@ describe( 'DowncastDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
-			dispatcher.convertRemove( model.createPositionAt( root, 3 ), 3, '$text' );
+			dispatcher._convertRemove( model.createPositionAt( root, 3 ), 3, '$text' );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 
@@ -582,7 +580,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
 			} );
 
-			dispatcher.convertMarkerAdd( 'name', range );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._prepareConversionApi() );
 
 			expect( spy.calledOnce ).to.be.true;
 
@@ -596,7 +594,7 @@ describe( 'DowncastDispatcher', () => {
 			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerAdd( 'name', eleRange );
+			dispatcher._convertMarkerAdd( 'name', eleRange, dispatcher._prepareConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.true;
 
@@ -608,7 +606,7 @@ describe( 'DowncastDispatcher', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerAdd( 'name', gyRange );
+			dispatcher._convertMarkerAdd( 'name', gyRange, dispatcher._prepareConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.false;
 
@@ -645,7 +643,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			} );
 
-			dispatcher.convertMarkerAdd( 'name', range );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._prepareConversionApi() );
 
 			expect( spyWholeRange.calledOnce ).to.be.true;
 			expect( spyItems.calledTwice ).to.be.true;
@@ -674,7 +672,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			} );
 
-			dispatcher.convertMarkerAdd( 'name', range );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._prepareConversionApi() );
 
 			expect( spyItems.called ).to.be.false;
 
@@ -702,7 +700,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			}, { priority: 'high' } );
 
-			dispatcher.convertMarkerAdd( 'marker', range );
+			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._prepareConversionApi() );
 
 			expect( addMarkerSpy.called ).to.be.false;
 			expect( highAddMarkerSpy.calledOnce ).to.be.true;
@@ -731,7 +729,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			}, { priority: 'high' } );
 
-			dispatcher.convertMarkerAdd( 'marker', range );
+			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._prepareConversionApi() );
 
 			expect( addMarkerSpy.called ).to.be.false;
 
@@ -757,7 +755,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire removeMarker event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerRemove( 'name', range );
+			dispatcher._convertMarkerRemove( 'name', range, dispatcher._prepareConversionApi() );
 
 			expect( dispatcher.fire.calledWith( 'removeMarker:name' ) ).to.be.true;
 
@@ -769,7 +767,7 @@ describe( 'DowncastDispatcher', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerRemove( 'name', gyRange );
+			dispatcher._convertMarkerRemove( 'name', gyRange, dispatcher._prepareConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.false;
 
@@ -783,7 +781,7 @@ describe( 'DowncastDispatcher', () => {
 			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerRemove( 'name', eleRange );
+			dispatcher._convertMarkerRemove( 'name', eleRange, dispatcher._prepareConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.true;
 
@@ -799,7 +797,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
 			} );
 
-			dispatcher.convertMarkerRemove( 'name', range );
+			dispatcher._convertMarkerRemove( 'name', range, dispatcher._prepareConversionApi() );
 
 			expect( dispatcher.conversionApi.writer ).to.be.undefined;
 			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
@@ -819,7 +817,7 @@ describe( 'DowncastDispatcher', () => {
 				evt.stop();
 			}, { priority: 'high' } );
 
-			dispatcher.convertMarkerRemove( 'marker', range );
+			dispatcher._convertMarkerRemove( 'marker', range, dispatcher._prepareConversionApi() );
 
 			expect( removeMarkerSpy.called ).to.be.false;
 			expect( highRemoveMarkerSpy.calledOnce ).to.be.true;
