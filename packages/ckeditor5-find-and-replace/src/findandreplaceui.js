@@ -45,6 +45,11 @@ export default class FindAndReplaceUI extends Plugin {
 		 * TODO
 		 */
 		this.set( 'highlightOffset', 0 );
+
+		/**
+		 * TODO
+		 */
+		this.formView = null;
 	}
 
 	/**
@@ -56,7 +61,7 @@ export default class FindAndReplaceUI extends Plugin {
 		// Register the toolbar dropdown component.
 		editor.ui.componentFactory.add( 'findAndReplace', locale => {
 			const dropdown = createDropdown( locale );
-			const formView = new FindAndReplaceFormView( editor.locale );
+			const formView = this.formView = new FindAndReplaceFormView( editor.locale );
 
 			// Dropdown should be disabled when in source editing mode. See #10001.
 			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );

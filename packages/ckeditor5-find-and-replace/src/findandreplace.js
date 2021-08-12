@@ -113,13 +113,13 @@ export default class FindAndReplace extends Plugin {
 				return 0;
 			}
 
-			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
-				const mapping = {
-					before: -1,
-					same: 0,
-					after: 1
-				};
+			const mapping = {
+				before: -1,
+				same: 0,
+				after: 1
+			};
 
+			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
 				return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
 			} );
 

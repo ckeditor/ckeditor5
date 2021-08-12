@@ -38,7 +38,7 @@ import '../../theme/findandreplaceform.css';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
-import cogIcon from 'ckeditor5/src/core';
+import { icons } from 'ckeditor5/src/core';
 
 /**
  * The find and replace form view class.
@@ -497,7 +497,7 @@ export default class FindAndReplaceFormView extends View {
 		dropdownView.buttonView.set( {
 			withText: false,
 			label: t( 'Show options' ),
-			icon: cogIcon,
+			icon: icons.cog,
 			tooltip: true
 		} );
 
