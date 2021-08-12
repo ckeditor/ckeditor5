@@ -33,20 +33,6 @@ export default class FindAndReplaceUI extends Plugin {
 		super( editor );
 
 		/**
-		 * The total number of matches found in the document.
-		 *
-		 * @member {Number} #matchCount
-		 */
-		this.set( 'matchCount', 0 );
-
-		/**
-		 * The index of the current match highlighted in the editing.
-		 *
-		 * @member {Number} #highlightOffset
-		 */
-		this.set( 'highlightOffset', 0 );
-
-		/**
 		 * A reference to the find and replace form view.
 		 *
 		 * @member {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} #formView
@@ -80,8 +66,8 @@ export default class FindAndReplaceUI extends Plugin {
 			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
 				if ( isOpen ) {
 					formView.disableCssTransitions();
-					formView.reset();
 
+					formView.reset();
 					formView._findInputView.fieldView.select();
 					formView.focus();
 
@@ -128,9 +114,27 @@ export default class FindAndReplaceUI extends Plugin {
 	_setupFormView( formView ) {
 		const editor = this.editor;
 		const commands = editor.commands;
+		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
+		const editingState = findAndReplaceEditing.state;
+		const sortMapping = { before: -1, same: 0, after: 1 };
 
-		formView.bind( 'matchCount', 'highlightOffset' ).to( this );
+		// Let the form know which result is being highlighted.
+		formView.bind( 'highlightOffset' ).to( editingState, 'highlightedResult', highlightedResult => {
+			if ( !highlightedResult ) {
+				return 0;
+			}
 
+			return Array.from( editingState.results )
+				.sort( ( a, b ) => sortMapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ] )
+				.indexOf( highlightedResult ) + 1;
+		} );
+
+		// Let the form know how many results were found in total.
+		formView.listenTo( editingState.results, 'change', () => {
+			formView.matchCount = editingState.results.length;
+		} );
+
+		// Command states are used to enable/disable individual form controls.
 		// To keep things simple, instead of binding 4 individual observables, there's only one that combines every
 		// commands' isEnabled state. Yes, it will change more often but this simplifies the structure of the form.
 		formView.bind( 'areCommandsEnabled' ).to(
@@ -141,6 +145,7 @@ export default class FindAndReplaceUI extends Plugin {
 			( findNext, findPrevious, replace, replaceAll ) => ( { findNext, findPrevious, replace, replaceAll } )
 		);
 
+		// The UI plugin works as an interface between the form and the editing part of the feature.
 		formView.delegate( 'findNext', 'findPrevious', 'replace', 'replaceAll' ).to( this );
 
 		// Let the feature know that search results are no longer relevant because the user changed the searched phrase

@@ -93,31 +93,5 @@ export default class FindAndReplace extends Plugin {
 			state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
-
-		// Let the UI know which result is being highlighted.
-		ui.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
-			if ( !highlightedResult ) {
-				return 0;
-			}
-
-			const mapping = {
-				before: -1,
-				same: 0,
-				after: 1
-			};
-
-			const index = Array.from( state.results )
-				.sort( ( a, b ) => {
-					return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
-				} )
-				.indexOf( highlightedResult );
-
-			return index + 1;
-		} );
-
-		// Let the UI know how many results were found in total.
-		ui.listenTo( state.results, 'change', () => {
-			ui.matchCount = state.results.length;
-		} );
 	}
 }

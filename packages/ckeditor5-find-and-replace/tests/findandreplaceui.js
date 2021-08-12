@@ -4,6 +4,7 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -15,12 +16,7 @@ import FindAndReplace from '../src/findandreplace';
 import loupeIcon from '../theme/icons/find-replace.svg';
 
 describe( 'FindAndReplaceUI', () => {
-	let editorElement;
-	let editor;
-	let dropdown;
-	let findCommand;
-	let form;
-	let plugin;
+	let editorElement, editor, dropdown, findCommand, form, plugin;
 
 	testUtils.createSinonSandbox();
 
@@ -30,7 +26,7 @@ describe( 'FindAndReplaceUI', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ FindAndReplace ]
+				plugins: [ FindAndReplace, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -49,20 +45,6 @@ describe( 'FindAndReplaceUI', () => {
 
 	it( 'should be named', () => {
 		expect( FindAndReplaceUI.pluginName ).to.equal( 'FindAndReplaceUI' );
-	} );
-
-	describe( 'constructor()', () => {
-		it( 'should set #matchCount', () => {
-			expect( plugin.matchCount ).to.equal( 0 );
-		} );
-
-		it( 'should set #highlightOffset', () => {
-			expect( plugin.highlightOffset ).to.equal( 0 );
-		} );
-
-		it( 'should set #formView', () => {
-			expect( plugin.formView ).to.equal( form );
-		} );
 	} );
 
 	describe( 'init()', () => {
@@ -205,15 +187,92 @@ describe( 'FindAndReplaceUI', () => {
 		} );
 
 		describe( 'form events and bindings', () => {
-			it( 'should bind form\'s #matchCount and #highlightOffset to the UI', () => {
-				expect( form.matchCount ).to.equal( 0 );
+			let findAndReplaceEditing, model;
+
+			beforeEach( () => {
+				model = editor.model;
+				findAndReplaceEditing = editor.plugins.get( 'FindAndReplaceEditing' );
+			} );
+
+			it( 'should bind form #highlightOffset to FindAndReplaceState#highlightedResult', () => {
+				findAndReplaceEditing.state.highlightedResult = null;
+
 				expect( form.highlightOffset ).to.equal( 0 );
 
-				plugin.matchCount = 2;
-				plugin.highlightOffset = 1;
+				editor.setData( '<p>foo</p>' );
 
-				expect( form.matchCount ).to.equal( 2 );
+				const firstParagraph = editor.model.document.getRoot().getChild( 0 );
+				let markerA, markerB;
+
+				model.change( writer => {
+					markerA = writer.addMarker( 'findResult:A', {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 0 ),
+							writer.createPositionAt( firstParagraph, 1 )
+						)
+					} );
+				} );
+
+				model.change( writer => {
+					markerB = writer.addMarker( 'findResult:B', {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 2 ),
+							writer.createPositionAt( firstParagraph, 3 )
+						)
+					} );
+				} );
+
+				const resultA = {
+					id: 'A',
+					label: 'label',
+					marker: markerA
+				};
+
+				const resultB = {
+					id: 'B',
+					label: 'label',
+					marker: markerB
+				};
+
+				findAndReplaceEditing.state.results.add( resultB, resultA );
+				findAndReplaceEditing.state.highlightedResult = resultB;
+
 				expect( form.highlightOffset ).to.equal( 1 );
+			} );
+
+			it( 'should update form #matchCount when FindAndReplaceState#results change', () => {
+				editor.setData( '<p>foo</p>' );
+
+				expect( form.matchCount ).to.equal( 0 );
+
+				const firstParagraph = editor.model.document.getRoot().getChild( 0 );
+				let marker;
+
+				model.change( writer => {
+					marker = writer.addMarker( 'findResult:123456', {
+						usingOperation: false,
+						affectsData: false,
+						range: writer.createRange(
+							writer.createPositionAt( firstParagraph, 0 ),
+							writer.createPositionAt( firstParagraph, 1 )
+						)
+					} );
+				} );
+
+				const highlightedResult = {
+					id: '123456',
+					label: 'label',
+					marker
+				};
+
+				findAndReplaceEditing.state.results.add( highlightedResult );
+				findAndReplaceEditing.state.highlightedResult = highlightedResult;
+
+				expect( form.matchCount ).to.equal( 1 );
 			} );
 
 			it( 'should bind form\'s #areCommandsEnabled to various editor commands', () => {
