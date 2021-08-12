@@ -138,12 +138,7 @@ export default class FindAndReplaceUI extends Plugin {
 			commands.get( 'findPrevious' ), 'isEnabled',
 			commands.get( 'replace' ), 'isEnabled',
 			commands.get( 'replaceAll' ), 'isEnabled',
-			( isFindNextCommandEnabled, isFindPreviousCommandEnabled, isReplaceCommandEnabled, isReplaceAllCommandEnabled ) => ( {
-				isFindNextCommandEnabled,
-				isFindPreviousCommandEnabled,
-				isReplaceCommandEnabled,
-				isReplaceAllCommandEnabled
-			} )
+			( findNext, findPrevious, replace, replaceAll ) => ( { findNext, findPrevious, replace, replaceAll } )
 		);
 
 		formView.delegate( 'findNext', 'findPrevious', 'replace', 'replaceAll' ).to( this );

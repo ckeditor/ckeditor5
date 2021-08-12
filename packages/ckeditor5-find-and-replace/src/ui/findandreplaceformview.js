@@ -65,36 +65,60 @@ export default class FindAndReplaceFormView extends View {
 		 * @observable
 		 * @member {Number} #matchCount
 		 */
-		this.set( 'matchCount', null );
+		this.set( 'matchCount', 0 );
 
 		/**
-		 * The offset of currently highlighted search result in {@link #matchCount matched results} or
-		 * `null` if there's no highlighted result.
+		 * The offset of currently highlighted search result in {@link #matchCount matched results}.
 		 *
 		 * @readonly
 		 * @observable
 		 * @member {Number|null} #highlightOffset
 		 */
-		this.set( 'highlightOffset', null );
+		this.set( 'highlightOffset', 0 );
 
 		/**
-		 * TODO
+		 * A live object with the aggregated `isEnabled` states of editor commands related to find and
+		 * replace. For instance, it may looks as follows:
+		 *
+		 *		{
+		 *			findNext: true,
+		 *			findPrevious: true,
+		 *			replace: false,
+		 *			replaceAll: false
+		 *		}
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Object} #areCommandsEnabled
 		 */
 		this.set( 'areCommandsEnabled', {} );
 
 		/**
-		 * TODO
+		 * `true` when the search params (find text, options) has been changed by the user since
+		 * the last time find was executed. `false` otherwise.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isDirty
 		 */
 		this.set( 'isDirty', false );
 
 		/**
-		 * TODO
+		 * The content of the counter label displaying the index of the current highlighted match
+		 * on top of the find input, for instance "3 of 50".
+		 *
+		 * @protected
+		 * @readonly
+		 * @observable
+		 * @member {String} #_resultsCounterText
 		 */
 		this.set( '_resultsCounterText', '' );
 
 		/**
-		 * TODO
+		 * The flag reflecting the state of the "Match case" switch button in the search options
+		 * dropdown.
 		 *
+		 * @protected
 		 * @readonly
 		 * @observable
 		 * @member {Boolean} #_matchCase
@@ -102,8 +126,10 @@ export default class FindAndReplaceFormView extends View {
 		this.set( '_matchCase', false );
 
 		/**
-		 * TODO
+		 * The flag reflecting the state of the "Whole words only" switch button in the search options
+		 * dropdown.
 		 *
+		 * @protected
 		 * @readonly
 		 * @observable
 		 * @member {Boolean} #_wholeWordsOnly
@@ -111,7 +137,17 @@ export default class FindAndReplaceFormView extends View {
 		this.set( '_wholeWordsOnly', false );
 
 		/**
-		 * TODO
+		 * This flag is set `true` when some matches were found and the user didn't change the search
+		 * params (text to find, options) yet. This is only possible immediately after hitting the "Find" button.
+		 * `false` when there were no matches (see {@link #matchCount}) or the user changed the params (see {@link #isDirty}).
+		 *
+		 * It is used to control the enabled state of the replace UI (input and buttons); replacing text is only possible
+		 * if this flag is `true`.
+		 *
+		 * @protected
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #_searchResultsFound
 		 */
 		this.bind( '_searchResultsFound' ).to(
 			this, 'matchCount',
@@ -124,6 +160,8 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The find in text input view that stores the searched string.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
 		this._findInputView = this._createInputField( t( 'Find in text…' ) );
@@ -131,6 +169,8 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The replace input view.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
 		 */
 		this._replaceInputView = this._createInputField( t( 'Replace with…' ) );
@@ -138,6 +178,8 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The find button view that initializes the search process.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this._findButtonView = this._createButton( {
@@ -149,35 +191,47 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The find previous button view.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this._findPrevButtonView = this._createButton( {
 			label: t( 'Previous result' ),
 			class: 'ck-button-prev',
 			icon: previousArrow,
+			keystroke: 'Shift+F3',
 			tooltip: true
 		} );
 
 		/**
 		 * The find next button view.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this._findNextButtonView = this._createButton( {
 			label: t( 'Next result' ),
 			class: 'ck-button-next',
 			icon: previousArrow,
+			keystroke: 'F3',
 			tooltip: true
 		} );
 
 		/**
-		 * TODO
+		 * The find options dropdown.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {module:ui/dropdown/dropdownview~DropdownView}
 		 */
 		this._optionsDropdown = this._createOptionsDropdown();
 
 		/**
 		 * The replace button view.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this._replaceButtonView = this._createButton( {
@@ -189,6 +243,8 @@ export default class FindAndReplaceFormView extends View {
 		/**
 		 * The replace all button view.
 		 *
+		 * @protected
+		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
 		this._replaceAllButtonView = this._createButton( {
@@ -198,12 +254,20 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		/**
-		 * TODO
+		 * The fieldset aggregating the find UI.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {module:ui/view/view~View}
 		 */
 		this._findFieldsetView = this._createFindFieldset();
 
 		/**
-		 * TODO
+		 * The fieldset aggregating the replace UI.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {module:ui/view/view~View}
 		 */
 		this._replaceFieldsetView = this._createReplaceFieldset();
 
@@ -211,6 +275,7 @@ export default class FindAndReplaceFormView extends View {
 		 * Tracks information about the DOM focus in the form.
 		 *
 		 * @readonly
+		 * @protected
 		 * @member {module:utils/focustracker~FocusTracker}
 		 */
 		this._focusTracker = new FocusTracker();
@@ -219,6 +284,7 @@ export default class FindAndReplaceFormView extends View {
 		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
+		 * @protected
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
 		this._keystrokes = new KeystrokeHandler();
@@ -316,31 +382,29 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Configures and returns the `<fieldset>` aggregating all find controls.
 	 *
 	 * @private
-	 * @returns
+	 * @returns {module:ui/view/view~View}
 	 */
 	_createFindFieldset() {
 		const locale = this.locale;
 		const fieldsetView = new View( locale );
 
+		// Typing in the find field invalidates all previous results (the form is "dirty").
 		this._findInputView.fieldView.on( 'input', () => {
 			this.isDirty = true;
 		} );
 
 		this._findButtonView.on( 'execute', this._onFindButtonExecute.bind( this ) );
 
+		// Pressing prev/next buttons fires related event on the form.
 		this._findPrevButtonView.delegate( 'execute' ).to( this, 'findPrevious' );
 		this._findNextButtonView.delegate( 'execute' ).to( this, 'findNext' );
-		this._findPrevButtonView.bind( 'isEnabled' ).to(
-			this, 'areCommandsEnabled',
-			( { isFindPreviousCommandEnabled } ) => isFindPreviousCommandEnabled );
-		this._findNextButtonView.bind( 'isEnabled' ).to(
-			this, 'areCommandsEnabled',
-			( { isFindNextCommandEnabled } ) => isFindNextCommandEnabled );
-		this._findNextButtonView.keystroke = 'F3';
-		this._findPrevButtonView.keystroke = 'Shift+F3';
+
+		// Prev/next buttons will be disabled when related editor command get disabled.
+		this._findPrevButtonView.bind( 'isEnabled' ).to( this, 'areCommandsEnabled', ( { findPrevious } ) => findPrevious );
+		this._findNextButtonView.bind( 'isEnabled' ).to( this, 'areCommandsEnabled', ( { findNext } ) => findNext );
 
 		this._injectFindResultsCounter();
 
@@ -361,7 +425,35 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * The action performed when the {@link #_findButtonView} is pressed.
+	 *
+	 * @private
+	 */
+	_onFindButtonExecute() {
+		// When hitting "Find" in an empty input, an error should be displayed.
+		// Also, if the form was "dirty", it should remain so.
+		if ( !this.textToFind ) {
+			const t = this.t;
+
+			this._findInputView.errorText = t( 'Text to find must not be empty.' );
+
+			return;
+		}
+
+		// Hitting "Find" automatically clears the dirty state.
+		this.isDirty = false;
+
+		this.fire( 'findNext', {
+			searchText: this.textToFind,
+			matchCase: this._matchCase,
+			wholeWords: this._wholeWordsOnly
+		} );
+	}
+
+	/**
+	 * Configures an injects the find results counter displaying a "N of M" label of the {@link #_findInputView}.
+	 *
+	 * @private
 	 */
 	_injectFindResultsCounter() {
 		const locale = this.locale;
@@ -413,43 +505,30 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Configures and returns the `<fieldset>` aggregating all replace controls.
 	 *
 	 * @private
-	 * @returns TODO
+	 * @returns {module:ui/view/view~View}
 	 */
 	_createReplaceFieldset() {
 		const locale = this.locale;
 		const t = locale.t;
 		const fieldsetView = new View( locale );
 
-		fieldsetView.setTemplate( {
-			tag: 'fieldset',
-			attributes: {
-				class: [ 'ck', 'ck-find-and-replace-form__replace' ]
-			},
-			children: [
-				this._replaceInputView,
-				this._optionsDropdown,
-				this._replaceButtonView,
-				this._replaceAllButtonView
-			]
-		} );
-
 		this._replaceButtonView.bind( 'isEnabled' ).to(
 			this, 'areCommandsEnabled',
 			this, '_searchResultsFound',
-			( { isReplaceCommandEnabled }, resultsFound ) => isReplaceCommandEnabled && resultsFound );
+			( { replace }, resultsFound ) => replace && resultsFound );
 
 		this._replaceAllButtonView.bind( 'isEnabled' ).to(
 			this, 'areCommandsEnabled',
 			this, '_searchResultsFound',
-			( { isReplaceAllCommandEnabled }, resultsFound ) => isReplaceAllCommandEnabled && resultsFound );
+			( { replaceAll }, resultsFound ) => replaceAll && resultsFound );
 
 		this._replaceInputView.bind( 'isEnabled' ).to(
 			this, 'areCommandsEnabled',
 			this, '_searchResultsFound',
-			( { isReplaceCommandEnabled }, resultsFound ) => isReplaceCommandEnabled && resultsFound );
+			( { replace }, resultsFound ) => replace && resultsFound );
 
 		this._replaceInputView.bind( 'infoText' ).to(
 			this._replaceInputView, 'isEnabled',
@@ -476,6 +555,19 @@ export default class FindAndReplaceFormView extends View {
 			} );
 
 			this.focus();
+		} );
+
+		fieldsetView.setTemplate( {
+			tag: 'fieldset',
+			attributes: {
+				class: [ 'ck', 'ck-find-and-replace-form__replace' ]
+			},
+			children: [
+				this._replaceInputView,
+				this._optionsDropdown,
+				this._replaceButtonView,
+				this._replaceAllButtonView
+			]
 		} );
 
 		return fieldsetView;
@@ -537,7 +629,8 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Initializes the {@link #_focusables} and {@link #_focusTracker} to allow navigation
+	 * using <kbd>Tab</kbd> and <kbd>Shift</kbd>+<kbd>Tab</kbd> keystrokes in the right order.
 	 *
 	 * @private
 	 */
@@ -560,13 +653,10 @@ export default class FindAndReplaceFormView extends View {
 			// Register the view in the focus tracker.
 			this._focusTracker.add( v.element );
 		} );
-
-		// Start listening for the keystrokes coming from #element.
-		this._keystrokes.listenTo( this.element );
 	}
 
 	/**
-	 * TODO
+	 * Initializes the keystroke handling in the form.
 	 *
 	 * @private
 	 */
@@ -577,18 +667,24 @@ export default class FindAndReplaceFormView extends View {
 			data.preventDefault();
 		};
 
+		// Start listening for the keystrokes coming from #element.
+		this._keystrokes.listenTo( this.element );
+
+		// Find the next result upon F3.
 		this._keystrokes.set( 'f3', event => {
 			stopPropagationAndPreventDefault( event );
 
 			this._findNextButtonView.fire( 'execute' );
 		} );
 
+		// Find the previous result upon F3.
 		this._keystrokes.set( 'shift+f3', event => {
 			stopPropagationAndPreventDefault( event );
 
 			this._findPrevButtonView.fire( 'execute' );
 		} );
 
+		// Find or replace upon pressing Enter in the find and replace fields.
 		this._keystrokes.set( 'enter', event => {
 			const target = event.target;
 
@@ -610,36 +706,14 @@ export default class FindAndReplaceFormView extends View {
 		this._keystrokes.set( 'arrowdown', stopPropagation );
 
 		// Intercept the `selectstart` event, which is blocked by default because of the default behavior
-		// of the DropdownView#panelView.
+		// of the DropdownView#panelView. This blocking prevents the native select all on Ctrl+A.
 		this.listenTo( this._findInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
+
 		this.listenTo( this._replaceInputView.element, 'selectstart', ( evt, domEvt ) => {
 			domEvt.stopPropagation();
 		}, { priority: 'high' } );
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @returns TODO
-	 */
-	_onFindButtonExecute() {
-		if ( !this.textToFind ) {
-			const t = this.t;
-
-			this._findInputView.errorText = t( 'Text to find must not be empty.' );
-
-			return;
-		}
-
-		this.isDirty = false;
-
-		this.fire( 'findNext', {
-			searchText: this.textToFind,
-			matchCase: this._matchCase,
-			wholeWords: this._wholeWordsOnly
-		} );
 	}
 
 	/**

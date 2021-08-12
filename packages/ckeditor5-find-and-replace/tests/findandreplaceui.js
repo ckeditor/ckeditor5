@@ -220,10 +220,10 @@ describe( 'FindAndReplaceUI', () => {
 				const commands = editor.commands;
 
 				expect( form.areCommandsEnabled ).to.deep.equal( {
-					isFindNextCommandEnabled: false,
-					isFindPreviousCommandEnabled: false,
-					isReplaceCommandEnabled: true,
-					isReplaceAllCommandEnabled: true
+					findNext: false,
+					findPrevious: false,
+					replace: true,
+					replaceAll: true
 				} );
 
 				commands.get( 'findNext' ).isEnabled = true;
@@ -232,10 +232,10 @@ describe( 'FindAndReplaceUI', () => {
 				commands.get( 'replaceAll' ).isEnabled = false;
 
 				expect( form.areCommandsEnabled ).to.deep.equal( {
-					isFindNextCommandEnabled: true,
-					isFindPreviousCommandEnabled: true,
-					isReplaceCommandEnabled: false,
-					isReplaceAllCommandEnabled: false
+					findNext: true,
+					findPrevious: true,
+					replace: false,
+					replaceAll: false
 				} );
 			} );
 
