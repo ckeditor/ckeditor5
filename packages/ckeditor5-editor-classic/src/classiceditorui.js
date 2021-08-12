@@ -143,8 +143,10 @@ export default class ClassicEditorUI extends EditorUI {
 		view.stickyPanel.bind( 'isActive' ).to( this.focusTracker, 'isFocused' );
 		view.stickyPanel.limiterElement = view.element;
 
-		if ( this._toolbarConfig.viewportTopOffset ) {
-			view.stickyPanel.viewportTopOffset = this._toolbarConfig.viewportTopOffset;
+		if ( this._viewportTopOffset ) {
+			// TODO: Consider dropping `stickyPanel` from this, and leave just
+			// view.viewportTopOffset to keep consistency with InlineEditor
+			view.stickyPanel.viewportTopOffset = this._viewportTopOffset;
 		}
 
 		view.toolbar.fillFromConfig( this._toolbarConfig, this.componentFactory );
@@ -180,5 +182,29 @@ export default class ClassicEditorUI extends EditorUI {
 				keepOnFocus: true
 			} );
 		}
+	}
+
+	/**
+	 * TODO: Find better place for this to not duplicate it with inline editor
+	 * TODO: Also deprecation warning could be moved from toolbar config normalization function to here
+	 * Get viewport top offset.
+	 *
+	 * @private
+	 * @return Number|null
+	 */
+	get _viewportTopOffset() {
+		const editor = this.editor;
+		const viewportOffset = editor.config.get( 'ui.viewportOffset' );
+
+		if ( viewportOffset && viewportOffset.top ) {
+			return viewportOffset.top;
+		}
+
+		// Fall back to deprecated toolbar config
+		if ( this._toolbarConfig.viewportTopOffset ) {
+			return this._toolbarConfig.viewportTopOffset;
+		}
+
+		return null;
 	}
 }

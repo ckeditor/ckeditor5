@@ -68,6 +68,25 @@ describe( 'InlineEditorUI', () => {
 			it( 'sets view#viewportTopOffset, if specified', () => {
 				return VirtualInlineTestEditor
 					.create( 'foo', {
+						ui: {
+							viewportOffset: {
+								top: 100
+							}
+						}
+					} )
+					.then( editor => {
+						const ui = editor.ui;
+						const view = ui.view;
+
+						expect( view.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'sets view#viewportTopOffset, if legacy toolbar.vierportTopOffset specified', () => {
+				return VirtualInlineTestEditor
+					.create( 'foo', {
 						toolbar: {
 							viewportTopOffset: 100
 						}
@@ -210,8 +229,7 @@ describe( 'InlineEditorUI', () => {
 				return VirtualInlineTestEditor
 					.create( '', {
 						toolbar: {
-							items: [ 'foo', 'bar' ],
-							viewportTopOffset: 100
+							items: [ 'foo', 'bar' ]
 						}
 					} )
 					.then( editor => {

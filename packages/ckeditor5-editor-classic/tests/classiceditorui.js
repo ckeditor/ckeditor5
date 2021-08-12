@@ -72,6 +72,22 @@ describe( 'ClassicEditorUI', () => {
 			it( 'sets view.stickyPanel#viewportTopOffset, when specified in the config', () => {
 				return VirtualClassicTestEditor
 					.create( '', {
+						ui: {
+							viewportOffset: {
+								top: 100
+							}
+						}
+					} )
+					.then( editor => {
+						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'sets view.stickyPanel#viewportTopOffset, if legacy toolbar.vierportTopOffset specified', () => {
+				return VirtualClassicTestEditor
+					.create( 'foo', {
 						toolbar: {
 							viewportTopOffset: 100
 						}
@@ -185,8 +201,7 @@ describe( 'ClassicEditorUI', () => {
 					return VirtualClassicTestEditor
 						.create( '', {
 							toolbar: {
-								items: [ 'foo', 'bar' ],
-								viewportTopOffset: 100
+								items: [ 'foo', 'bar' ]
 							}
 						} )
 						.then( editor => {
