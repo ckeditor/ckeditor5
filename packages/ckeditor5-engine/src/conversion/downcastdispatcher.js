@@ -117,7 +117,7 @@ export default class DowncastDispatcher {
 	 */
 	constructor( conversionApi ) {
 		/**
-		 * An interface passed by the dispatcher to the event callbacks.
+		 * A template for an interface passed by the dispatcher to the event callbacks.
 		 *
 		 * @private
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
@@ -176,14 +176,13 @@ export default class DowncastDispatcher {
 	/**
 	 * Starts a conversion of a range insertion.
 	 *
-	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
-	 * {@link #event:attribute `attribute` event is fired}.
-	 *
 	 * @fires insert
 	 * @fires attribute
+	 * @fires addMarker
 	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @param {Array.<Array>} markers The list of marker entries `[ name, range ]` that should be down-casted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
-	 * @param {Object} [options] TODO
+	 * @param {Object} [options] Optional options object passed to `convertionApi.options`.
 	 */
 	convertInsert( range, markers, writer, options = {} ) {
 		const conversionApi = this._prepareConversionApi( writer, options );
@@ -192,106 +191,6 @@ export default class DowncastDispatcher {
 
 		for ( const [ name, range ] of markers ) {
 			this._convertMarkerAdd( name, range, conversionApi );
-		}
-	}
-
-	/**
-	 * Starts a conversion of a range insertion.
-	 *
-	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
-	 * {@link #event:attribute `attribute` event is fired}.
-	 *
-	 * @protected
-	 * @fires insert
-	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range The inserted range.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
-	 */
-	_convertInsert( range, conversionApi ) {
-		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this._addConsumablesForInsert( conversionApi.consumable, range );
-
-		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( data, conversionApi );
-		}
-	}
-
-	/**
-	 * Fires conversion of a single node removal. Fires {@link #event:remove remove event} with provided data.
-	 *
-	 * @protected
-	 * @param {module:engine/model/position~Position} position Position from which node was removed.
-	 * @param {Number} length Offset size of removed node.
-	 * @param {String} name Name of removed node.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
-	 */
-	_convertRemove( position, length, name, conversionApi ) {
-		this.fire( 'remove:' + name, { position, length }, conversionApi );
-	}
-
-	/**
-	 * Starts a conversion of an attribute change on a given `range`.
-	 *
-	 * For each node in the given `range`, {@link #event:attribute attribute event} is fired with the passed data.
-	 *
-	 * @protected
-	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range Changed range.
-	 * @param {String} key Key of the attribute that has changed.
-	 * @param {*} oldValue Attribute value before the change or `null` if the attribute has not been set before.
-	 * @param {*} newValue New attribute value or `null` if the attribute has been removed.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify view document.
-	 */
-	_convertAttribute( range, key, oldValue, newValue, conversionApi ) {
-		// Create a list with attributes to consume.
-		this._addConsumablesForRange( conversionApi.consumable, range, `attribute:${ key }` );
-
-		// Create a separate attribute event for each node in the range.
-		for ( const value of range ) {
-			const item = value.item;
-			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
-			const data = {
-				item,
-				range: itemRange,
-				attributeKey: key,
-				attributeOldValue: oldValue,
-				attributeNewValue: newValue
-			};
-
-			this._testAndFire( `attribute:${ key }`, data, conversionApi );
-		}
-	}
-
-	/**
-	 * TODO
-	 *
-	 * Starts the reconversion of an element. It will:
-	 *
-	 * * Fire an {@link #event:insert `insert` event} for the element to reconvert.
-	 * * Fire an {@link #event:attribute `attribute` event} for element attributes.
-	 *
-	 * This will not reconvert children of the element if they have existing (already converted) views. For newly inserted child elements
-	 * it will behave the same as {@link #convertInsert}.
-	 *
-	 * Element reconversion is defined by the `triggerBy` configuration for the
-	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
-	 *
-	 * @protected
-	 * @fires insert
-	 * @fires attribute
-	 * @param {module:engine/model/range~Range} range The range to reinsert.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
-	 */
-	_convertReinsert( range, conversionApi ) {
-		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		this._addConsumablesForInsert( conversionApi.consumable, range );
-
-		// Convert the elements - without converting children.
-		//
-		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( { ...data, reconversion: true }, conversionApi );
 		}
 	}
 
@@ -355,6 +254,106 @@ export default class DowncastDispatcher {
 	}
 
 	/**
+	 * Starts a conversion of a range insertion.
+	 *
+	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
+	 * {@link #event:attribute `attribute` event is fired}.
+	 *
+	 * @protected
+	 * @fires insert
+	 * @fires attribute
+	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 */
+	_convertInsert( range, conversionApi ) {
+		// Create a list of things that can be consumed, consisting of nodes and their attributes.
+		this._addConsumablesForInsert( conversionApi.consumable, range );
+
+		// Fire a separate insert event for each node and text fragment contained in the range.
+		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
+			this._convertInsertWithAttributes( data, conversionApi );
+		}
+	}
+
+	/**
+	 * Fires conversion of a single node removal. Fires {@link #event:remove remove event} with provided data.
+	 *
+	 * @protected
+	 * @param {module:engine/model/position~Position} position Position from which node was removed.
+	 * @param {Number} length Offset size of removed node.
+	 * @param {String} name Name of removed node.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 */
+	_convertRemove( position, length, name, conversionApi ) {
+		this.fire( 'remove:' + name, { position, length }, conversionApi );
+	}
+
+	/**
+	 * Starts a conversion of an attribute change on a given `range`.
+	 *
+	 * For each node in the given `range`, {@link #event:attribute attribute event} is fired with the passed data.
+	 *
+	 * @protected
+	 * @fires attribute
+	 * @param {module:engine/model/range~Range} range Changed range.
+	 * @param {String} key Key of the attribute that has changed.
+	 * @param {*} oldValue Attribute value before the change or `null` if the attribute has not been set before.
+	 * @param {*} newValue New attribute value or `null` if the attribute has been removed.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 */
+	_convertAttribute( range, key, oldValue, newValue, conversionApi ) {
+		// Create a list with attributes to consume.
+		this._addConsumablesForRange( conversionApi.consumable, range, `attribute:${ key }` );
+
+		// Create a separate attribute event for each node in the range.
+		for ( const value of range ) {
+			const item = value.item;
+			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
+			const data = {
+				item,
+				range: itemRange,
+				attributeKey: key,
+				attributeOldValue: oldValue,
+				attributeNewValue: newValue
+			};
+
+			this._testAndFire( `attribute:${ key }`, data, conversionApi );
+		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * Starts the reconversion of an element. It will:
+	 *
+	 * * Fire an {@link #event:insert `insert` event} for the element to reconvert.
+	 * * Fire an {@link #event:attribute `attribute` event} for element attributes.
+	 *
+	 * This will not reconvert children of the element if they have existing (already converted) views. For newly inserted child elements
+	 * it will behave the same as {@link #convertInsert}.
+	 *
+	 * Element reconversion is defined by the `triggerBy` configuration for the
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} conversion helper.
+	 *
+	 * @protected
+	 * @fires insert
+	 * @fires attribute
+	 * @param {module:engine/model/range~Range} range The range to reinsert.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 */
+	_convertReinsert( range, conversionApi ) {
+		// Create a list of things that can be consumed, consisting of nodes and their attributes.
+		this._addConsumablesForInsert( conversionApi.consumable, range );
+
+		// Convert the elements - without converting children.
+		//
+		// Fire a separate insert event for each node and text fragment contained in the range.
+		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
+			this._convertInsertWithAttributes( { ...data, reconversion: true }, conversionApi );
+		}
+	}
+
+	/**
 	 * Converts the added marker. Fires the {@link #event:addMarker `addMarker`} event for each item
 	 * in the marker's range. If the range is collapsed, a single event is dispatched. See the event description for more details.
 	 *
@@ -362,7 +361,7 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange The marker range.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertMarkerAdd( markerName, markerRange, conversionApi ) {
 		// Do not convert if range is in graveyard.
@@ -411,7 +410,7 @@ export default class DowncastDispatcher {
 	 * @fires removeMarker
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange The marker range.
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertMarkerRemove( markerName, markerRange, conversionApi ) {
 		// Do not convert if range is in graveyard.
@@ -442,6 +441,7 @@ export default class DowncastDispatcher {
 	 * assuming that the range has just been inserted to the model.
 	 *
 	 * @private
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
 	 */
@@ -463,6 +463,7 @@ export default class DowncastDispatcher {
 	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for a given range.
 	 *
 	 * @private
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
 	 * @param {module:engine/model/range~Range} range The affected range.
 	 * @param {String} type Consumable type.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
@@ -479,6 +480,7 @@ export default class DowncastDispatcher {
 	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
 	 *
 	 * @private
+	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
 	 * @param {module:engine/model/selection~Selection} selection The selection to create the consumable from.
 	 * @param {Iterable.<module:engine/model/markercollection~Marker>} markers Markers that contain the selection.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
@@ -505,6 +507,7 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {String} type Event type.
 	 * @param {Object} data Event data.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_testAndFire( type, data, conversionApi ) {
 		if ( !conversionApi.consumable.test( data.item, type ) ) {
@@ -519,6 +522,9 @@ export default class DowncastDispatcher {
 	 * TODO
 	 *
 	 * @private
+	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
+	 * @param {Object} [options] Optional options passed to `convertionApi.options`.
+	 * @return {module:engine/conversion/downcastdispatcher~DowncastConversionApi} The conversion API object.
 	 */
 	_prepareConversionApi( writer, options = {} ) {
 		const conversionApi = {
@@ -539,6 +545,7 @@ export default class DowncastDispatcher {
 	 * @fires insert
 	 * @fires attribute
 	 * @param {Object} data Event data.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertInsertWithAttributes( data, conversionApi ) {
 		this._testAndFire( 'insert', data, conversionApi );
