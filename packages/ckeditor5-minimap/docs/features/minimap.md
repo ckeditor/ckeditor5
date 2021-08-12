@@ -108,7 +108,7 @@ Finally, the JavaScript to run the editor (learn how to [install](#installation)
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-pagination/src/minimap';
+import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
@@ -137,7 +137,7 @@ Then add the `Minimap` plugin to your plugin list and [configure](#configuration
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-pagination/src/minimap';
+import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
@@ -166,7 +166,7 @@ The container element is essential for the minimap to render. You should pass th
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-pagination/src/minimap';
+import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {

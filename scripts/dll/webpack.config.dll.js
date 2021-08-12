@@ -10,6 +10,7 @@ const webpack = require( 'webpack' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const WrapperPlugin = require( 'wrapper-webpack-plugin' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
 const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
@@ -83,6 +84,12 @@ const webpackConfig = {
 		libraryTarget: 'window'
 	},
 	plugins: [
+		new CKEditorWebpackPlugin( {
+			// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+			language: 'en',
+			additionalLanguages: 'all',
+			includeCorePackageTranslations: true
+		} ),
 		new webpack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
 			raw: true
