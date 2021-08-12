@@ -203,8 +203,8 @@ describe( 'FindAndReplace plugin', () => {
 				marker
 			};
 
-			findAndReplaceEditing.state.highlightedResult = highlightedResult;
 			findAndReplaceEditing.state.results.add( highlightedResult );
+			findAndReplaceEditing.state.highlightedResult = highlightedResult;
 
 			expect( findAndReplaceUI.matchCount ).to.equal( 1 );
 		} );

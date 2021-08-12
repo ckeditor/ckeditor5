@@ -43,23 +43,17 @@ export default class FindAndReplace extends Plugin {
 		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
 		const state = findAndReplaceEditing.state;
 
-		/**
-		 * Delegate find next request.
-		 */
 		ui.on( 'findNext', ( event, data ) => {
 			// Data is contained only for the "find" button.
 			if ( data ) {
 				state.searchText = data.searchText;
 				this.editor.execute( 'find', data.searchText, data );
 			} else {
-				// Arrow button press.
+				// Find next arrow button press.
 				this.editor.execute( 'findNext' );
 			}
 		} );
 
-		/**
-		 * Delegate find previous request
-		 */
 		ui.on( 'findPrevious', ( event, data ) => {
 			if ( data && state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
@@ -69,9 +63,6 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
-		/**
-		 * Delegate replace action.
-		 */
 		ui.on( 'replace', ( event, data ) => {
 			if ( state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
@@ -84,9 +75,6 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
-		/**
-		 * Delegate replace all action.
-		 */
 		ui.on( 'replaceAll', ( event, data ) => {
 			// The state hadn't been yet built for this search text.
 			if ( state.searchText !== data.searchText ) {
@@ -96,18 +84,14 @@ export default class FindAndReplace extends Plugin {
 			this.editor.execute( 'replaceAll', data.replaceText, state.results );
 		} );
 
-		/**
-		 * Reset the state when the user invalidated last search results, for instance,
-		 * by starting typing another search query or changing options.
-		 */
+		// Reset the state when the user invalidated last search results, for instance,
+		// by starting typing another search query or changing options.
 		ui.on( 'searchReseted', () => {
 			state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
 
-		/**
-		 * Let the UI know which result is being highlighted.
-		 */
+		// Let the UI know which result is being highlighted.
 		ui.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
 			if ( !highlightedResult ) {
 				return 0;
@@ -119,18 +103,16 @@ export default class FindAndReplace extends Plugin {
 				after: 1
 			};
 
-			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
-				return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
-			} );
+			const index = Array.from( state.results )
+				.sort( ( a, b ) => {
+					return mapping[ a.marker.getStart().compareWith( b.marker.getStart() ) ];
+				} )
+				.indexOf( highlightedResult );
 
-			const index = sortedResults.indexOf( highlightedResult );
-
-			return index === -1 ? 0 : index + 1;
+			return index + 1;
 		} );
 
-		/**
-		 * Let the UI know how many results were found.
-		 */
+		// Let the UI know how many results were found in total.
 		ui.listenTo( state.results, 'change', () => {
 			ui.matchCount = state.results.length;
 		} );
