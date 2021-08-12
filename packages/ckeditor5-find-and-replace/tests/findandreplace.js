@@ -17,7 +17,7 @@ import FindAndReplace from '../src/findandreplace';
 import FindAndReplaceUI from '../src/findandreplaceui';
 import FindAndReplaceEditing from '../src/findandreplaceediting';
 
-describe( 'FindAndReplace plugin', () => {
+describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.
 	const LONG_TEXT =
 		'<p>Cupcake ipsum dolor sit amet biscuit icing bears candy. Liquorice biscuit brownie croissant.</p>' +
@@ -60,6 +60,14 @@ describe( 'FindAndReplace plugin', () => {
 		await editor.destroy();
 
 		editorElement.remove();
+	} );
+
+	it( 'should be named', () => {
+		expect( FindAndReplace.pluginName ).to.equal( 'FindAndReplace' );
+	} );
+
+	it( 'should require other plugins', () => {
+		expect( FindAndReplace.requires ).to.deep.equal( [ FindAndReplaceEditing, FindAndReplaceUI ] );
 	} );
 
 	describe( 'UI listeners and bindings', () => {
