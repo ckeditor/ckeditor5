@@ -27,7 +27,8 @@ import {
 import {
 	FocusTracker,
 	KeystrokeHandler,
-	Collection
+	Collection,
+	Rect
 } from 'ckeditor5/src/utils';
 
 // See: #8833.
@@ -78,46 +79,36 @@ export default class FindAndReplaceFormView extends View {
 
 		/**
 		 * TODO
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #matchCase
 		 */
-		this.set( 'matchCase', false );
-
-		/**
-		 * TODO
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #wholeWordsOnly
-		 */
-		this.set( 'wholeWordsOnly', false );
-
-		/**
-		 * TODO
-		 */
-		this.set( 'isFindNextCommandEnabled', false );
-
-		/**
-		 * TODO
-		 */
-		this.set( 'isFindPreviousCommandEnabled', false );
-
-		/**
-		 * TODO
-		 */
-		this.set( 'isReplaceCommandEnabled', false );
-
-		/**
-		 * TODO
-		 */
-		this.set( 'isReplaceAllCommandEnabled', false );
+		this.set( 'areCommandsEnabled', {} );
 
 		/**
 		 * TODO
 		 */
 		this.set( 'isDirty', false );
+
+		/**
+		 * TODO
+		 */
+		this.set( '_resultsCounterText', '' );
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #_matchCase
+		 */
+		this.set( '_matchCase', false );
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #_wholeWordsOnly
+		 */
+		this.set( '_wholeWordsOnly', false );
 
 		/**
 		 * TODO
@@ -129,13 +120,6 @@ export default class FindAndReplaceFormView extends View {
 				return matchCount > 0 && !isDirty;
 			}
 		);
-
-		/**
-		 * TODO
-		 */
-		this._headerView = new FormHeaderView( locale, {
-			label: t( 'Find and replace' )
-		} );
 
 		/**
 		 * The find in text input view that stores the searched string.
@@ -279,7 +263,9 @@ export default class FindAndReplaceFormView extends View {
 				tabindex: '-1'
 			},
 			children: [
-				this._headerView,
+				new FormHeaderView( locale, {
+					label: t( 'Find and replace' )
+				} ),
 				this._findFieldsetView,
 				this._replaceFieldsetView
 			]
@@ -337,10 +323,7 @@ export default class FindAndReplaceFormView extends View {
 	 */
 	_createFindFieldset() {
 		const locale = this.locale;
-		const t = locale.t;
 		const fieldsetView = new View( locale );
-		const resultsCounterView = new View( locale );
-		const bind = this.bindTemplate;
 
 		this._findInputView.fieldView.on( 'input', () => {
 			this.isDirty = true;
@@ -350,32 +333,16 @@ export default class FindAndReplaceFormView extends View {
 
 		this._findPrevButtonView.delegate( 'execute' ).to( this, 'findPrevious' );
 		this._findNextButtonView.delegate( 'execute' ).to( this, 'findNext' );
-
-		this._findPrevButtonView.bind( 'isEnabled' ).to( this, 'isFindPreviousCommandEnabled' );
-		this._findNextButtonView.bind( 'isEnabled' ).to( this, 'isFindNextCommandEnabled' );
+		this._findPrevButtonView.bind( 'isEnabled' ).to(
+			this, 'areCommandsEnabled',
+			( { isFindPreviousCommandEnabled } ) => isFindPreviousCommandEnabled );
+		this._findNextButtonView.bind( 'isEnabled' ).to(
+			this, 'areCommandsEnabled',
+			( { isFindNextCommandEnabled } ) => isFindNextCommandEnabled );
 		this._findNextButtonView.keystroke = 'F3';
 		this._findPrevButtonView.keystroke = 'Shift+F3';
 
-		resultsCounterView.setTemplate( {
-			tag: 'span',
-			attributes: {
-				class: [
-					'ck-results-counter',
-					bind.if( 'isDirty', 'ck-hidden' )
-				]
-			},
-			children: [
-				{
-					text: bind.to( 'highlightOffset', highlightOffset => highlightOffset || 0 )
-				},
-				t( ' of ' ),
-				{
-					text: bind.to( 'matchCount' )
-				}
-			]
-		} );
-
-		this._findInputView.template.children[ 0 ].children.push( resultsCounterView );
+		this._injectFindResultsCounter();
 
 		fieldsetView.setTemplate( {
 			tag: 'fieldset',
@@ -391,6 +358,58 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		return fieldsetView;
+	}
+
+	/**
+	 * TODO
+	 */
+	_injectFindResultsCounter() {
+		const locale = this.locale;
+		const t = locale.t;
+		const bind = this.bindTemplate;
+		const resultsCounterView = new View( locale );
+
+		this.bind( '_resultsCounterText' ).to( this, 'highlightOffset', this, 'matchCount',
+			( highlightOffset, matchCount ) => t( '%0 of %1', [ highlightOffset, matchCount ] )
+		);
+
+		resultsCounterView.setTemplate( {
+			tag: 'span',
+			attributes: {
+				class: [
+					'ck-results-counter',
+					// The counter only makes sense when the field text corresponds to search results in the editing.
+					bind.if( 'isDirty', 'ck-hidden' )
+				]
+			},
+			children: [
+				{
+					text: bind.to( '_resultsCounterText' )
+				}
+			]
+		} );
+
+		const updateFindInputPadding = () => {
+			const inputElement = this._findInputView.fieldView.element;
+
+			if ( !inputElement ) {
+				return;
+			}
+
+			const counterWidth = new Rect( resultsCounterView.element ).width;
+
+			if ( !counterWidth ) {
+				inputElement.style.paddingRight = null;
+			} else {
+				inputElement.style.paddingRight = `calc( 2 * var(--ck-spacing-standard) + ${ counterWidth }px )`;
+			}
+		};
+
+		this.on( 'change:_resultsCounterText', updateFindInputPadding, { priority: 'low' } );
+		this.on( 'change:isDirty', updateFindInputPadding, { priority: 'low' } );
+
+		// Put the counter element next to the <input> in the find field.
+		this._findInputView.template.children[ 0 ].children.push( resultsCounterView );
 	}
 
 	/**
@@ -418,19 +437,19 @@ export default class FindAndReplaceFormView extends View {
 		} );
 
 		this._replaceButtonView.bind( 'isEnabled' ).to(
-			this, 'isReplaceCommandEnabled',
+			this, 'areCommandsEnabled',
 			this, '_searchResultsFound',
-			( commandEnabled, resultsFound ) => commandEnabled && resultsFound );
+			( { isReplaceCommandEnabled }, resultsFound ) => isReplaceCommandEnabled && resultsFound );
 
 		this._replaceAllButtonView.bind( 'isEnabled' ).to(
-			this, 'isReplaceAllCommandEnabled',
+			this, 'areCommandsEnabled',
 			this, '_searchResultsFound',
-			( commandEnabled, resultsFound ) => commandEnabled && resultsFound );
+			( { isReplaceAllCommandEnabled }, resultsFound ) => isReplaceAllCommandEnabled && resultsFound );
 
 		this._replaceInputView.bind( 'isEnabled' ).to(
-			this, 'isReplaceCommandEnabled',
+			this, 'areCommandsEnabled',
 			this, '_searchResultsFound',
-			( commandEnabled, resultsFound ) => commandEnabled && resultsFound );
+			( { isReplaceCommandEnabled }, resultsFound ) => isReplaceCommandEnabled && resultsFound );
 
 		this._replaceInputView.bind( 'infoText' ).to(
 			this._replaceInputView, 'isEnabled',
@@ -495,15 +514,15 @@ export default class FindAndReplaceFormView extends View {
 			label: t( 'Whole words only' )
 		} );
 
-		matchCaseModel.bind( 'isOn' ).to( this, 'matchCase' );
-		wholeWordsOnlyModel.bind( 'isOn' ).to( this, 'wholeWordsOnly' );
+		matchCaseModel.bind( 'isOn' ).to( this, '_matchCase' );
+		wholeWordsOnlyModel.bind( 'isOn' ).to( this, '_wholeWordsOnly' );
 
 		// Update the state of the view when a toggle switch is being toggled.
 		dropdownView.on( 'execute', evt => {
 			if ( evt.source._isMatchCaseSwitch ) {
-				this.matchCase = !this.matchCase;
+				this._matchCase = !this._matchCase;
 			} else {
-				this.wholeWordsOnly = !this.wholeWordsOnly;
+				this._wholeWordsOnly = !this._wholeWordsOnly;
 			}
 
 			this.isDirty = true;
@@ -614,13 +633,13 @@ export default class FindAndReplaceFormView extends View {
 			return;
 		}
 
+		this.isDirty = false;
+
 		this.fire( 'findNext', {
 			searchText: this.textToFind,
-			matchCase: this.matchCase,
-			wholeWords: this.wholeWordsOnly
+			matchCase: this._matchCase,
+			wholeWords: this._wholeWordsOnly
 		} );
-
-		this.isDirty = false;
 	}
 
 	/**

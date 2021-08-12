@@ -110,7 +110,7 @@ export default class FindAndReplace extends Plugin {
 		 */
 		ui.bind( 'highlightOffset' ).to( state, 'highlightedResult', highlightedResult => {
 			if ( !highlightedResult ) {
-				return null;
+				return 0;
 			}
 
 			const sortedResults = Array.from( state.results ).sort( ( a, b ) => {
@@ -125,7 +125,7 @@ export default class FindAndReplace extends Plugin {
 
 			const index = sortedResults.indexOf( highlightedResult );
 
-			return index === -1 ? null : index + 1;
+			return index === -1 ? 0 : index + 1;
 		} );
 
 		/**

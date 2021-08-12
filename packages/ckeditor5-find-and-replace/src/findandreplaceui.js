@@ -39,12 +39,12 @@ export default class FindAndReplaceUI extends Plugin {
 		/**
 		 * TODO
 		 */
-		this.set( 'matchCount', null );
+		this.set( 'matchCount', 0 );
 
 		/**
 		 * TODO
 		 */
-		this.set( 'highlightOffset', null );
+		this.set( 'highlightOffset', 0 );
 	}
 
 	/**
@@ -128,10 +128,18 @@ export default class FindAndReplaceUI extends Plugin {
 		const commands = editor.commands;
 
 		formView.bind( 'matchCount', 'highlightOffset' ).to( this );
-		formView.bind( 'isFindNextCommandEnabled' ).to( commands.get( 'findNext' ), 'isEnabled' );
-		formView.bind( 'isFindPreviousCommandEnabled' ).to( commands.get( 'findPrevious' ), 'isEnabled' );
-		formView.bind( 'isReplaceCommandEnabled' ).to( commands.get( 'replace' ), 'isEnabled' );
-		formView.bind( 'isReplaceAllCommandEnabled' ).to( commands.get( 'replaceAll' ), 'isEnabled' );
+		formView.bind( 'areCommandsEnabled' ).to(
+			commands.get( 'findNext' ), 'isEnabled',
+			commands.get( 'findPrevious' ), 'isEnabled',
+			commands.get( 'replace' ), 'isEnabled',
+			commands.get( 'replaceAll' ), 'isEnabled',
+			( isFindNextCommandEnabled, isFindPreviousCommandEnabled, isReplaceCommandEnabled, isReplaceAllCommandEnabled ) => ( {
+				isFindNextCommandEnabled,
+				isFindPreviousCommandEnabled,
+				isReplaceCommandEnabled,
+				isReplaceAllCommandEnabled
+			} )
+		);
 
 		formView.delegate( 'findNext', 'findPrevious', 'replace', 'replaceAll' ).to( this );
 

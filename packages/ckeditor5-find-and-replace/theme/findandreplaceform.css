@@ -69,10 +69,6 @@
 				transform: rotate(-90deg);
 			}
 
-			& > .ck-labeled-field-view .ck-input {
-				padding-right: calc( 5 * var(--ck-spacing-large) );
-			}
-
 			& .ck-results-counter {
 				position: absolute;
 				top: 50%;
