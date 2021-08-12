@@ -80,7 +80,6 @@ export default class StickyPanelView extends View {
 		 * either using `position: fixed` or `position: sticky`, which would cover the
 		 * sticky panel or vice–versa (depending on the `z-index` hierarchy).
 		 *
-		 * @readonly
 		 * @observable
 		 * @default 0
 		 * @member {Number} #viewportTopOffset
