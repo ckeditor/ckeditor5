@@ -38,7 +38,7 @@ import '../../theme/findandreplaceform.css';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
-import cogIcon from '../../theme/icons/cog.svg';
+import cogIcon from 'ckeditor5/src/core';
 
 /**
  * The find and replace form view class.
@@ -392,7 +392,7 @@ export default class FindAndReplaceFormView extends View {
 		const updateFindInputPadding = () => {
 			const inputElement = this._findInputView.fieldView.element;
 
-			if ( !inputElement ) {
+			if ( !inputElement || !inputElement.offsetParent ) {
 				return;
 			}
 
