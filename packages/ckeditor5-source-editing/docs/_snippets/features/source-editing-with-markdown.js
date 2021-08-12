@@ -49,6 +49,16 @@ ClassicEditor
 					classes: true,
 					styles: true
 				}
+			],
+			disallow: [
+				{
+					attributes: [
+						{ key: /^on(.*)/i, value: true },
+						{ key: /.*/, value: /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i },
+						{ key: /.*/, value: /data:(?!image\/(png|jpg|jpeg|gif|webp))/i }
+					]
+				},
+				{ name: 'script' }
 			]
 		}
 	} )
