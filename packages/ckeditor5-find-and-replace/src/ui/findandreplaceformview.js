@@ -378,18 +378,20 @@ export default class FindAndReplaceFormView extends View {
 	/**
 	 * Returns the value of the find input.
 	 *
+	 * @protected
 	 * @returns {String}
 	 */
-	get textToFind() {
+	get _textToFind() {
 		return this._findInputView.fieldView.element.value;
 	}
 
 	/**
 	 * Returns the value of the replace input.
 	 *
+	 * @protected
 	 * @returns {String}
 	 */
-	get textToReplace() {
+	get _textToReplace() {
 		return this._replaceInputView.fieldView.element.value;
 	}
 
@@ -444,7 +446,7 @@ export default class FindAndReplaceFormView extends View {
 	_onFindButtonExecute() {
 		// When hitting "Find" in an empty input, an error should be displayed.
 		// Also, if the form was "dirty", it should remain so.
-		if ( !this.textToFind ) {
+		if ( !this._textToFind ) {
 			const t = this.t;
 
 			this._findInputView.errorText = t( 'Text to find must not be empty.' );
@@ -456,7 +458,7 @@ export default class FindAndReplaceFormView extends View {
 		this.isDirty = false;
 
 		this.fire( 'findNext', {
-			searchText: this.textToFind,
+			searchText: this._textToFind,
 			matchCase: this._matchCase,
 			wholeWords: this._wholeWordsOnly
 		} );
@@ -567,15 +569,15 @@ export default class FindAndReplaceFormView extends View {
 
 		this._replaceButtonView.on( 'execute', () => {
 			this.fire( 'replace', {
-				searchText: this.textToFind,
-				replaceText: this.textToReplace
+				searchText: this._textToFind,
+				replaceText: this._textToReplace
 			} );
 		} );
 
 		this._replaceAllButtonView.on( 'execute', () => {
 			this.fire( 'replaceAll', {
-				searchText: this.textToFind,
-				replaceText: this.textToReplace
+				searchText: this._textToFind,
+				replaceText: this._textToReplace
 			} );
 
 			this.focus();

@@ -615,19 +615,19 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 	} );
 
-	describe( 'textToFind()', () => {
+	describe( '_textToFind()', () => {
 		it( 'should return the text of the find input', () => {
 			view._findInputView.fieldView.value = 'foo';
 
-			expect( view.textToFind ).to.equal( 'foo' );
+			expect( view._textToFind ).to.equal( 'foo' );
 		} );
 	} );
 
-	describe( 'textToReplace()', () => {
+	describe( '_textToReplace()', () => {
 		it( 'should return the text of the replace input', () => {
 			view._replaceInputView.fieldView.value = 'foo';
 
-			expect( view.textToReplace ).to.equal( 'foo' );
+			expect( view._textToReplace ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -749,9 +749,9 @@ describe( 'FindAndReplaceFormView', () => {
 			closeDropdown();
 			openDropdown();
 
-			expect( view.textToFind ).to.equal( 'foo' );
+			expect( view._textToFind ).to.equal( 'foo' );
 			expect( findInput.errorText ).to.be.null;
-			expect( view.textToReplace ).to.equal( 'bar' );
+			expect( view._textToReplace ).to.equal( 'bar' );
 			expect( matchCaseSwitch.isOn ).to.be.true;
 			expect( wholeWordsOnlySwitch.isOn ).to.be.true;
 			expect( view.isDirty ).to.be.true;
