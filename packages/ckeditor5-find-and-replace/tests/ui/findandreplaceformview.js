@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals window, document, Event */
 
 import {
 	View,
@@ -946,6 +946,88 @@ describe( 'FindAndReplaceFormView', () => {
 
 				findPrevButton.fire( 'execute' );
 				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+			} );
+
+			it( 'should adjust the right padding of the find input depending on the changing size of the counter (LTR editor)', () => {
+				editor.setData( `<p>${ new Array( 20 ).join( 'A' ) }</p>` );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				expect( findInput.fieldView.element.style.paddingRight ).to.equal( '' );
+
+				findButton.fire( 'execute' );
+
+				const paddingBefore = parseInt( window.getComputedStyle( findInput.fieldView.element ).paddingRight );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 19' );
+				expect( findInput.fieldView.element.style.paddingRight )
+					.to.match( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+
+				findPrevButton.fire( 'execute' );
+
+				const paddingAfter = parseInt( window.getComputedStyle( findInput.fieldView.element ).paddingRight );
+
+				expect( matchCounterElement.textContent ).to.equal( '19 of 19' );
+				expect( findInput.fieldView.element.style.paddingRight )
+					.to.match( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+
+				// "1 of 19" consumes less horizontal space than "19 of 19"
+				expect( paddingBefore ).to.be.below( paddingAfter );
+			} );
+
+			it( 'should adjust the right padding of the find input depending on the changing size of the counter (RTL editor)', () => {
+				editor.locale.uiLanguageDirection = 'rtl';
+
+				editor.setData( `<p>${ new Array( 20 ).join( 'A' ) }</p>` );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				expect( findInput.fieldView.element.style.paddingLeft ).to.equal( '' );
+
+				findButton.fire( 'execute' );
+
+				const paddingBefore = parseInt( window.getComputedStyle( findInput.fieldView.element ).paddingLeft );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 19' );
+				expect( findInput.fieldView.element.style.paddingLeft )
+					.to.match( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+
+				findPrevButton.fire( 'execute' );
+
+				const paddingAfter = parseInt( window.getComputedStyle( findInput.fieldView.element ).paddingLeft );
+
+				expect( matchCounterElement.textContent ).to.equal( '19 of 19' );
+				expect( findInput.fieldView.element.style.paddingLeft )
+					.to.match( /^calc\( 2 \* var\(--ck-spacing-standard\) \+ [\d.]+px \)$/ );
+
+				// "1 of 19" consumes less horizontal space than "19 of 19"
+				expect( paddingBefore ).to.be.below( paddingAfter );
+			} );
+
+			it( 'should adjust the right padding of the find input depending on the presence of the counter', () => {
+				editor.setData( `<p>${ new Array( 20 ).join( 'A' ) }</p>` );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				expect( findInput.fieldView.element.style.paddingRight ).to.equal( '' );
+
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 19' );
+				expect( findInput.fieldView.element.style.paddingRight ).to.match( /^calc/ );
+
+				findInput.fieldView.value = 'AA';
+				findInput.fieldView.fire( 'input' );
+
+				expect( findInput.fieldView.element.style.paddingRight ).to.equal( '' );
+
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 9' );
+				expect( findInput.fieldView.element.style.paddingRight ).to.match( /^calc/ );
 			} );
 		} );
 
