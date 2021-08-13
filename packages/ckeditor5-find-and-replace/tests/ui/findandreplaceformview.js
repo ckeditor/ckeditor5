@@ -20,8 +20,6 @@ import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;
-	let viewValue;
-	let state;
 
 	testUtils.createSinonSandbox();
 
@@ -187,7 +185,7 @@ describe( 'FindAndReplaceFormView', () => {
 				} );
 
 				describe( 'options dropdown', () => {
-
+					// TODO
 				} );
 
 				describe( 'replace button view', () => {
@@ -281,7 +279,7 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
-				view = new FindAndReplaceFormView( { t: val => val }, state );
+				view = new FindAndReplaceFormView( { t: val => val } );
 
 				const spy = testUtils.sinon.spy( view._focusTracker, 'add' );
 
@@ -298,7 +296,7 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
-				view = new FindAndReplaceFormView( { t: val => val }, state );
+				view = new FindAndReplaceFormView( { t: val => val } );
 
 				const spy = sinon.spy( view._keystrokes, 'listenTo' );
 
@@ -408,149 +406,31 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 	} );
 
+	describe( 'reset()', () => {
+		it( 'should reset the form', () => {
+			view._findInputView.errorText = 'foo';
+			view.isDirty = false;
+
+			view.reset();
+
+			expect( view._findInputView.errorText ).to.be.null;
+			expect( view.isDirty ).to.be.true;
+		} );
+	} );
+
 	describe( 'textToFind()', () => {
-		// TODO
+		it( 'should return the text of the find input', () => {
+			view._findInputView.fieldView.value = 'foo';
+
+			expect( view.textToFind ).to.equal( 'foo' );
+		} );
 	} );
 
 	describe( 'textToReplace()', () => {
-		// TODO
-	} );
+		it( 'should return the text of the replace input', () => {
+			view._replaceInputView.fieldView.value = 'foo';
 
-	describe( 'observable properties', () => {
-		describe( 'isDirty', () => {
-			it( 'should be initially false', () => {
-				expect( view.isDirty ).to.be.false;
-			} );
-
-			it( 'should change to true on searchText change', () => {
-				view.searchText = 'foo';
-
-				expect( view.isDirty ).to.true;
-			} );
-
-			it( 'should change to true on state change', () => {
-				state.searchText = 'foo';
-
-				expect( view.isDirty ).to.true;
-			} );
-
-			it( 'should be false when state and view have the same value', () => {
-				view.searchText = 'foo';
-				state.searchText = 'foo';
-
-				expect( view.isDirty ).to.false;
-			} );
-
-			it( 'should change to true on matchCase change', () => {
-				view.matchCaseView.isChecked = true;
-
-				expect( view.isDirty ).to.true;
-
-				view.matchCaseView.isChecked = false;
-				state.matchCase = true;
-
-				expect( view.isDirty ).to.true;
-			} );
-
-			it( 'should change to true on matchWholeWords change', () => {
-				state.matchWholeWords = true;
-
-				expect( view.isDirty ).to.true;
-
-				view.matchWholeWordsView.isChecked = false;
-				state.matchWholeWords = true;
-
-				expect( view.isDirty ).to.true;
-			} );
-
-			it( 'should be false when matchCase or matchWholeWords have the same value', () => {
-				expect( view.isDirty ).to.false;
-
-				state.matchCase = true;
-				view.matchCaseView.isChecked = true;
-
-				expect( view.isDirty ).to.false;
-
-				state.matchWholeWords = true;
-				view.matchWholeWordsView.isChecked = true;
-
-				expect( view.isDirty ).to.false;
-			} );
-		} );
-	} );
-
-	describe( 'find and replace events', () => {
-		it( 'should trigger findNext twice', () => {
-			const spy = sinon.spy();
-
-			view.on( 'findNext', spy );
-
-			view._findNextButtonView.fire( 'execute' );
-			view.findButtonView.fire( 'execute' );
-
-			expect( spy.calledTwice ).to.true;
-		} );
-
-		it( 'should trigger findPrevious', () => {
-			const spy = sinon.spy();
-
-			view.on( 'findPrevious', spy );
-
-			view._findPrevButtonView.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.true;
-		} );
-
-		it( 'should trigger replace', () => {
-			const spy = sinon.spy();
-
-			view.on( 'replace', spy );
-
-			view._replaceButtonView.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.true;
-		} );
-
-		it( 'should trigger replaceAll', () => {
-			const spy = sinon.spy();
-
-			view.on( 'replaceAll', spy );
-
-			view._replaceAllButtonView.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.true;
-		} );
-	} );
-
-	describe( 'find and replace input values', () => {
-		it( 'returns the #findInputView DOM value', () => {
-			viewValue = view._findInputView.fieldView.element.value;
-			viewValue = 'foo';
-
-			expect( viewValue ).to.equal( 'foo' );
-		} );
-
-		it( 'returns the #replaceInputView DOM value', () => {
-			viewValue = view._replaceInputView.fieldView.element.value;
-			viewValue = 'foo';
-
-			expect( viewValue ).to.equal( 'foo' );
-		} );
-
-		it( 'sets the #findInputView DOM value', () => {
-			viewValue = view._findInputView.fieldView.element.value;
-			viewValue = 'bar';
-			viewValue = 'foo';
-
-			expect( viewValue ).to.equal( 'foo' );
-		} );
-
-		it( 'sets the #replaceInputView DOM value', () => {
-			viewValue = view._replaceInputView.fieldView.element.value;
-			viewValue = 'bar';
-			viewValue = 'foo';
-
-			expect( viewValue ).to.equal( 'foo' );
+			expect( view.textToReplace ).to.equal( 'foo' );
 		} );
 	} );
 } );

@@ -360,7 +360,14 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Resets the form before re-appearing.
+	 *
+	 * It clears error messages, hides the match counter and disables the replace feature
+	 * until the next hit of the "Find" button.
+	 *
+	 * **Note**: It does not reset inputs and options, though. This way the form works better better in editors
+	 * disappearing toolbar (e.g. BalloonEditor): hiding the toolbar by accident (together the find and replace UI)
+	 * does not require filling the whole form again.
 	 */
 	reset() {
 		this._findInputView.errorText = null;
@@ -368,14 +375,18 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Returns the value of the find input.
+	 *
+	 * @returns {String}
 	 */
 	get textToFind() {
 		return this._findInputView.fieldView.element.value;
 	}
 
 	/**
-	 * TODO
+	 * Returns the value of the replace input.
+	 *
+	 * @returns {String}
 	 */
 	get textToReplace() {
 		return this._replaceInputView.fieldView.element.value;
