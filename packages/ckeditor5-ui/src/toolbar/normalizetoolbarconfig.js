@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global console */
-
 /**
  * @module ui/toolbar/normalizetoolbarconfig
  */
@@ -44,13 +42,6 @@ export default function normalizeToolbarConfig( config ) {
 			items: [],
 			removeItems: []
 		};
-	}
-
-	if ( Object.prototype.hasOwnProperty.call( config, 'viewportTopOffset' ) ) {
-		console.warn(
-			'The `toolbar.vieportTopOffset` configuration option is deprecated.' +
-			'It will be removed from future CKEditor versions. Use `ui.viewportOffset.top` instead.'
-		);
 	}
 
 	return Object.assign( {

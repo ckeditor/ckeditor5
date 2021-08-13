@@ -40,5 +40,6 @@ button.addEventListener( 'click', () => {
 	const getRandomBetween = ( min, max ) => Math.random() * ( max - min ) + min;
 	const random = getRandomBetween( 100, 200 );
 	document.documentElement.style.setProperty( '--top-offset', `${ random }px` );
-	editor.ui.view.viewportTopOffset = random;
+	editor.ui.viewportOffset = { top: random };
+	editor.editing.view.focus();
 } );
