@@ -275,10 +275,10 @@ describe( 'FindAndReplaceUI', () => {
 				expect( form.matchCount ).to.equal( 1 );
 			} );
 
-			it( 'should bind form\'s #areCommandsEnabled to various editor commands', () => {
+			it( 'should bind form\'s #_areCommandsEnabled to various editor commands', () => {
 				const commands = editor.commands;
 
-				expect( form.areCommandsEnabled ).to.deep.equal( {
+				expect( form._areCommandsEnabled ).to.deep.equal( {
 					findNext: false,
 					findPrevious: false,
 					replace: true,
@@ -290,7 +290,7 @@ describe( 'FindAndReplaceUI', () => {
 				commands.get( 'replace' ).isEnabled = false;
 				commands.get( 'replaceAll' ).isEnabled = false;
 
-				expect( form.areCommandsEnabled ).to.deep.equal( {
+				expect( form._areCommandsEnabled ).to.deep.equal( {
 					findNext: true,
 					findPrevious: true,
 					replace: false,

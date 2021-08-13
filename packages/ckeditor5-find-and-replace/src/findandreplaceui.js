@@ -137,7 +137,7 @@ export default class FindAndReplaceUI extends Plugin {
 		// Command states are used to enable/disable individual form controls.
 		// To keep things simple, instead of binding 4 individual observables, there's only one that combines every
 		// commands' isEnabled state. Yes, it will change more often but this simplifies the structure of the form.
-		formView.bind( 'areCommandsEnabled' ).to(
+		formView.bind( '_areCommandsEnabled' ).to(
 			commands.get( 'findNext' ), 'isEnabled',
 			commands.get( 'findPrevious' ), 'isEnabled',
 			commands.get( 'replace' ), 'isEnabled',

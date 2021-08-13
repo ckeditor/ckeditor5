@@ -77,6 +77,16 @@ export default class FindAndReplaceFormView extends View {
 		this.set( 'highlightOffset', 0 );
 
 		/**
+		 * `true` when the search params (find text, options) has been changed by the user since
+		 * the last time find was executed. `false` otherwise.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isDirty
+		 */
+		this.set( 'isDirty', false );
+
+		/**
 		 * A live object with the aggregated `isEnabled` states of editor commands related to find and
 		 * replace. For instance, it may looks as follows:
 		 *
@@ -87,21 +97,12 @@ export default class FindAndReplaceFormView extends View {
 		 *			replaceAll: false
 		 *		}
 		 *
+		 * @protected
 		 * @readonly
 		 * @observable
-		 * @member {Object} #areCommandsEnabled
+		 * @member {Object} #_areCommandsEnabled
 		 */
-		this.set( 'areCommandsEnabled', {} );
-
-		/**
-		 * `true` when the search params (find text, options) has been changed by the user since
-		 * the last time find was executed. `false` otherwise.
-		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #isDirty
-		 */
-		this.set( 'isDirty', false );
+		this.set( '_areCommandsEnabled', {} );
 
 		/**
 		 * The content of the counter label displaying the index of the current highlighted match
@@ -414,8 +415,8 @@ export default class FindAndReplaceFormView extends View {
 		this._findNextButtonView.delegate( 'execute' ).to( this, 'findNext' );
 
 		// Prev/next buttons will be disabled when related editor command get disabled.
-		this._findPrevButtonView.bind( 'isEnabled' ).to( this, 'areCommandsEnabled', ( { findPrevious } ) => findPrevious );
-		this._findNextButtonView.bind( 'isEnabled' ).to( this, 'areCommandsEnabled', ( { findNext } ) => findNext );
+		this._findPrevButtonView.bind( 'isEnabled' ).to( this, '_areCommandsEnabled', ( { findPrevious } ) => findPrevious );
+		this._findNextButtonView.bind( 'isEnabled' ).to( this, '_areCommandsEnabled', ( { findNext } ) => findNext );
 
 		this._injectFindResultsCounter();
 
@@ -539,17 +540,17 @@ export default class FindAndReplaceFormView extends View {
 		const fieldsetView = new View( locale );
 
 		this._replaceButtonView.bind( 'isEnabled' ).to(
-			this, 'areCommandsEnabled',
+			this, '_areCommandsEnabled',
 			this, '_searchResultsFound',
 			( { replace }, resultsFound ) => replace && resultsFound );
 
 		this._replaceAllButtonView.bind( 'isEnabled' ).to(
-			this, 'areCommandsEnabled',
+			this, '_areCommandsEnabled',
 			this, '_searchResultsFound',
 			( { replaceAll }, resultsFound ) => replaceAll && resultsFound );
 
 		this._replaceInputView.bind( 'isEnabled' ).to(
-			this, 'areCommandsEnabled',
+			this, '_areCommandsEnabled',
 			this, '_searchResultsFound',
 			( { replace }, resultsFound ) => replace && resultsFound );
 

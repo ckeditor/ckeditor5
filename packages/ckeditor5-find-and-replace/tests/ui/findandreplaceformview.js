@@ -60,12 +60,12 @@ describe( 'FindAndReplaceFormView', () => {
 				expect( view.highlightOffset ).to.equal( 0 );
 			} );
 
-			it( 'should set #areCommandsEnabled', () => {
-				expect( view.areCommandsEnabled ).to.deep.equal( {} );
-			} );
-
 			it( 'should set #isDirty', () => {
 				expect( view.isDirty ).to.be.false;
+			} );
+
+			it( 'should set #_areCommandsEnabled', () => {
+				expect( view._areCommandsEnabled ).to.deep.equal( {} );
 			} );
 
 			it( 'should set #_resultsCounterText', () => {
