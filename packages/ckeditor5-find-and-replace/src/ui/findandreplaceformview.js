@@ -505,11 +505,12 @@ export default class FindAndReplaceFormView extends View {
 			}
 
 			const counterWidth = new Rect( resultsCounterView.element ).width;
+			const paddingPropertyName = locale.uiLanguageDirection === 'ltr' ? 'paddingRight' : 'paddingLeft';
 
 			if ( !counterWidth ) {
-				inputElement.style.paddingRight = null;
+				inputElement.style[ paddingPropertyName ] = null;
 			} else {
-				inputElement.style.paddingRight = `calc( 2 * var(--ck-spacing-standard) + ${ counterWidth }px )`;
+				inputElement.style[ paddingPropertyName ] = `calc( 2 * var(--ck-spacing-standard) + ${ counterWidth }px )`;
 			}
 		};
 

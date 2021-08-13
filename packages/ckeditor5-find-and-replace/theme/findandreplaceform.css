@@ -73,7 +73,15 @@
 				position: absolute;
 				top: 50%;
 				transform: translateY(-50%);
-				right: var(--ck-spacing-standard);
+
+				@mixin ck-dir ltr {
+					right: var(--ck-spacing-standard);
+				}
+
+				@mixin ck-dir rtl {
+					left: var(--ck-spacing-standard);
+				}
+
 				color: var(--ck-color-base-border);
 			}
 		}
