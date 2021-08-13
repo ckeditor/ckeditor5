@@ -12,8 +12,7 @@
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { ObservableMixin, mix } from '@ckeditor/ckeditor5-utils';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -52,6 +51,13 @@ export default class EditorUI {
 		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
 		 */
 		this.focusTracker = new FocusTracker();
+
+		/**
+		 * TODO
+		 *
+		 * @observable
+		 */
+		this.set( 'viewportOffset', this._viewportTopOffset );
 
 		/**
 		 * Stores all editable elements used by the editor instance.
@@ -173,6 +179,42 @@ export default class EditorUI {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @private
+	 * @return Object
+	 */
+	get _viewportTopOffset() {
+		const editor = this.editor;
+		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
+
+		if ( viewportOffsetConfig ) {
+			return viewportOffsetConfig;
+		}
+
+		const legacyOffsetConfig = editor.config.get( 'toolbar.viewportTopOffset' );
+
+		// Fall back to deprecated toolbar config
+		if ( legacyOffsetConfig ) {
+			/**
+			 * TODO
+			 *
+			 * @error todo-error-name
+			 */
+			console.warn(
+				'todo-error-name: ' +
+				'The `toolbar.vieportTopOffset` configuration option is deprecated. ' +
+				'It will be removed from future CKEditor versions. Use `ui.viewportOffset.top` instead.'
+			);
+
+			return { top: legacyOffsetConfig };
+		}
+
+		// More keys to come in the future.
+		return { top: 0 };
+	}
+
+	/**
 	 * Fired when the editor UI is ready.
 	 *
 	 * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
@@ -190,4 +232,4 @@ export default class EditorUI {
 	 */
 }
 
-mix( EditorUI, EmitterMixin );
+mix( EditorUI, ObservableMixin );
