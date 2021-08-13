@@ -396,7 +396,7 @@ export default class FindAndReplaceFormView extends View {
 	 * Configures and returns the `<fieldset>` aggregating all find controls.
 	 *
 	 * @private
-	 * @returns {module:ui/view/view~View}
+	 * @returns {module:ui/view~View}
 	 */
 	_createFindFieldset() {
 		const locale = this.locale;
@@ -531,7 +531,7 @@ export default class FindAndReplaceFormView extends View {
 	 * Configures and returns the `<fieldset>` aggregating all replace controls.
 	 *
 	 * @private
-	 * @returns {module:ui/view/view~View}
+	 * @returns {module:ui/view~View}
 	 */
 	_createReplaceFieldset() {
 		const locale = this.locale;
@@ -775,28 +775,28 @@ export default class FindAndReplaceFormView extends View {
 }
 
 /**
- * Fired when the find next button ({@link #findNextButtonView}) is triggered.
+ * Fired when the find next button is triggered.
  *
  * @event findNext
  * @param {String} searchText Search text.
  */
 
 /**
- * Fired when the find previous button ({@link #findPrevButtonView}) is triggered.
+ * Fired when the find previous button is triggered.
  *
  * @event findPrevious
  * @param {String} searchText Search text.
  */
 
 /**
- * Fired when the replace button ({@link #replaceButtonView}) is triggered.
+ * Fired when the replace button is triggered.
  *
  * @event replace
  * @param {String} replaceText Replacement text.
  */
 
 /**
- * Fired when the replaceAll button ({@link #replaceAllButtonView}) is triggered.
+ * Fired when the replaceAll button is triggered.
  *
  * @event replaceAll
  * @param {String} replaceText Replacement text.
