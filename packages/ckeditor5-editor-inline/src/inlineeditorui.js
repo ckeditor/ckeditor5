@@ -125,9 +125,7 @@ export default class InlineEditorUI extends EditorUI {
 		// Set–up the view#panel.
 		view.panel.bind( 'isVisible' ).to( this.focusTracker, 'isFocused' );
 
-		if ( this._viewportTopOffset ) {
-			view.viewportTopOffset = this._viewportTopOffset;
-		}
+		view.bind( 'viewportTopOffset' ).to( this, 'viewportOffset', ( { top } ) => top );
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
 		view.listenTo( editor.ui, 'update', () => {
@@ -174,29 +172,5 @@ export default class InlineEditorUI extends EditorUI {
 				keepOnFocus: true
 			} );
 		}
-	}
-
-	/**
-	 * TODO: Find better place for this to not duplicate it with inline editor
-	 * TODO: Also deprecation warning could be moved from toolbar config normalization function to here
-	 * Get viewport top offset.
-	 *
-	 * @private
-	 * @return Number|null
-	 */
-	get _viewportTopOffset() {
-		const editor = this.editor;
-		const viewportOffset = editor.config.get( 'ui.viewportOffset' );
-
-		if ( viewportOffset && viewportOffset.top ) {
-			return viewportOffset.top;
-		}
-
-		// Fall back to deprecated toolbar config
-		if ( this._toolbarConfig.viewportTopOffset ) {
-			return this._toolbarConfig.viewportTopOffset;
-		}
-
-		return null;
 	}
 }
