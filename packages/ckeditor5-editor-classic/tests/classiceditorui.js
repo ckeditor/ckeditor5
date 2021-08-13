@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -86,6 +86,8 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			it( 'sets view.stickyPanel#viewportTopOffset, if legacy toolbar.vierportTopOffset specified', () => {
+				sinon.stub( console, 'warn' );
+
 				return VirtualClassicTestEditor
 					.create( 'foo', {
 						toolbar: {

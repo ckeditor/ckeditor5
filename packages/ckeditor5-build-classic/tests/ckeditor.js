@@ -189,8 +189,10 @@ describe( 'ClassicEditor build', () => {
 		it( 'allows configuring toolbar offset without overriding toolbar items', () => {
 			return ClassicEditor
 				.create( editorElement, {
-					toolbar: {
-						viewportTopOffset: 42
+					ui: {
+						viewportOffset: {
+							top: 42
+						}
 					}
 				} )
 				.then( newEditor => {
