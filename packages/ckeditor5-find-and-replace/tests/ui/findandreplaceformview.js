@@ -5,17 +5,28 @@
 
 /* globals Event */
 
-import { View, FormHeaderView, LabeledFieldView, ButtonView, ListView } from '@ckeditor/ckeditor5-ui';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import {
+	View,
+	FormHeaderView,
+	LabeledFieldView,
+	ButtonView,
+	ListView,
+	ViewCollection,
+	FocusCycler
+} from '@ckeditor/ckeditor5-ui';
 
-import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
+// Non-DLL.
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 
+import {
+	KeystrokeHandler,
+	FocusTracker,
+	keyCodes
+} from '@ckeditor/ckeditor5-utils';
+
+import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
 import { icons } from 'ckeditor5/src/core';
 
@@ -103,6 +114,14 @@ describe( 'FindAndReplaceFormView', () => {
 				describe( 'find input view', () => {
 					it( 'should have a label', () => {
 						expect( view._findInputView.label ).to.match( /^Find in text/ );
+					} );
+
+					it( 'should have a match counter', () => {
+						const counterElement = view._findInputView.element.firstChild.childNodes[ 2 ];
+
+						expect( counterElement.classList.contains( 'ck' ) ).to.be.true;
+						expect( counterElement.classList.contains( 'ck-results-counter' ) ).to.be.true;
+						expect( counterElement.textContent ).to.equal( '%0 of %1' );
 					} );
 				} );
 
@@ -473,6 +492,43 @@ describe( 'FindAndReplaceFormView', () => {
 
 				view._replaceInputView.element.dispatchEvent( event );
 				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'handles F3 keystroke and extecutes find next', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.f3,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const spy = sinon.spy( view._findNextButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
+			} );
+
+			it( 'handles Shift+F3 keystroke and executes find previous', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.f3,
+					shiftKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const spy = sinon.spy( view._findPrevButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
 			} );
 		} );
 	} );

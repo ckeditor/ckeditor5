@@ -480,6 +480,7 @@ export default class FindAndReplaceFormView extends View {
 			tag: 'span',
 			attributes: {
 				class: [
+					'ck',
 					'ck-results-counter',
 					// The counter only makes sense when the field text corresponds to search results in the editing.
 					bind.if( 'isDirty', 'ck-hidden' )
