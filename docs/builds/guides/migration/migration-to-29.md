@@ -89,8 +89,6 @@ ClassicEditor
 
 ## Migration to CKEditor 5 v29.0.0
 
-For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2900-2021-07-05).
-
 This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v29.0.0 due to changes introduced in the {@link module:image/image~Image} plugin and some other image-related features.
 
 For the entire list of changes introduced in version 29.0.0, see the [changelog for CKEditor 5 v29.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2900-2021-07-05).
@@ -103,7 +101,7 @@ To get to know the new editor UI for the image features, visit the {@link featur
 
 Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins: {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
 * The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting the inline `<img>` tag nested in text (e.g. inside a paragraph).
-* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it ues the `imageBlock` element (known as `image` before v29.0.0).
+* The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it uses the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
 	**Note:** It is possible to load only one of these plugins, but only when {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source building the editor from source}.
