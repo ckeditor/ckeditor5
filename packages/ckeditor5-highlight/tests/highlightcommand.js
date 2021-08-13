@@ -187,6 +187,34 @@ describe( 'HighlightCommand', () => {
 					expect( command.value ).to.equal( 'pinkMarker' );
 					expect( doc.selection.getAttribute( 'highlight' ) ).to.equal( 'pinkMarker' );
 				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/2616
+				it( 'should not change entire highlight when at the end of highlighted text', () => {
+					setData( model, '<p>abc<$text highlight="yellowMarker">foobar</$text>[]xyz</p>' );
+
+					expect( command.value ).to.equal( 'yellowMarker' );
+
+					command.execute( { value: 'greenMarker' } );
+
+					expect( getData( model ) ).to.equal(
+						'<p>abc<$text highlight="yellowMarker">foobar</$text><$text highlight="greenMarker">[]</$text>xyz</p>'
+					);
+
+					expect( command.value ).to.equal( 'greenMarker' );
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/2616
+				it( 'should not remove entire highlight when at the end of highlighted text of the same value', () => {
+					setData( model, '<p>abc<$text highlight="yellowMarker">foobar</$text>[]xyz</p>' );
+
+					expect( command.value ).to.equal( 'yellowMarker' );
+
+					command.execute( { value: 'yellowMarker' } );
+
+					expect( getData( model ) ).to.equal( '<p>abc<$text highlight="yellowMarker">foobar</$text>[]xyz</p>' );
+
+					expect( command.value ).to.be.undefined;
+				} );
 			} );
 
 			describe( 'on not collapsed range', () => {
@@ -247,6 +275,19 @@ describe( 'HighlightCommand', () => {
 					command.execute();
 
 					expect( getData( model ) ).to.equal( '<p>abcfoo[]barxyz</p>' );
+
+					expect( command.value ).to.be.undefined;
+				} );
+
+				// https://github.com/ckeditor/ckeditor5/issues/2616
+				it( 'should not remove entire highlight when at the end of highlighted text', () => {
+					setData( model, '<p>abc<$text highlight="yellowMarker">foobar</$text>[]xyz</p>' );
+
+					expect( command.value ).to.equal( 'yellowMarker' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '<p>abc<$text highlight="yellowMarker">foobar</$text>[]xyz</p>' );
 
 					expect( command.value ).to.be.undefined;
 				} );
