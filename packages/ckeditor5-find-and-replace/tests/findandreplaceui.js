@@ -320,7 +320,7 @@ describe( 'FindAndReplaceUI', () => {
 				sinon.assert.calledOnce( replaceAllSpy );
 			} );
 
-			it( 'should fire #searchReseted when the form becomes disty', () => {
+			it( 'should fire #searchReseted when the form becomes dirty', () => {
 				form.isDirty = false;
 
 				const spy = sinon.spy();

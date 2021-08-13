@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Event */
+/* globals document, Event */
 
 import {
 	View,
@@ -24,6 +24,12 @@ import {
 	keyCodes
 } from '@ckeditor/ckeditor5-utils';
 
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+
+import FindAndReplace from '../../src/findandreplace';
 import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -530,6 +536,60 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledOnceWithExactly( spy, 'execute' );
 			} );
+
+			it( 'handles "enter" when pressed in the find input and performs a search', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: view._findInputView.fieldView.element
+				};
+
+				const spy = sinon.spy( view._findButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
+			} );
+
+			it( 'handles "enter" when pressed in the replace input and performs a replacement', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: view._replaceInputView.fieldView.element
+				};
+
+				const spy = sinon.spy( view._replaceButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
+			} );
+
+			it( 'ignores "enter" when pressed somewhere else', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const spy = sinon.spy( view._replaceButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 	} );
 
@@ -568,6 +628,534 @@ describe( 'FindAndReplaceFormView', () => {
 			view._replaceInputView.fieldView.value = 'foo';
 
 			expect( view.textToReplace ).to.equal( 'foo' );
+		} );
+	} );
+
+	describe( 'form state machine', () => {
+		let editorElement, editor, view, dropdown;
+		let findInput, replaceInput, replaceButton, replaceAllButton, findButton, findNextButton, findPrevButton;
+		let matchCaseSwitch, wholeWordsOnlySwitch, matchCounterElement;
+
+		beforeEach( async () => {
+			editorElement = document.createElement( 'div' );
+
+			document.body.appendChild( editorElement );
+
+			editor = await ClassicEditor.create( editorElement, {
+				plugins: [ Essentials, Paragraph, BoldEditing, FindAndReplace ],
+				toolbar: [ 'findAndReplace' ]
+			} );
+
+			view = editor.plugins.get( 'FindAndReplaceUI' ).formView;
+			dropdown = editor.ui.view.toolbar.items
+				.find( item => item.buttonView && item.buttonView.label == 'Find and replace' );
+
+			findInput = view._findInputView;
+			matchCounterElement = findInput.element.firstChild.childNodes[ 2 ];
+			replaceInput = view._replaceInputView;
+			findButton = view._findButtonView;
+			findNextButton = view._findNextButtonView;
+			findPrevButton = view._findPrevButtonView;
+			replaceButton = view._replaceButtonView;
+			replaceAllButton = view._replaceAllButtonView;
+
+			const optionsListView = view._optionsDropdown.panelView.children.get( 0 );
+			matchCaseSwitch = optionsListView.items.get( 0 ).children.get( 0 );
+			wholeWordsOnlySwitch = optionsListView.items.get( 1 ).children.get( 0 );
+		} );
+
+		afterEach( async () => {
+			await editor.destroy();
+
+			editorElement.remove();
+		} );
+
+		function openDropdown() {
+			dropdown.isOpen = true;
+		}
+
+		function closeDropdown() {
+			dropdown.isOpen = false;
+		}
+
+		describe( 'initial state', () => {
+			beforeEach( () => {
+				openDropdown();
+			} );
+
+			describe( 'properties', () => {
+				it( 'sets isDirty to true', () => {
+					expect( view.isDirty ).to.be.true;
+				} );
+			} );
+
+			describe( 'find', () => {
+				it( 'should set the find input empty and enabled', () => {
+					expect( findInput.fieldView.element.value ).to.equal( '' );
+					expect( findInput.isEnabled ).to.be.true;
+				} );
+
+				it( 'should hide the match counter', () => {
+					expect( matchCounterElement.classList.contains( 'ck-hidden' ) ).to.be.true;
+				} );
+
+				it( 'should set the find button enabled', () => {
+					expect( findButton.isEnabled ).to.be.true;
+				} );
+
+				it( 'should set the find next button disabled', () => {
+					expect( findNextButton.isEnabled ).to.be.false;
+				} );
+
+				it( 'should set the find previous button disabled', () => {
+					expect( findPrevButton.isEnabled ).to.be.false;
+				} );
+			} );
+
+			describe( 'replace', () => {
+				it( 'should set the replace input empty and disabled', () => {
+					expect( replaceInput.fieldView.element.value ).to.equal( '' );
+					expect( replaceInput.isEnabled ).to.be.false;
+				} );
+
+				it( 'should set the replace button disabled', () => {
+					expect( replaceButton.isEnabled ).to.be.false;
+				} );
+
+				it( 'should set the replace all button disabled', () => {
+					expect( replaceAllButton.isEnabled ).to.be.false;
+				} );
+			} );
+
+			describe( 'options', () => {
+				it( 'should set the "match case" switch off', () => {
+					expect( matchCaseSwitch.isOn ).to.be.false;
+				} );
+
+				it( 'should set the "whole words only" switch off', () => {
+					expect( wholeWordsOnlySwitch.isOn ).to.be.false;
+				} );
+			} );
+		} );
+
+		it( 'should preserve state after reopening the dropdown but reset errors and make the form dirty', () => {
+			findInput.fieldView.value = 'foo';
+			findInput.errorText = 'error';
+			replaceInput.fieldView.value = 'bar';
+			matchCaseSwitch.isOn = true;
+			wholeWordsOnlySwitch.isOn = true;
+			view.isDirty = false;
+
+			closeDropdown();
+			openDropdown();
+
+			expect( view.textToFind ).to.equal( 'foo' );
+			expect( findInput.errorText ).to.be.null;
+			expect( view.textToReplace ).to.equal( 'bar' );
+			expect( matchCaseSwitch.isOn ).to.be.true;
+			expect( wholeWordsOnlySwitch.isOn ).to.be.true;
+			expect( view.isDirty ).to.be.true;
+		} );
+
+		describe( 'using the "Find" button', () => {
+			it( 'hitting "Find" when the find input has text should execute a #findNext event', () => {
+				openDropdown();
+
+				const spy = sinon.spy( view, 'fire' );
+				findInput.fieldView.value = 'foo';
+
+				findButton.fire( 'execute' );
+				sinon.assert.calledWithExactly( spy, 'findNext', { searchText: 'foo', matchCase: false, wholeWords: false } );
+			} );
+
+			it( 'hitting "Find" when the find input is empty should show an error instead of finding things', () => {
+				openDropdown();
+
+				const spy = sinon.spy( view, 'fire' );
+				findButton.fire( 'execute' );
+
+				expect( findInput.errorText ).to.match( /^Text to find must not/ );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'hitting "Find" with some results should enable the find previous/next navigation', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+
+				expect( findNextButton.isEnabled ).to.be.true;
+				expect( findPrevButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'hitting "Find" with some results should enable the replace UI', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+
+				expect( replaceInput.isEnabled ).to.be.true;
+				expect( replaceButton.isEnabled ).to.be.true;
+				expect( replaceAllButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'hitting "Find" with some results should show the counter', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+				expect( matchCounterElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+			} );
+
+			it( 'hitting "Find" with the same results again should not change the UI', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+				findButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+				expect( matchCounterElement.classList.contains( 'ck-hidden' ) ).to.be.false;
+				expect( replaceInput.isEnabled ).to.be.true;
+				expect( replaceButton.isEnabled ).to.be.true;
+				expect( replaceAllButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'hitting "Find" with no results should keep the replace UI disabled', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'B';
+
+				findButton.fire( 'execute' );
+
+				expect( replaceInput.isEnabled ).to.be.false;
+				expect( replaceButton.isEnabled ).to.be.false;
+				expect( replaceAllButton.isEnabled ).to.be.false;
+			} );
+
+			it( 'hitting "Find" when navigating forward should reset the search', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+				findNextButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
+
+				findButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+			} );
+		} );
+
+		describe( 'find results navigation using previous/next buttons', () => {
+			it( 'should bind next button #isEnabled to the "findNext" command', () => {
+				const command = editor.commands.get( 'findNext' );
+
+				command.isEnabled = false;
+				expect( findNextButton.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( findNextButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'should bind previous button #isEnabled to the "findPrevious" command', () => {
+				const command = editor.commands.get( 'findPrevious' );
+
+				command.isEnabled = false;
+				expect( findPrevButton.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( findPrevButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'should execute an event when the next button is used', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const spy = sinon.spy();
+
+				view.on( 'findNext', spy );
+
+				findNextButton.fire( 'execute' );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should execute an event when the previous button is used', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const spy = sinon.spy();
+
+				view.on( 'findPrevious', spy );
+
+				findPrevButton.fire( 'execute' );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should navigate forward using the next button (counter)', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+
+				findNextButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
+
+				findNextButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '3 of 3' );
+
+				findNextButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+			} );
+
+			it( 'should navigate backward using the previous button (counter)', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+
+				findPrevButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '3 of 3' );
+
+				findPrevButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
+
+				findPrevButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 3' );
+			} );
+		} );
+
+		describe( 'using the replace UI', () => {
+			it( 'should bind "replace" button #isEnabled to the "replace" command', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const command = editor.commands.get( 'replace' );
+
+				command.isEnabled = false;
+				expect( replaceButton.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( replaceButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'should bind "replace all" button #isEnabled to the "replaceAll" command', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const command = editor.commands.get( 'replaceAll' );
+
+				command.isEnabled = false;
+				expect( replaceAllButton.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( replaceAllButton.isEnabled ).to.be.true;
+			} );
+
+			it( 'should bind replace input #isEnabled to the "replace" command', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const command = editor.commands.get( 'replace' );
+
+				command.isEnabled = false;
+				expect( replaceInput.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( replaceInput.isEnabled ).to.be.true;
+			} );
+
+			it( 'should display a tip when the replace field is disabled but not focused', () => {
+				openDropdown();
+
+				expect( replaceInput.isEnabled ).to.be.false;
+				expect( replaceInput.infoText ).to.equal( '' );
+			} );
+
+			it( 'should display a tip when the replace field is disabled and focused', () => {
+				openDropdown();
+
+				replaceInput.focus();
+
+				expect( replaceInput.isEnabled ).to.be.false;
+				expect( replaceInput.infoText ).to.match( /^Tip: Find some text/ );
+			} );
+
+			it( 'should fire an event when the "replace" button is hit', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const spy = sinon.spy();
+
+				view.on( 'replace', spy );
+
+				replaceButton.fire( 'execute' );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should fire an event when the "replace all" button is hit', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+
+				const spy = sinon.spy();
+
+				view.on( 'replaceAll', spy );
+
+				replaceAllButton.fire( 'execute' );
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should replace an occurence when the "replace" button is hit', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+				findNextButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
+
+				replaceButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '2 of 2' );
+
+				replaceButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '1 of 1' );
+
+				replaceButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+			} );
+
+			it( 'should replace all occurences when the "replace all" button is hit', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+				findNextButton.fire( 'execute' );
+
+				expect( matchCounterElement.textContent ).to.equal( '2 of 3' );
+
+				replaceAllButton.fire( 'execute' );
+				expect( matchCounterElement.textContent ).to.equal( '0 of 0' );
+			} );
+
+			it( 'should focus the find input when "replace all" button is hit', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+				findButton.fire( 'execute' );
+				findNextButton.fire( 'execute' );
+
+				const spy = sinon.spy( findInput, 'focus' );
+
+				replaceAllButton.fire( 'execute' );
+
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
+
+		describe( 'dirty state of the form', () => {
+			it( 'hitting "Find" and finding results should make the form clean', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'A';
+
+				findButton.fire( 'execute' );
+
+				expect( view.isDirty ).to.be.false;
+			} );
+
+			it( 'hitting "Find" and not finding any results should make the form clean', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'B';
+
+				findButton.fire( 'execute' );
+
+				expect( view.isDirty ).to.be.false;
+			} );
+
+			it( 'typing in the find input when the form is clean should make it dirty', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'B';
+
+				findButton.fire( 'execute' );
+				expect( view.isDirty ).to.be.false;
+
+				findInput.fieldView.value = 'C';
+				findInput.fieldView.fire( 'input' );
+				expect( view.isDirty ).to.be.true;
+			} );
+
+			it( 'changing the match case option when the form is clean should make it dirty', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'B';
+
+				findButton.fire( 'execute' );
+				expect( view.isDirty ).to.be.false;
+
+				matchCaseSwitch.fire( 'execute' );
+				expect( view.isDirty ).to.be.true;
+			} );
+
+			it( 'changing the whole words only option when the form is clean should make it dirty', () => {
+				editor.setData( '<p>AAA</p>' );
+				openDropdown();
+
+				findInput.fieldView.value = 'B';
+
+				findButton.fire( 'execute' );
+				expect( view.isDirty ).to.be.false;
+
+				wholeWordsOnlySwitch.fire( 'execute' );
+				expect( view.isDirty ).to.be.true;
+			} );
 		} );
 	} );
 } );

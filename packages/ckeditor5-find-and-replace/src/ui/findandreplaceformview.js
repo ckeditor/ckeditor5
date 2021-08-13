@@ -493,9 +493,13 @@ export default class FindAndReplaceFormView extends View {
 			]
 		} );
 
+		// The whole idea is that when the text of the counter changes, its width also increases/decreases and
+		// it consumes more or less space over the input. The input, on the other hand, should adjust it's right
+		// padding so its *entire* text always remains visible and available to the user.
 		const updateFindInputPadding = () => {
 			const inputElement = this._findInputView.fieldView.element;
 
+			// Don't adjust the padding if the input (also: counter) were not rendered or not inserted into DOM yet.
 			if ( !inputElement || !inputElement.offsetParent ) {
 				return;
 			}
@@ -509,7 +513,13 @@ export default class FindAndReplaceFormView extends View {
 			}
 		};
 
+		// Adjust the input padding when the text of the counter changes, for instance "1 of 200" is narrower than "123 of 200".
+		// Using "low" priority to let the text be set by the template binding first.
 		this.on( 'change:_resultsCounterText', updateFindInputPadding, { priority: 'low' } );
+
+		// Adjust the input padding when the counter shows or hides. When hidden, there should be no padding. When it shows, the
+		// padding should be set according to the text of the counter.
+		// Using "low" priority to let the text be set by the template binding first.
 		this.on( 'change:isDirty', updateFindInputPadding, { priority: 'low' } );
 
 		// Put the counter element next to the <input> in the find field.

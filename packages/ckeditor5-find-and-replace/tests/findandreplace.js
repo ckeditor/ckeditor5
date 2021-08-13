@@ -141,10 +141,8 @@ describe( 'FindAndReplace', () => {
 		let toolbarDropdownView;
 
 		beforeEach( () => {
-			toolbarDropdownView = Array.from( editor.ui.view.toolbar.items )
-				.filter( item =>
-					item.buttonView && item.buttonView.label == 'Find and replace'
-				)[ 0 ];
+			toolbarDropdownView = editor.ui.view.toolbar.items
+				.find( item => item.buttonView && item.buttonView.label == 'Find and replace' );
 		} );
 
 		describe( 'mocks', () => {
