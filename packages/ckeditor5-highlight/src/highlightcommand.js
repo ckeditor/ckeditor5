@@ -72,16 +72,20 @@ export default class HighlightCommand extends Command {
 					const highlightStart = position.getLastMatchingPosition( isSameHighlight, { direction: 'backward' } );
 					const highlightEnd = position.getLastMatchingPosition( isSameHighlight );
 
-					const highlightRange = writer.createRange( highlightStart, highlightEnd );
+					const highlightRange = position.isEqual( highlightEnd ) ? null : writer.createRange( highlightStart, highlightEnd );
 
 					// Then depending on current value...
 					if ( !highlighter || this.value === highlighter ) {
 						// ...remove attribute when passing highlighter different then current or executing "eraser".
-						writer.removeAttribute( 'highlight', highlightRange );
+						if ( highlightRange ) {
+							writer.removeAttribute( 'highlight', highlightRange );
+						}
 						writer.removeSelectionAttribute( 'highlight' );
 					} else {
 						// ...update `highlight` value.
-						writer.setAttribute( 'highlight', highlighter, highlightRange );
+						if ( highlightRange ) {
+							writer.setAttribute( 'highlight', highlighter, highlightRange );
+						}
 						writer.setSelectionAttribute( 'highlight', highlighter );
 					}
 				} else if ( highlighter ) {
