@@ -6,8 +6,9 @@
 import { range } from 'lodash-es';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import { getModelDataWithAttributes } from './_utils/utils';
@@ -24,7 +25,7 @@ describe( 'ImageElementSupport', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image, ImageCaption, Paragraph, GeneralHtmlSupport ]
+				plugins: [ Image, ImageCaption, LinkImage, Paragraph, GeneralHtmlSupport ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -48,15 +49,14 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			const expectedHtml =
-			'<figure class="image" data-figure="figure">' +
-				'<img src="/assets/sample.png" data-image="image">' +
-			'</figure>';
+				'<figure class="image" data-figure="figure">' +
+					'<img src="/assets/sample.png" data-image="image">' +
+				'</figure>';
 
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: {
 					1: {
 						attributes: {
@@ -81,15 +81,14 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			const expectedHtml =
-			'<figure class="image foobar">' +
-				'<img class="foobar" src="/assets/sample.png">' +
-			'</figure>';
+				'<figure class="image foobar">' +
+					'<img class="foobar" src="/assets/sample.png">' +
+				'</figure>';
 
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						classes: [ 'foobar' ]
@@ -108,15 +107,14 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			const expectedHtml =
-			'<figure class="image" style="color:red;">' +
-				'<img style="color:red;" src="/assets/sample.png">' +
-			'</figure>';
+				'<figure class="image" style="color:red;">' +
+					'<img style="color:red;" src="/assets/sample.png">' +
+				'</figure>';
 
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
 				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						styles: {
@@ -148,8 +146,7 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
@@ -178,8 +175,7 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
@@ -208,8 +204,7 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock src="/assets/sample.png"></imageBlock>',
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
 				attributes: {}
 			} );
 
@@ -299,8 +294,259 @@ describe( 'ImageElementSupport', () => {
 		} );
 	} );
 
-	describe( 'BlockImage with link', () => {
-		// TODO:
+	describe.skip( 'BlockImage with link', () => {
+		it( 'should allow attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption|a)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image" data-figure="figure">' +
+					'<a href="www.example.com" data-link="link"><img src="/assets/sample.png" data-image="image"></a>' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" linkHref="www.example.com" src="/assets/sample.png">' +
+					'</imageBlock>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'image'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'figure'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should allow classes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				classes: 'foobar'
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image foobar">' +
+					'<img class="foobar" src="/assets/sample.png">' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						classes: [ 'foobar' ]
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should allow styles', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				styles: 'color'
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image" style="color:red;">' +
+					'<img style="color:red;" src="/assets/sample.png">' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>',
+				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						styles: {
+							color: 'red'
+						}
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			editor.setData(
+				'<figure class="image" data-figure="figure">' +
+					'<img data-image="image" src="/assets/sample.png">' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should disallow classes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				classes: 'foobar'
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				classes: 'foobar'
+			} ] );
+
+			editor.setData(
+				'<figure class="image foobar">' +
+					'<image class="foobar" src="/assets/sample.png">' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should disallow styles', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				styles: 'color'
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(figure|img|figcaption)$/,
+				styles: 'color'
+			} ] );
+
+			editor.setData(
+				'<figure class="image" style="color:red;">' +
+					'<img style="color:red;" src="/assets/sample.png">' +
+				'</figure>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<imageBlock src="/assets/sample.png"></imageBlock>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
+				'</figure>'
+			);
+		} );
+
+		it( 'should not break figure integration for other features', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(figure|figcaption|img)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image" data-figure="image">' +
+					'<img src="/assets/sample.png" data-image="image">' +
+				'</figure>' +
+				'<figure data-figure="standalone">' +
+					'<figcaption data-figcaption="figcaption">foobar</figcaption>' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"></imageBlock>' +
+					'<htmlFigure htmlAttributes="(3)">' +
+						'<htmlFigcaption htmlAttributes="(4)">foobar</htmlFigcaption>' +
+					'</htmlFigure>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-image': 'image'
+						}
+					},
+					2: {
+						attributes: {
+							'data-figure': 'image'
+						}
+					},
+					3: {
+						attributes: {
+							'data-figure': 'standalone'
+						}
+					},
+					4: {
+						attributes: {
+							'data-figcaption': 'figcaption'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should not consume attributes already consumed (downcast)', () => {
+			[
+				'htmlAttributes',
+				'htmlFigureAttributes'
+			].forEach( attributeName => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+				} );
+			} );
+
+			dataFilter.allowElement( /^(figure|img)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(figure|figcaption|img)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<figure class="image" data-foo="foo">' +
+					'<img src="/assets/sample.png" data-foo="foo">' +
+				'</figure>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<figure class="image"><img src="/assets/sample.png"></figure>'
+			);
+		} );
 	} );
 
 	describe( 'BlockImage with caption', () => {
@@ -311,18 +557,18 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			const expectedHtml =
-			'<figure class="image" data-figure="figure">' +
-				'<img src="/assets/sample.png" data-image="image">' +
-				'<figcaption data-figcaption="figcaption">A caption</figcaption>' +
-			'</figure>';
+				'<figure class="image" data-figure="figure">' +
+					'<img src="/assets/sample.png" data-image="image">' +
+					'<figcaption data-figcaption="figcaption">A caption</figcaption>' +
+				'</figure>';
 
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-					'<caption htmlAttributes="(3)">A caption</caption>' +
-				'</imageBlock>',
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'</imageBlock>',
 				attributes: {
 					1: {
 						attributes: {
@@ -352,18 +598,18 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			const expectedHtml =
-			'<figure class="image foobar">' +
-				'<img class="foobar" src="/assets/sample.png">' +
-				'<figcaption class="foobar">A caption</figcaption>' +
-			'</figure>';
+				'<figure class="image foobar">' +
+					'<img class="foobar" src="/assets/sample.png">' +
+					'<figcaption class="foobar">A caption</figcaption>' +
+				'</figure>';
 
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-					'<caption htmlAttributes="(3)">A caption</caption>' +
-				'</imageBlock>',
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						classes: [ 'foobar' ]
@@ -382,18 +628,18 @@ describe( 'ImageElementSupport', () => {
 			} ] );
 
 			const expectedHtml =
-			'<figure class="image" style="color:red;">' +
-				'<img style="color:red;" src="/assets/sample.png">' +
-				'<figcaption style="color:red;">A caption</figcaption>' +
-			'</figure>';
+				'<figure class="image" style="color:red;">' +
+					'<img style="color:red;" src="/assets/sample.png">' +
+					'<figcaption style="color:red;">A caption</figcaption>' +
+				'</figure>';
 
 			editor.setData( expectedHtml );
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
-					'<caption htmlAttributes="(3)">A caption</caption>' +
-				'</imageBlock>',
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						styles: {
@@ -426,8 +672,7 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
+				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
@@ -458,8 +703,7 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
+				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
@@ -490,8 +734,7 @@ describe( 'ImageElementSupport', () => {
 			);
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-				data:
-				'<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
+				data: '<imageBlock src="/assets/sample.png"><caption>A caption</caption></imageBlock>',
 				attributes: {}
 			} );
 
@@ -610,7 +853,9 @@ describe( 'ImageElementSupport', () => {
 
 			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
 				data:
-				'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png"><caption htmlAttributes="(3)">A caption</caption></imageBlock>',
+					'<imageBlock htmlAttributes="(1)" htmlFigureAttributes="(2)" src="/assets/sample.png">' +
+						'<caption htmlAttributes="(3)">A caption</caption>' +
+					'</imageBlock>',
 				attributes: range( 1, 4 ).reduce( ( attributes, index ) => {
 					attributes[ index ] = {
 						attributes: {
@@ -633,5 +878,205 @@ describe( 'ImageElementSupport', () => {
 			);
 			/* eslint-enable max-len */
 		} );
+	} );
+
+	describe( 'InlineImage', () => {
+		it( 'should allow attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml = '<p data-paragraph="paragraph"><img src="/assets/sample.png" data-image="image"></p>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-paragraph': 'paragraph'
+						}
+					},
+					2: {
+						attributes: {
+							'data-image': 'image'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should allow classes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				classes: 'foobar'
+			} ] );
+
+			const expectedHtml = '<p class="foobar"><img class="foobar" src="/assets/sample.png"></p>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						classes: [ 'foobar' ]
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should allow styles', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				styles: 'color'
+			} ] );
+
+			const expectedHtml = '<p style="color:red;"><img style="color:red;" src="/assets/sample.png"></p>';
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<paragraph htmlAttributes="(1)">' +
+						'<imageInline htmlAttributes="(2)" src="/assets/sample.png"></imageInline>' +
+					'</paragraph>',
+				attributes: range( 1, 3 ).reduce( ( attributes, index ) => {
+					attributes[ index ] = {
+						styles: {
+							color: 'red'
+						}
+					};
+					return attributes;
+				}, {} )
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should disallow attributes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(img|p)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			editor.setData(
+				'<p data-paragraph="paragraph"><img data-image="image" src="/assets/sample.png"></p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><img src="/assets/sample.png"></p>'
+			);
+		} );
+
+		it( 'should disallow classes', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				classes: 'foobar'
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(img|p)$/,
+				classes: 'foobar'
+			} ] );
+
+			editor.setData(
+				'<p class="foobar"><image class="foobar" src="/assets/sample.png"></p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p><img src="/assets/sample.png"></p>'
+			);
+		} );
+
+		it( 'should disallow styles', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(img|p)$/,
+				styles: 'color'
+			} ] );
+
+			dataFilter.loadDisallowedConfig( [ {
+				name: /^(img|p)$/,
+				styles: 'color'
+			} ] );
+
+			editor.setData(
+				'<p style="color:red;">' +
+					'<img style="color:red;" src="/assets/sample.png">' +
+				'</p>'
+			);
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<p>' +
+					'<img src="/assets/sample.png">' +
+				'</p>'
+			);
+		} );
+
+		it( 'should not consume attributes already consumed (downcast)', () => {
+			[
+				'htmlAttributes',
+				'htmlFigureAttributes'
+			].forEach( attributeName => {
+				editor.conversion.for( 'downcast' ).add( dispatcher => {
+					dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'high' } );
+				} );
+			} );
+
+			dataFilter.allowElement( /^(img|p)$/ );
+			dataFilter.allowAttributes( {
+				name: /^(img|p)$/,
+				attributes: { 'data-foo': true }
+			} );
+
+			editor.setData(
+				'<p>' +
+					'<img src="/assets/sample.png" data-foo="foo">' +
+				'</p>'
+			);
+
+			expect( editor.getData() ).to.equal(
+				'<p><img src="/assets/sample.png"></p>'
+			);
+		} );
+	} );
+
+	describe( 'Inline image with link', () => {
+		// TODO
 	} );
 } );
