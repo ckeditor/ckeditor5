@@ -585,10 +585,11 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates, configures and returns and instance of a dropdown allowing users to narrow
+	 * the search criteria down. The dropdown has a list with switch buttons for each option.
 	 *
 	 * @private
-	 * @returns TODO
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
 	_createOptionsDropdown() {
 		const locale = this.locale;
@@ -608,7 +609,7 @@ export default class FindAndReplaceFormView extends View {
 			withText: true,
 			label: t( 'Match case' ),
 
-			// A dummy prop to make it easier to tell which switch was toggled.
+			// A dummy read-only prop to make it easy to tell which switch was toggled.
 			_isMatchCaseSwitch: true
 		} );
 
@@ -617,10 +618,11 @@ export default class FindAndReplaceFormView extends View {
 			label: t( 'Whole words only' )
 		} );
 
+		// Let the switches be controlled by form's observable properties.
 		matchCaseModel.bind( 'isOn' ).to( this, '_matchCase' );
 		wholeWordsOnlyModel.bind( 'isOn' ).to( this, '_wholeWordsOnly' );
 
-		// Update the state of the view when a toggle switch is being toggled.
+		// Update the state of the form when a switch is toggled.
 		dropdownView.on( 'execute', evt => {
 			if ( evt.source._isMatchCaseSwitch ) {
 				this._matchCase = !this._matchCase;
@@ -628,6 +630,8 @@ export default class FindAndReplaceFormView extends View {
 				this._wholeWordsOnly = !this._wholeWordsOnly;
 			}
 
+			// Toggling a switch makes the form dirty because this changes search criteria
+			// just like typing text of the find input.
 			this.isDirty = true;
 		} );
 

@@ -5,7 +5,7 @@
 
 /* globals Event */
 
-import { View, FormHeaderView, LabeledFieldView, ButtonView } from '@ckeditor/ckeditor5-ui';
+import { View, FormHeaderView, LabeledFieldView, ButtonView, ListView } from '@ckeditor/ckeditor5-ui';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
@@ -17,6 +17,7 @@ import FindAndReplaceFormView from '../../src/ui/findandreplaceformview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 
 import previousArrow from '@ckeditor/ckeditor5-ui/theme/icons/previous-arrow.svg';
+import { icons } from 'ckeditor5/src/core';
 
 describe( 'FindAndReplaceFormView', () => {
 	let view;
@@ -185,7 +186,87 @@ describe( 'FindAndReplaceFormView', () => {
 				} );
 
 				describe( 'options dropdown', () => {
-					// TODO
+					it( 'should be a dropdown', () => {
+						expect( view._optionsDropdown ).to.be.instanceOf( DropdownView );
+						expect( view._optionsDropdown.class ).to.equal( 'ck-options-dropdown' );
+						expect( view._optionsDropdown.class ).to.equal( 'ck-options-dropdown' );
+
+						expect( view._optionsDropdown.buttonView.withText ).to.equal( false );
+						expect( view._optionsDropdown.buttonView.label ).to.equal( 'Show options' );
+						expect( view._optionsDropdown.buttonView.icon ).to.equal( icons.cog );
+						expect( view._optionsDropdown.buttonView.tooltip ).to.equal( true );
+					} );
+
+					it( 'should have a list', () => {
+						expect( view._optionsDropdown.panelView.children.get( 0 ) ).to.be.instanceOf( ListView );
+					} );
+
+					it( 'should have a "match case" switch', () => {
+						const listView = view._optionsDropdown.panelView.children.get( 0 );
+						const listItemView = listView.items.get( 0 );
+						const switchView = listItemView.children.get( 0 );
+
+						expect( switchView.label ).to.equal( 'Match case' );
+						expect( switchView.withText ).to.be.true;
+					} );
+
+					it( 'should have a "whole words only" switch', () => {
+						const listView = view._optionsDropdown.panelView.children.get( 0 );
+						const listItemView = listView.items.get( 1 );
+						const switchView = listItemView.children.get( 0 );
+
+						expect( switchView.label ).to.equal( 'Whole words only' );
+						expect( switchView.withText ).to.be.true;
+					} );
+
+					it( 'should bind switch states to form properties', () => {
+						const listView = view._optionsDropdown.panelView.children.get( 0 );
+						const matchCaseSwitchView = listView.items.get( 0 ).children.get( 0 );
+						const wholeWordsSwitchView = listView.items.get( 1 ).children.get( 0 );
+
+						view._matchCase = view._wholeWordsOnly = false;
+
+						expect( matchCaseSwitchView.isOn ).to.be.false;
+						expect( wholeWordsSwitchView.isOn ).to.be.false;
+
+						view._matchCase = true;
+
+						expect( matchCaseSwitchView.isOn ).to.be.true;
+						expect( wholeWordsSwitchView.isOn ).to.be.false;
+
+						view._wholeWordsOnly = true;
+
+						expect( matchCaseSwitchView.isOn ).to.be.true;
+						expect( wholeWordsSwitchView.isOn ).to.be.true;
+					} );
+
+					it( 'should update form properties when switches are toggled', () => {
+						const listView = view._optionsDropdown.panelView.children.get( 0 );
+						const matchCaseSwitchView = listView.items.get( 0 ).children.get( 0 );
+						const wholeWordsSwitchView = listView.items.get( 1 ).children.get( 0 );
+
+						view._matchCase = view._wholeWordsOnly = false;
+
+						matchCaseSwitchView.fire( 'execute' );
+
+						expect( view._matchCase ).to.be.true;
+						expect( view._wholeWordsOnly ).to.be.false;
+
+						matchCaseSwitchView.fire( 'execute' );
+
+						expect( view._matchCase ).to.be.false;
+						expect( view._wholeWordsOnly ).to.be.false;
+
+						wholeWordsSwitchView.fire( 'execute' );
+
+						expect( view._matchCase ).to.be.false;
+						expect( view._wholeWordsOnly ).to.be.true;
+
+						wholeWordsSwitchView.fire( 'execute' );
+
+						expect( view._matchCase ).to.be.false;
+						expect( view._wholeWordsOnly ).to.be.false;
+					} );
 				} );
 
 				describe( 'replace button view', () => {
