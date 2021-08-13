@@ -20,8 +20,12 @@ InlineEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 		toolbar: {
-			items: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
-			viewportTopOffset: 100
+			items: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
+		},
+		ui: {
+			viewportOffset: {
+				top: 100
+			}
 		}
 	} )
 	.then( newEditor => {
