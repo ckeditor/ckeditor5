@@ -86,7 +86,7 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			it( 'sets view.stickyPanel#viewportTopOffset, if legacy toolbar.vierportTopOffset specified', () => {
-				sinon.stub( console, 'warn' );
+				const spy = sinon.stub( console, 'warn' );
 
 				return VirtualClassicTestEditor
 					.create( 'foo', {
@@ -95,7 +95,9 @@ describe( 'ClassicEditorUI', () => {
 						}
 					} )
 					.then( editor => {
+						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
 						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
+						sinon.assert.calledOnce( spy );
 
 						return editor.destroy();
 					} );
