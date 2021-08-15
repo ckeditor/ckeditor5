@@ -79,6 +79,7 @@ describe( 'ClassicEditorUI', () => {
 						}
 					} )
 					.then( editor => {
+						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
 						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
 
 						return editor.destroy();
