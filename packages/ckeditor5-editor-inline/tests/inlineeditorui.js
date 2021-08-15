@@ -78,6 +78,7 @@ describe( 'InlineEditorUI', () => {
 						const ui = editor.ui;
 						const view = ui.view;
 
+						expect( ui.viewportOffset.top ).to.equal( 100 );
 						expect( view.viewportTopOffset ).to.equal( 100 );
 
 						return editor.destroy();

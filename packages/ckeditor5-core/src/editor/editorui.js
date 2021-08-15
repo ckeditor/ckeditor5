@@ -53,8 +53,9 @@ export default class EditorUI {
 		this.focusTracker = new FocusTracker();
 
 		/**
-		 * TODO
+		 * Stores viewport offsets from every direction.
 		 *
+		 * @readonly
 		 * @observable
 		 */
 		this.set( 'viewportOffset', this._viewportOffset );
