@@ -224,10 +224,10 @@ describe( 'EditorUI', () => {
 				.withArgs( 'toolbar.viewportTopOffset' )
 				.returns( 200 );
 
-			const consoleStup = testUtils.sinon.stub( console, 'warn' );
+			const consoleStub = testUtils.sinon.stub( console, 'warn' );
 
 			expect( ui._viewportOffset ).to.deep.equal( { top: 200 } );
-			sinon.assert.calledWithMatch( consoleStup, 'editor-ui-deprecated-viewport-offset-config' );
+			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
 		} );
 	} );
 } );
