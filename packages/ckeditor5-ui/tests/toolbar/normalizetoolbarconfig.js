@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console */
-
 import normalizeToolbarConfig from '../../src/toolbar/normalizetoolbarconfig';
 
 describe( 'normalizeToolbarConfig()', () => {
@@ -54,16 +52,5 @@ describe( 'normalizeToolbarConfig()', () => {
 		expect( normalized ).to.be.an( 'object' );
 		expect( normalized.items ).to.be.an( 'array' ).of.length( 0 );
 		expect( normalized.removeItems ).to.be.an( 'array' ).of.length( 0 );
-	} );
-
-	it( 'warns when deprecated viewportTopOffset config property is used', () => {
-		const spy = sinon.stub( console, 'warn' );
-
-		const cfg = {
-			viewportTopOffset: 100
-		};
-
-		normalizeToolbarConfig( cfg );
-		sinon.assert.calledOnce( spy );
 	} );
 } );

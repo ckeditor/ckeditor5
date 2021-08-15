@@ -85,7 +85,7 @@ describe( 'InlineEditorUI', () => {
 			} );
 
 			it( 'sets view#viewportTopOffset, if legacy toolbar.vierportTopOffset specified', () => {
-				sinon.stub( console, 'warn' );
+				const spy = sinon.stub( console, 'warn' );
 
 				return VirtualInlineTestEditor
 					.create( 'foo', {
@@ -95,9 +95,10 @@ describe( 'InlineEditorUI', () => {
 					} )
 					.then( editor => {
 						const ui = editor.ui;
-						const view = ui.view;
 
-						expect( view.viewportTopOffset ).to.equal( 100 );
+						expect( ui.viewportOffset.top ).to.equal( 100 );
+						expect( ui.view.viewportTopOffset ).to.equal( 100 );
+						sinon.assert.calledOnce( spy );
 
 						return editor.destroy();
 					} );

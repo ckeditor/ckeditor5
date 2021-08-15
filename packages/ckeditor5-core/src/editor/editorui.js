@@ -57,7 +57,7 @@ export default class EditorUI {
 		 *
 		 * @observable
 		 */
-		this.set( 'viewportOffset', this._viewportTopOffset );
+		this.set( 'viewportOffset', this._viewportOffset );
 
 		/**
 		 * Stores all editable elements used by the editor instance.
@@ -179,12 +179,14 @@ export default class EditorUI {
 	}
 
 	/**
-	 * TODO
+	 * Returns viewport offsets object
+	 * { top: Number, right: Number, bottom: Number, left: Number }
+	 * Only top property is currently supported
 	 *
 	 * @private
-	 * @return Object
+	 * @return {Object}
 	 */
-	get _viewportTopOffset() {
+	get _viewportOffset() {
 		const editor = this.editor;
 		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
 
@@ -197,12 +199,14 @@ export default class EditorUI {
 		// Fall back to deprecated toolbar config
 		if ( legacyOffsetConfig ) {
 			/**
-			 * TODO
+			 * The {@link module:core/editor/editorconfig~EditorConfig#toolbar `EditorConfig#toolbar.viewportTopOffset`}
+			 * property has been deprecated and will be removed in the near future. Please use
+			 * {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} instead.
 			 *
-			 * @error todo-error-name
+			 * @error editor-ui-deprecated-viewport-offset-config
 			 */
 			console.warn(
-				'todo-error-name: ' +
+				'editor-ui-deprecated-viewport-offset-config: ' +
 				'The `toolbar.vieportTopOffset` configuration option is deprecated. ' +
 				'It will be removed from future CKEditor versions. Use `ui.viewportOffset.top` instead.'
 			);
