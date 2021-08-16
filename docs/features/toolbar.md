@@ -64,7 +64,6 @@ You can use the extended {@link module:core/editor/editorconfig~EditorConfig#too
 ```js
 toolbar: {
     items: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ],
-    viewportTopOffset: 30,
     shouldNotGroupWhenFull: true
 }
 ```
@@ -73,7 +72,11 @@ toolbar: {
 
  * **`removeItems`** &ndash; An array of toolbar item names. With this setting you can modify the default toolbar configuration without the need of defining the entire list (you can specify a couple of buttons that you want to remove instead of specifying all the buttons you want to keep). If, after removing an item, toolbar will have two or more consecutive separators (`'|'`), the duplicates will be removed automatically.
 
- * **`viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar. Useful when a page with which the editor is being integrated has some other sticky or fixed elements (e.g. the top menu). Thanks to setting the toolbar offset, the toolbar will not be positioned underneath or above the page's UI.
+ * **`viewportTopOffset` (deprecated)** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar. Useful when a page with which the editor is being integrated has some other sticky or fixed elements (e.g. the top menu). Thanks to setting the toolbar offset, the toolbar will not be positioned underneath or above the page's UI.
+
+	<info-box warning>
+		This property has been deprecated and will be removed in the future versions of CKEditor. Please use {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} instead.
+	</info-box>
 
  * **`shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items and let them wrap to the next line when there is not enough space to display them in a single row. This setting is `false` by default, which enables items grouping.
 
