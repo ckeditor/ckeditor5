@@ -5,8 +5,6 @@
 
 /* eslint-env node */
 
-const cwd = process.cwd();
-
 const path = require( 'path' );
 const fs = require( 'fs' );
 const chalk = require( 'chalk' );
@@ -16,6 +14,8 @@ const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
 const Table = require( 'cli-table' );
 const { tools, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+const cwd = normalizePath( process.cwd() );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const CONTENT_STYLES_GUIDE_PATH = path.join( __dirname, '..', '..', 'docs', 'builds', 'guides', 'integration', 'content-styles.md' );
@@ -49,7 +49,7 @@ getCkeditor5ModulePaths()
 				return checkWhetherIsCKEditor5Plugin( modulePath )
 					.then( isModule => {
 						if ( isModule ) {
-							ckeditor5Modules.push( path.join( cwd, modulePath ) );
+							ckeditor5Modules.push( normalizePath( path.join( cwd, modulePath ) ) );
 						}
 					} );
 			} );
@@ -201,8 +201,7 @@ function generateCKEditor5Source( ckeditor5Modules ) {
 		''
 	];
 
-	for ( let { modulePath, pluginName } of ckeditor5Modules ) {
-		modulePath = modulePath.split( '\u005C' ).join( '/' );
+	for ( const { modulePath, pluginName } of ckeditor5Modules ) {
 		sourceFileContent.push( `import ${ pluginName } from '${ modulePath }';` );
 	}
 
@@ -441,7 +440,7 @@ function findNewPlugins( currentPlugins, previousPlugins ) {
 
 	for ( const data of currentPlugins ) {
 		// Use relative paths.
-		const modulePath = normalizePath( data.modulePath.replace( cwd + path.sep, '' ) );
+		const modulePath = normalizePath( data.modulePath.replace( cwd + path.posix.sep, '' ) );
 
 		if ( !previousPlugins[ modulePath ] ) {
 			newPlugins.push( data );
