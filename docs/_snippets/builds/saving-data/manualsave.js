@@ -17,8 +17,10 @@ document.querySelector( '#snippet-manualsave-lag' ).addEventListener( 'change', 
 ClassicEditor
 	.create( document.querySelector( '#snippet-manualsave' ), {
 		cloudServices: CS_CONFIG,
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

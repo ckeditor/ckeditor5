@@ -8,8 +8,10 @@
 ClassicEditor
 	.create( document.querySelector( '#snippet-link-decorators' ), {
 		cloudServices: CS_CONFIG,
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		link: {
 			addTargetToExternalLinks: true,

@@ -12,8 +12,10 @@ ClassicEditor.builtinPlugins.push( Base64UploadAdapter );
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-base64-upload' ), {
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {
