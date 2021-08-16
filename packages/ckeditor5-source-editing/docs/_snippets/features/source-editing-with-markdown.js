@@ -35,6 +35,8 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [
+				'linkImage',
+				'|',
 				'imageStyle:block',
 				'imageStyle:side',
 				'|',
