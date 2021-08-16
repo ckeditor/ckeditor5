@@ -13,6 +13,7 @@ const mkdirp = require( 'mkdirp' );
 const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
 const Table = require( 'cli-table' );
+const readline = require( 'readline' );
 const { tools, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const cwd = normalizePath( process.cwd() );
@@ -31,8 +32,6 @@ const contentRules = {
 	variables: [],
 	atRules: {}
 };
-
-const shouldCommitChanges = process.argv.includes( '--commit' );
 
 logProcess( 'Gathering all CKEditor 5 modules...' );
 
@@ -76,20 +75,28 @@ getCkeditor5ModulePaths()
 
 		const newPlugins = findNewPlugins( foundModules, contentStylesDetails.plugins );
 
-		if ( newPlugins.length ) {
-			console.log( 'Found new plugins.' );
-			displayNewPluginsTable( newPlugins );
-		} else {
+		if ( !newPlugins.length ) {
 			console.log( 'Previous and current versions of the content styles stylesheet were generated with the same set of plugins.' );
-		}
-
-		if ( !shouldCommitChanges ) {
 			logProcess( 'Done.' );
 
 			return Promise.resolve();
 		}
 
-		if ( newPlugins.length ) {
+		console.log( 'Found new plugins.' );
+		displayNewPluginsTable( newPlugins );
+
+		const rl = readline.createInterface( {
+			input: process.stdin,
+			output: process.stdout
+		} );
+
+		rl.question( 'Do you want to commit the changes? (Y/N): ', answer => {
+			rl.close();
+			if ( answer !== 'Y' ) {
+				console.log( 'Changes will not be commited.' );
+				return Promise.resolve();
+			}
+
 			logProcess( 'Updating the content styles details file...' );
 
 			tools.updateJSONFile( CONTENT_STYLES_DETAILS_PATH, json => {
@@ -104,39 +111,39 @@ getCkeditor5ModulePaths()
 
 				return json;
 			} );
-		}
 
-		logProcess( 'Updating the content styles guide...' );
+			logProcess( 'Updating the content styles guide...' );
 
-		const promises = [
-			readFile( CONTENT_STYLES_GUIDE_PATH ),
-			readFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ) )
-		];
+			const promises = [
+				readFile( CONTENT_STYLES_GUIDE_PATH ),
+				readFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ) )
+			];
 
-		return Promise.all( promises )
-			.then( ( [ guideContent, newContentStyles ] ) => {
-				guideContent = guideContent.replace( /```css([^`]+)```/, '```css\n' + newContentStyles + '\n```' );
+			return Promise.all( promises )
+				.then( ( [ guideContent, newContentStyles ] ) => {
+					guideContent = guideContent.replace( /```css([^`]+)```/, '```css\n' + newContentStyles + '\n```' );
 
-				return writeFile( CONTENT_STYLES_GUIDE_PATH, guideContent );
-			} )
-			.then( () => {
-				logProcess( 'Saving and committing...' );
+					return writeFile( CONTENT_STYLES_GUIDE_PATH, guideContent );
+				} )
+				.then( () => {
+					logProcess( 'Saving and committing...' );
 
-				const contentStyleGuide = CONTENT_STYLES_GUIDE_PATH.replace( cwd + path.sep, '' );
-				const contentStyleDetails = CONTENT_STYLES_DETAILS_PATH.replace( cwd + path.sep, '' );
+					const contentStyleGuide = CONTENT_STYLES_GUIDE_PATH.replace( cwd + path.sep, '' );
+					const contentStyleDetails = CONTENT_STYLES_DETAILS_PATH.replace( cwd + path.sep, '' );
 
-				// Commit the documentation.
-				if ( exec( `git diff --name-only ${ contentStyleGuide } ${ contentStyleDetails }` ).trim().length ) {
-					exec( `git add ${ contentStyleGuide } ${ contentStyleDetails }` );
-					exec( 'git commit -m "Docs (ckeditor5): Updated the content styles stylesheet."' );
+					// Commit the documentation.
+					if ( exec( `git diff --name-only ${ contentStyleGuide } ${ contentStyleDetails }` ).trim().length ) {
+						exec( `git add ${ contentStyleGuide } ${ contentStyleDetails }` );
+						exec( 'git commit -m "Docs (ckeditor5): Updated the content styles stylesheet."' );
 
-					console.log( 'Successfully updated the content styles guide.' );
-				} else {
-					console.log( 'Nothing to commit. The content styles guide is up to date.' );
-				}
+						console.log( 'Successfully updated the content styles guide.' );
+					} else {
+						console.log( 'Nothing to commit. The content styles guide is up to date.' );
+					}
 
-				logProcess( 'Done.' );
-			} );
+					logProcess( 'Done.' );
+				} );
+		} );
 	} )
 	.catch( err => {
 		console.log( err );
