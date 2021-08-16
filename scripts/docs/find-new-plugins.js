@@ -19,7 +19,6 @@ const readline = require( 'readline' );
 const { tools, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
-const CONTENT_STYLES_GUIDE_PATH = path.join( __dirname, '..', '..', 'docs', 'builds', 'guides', 'integration', 'content-styles.md' );
 const CONTENT_STYLES_DETAILS_PATH = path.join( __dirname, 'content-styles-details.json' );
 
 const contentStylesDetails = require( CONTENT_STYLES_DETAILS_PATH );
@@ -112,37 +111,23 @@ getCkeditor5ModulePaths()
 				return json;
 			} );
 
-			logProcess( 'Updating the content styles guide...' );
+			logProcess( 'Saving and committing...' );
 
-			const promises = [
-				readFile( CONTENT_STYLES_GUIDE_PATH ),
-				readFile( path.join( DESTINATION_DIRECTORY, 'content-styles.css' ) )
-			];
+			const contentStyleDetails = CONTENT_STYLES_DETAILS_PATH.replace( cwd + path.sep, '' );
 
-			return Promise.all( promises )
-				.then( ( [ guideContent, newContentStyles ] ) => {
-					guideContent = guideContent.replace( /```css([^`]+)```/, '```css\n' + newContentStyles + '\n```' );
+			// Commit the documentation.
+			if ( exec( `git diff --name-only ${ contentStyleDetails }` ).trim().length ) {
+				exec( `git add ${ contentStyleDetails }` );
+				exec( 'git commit -m "Docs (ckeditor5): Updated the content styles stylesheet."' );
 
-					return writeFile( CONTENT_STYLES_GUIDE_PATH, guideContent );
-				} )
-				.then( () => {
-					logProcess( 'Saving and committing...' );
+				console.log( 'Successfully updated the content styles guide.' );
+			} else {
+				console.log( 'Nothing to commit. The content styles guide is up to date.' );
+			}
 
-					const contentStyleGuide = CONTENT_STYLES_GUIDE_PATH.replace( cwd + path.sep, '' );
-					const contentStyleDetails = CONTENT_STYLES_DETAILS_PATH.replace( cwd + path.sep, '' );
+			logProcess( 'Done.' );
 
-					// Commit the documentation.
-					if ( exec( `git diff --name-only ${ contentStyleGuide } ${ contentStyleDetails }` ).trim().length ) {
-						exec( `git add ${ contentStyleGuide } ${ contentStyleDetails }` );
-						exec( 'git commit -m "Docs (ckeditor5): Updated the content styles stylesheet."' );
-
-						console.log( 'Successfully updated the content styles guide.' );
-					} else {
-						console.log( 'Nothing to commit. The content styles guide is up to date.' );
-					}
-
-					logProcess( 'Done.' );
-				} );
+			return Promise.resolve();
 		} );
 	} )
 	.catch( err => {
