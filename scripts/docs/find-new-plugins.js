@@ -12,11 +12,9 @@ const fs = require( 'fs' );
 const chalk = require( 'chalk' );
 const glob = require( 'glob' );
 const mkdirp = require( 'mkdirp' );
-const postcss = require( 'postcss' );
-const webpack = require( 'webpack' );
 const Table = require( 'cli-table' );
 const readline = require( 'readline' );
-const { tools, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const CONTENT_STYLES_DETAILS_PATH = path.join( __dirname, 'content-styles-details.json' );
@@ -25,12 +23,6 @@ const contentStylesDetails = require( CONTENT_STYLES_DETAILS_PATH );
 
 // An array of objects with plugins used to generate the current version of the content styles.
 let foundModules;
-
-const contentRules = {
-	selector: [],
-	variables: [],
-	atRules: {}
-};
 
 logProcess( 'Gathering all CKEditor 5 modules...' );
 
@@ -63,11 +55,6 @@ getCkeditor5ModulePaths()
 	} )
 	.then( ckeditor5Modules => {
 		foundModules = ckeditor5Modules;
-
-		logProcess( 'Building the editor...' );
-		const webpackConfig = getWebpackConfig();
-
-		return runWebpack( webpackConfig );
 	} )
 	.then( () => {
 		logProcess( 'Looking for new plugins...' );
@@ -75,7 +62,7 @@ getCkeditor5ModulePaths()
 		const newPlugins = findNewPlugins( foundModules, contentStylesDetails.plugins );
 
 		if ( !newPlugins.length ) {
-			console.log( 'Previous and current versions of the content styles stylesheet were generated with the same set of plugins.' );
+			console.log( 'Previous and current versions of the content styles details were generated with the same set of plugins.' );
 			logProcess( 'Done.' );
 
 			return Promise.resolve();
@@ -95,8 +82,6 @@ getCkeditor5ModulePaths()
 				console.log( 'Changes will not be commited.' );
 				return Promise.resolve();
 			}
-
-			logProcess( 'Updating the content styles details file...' );
 
 			tools.updateJSONFile( CONTENT_STYLES_DETAILS_PATH, json => {
 				const newPluginsObject = {};
@@ -120,9 +105,9 @@ getCkeditor5ModulePaths()
 				exec( `git add ${ contentStyleDetails }` );
 				exec( 'git commit -m "Docs (ckeditor5): Updated the content styles stylesheet."' );
 
-				console.log( 'Successfully updated the content styles guide.' );
+				console.log( 'Successfully updated the content styles details.' );
 			} else {
-				console.log( 'Nothing to commit. The content styles guide is up to date.' );
+				console.log( 'Nothing to commit. The content styles details is up to date.' );
 			}
 
 			logProcess( 'Done.' );
@@ -216,172 +201,6 @@ function generateCKEditor5Source( ckeditor5Modules ) {
 	function capitalize( value ) {
 		return value.charAt( 0 ).toUpperCase() + value.slice( 1 );
 	}
-}
-
-/**
- * Prepares the configuration for webpack.
- *
- * @returns {Object}
- */
-function getWebpackConfig() {
-	const postCssConfig = styles.getPostCssConfig( {
-		themeImporter: {
-			themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-		},
-		minify: false
-	} );
-
-	postCssConfig.plugins.push( postCssContentStylesPlugin( contentRules ) );
-
-	return {
-		mode: 'development',
-		devtool: 'source-map',
-		entry: {
-			ckeditor5: path.join( DESTINATION_DIRECTORY, 'source.js' )
-		},
-		output: {
-			path: DESTINATION_DIRECTORY,
-			filename: '[name].js'
-		},
-		resolve: {
-			modules: getModuleResolvePaths()
-		},
-		resolveLoader: {
-			modules: getModuleResolvePaths()
-		},
-		module: {
-			rules: [
-				{
-					test: /\.svg$/,
-					use: [ 'raw-loader' ]
-				},
-				{
-					test: /\.css$/,
-					use: [
-						'style-loader',
-						{
-							loader: 'postcss-loader',
-							options: postCssConfig
-						}
-					]
-				}
-			]
-		}
-	};
-}
-
-/**
- * Returns the PostCSS plugin that allows intercepting CSS definition used in the editor's build.
- *
- * @param {Object} contentRules
- * @param {Array.<String>} contentRules.variables Variables defined as `:root`.
- * @param {Object} contentRules.atRules Definitions of behaves.
- * @param {Array.<String>} contentRules.selector CSS definitions for all selectors.
- * @returns {Function}
- */
-function postCssContentStylesPlugin( contentRules ) {
-	return postcss.plugin( 'list-content-styles', function() {
-		const selectorStyles = contentRules.selector;
-		const variables = contentRules.variables;
-
-		return root => {
-			root.walkRules( rule => {
-				for ( const selector of rule.selectors ) {
-					const data = {
-						file: root.source.input.file,
-						css: rule.toString()
-					};
-
-					if ( selector.match( ':root' ) ) {
-						addDefinition( variables, data );
-					}
-
-					if ( selector.match( '.ck-content' ) ) {
-						if ( rule.parent.name && rule.parent.params ) {
-							const atRule = getAtRuleArray( contentRules.atRules, rule.parent.name, rule.parent.params );
-
-							addDefinition( atRule, data );
-						} else {
-							addDefinition( selectorStyles, data );
-						}
-					}
-				}
-			} );
-		};
-	} );
-
-	/**
-	 * @param {Object} collection
-	 * @param {String} name Name of an `at-rule`.
-	 * @param {String} params Parameters that describes the `at-rule`.
-	 * @returns {Array}
-	 */
-	function getAtRuleArray( collection, name, params ) {
-		const definition = `${ name } ${ params }`;
-
-		if ( !collection[ definition ] ) {
-			collection[ definition ] = [];
-		}
-
-		return collection[ definition ];
-	}
-
-	/**
-	 * Checks whether specified definition is duplicated in the collection.
-	 *
-	 * @param {Array.<StyleStructure>} collection
-	 * @param {StyleStructure} def
-	 * @returns {Boolean}
-	 */
-	function isDuplicatedDefinition( collection, def ) {
-		for ( const item of collection ) {
-			if ( item.file === def.file && item.css === def.css ) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Adds definition to the collection if it does not exist in the collection.
-	 *
-	 * @param {Array.<StyleStructure>} collection
-	 * @param {StyleStructure} def
-	 */
-	function addDefinition( collection, def ) {
-		if ( !isDuplicatedDefinition( collection, def ) ) {
-			collection.push( def );
-		}
-	}
-}
-
-/**
- * @param {Object} webpackConfig
- * @returns {Promise}
- */
-function runWebpack( webpackConfig ) {
-	return new Promise( ( resolve, reject ) => {
-		webpack( webpackConfig, ( err, stats ) => {
-			if ( err ) {
-				reject( err );
-			} else if ( stats.hasErrors() ) {
-				reject( new Error( stats.toString() ) );
-			} else {
-				resolve();
-			}
-		} );
-	} );
-}
-
-/**
- * @returns {Array.<String>}
- */
-function getModuleResolvePaths() {
-	return [
-		path.resolve( __dirname, '..', '..', 'node_modules' ),
-		'node_modules'
-	];
 }
 
 /**
