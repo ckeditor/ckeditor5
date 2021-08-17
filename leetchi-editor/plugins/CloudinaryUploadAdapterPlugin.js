@@ -1,6 +1,5 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { CloudinaryUnsigned } from 'puff-puff/CKEditor';
-
+import { CloudinaryUnsigned } from './puff-puff/CloudinaryUnsigned';
 export default class CloudinaryUploadAdapter extends Plugin {
 	/**
 	 * @inheritDoc

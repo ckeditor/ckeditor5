@@ -103,14 +103,13 @@ export default class CloudinaryTrackImage extends Plugin {
 				removedNodes.forEach((node) => {
 					const removedNode = node.position.nodeAfter;
 					const imageUploadedAttribute =
-						removedNode.getAttribute('imageUploaded');
+						removedNode.getAttribute('cloudinaryPublicId');
 
 					//check if the image has been uploaded with cloudinary
-					if (
-						imageUploadedAttribute !== undefined &&
-						imageUploadedAttribute === 'cloudinary'
-					) {
-						removedImageCallBack(removedNode.getAttribute('src'));
+					if (imageUploadedAttribute !== undefined) {
+						removedImageCallBack(
+							removedNode.getAttribute('cloudinaryPublicId')
+						);
 					}
 				});
 				return;
@@ -122,11 +121,11 @@ export default class CloudinaryTrackImage extends Plugin {
 			.on('uploadComplete', (evt, { data, imageElement }) => {
 				editor.model.change((writer) => {
 					writer.setAttribute(
-						'imageUploaded',
-						'cloudinary',
+						'cloudinaryPublicId',
+						data.public_id,
 						imageElement
 					);
-					insertedImageCallBack(data.default);
+					insertedImageCallBack(data.public_id);
 				});
 			});
 	}

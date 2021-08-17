@@ -40,8 +40,7 @@
     "@ckeditor/ckeditor5-paragraph": "^29.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^29.0.0",
     "@ckeditor/ckeditor5-typing": "^29.0.0",
-    "@wwalc/ckeditor5-emoji": "^11.0.2",
-    "puff-puff": "^1.2.0"
+    "@wwalc/ckeditor5-emoji": "^11.0.2"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^29.0.0",
