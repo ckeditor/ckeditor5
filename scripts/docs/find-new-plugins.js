@@ -11,12 +11,10 @@ const path = require( 'path' );
 const fs = require( 'fs' );
 const chalk = require( 'chalk' );
 const glob = require( 'glob' );
-const mkdirp = require( 'mkdirp' );
 const Table = require( 'cli-table' );
 const readline = require( 'readline' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const CONTENT_STYLES_DETAILS_PATH = path.join( __dirname, 'content-styles-details.json' );
 
 const contentStylesDetails = require( CONTENT_STYLES_DETAILS_PATH );
@@ -49,14 +47,12 @@ getCkeditor5ModulePaths()
 	} )
 	.then( ckeditor5Modules => {
 		console.log( `Found ${ ckeditor5Modules.length } plugins.` );
-		logProcess( 'Generating source file...' );
 
-		return mkdirp( DESTINATION_DIRECTORY ).then( () => generateCKEditor5Source( ckeditor5Modules ) );
-	} )
-	.then( ckeditor5Modules => {
-		foundModules = ckeditor5Modules;
-	} )
-	.then( () => {
+		foundModules = ckeditor5Modules.map( modulePath => {
+			const pluginName = capitalize( path.basename( modulePath, '.js' ) );
+			return { modulePath, pluginName };
+		} );
+
 		logProcess( 'Looking for new plugins...' );
 
 		const newPlugins = findNewPlugins( foundModules, contentStylesDetails.plugins );
@@ -156,54 +152,6 @@ function checkWhetherIsCKEditor5Plugin( modulePath ) {
 }
 
 /**
- * Generates a source file that will be used to build the editor.
- *
- * @param {Array.<String>} ckeditor5Modules Paths to CKEditor 5 modules.
- * @returns {Promise>}
- */
-function generateCKEditor5Source( ckeditor5Modules ) {
-	ckeditor5Modules = ckeditor5Modules.map( modulePath => {
-		const pluginName = capitalize( path.basename( modulePath, '.js' ) );
-		return { modulePath, pluginName };
-	} );
-
-	const sourceFileContent = [
-		'/**',
-		` * @license Copyright (c) 2003-${ new Date().getFullYear() }, CKSource - Frederico Knabben. All rights reserved.`,
-		' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
-		' */',
-		'',
-		'// The editor creator to use.',
-		'import ClassicEditorBase from \'@ckeditor/ckeditor5-editor-classic/src/classiceditor\';',
-		''
-	];
-
-	for ( let { modulePath, pluginName } of ckeditor5Modules ) {
-		modulePath = normalizePath( modulePath );
-		sourceFileContent.push( `import ${ pluginName } from '${ modulePath }';` );
-	}
-
-	sourceFileContent.push( '' );
-	sourceFileContent.push( 'export default class ClassicEditor extends ClassicEditorBase {}' );
-	sourceFileContent.push( '' );
-	sourceFileContent.push( '// Plugins to include in the build.' );
-	sourceFileContent.push( 'ClassicEditor.builtinPlugins = [' );
-
-	for ( const { pluginName } of ckeditor5Modules ) {
-		sourceFileContent.push( '\t' + pluginName + ',' );
-	}
-
-	sourceFileContent.push( '];' );
-
-	return writeFile( path.join( DESTINATION_DIRECTORY, 'source.js' ), sourceFileContent.join( '\n' ) )
-		.then( () => ckeditor5Modules );
-
-	function capitalize( value ) {
-		return value.charAt( 0 ).toUpperCase() + value.slice( 1 );
-	}
-}
-
-/**
  * Resolves the promise with the content of the file saved under the `filePath` location.
  *
  * @param {String} filePath The path to fhe file.
@@ -217,25 +165,6 @@ function readFile( filePath ) {
 			}
 
 			return resolve( content );
-		} );
-	} );
-}
-
-/**
- * Saves the `data` value to the file saved under the `filePath` location.
- *
- * @param {String} filePath The path to fhe file.
- * @param {String} data The content to save.
- * @returns {Promise.<String>}
- */
-function writeFile( filePath, data ) {
-	return new Promise( ( resolve, reject ) => {
-		fs.writeFile( filePath, data, err => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve();
 		} );
 	} );
 }
@@ -292,6 +221,10 @@ function exec( command ) {
 
 function logProcess( message ) {
 	console.log( '\n📍 ' + chalk.cyan( message ) );
+}
+
+function capitalize( value ) {
+	return value.charAt( 0 ).toUpperCase() + value.slice( 1 );
 }
 
 /**
