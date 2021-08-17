@@ -97,16 +97,14 @@ export default class DataTransfer {
 }
 
 function getFiles( nativeDataTransfer ) {
-	// A helper to ensure that property is not evaluated more than once.
-	const convertToArray = arrayLike => arrayLike ? Array.from( arrayLike ) : [];
-
 	// DataTransfer.files and items are array-like and might not have an iterable interface.
-	const files = convertToArray( nativeDataTransfer.files );
-	const items = convertToArray( nativeDataTransfer.items );
+	const files = Array.from( nativeDataTransfer.files || [] );
+	const items = Array.from( nativeDataTransfer.items || [] );
 
 	if ( files.length ) {
 		return files;
 	}
+
 	// Chrome has empty DataTransfer.files, but allows getting files through the items interface.
 	return items
 		.filter( item => item.kind === 'file' )
