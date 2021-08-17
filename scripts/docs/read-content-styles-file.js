@@ -7,6 +7,11 @@
 
 const fs = require( 'fs' );
 
+/**
+ * Reads and returns content of the content-styles.css file.
+ *
+ * @returns {String} Content of the file
+ */
 module.exports = function readContentStylesFile() {
 	return fs.readFileSync( 'build/content-styles/content-styles.css', 'utf-8' );
 };
