@@ -573,7 +573,7 @@ export function remove() {
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
 		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
-			conversionApi.mapper.unbindViewElement( child, false );
+			conversionApi.mapper.unbindViewElement( child, { defer: true } );
 		}
 	};
 }
@@ -797,8 +797,7 @@ export function wrap( elementCreator ) {
  * It is expected that the function returns an {@link module:engine/view/element~Element}.
  * The result of the function will be inserted into the view.
  *
- * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
+ * The converter automatically consumes the corresponding value from the consumables list and binds the model and view elements.
  *
  *		downcastDispatcher.on(
  *			'insert:myElem',
@@ -832,30 +831,17 @@ export function insertElement( elementCreator ) {
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		// Bring back the old view element if it's same as the previous one.
-		// TODO this is useless if any of the attributes are converted separately
-		//  but helps with replacing table cells that do not need to be replaced (but still useless for col/row span).
-		if ( data.reconversion ) {
-			const oldViewElement = conversionApi.mapper.toViewElement( data.item );
-
-			if ( oldViewElement && oldViewElement.isSimilar( viewElement ) && oldViewElement.root != viewPosition.root ) {
-				conversionApi.writer.move( conversionApi.writer.createRangeOn( oldViewElement ), viewPosition );
-
-				return;
-			}
-		}
-
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, data.reconversion );
+		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
 /**
  * TODO
  */
-function insertStructure( elementCreator ) {
+function insertStructure( elementCreator, consumer ) {
 	return ( evt, data, conversionApi ) => {
 		let debugSlots = false; // eslint-disable-line
 		// @if CK_DEBUG_SLOTS // debugSlots = true;
@@ -865,25 +851,7 @@ function insertStructure( elementCreator ) {
 		// View creation.
 		const viewElement = elementCreator( data.item, {
 			...conversionApi,
-			slotFor( mode ) {
-				const slot = debugSlots ?
-					conversionApi.writer.createContainerElement( 'div', { 'data-slot': String( mode ) } ) :
-					conversionApi.writer.createContainerElement( '$slot' );
-
-				if ( mode == 'children' ) {
-					slotsMap.set( slot, Array.from( data.item.getChildren() ) );
-				} else if ( typeof mode == 'function' ) {
-					slotsMap.set( slot, Array.from( data.item.getChildren() ).filter( element => mode( element ) ) );
-				} else {
-					throw new Error( 'unknown slot mode' );
-				}
-
-				// TODO throw if the same element is in multiple slots
-				// TODO all child nodes must be covered here so they won't get converted separately
-				// TODO Make sure that slots are created for the elements themself or direct descendants and not other elements.
-
-				return slot;
-			}
+			slotFor: createSlotFactory( data.item, slotsMap, conversionApi.writer, { debugSlots } )
 		} );
 
 		// Insert the new structure if any was created. Otherwise it's removed.
@@ -891,56 +859,24 @@ function insertStructure( elementCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		// Check if all children are covered by slots and there is no child that landed in multiple slots.
+		validateSlotsChildren( data.item, slotsMap );
+
+		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
+		if ( !consumer( data.item, conversionApi.consumable ) ) {
 			return;
 		}
-
-		// TODO consume attributes that were watched to trigger this conversion
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		// Fill slots.
-
-		conversionApi.mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'high' } );
-
-		let currentSlot = null;
-
-		// Fill slots with nested view nodes.
-		for ( const [ slot, nodes ] of slotsMap ) {
-			currentSlot = slot;
-
-			reinsertNodes( viewElement, nodes, conversionApi, data.reconversion );
-
-			if ( !debugSlots ) {
-				conversionApi.writer.move( conversionApi.writer.createRangeIn( slot ), conversionApi.writer.createPositionBefore( slot ) );
-				conversionApi.writer.remove( slot );
-			}
-		}
-
-		conversionApi.mapper.off( 'modelToViewPosition', toViewPositionMapping );
-
-		function toViewPositionMapping( evt, data ) {
-			if ( data.viewPosition || !currentSlot ) {
-				return;
-			}
-
-			const nodeAfter = data.modelPosition.nodeAfter;
-
-			if ( !nodeAfter ) {
-				return;
-			}
-
-			const index = slotsMap.get( currentSlot ).indexOf( nodeAfter );
-
-			if ( index < 0 ) {
-				return;
-			}
-
-			data.viewPosition = data.mapper.findPositionIn( currentSlot, index );
-		}
+		// Fill view slots with previous view elements or create new ones.
+		fillSlots( viewElement, slotsMap, conversionApi, {
+			reconversion: data.reconversion,
+			debugSlots
+		} );
 	};
 }
 
@@ -1522,7 +1458,16 @@ function downcastElementToElement( config ) {
 	};
 }
 
-// TODO
+// Model element to view structure conversion helper.
+//
+// See {@link ~DowncastHelpers#elementToStructure `.elementToStructure()` downcast helper} for examples and config params description.
+//
+// @param {Object} config Conversion configuration.
+// @param {String|Object} config.model
+// @param {Array.<String>} [config.model.attributes]
+// @param {Boolean} [config.model.children]
+// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
+// @returns {Function} Conversion helper.
 function downcastElementToStructure( config ) {
 	config = cloneDeep( config );
 
@@ -1530,7 +1475,11 @@ function downcastElementToStructure( config ) {
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model.name, insertStructure( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on(
+			'insert:' + config.model.name,
+			insertStructure( config.view, createConsumer( config.model ) ),
+			{ priority: config.converterPriority || 'normal' }
+		);
 
 		if ( config.model.children || config.model.attributes.length ) {
 			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
@@ -1682,7 +1631,13 @@ function downcastMarkerToHighlight( config ) {
 	};
 }
 
-// TODO
+// Takes `config.model`, and converts it to an object with normalized structure.
+//
+// @param {String|Object} model Model configuration or element name.
+// @param {String} model.name
+// @param {Array.<String>} [model.attributes]
+// @param {Boolean} [model.children]
+// @returns {Object}
 function normalizeModelElementConfig( model ) {
 	if ( typeof model == 'string' ) {
 		model = { name: model };
@@ -1830,7 +1785,13 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 	return descriptor;
 }
 
-// TODO
+// Creates a function that checks a single differ diff item whether it should trigger reconversion.
+//
+// @param {Object} model A normalized `config.model` converter configuration.
+// @param {String} model.name The name of element.
+// @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
+// @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @returns {Function}
 function createChangeReducerCallback( model ) {
 	return ( node, change ) => {
 		if ( !node.is( 'element', model.name ) ) {
@@ -1851,7 +1812,14 @@ function createChangeReducerCallback( model ) {
 	};
 }
 
-// TODO
+// Creates a `reduceChanges` event handler for reconversion.
+//
+// @param {Object} model A normalized `config.model` converter configuration.
+// @param {String} model.name The name of element.
+// @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
+// @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @param {Function} The callback for checking a single diff item whether it should trigger reconversion.
+// @returns {Function}
 function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
 	return ( evt, data ) => {
 		const reducedChanges = [];
@@ -1914,13 +1882,143 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 	};
 }
 
-// TODO
-function reinsertNodes( viewElement, nodes, conversionApi, reconversion ) {
+// Creates a function that checks if an element and it's watched attributes can be consumed and consumes them.
+//
+// @param {Object} model A normalized `config.model` converter configuration.
+// @param {String} model.name The name of element.
+// @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
+// @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @returns {Function}
+function createConsumer( model ) {
+	return ( node, consumable ) => {
+		const events = [ 'insert' ];
+
+		// Collect all set attributes that are triggering conversion.
+		for ( const attributeName of model.attributes ) {
+			if ( node.hasAttribute( attributeName ) ) {
+				events.push( `attribute:${ attributeName }` );
+			}
+		}
+
+		if ( !events.every( event => consumable.test( node, event ) ) ) {
+			return false;
+		}
+
+		return events.every( event => consumable.consume( node, event ) );
+	};
+}
+
+// Creates a function that create view slots.
+//
+// @param {module:engine/model/element~Element} element
+// @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {Object} options
+// @param {Boolean} [options.debugSlots]
+// @returns {Function}
+function createSlotFactory( element, slotsMap, writer, options ) {
+	return modeOrFilter => {
+		const slot = options.debugSlots ?
+			writer.createContainerElement( 'div', { 'data-slot': String( modeOrFilter ) } ) :
+			writer.createContainerElement( '$slot' );
+
+		let children = null;
+
+		if ( modeOrFilter === 'children' ) {
+			children = Array.from( element.getChildren() );
+		} else if ( typeof modeOrFilter == 'function' ) {
+			children = Array.from( element.getChildren() ).filter( element => modeOrFilter( element ) );
+		} else {
+			throw new Error( 'unknown slot mode' ); // TODO
+		}
+
+		slotsMap.set( slot, children );
+
+		return slot;
+	};
+}
+
+// Checks if all children are covered by slots and there is no child that landed in multiple slots.
+//
+// @param {module:engine/model/element~Element}
+// @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
+function validateSlotsChildren( element, slotsMap ) {
+	const childrenInSlots = Array.from( slotsMap.values() ).flat();
+	const uniqueChildrenInSlots = new Set( childrenInSlots );
+
+	if ( uniqueChildrenInSlots.size != childrenInSlots.length ) {
+		throw new Error( 'same child in multiple slots' );
+	}
+
+	if ( uniqueChildrenInSlots.size != element.childCount ) {
+		throw new Error( 'not all children covered by slots' );
+	}
+}
+
+// Fill slots with appropriate view elements.
+//
+// @param {module:engine/view/element~Element} viewElement
+// @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Object} options
+// @param {Boolean} [options.reconversion]
+// @param {Boolean} [options.debugSlots]
+function fillSlots( viewElement, slotsMap, conversionApi, options ) {
+	// Set temporary position mapping to redirect child view elements into a proper slots.
+	conversionApi.mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'high' } );
+
+	let currentSlot = null;
+
+	// Fill slots with nested view nodes.
+	for ( const [ slot, nodes ] of slotsMap ) {
+		currentSlot = slot;
+
+		reinsertNodes( viewElement, nodes, conversionApi, options );
+
+		if ( !options.debugSlots ) {
+			conversionApi.writer.move( conversionApi.writer.createRangeIn( slot ), conversionApi.writer.createPositionBefore( slot ) );
+			conversionApi.writer.remove( slot );
+		}
+	}
+
+	conversionApi.mapper.off( 'modelToViewPosition', toViewPositionMapping );
+
+	function toViewPositionMapping( evt, data ) {
+		if ( data.viewPosition || !currentSlot ) {
+			return;
+		}
+
+		const nodeAfter = data.modelPosition.nodeAfter;
+
+		if ( !nodeAfter ) {
+			return;
+		}
+
+		// Find the proper offset within the slot.
+		const index = slotsMap.get( currentSlot ).indexOf( nodeAfter );
+
+		if ( index < 0 ) {
+			return;
+		}
+
+		data.viewPosition = data.mapper.findPositionIn( currentSlot, index );
+	}
+}
+
+// Inserts view representation of `nodes` into the `viewElement` either by bringing back just removed view nodes
+// or by triggering conversion for them.
+//
+// @param {module:engine/view/element~Element} viewElement
+// @param {Iterable.<module:engine/model/element~Element>} modelNodes
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Object} options
+// @param {Boolean} [options.reconversion]
+function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 	// Fill with nested view nodes.
-	for ( const modelChildNode of nodes ) {
+	for ( const modelChildNode of modelNodes ) {
 		const viewChildNode = conversionApi.mapper.toViewElement( modelChildNode );
 
-		if ( reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
+		if ( options.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
 			if ( conversionApi.consumable.consume( modelChildNode, 'insert' ) ) {
 				conversionApi.writer.move(
 					conversionApi.writer.createRangeOn( viewChildNode ),

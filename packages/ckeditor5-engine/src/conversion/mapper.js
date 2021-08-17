@@ -89,10 +89,12 @@ export default class Mapper {
 		this._elementToMarkerNames = new Map();
 
 		/**
-		 * TODO
+		 * Map of removed view elements with their current root (used for deferred unbinding).
+		 *
 		 * @private
+		 * @member {Map.<module:engine/view/element~Element,module:engine/view/documentfragment~DocumentFragment>}
 		 */
-		this._removedViewElements = new Set();
+		this._deferredBindingRemovals = new Map();
 
 		/**
 		 * Stores marker names of markers which has changed due to unbinding a view element (so it is assumed that the view element
@@ -152,8 +154,11 @@ export default class Mapper {
 	 * when the previously bound view element is unbound.
 	 *
 	 * @param {module:engine/view/element~Element} viewElement View element to unbind.
+	 * @param {Object} [options={}] The options object.
+	 * @param {Boolean} [options.defer=false] Controls whether binding should be immediately removed or deferred until the
+	 * {@link #flushDeferredBindings `flushDeferredBindings()`} call.
 	 */
-	unbindViewElement( viewElement, immediate = true ) {
+	unbindViewElement( viewElement, options = {} ) {
 		const modelElement = this.toModelElement( viewElement );
 
 		if ( this._elementToMarkerNames.has( viewElement ) ) {
@@ -162,14 +167,14 @@ export default class Mapper {
 			}
 		}
 
-		if ( immediate ) {
+		if ( options.defer ) {
+			this._deferredBindingRemovals.set( viewElement, viewElement.root );
+		} else {
 			this._viewToModelMapping.delete( viewElement );
 
 			if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
 				this._modelToViewMapping.delete( modelElement );
 			}
-		} else {
-			this._removedViewElements.add( [ viewElement, viewElement.root ] );
 		}
 	}
 
@@ -255,17 +260,17 @@ export default class Mapper {
 	}
 
 	/**
-	 * TODO
+	 * Unbinds all deferred binding removals that were not re-attached to some root or document fragment.
 	 */
-	flushTemporaryMappings() {
-		for ( const [ viewElement, root ] of this._removedViewElements ) {
+	flushDeferredBindings() {
+		for ( const [ viewElement, root ] of this._deferredBindingRemovals ) {
 			// Unbind it only if it wasn't re-attached to some root or document fragment.
 			if ( viewElement.root == root ) {
-				this.unbindViewElement( viewElement, true );
+				this.unbindViewElement( viewElement );
 			}
 		}
 
-		this._removedViewElements = new Set();
+		this._deferredBindingRemovals = new Map();
 	}
 
 	/**
@@ -277,7 +282,7 @@ export default class Mapper {
 		this._markerNameToElements = new Map();
 		this._elementToMarkerNames = new Map();
 		this._unboundMarkerNames = new Set();
-		this._removedViewElements = new Set();
+		this._deferredBindingRemovals = new Map();
 	}
 
 	/**
