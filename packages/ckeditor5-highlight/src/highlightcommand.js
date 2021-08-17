@@ -57,8 +57,6 @@ export default class HighlightCommand extends Command {
 		const highlighter = options.value;
 
 		model.change( writer => {
-			const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
-
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
 
@@ -98,6 +96,8 @@ export default class HighlightCommand extends Command {
 					writer.setSelectionAttribute( 'highlight', highlighter );
 				}
 			} else {
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
+
 				for ( const range of ranges ) {
 					if ( highlighter ) {
 						writer.setAttribute( 'highlight', highlighter, range );
