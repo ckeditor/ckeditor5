@@ -10,7 +10,6 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
 import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import CloudinaryTrackImage from '../plugins/CloudinaryTrackImagePlugin';
 import CloudinaryUploadAdapter from '../plugins/CloudinaryUploadAdapterPlugin';
@@ -18,11 +17,7 @@ import Emoji from '@wwalc/ckeditor5-emoji/src/emoji';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
@@ -40,7 +35,6 @@ LeetchiEditor.builtinPlugins = [
 	Autoformat,
 	AutoImage,
 	AutoLink,
-	BlockQuote,
 	Bold,
 	CloudinaryTrackImage,
 	CloudinaryUploadAdapter,
@@ -48,11 +42,7 @@ LeetchiEditor.builtinPlugins = [
 	Essentials,
 	Heading,
 	Image,
-	ImageCaption,
-	ImageStyle,
 	ImageUpload,
-	Indent,
-	IndentBlock,
 	Italic,
 	Link,
 	List,
@@ -67,23 +57,19 @@ LeetchiEditor.builtinPlugins = [
 LeetchiEditor.defaultConfig = {
 	toolbar: {
 		items: [
+			'heading',
+			'|',
 			'bold',
 			'italic',
 			'underline',
-			'bulletedList',
-			'numberedList',
-			'link',
-			'|',
-			'outdent',
-			'indent',
 			'alignment',
-			'|',
-			'heading',
-			'emoji',
+			'bulletedList',
+			'link',
 			'uploadImage',
-			'blockQuote',
 			'mediaEmbed',
+			'emoji',
 		],
+		shouldNotGroupWhenFull: true,
 	},
 	typing: {
 		transformations: {
@@ -91,29 +77,68 @@ LeetchiEditor.defaultConfig = {
 				// Add some custom transformations – e.g. for emojis.
 				{ from: ':)', to: '🙂' },
 				{ from: ':-)', to: '🙂' },
+				{ from: '=)', to: '🙂' },
+
 				{ from: ';)', to: '😉' },
 				{ from: ';-)', to: '😉' },
+
 				{ from: ':o', to: '😮' },
 				{ from: ':-o', to: '😮' },
-				{ from: ':s', to: '😕' },
-				{ from: ':-s', to: '😕' },
+				{ from: '=o', to: '😮' },
+
+				{ from: ':s', to: '🙁' },
+				{ from: ':-s', to: '🙁' },
+				{ from: '=s', to: '🙁' },
+
+				{ from: ':/', to: '🙁' },
+				{ from: ':-/', to: '🙁' },
+				{ from: '=/', to: '🙁' },
+
+				{ from: ':(', to: '🙁' },
+				{ from: ':-(', to: '🙁' },
+				{ from: '=(', to: '🙁' },
+
 				{ from: ":'(", to: '😢' },
+				{ from: "='(", to: '😢' },
+
 				{ from: ':-D', to: '😀' },
 				{ from: ':D', to: '😀' },
 				{ from: ':d', to: '😀' },
+				{ from: '=D', to: '😀' },
+
 				{ from: '<3', to: '❤️' },
+
+				{ from: '</3', to: '💔' },
+
+				{ from: ":')", to: '😂' },
+				{ from: "=')", to: '😂' },
+				{ from: ":'D", to: '😂' },
+				{ from: "='D", to: '😂' },
+
+				{ from: ':p', to: '😛' },
+				{ from: '=p', to: '😛' },
+				{ from: ';p', to: '😛' },
+
+				{ from: '8)', to: '😎' },
+
+				{ from: ':*', to: '😘' },
+				{ from: '=*', to: '😘' },
 			],
 		},
 	},
 	emoji: [
-		{ name: 'smile', text: '🙂' },
-		{ name: 'enjoy', text: '😀' },
+		{ name: 'slight smile', text: '🙂' },
 		{ name: 'wink', text: '😉' },
-		{ name: 'cool', text: '😎' },
-		{ name: 'surprise', text: '😮' },
-		{ name: 'confusion', text: '😕' },
-		{ name: 'crying', text: '😢' },
+		{ name: 'open mouth', text: '😮' },
+		{ name: 'slight frown', text: '🙁' },
+		{ name: 'cry', text: '😢' },
+		{ name: 'grinning', text: '😀' },
 		{ name: 'heart', text: '❤️' },
+		{ name: 'broken heart', text: '💔' },
+		{ name: 'joy', text: '😂' },
+		{ name: 'stuck out tongue', text: '😛' },
+		{ name: 'sunglasses', text: '😎' },
+		{ name: 'kissing heart', text: '😘' },
 	],
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'fr',
