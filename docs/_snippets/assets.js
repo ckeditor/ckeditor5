@@ -136,11 +136,24 @@ window.findToolbarItem = function( toolbarView, indexOrCallback ) {
 	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
 		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
 		.forEach( img => {
-			const { src } = img;
-			const srcAttr = img.getAttribute( 'src' );
+			img.setAttribute( 'src', img.src );
 
-			if ( src !== srcAttr ) {
-				img.setAttribute( 'src', src );
+			if ( img.srcset ) {
+				const srcset = img.srcset.split( ',' )
+					.map( item => {
+						const [ relativeUrl, ratio ] = item.trim().split( ' ' );
+
+						if ( !isRelativeUrl( relativeUrl ) ) {
+							return item;
+						}
+
+						const absoluteUrl = new window.URL( relativeUrl, window.location.href ).toString();
+
+						return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
+					} )
+					.join( ', ' );
+
+				img.setAttribute( 'srcset', srcset );
 			}
 		} );
 } )();
