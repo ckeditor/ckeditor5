@@ -47,7 +47,8 @@
     "@ckeditor/ckeditor5-paragraph": "^27.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^27.0.0",
     "@ckeditor/ckeditor5-table": "^27.0.0",
-    "@ckeditor/ckeditor5-typing": "^27.0.0"
+    "@ckeditor/ckeditor5-typing": "^27.0.0",
+    "ckeditor5-line-height-plugin": "^0.1.6"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^27.0.0",

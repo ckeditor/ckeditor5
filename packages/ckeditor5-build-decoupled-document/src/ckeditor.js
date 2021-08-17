@@ -50,13 +50,18 @@ import { Plugin } from '@ckeditor/ckeditor5-core/src';
 import { createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
 import smartfieldIcon from './smartfieldIcon.svg';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import LineHeight from 'ckeditor5-line-height-plugin/src/lineheight';
+
 class InsertSmartField extends Plugin {
 	init() {
 		const editor = this.editor;
 		const componentFactory = editor.ui.componentFactory;
 		const t = editor.t;
 		const smartFieldsConfig = editor.config._config.smartFields;
-		const { cbFn = () => {}, smartFieldsDropdownList: smartFields = [] } = smartFieldsConfig;
+		const {
+			cbFn = () => {},
+			smartFieldsDropdownList: smartFields = []
+		} = smartFieldsConfig;
 
 		componentFactory.add( 'insertSmartField', locale => {
 			const dropdownView = createDropdown( locale );
@@ -84,7 +89,10 @@ class InsertSmartField extends Plugin {
 			// Create a dropdown with list of smartfields inside the panel.
 			addListToDropdown( dropdownView, items );
 			dropdownView.on( 'execute', evt => {
-				const formattedText = `[[${ evt.source.label.replace( / /g, '' ) }]]`;
+				const formattedText = `[[${ evt.source.label.replace(
+					/ /g,
+					''
+				) }]]`;
 				editor.model.change( () => {
 					cbFn( editor, formattedText );
 				} );
@@ -155,6 +163,7 @@ DecoupledEditor.builtinPlugins = [
 	Indent,
 	IndentBlock,
 	InsertSmartField,
+	LineHeight,
 	Link,
 	List,
 	ListStyle,
@@ -195,6 +204,8 @@ DecoupledEditor.defaultConfig = {
 			'outdent',
 			'indent',
 			'|',
+			'lineHeight',
+			'|',
 			'link',
 			'blockquote',
 			// Removing image btn until uploading images enabled
@@ -207,16 +218,13 @@ DecoupledEditor.defaultConfig = {
 			'pageBreak',
 			'previousPage',
 			'nextPage',
-			'pageNavigation', '|',
+			'pageNavigation',
+			'|',
 			'insertSmartField'
 		]
 	},
 	image: {
-		styles: [
-			'full',
-			'alignLeft',
-			'alignRight'
-		],
+		styles: [ 'full', 'alignLeft', 'alignRight' ],
 		toolbar: [
 			'imageStyle:alignLeft',
 			'imageStyle:full',
@@ -241,6 +249,9 @@ DecoupledEditor.defaultConfig = {
 			borderColors: customColorPalette,
 			backgroundColors: customColorPalette
 		}
+	},
+	lineHeight: {
+		options: [ 1, 1.15, 1.5, 2, 2.5 ]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
