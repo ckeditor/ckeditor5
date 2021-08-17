@@ -51,7 +51,9 @@ export default class ImageElementSupport extends Plugin {
 						'htmlAttributes',
 						// Figure doesn't have model counterpart.
 						// We will be preserving attributes on image model element using these attribute keys.
-						'htmlFigureAttributes'
+						'htmlFigureAttributes',
+						// Link doesn't have model counterpart for other attributes than `href`. We will preserve them on image model.
+						'htmlLinkAttributes'
 					]
 				} );
 			}
@@ -59,6 +61,8 @@ export default class ImageElementSupport extends Plugin {
 			if ( schema.isRegistered( 'imageInline' ) ) {
 				schema.extend( 'imageInline', {
 					allowAttributes: [
+						// It's needed for standard GHS link integration.
+						'htmlA',
 						'htmlAttributes'
 					]
 				} );
@@ -90,16 +94,21 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 
 			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
 
-			const viewFigureElement = viewImageElement.parent;
+			const viewContainerElement = viewImageElement.parent;
 
-			if ( viewFigureElement.is( 'element', 'figure' ) ) {
-				preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
-			} else if (
+			if ( viewContainerElement.is( 'element', 'figure' ) ) {
+				preserveElementAttributes( viewContainerElement, 'htmlFigureAttributes' );
+			} else if ( viewContainerElement.is( 'element', 'a' ) ) {
+				// For block image, we want to preserve the attributes on our own. The inline image attributes will be handled
+				// by the GHS automatically.
+				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
+					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
+				}
+
 				// If we're in a link, then the `<figure>` element should be one level higher.
-				viewFigureElement.is( 'element', 'a' ) &&
-				viewFigureElement.parent.is( 'element', 'figure' )
-			) {
-				preserveElementAttributes( viewFigureElement.parent, 'htmlFigureAttributes' );
+				if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
+					preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
+				}
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
@@ -120,10 +129,13 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 // @returns {Function} Returns a conversion callback.
 function modelToViewImageAttributeConverter() {
 	return dispatcher => {
-		addAttributeConversionDispatcherHandler( 'img', 'htmlAttributes' );
-		addAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
+		addInlineAttributeConversionDispatcherHandler( 'htmlAttributes' );
 
-		function addAttributeConversionDispatcherHandler( elementName, attributeName ) {
+		addBlockAttributeConversionDispatcherHandler( 'img', 'htmlAttributes' );
+		addBlockAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
+		addBlockAttributeConversionDispatcherHandler2();
+
+		function addInlineAttributeConversionDispatcherHandler( attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -132,18 +144,44 @@ function modelToViewImageAttributeConverter() {
 				const viewElement = conversionApi.mapper.toViewElement( data.item );
 
 				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
-			} );
+			}, { priority: 'low' } );
+		}
 
+		// TODO: Refactor.
+		function addBlockAttributeConversionDispatcherHandler( elementName, attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				if ( !conversionApi.consumable.consume( data.item, `attribute:${ attributeName }:imageBlock` ) ) {
 					return;
 				}
 
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
-			} );
+				// The viewElement can be empty, e.g. elementName is `a`, but on editing downcast we won't find `a`.
+				if ( !viewElement ) {
+					return;
+				}
+
+				setViewAttributes( conversionApi.writer, data.item.getAttribute( attributeName ), viewElement );
+			}, { priority: 'low' } );
+		}
+
+		function addBlockAttributeConversionDispatcherHandler2( ) {
+			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
+					return;
+				}
+
+				const containerElement = conversionApi.mapper.toViewElement( data.item );
+				const viewElement = getDescendantElement( conversionApi, containerElement, 'a' );
+
+				// The viewElement can be empty, e.g. elementName is `a`, but on editing downcast we won't find `a`.
+				if ( !viewElement ) {
+					return;
+				}
+
+				setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
+			}, { priority: 'low' } );
 		}
 	};
 }
