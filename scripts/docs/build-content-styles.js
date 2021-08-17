@@ -8,11 +8,10 @@
 const cwd = process.cwd();
 
 const path = require( 'path' );
-const fs = require( 'fs' );
-const chalk = require( 'chalk' );
-const glob = require( 'glob' );
+const mkdirp = require( 'mkdirp' );
 const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
+const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/versions' );
 
@@ -34,43 +33,19 @@ const contentRules = {
 
 const packagesPath = path.join( cwd, 'packages' );
 
-logProcess( 'Gathering all CKEditor 5 modules...' );
 module.exports = () => {
+	console.log( 'Building content styles...' );
 	return new Promise( resolve => {
-		getCkeditor5ModulePaths()
-			.then( files => {
-				console.log( `Found ${ files.length } files.` );
-				logProcess( 'Filtering CKEditor 5 plugins...' );
-
-				let promise = Promise.resolve();
-				const ckeditor5Modules = [];
-
-				for ( const modulePath of files ) {
-					promise = promise.then( () => {
-						return checkWhetherIsCKEditor5Plugin( modulePath )
-							.then( isModule => {
-								if ( isModule ) {
-									ckeditor5Modules.push( path.join( cwd, modulePath ) );
-								}
-							} );
-					} );
-				}
-
-				return promise.then( () => ckeditor5Modules );
-			} )
+		getCkeditor5Plugins()
 			.then( ckeditor5Modules => {
-				console.log( `Found ${ ckeditor5Modules.length } plugins.` );
-				logProcess( 'Generating source file...' );
+				return mkdirp( DESTINATION_DIRECTORY ).then( () => generateCKEditor5Source( ckeditor5Modules ) );
 			} )
 			.then( () => {
-				logProcess( 'Building the editor...' );
 				const webpackConfig = getWebpackConfig();
 
 				return runWebpack( webpackConfig );
 			} )
 			.then( () => {
-				logProcess( 'Preparing the content styles file...' );
-
 				// All variables are placed inside the `:root` selector. Let's extract their names and values as a map.
 				const cssVariables = new Map( contentRules.variables
 					.map( rule => {
@@ -171,42 +146,6 @@ module.exports = () => {
 				console.log( err );
 			} );
 	} ); };
-
-/**
- * Resolves the promise with an array of paths to CKEditor 5 modules.
- *
- * @returns {Promise.<Array>}
- */
-function getCkeditor5ModulePaths() {
-	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.js', ( err, files ) => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve( files );
-		} );
-	} );
-}
-
-/**
- * Resolves the promise with a boolean value that indicates whether the module under `modulePath` is the CKEditor 5 plugin.
- *
- * @param modulePath
- * @returns {Promise.<Boolean>}
- */
-function checkWhetherIsCKEditor5Plugin( modulePath ) {
-	return readFile( path.join( cwd, modulePath ) )
-		.then( content => {
-			const pluginName = path.basename( modulePath, '.js' );
-
-			if ( content.match( new RegExp( `export default class ${ pluginName } extends Plugin`, 'i' ) ) ) {
-				return Promise.resolve( true );
-			}
-
-			return Promise.resolve( false );
-		} );
-}
 
 /**
  * Prepares the configuration for webpack.
@@ -375,43 +314,6 @@ function getModuleResolvePaths() {
 }
 
 /**
- * Resolves the promise with the content of the file saved under the `filePath` location.
- *
- * @param {String} filePath The path to fhe file.
- * @returns {Promise.<String>}
- */
-function readFile( filePath ) {
-	return new Promise( ( resolve, reject ) => {
-		fs.readFile( filePath, 'utf-8', ( err, content ) => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve( content );
-		} );
-	} );
-}
-
-/**
- * Saves the `data` value to the file saved under the `filePath` location.
- *
- * @param {String} filePath The path to fhe file.
- * @param {String} data The content to save.
- * @returns {Promise.<String>}
- */
-function writeFile( filePath, data ) {
-	return new Promise( ( resolve, reject ) => {
-		fs.writeFile( filePath, data, err => {
-			if ( err ) {
-				return reject( err );
-			}
-
-			return resolve();
-		} );
-	} );
-}
-
-/**
  * @param {Array} rules
  * @returns {String}
  */
@@ -459,8 +361,51 @@ function transformCssRules( rules ) {
 		.join( '\n' );
 }
 
-function logProcess( message ) {
-	console.log( '\n📍 ' + chalk.cyan( message ) );
+/**
+ * Generates a source file that will be used to build the editor.
+ *
+ * @param {Array.<String>} ckeditor5Modules Paths to CKEditor 5 modules.
+ * @returns {Promise>}
+ */
+function generateCKEditor5Source( ckeditor5Modules ) {
+	ckeditor5Modules = ckeditor5Modules.map( modulePath => {
+		const pluginName = capitalize( path.basename( modulePath, '.js' ) );
+		return { modulePath, pluginName };
+	} );
+
+	const sourceFileContent = [
+		'/**',
+		` * @license Copyright (c) 2003-${ new Date().getFullYear() }, CKSource - Frederico Knabben. All rights reserved.`,
+		' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
+		' */',
+		'',
+		'// The editor creator to use.',
+		'import ClassicEditorBase from \'@ckeditor/ckeditor5-editor-classic/src/classiceditor\';',
+		''
+	];
+
+	for ( const { modulePath, pluginName } of ckeditor5Modules ) {
+		sourceFileContent.push( `import ${ pluginName } from '${ normalizePath( modulePath ) }';` );
+	}
+
+	sourceFileContent.push( '' );
+	sourceFileContent.push( 'export default class ClassicEditor extends ClassicEditorBase {}' );
+	sourceFileContent.push( '' );
+	sourceFileContent.push( '// Plugins to include in the build.' );
+	sourceFileContent.push( 'ClassicEditor.builtinPlugins = [' );
+
+	for ( const { pluginName } of ckeditor5Modules ) {
+		sourceFileContent.push( '\t' + pluginName + ',' );
+	}
+
+	sourceFileContent.push( '];' );
+
+	return writeFile( path.join( DESTINATION_DIRECTORY, 'source.js' ), sourceFileContent.join( '\n' ) )
+		.then( () => ckeditor5Modules );
+
+	function capitalize( value ) {
+		return value.charAt( 0 ).toUpperCase() + value.slice( 1 );
+	}
 }
 
 /**
