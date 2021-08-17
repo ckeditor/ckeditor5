@@ -97,9 +97,12 @@ export default class DataTransfer {
 }
 
 function getFiles( nativeDataTransfer ) {
+	// A helper to ensure that property is not evaluated more than once.
+	const convertToArray = arrayLike => arrayLike ? Array.from( arrayLike ) : [];
+
 	// DataTransfer.files and items are array-like and might not have an iterable interface.
-	const files = nativeDataTransfer.files ? Array.from( nativeDataTransfer.files ) : [];
-	const items = nativeDataTransfer.items ? Array.from( nativeDataTransfer.items ) : [];
+	const files = convertToArray( nativeDataTransfer.files );
+	const items = convertToArray( nativeDataTransfer.items );
 
 	if ( files.length ) {
 		return files;
