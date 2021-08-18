@@ -400,7 +400,7 @@ describe( 'ImageElementSupport', () => {
 		} );
 
 		// TODO cannot disallow on <a>.
-		it.skip( 'should disallow attributes', () => {
+		it.only( 'should disallow attributes', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /^(figure|img|a)$/,
 				attributes: /^data-.*$/

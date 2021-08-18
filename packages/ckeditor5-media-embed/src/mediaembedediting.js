@@ -255,13 +255,18 @@ export default class MediaEmbedEditing extends Plugin {
 				}
 			} )
 			// Consume `<figure class="media">` elements, that were left after upcast.
-			// TODO: Not sure if that's really helpful. I added it for safety after problems with leftover figure
-			// elements, but even without the converter below it works fine.
 			.add( dispatcher => {
-				dispatcher.on( 'element:figure', converter, { priority: 'lowest' } );
+				dispatcher.on( 'element:figure', converter );
 
 				function converter( evt, data, conversionApi ) {
-					conversionApi.consumable.consume( data.viewItem, { classes: 'media' } );
+					if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+						return;
+					}
+
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
 				}
 			} );
 	}
