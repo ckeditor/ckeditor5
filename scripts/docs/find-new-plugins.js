@@ -14,14 +14,14 @@ const readline = require( 'readline' );
 const { getCkeditor5Plugins, normalizePath } = require( './utils' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const CONTENT_STYLES_DETAILS_PATH = path.join( __dirname, 'content-styles-details.json' );
+const PLUGINS_COLLECTION_PATH = path.join( __dirname, 'plugins-collection.json' );
 
-const contentStylesDetails = require( CONTENT_STYLES_DETAILS_PATH );
+const pluginsCollection = require( PLUGINS_COLLECTION_PATH );
 
 // An array of objects with plugins used to generate the current version of the content styles.
 let foundModules;
 
-logProcess( 'Gathering all CKEditor 5 modules...' );
+logProcess( 'Gathering all CKEditor 5 plugins...' );
 
 getCkeditor5Plugins()
 	.then( ckeditor5Modules => {
@@ -29,15 +29,16 @@ getCkeditor5Plugins()
 
 		foundModules = ckeditor5Modules.map( modulePath => {
 			const pluginName = capitalize( path.basename( modulePath, '.js' ) );
+
 			return { modulePath, pluginName };
 		} );
 
 		logProcess( 'Looking for new plugins...' );
 
-		const newPlugins = findNewPlugins( foundModules, contentStylesDetails.plugins );
+		const newPlugins = findNewPlugins( foundModules, pluginsCollection );
 
 		if ( !newPlugins.length ) {
-			console.log( 'Previous and current versions of the content styles details were generated with the same set of plugins.' );
+			console.log( 'Previous and current versions of the plugins collection were generated with the same set of plugins.' );
 			logProcess( 'Done.' );
 
 			return Promise.resolve();
@@ -54,7 +55,9 @@ getCkeditor5Plugins()
 			return Promise.resolve();
 		}
 
-		tools.updateJSONFile( CONTENT_STYLES_DETAILS_PATH, json => {
+		logProcess( 'Saving and committing...' );
+
+		tools.updateJSONFile( PLUGINS_COLLECTION_PATH, () => {
 			const newPluginsObject = {};
 
 			for ( const data of foundModules ) {
@@ -62,17 +65,13 @@ getCkeditor5Plugins()
 				newPluginsObject[ modulePath ] = data.pluginName;
 			}
 
-			json.plugins = newPluginsObject;
-
-			return json;
+			return newPluginsObject;
 		} );
 
-		logProcess( 'Saving and committing...' );
-
-		const contentStyleDetails = CONTENT_STYLES_DETAILS_PATH.replace( cwd + path.sep, '' );
+		const pluginsCollectionRelativePath = PLUGINS_COLLECTION_PATH.replace( cwd + path.sep, '' );
 
 		// Commit the documentation.
-		exec( `git add ${ contentStyleDetails }` );
+		exec( `git add ${ pluginsCollectionRelativePath }` );
 		exec( 'git commit -m "Docs (ckeditor5): Updated the plugin list collection."' );
 
 		console.log( 'Successfully updated the plugin list collection.' );
@@ -92,7 +91,7 @@ function shouldCommitChanges() {
 	} );
 
 	return new Promise( resolve => {
-		rl.question( 'Do you want to commit the changes? (y/n): ', answer => {
+		rl.question( 'Do you want to commit the changes? (Y/n): ', answer => {
 			rl.close();
 			if ( answer.toLocaleLowerCase() !== 'y' ) {
 				//
@@ -100,6 +99,7 @@ function shouldCommitChanges() {
 			}
 			return resolve( true );
 		} );
+		rl.write( 'Y' );
 	} );
 }
 
@@ -108,7 +108,7 @@ function shouldCommitChanges() {
  *
  * @param {Array.<Object>} currentPlugins
  * @param {Array.<Object>} previousPlugins
- * @returns {{Array.<Object>}}
+ * @returns {Array.<Object>}
  */
 function findNewPlugins( currentPlugins, previousPlugins ) {
 	const newPlugins = [];
