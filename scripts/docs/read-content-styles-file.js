@@ -6,6 +6,7 @@
 /* eslint-env node */
 
 const fs = require( 'fs' );
+const path = require( 'path' );
 
 /**
  * Reads and returns content of the content-styles.css file.
@@ -13,5 +14,7 @@ const fs = require( 'fs' );
  * @returns {String} Content of the file
  */
 module.exports = function readContentStylesFile() {
-	return fs.readFileSync( 'build/content-styles/content-styles.css', 'utf-8' );
+	const contentStylesPath = path.join( __dirname, '..', '..', 'build', 'content-styles', 'content-styles.css' );
+
+	return fs.readFileSync( contentStylesPath, 'utf-8' );
 };
