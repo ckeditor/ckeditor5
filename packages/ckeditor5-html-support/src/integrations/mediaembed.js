@@ -68,39 +68,18 @@ export default class MediaEmbedElementSupport extends Plugin {
 
 function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 	return dispatcher => {
-		// Here we want to be the first to convert (and consume) the figure element, otherwise GHS can pick it up and
-		// convert it to generic `htmlFigure`.
-		dispatcher.on( 'element:figure', upcastFigure, { priority: 'high' } );
-
-		// Handle media elements without `<figure>` container.
 		dispatcher.on( `element:${ mediaElementName }`, upcastMedia );
 	};
 
-	function upcastFigure( evt, data, conversionApi ) {
-		const viewFigureElement = data.viewItem;
-
-		// Convert only "media figure" elements.
-		if ( !conversionApi.consumable.test( viewFigureElement, { name: true, classes: 'media' } ) ) {
-			return;
-		}
-
-		// Find media element.
-		const viewMediaElement = Array.from( viewFigureElement.getChildren() )
-			.find( item => item.is( 'element', mediaElementName ) );
-
-		// Do not convert if media element is absent.
-		if ( !viewMediaElement ) {
-			return;
-		}
-
-		// Convert just the media element.
-		Object.assign( data, conversionApi.convertItem( viewMediaElement, data.modelCursor ) );
+	function upcastMedia( evt, data, conversionApi ) {
+		const viewMediaElement = data.viewItem;
+		const viewParent = viewMediaElement.parent;
 
 		preserveElementAttributes( viewMediaElement, 'htmlAttributes' );
-		preserveElementAttributes( viewFigureElement, 'htmlFigureAttributes' );
 
-		// Consume the figure to prevent converting it to `htmlFigure` by default GHS converters.
-		conversionApi.consumable.consume( viewFigureElement, { name: true, classes: 'media' } );
+		if ( viewParent.is( 'element', 'figure' ) && viewParent.hasClass( 'media' ) ) {
+			preserveElementAttributes( viewParent, 'htmlFigureAttributes' );
+		}
 
 		function preserveElementAttributes( viewElement, attributeName ) {
 			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
@@ -108,15 +87,6 @@ function viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) {
 			if ( viewAttributes ) {
 				conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 			}
-		}
-	}
-
-	function upcastMedia( evt, data, conversionApi ) {
-		const viewMediaElement = data.viewItem;
-		const viewAttributes = dataFilter._consumeAllowedAttributes( viewMediaElement, conversionApi );
-
-		if ( viewAttributes ) {
-			conversionApi.writer.setAttribute( 'htmlAttributes', viewAttributes, data.modelRange );
 		}
 	}
 }

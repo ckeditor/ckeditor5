@@ -399,8 +399,7 @@ describe( 'ImageElementSupport', () => {
 			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 
-		// TODO cannot disallow on <a>.
-		it.only( 'should disallow attributes', () => {
+		it( 'should disallow attributes', () => {
 			dataFilter.loadAllowedConfig( [ {
 				name: /^(figure|img|a)$/,
 				attributes: /^data-.*$/

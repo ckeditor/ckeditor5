@@ -314,26 +314,6 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( editor.getData() ).to.equal( '' );
 		} );
 
-		it( 'should not consume media element that is already consumed (upcast)', () => {
-			dataFilter.allowElement( /^(figure|oembed)$/ );
-			dataFilter.allowAttributes( {
-				name: /^(figure|oembed)$/,
-				attributes: { 'data-foo': true }
-			} );
-
-			editor.setData(
-				'<figure class="media" data-foo="foo">' +
-					'<p>foobar</p>' +
-				'</figure>'
-			);
-
-			expect( editor.getData() ).to.equal(
-				'<figure data-foo="foo">' +
-					'<p>foobar</p>' +
-				'</figure>'
-			);
-		} );
-
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
 				'htmlAttributes',
@@ -669,26 +649,6 @@ describe( 'MediaEmbedElementSupport', () => {
 			);
 
 			expect( editor.getData() ).to.equal( '' );
-		} );
-
-		it( 'should not consume media element that is already consumed (upcast)', () => {
-			dataFilter.allowElement( /^(figure|custom-oembed)$/ );
-			dataFilter.allowAttributes( {
-				name: /^(figure|custom-oembed)$/,
-				attributes: { 'data-foo': true }
-			} );
-
-			editor.setData(
-				'<figure class="media" data-foo="foo">' +
-					'<p>foobar</p>' +
-				'</figure>'
-			);
-
-			expect( editor.getData() ).to.equal(
-				'<figure data-foo="foo">' +
-					'<p>foobar</p>' +
-				'</figure>'
-			);
 		} );
 
 		it( 'should not consume attributes already consumed (downcast)', () => {
