@@ -9,7 +9,7 @@ const glob = require( 'glob' );
 const fs = require( 'fs' );
 const path = require( 'path' );
 
-const cwd = process.cwd();
+const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 
 module.exports = { getCkeditor5Plugins, writeFile, normalizePath };
 
@@ -27,9 +27,9 @@ function getCkeditor5Plugins() {
 			for ( const modulePath of files ) {
 				promise = promise.then( () => {
 					return checkWhetherIsCKEditor5Plugin( modulePath )
-						.then( isModule => {
-							if ( isModule ) {
-								ckeditor5Modules.push( path.join( cwd, modulePath ) );
+						.then( isCKEditor5Plugin => {
+							if ( isCKEditor5Plugin ) {
+								ckeditor5Modules.push( path.join( ROOT_DIRECTORY, modulePath ) );
 							}
 						} );
 				} );
@@ -46,7 +46,7 @@ function getCkeditor5Plugins() {
  */
 function getCkeditor5ModulePaths() {
 	return new Promise( ( resolve, reject ) => {
-		glob( 'packages/*/src/**/*.js', ( err, files ) => {
+		glob( 'packages/*/src/**/*.js', { cwd: ROOT_DIRECTORY }, ( err, files ) => {
 			if ( err ) {
 				return reject( err );
 			}
@@ -63,7 +63,7 @@ function getCkeditor5ModulePaths() {
  * @returns {Promise.<Boolean>}
  */
 function checkWhetherIsCKEditor5Plugin( modulePath ) {
-	return readFile( path.join( cwd, modulePath ) )
+	return readFile( path.join( ROOT_DIRECTORY, modulePath ) )
 		.then( content => {
 			const pluginName = path.basename( modulePath, '.js' );
 
