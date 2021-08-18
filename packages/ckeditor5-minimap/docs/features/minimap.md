@@ -10,7 +10,7 @@ modified_at: 2021-07-12
 
 The {@link module:minimap/minimap~Minimap} feature renders a content minimap which, when placed next to the editor, helps the users navigate their content. It enables navigating the content and provides a visual overview when the document is longer than its visible portion on the screen.
 
-You can try the minimap feature it in the demo below.
+You can try the minimap feature in the demo below.
 
 <info-box warning>
 	This is a **feature preview**, and as such it is not recommended for production use. For more information, comments and feature requests, please refer to the [issue on GitHub](https://github.com/ckeditor/ckeditor5/issues/10089).
@@ -108,7 +108,7 @@ Finally, the JavaScript to run the editor (learn how to [install](#installation)
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-pagination/src/minimap';
+import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor-content' ), {
@@ -137,7 +137,7 @@ Then add the `Minimap` plugin to your plugin list and [configure](#configuration
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-pagination/src/minimap';
+import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {
@@ -166,7 +166,7 @@ The container element is essential for the minimap to render. You should pass th
 
 ```js
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
-import Minimap from '@ckeditor/ckeditor5-pagination/src/minimap';
+import Minimap from '@ckeditor/ckeditor5-minimap/src/minimap';
 
 DecoupledEditor
 	.create( document.querySelector( '#editor' ), {

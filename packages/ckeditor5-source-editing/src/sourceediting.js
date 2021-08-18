@@ -227,6 +227,9 @@ export default class SourceEditing extends Plugin {
 
 			domSourceEditingElementTextarea.value = data;
 
+			// Setting a value to textarea moves the input cursor to the end. We want the selection at the beginning.
+			domSourceEditingElementTextarea.setSelectionRange( 0, 0 );
+
 			// Bind the textarea's value to the wrapper's `data-value` property. Each change of the textarea's value updates the
 			// wrapper's `data-value` property.
 			domSourceEditingElementTextarea.addEventListener( 'input', () => {
