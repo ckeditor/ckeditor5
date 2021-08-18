@@ -14,8 +14,6 @@ import { Matcher } from 'ckeditor5/src/engine';
 import { priorities, CKEditorError } from 'ckeditor5/src/utils';
 import { Widget } from 'ckeditor5/src/widget';
 import {
-	disallowedAttributesConverter,
-
 	viewToModelObjectConverter,
 	toObjectWidgetConverter,
 	createObjectView,
@@ -229,21 +227,6 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Matches and consumes disallowed view attributes.
-	 *
-	 * @protected
-	 * @param {module:engine/view/element~Element} viewElement
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-	 * @returns {Object} [result]
-	 * @returns {Object} result.attributes Set with matched attribute names.
-	 * @returns {Object} result.styles Set with matched style names.
-	 * @returns {Array.<String>} result.classes Set with matched class names.
-	 */
-	_consumeDisallowedAttributes( viewElement, conversionApi ) {
-		return consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
-	}
-
-	/**
 	 * Registers elements allowed by {@link module:html-support/datafilter~DataFilter#allowElement} method
 	 * once {@link module:engine/controller/datacontroller~DataController editor's data controller} is initialized.
 	 *
@@ -339,7 +322,6 @@ export default class DataFilter extends Plugin {
 			name: viewName
 		} );
 
-		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).elementToElement( {
 			view: viewName,
 			model: viewToModelObjectConverter( definition ),
@@ -404,7 +386,6 @@ export default class DataFilter extends Plugin {
 			allowAttributes: 'htmlAttributes'
 		} );
 
-		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 		conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 	}
@@ -431,7 +412,6 @@ export default class DataFilter extends Plugin {
 			schema.setAttributeProperties( attributeKey, definition.attributeProperties );
 		}
 
-		conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, this ) );
 		conversion.for( 'upcast' ).add( viewToAttributeInlineConverter( definition, this ) );
 
 		conversion.for( 'downcast' ).attributeToElement( {

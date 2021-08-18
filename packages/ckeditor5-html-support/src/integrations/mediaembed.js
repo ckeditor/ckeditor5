@@ -9,7 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import { disallowedAttributesConverter } from '../converters';
 import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 import DataSchema from '../dataschema';
@@ -57,7 +56,6 @@ export default class MediaEmbedElementSupport extends Plugin {
 				]
 			} );
 
-			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
 			conversion.for( 'upcast' ).add( viewToModelMediaAttributesConverter( dataFilter, mediaElementName ) );
 			conversion.for( 'dataDowncast' ).add( modelToViewMediaAttributeConverter( mediaElementName ) );
 
