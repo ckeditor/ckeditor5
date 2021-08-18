@@ -5,8 +5,6 @@
 
 /* eslint-env node */
 
-const cwd = process.cwd();
-
 const path = require( 'path' );
 const mkdirp = require( 'mkdirp' );
 const postcss = require( 'postcss' );
@@ -15,10 +13,9 @@ const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/versions' );
 
-const version = getLastFromChangelog();
-
+const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
-const outputFilePath = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
+const OUTPUT_FILE_PATH = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
 
 const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html';
 
@@ -31,10 +28,12 @@ const contentRules = {
 	atRules: {}
 };
 
-const packagesPath = path.join( cwd, 'packages' );
+const packagesPath = path.join( ROOT_DIRECTORY, 'packages' );
+const version = getLastFromChangelog( ROOT_DIRECTORY );
 
 module.exports = () => {
 	console.log( 'Building content styles...' );
+
 	return new Promise( resolve => {
 		getCkeditor5Plugins()
 			.then( ckeditor5Modules => {
@@ -136,11 +135,11 @@ module.exports = () => {
 				data += '\n';
 				data += atRulesDefinitions.join( '\n' );
 
-				writeFile( outputFilePath, data );
+				writeFile( OUTPUT_FILE_PATH, data );
 				resolve();
 			} )
 			.then( () => {
-				console.log( `Content styles have been extracted to ${ outputFilePath }` );
+				console.log( `Content styles have been extracted to ${ OUTPUT_FILE_PATH }` );
 			} )
 			.catch( err => {
 				console.log( err );
