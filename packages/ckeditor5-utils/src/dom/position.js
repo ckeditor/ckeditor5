@@ -137,12 +137,9 @@ class Position {
 			return;
 		}
 
-		const { left, top } = positioningFunctionOutput;
+		const { left, top, name } = positioningFunctionOutput;
 
-		delete positioningFunctionOutput.left;
-		delete positioningFunctionOutput.top;
-
-		Object.assign( this, positioningFunctionOutput );
+		Object.assign( this, { name } );
 
 		this._positioningFunctionCorrdinates = { left, top };
 		this._options = options;
@@ -212,8 +209,8 @@ class Position {
 
 		this._cachedAbsoluteRect = getRectForAbsolutePositioning( this._rect );
 
-		if ( this._options.positionedAncestor ) {
-			shiftRectToCompensatePositionedAncestor( this._cachedAbsoluteRect, this._options.positionedAncestor );
+		if ( this._options.positionedElementAncestor ) {
+			shiftRectToCompensatePositionedAncestor( this._cachedAbsoluteRect, this._options.positionedElementAncestor );
 		}
 
 		return this._cachedAbsoluteRect;

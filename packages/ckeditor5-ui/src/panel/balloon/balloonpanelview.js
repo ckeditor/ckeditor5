@@ -241,8 +241,6 @@ export default class BalloonPanelView extends View {
 
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
-		console.log( optimalPosition );
-
 		// Usually browsers make some problems with super accurate values like 104.345px
 		// so it is better to use int values.
 		const left = parseInt( optimalPosition.left );

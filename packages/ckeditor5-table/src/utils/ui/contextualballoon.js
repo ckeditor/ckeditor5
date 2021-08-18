@@ -62,8 +62,6 @@ export function getBalloonTablePositionData( editor ) {
 	const modelTable = firstPosition.findAncestor( 'table' );
 	const viewTable = editor.editing.mapper.toViewElement( modelTable );
 
-	console.log(BALLOON_POSITIONS);
-
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTable ),
 		positions: BALLOON_POSITIONS
@@ -92,8 +90,6 @@ export function getBalloonCellPositionData( editor ) {
 
 	const modelTableCell = getTableCellAtPosition( selection.getFirstPosition() );
 	const viewTableCell = mapper.toViewElement( modelTableCell );
-
-	console.log(BALLOON_POSITIONS);
 
 	return {
 		target: domConverter.viewToDom( viewTableCell ),

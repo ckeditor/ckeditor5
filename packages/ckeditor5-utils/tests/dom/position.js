@@ -688,8 +688,9 @@ describe( 'getOptimalPosition()', () => {
 
 function assertPosition( options, expected ) {
 	const position = getOptimalPosition( options );
+	const { top, left, name } = position;
 
-	expect( position ).to.deep.equal( expected );
+	expect( { top, left, name } ).to.deep.equal( expected );
 }
 
 function assertPositionName( options, expected ) {
