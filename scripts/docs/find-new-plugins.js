@@ -8,11 +8,11 @@
 const cwd = process.cwd();
 
 const path = require( 'path' );
+const readline = require( 'readline' );
 const chalk = require( 'chalk' );
 const Table = require( 'cli-table' );
-const readline = require( 'readline' );
-const { getCkeditor5Plugins, normalizePath } = require( './utils' );
 const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { getCkeditor5Plugins, normalizePath } = require( './utils' );
 
 const PLUGINS_COLLECTION_PATH = path.join( __dirname, 'plugins-collection.json' );
 
@@ -84,6 +84,11 @@ getCkeditor5Plugins()
 		console.log( err );
 	} );
 
+/**
+ * Asks about committing changes.
+ *
+ * @return {Promise.<Boolean>}
+ */
 function shouldCommitChanges() {
 	const rl = readline.createInterface( {
 		input: process.stdin,
@@ -94,11 +99,12 @@ function shouldCommitChanges() {
 		rl.question( 'Do you want to commit the changes? (Y/n): ', answer => {
 			rl.close();
 			if ( answer.toLocaleLowerCase() !== 'y' ) {
-				//
 				return resolve( false );
 			}
 			return resolve( true );
 		} );
+
+		// Default answer.
 		rl.write( 'Y' );
 	} );
 }

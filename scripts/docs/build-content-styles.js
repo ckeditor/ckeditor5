@@ -9,9 +9,9 @@ const path = require( 'path' );
 const mkdirp = require( 'mkdirp' );
 const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
-const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/versions' );
+const { writeFile, getCkeditor5Plugins, normalizePath } = require( './utils' );
 
 const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
