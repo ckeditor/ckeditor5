@@ -40,32 +40,29 @@ export default class ImageElementSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		dataFilter.on( 'register:img', ( evt, definition ) => {
+			/* istanbul ignore next */
 			if ( definition.model !== 'htmlImg' ) {
 				return;
 			}
 
-			if ( schema.isRegistered( 'imageBlock' ) ) {
-				schema.extend( 'imageBlock', {
-					allowAttributes: [
-						'htmlAttributes',
-						// Figure doesn't have model counterpart.
-						// We will be preserving attributes on image model element using these attribute keys.
-						'htmlFigureAttributes',
-						// Link doesn't have model counterpart for other attributes than `href`. We will preserve them on image model.
-						'htmlLinkAttributes'
-					]
-				} );
-			}
+			schema.extend( 'imageBlock', {
+				allowAttributes: [
+					'htmlAttributes',
+					// Figure doesn't have model counterpart.
+					// We will be preserving attributes on image model element using these attribute keys.
+					'htmlFigureAttributes',
+					// Link doesn't have model counterpart for other attributes than `href`. We will preserve them on image model.
+					'htmlLinkAttributes'
+				]
+			} );
 
-			if ( schema.isRegistered( 'imageInline' ) ) {
-				schema.extend( 'imageInline', {
-					allowAttributes: [
-						// It's needed for standard GHS link integration.
-						'htmlA',
-						'htmlAttributes'
-					]
-				} );
-			}
+			schema.extend( 'imageInline', {
+				allowAttributes: [
+					// It's needed for standard GHS link integration.
+					'htmlA',
+					'htmlAttributes'
+				]
+			} );
 
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );
@@ -155,6 +152,7 @@ function modelToViewImageAttributeConverter() {
 				const viewElement = getDescendantElement( conversionApi, containerElement, elementName );
 
 				// The viewElement can be empty, e.g. elementName is `a`, but on editing downcast we won't find `a`.
+				/* istanbul ignore next */
 				if ( !viewElement ) {
 					return;
 				}
@@ -173,6 +171,7 @@ function modelToViewImageAttributeConverter() {
 				const viewElement = getDescendantElement( conversionApi, containerElement, 'a' );
 
 				// The viewElement can be empty, e.g. elementName is `a`, but on editing downcast we won't find `a`.
+				/* istanbul ignore next */
 				if ( !viewElement ) {
 					return;
 				}
