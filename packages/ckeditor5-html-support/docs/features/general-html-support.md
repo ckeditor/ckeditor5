@@ -1,7 +1,6 @@
 ---
 category: features
-modified_at: 2021-06-13
-updated_at: 2021-06-14
+modified_at: 2021-07-14
 ---
 
 # General HTML Support
