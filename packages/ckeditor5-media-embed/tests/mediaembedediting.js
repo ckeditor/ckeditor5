@@ -612,6 +612,14 @@ describe( 'MediaEmbedEditing', () => {
 							.to.equal( '' );
 					} );
 
+					it( 'should not left unconverted figure media element', () => {
+						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { classes: 'media' } ) ).to.be.false;
+						}, { priority: 'lowest' } );
+
+						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com">foo bar</o-embed></figure>' );
+					} );
+
 					it( 'should discard the contents of the media', () => {
 						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com">foo bar</o-embed></figure>' );
 
