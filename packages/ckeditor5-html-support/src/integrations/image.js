@@ -127,13 +127,13 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 // @returns {Function} Returns a conversion callback.
 function modelToViewImageAttributeConverter() {
 	return dispatcher => {
-		addInlineAttributeConversionDispatcherHandler( 'htmlAttributes' );
+		addInlineAttributeConversion( 'htmlAttributes' );
 
-		addBlockAttributeConversionDispatcherHandler( 'img', 'htmlAttributes' );
-		addBlockAttributeConversionDispatcherHandler( 'figure', 'htmlFigureAttributes' );
-		addBlockAttributeConversionDispatcherHandler2();
+		addBlockAttributeConversion( 'img', 'htmlAttributes' );
+		addBlockAttributeConversion( 'figure', 'htmlFigureAttributes' );
+		addBlockImageLinkAttributeConversion();
 
-		function addInlineAttributeConversionDispatcherHandler( attributeName ) {
+		function addInlineAttributeConversion( attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageInline`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
@@ -145,8 +145,7 @@ function modelToViewImageAttributeConverter() {
 			}, { priority: 'low' } );
 		}
 
-		// TODO: Refactor.
-		function addBlockAttributeConversionDispatcherHandler( elementName, attributeName ) {
+		function addBlockAttributeConversion( elementName, attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, `attribute:${ attributeName }:imageBlock` ) ) {
 					return;
@@ -164,7 +163,7 @@ function modelToViewImageAttributeConverter() {
 			}, { priority: 'low' } );
 		}
 
-		function addBlockAttributeConversionDispatcherHandler2( ) {
+		function addBlockImageLinkAttributeConversion( ) {
 			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
 					return;
