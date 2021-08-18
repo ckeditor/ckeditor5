@@ -132,28 +132,43 @@ window.findToolbarItem = function( toolbarView, indexOrCallback ) {
 
 // Replaces all relative paths inside the content container with absolute URLs
 // to avoid a broken user experience when copying images between editors.
+// It parses all `<img>` elements and `<source>` elements if they belong to the `<picture>` node.
 ( () => {
 	[ ...document.querySelectorAll( '.main__content-inner img' ) ]
 		.filter( img => isRelativeUrl( img.getAttribute( 'src' ) ) )
 		.forEach( img => {
+			// Update `<img src="...">`.
 			img.setAttribute( 'src', img.src );
 
+			// Update `<img srcset="...">`.
 			if ( img.srcset ) {
-				const srcset = img.srcset.split( ',' )
-					.map( item => {
-						const [ relativeUrl, ratio ] = item.trim().split( ' ' );
+				updateSrcSetAttribute( img, img.baseURI );
+			}
 
-						if ( !isRelativeUrl( relativeUrl ) ) {
-							return item;
-						}
-
-						const absoluteUrl = new window.URL( relativeUrl, window.location.href ).toString();
-
-						return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
-					} )
-					.join( ', ' );
-
-				img.setAttribute( 'srcset', srcset );
+			// Update `<source>` elements if grouped in the `<picture>` element.
+			if ( img.parentElement instanceof window.HTMLPictureElement ) {
+				[ ...img.parentElement.querySelectorAll( 'source' ) ]
+					.forEach( source => {
+						updateSrcSetAttribute( source, img.baseURI );
+					} );
 			}
 		} );
+
+	function updateSrcSetAttribute( element, baseURI ) {
+		const srcset = element.srcset.split( ',' )
+			.map( item => {
+				const [ relativeUrl, ratio ] = item.trim().split( ' ' );
+
+				if ( !isRelativeUrl( relativeUrl ) ) {
+					return item;
+				}
+
+				const absoluteUrl = new window.URL( relativeUrl, baseURI ).toString();
+
+				return [ absoluteUrl, ratio ].filter( i => i ).join( ' ' );
+			} )
+			.join( ', ' );
+
+		element.setAttribute( 'srcset', srcset );
+	}
 } )();
