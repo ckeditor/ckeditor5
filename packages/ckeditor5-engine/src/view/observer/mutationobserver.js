@@ -186,7 +186,7 @@ export default class MutationObserver extends Observer {
 				// When we added first letter to the text node which had only inline filler, for the DOM it is mutation
 				// on text, but for the view, where filler text node did not existed, new text node was created, so we
 				// need to fire 'children' mutation instead of 'text'.
-				else if ( !text && startsWithFiller( mutation.target ) ) {
+				else if ( !text && ( startsWithFiller( mutation.target ) || this.renderer._inlineFiller == mutation.target ) ) {
 					mutatedElements.add( domConverter.mapDomToView( mutation.target.parentNode ) );
 				}
 			}

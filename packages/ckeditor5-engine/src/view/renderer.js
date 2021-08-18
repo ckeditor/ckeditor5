@@ -391,13 +391,16 @@ export default class Renderer {
 
 		// Something weird happened and the stored node doesn't contain the filler's text.
 		if ( !startsWithFiller( domFillerNode ) ) {
-			/**
-			 * The inline filler node was lost. Most likely, something overwrote the filler text node
-			 * in the DOM.
-			 *
-			 * @error view-renderer-filler-was-lost
-			 */
-			throw new CKEditorError( 'view-renderer-filler-was-lost', this );
+			this._inlineFiller = null;
+
+			return;
+			// /**
+			//  * The inline filler node was lost. Most likely, something overwrote the filler text node
+			//  * in the DOM.
+			//  *
+			//  * @error view-renderer-filler-was-lost
+			//  */
+			// throw new CKEditorError( 'view-renderer-filler-was-lost', this );
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {
@@ -783,10 +786,10 @@ export default class Renderer {
 	 * @returns {Boolean}
 	 */
 	_domSelectionNeedsUpdate( domSelection ) {
-		if ( !this.domConverter.isDomSelectionCorrect( domSelection ) ) {
-			// Current DOM selection is in incorrect position. We need to update it.
-			return true;
-		}
+		// if ( !this.domConverter.isDomSelectionCorrect( domSelection ) ) {
+		// 	// Current DOM selection is in incorrect position. We need to update it.
+		// 	return true;
+		// }
 
 		const oldViewSelection = domSelection && this.domConverter.domSelectionToView( domSelection );
 
@@ -794,8 +797,7 @@ export default class Renderer {
 			return false;
 		}
 
-		// If selection is not collapsed, it does not need to be updated if it is similar.
-		if ( !this.selection.isCollapsed && this.selection.isSimilar( oldViewSelection ) ) {
+		if ( oldViewSelection && this.selection.isSimilar( oldViewSelection ) ) {
 			// Selection did not changed and is correct, do not update.
 			return false;
 		}

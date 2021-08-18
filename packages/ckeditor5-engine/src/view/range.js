@@ -143,22 +143,32 @@ export default class Range {
 	 */
 	getTrimmed() {
 		let start = this.start.getLastMatchingPosition( enlargeTrimSkip );
+		let end;
 
 		if ( start.isAfter( this.end ) || start.isEqual( this.end ) ) {
-			return new Range( start, start );
+			end = start;
+		} else {
+			end = this.end.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
 		}
 
-		let end = this.end.getLastMatchingPosition( enlargeTrimSkip, { direction: 'backward' } );
+		const collapsed = start.isEqual( end );
+
+		const nodeBeforeStart = start.nodeBefore;
 		const nodeAfterStart = start.nodeAfter;
 		const nodeBeforeEnd = end.nodeBefore;
+		const nodeAfterEnd = end.nodeAfter;
 
 		// Because TreeWalker prefers positions next to text node, we need to move them manually into these text nodes.
 		if ( nodeAfterStart && nodeAfterStart.is( '$text' ) ) {
 			start = new Position( nodeAfterStart, 0 );
+		} else if ( collapsed && nodeBeforeStart && nodeBeforeStart.is( '$text' ) ) {
+			start = new Position( nodeBeforeStart, nodeBeforeStart.data.length );
 		}
 
 		if ( nodeBeforeEnd && nodeBeforeEnd.is( '$text' ) ) {
 			end = new Position( nodeBeforeEnd, nodeBeforeEnd.data.length );
+		} else if ( collapsed && nodeAfterEnd && nodeAfterEnd.is( '$text' ) ) {
+			end = new Position( nodeAfterEnd, 0 );
 		}
 
 		return new Range( start, end );
