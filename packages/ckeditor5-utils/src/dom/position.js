@@ -27,7 +27,7 @@ import { isFunction } from 'lodash-es';
  *		const target = document.body.querySelector( '#container' );
  *
  *		// Finding the optimal coordinates for the positioning.
- *		const { left, top, name } = getOptimalPosition( {
+ *		const { left, top, name, withArrow } = getOptimalPosition( {
  *			element: element,
  *			target: target,
  *
@@ -137,9 +137,9 @@ class Position {
 			return;
 		}
 
-		const { left, top, name } = positioningFunctionOutput;
+		const { left, top, name, withArrow } = positioningFunctionOutput;
 
-		Object.assign( this, { name } );
+		Object.assign( this, { name, withArrow } );
 
 		this._positioningFunctionCorrdinates = { left, top };
 		this._options = options;
