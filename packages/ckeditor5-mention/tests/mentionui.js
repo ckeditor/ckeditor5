@@ -196,25 +196,29 @@ describe( 'MentionUI', () => {
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_se',
-						top: 121
+						top: 121,
+						withArrow: false
 					} );
 
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
-						top: 121
+						top: 121,
+						withArrow: false
 					} );
 
 					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_ne',
-						top: -53
+						top: -53,
+						withArrow: false
 					} );
 
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_nw',
-						top: -53
+						top: -53,
+						withArrow: false
 					} );
 				} );
 		} );

@@ -217,8 +217,10 @@ class Position {
 	}
 }
 
-// TODO
+// Returns viewport `Rect` shrinked by viewportOffset config.
+//
 // @private
+// @param {Object} an object containing viewportOffset config.
 function getConstrainedViewportRect( viewportOffsetConfig ) {
 	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
@@ -231,25 +233,6 @@ function getConstrainedViewportRect( viewportOffsetConfig ) {
 
 	return viewportRect;
 }
-
-// For given position function, returns a corresponding `Rect` instance.
-//
-// @private
-// @param {Function} position A function returning {@link module:utils/dom/position~Position}.
-// @param {utils/dom/rect~Rect} targetRect A rect of the target.
-// @param {utils/dom/rect~Rect} elementRect A rect of positioned element.
-// @returns {Array|null} An array containing position name and its Rect (or null if position should be ignored).
-// function getPositionNameAndRect( position, targetRect, elementRect ) {
-// 	const positionData = position( targetRect, elementRect );
-
-// 	if ( !positionData ) {
-// 		return null;
-// 	}
-
-// 	const { left, top, name } = positionData;
-
-// 	return [ name, elementRect.clone().moveTo( left, top ) ];
-// }
 
 // For a given array of positioning functions, returns such that provides the best
 // fit of the `elementRect` into the `limiterRect` and `viewportRect`.

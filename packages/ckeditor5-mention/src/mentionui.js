@@ -586,7 +586,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right,
-				name: 'caret_se'
+				name: 'caret_se',
+				withArrow: false
 			};
 		},
 
@@ -595,7 +596,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right,
-				name: 'caret_ne'
+				name: 'caret_ne',
+				withArrow: false
 			};
 		},
 
@@ -604,7 +606,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
-				name: 'caret_sw'
+				name: 'caret_sw',
+				withArrow: false
 			};
 		},
 
@@ -613,7 +616,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
-				name: 'caret_nw'
+				name: 'caret_nw',
+				withArrow: false
 			};
 		}
 	};
