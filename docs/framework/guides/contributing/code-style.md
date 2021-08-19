@@ -777,3 +777,58 @@ Widely used standard files do not obey the above rules:
 * `README.md`, `LICENSE.md`, `CONTRIBUTING.md`, `CHANGES.md`
 * `.gitignore` and all standard "dot-files"
 * `node_modules`
+
+## CKEditor 5 custom ESLint rules
+### Importing from the same package
+While importing modules from the same package it is allowed to use relative paths, like so:
+```js
+import Foo from '../foo';
+import Foo from '../../foo';
+```
+### Importing from other packages
+While importing modules from other packages it is disallowed to use relative paths, and absolute paths must be used instead, like so:
+```js
+import Position from '@ckeditor5/ckeditor5-engine/src/model/position';
+```
+👎 Examples of incorrect code for this rule:
+```js
+import Foo from '../ckeditor5-media-embed/src/foo';
+import Position from '../ckeditor5-engine/src/model/position';
+import Position from '../../ckeditor5-engine/src/model/position';
+import Position from '../../../../../../../../../../ckeditor5-engine/src/model/position';
+```
+👍 Examples of correct code for this rule:
+```js
+import Foo from '@ckeditor/ckeditor5-media-embed/src/foo';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+```
+### Docs for new errors
+Each time new type of error is created, it needs a comment that contains description, and `@error error-name` expression, like so:
+```js
+/**
+ * Description of why the error was thrown
+ *
+ * @error method-id-is-kebab
+ */
+throw new CKEditorError( 'method-id-is-kebab', this );
+```
+### Errors that already have docs elsewhere
+In case the error is already documented elsewhere, this expression can be used to avoid ESLint errors:
+`// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message`
+And while it is not required, it is a good practice to include a note above the expression that explains where is the already existing documentation, like so:
+```js
+// Documented in core/editor/editor.js
+// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+throw new CKEditorError( 'method-id-is-kebab', null );
+```
+### DLL
+paczki dll mogą importować “jak chcą”
+paczki nie-DLL muszą importować paczki DLL-owe używając ckeditor5
+👎 Examples of incorrect code for this rule:
+```js
+//
+```
+👍 Examples of correct code for this rule:
+```js
+//
+```
