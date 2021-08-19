@@ -839,9 +839,19 @@ export function insertElement( elementCreator ) {
 }
 
 /**
- * TODO
- */
-function insertStructure( elementCreator, consumer ) {
+ * Function factory that creates a converter which converts a single model node insertion to a view structure.
+ *
+ * It is expected that the passed element creator function returns an {@link module:engine/view/element~Element} with attached slots
+ * created with `conversionApi.slotFor()` to indicate where child nodes should be converted.
+ *
+ * @protected
+ * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} elementCreator Function returning a view structure,
+ * which will be inserted.
+ * @param {module:engine/conversion/downcasthelpers~ConsumerFunction} consumer A callback that is expected to consume all the consumables
+ * that were used by the element creator.
+ * @returns {Function} Insert element event converter.
+*/
+export function insertStructure( elementCreator, consumer ) {
 	return ( evt, data, conversionApi ) => {
 		let debugSlots = false; // eslint-disable-line
 		// @if CK_DEBUG_SLOTS // debugSlots = true;
@@ -854,7 +864,6 @@ function insertStructure( elementCreator, consumer ) {
 			slotFor: createSlotFactory( data.item, slotsMap, conversionApi.writer, { debugSlots } )
 		} );
 
-		// Insert the new structure if any was created. Otherwise it's removed.
 		if ( !viewElement ) {
 			return;
 		}
@@ -1191,10 +1200,7 @@ function changeAttribute( attributeCreator ) {
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
-			throw new CKEditorError(
-				'conversion-attribute-to-attribute-on-text',
-				[ data, conversionApi ]
-			);
+			throw new CKEditorError( 'conversion-attribute-to-attribute-on-text', this, data );
 		}
 
 		// First remove the old attribute if there was one.
@@ -1929,7 +1935,12 @@ function createSlotFactory( element, slotsMap, writer, options ) {
 		} else if ( typeof modeOrFilter == 'function' ) {
 			children = Array.from( element.getChildren() ).filter( element => modeOrFilter( element ) );
 		} else {
-			throw new Error( 'unknown slot mode' ); // TODO
+			/**
+			 * Unknown slot mode was provided to `conversionApi.slotFor()` in downcast converter.
+			 *
+			 * @error conversion-slot-mode-unknown
+			 */
+			throw new CKEditorError( 'conversion-slot-mode-unknown', this, { modeOrFilter } );
 		}
 
 		slotsMap.set( slot, children );
@@ -1947,11 +1958,21 @@ function validateSlotsChildren( element, slotsMap ) {
 	const uniqueChildrenInSlots = new Set( childrenInSlots );
 
 	if ( uniqueChildrenInSlots.size != childrenInSlots.length ) {
-		throw new Error( 'same child in multiple slots' );
+		/**
+		 * A filter provided to `conversionApi.slotFor()` is to permissive and leads to downcasting a same node to a multiple slots.
+		 *
+		 * @error conversion-slot-filter-to-permissive
+		 */
+		throw new CKEditorError( 'conversion-slot-filter-to-permissive', this, { element, slotsMap } );
 	}
 
 	if ( uniqueChildrenInSlots.size != element.childCount ) {
-		throw new Error( 'not all children covered by slots' );
+		/**
+		 * A filter provided to `conversionApi.slotFor()` is to restrictive and leads to missing some nodes while downcasting.
+		 *
+		 * @error conversion-slot-filter-to-restrictive
+		 */
+		throw new CKEditorError( 'conversion-slot-filter-to-restrictive', this, { element, slotsMap } );
 	}
 }
 
@@ -2065,4 +2086,27 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
  * an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these attributes will be set on that
  * attribute element. If the descriptor is applied to an element, usually these attributes will be set on that element, however,
  * this depends on how the element converts the descriptor.
+ */
+
+/**
+ * TODO
+ *
+ * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
+ * @param {module:engine/model/element~Element} element TODO
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi TODO with mixed slotFor
+ * @returns {module:engine/view/element~Element} TODO
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ * @see module:engine/conversion/downcasthelpers~insertStructure
+ */
+
+/**
+ * TODO
+ *
+ * @callback module:engine/conversion/downcasthelpers~ConsumerFunction
+ * @param {module:engine/model/element~Element} element TODO
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable TODO
+ * @returns {Boolean} TODO
+ *
+ * @see module:engine/conversion/downcasthelpers~insertStructure
  */
