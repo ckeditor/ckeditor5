@@ -402,7 +402,7 @@ function getDomElement( object ) {
  *		      \|/
  *	    >|-----|<---------------- horizontal offset
  *
- * @default 30
+ * @default 25
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHorizontalOffset
  */
 BalloonPanelView.arrowHorizontalOffset = 25;
@@ -421,12 +421,24 @@ BalloonPanelView.arrowHorizontalOffset = 25;
  *		-------------------------------
  *		                       ^
  *
- * @default 15
+ * @default 10
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
 BalloonPanelView.arrowVerticalOffset = 10;
 
-// TODO
+/**
+ * A vertical offset of the balloon panel from the edge of the viewport if sticky.
+ * It helps in accessing toolbar buttons underneath the balloon panel.
+ *
+ *       Toolbar                        /-- vertical offset
+ *       +-----------------------------V--------------------+
+ *       |                  +-------------+                 |
+ *       +------------------|   Balloon   |-----------------+
+ *                          +-------------+
+ *
+ * @default 20
+ * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset
+ */
 BalloonPanelView.stickyVerticalOffset = 20;
 
 /**
@@ -708,19 +720,19 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * * `viewportStickyNorth`
  *
- *		+---------------------------+
- *		|		 [ Target ]			|
- *		|							|
+ *	    +---------------------------+
+ *	    |        [ Target ]         |
+ *	    |                           |
  *	+-----------------------------------+
- *	|	|	 +-----------------+	|	|
- *	|	|	 |     Balloon     |	|	|
- *	|	|	 +-----------------+	|	|
- *	|	|        					|	|
- *	|	|							|	|
- *	|	|							|	|
- * 	|	|							|	|
- *	|	+---------------------------+	|
- * 	|			  Viewport				|
+ *	|   |    +-----------------+    |   |
+ *	|   |    |     Balloon     |    |   |
+ *	|   |    +-----------------+    |   |
+ *	|   |                           |   |
+ *	|   |                           |   |
+ *	|   |                           |   |
+ * 	|   |                           |   |
+ *	|	+---------------------------+   |
+ * 	|             Viewport              |
  *	+-----------------------------------+
  *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.

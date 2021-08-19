@@ -1011,9 +1011,9 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
-		// ------- South east
+		// ------- Sticky
 
-		it( 'should define the "viewportStickyNorth" position', () => {
+		it( 'should define the "viewportStickyNorth" position and return null if not sticky', () => {
 			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
 		} );
 	} );
