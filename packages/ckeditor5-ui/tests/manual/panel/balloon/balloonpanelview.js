@@ -10,8 +10,8 @@ import BalloonPanelView from '../../../../src/panel/balloon/balloonpanelview';
 const defaultPositions = BalloonPanelView.defaultPositions;
 const container = document.querySelector( '#container' );
 
-// exclude sticky position from this manual test
-// as it makes no sense to test it in this context
+// It makes no sense to test the sticky position in this context,
+// thus exclude it from this manual test.
 delete defaultPositions.viewportStickyNorth;
 
 let currentHeading = '';

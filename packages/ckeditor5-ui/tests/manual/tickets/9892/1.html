@@ -101,7 +101,6 @@
 	.sticky-header,
 	.sticky-footer {
 		display: flex;
-		display: none;
 		opacity: .9;
 		position: fixed;
 		left: 48px;
@@ -109,8 +108,8 @@
 		align-items: center;
 		height: 100px;
 		padding-left: 10px;
-		background-color: hsl(0, 0%, 90%);
-		z-index: 999;
+		background-color: hsl( 0, 0%, 90% );
+		z-index: 9999;
 	}
 
 	.sticky-header {
@@ -119,5 +118,10 @@
 
 	.sticky-footer {
 		bottom: 0;
+	}
+
+	.manual-test-container_pinned-sidebar .sticky-header,
+	.manual-test-container_pinned-sidebar .sticky-footer {
+		left: calc(48px + 390px);
 	}
 </style>
