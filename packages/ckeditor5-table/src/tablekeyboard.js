@@ -218,10 +218,22 @@ export default class TableKeyboard extends Plugin {
 			return false;
 		}
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach cell edge.
-		if ( expandSelection && !selection.isCollapsed && selection.isBackward == isForward ) {
-			return false;
+		// When the selection is not collapsed.
+		if ( !selection.isCollapsed ) {
+			if ( expandSelection ) {
+				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+				// Selection for sure will not approach cell edge.
+				if ( selection.isBackward == isForward ) {
+					return false;
+				}
+			} else {
+				const selectedElement = selection.getSelectedElement();
+
+				// It will collapse for non-object selected so it's not going to move to other cell.
+				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+					return false;
+				}
+			}
 		}
 
 		// Let's check if the selection is at the beginning/end of the cell.
