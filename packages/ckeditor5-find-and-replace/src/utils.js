@@ -133,7 +133,15 @@ export function findByTextCallback( searchTerm, options ) {
 	if ( options.wholeWords ) {
 		const nonLetterGroup = '[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]';
 
-		regExpQuery = `(?<=^|${ nonLetterGroup }|_)` + regExpQuery + `(?=_|${ nonLetterGroup }|$)`;
+		if ( !new RegExp( '^' + nonLetterGroup ).test( searchTerm ) )
+		{
+			regExpQuery = `(?<=^|${ nonLetterGroup }|_)${ regExpQuery }`;
+		}
+
+		if ( !new RegExp( nonLetterGroup + '$' ).test( searchTerm ) )
+		{
+			regExpQuery = `${ regExpQuery }(?=_|${ nonLetterGroup }|$)`;
+		}
 	}
 
 	const regExp = new RegExp( regExpQuery, flags );
