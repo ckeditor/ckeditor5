@@ -45,7 +45,7 @@ ClassicEditor
 					// Finally, you can define `to` as a callback.
 					// This (naive) rule will auto-capitalize the first word after a period.
 					{
-						from: /(\. )([a-z])$/,
+						from: /(\. |\? |! )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
 					}
 				]
