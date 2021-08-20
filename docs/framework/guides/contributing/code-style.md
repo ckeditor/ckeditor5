@@ -780,7 +780,7 @@ Widely used standard files do not obey the above rules:
 
 ## CKEditor 5 custom ESLint rules
 
-EIn addition to the rules provided by ESLint, CKEditor 5 uses a few custom rules described below.
+In addition to the rules provided by ESLint, CKEditor 5 uses a few custom rules described below.
 
 ### Importing between packages: `ckeditor5-rules/no-relative-imports`
 
