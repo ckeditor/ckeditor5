@@ -779,56 +779,124 @@ Widely used standard files do not obey the above rules:
 * `node_modules`
 
 ## CKEditor 5 custom ESLint rules
-### Importing from the same package
-While importing modules from the same package it is allowed to use relative paths, like so:
+
+Except for rules provided by ESLint, CKEditor 5 uses a few custom rules described below.
+
+### Importing between packages: `ckeditor5-rules/no-relative-imports`
+
+While importing modules from the same package, it is allowed to use relative paths, like so:
+
 ```js
-import Foo from '../foo';
-import Foo from '../../foo';
+// Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
+
+import Position from './position';
+import insertContent from './utils/insertcontent';
 ```
-### Importing from other packages
-While importing modules from other packages it is disallowed to use relative paths, and absolute paths must be used instead, like so:
+
+While importing modules from other packages, it is disallowed to use relative paths, and import must be done using the package name, like so:
+
+👎&nbsp; Examples of incorrect code for this rule:
+
 ```js
-import Position from '@ckeditor5/ckeditor5-engine/src/model/position';
+// Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
+
+import CKEditorError from '../../../ckeditor5-utils/src/ckeditorerror';
 ```
-👎 Examples of incorrect code for this rule:
+
+Even if the import statement works locally, it will throw an error when developers install packages from npm.
+
+👍&nbsp; Examples of correct code for this rule:
+
 ```js
-import Foo from '../ckeditor5-media-embed/src/foo';
-import Position from '../ckeditor5-engine/src/model/position';
-import Position from '../../ckeditor5-engine/src/model/position';
-import Position from '../../../../../../../../../../ckeditor5-engine/src/model/position';
+// Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
+
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 ```
-👍 Examples of correct code for this rule:
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
+
+### Description of an error: `ckeditor5-rules/ckeditor-error-message`
+
+Each time a new error is created, it needs a description to be displayed on the {@link framework/guides/support/error-codes error codes} page, like so:
+
+👎&nbsp; Examples of incorrect code for this rule:
+
 ```js
-import Foo from '@ckeditor/ckeditor5-media-embed/src/foo';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+// Missing the error's description.
+
+throw new CKEditorError( 'ckeditor5-example-error', this );
+
+// ESLint shouldn't expect the definition of the error as it is already described.
+
+throw new CKEditorError( 'editor-wrong-element', this );
 ```
-### Docs for new errors
-Each time new type of error is created, it needs a comment that contains description, and `@error error-name` expression, like so:
+
+👍&nbsp; Examples of correct code for this rule:
+
 ```js
+// This error occurs for the first time in the project, so it needs to be defined.
+
 /**
- * Description of why the error was thrown
+ * Description of why the error was thrown and how to fix the code.
  *
- * @error method-id-is-kebab
+ * @error ckeditor5-example-error
  */
-throw new CKEditorError( 'method-id-is-kebab', this );
-```
-### Errors that already have docs elsewhere
-In case the error is already documented elsewhere, this expression can be used to avoid ESLint errors:
-`// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message`
-And while it is not required, it is a good practice to include a note above the expression that explains where is the already existing documentation, like so:
-```js
+throw new CKEditorError( 'ckeditor5-example-error', this );
+
+// This error is already described, so we don't need to provide its documentation.
+// We need to disable ESLint for checking the rule.
+// It is a good practice to include a note that explains where it is described.
+
 // Documented in core/editor/editor.js
 // eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-throw new CKEditorError( 'method-id-is-kebab', null );
+throw new CKEditorError( 'editor-wrong-element', this );
 ```
-### DLL
-paczki dll mogą importować “jak chcą”
-paczki nie-DLL muszą importować paczki DLL-owe używając ckeditor5
-👎 Examples of incorrect code for this rule:
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/7822)
+
+### DLL Builds: `ckeditor5-rules/ckeditor-imports`
+
+To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
+
+Packages marked as "Base DLL build" can import between themselves without any restrictions. Name of these packages are specified in the {@link builds/guides/development/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
+
+The rest of CKEditor 5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
+
+When importing modules from the `ckeditor5` package, all imports must come from the `src/` directory. Other directories are not published on npm, so these imports will not work.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
 ```js
-//
+// Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+// The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
+
+import Plugin from 'ckeditor5/packages/ckeditor5-core/src/plugin';
 ```
-👍 Examples of correct code for this rule:
+
+👍&nbsp; Examples of correct code for this rule:
+
 ```js
-//
+// Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
+
+import { Plugin } from 'ckeditor5/src/core';
 ```
+
+Also, non-DLL packages shouldn't import between non-DLL packages to avoid code duplications when building DLL builds.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
+
+import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/utils.js'
+```
+
+To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose required function in the `ckeditor5-image` package.
+
+History of changes:
+
+* [Force importing using the `ckeditor5` package.](https://github.com/ckeditor/ckeditor5/issues/8581)
+* [Imports from the `ckeditor5` package must use the `src/` directory.](https://github.com/ckeditor/ckeditor5/issues/10030)
