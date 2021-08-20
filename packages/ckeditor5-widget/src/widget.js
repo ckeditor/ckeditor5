@@ -386,6 +386,12 @@ export default class Widget extends Plugin {
 		// to its current state after undo.
 		const probe = model.createSelection( modelSelection );
 		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+
+		// The selection didn't change so there is nothing there.
+		if ( probe.isEqual( modelSelection ) ) {
+			return null;
+		}
+
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
 		if ( !!objectElement && schema.isObject( objectElement ) ) {
