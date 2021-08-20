@@ -585,6 +585,20 @@ describe( 'Widget', () => {
 			);
 
 			test(
+				'should not move selection if there is an inline widget after caret - down arrow',
+				'<paragraph>[]<inline-widget></inline-widget>foo</paragraph>',
+				[ keyCodes.arrowdown ],
+				'<paragraph>[]<inline-widget></inline-widget>foo</paragraph>'
+			);
+
+			test(
+				'should not move selection if there is an inline widget before caret - up arrow',
+				'<paragraph>foo<inline-widget></inline-widget>[]</paragraph>',
+				[ keyCodes.arrowup ],
+				'<paragraph>foo<inline-widget></inline-widget>[]</paragraph>'
+			);
+
+			test(
 				'should do nothing if other key is pressed',
 				'[<widget></widget>]<paragraph>foo</paragraph>',
 				// Use a safe key (alt) to not trigger the Input features "unsafe keys" handler.

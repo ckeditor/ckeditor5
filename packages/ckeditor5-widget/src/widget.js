@@ -12,7 +12,7 @@ import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobs
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { isForwardArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../theme/widget.css';
@@ -256,7 +256,9 @@ export default class Widget extends Plugin {
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
 		const objectElement = modelSelection.getSelectedElement();
-		const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, this.editor.locale.contentLanguageDirection );
+		const isForward = direction == 'down' || direction == 'right';
+		const isVerticalNavigation = direction == 'up' || direction == 'down';
 
 		// If object element is selected.
 		if ( objectElement && schema.isObject( objectElement ) ) {
@@ -284,6 +286,11 @@ export default class Widget extends Plugin {
 		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
+			// Do not select an inline widget while handling up/down arrow.
+			if ( schema.isInline( objectElementNextToSelection ) && isVerticalNavigation ) {
+				return;
+			}
+
 			this._setSelectionOverElement( objectElementNextToSelection );
 
 			domEventData.preventDefault();
