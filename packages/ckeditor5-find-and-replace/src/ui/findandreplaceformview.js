@@ -88,7 +88,7 @@ export default class FindAndReplaceFormView extends View {
 
 		/**
 		 * A live object with the aggregated `isEnabled` states of editor commands related to find and
-		 * replace. For instance, it may looks as follows:
+		 * replace. For instance, it may look as follows:
 		 *
 		 *		{
 		 *			findNext: true,
@@ -366,9 +366,9 @@ export default class FindAndReplaceFormView extends View {
 	 * It clears error messages, hides the match counter and disables the replace feature
 	 * until the next hit of the "Find" button.
 	 *
-	 * **Note**: It does not reset inputs and options, though. This way the form works better better in editors
-	 * disappearing toolbar (e.g. BalloonEditor): hiding the toolbar by accident (together the find and replace UI)
-	 * does not require filling the whole form again.
+	 * **Note**: It does not reset inputs and options, though. This way the form works better in editors with
+	 * disappearing toolbar (e.g. BalloonEditor): hiding the toolbar by accident (together with the find and replace UI)
+	 * does not require filling the entire form again.
 	 */
 	reset() {
 		this._findInputView.errorText = null;
@@ -416,7 +416,7 @@ export default class FindAndReplaceFormView extends View {
 		this._findPrevButtonView.delegate( 'execute' ).to( this, 'findPrevious' );
 		this._findNextButtonView.delegate( 'execute' ).to( this, 'findNext' );
 
-		// Prev/next buttons will be disabled when related editor command get disabled.
+		// Prev/next buttons will be disabled when related editor command gets disabled.
 		this._findPrevButtonView.bind( 'isEnabled' ).to( this, '_areCommandsEnabled', ( { findPrevious } ) => findPrevious );
 		this._findNextButtonView.bind( 'isEnabled' ).to( this, '_areCommandsEnabled', ( { findNext } ) => findNext );
 

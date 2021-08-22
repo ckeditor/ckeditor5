@@ -191,7 +191,7 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			describe( 'replace fieldset', () => {
-				it( 'should have an element create dfrom template', () => {
+				it( 'should have an element created from template', () => {
 					expect( view._replaceFieldsetView.element.tagName ).to.equal( 'FIELDSET' );
 					expect( view._replaceFieldsetView.element.classList.contains( 'ck' ) ).to.true;
 					expect( view._replaceFieldsetView.element.classList.contains( 'ck-find-and-replace-form__replace' ) ).to.be.true;
