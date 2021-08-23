@@ -203,21 +203,19 @@ describe( 'EditorUI', () => {
 		} );
 	} );
 
-	describe( '_viewportOffset()', () => {
+	describe( 'viewportOffset', () => {
 		it( 'should return offset object', () => {
-			const ui = new EditorUI( editor );
-
 			const stub = testUtils.sinon.stub( editor.config, 'get' )
 				.withArgs( 'ui.viewportOffset' )
 				.returns( { top: 200 } );
 
-			expect( ui._viewportOffset ).to.deep.equal( { top: 200 } );
+			const ui = new EditorUI( editor );
+
+			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledOnce( stub );
 		} );
 
 		it( 'should warn about deprecation', () => {
-			const ui = new EditorUI( editor );
-
 			testUtils.sinon.stub( editor.config, 'get' )
 				.withArgs( 'ui.viewportOffset' )
 				.returns( null )
@@ -226,7 +224,9 @@ describe( 'EditorUI', () => {
 
 			const consoleStub = testUtils.sinon.stub( console, 'warn' );
 
-			expect( ui._viewportOffset ).to.deep.equal( { top: 200 } );
+			const ui = new EditorUI( editor );
+
+			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
 			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
 		} );
 	} );

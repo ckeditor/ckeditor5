@@ -59,11 +59,22 @@ export default class EditorUI {
 		 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
 		 * This can be useful if there are any other absolutely positioned elements that may interfere with editor UI.
 		 *
+		 * Example:
+		 *
+		 * ```js
+		 * {
+		 * 	top: 50,
+		 * 	right: 50,
+		 * 	bottom: 50,
+		 * 	left: 50
+		 * }
+		 * ```
+		 *
 		 * @readonly
 		 * @observable
 		 * @member {Object} #viewportOffset
 		 */
-		this.set( 'viewportOffset', this._viewportOffset );
+		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
 		/**
 		 * Stores all editable elements used by the editor instance.
@@ -185,14 +196,23 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Returns viewport offsets object
-	 * { top: Number, right: Number, bottom: Number, left: Number }
-	 * Only top property is currently supported
+	 * Returns viewport offsets object:
+	 *
+	 * ```js
+	 * {
+	 * 	top: Number,
+	 * 	right: Number,
+	 * 	bottom: Number,
+	 * 	left: Number
+	 * }
+	 * ```
+	 *
+	 * Only top property is currently supported.
 	 *
 	 * @private
 	 * @return {Object}
 	 */
-	get _viewportOffset() {
+	_readViewportOffsetFromConfig() {
 		const editor = this.editor;
 		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
 
@@ -202,7 +222,7 @@ export default class EditorUI {
 
 		const legacyOffsetConfig = editor.config.get( 'toolbar.viewportTopOffset' );
 
-		// Fall back to deprecated toolbar config
+		// Fall back to deprecated toolbar config.
 		if ( legacyOffsetConfig ) {
 			/**
 			 * The {@link module:core/editor/editorconfig~EditorConfig#toolbar `EditorConfig#toolbar.viewportTopOffset`}
