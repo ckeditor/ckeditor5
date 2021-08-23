@@ -80,6 +80,14 @@ export default class StickyPanelView extends View {
 		 * either using `position: fixed` or `position: sticky`, which would cover the
 		 * sticky panel or vice–versa (depending on the `z-index` hierarchy).
 		 *
+		 * Bound to {@link module:core/editor/editorui~EditorUI#viewportOffset `EditorUI.viewportOffset`}.
+		 *
+		 * If {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset.top`} is defined then
+		 * it will be set as the value of this property overriding the default value.
+		 *
+		 * Everytime {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} is updated,
+		 * this value will be updated as well.
+		 *
 		 * @observable
 		 * @default 0
 		 * @member {Number} #viewportTopOffset

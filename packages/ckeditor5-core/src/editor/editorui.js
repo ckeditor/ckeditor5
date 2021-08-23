@@ -56,8 +56,12 @@ export default class EditorUI {
 		/**
 		 * Stores viewport offsets from every direction.
 		 *
+		 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
+		 * This can be useful if there are any other absolutely positioned elements that may interfere with editor UI.
+		 *
 		 * @readonly
 		 * @observable
+		 * @member {Object} #viewportOffset
 		 */
 		this.set( 'viewportOffset', this._viewportOffset );
 
