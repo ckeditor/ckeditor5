@@ -19,7 +19,12 @@ import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting'
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Essentials, Paragraph, FindAndReplace, Highlight, ArticlePluginSet, FontColor, SourceEditing ],
-		toolbar: [ 'sourceEditing', '|', 'heading', 'undo', 'redo', 'highlight', 'bold', 'fontColor', 'findAndReplace' ]
+		toolbar: [ 'findAndReplace', '|', 'sourceEditing', '|', 'heading', 'undo', 'redo', 'highlight', 'bold', 'fontColor' ],
+		image: {
+			toolbar: [
+				'toggleImageCaption', 'imageTextAlternative'
+			]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

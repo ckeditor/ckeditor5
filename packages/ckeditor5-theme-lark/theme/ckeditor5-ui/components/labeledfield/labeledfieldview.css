@@ -84,7 +84,7 @@
 
 	/* Fields that are disabled or not focused and without a placeholder should have full-sized labels. */
 	/* stylelint-disable-next-line no-descending-specificity */
-	&.ck-disabled > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
+	&.ck-disabled.ck-labeled-field-view_empty > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label,
 	&.ck-labeled-field-view_empty:not(.ck-labeled-field-view_focused):not(.ck-labeled-field-view_placeholder) > .ck.ck-labeled-field-view__input-wrapper > .ck.ck-label {
 		@mixin ck-dir ltr {
 			transform: translate(var(--ck-spacing-medium), calc(0.6 * var(--ck-font-size-base))) scale(1);
