@@ -57,8 +57,6 @@ export default class HighlightCommand extends Command {
 		const highlighter = options.value;
 
 		model.change( writer => {
-			const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
-
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
 
@@ -77,17 +75,29 @@ export default class HighlightCommand extends Command {
 					// Then depending on current value...
 					if ( !highlighter || this.value === highlighter ) {
 						// ...remove attribute when passing highlighter different then current or executing "eraser".
-						writer.removeAttribute( 'highlight', highlightRange );
+
+						// If we're at the end of the highlighted range, we don't want to remove highlight of the range.
+						if ( !position.isEqual( highlightEnd ) ) {
+							writer.removeAttribute( 'highlight', highlightRange );
+						}
+
 						writer.removeSelectionAttribute( 'highlight' );
 					} else {
 						// ...update `highlight` value.
-						writer.setAttribute( 'highlight', highlighter, highlightRange );
+
+						// If we're at the end of the highlighted range, we don't want to change the highlight of the range.
+						if ( !position.isEqual( highlightEnd ) ) {
+							writer.setAttribute( 'highlight', highlighter, highlightRange );
+						}
+
 						writer.setSelectionAttribute( 'highlight', highlighter );
 					}
 				} else if ( highlighter ) {
 					writer.setSelectionAttribute( 'highlight', highlighter );
 				}
 			} else {
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
+
 				for ( const range of ranges ) {
 					if ( highlighter ) {
 						writer.setAttribute( 'highlight', highlighter, range );
