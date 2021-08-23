@@ -9,6 +9,14 @@
 .ck.ck-find-and-replace-form {
 	width: 400px;
 
+	/*
+	 * The <form> needs tabindex="-1" for proper Esc handling after being clicked
+	 * but the side effect is that this creates a nasty focus outline in some browsers.
+	 */
+	&:focus {
+		outline: none;
+	}
+
 	& fieldset {
 		flex-direction: row;
 		flex-wrap: nowrap;
