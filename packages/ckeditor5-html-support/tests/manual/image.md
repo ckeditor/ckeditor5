@@ -5,3 +5,5 @@ Also, in Source Editing mode you can see class `allowed-class` and style `color:
 
 **Case 2:** Doesn't have `data-validation-disallow` attribute or red border.
 Also, in Source Editing mode you must not see class `disallowed-class` and style `color: red`.
+
+**Please ignore other rendering issues.**
