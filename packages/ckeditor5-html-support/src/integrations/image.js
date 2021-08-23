@@ -48,17 +48,16 @@ export default class ImageElementSupport extends Plugin {
 			schema.extend( 'imageBlock', {
 				allowAttributes: [
 					'htmlAttributes',
-					// Figure doesn't have model counterpart.
-					// We will be preserving attributes on image model element using these attribute keys.
+					// Figure and Link don't have model counterpart.
+					// We will preserve attributes on image model element using these attribute keys.
 					'htmlFigureAttributes',
-					// Link doesn't have model counterpart for other attributes than `href`. We will preserve them on image model.
 					'htmlLinkAttributes'
 				]
 			} );
 
 			schema.extend( 'imageInline', {
 				allowAttributes: [
-					// It's needed for standard GHS link integration.
+					// `htmlA` is needed for standard GHS link integration.
 					'htmlA',
 					'htmlAttributes'
 				]
@@ -86,24 +85,14 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
 			const viewImageElement = data.viewItem;
+			const viewContainerElement = viewImageElement.parent;
 
 			preserveElementAttributes( viewImageElement, 'htmlAttributes' );
-
-			const viewContainerElement = viewImageElement.parent;
 
 			if ( viewContainerElement.is( 'element', 'figure' ) ) {
 				preserveElementAttributes( viewContainerElement, 'htmlFigureAttributes' );
 			} else if ( viewContainerElement.is( 'element', 'a' ) ) {
-				// For block image, we want to preserve the attributes on our own. The inline image attributes will be handled
-				// by the GHS automatically.
-				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
-					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
-				}
-
-				// If we're in a link, then the `<figure>` element should be one level higher.
-				if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
-					preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
-				}
+				preserveLinkAttributes( data, preserveElementAttributes, viewContainerElement );
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
@@ -115,6 +104,19 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 			}
 		}, { priority: 'low' } );
 	};
+
+	// For block image, we want to preserve the attributes on our own.
+	// The inline image attributes will be handled by the GHS automatically.
+	function preserveLinkAttributes( data, preserveElementAttributes, viewContainerElement ) {
+		if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
+			preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
+		}
+
+		// If we're in a link, then the `<figure>` element should be one level higher.
+		if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
+			preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
+		}
+	}
 }
 
 // Model-to-view conversion helper applying attributes from {@link module:image/image~Image Image}
@@ -161,6 +163,8 @@ function modelToViewImageAttributeConverter() {
 			}, { priority: 'low' } );
 		}
 
+		// To have a link element in the view, we need to attach converter to `linkHref` attribute.
+		// Doing this directly on `htmlLinkAttributes` will fail, as the link wrapper is not yet called at that moment.
 		function addBlockImageLinkAttributeConversion( ) {
 			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
 				if ( !conversionApi.consumable.consume( data.item, 'attribute:htmlLinkAttributes:imageBlock' ) ) {
@@ -200,8 +204,7 @@ function getDescendantElement( conversionApi, containerElement, elementName ) {
 	}
 }
 
-// Conversion helper consuming figure element if it's a part of the Table feature
-// to avoid elementToElement conversion for figure with that context.
+// Prevent figure elements from being left unconsumed.
 //
 // @private
 // @returns {Function} Returns a conversion callback.
