@@ -83,6 +83,10 @@ The {@link features/base64-upload-adapter Base64 upload feature} converts images
 
 {@link features/base64-upload-adapter **Learn how to use Base64–encoded images in CKEditor 5**}.
 
+<info-box>
+	Please remember, that while `Base64` upload is a very easy solution, it is also somewhat inefficient. The image file itself is kept whole in the database, generating a much heavier data load and higher transfer. Try out also other ways to upload images into CKEditor 5.
+</info-box>
+
 ## Implementing your own upload adapter
 
 CKEditor 5 provides an open API that allows you to develop your own upload adapters. Tailored to your project, a custom adapter will allow you to take the **full control** over the process of sending the files to the server as well as passing the response from the server (e.g. the URL to the saved file) back to the WYSIWYG editor.

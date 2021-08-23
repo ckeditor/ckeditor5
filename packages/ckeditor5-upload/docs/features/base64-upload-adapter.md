@@ -11,7 +11,9 @@ The {@link module:upload/adapters/base64uploadadapter~Base64UploadAdapter Base64
 This kind of image upload does not require any server-side processing &mdash; images are stored with the rest of the text and displayed by the web browser without additional requests. On the downside, this approach can bloat your database with very long data strings which, in theory, could have a negative impact on the performance.
 
 <info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
+	Please remember, that while `Base64` upload is a very easy solution, it is also somewhat inefficient. The image file itself is kept whole in the database, generating a much heavier data load and higher transfer.
+
+	This can be troublesome for some features: {@link features/revision-history revision history} may hence take longer to load revisions; the same applies e.g. to {@link features/comments comments}. Therefore using the `Base64` feature is a less efficient option to use than some other available ones. Check out the comprehensive {@link features/image-upload image upload overview} guide to learn about other ways to upload images into CKEditor 5.
 </info-box>
 
 ## Demo
