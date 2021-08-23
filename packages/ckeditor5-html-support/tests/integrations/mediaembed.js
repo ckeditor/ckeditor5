@@ -6,8 +6,8 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import GeneralHtmlSupport from '../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from './_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from '../_utils/utils';
 import { range } from 'lodash-es';
 
 /* global document */

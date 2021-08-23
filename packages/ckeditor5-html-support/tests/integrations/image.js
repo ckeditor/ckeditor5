@@ -11,8 +11,8 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import { getModelDataWithAttributes } from './_utils/utils';
-import GeneralHtmlSupport from '../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from '../_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
 /* global document */
 
