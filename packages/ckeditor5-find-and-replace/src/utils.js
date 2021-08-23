@@ -107,6 +107,7 @@ function regexpMatchToFindResult( matchResult ) {
 	let startOffset = matchResult.index;
 
 	// Searches with match all flag have an extra matching group with empty string or white space matched before the word.
+	// If the search term starts with the space already, there is no extra group even with match all flag on.
 	if ( matchResult.length === 3 ) {
 		startOffset += matchResult[ 1 ].length;
 	}
@@ -138,7 +139,13 @@ export function findByTextCallback( searchTerm, options ) {
 	if ( options.wholeWords ) {
 		const nonLetterGroup = '[^a-zA-Z\u00C0-\u024F\u1E00-\u1EFF]';
 
-		regExpQuery = `(^|${ nonLetterGroup }|_)` + regExpQuery + `(?:_|${ nonLetterGroup }|$)`;
+		if ( !new RegExp( '^' + nonLetterGroup ).test( searchTerm ) ) {
+			regExpQuery = `(^|${ nonLetterGroup }|_)${ regExpQuery }`;
+		}
+
+		if ( !new RegExp( nonLetterGroup + '$' ).test( searchTerm ) ) {
+			regExpQuery = `${ regExpQuery }(?:_|${ nonLetterGroup }|$)`;
+		}
 	}
 
 	const regExp = new RegExp( regExpQuery, flags );

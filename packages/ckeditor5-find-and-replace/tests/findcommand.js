@@ -233,6 +233,30 @@ describe( 'FindCommand', () => {
 					expect( results.length ).to.equal( 1 );
 				} );
 
+				it( 'set to true matches a text ending with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( 'bar ', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text starting with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( ' bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text starting and ending with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( ' bar ', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
 				it( 'set to true doesn\'t match a word including diacritic characters', () => {
 					editor.setData( '<p>foo łbarę and Äbarè</p>' );
 
