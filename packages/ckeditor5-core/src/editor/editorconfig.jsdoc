@@ -321,7 +321,7 @@
  *
  * 	**Note:** At the moment, only `top` property is supported. Support for other directions will be added in the future.
  *
- * 	**Note:** The `top` property is being used by both {@link module:editor-inline/inlineeditoruiview~InlineEditorUIView#viewportTopOffset `InlineEditorUIView#viewportTopOffset`} and {@link module:ui/panel/sticky/stickypanelview~StickyPanelView#viewportTopOffset `StickyPanelView#viewportTopOffset`}. This makes both inline editor toolbar and sticky contextual balloons to respect viewport top offset.
+ * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
  *
  * @member {Object} module:core/editor/editorconfig~EditorConfig#ui
  */
