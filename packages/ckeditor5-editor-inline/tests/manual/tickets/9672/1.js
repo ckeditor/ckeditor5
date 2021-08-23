@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console:false, document, window */
+/* globals console:false, document, window, setInterval, clearInterval */
 
 import InlineEditor from '../../../../src/inlineeditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -39,11 +39,42 @@ InlineEditor
 	} );
 
 const button = document.querySelector( '#change-offset' );
+const buttonInterval = document.querySelector( '#change-offset-interval' );
 
-button.addEventListener( 'click', () => {
+let intervalRunning = false;
+let interval = null;
+
+const update = () => {
 	const getRandomBetween = ( min, max ) => Math.random() * ( max - min ) + min;
 	const random = getRandomBetween( 100, 200 );
 	document.documentElement.style.setProperty( '--top-offset', `${ random }px` );
 	editor.ui.viewportOffset = { top: random };
+};
+
+const updateAndFocus = () => {
+	update();
 	editor.editing.view.focus();
-} );
+};
+
+const updateAndChangeLayout = () => {
+	update();
+	editor.editing.view.document.fire( 'layoutChanged' );
+};
+
+const handleInterval = () => {
+	if ( intervalRunning ) {
+		clearInterval( interval );
+		intervalRunning = false;
+	} else {
+		interval = setInterval( updateAndChangeLayout, 2000 );
+		intervalRunning = true;
+	}
+};
+
+const updateFocusAndChangeLayout = () => {
+	editor.editing.view.focus();
+	handleInterval();
+};
+
+button.addEventListener( 'click', updateAndFocus );
+buttonInterval.addEventListener( 'click', updateFocusAndChangeLayout );
