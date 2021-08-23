@@ -1090,7 +1090,8 @@ describe( 'FindAndReplaceFormView', () => {
 			it( 'should display a tip when the replace field is disabled and focused', () => {
 				openDropdown();
 
-				replaceInput.focus();
+				// Note: replaceInput.focus() will not work if the browser window is not focused.
+				replaceInput.isFocused = true;
 
 				expect( replaceInput.isEnabled ).to.be.false;
 				expect( replaceInput.infoText ).to.match( /^Tip: Find some text/ );
