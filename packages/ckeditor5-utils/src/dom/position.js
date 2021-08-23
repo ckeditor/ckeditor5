@@ -128,99 +128,12 @@ export function getOptimalPosition( { element, target, positions, limiter, fitIn
 	return bestPosition;
 }
 
-class Position {
-	constructor( positioningFunction, options ) {
-		const positioningFunctionOutput = positioningFunction( options.targetRect, options.elementRect, options.viewportRect );
-
-		// Nameless position for a function that didn't participate.
-		if ( !positioningFunctionOutput ) {
-			return;
-		}
-
-		const { left, top, name, withArrow } = positioningFunctionOutput;
-
-		Object.assign( this, { name, withArrow } );
-
-		this._positioningFunctionCorrdinates = { left, top };
-		this._options = options;
-	}
-
-	get left() {
-		return this._absoluteRect.left;
-	}
-
-	get top() {
-		return this._absoluteRect.top;
-	}
-
-	// TODO
-	get limiterIntersectionArea() {
-		const limiterRect = this._options.limiterRect;
-
-		if ( limiterRect ) {
-			const viewportRect = this._options.viewportRect;
-
-			if ( viewportRect ) {
-				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
-				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
-
-				if ( limiterViewportIntersectRect ) {
-					// If the limiter is within the viewport, then check the intersection between that part of the
-					// limiter and actual position.
-					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
-				}
-			} else {
-				return limiterRect.getIntersectionArea( this._rect );
-			}
-		}
-
-		return 0;
-	}
-
-	// TODO
-	get viewportIntersectionArea() {
-		const viewportRect = this._options.viewportRect;
-
-		if ( viewportRect ) {
-			return viewportRect.getIntersectionArea( this._rect );
-		}
-
-		return 0;
-	}
-
-	get _rect() {
-		if ( this._cachedRect ) {
-			return this._cachedRect;
-		}
-
-		this._cachedRect = this._options.elementRect.clone().moveTo(
-			this._positioningFunctionCorrdinates.left,
-			this._positioningFunctionCorrdinates.top
-		);
-
-		return this._cachedRect;
-	}
-
-	get _absoluteRect() {
-		// Speed optimization.
-		if ( this._cachedAbsoluteRect ) {
-			return this._cachedAbsoluteRect;
-		}
-
-		this._cachedAbsoluteRect = getRectForAbsolutePositioning( this._rect );
-
-		if ( this._options.positionedElementAncestor ) {
-			shiftRectToCompensatePositionedAncestor( this._cachedAbsoluteRect, this._options.positionedElementAncestor );
-		}
-
-		return this._cachedAbsoluteRect;
-	}
-}
-
 // Returns viewport `Rect` shrinked by viewportOffset config.
 //
 // @private
 // @param {Object} an object containing viewportOffset config.
+//
+// @returns {utils/dom/rect~Rect} A shrinked rect of the viewport.
 function getConstrainedViewportRect( viewportOffsetConfig ) {
 	viewportOffsetConfig = Object.assign( { top: 0, bottom: 0, left: 0, right: 0 }, viewportOffsetConfig );
 
@@ -246,7 +159,7 @@ function getConstrainedViewportRect( viewportOffsetConfig ) {
 // @param {utils/dom/rect~Rect} options.targetRect A rect of the {@link module:utils/dom/position~Options#target}.
 // @param {utils/dom/rect~Rect} options.elementRect A rect of positioned {@link module:utils/dom/position~Options#element}.
 // @param {utils/dom/rect~Rect} options.limiterRect A rect of the {@link module:utils/dom/position~Options#limiter}.
-// @param {utils/dom/rect~Rect} options.viewportRect A rect of the viewport.
+// @param {utils/dom/rect~Rect} options.viewportRect A rect of the {@link module:utils/dom/position~Options#viewport}.
 //
 // @returns {Array} An array containing the name of the position and it's rect.
 function getBestPosition( positions, options ) {
@@ -325,12 +238,12 @@ function getBestConstrainedPosition( processedPositions, elementRectArea ) {
 //
 // @private
 //
-// @param {Object} absoluteRect An object with absolute rect coordinates.
-// @param {Object} absoluteRect.top
-// @param {Object} absoluteRect.left
+// @param {utils/dom/rect~Rect} rect A rect with absolute rect coordinates.
+// @param {Number} rect.top
+// @param {Number} rect.left
 // @param {HTMLElement} positionedElementAncestor An ancestor element that should be considered.
 //
-// @returns {Object} An object corresponding to `absoluteRect` input but with values shifted
+// @returns {utils/dom/rect~Rect} A rect corresponding to `absoluteRect` input but with values shifted
 // to make up for the positioned element ancestor.
 function shiftRectToCompensatePositionedAncestor( rect, positionedElementAncestor ) {
 	const ancestorPosition = getRectForAbsolutePositioning( new Rect( positionedElementAncestor ) );
@@ -370,11 +283,183 @@ function shiftRectToCompensatePositionedAncestor( rect, positionedElementAncesto
 //
 // @private
 // @param {utils/dom/rect~Rect} rect A rect to be converted.
+//
 // @returns {Object} Object containing `left` and `top` properties, in absolute coordinates.
 function getRectForAbsolutePositioning( rect ) {
 	const { scrollX, scrollY } = global.window;
 
 	return rect.clone().moveBy( scrollX, scrollY );
+}
+
+/**
+ * Position class used to store and calculate various positioning components used for example in balloons positioning.
+ *
+ * Usage example:
+ *
+ *		const elementRect = new Rect( element );
+ *		const targetRect = new Rect( target );
+ *		const viewportRect = new Rect( viewport );
+ *		const positionedElementAncestor = getPositionedAncestor( element );
+ *
+ *		const options = { elementRect, elementRect, viewportRect, positionedElementAncestor };
+ *
+ *		const positioningFunction = ( element, target, viewport ) => ( { top: 0, left: 0, name: 'example', withArrow: false } );
+ *
+ *		const position = new Position( positioningFunction, options );
+ *
+ *		const { top, left, name, withArrow, limiterIntersectionArea, viewportIntersectionArea } = position;
+ *
+ * The above `positioningFunction` is only an example always returning hardcoded top and left coordinates regardless of given options.
+ *
+ * Positioning function must be compatible with {@link module:utils/dom/position~Position}.
+ *
+ * Check the {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions `BalloonPanelView.defaultPositions`}
+ * for example functions.
+ */
+class Position {
+	/**
+	 * Creates an instance of the {@link module:utils/dom/position~Position} class.
+	 *
+	 * @param {Function} [positioningFunction] function handling rects positioning.
+	 * @param {Object} [options] options object.
+	 * @param {module:utils/dom/rect~Rect} [options.targetRect] target element rect.
+	 * @param {module:utils/dom/rect~Rect} [options.elementRect] balloon element rect.
+	 * @param {module:utils/dom/rect~Rect} [options.viewportRect] viewport element rect.
+	 * @param {HTMLElement|null} [options.positionedElementAncestor] nearest ancestor element which CSS position is not "static".
+	 */
+	constructor( positioningFunction, options ) {
+		const positioningFunctionOutput = positioningFunction( options.targetRect, options.elementRect, options.viewportRect );
+
+		// Nameless position for a function that didn't participate.
+		if ( !positioningFunctionOutput ) {
+			return;
+		}
+
+		const { left, top, name, withArrow } = positioningFunctionOutput;
+
+		Object.assign( this, { name, withArrow } );
+
+		this._positioningFunctionCorrdinates = { left, top };
+		this._options = options;
+
+		/**
+		 * Position name.
+		 *
+		 * @readonly
+		 * @member {String} #name
+		 */
+
+		/**
+		 * Tells whether given balloon constructed out of this position should have arrow.
+		 *
+		 * @readonly
+		 * @member {String} #withArrow
+		 */
+	}
+
+	/**
+	 * Position left coordinate.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get left() {
+		return this._absoluteRect.left;
+	}
+
+	/**
+	 * Position top coordinate.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get top() {
+		return this._absoluteRect.top;
+	}
+
+	/**
+	 * An intersection area between positioned element and limiter within viewport constraints.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get limiterIntersectionArea() {
+		const limiterRect = this._options.limiterRect;
+
+		if ( limiterRect ) {
+			const viewportRect = this._options.viewportRect;
+
+			if ( viewportRect ) {
+				// Consider only the part of the limiter which is visible in the viewport. So the limiter is getting limited.
+				const limiterViewportIntersectRect = limiterRect.getIntersection( viewportRect );
+
+				if ( limiterViewportIntersectRect ) {
+					// If the limiter is within the viewport, then check the intersection between that part of the
+					// limiter and actual position.
+					return limiterViewportIntersectRect.getIntersectionArea( this._rect );
+				}
+			} else {
+				return limiterRect.getIntersectionArea( this._rect );
+			}
+		}
+
+		return 0;
+	}
+
+	/**
+	 * An intersection area between positioned element and viewport.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get viewportIntersectionArea() {
+		const viewportRect = this._options.viewportRect;
+
+		if ( viewportRect ) {
+			return viewportRect.getIntersectionArea( this._rect );
+		}
+
+		return 0;
+	}
+
+	/**
+	 * An already positioned element rect.
+	 *
+	 * @private
+	 * @type {module:utils/dom/rect~Rect}
+	 */
+	get _rect() {
+		if ( this._cachedRect ) {
+			return this._cachedRect;
+		}
+
+		this._cachedRect = this._options.elementRect.clone().moveTo(
+			this._positioningFunctionCorrdinates.left,
+			this._positioningFunctionCorrdinates.top
+		);
+
+		return this._cachedRect;
+	}
+
+	/**
+	 * An already absolutely positioned element rect.
+	 *
+	 * @private
+	 * @type {module:utils/dom/rect~Rect}
+	 */
+	get _absoluteRect() {
+		if ( this._cachedAbsoluteRect ) {
+			return this._cachedAbsoluteRect;
+		}
+
+		this._cachedAbsoluteRect = getRectForAbsolutePositioning( this._rect );
+
+		if ( this._options.positionedElementAncestor ) {
+			shiftRectToCompensatePositionedAncestor( this._cachedAbsoluteRect, this._options.positionedElementAncestor );
+		}
+
+		return this._cachedAbsoluteRect;
+	}
 }
 
 /**
@@ -419,12 +504,16 @@ function getRectForAbsolutePositioning( rect ) {
  */
 
 /**
- * An object describing a position in `position: absolute` coordinate
- * system, along with position name.
+ * Viewport offset config object.
  *
- * @typedef {Object} module:utils/dom/position~Position
+ * ```js
+ * {
+ * 	top: 50,
+ * 	right: 50,
+ * 	bottom: 50,
+ * 	left: 50
+ * }
+ * ```
  *
- * @property {Number} top Top position offset.
- * @property {Number} left Left position offset.
- * @property {String} name Name of the position.
+ * @member {Object} #viewportOffsetConfig
  */
