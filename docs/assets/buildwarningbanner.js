@@ -5,10 +5,9 @@
 
 /* globals window */
 
-// Display a warning banner when browsing local or nightly documentation build.
-if ( window.location.host !== 'ckeditor.com' ) {
+// Display a warning banner when browsing nightly documentation build.
+if ( window.location.host === 'ckeditor5.github.io' ) {
 	window.umberto.showWarningBanner(
-		`${ window.location.host === 'ckeditor5.github.io' ? 'Nightly' : 'Development' } documentation ahead. ` +
-		'Switch to the <a href="https://ckeditor.com/docs/ckeditor5">stable editor documentation</a>.'
+		'Nightly documentation ahead. Switch to the <a href="https://ckeditor.com/docs/ckeditor5">stable editor documentation</a>.'
 	);
 }
