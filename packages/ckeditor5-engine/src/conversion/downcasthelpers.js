@@ -2089,11 +2089,64 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
  */
 
 /**
+ * A filtering function used to choose model child nodes to be downcasted into a specific view
+ * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor "slot"} while converting
+ * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
+ *
+ * @callback module:engine/conversion/downcasthelpers~SlotFilter
+ *
+ * @param {module:engine/model/node~Node} node A model node.
+ * @returns {Boolean} Whether provided model node should be downcasted into this slot.
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ * @see module:engine/conversion/downcasthelpers~insertStructure
+ */
+
+/**
+ * An extended {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} that adds a
+ * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor `slotFor()`} helper to create placeholders for
+ * child elements converion.
+ *
+ * @interface module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi
+ * @extends module:engine/conversion/downcastdispatcher~DowncastConversionApi
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ * @see module:engine/conversion/downcasthelpers~insertStructure
+ */
+
+/**
+ * A helper that creates placeholders for child elements.
+ *
+ * 		const viewSlot = conversionApi.slotFor( 'children' );
+ * 		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+ *
+ * 		conversionApi.writer.insert( viewPosition, viewSlot );
+ *
+ * It could be filtered to a specific subset of children:
+ *
+ * 		const viewSlot = conversionApi.slotFor( node => node.is( 'element', 'foo' ) );
+ * 		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+ *
+ * 		conversionApi.writer.insert( viewPosition, viewSlot );
+ *
+ * While providing a filtered slot make sure to provide slots for all child nodes. A single node can not be downcasted into
+ * multiple slots.
+ *
+ * **Note**: You should not change an order of nodes, view elements should be in the same order as model nodes.
+ *
+ * @method #slotFor
+ * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} modeOrFilter The filter for child nodes.
+ * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
+ * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
+ */
+
+/**
  * TODO
  *
  * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
  * @param {module:engine/model/element~Element} element TODO
- * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi TODO with mixed slotFor
+ * @param {module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi} conversionApi TODO with mixed slotFor
  * @returns {module:engine/view/element~Element} TODO
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
