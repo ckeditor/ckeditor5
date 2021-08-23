@@ -13,7 +13,7 @@ import { setViewAttributes } from '../conversionutils.js';
 import DataFilter from '../datafilter';
 
 /**
- * Provides the General HTML Support integration with {@link module:image/image~Image Image} feature.
+ * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -75,7 +75,7 @@ export default class ImageElementSupport extends Plugin {
 	}
 }
 
-// View-to-model conversion helper preserving allowed attributes on {@link module:image/image~Image Image}
+// View-to-model conversion helper preserving allowed attributes on the {@link module:image/image~Image Image}
 // feature model element.
 //
 // @private
@@ -105,7 +105,7 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 		}, { priority: 'low' } );
 	};
 
-	// For block image, we want to preserve the attributes on our own.
+	// For a block image, we want to preserve the attributes on our own.
 	// The inline image attributes will be handled by the GHS automatically.
 	function preserveLinkAttributes( data, preserveElementAttributes, viewContainerElement ) {
 		if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
@@ -119,7 +119,7 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 	}
 }
 
-// Model-to-view conversion helper applying attributes from {@link module:image/image~Image Image}
+// A model-to-view conversion helper applying attributes from the {@link module:image/image~Image Image}
 // feature.
 //
 // @private
@@ -163,7 +163,7 @@ function modelToViewImageAttributeConverter() {
 			}, { priority: 'low' } );
 		}
 
-		// To have a link element in the view, we need to attach converter to `linkHref` attribute.
+		// To have a link element in the view, we need to attach a converter to the `linkHref` attribute.
 		// Doing this directly on `htmlLinkAttributes` will fail, as the link wrapper is not yet called at that moment.
 		function addBlockImageLinkAttributeConversion( ) {
 			dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {

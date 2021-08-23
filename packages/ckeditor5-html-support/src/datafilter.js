@@ -208,7 +208,7 @@ export default class DataFilter extends Plugin {
 	}
 
 	/**
-	 * Matches and consumes allowed and disallowed view attributes and returns allowed ones.
+	 * Matches and consumes allowed and disallowed view attributes and returns the allowed ones.
 	 *
 	 * @protected
 	 * @param {module:engine/view/element~Element} viewElement
@@ -219,8 +219,8 @@ export default class DataFilter extends Plugin {
 	 * @returns {Array.<String>} result.classes Set with matched class names.
 	 */
 	_consumeAllowedAttributes( viewElement, conversionApi ) {
-		// Make sure that disabled attributes are handled before the allowed attributes is called.
-		// For example for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e., <a>.
+		// Make sure that the disabled attributes are handled before the allowed attributes are called.
+		// For example, for block images the <figure> converter triggers conversion for <img> first and then for other elements, i.e. <a>.
 		consumeAttributes( viewElement, conversionApi, this._disallowedAttributes );
 
 		return consumeAttributes( viewElement, conversionApi, this._allowedAttributes );
