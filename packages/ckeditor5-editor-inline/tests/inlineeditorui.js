@@ -85,8 +85,8 @@ describe( 'InlineEditorUI', () => {
 					} );
 			} );
 
-			it( 'sets view#viewportTopOffset, if legacy toolbar.vierportTopOffset specified', () => {
-				const spy = sinon.stub( console, 'warn' );
+			it( 'sets view#viewportTopOffset if legacy toolbar.vierportTopOffset specified', () => {
+				sinon.stub( console, 'warn' );
 
 				return VirtualInlineTestEditor
 					.create( 'foo', {
@@ -99,6 +99,21 @@ describe( 'InlineEditorUI', () => {
 
 						expect( ui.viewportOffset.top ).to.equal( 100 );
 						expect( ui.view.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'warns if legacy toolbar.vierportTopOffset specified', () => {
+				const spy = sinon.stub( console, 'warn' );
+
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						toolbar: {
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
 						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
