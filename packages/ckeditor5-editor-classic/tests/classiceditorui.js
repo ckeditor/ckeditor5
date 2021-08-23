@@ -98,7 +98,7 @@ describe( 'ClassicEditorUI', () => {
 					.then( editor => {
 						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
 						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
-						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
 					} );

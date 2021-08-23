@@ -99,7 +99,7 @@ describe( 'InlineEditorUI', () => {
 
 						expect( ui.viewportOffset.top ).to.equal( 100 );
 						expect( ui.view.viewportTopOffset ).to.equal( 100 );
-						sinon.assert.calledOnce( spy );
+						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
 					} );
