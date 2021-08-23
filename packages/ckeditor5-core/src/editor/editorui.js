@@ -12,7 +12,8 @@
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-import { ObservableMixin, mix } from '@ckeditor/ckeditor5-utils';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
