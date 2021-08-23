@@ -59,7 +59,7 @@ export default class EditorUI {
 		 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
 		 * This can be useful if there are any other absolutely positioned elements that may interfere with editor UI.
 		 *
-		 * Example:
+		 * Example `editor.ui.viewportOffset` returns:
 		 *
 		 * ```js
 		 * {
@@ -70,7 +70,17 @@ export default class EditorUI {
 		 * }
 		 * ```
 		 *
-		 * @readonly
+		 * This property can be overriden after editor already being initialized:
+		 *
+		 * ```js
+		 * editor.ui.viewportOffset = {
+		 * 	top: 100,
+		 * 	right: 0,
+		 * 	bottom: 0,
+		 * 	left: 0
+		 * };
+		 * ```
+		 *
 		 * @observable
 		 * @member {Object} #viewportOffset
 		 */
