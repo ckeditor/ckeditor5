@@ -1935,6 +1935,83 @@ describe( 'TableKeyboard', () => {
 							[ '20', '[]21', '22' ]
 						] ) );
 					} );
+
+					describe( 'with shift key pressed', () => {
+						beforeEach( () => {
+							leftArrowDomEvtDataStub.shiftKey = true;
+							rightArrowDomEvtDataStub.shiftKey = true;
+							upArrowDomEvtDataStub.shiftKey = true;
+							downArrowDomEvtDataStub.shiftKey = true;
+						} );
+
+						it( 'should select multiple cells on right arrow key press if all content of a cell is selected', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on right arrow key press if all content of a cell is selected backward', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on left arrow key press if all content of a cell is selected', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on left arrow key press if all content of a cell is selected backward', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+					} );
 				} );
 
 				describe( 'multiple paragraphs in the cell content', () => {

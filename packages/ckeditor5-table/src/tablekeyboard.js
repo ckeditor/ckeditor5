@@ -223,7 +223,9 @@ export default class TableKeyboard extends Plugin {
 			if ( expandSelection ) {
 				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
 				// Selection for sure will not approach cell edge.
-				if ( selection.isBackward == isForward ) {
+				//
+				// With a special case when all cell content is selected - then selection should expand to the other cell.
+				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
 					return false;
 				}
 			} else {

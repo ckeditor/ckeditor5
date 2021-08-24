@@ -497,6 +497,80 @@ describe( 'WidgetTypeAround', () => {
 				sinon.assert.notCalled( eventInfoStub.stop );
 				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
 			} );
+
+			describe( 'selection containing more than a widget', () => {
+				it( 'should activate before when the widget is the first element and the navigation is backward', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget><paragraph>foo]</paragraph>' );
+
+					fireKeyboardEvent( 'arrowleft' );
+
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+					const viewWidget = viewRoot.getChild( 0 );
+
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should activate before when the widget is the first and last element and the navigation is backward', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget><paragraph>foo</paragraph><blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowleft' );
+
+					expect( getModelData( model ) ).to.equal(
+						'[<blockWidget></blockWidget>]<paragraph>foo</paragraph><blockWidget></blockWidget>'
+					);
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+
+					const viewWidget = viewRoot.getChild( 0 );
+
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.true;
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should activate after when the widget is the last element and the navigation is forward', () => {
+					setModelData( editor.model, '<paragraph>[foo</paragraph><blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowright' );
+
+					expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
+
+					const viewWidget = viewRoot.getChild( 1 );
+
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				} );
+
+				it( 'should activate after when the widget is the first and last element and the navigation is forward', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget><paragraph>foo</paragraph><blockWidget></blockWidget>]' );
+
+					fireKeyboardEvent( 'arrowright' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<blockWidget></blockWidget><paragraph>foo</paragraph>[<blockWidget></blockWidget>]'
+					);
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
+
+					const viewWidget = viewRoot.getChild( 2 );
+
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
+					expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.true;
+
+					sinon.assert.calledOnce( eventInfoStub.stop );
+					sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+				} );
+			} );
 		} );
 
 		describe( '"fake caret" deactivation', () => {
@@ -671,6 +745,32 @@ describe( 'WidgetTypeAround', () => {
 
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
+
+				sinon.assert.calledOnce( eventInfoStub.stop );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+			} );
+		} );
+
+		describe( 'collapsing selection spanning over the widget at the edge of limit element', () => {
+			it( 'should collapse selection at the beginning if the widget is the last element and the navigation is backward', () => {
+				setModelData( editor.model, '<paragraph>[foo</paragraph><blockWidget></blockWidget>]' );
+
+				fireKeyboardEvent( 'arrowleft' );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph><blockWidget></blockWidget>' );
+				expect( modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.false;
+
+				sinon.assert.calledOnce( eventInfoStub.stop );
+				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
+			} );
+
+			it( 'should collapse selection at the end if the widget is the first element and the navigation is forward', () => {
+				setModelData( editor.model, '[<blockWidget></blockWidget><paragraph>foo]</paragraph>' );
+
+				fireKeyboardEvent( 'arrowright' );
+
+				expect( getModelData( model ) ).to.equal( '<blockWidget></blockWidget><paragraph>foo[]</paragraph>' );
+				expect( modelSelection.hasAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.false;
 
 				sinon.assert.calledOnce( eventInfoStub.stop );
 				sinon.assert.called( domEventDataStub.domEvent.preventDefault );
