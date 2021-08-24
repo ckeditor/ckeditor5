@@ -649,7 +649,10 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
-		it( 'should match element expanded styles when CSS shorthand is used', () => {
+		// With current way the style reducers work, this test is passing when it shouldn't.
+		// The problem is described in https://github.com/ckeditor/ckeditor5/issues/10399.
+		// Until the proper fix is ready, this test should be skipped.
+		it.skip( 'should match element expanded styles when CSS shorthand is used', () => {
 			const pattern = {
 				styles: {
 					'border-left': /.*/

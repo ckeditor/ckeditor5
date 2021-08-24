@@ -235,7 +235,7 @@ function isElementMatching( element, pattern ) {
 function matchName( pattern, name ) {
 	// If pattern is provided as RegExp - test against this regexp.
 	if ( pattern instanceof RegExp ) {
-		return pattern.test( name );
+		return typeof name == 'string' && !!name.match( pattern );
 	}
 
 	return pattern === name;
@@ -392,9 +392,12 @@ function normalizePatterns( patterns ) {
 // @param {String} itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
 // @returns {Boolean}
 function isKeyMatched( patternKey, itemKey ) {
+	// For now reducers are not returning full tree of properties.
+	// Casting to string preserves old behavior until the root cause is fixed.
+	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
 	return patternKey === true ||
 		patternKey === itemKey ||
-		patternKey instanceof RegExp && patternKey.test( itemKey );
+		patternKey instanceof RegExp && !!String( itemKey ).match( patternKey );
 }
 
 // @param {String|RegExp} patternValue A pattern representing a value we want to match.
@@ -408,7 +411,11 @@ function isValueMatched( patternValue, itemKey, valueGetter ) {
 
 	const itemValue = valueGetter( itemKey );
 
-	return patternValue === itemValue || patternValue instanceof RegExp && patternValue.test( itemValue );
+	// For now reducers are not returning full tree of properties.
+	// Casting to string preserves old behavior until the root cause is fixed.
+	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
+	return patternValue === itemValue ||
+		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
 }
 
 // Checks if attributes of provided element can be matched against provided patterns.
