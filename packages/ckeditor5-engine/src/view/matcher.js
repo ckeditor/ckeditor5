@@ -392,8 +392,8 @@ function normalizePatterns( patterns ) {
 // @param {String} itemKey An actual item key (e.g. `'src'`, `'background-color'`, `'ck-widget'`) we're testing against pattern.
 // @returns {Boolean}
 function isKeyMatched( patternKey, itemKey ) {
-	// For now reducers are not returning full tree of properties.
-	// Casting to string preserves old behavior until the root cause is fixed.
+	// For now, the reducers are not returning the full tree of properties.
+	// Casting to string preserves the old behavior until the root cause is fixed.
 	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
 	return patternKey === true ||
 		patternKey === itemKey ||
@@ -411,8 +411,8 @@ function isValueMatched( patternValue, itemKey, valueGetter ) {
 
 	const itemValue = valueGetter( itemKey );
 
-	// For now reducers are not returning full tree of properties.
-	// Casting to string preserves old behavior until the root cause is fixed.
+	// For now, the reducers are not returning the full tree of properties.
+	// Casting to string preserves the old behavior until the root cause is fixed.
 	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
 	return patternValue === itemValue ||
 		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
