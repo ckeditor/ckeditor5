@@ -398,6 +398,10 @@ export default class WidgetTypeAround extends Plugin {
 		else if ( modelSelection.isCollapsed ) {
 			shouldStopAndPreventDefault = this._handleArrowKeyPressWhenSelectionNextToAWidget( isForward );
 		}
+		// Handle collapsing a non-collapsed selection that is wider than on a single widget.
+		else if ( !domEventData.shiftKey ) {
+			shouldStopAndPreventDefault = this._handleArrowKeyPressWhenNonCollapsedSelection( isForward );
+		}
 
 		if ( shouldStopAndPreventDefault ) {
 			domEventData.preventDefault();
@@ -487,6 +491,78 @@ export default class WidgetTypeAround extends Plugin {
 			// The change() block above does the same job as the Widget plugin. The event can
 			// be safely canceled.
 			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Handles the keyboard navigation on "keydown" when a widget is currently selected (together with some other content)
+	 * and the widget it the first or last element in the selection. It activates or deactivates
+	 * the fake caret for that widget or sets collapsed selection when there is no widget on that edge of selection
+	 * (this is needed because browsers can't handle this case properly).
+	 *
+	 * @private
+	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
+	 * as in {@link module:utils/keyboard~isForwardArrowKeyCode}.
+	 * @returns {Boolean} Returns `true` when the keypress was handled and no other keydown listener of the editor should
+	 * process the event any further. Returns `false` otherwise.
+	 */
+	_handleArrowKeyPressWhenNonCollapsedSelection( isForward ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
+		const modelSelection = model.document.selection;
+
+		const firstModelNode = modelSelection.getFirstPosition().nodeAfter;
+		const lastModelNode = modelSelection.getLastPosition().nodeBefore;
+
+		const firstViewNode = editor.editing.mapper.toViewElement( firstModelNode );
+		const lastViewNode = editor.editing.mapper.toViewElement( lastModelNode );
+
+		const isFirstNodeTypeAroundWidget = isTypeAroundWidget( firstViewNode, firstModelNode, schema );
+		const isLastNodeTypeAroundWidget = isTypeAroundWidget( lastViewNode, lastModelNode, schema );
+
+		if ( isForward ) {
+			// There is a widget as the last node in the selection so collapse it to the fake caret after it.
+			if ( isLastNodeTypeAroundWidget ) {
+				model.change( writer => {
+					writer.setSelection( lastModelNode, 'on' );
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+				} );
+
+				return true;
+			}
+
+			// There is a widget on the opposite end of selection so collapse the selection manually
+			// because browsers fail to do it correctly in this case.
+			if ( isFirstNodeTypeAroundWidget ) {
+				model.change( writer => {
+					writer.setSelection( modelSelection.getLastPosition() );
+				} );
+
+				return true;
+			}
+		} else {
+			// There is a widget as the first node in the selection so collapse it to the fake caret after it.
+			if ( isFirstNodeTypeAroundWidget ) {
+				model.change( writer => {
+					writer.setSelection( firstModelNode, 'on' );
+					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+				} );
+
+				return true;
+			}
+
+			// There is a widget on the opposite end of selection so collapse the selection manually
+			// because browsers fail to do it correctly in this case.
+			if ( isLastNodeTypeAroundWidget ) {
+				model.change( writer => {
+					writer.setSelection( modelSelection.getFirstPosition() );
+				} );
+
+				return true;
+			}
 		}
 
 		return false;
