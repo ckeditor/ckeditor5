@@ -1,7 +1,6 @@
 ---
 category: features
-modified_at: 2021-06-13
-updated_at: 2021-06-14
+modified_at: 2021-07-14
 ---
 
 # General HTML Support
@@ -33,31 +32,7 @@ Use the {@link features/source-editing source editing feature} toolbar button {@
 
 {@snippet features/general-html-support}
 
-The General HTML Support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.  The demo above uses the following configuration:
-
-```js
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ SourceEditing, GeneralHtmlSupport, ... ],
-		toolbar: [ 'sourceEditing', ... ],
-		htmlSupport: {
-			allow: [
-				// Enables all HTML features.
-				{
-					name: /.*/,
-					attributes: true,
-					classes: true,
-					styles: true
-				}
-			]
-		}
-	} )
-	.then( ... )
-	.catch( ... );
-```
+The General HTML Support feature is configured via the `config.htmlSupport` property. In it, you need to list the HTML features that should be handled by GHS.
 
 ## Related features
 
@@ -216,6 +191,10 @@ htmlSupport: {
 	]
 }
 ```
+
+<info-box>
+	Please, keep in mind that enabling all HTML features creates a security risk. It's recommended to pass to the configuration a list of disallowed elements and attributes to make sure that any malicious code won't be saved and executed in the editor.
+</info-box>
 
 The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 

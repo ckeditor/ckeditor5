@@ -1,8 +1,14 @@
 {
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
+	"hooks": {
+		"beforeHexo": [
+			"../scripts/docs/build-content-styles.js"
+		]
+	},
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
+	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": ["packages", "external", "external/*/packages" ],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",

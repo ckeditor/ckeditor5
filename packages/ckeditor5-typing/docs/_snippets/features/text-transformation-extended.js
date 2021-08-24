@@ -43,9 +43,9 @@ ClassicEditor
 					},
 
 					// Finally, you can define `to` as a callback.
-					// This (naive) rule will auto-capitalize the first word after a period.
+					// This (naive) rule will auto-capitalize the first word after a period, question mark, or an exclamation mark.
 					{
-						from: /(\. )([a-z])$/,
+						from: /([.?!] )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
 					}
 				]
