@@ -293,11 +293,14 @@ describe( 'ImageCaptionEditing', () => {
 				);
 			} );
 
-			it( 'should apply marker class on figcaption', () => {
+			it( 'should apply highlighting on figcaption', () => {
 				editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 					model: 'marker',
 					view: data => ( {
-						classes: 'highlight-' + data.markerName.split( ':' )[ 1 ]
+						classes: 'highlight-' + data.markerName.split( ':' )[ 1 ],
+						attributes: {
+							'data-foo': data.markerName.split( ':' )[ 1 ]
+						}
 					} )
 				} );
 
@@ -321,7 +324,7 @@ describe( 'ImageCaptionEditing', () => {
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption class="ck-editor__editable ck-editor__nested-editable highlight-yellow" ' +
-								'contenteditable="true" data-placeholder="Enter image caption">' +
+								'contenteditable="true" data-foo="yellow" data-placeholder="Enter image caption">' +
 							'Foo bar baz.' +
 						'</figcaption>' +
 					'</figure>'

@@ -124,7 +124,7 @@ export function toWidget( element, writer, options = {} ) {
 		addSelectionHandle( element, writer );
 	}
 
-	setHighlightHandling( element, writer, addHighlight, removeHighlight );
+	setHighlightHandling( element, writer );
 
 	return element;
 }
@@ -171,10 +171,10 @@ function removeHighlight( element, descriptor, writer ) {
  *
  * @param {module:engine/view/element~Element} element
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {Function} add
- * @param {Function} remove
+ * @param {Function} [add]
+ * @param {Function} [remove]
  */
-export function setHighlightHandling( element, writer, add, remove ) {
+export function setHighlightHandling( element, writer, add = addHighlight, remove = removeHighlight ) {
 	const stack = new HighlightStack();
 
 	stack.on( 'change:top', ( evt, data ) => {

@@ -9,7 +9,6 @@
 
 import TableWalker from './../tablewalker';
 import { setHighlightHandling, toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
-import { toArray } from 'ckeditor5/src/utils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -311,12 +310,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi )
 	const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
 	const renamedCell = toWidgetEditable( editable, viewWriter );
 
-	setHighlightHandling(
-		renamedCell,
-		viewWriter,
-		( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
-		( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
-	);
+	setHighlightHandling( renamedCell, viewWriter );
 
 	viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
 	viewWriter.move( viewWriter.createRangeIn( viewCell ), viewWriter.createPositionAt( renamedCell, 0 ) );
@@ -360,12 +354,7 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 		conversionApi.writer.createContainerElement( cellElementName );
 
 	if ( asWidget ) {
-		setHighlightHandling(
-			cellElement,
-			conversionApi.writer,
-			( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
-			( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
-		);
+		setHighlightHandling( cellElement, conversionApi.writer );
 	}
 
 	const tableCell = tableSlot.cell;
