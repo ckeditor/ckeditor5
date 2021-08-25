@@ -11,12 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+import verticalNavigationHandler from './verticalnavigation';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 
 import '../theme/widget.css';
-import verticalNavigationHandler from './verticalnavigation';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -277,11 +278,33 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		// If selection is next to object element.
+		// Handle collapsing of the selection when there is any widget on the edge of selection.
+		// This is needed because browsers have problems with collapsing such selection.
+		if ( !modelSelection.isCollapsed && !domEventData.shiftKey ) {
+			const firstPosition = modelSelection.getFirstPosition();
+			const lastPosition = modelSelection.getLastPosition();
+
+			const firstSelectedNode = firstPosition.nodeAfter;
+			const lastSelectedNode = lastPosition.nodeBefore;
+
+			if ( firstSelectedNode && schema.isObject( firstSelectedNode ) || lastSelectedNode && schema.isObject( lastSelectedNode ) ) {
+				model.change( writer => {
+					writer.setSelection( isForward ? lastPosition : firstPosition );
+				} );
+
+				domEventData.preventDefault();
+				eventInfo.stop();
+			}
+
+			return;
+		}
+
 		// Return if not collapsed.
 		if ( !modelSelection.isCollapsed ) {
 			return;
 		}
+
+		// If selection is next to object element.
 
 		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
 

@@ -498,9 +498,7 @@ export default class WidgetTypeAround extends Plugin {
 
 	/**
 	 * Handles the keyboard navigation on "keydown" when a widget is currently selected (together with some other content)
-	 * and the widget it the first or last element in the selection. It activates or deactivates
-	 * the fake caret for that widget or sets collapsed selection when there is no widget on that edge of selection
-	 * (this is needed because browsers can't handle this case properly).
+	 * and the widget is the first or last element in the selection. It activates or deactivates the fake caret for that widget.
 	 *
 	 * @private
 	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
@@ -512,57 +510,23 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
+		const mapper = editor.editing.mapper;
 		const modelSelection = model.document.selection;
 
-		const firstModelNode = modelSelection.getFirstPosition().nodeAfter;
-		const lastModelNode = modelSelection.getLastPosition().nodeBefore;
+		const selectedModelNode = isForward ?
+			modelSelection.getLastPosition().nodeBefore :
+			modelSelection.getFirstPosition().nodeAfter;
 
-		const firstViewNode = editor.editing.mapper.toViewElement( firstModelNode );
-		const lastViewNode = editor.editing.mapper.toViewElement( lastModelNode );
+		const selectedViewNode = mapper.toViewElement( selectedModelNode );
 
-		const isFirstNodeTypeAroundWidget = isTypeAroundWidget( firstViewNode, firstModelNode, schema );
-		const isLastNodeTypeAroundWidget = isTypeAroundWidget( lastViewNode, lastModelNode, schema );
+		// There is a widget at the collapse position so collapse the selection to the fake caret on it.
+		if ( isTypeAroundWidget( selectedViewNode, selectedModelNode, schema ) ) {
+			model.change( writer => {
+				writer.setSelection( selectedModelNode, 'on' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
+			} );
 
-		if ( isForward ) {
-			// There is a widget as the last node in the selection so collapse it to the fake caret after it.
-			if ( isLastNodeTypeAroundWidget ) {
-				model.change( writer => {
-					writer.setSelection( lastModelNode, 'on' );
-					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
-				} );
-
-				return true;
-			}
-
-			// There is a widget on the opposite end of selection so collapse the selection manually
-			// because browsers fail to do it correctly in this case.
-			if ( isFirstNodeTypeAroundWidget ) {
-				model.change( writer => {
-					writer.setSelection( modelSelection.getLastPosition() );
-				} );
-
-				return true;
-			}
-		} else {
-			// There is a widget as the first node in the selection so collapse it to the fake caret after it.
-			if ( isFirstNodeTypeAroundWidget ) {
-				model.change( writer => {
-					writer.setSelection( firstModelNode, 'on' );
-					writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
-				} );
-
-				return true;
-			}
-
-			// There is a widget on the opposite end of selection so collapse the selection manually
-			// because browsers fail to do it correctly in this case.
-			if ( isLastNodeTypeAroundWidget ) {
-				model.change( writer => {
-					writer.setSelection( modelSelection.getFirstPosition() );
-				} );
-
-				return true;
-			}
+			return true;
 		}
 
 		return false;
