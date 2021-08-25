@@ -16,7 +16,7 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-msgctxt "The tooltip of a find and replace button's in the toolbar."
+msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
 msgstr "Найти и заменить"
 
@@ -56,6 +56,14 @@ msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
 msgstr "Заменить на..."
 
-msgctxt "The text between currently highlighted text offset and the count of all matches in the find and replace dropdown."
-msgid " of "
-msgstr "из"
+msgctxt "An error text displayed when user attempted to find an empty text."
+msgid "Text to find must not be empty."
+msgstr ""
+
+msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
+msgid "Tip: Find some text first in order to replace it."
+msgstr ""
+
+msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
+msgid "Show options"
+msgstr ""
