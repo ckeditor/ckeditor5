@@ -153,12 +153,6 @@ function modelToViewImageAttributeConverter() {
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi, containerElement, elementName );
 
-				// The viewElement can be empty, e.g. elementName is `a`, but on editing downcast we won't find `a`.
-				/* istanbul ignore next */
-				if ( !viewElement ) {
-					return;
-				}
-
 				setViewAttributes( conversionApi.writer, data.item.getAttribute( attributeName ), viewElement );
 			}, { priority: 'low' } );
 		}
@@ -173,12 +167,6 @@ function modelToViewImageAttributeConverter() {
 
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi, containerElement, 'a' );
-
-				// The viewElement can be empty, e.g. elementName is `a`, but on editing downcast we won't find `a`.
-				/* istanbul ignore next */
-				if ( !viewElement ) {
-					return;
-				}
 
 				setViewAttributes( conversionApi.writer, data.item.getAttribute( 'htmlLinkAttributes' ), viewElement );
 			}, { priority: 'low' } );
