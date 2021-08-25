@@ -70,7 +70,7 @@ export default class ImageElementSupport extends Plugin {
 		} );
 
 		dataFilter.on( 'register:figure', () => {
-			conversion.for( 'upcast' ).add( consumeTableFigureConverter() );
+			conversion.for( 'upcast' ).add( consumeImageFigureConverter() );
 		} );
 	}
 }
@@ -208,7 +208,7 @@ function getDescendantElement( conversionApi, containerElement, elementName ) {
 //
 // @private
 // @returns {Function} Returns a conversion callback.
-function consumeTableFigureConverter() {
+function consumeImageFigureConverter() {
 	return dispatcher => {
 		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 			for ( const childNode of data.viewItem.getChildren() ) {
