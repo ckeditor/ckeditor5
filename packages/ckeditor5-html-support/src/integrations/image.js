@@ -31,7 +31,8 @@ export default class ImageElementSupport extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		if ( !( editor.plugins.has( 'ImageInlineEditing' ) && editor.plugins.has( 'ImageBlockEditing' ) ) ) {
+		// At least one image plugin should be loaded for the integration to work properly.
+		if ( !( editor.plugins.has( 'ImageInlineEditing' ) || editor.plugins.has( 'ImageBlockEditing' ) ) ) {
 			return;
 		}
 
@@ -40,28 +41,31 @@ export default class ImageElementSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 
 		dataFilter.on( 'register:img', ( evt, definition ) => {
-			/* istanbul ignore next */
-			if ( definition.model !== 'htmlImg' ) {
+			if ( definition.model !== 'imageBlock' && definition.model !== 'imageInline' ) {
 				return;
 			}
 
-			schema.extend( 'imageBlock', {
-				allowAttributes: [
-					'htmlAttributes',
-					// Figure and Link don't have model counterpart.
-					// We will preserve attributes on image model element using these attribute keys.
-					'htmlFigureAttributes',
-					'htmlLinkAttributes'
-				]
-			} );
+			if ( schema.isRegistered( 'imageBlock' ) ) {
+				schema.extend( 'imageBlock', {
+					allowAttributes: [
+						'htmlAttributes',
+						// Figure and Link don't have model counterpart.
+						// We will preserve attributes on image model element using these attribute keys.
+						'htmlFigureAttributes',
+						'htmlLinkAttributes'
+					]
+				} );
+			}
 
-			schema.extend( 'imageInline', {
-				allowAttributes: [
-					// `htmlA` is needed for standard GHS link integration.
-					'htmlA',
-					'htmlAttributes'
-				]
-			} );
+			if ( schema.isRegistered( 'imageInline' ) ) {
+				schema.extend( 'imageInline', {
+					allowAttributes: [
+						// `htmlA` is needed for standard GHS link integration.
+						'htmlA',
+						'htmlAttributes'
+					]
+				} );
+			}
 
 			conversion.for( 'upcast' ).add( viewToModelImageAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewImageAttributeConverter() );

@@ -8,6 +8,8 @@ import { range } from 'lodash-es';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
+import ImageInlineEditing from '@ckeditor/ckeditor5-image/src/image/imageinlineediting';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
@@ -1424,6 +1426,105 @@ describe( 'ImageElementSupport', () => {
 			expect( editor.getData() ).to.equal(
 				'<p><a href="www.example.com"><img src="/assets/sample.png"></a></p>'
 			);
+		} );
+	} );
+
+	describe( 'Partial load of image plugins', () => {
+		let editorElement, editor;
+
+		it( 'should only extend imageBlock model if only ImageBlockEditing is present', () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ ImageBlockEditing, ImageCaption, LinkImage, Paragraph, GeneralHtmlSupport ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					const model = editor.model;
+					const schema = model.schema;
+					const dataFilter = editor.plugins.get( 'DataFilter' );
+
+					dataFilter.loadAllowedConfig( [ {
+						name: /^(img)$/
+					} ] );
+
+					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
+						'alt',
+						'src',
+						'srcset',
+						'linkHref',
+						'htmlAttributes',
+						'htmlFigureAttributes',
+						'htmlLinkAttributes'
+					] );
+
+					expect( schema.getDefinition( 'imageInline' ) ).to.be.undefined;
+				} );
+		} );
+
+		it( 'should only extend imageInline model if only ImageInlineEditing is present', () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ ImageInlineEditing, ImageCaption, Paragraph, GeneralHtmlSupport ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					const model = editor.model;
+					const schema = model.schema;
+					const dataFilter = editor.plugins.get( 'DataFilter' );
+
+					dataFilter.loadAllowedConfig( [ {
+						name: /^(img)$/
+					} ] );
+
+					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
+						'alt',
+						'src',
+						'srcset',
+						'htmlA',
+						'htmlAttributes'
+					] );
+
+					expect( schema.getDefinition( 'imageBlock' ) ).to.be.undefined;
+				} );
+		} );
+
+		it( 'should not extend image schemas if no image plugin is available', () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, GeneralHtmlSupport ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					const model = editor.model;
+					const schema = model.schema;
+					const dataFilter = editor.plugins.get( 'DataFilter' );
+
+					dataFilter.loadAllowedConfig( [ {
+						name: /^(img)$/
+					} ] );
+
+					expect( schema.getDefinition( 'imageBlock' ).allowAttributes ).to.deep.equal( [
+						'htmlAttributes'
+					] );
+					expect( schema.getDefinition( 'imageInline' ).allowAttributes ).to.deep.equal( [
+						'htmlAttributes'
+					] );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
 		} );
 	} );
 } );

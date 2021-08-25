@@ -111,6 +111,14 @@ export default {
 			model: 'caption',
 			view: 'figcaption'
 		},
+		{
+			model: 'imageBlock',
+			view: 'img'
+		},
+		{
+			model: 'imageInline',
+			view: 'img'
+		},
 
 		// Compatibility features
 		{
