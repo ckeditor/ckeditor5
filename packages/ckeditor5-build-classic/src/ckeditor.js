@@ -104,7 +104,7 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	localImage: {
-		label: 'Test',
+		label: 'Test2',
 		execute: () => {
 
 		}
