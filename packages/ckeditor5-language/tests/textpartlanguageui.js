@@ -54,6 +54,7 @@ describe( 'TextPartLanguageUI', () => {
 			expect( dropdown.buttonView.isOn ).to.be.false;
 			expect( dropdown.buttonView.label ).to.equal( 'Choose language' );
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Language' );
+			expect( dropdown.listView.items.first.children.first.label ).to.equal( 'Remove language' );
 		} );
 
 		it( 'should execute textPartLanguage command on model (no language selected)', () => {
@@ -130,8 +131,8 @@ describe( 'TextPartLanguageUI', () => {
 
 				expect( getListViewItems( listView ).map( item => item.children.first.isOn ) ).to.deep.equal( [
 					false,
-					true,
 					false,
+					true,
 					false
 				] );
 			} );

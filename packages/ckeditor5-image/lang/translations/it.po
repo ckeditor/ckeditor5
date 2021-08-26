@@ -22,15 +22,15 @@ msgstr "Widget immagine"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Testo a capo"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Interrompi testo"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "In linea"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"

@@ -47,6 +47,20 @@ export default class TextPartLanguageUI extends Plugin {
 
 			const languageCommand = editor.commands.get( 'textPartLanguage' );
 
+			// Item definition with false `languageCode` will behave as remove lang button.
+			itemDefinitions.add( {
+				type: 'button',
+				model: new Model( {
+					label: removeTitle,
+					languageCode: false,
+					withText: true
+				} )
+			} );
+
+			itemDefinitions.add( {
+				type: 'separator'
+			} );
+
 			for ( const option of options ) {
 				const def = {
 					type: 'button',
@@ -66,20 +80,6 @@ export default class TextPartLanguageUI extends Plugin {
 
 				titles[ language ] = option.title;
 			}
-
-			itemDefinitions.add( {
-				type: 'separator'
-			} );
-
-			// Item definition with false `languageCode` will behave as remove lang button.
-			itemDefinitions.add( {
-				type: 'button',
-				model: new Model( {
-					label: removeTitle,
-					languageCode: false,
-					withText: true
-				} )
-			} );
 
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, itemDefinitions );
