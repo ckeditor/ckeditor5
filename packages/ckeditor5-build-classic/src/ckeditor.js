@@ -30,6 +30,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
+import LocalImage from './plugins/localImage'
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -58,7 +59,8 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	TextTransformation
+	TextTransformation,
+	LocalImage
 ];
 
 // Editor configuration.
@@ -76,7 +78,7 @@ ClassicEditor.defaultConfig = {
 			'outdent',
 			'indent',
 			'|',
-			'uploadImage',
+			'localImage',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
@@ -100,6 +102,12 @@ ClassicEditor.defaultConfig = {
 			'tableRow',
 			'mergeTableCells'
 		]
+	},
+	localImage: {
+		label: 'Test',
+		execute: () => {
+			alert('Test');
+		}
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
