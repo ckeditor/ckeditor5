@@ -48,6 +48,8 @@ export function upcastTableFigure() {
 				return;
 			}
 
+			conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } );
+
 			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
 			conversionApi.updateConversionResult( modelTable, data );
 		} );

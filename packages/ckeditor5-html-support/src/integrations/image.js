@@ -72,10 +72,6 @@ export default class ImageElementSupport extends Plugin {
 
 			evt.stop();
 		} );
-
-		dataFilter.on( 'register:figure', () => {
-			conversion.for( 'upcast' ).add( consumeImageFigureConverter() );
-		} );
 	}
 }
 
@@ -194,21 +190,4 @@ function getDescendantElement( conversionApi, containerElement, elementName ) {
 			return item;
 		}
 	}
-}
-
-// Prevent figure elements from being left unconsumed.
-//
-// @private
-// @returns {Function} Returns a conversion callback.
-function consumeImageFigureConverter() {
-	return dispatcher => {
-		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-			for ( const childNode of data.viewItem.getChildren() ) {
-				if ( childNode.is( 'element', 'img' ) ) {
-					conversionApi.consumable.consume( data.viewItem, { name: true } );
-					return;
-				}
-			}
-		} );
-	};
 }
