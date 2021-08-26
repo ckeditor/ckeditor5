@@ -4,13 +4,13 @@
  */
 
 /**
- * @module html-support/integrations/table
+ * @module html-support/integrations/image
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
+import { setViewAttributes } from '../conversionutils.js';
 
 /**
  * Provides the General HTML Support integration with the {@link module:image/image~Image Image} feature.
@@ -32,7 +32,7 @@ export default class ImageElementSupport extends Plugin {
 		const editor = this.editor;
 
 		// At least one image plugin should be loaded for the integration to work properly.
-		if ( !( editor.plugins.has( 'ImageInlineEditing' ) || editor.plugins.has( 'ImageBlockEditing' ) ) ) {
+		if ( !editor.plugins.has( 'ImageInlineEditing' ) && !editor.plugins.has( 'ImageBlockEditing' ) ) ) {
 			return;
 		}
 
@@ -146,14 +146,14 @@ function modelToViewImageAttributeConverter() {
 
 		function addBlockAttributeConversion( elementName, attributeName ) {
 			dispatcher.on( `attribute:${ attributeName }:imageBlock`, ( evt, data, conversionApi ) => {
-				if ( !conversionApi.consumable.consume( data.item, `attribute:${ attributeName }:imageBlock` ) ) {
+				if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 					return;
 				}
 
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
 				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
-				setViewAttributes( conversionApi.writer, data.item.getAttribute( attributeName ), viewElement );
+				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
 			}, { priority: 'low' } );
 		}
 
