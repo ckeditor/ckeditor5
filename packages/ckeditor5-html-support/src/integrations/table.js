@@ -119,7 +119,7 @@ function modelToViewTableAttributeConverter() {
 				}
 
 				const containerElement = conversionApi.mapper.toViewElement( data.item );
-				const viewElement = getDescendantElement( conversionApi, containerElement, elementName );
+				const viewElement = getDescendantElement( conversionApi.writer, containerElement, elementName );
 
 				setViewAttributes( conversionApi.writer, data.attributeNewValue, viewElement );
 			} );
@@ -131,12 +131,12 @@ function modelToViewTableAttributeConverter() {
 // Includes view element itself.
 //
 // @private
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {module:engine/view/downcastwriter~DowncastWriter} writer
 // @param {module:engine/view/element~Element} containerElement
 // @param {String} elementName
 // @returns {module:engine/view/element~Element|null}
-function getDescendantElement( conversionApi, containerElement, elementName ) {
-	const range = conversionApi.writer.createRangeOn( containerElement );
+function getDescendantElement( writer, containerElement, elementName ) {
+	const range = writer.createRangeOn( containerElement );
 
 	for ( const { item } of range.getWalker() ) {
 		if ( item.is( 'element', elementName ) ) {
