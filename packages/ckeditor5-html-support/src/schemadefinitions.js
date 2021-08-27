@@ -111,6 +111,14 @@ export default {
 			model: 'caption',
 			view: 'figcaption'
 		},
+		{
+			model: 'imageBlock',
+			view: 'img'
+		},
+		{
+			model: 'imageInline',
+			view: 'img'
+		},
 
 		// Compatibility features
 		{
@@ -256,7 +264,7 @@ export default {
 			}
 		},
 		{
-			model: 'htmlSumary',
+			model: 'htmlSummary',
 			view: 'summary',
 			modelSchema: {
 				allowChildren: '$text',
@@ -633,7 +641,7 @@ export default {
 				copyOnEnter: true
 			}
 		},
-		// TODO According to HTML-spec can behave as div-like element, althouth CKE4 only handles it as an inline element.
+		// TODO According to HTML-spec can behave as div-like element, although CKE4 only handles it as an inline element.
 		{
 			model: 'htmlDel',
 			view: 'del',
@@ -641,7 +649,7 @@ export default {
 				copyOnEnter: true
 			}
 		},
-		// TODO According to HTML-spec can behave as div-like element, althouth CKE4 only handles it as an inline element.
+		// TODO According to HTML-spec can behave as div-like element, although CKE4 only handles it as an inline element.
 		{
 			model: 'htmlIns',
 			view: 'ins',
