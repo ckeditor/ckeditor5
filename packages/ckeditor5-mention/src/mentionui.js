@@ -463,7 +463,9 @@ export default class MentionUI extends Plugin {
 			this._balloon.add( {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
-				withArrow: false,
+				config: {
+					withArrow: false
+				},
 				singleViewMode: true
 			} );
 		}
@@ -587,7 +589,9 @@ function getBalloonPanelPositions( preferredPosition ) {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right,
 				name: 'caret_se',
-				withArrow: false
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -597,7 +601,9 @@ function getBalloonPanelPositions( preferredPosition ) {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right,
 				name: 'caret_ne',
-				withArrow: false
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -607,7 +613,9 @@ function getBalloonPanelPositions( preferredPosition ) {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
 				name: 'caret_sw',
-				withArrow: false
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -617,7 +625,9 @@ function getBalloonPanelPositions( preferredPosition ) {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
 				name: 'caret_nw',
-				withArrow: false
+				config: {
+					withArrow: false
+				}
 			};
 		}
 	};
