@@ -397,7 +397,7 @@ function isKeyMatched( patternKey, itemKey ) {
 	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
 	return patternKey === true ||
 		patternKey === itemKey ||
-		patternKey instanceof RegExp && !!String( itemKey ).match( patternKey );
+		patternKey instanceof RegExp && itemKey.match( patternKey );
 }
 
 // @param {String|RegExp} patternValue A pattern representing a value we want to match.
