@@ -307,7 +307,8 @@ function getRectForAbsolutePositioning( rect ) {
  *
  *		const position = new Position( positioningFunction, options );
  *
- *		const { top, left, name, withArrow, limiterIntersectionArea, viewportIntersectionArea } = position;
+ *		const { top, left, name, config, limiterIntersectionArea, viewportIntersectionArea } = position;
+ *		const { withArrow } = config;
  *
  * The above `positioningFunction` is only an example always returning hardcoded top and left coordinates regardless of given options.
  *
@@ -335,9 +336,9 @@ class Position {
 			return;
 		}
 
-		const { left, top, name, withArrow } = positioningFunctionOutput;
+		const { left, top, name, config } = positioningFunctionOutput;
 
-		Object.assign( this, { name, withArrow } );
+		Object.assign( this, { name, config } );
 
 		this._positioningFunctionCorrdinates = { left, top };
 		this._options = options;
@@ -350,10 +351,20 @@ class Position {
 		 */
 
 		/**
-		 * Tells whether given balloon constructed out of this position should have arrow.
+		 * The position configuration.
+		 *
+		 * Currently supported config proerties:
+		 *
+		 * ```js
+		 * const config = {
+		 * 	withArrow: true
+		 * }
+		 * ```
+		 *
+		 * * **`config.withArrow`** &ndash; A boolean flag. Determines weather given position contains the arrow. Defaults to `true`.
 		 *
 		 * @readonly
-		 * @member {String} #withArrow
+		 * @member {Object} #config
 		 */
 	}
 
