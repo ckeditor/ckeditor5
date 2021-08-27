@@ -429,6 +429,7 @@ describe( 'ListEditing', () => {
 			}
 
 			testList( 'single item', '<ul><li>x</li></ul>' );
+			testList( 'single item with spaces', '<ul><li>&nbsp;x&nbsp;</li></ul>' );
 			testList( 'multiple items', '<ul><li>a</li><li>b</li><li>c</li></ul>' );
 			testList( 'items and text', '<p>xxx</p><ul><li>a</li><li>b</li></ul><p>yyy</p><ul><li>c</li><li>d</li></ul>' );
 			testList( 'numbered list', '<ol><li>a</li><li>b</li></ol>' );
