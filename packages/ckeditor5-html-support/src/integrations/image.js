@@ -32,7 +32,7 @@ export default class ImageElementSupport extends Plugin {
 		const editor = this.editor;
 
 		// At least one image plugin should be loaded for the integration to work properly.
-		if ( !editor.plugins.has( 'ImageInlineEditing' ) && !editor.plugins.has( 'ImageBlockEditing' ) ) ) {
+		if ( !editor.plugins.has( 'ImageInlineEditing' ) && !editor.plugins.has( 'ImageBlockEditing' ) ) {
 			return;
 		}
 
@@ -92,7 +92,7 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 			if ( viewContainerElement.is( 'element', 'figure' ) ) {
 				preserveElementAttributes( viewContainerElement, 'htmlFigureAttributes' );
 			} else if ( viewContainerElement.is( 'element', 'a' ) ) {
-				preserveLinkAttributes( data, preserveElementAttributes, viewContainerElement );
+				preserveLinkAttributes( viewContainerElement );
 			}
 
 			function preserveElementAttributes( viewElement, attributeName ) {
@@ -102,21 +102,21 @@ function viewToModelImageAttributeConverter( dataFilter ) {
 					conversionApi.writer.setAttribute( attributeName, viewAttributes, data.modelRange );
 				}
 			}
+
+			// For a block image, we want to preserve the attributes on our own.
+			// The inline image attributes will be handled by the GHS automatically.
+			function preserveLinkAttributes( viewContainerElement ) {
+				if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
+					preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
+				}
+
+				// If we're in a link, then the `<figure>` element should be one level higher.
+				if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
+					preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
+				}
+			}
 		}, { priority: 'low' } );
 	};
-
-	// For a block image, we want to preserve the attributes on our own.
-	// The inline image attributes will be handled by the GHS automatically.
-	function preserveLinkAttributes( data, preserveElementAttributes, viewContainerElement ) {
-		if ( data.modelRange && data.modelRange.getContainedElement().is( 'element', 'imageBlock' ) ) {
-			preserveElementAttributes( viewContainerElement, 'htmlLinkAttributes' );
-		}
-
-		// If we're in a link, then the `<figure>` element should be one level higher.
-		if ( viewContainerElement.parent.is( 'element', 'figure' ) ) {
-			preserveElementAttributes( viewContainerElement.parent, 'htmlFigureAttributes' );
-		}
-	}
 }
 
 // A model-to-view conversion helper applying attributes from the {@link module:image/image~Image Image}
