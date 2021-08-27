@@ -235,7 +235,7 @@ function isElementMatching( element, pattern ) {
 function matchName( pattern, name ) {
 	// If pattern is provided as RegExp - test against this regexp.
 	if ( pattern instanceof RegExp ) {
-		return typeof name == 'string' && !!name.match( pattern );
+		return !!name.match( pattern );
 	}
 
 	return pattern === name;
