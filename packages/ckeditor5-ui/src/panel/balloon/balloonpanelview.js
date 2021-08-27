@@ -239,10 +239,6 @@ export default class BalloonPanelView extends View {
 			fitInViewport: true
 		}, options );
 
-		const defaultPositionConfig = {
-			withArrow: true
-		};
-
 		const optimalPosition = BalloonPanelView._getOptimalPosition( positionOptions );
 
 		// Usually browsers make some problems with super accurate values like 104.345px
@@ -250,9 +246,14 @@ export default class BalloonPanelView extends View {
 		const left = parseInt( optimalPosition.left );
 		const top = parseInt( optimalPosition.top );
 
-		const { name: position, config = defaultPositionConfig } = optimalPosition;
+		const defaultPositionConfig = {
+			withArrow: true
+		};
 
-		Object.assign( this, { top, left, position, config } );
+		const { name: position, config = defaultPositionConfig } = optimalPosition;
+		const { withArrow } = config;
+
+		Object.assign( this, { top, left, position, withArrow } );
 	}
 
 	/**
@@ -953,7 +954,9 @@ BalloonPanelView.defaultPositions = {
 			top: viewportRect.top + BalloonPanelView.stickyVerticalOffset,
 			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 			name: 'arrowless',
-			withArrow: false
+			config: {
+				withArrow: false
+			}
 		};
 	}
 };

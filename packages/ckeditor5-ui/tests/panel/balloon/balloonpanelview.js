@@ -1028,7 +1028,9 @@ describe( 'BalloonPanelView', () => {
 				top: 300 + stickyOffset,
 				left: 25,
 				name: 'arrowless',
-				withArrow: false
+				config: {
+					withArrow: false
+				}
 			} );
 		} );
 	} );
