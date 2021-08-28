@@ -35,7 +35,8 @@ export default class IndentBlock extends Plugin {
 
 		editor.config.define( 'indentBlock', {
 			offset: 40,
-			unit: 'px'
+			unit: 'px',
+			useTabKey: false
 		} );
 	}
 
@@ -68,6 +69,10 @@ export default class IndentBlock extends Plugin {
 			this._setupConversionUsingClasses( configuration.classes );
 			editor.commands.add( 'indentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( indentConfig ) ) );
 			editor.commands.add( 'outdentBlock', new IndentBlockCommand( editor, new IndentUsingClasses( outdentConfig ) ) );
+		}
+
+		if ( configuration.useTabKey ) {
+			this._setupTabKeystrokesHandlers();
 		}
 	}
 
@@ -157,6 +162,24 @@ export default class IndentBlock extends Plugin {
 		}
 
 		this.editor.conversion.attributeToAttribute( definition );
+	}
+
+	_setupTabKeystrokesHandlers( ) {
+		const editor = this.editor;
+
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
+				const command = this.editor.commands.get( commandName );
+
+				if ( command.isEnabled ) {
+					this.editor.execute( commandName );
+					cancel();
+				}
+			};
+		};
+
+		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentBlock' ) );
+		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentBlock' ) );
 	}
 }
 

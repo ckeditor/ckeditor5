@@ -12,6 +12,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import IndentEditing from '../src/indentediting';
 import IndentBlock from '../src/indentblock';
 import IndentBlockCommand from '../src/indentblockcommand';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'IndentBlock', () => {
 	let editor, model, doc;
@@ -62,7 +63,12 @@ describe( 'IndentBlock', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
 				return createTestEditor().then( editor => {
-					expect( editor.config.get( 'indentBlock' ) ).to.deep.equal( { offset: 40, unit: 'px' } );
+					const config = editor.config.get( 'indentBlock' );
+					expect( config ).to.deep.equal( {
+						offset: 40,
+						unit: 'px',
+						useTabKey: false
+					} );
 				} );
 			} );
 		} );
@@ -327,6 +333,136 @@ describe( 'IndentBlock', () => {
 				expect( editor.getData() ).to.equal( expectedView );
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( expectedView );
 			} );
+		} );
+	} );
+
+	describe( 'tab key handling callback when enabled in config', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			return createTestEditor( {
+				indentBlock: {
+					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ],
+					useTabKey: true
+				}
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				doc = model.document;
+
+				domEvtDataStub = {
+					keyCode: getCode( 'Tab' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				sinon.spy( editor, 'execute' );
+			} );
+		} );
+
+		afterEach( () => {
+			editor.execute.restore();
+		} );
+
+		it( 'should execute indentBlock command on tab key', () => {
+			editor.setData( '<p>[]foo</p>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'indentBlock' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should execute outdentBlock command on Shift+Tab keystroke', () => {
+			domEvtDataStub.keyCode += getCode( 'Shift' );
+
+			editor.setData( '<p class="indent-1">[]foo</p>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentBlock' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent if command is disabled', () => {
+			model.schema.register( 'nonIndentable', { inheritAllFrom: '$block' } );
+
+			editor.conversion.elementToElement( { model: 'nonIndentable', view: 'span' } );
+
+			editor.setData( '<span>[]foo</span>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent or outdent if alt+tab is pressed', () => {
+			domEvtDataStub.keyCode += getCode( 'alt' );
+
+			editor.setData( '<p>[]foo</p>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+	} );
+
+	describe( 'tab key when disabled in config', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			return createTestEditor( {
+				indentBlock: {
+					classes: [ 'indent-1', 'indent-2', 'indent-3', 'indent-4' ],
+					useTabKey: false
+				}
+			} ).then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				doc = model.document;
+
+				domEvtDataStub = {
+					keyCode: getCode( 'Tab' ),
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				sinon.spy( editor, 'execute' );
+			} );
+		} );
+
+		afterEach( () => {
+			editor.execute.restore();
+		} );
+
+		it( 'should not execute indentBlock command on tab key', () => {
+			editor.setData( '<p>[]foo</p>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not execute outdentBlock command on Shift+Tab keystroke', () => {
+			domEvtDataStub.keyCode += getCode( 'Shift' );
+
+			editor.setData( '<p class="indent-1">[]foo</p>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
 
