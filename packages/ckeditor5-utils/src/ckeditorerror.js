@@ -85,6 +85,7 @@ export default class CKEditorError extends Error {
 
 	/**
 	 * Checks if the error is of the `CKEditorError` type.
+	 * @returns {Boolean}
 	 */
 	is( type ) {
 		return type === 'CKEditorError';
@@ -142,7 +143,6 @@ export default class CKEditorError extends Error {
  *
  * @param {String} errorName The error name to be logged.
  * @param {Object} [data] Additional data to be logged.
- * @returns {String}
  */
 export function logWarning( errorName, data ) {
 	console.warn( ...formatConsoleArguments( errorName, data ) );
@@ -167,7 +167,6 @@ export function logWarning( errorName, data ) {
  *
  * @param {String} errorName The error name to be logged.
  * @param {Object} [data] Additional data to be logged.
- * @returns {String}
  */
 export function logError( errorName, data ) {
 	console.error( ...formatConsoleArguments( errorName, data ) );
