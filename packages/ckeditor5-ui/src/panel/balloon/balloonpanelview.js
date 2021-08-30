@@ -722,20 +722,20 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * * `viewportStickyNorth`
  *
- *	    +---------------------------+
- *	    |        [ Target ]         |
- *	    |                           |
- *	+-----------------------------------+
- *	|   |    +-----------------+    |   |
- *	|   |    |     Balloon     |    |   |
- *	|   |    +-----------------+    |   |
- *	|   |                           |   |
- *	|   |                           |   |
- *	|   |                           |   |
- * 	|   |                           |   |
- *	|   +---------------------------+   |
- * 	|             Viewport              |
- *	+-----------------------------------+
+ *		    +---------------------------+
+ *		    |        [ Target ]         |
+ *		    |                           |
+ *		+-----------------------------------+
+ *		|   |    +-----------------+    |   |
+ *		|   |    |     Balloon     |    |   |
+ *		|   |    +-----------------+    |   |
+ *		|   |                           |   |
+ *		|   |                           |   |
+ *		|   |                           |   |
+ *		|   |                           |   |
+ *		|   +---------------------------+   |
+ *		|             Viewport              |
+ *		+-----------------------------------+
  *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
@@ -744,7 +744,8 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * The name that the position function returns will be reflected in the balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
  *
- * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
+ * @member {Object.<String,module:utils/dom/position~positioningFunction>}
+ * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = {
 
