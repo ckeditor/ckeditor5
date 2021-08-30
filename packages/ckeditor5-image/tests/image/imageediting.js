@@ -345,16 +345,16 @@ describe( 'ImageEditing', () => {
 					.to.equal( '<paragraph><imageInline src="/assets/sample.png"></imageInline></paragraph>' );
 			} );
 
-			it( 'should not convert without src attribute', () => {
+			it( 'should convert without src attribute', () => {
 				editor.setData( '<figure class="image"><img alt="alt text" /></figure>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
+					.to.equal( '<imageBlock alt="alt text"></imageBlock>' );
 
 				editor.setData( '<p><img alt="alt text" /></p>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<paragraph></paragraph>' );
+					.to.equal( '<paragraph><imageInline alt="alt text"></imageInline></paragraph>' );
 			} );
 
 			it( 'should not convert in wrong context', () => {
@@ -703,10 +703,12 @@ describe( 'ImageEditing', () => {
 					);
 				} );
 
-				it( 'should not convert and autohoist image element without src attribute (which is not allowed by schema)', () => {
+				it( 'should convert and autohoist image element without src attribute', () => {
 					editor.setData( '<div>foo<img alt="foo" />bar</div>' );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<div>foobar</div>' );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<div>foo<imageInline alt="foo"></imageInline>bar</div>'
+					);
 				} );
 			} );
 		} );

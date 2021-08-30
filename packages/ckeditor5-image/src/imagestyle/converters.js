@@ -61,11 +61,6 @@ export function viewToModelStyleAttribute( styles ) {
 		const viewElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
-		// Check if `modelImageElement` exists (see: #8270, and #9563)...
-		if ( !modelImageElement ) {
-			return;
-		}
-
 		// ...and the `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
 		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
 			return;

@@ -55,7 +55,7 @@ export function getImgViewElementMatcher( editor, matchImageType ) {
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return element => {
-		// Convert only images with src attribute.
+		// check if view element is an `img`
 		if ( !imageUtils.isInlineImageView( element ) ) {
 			return null;
 		}
