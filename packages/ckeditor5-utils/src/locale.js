@@ -149,7 +149,7 @@ export default class Locale {
 	 *
 	 * @private
 	 * @param {String|module:utils/translation-service~Message} message
-	 * @param {Number|String|Array.<Number>} [values]
+	 * @param {Number|Array.<Number>} [values]
 	 * @returns {String}
 	 */
 	_t( message, values = [] ) {
