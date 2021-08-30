@@ -16,7 +16,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-msgctxt "The tooltip of a find and replace button's in the toolbar."
+msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
 msgstr "Find and replace"
 
@@ -56,6 +56,14 @@ msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
 msgstr "Replace with…"
 
-msgctxt "The text between currently highlighted text offset and the count of all matches in the find and replace dropdown."
-msgid " of "
-msgstr " of "
+msgctxt "An error text displayed when user attempted to find an empty text."
+msgid "Text to find must not be empty."
+msgstr "Text to find must not be empty."
+
+msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
+msgid "Tip: Find some text first in order to replace it."
+msgstr "Tip: Find some text first in order to replace it."
+
+msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
+msgid "Show options"
+msgstr "Show options"

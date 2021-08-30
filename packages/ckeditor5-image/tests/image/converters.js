@@ -221,6 +221,14 @@ describe( 'Image converters', () => {
 			// Figure converter outputs nothing and text is disallowed in root.
 			expectModel( '' );
 		} );
+
+		it( 'should not left unconverted figure media element', () => {
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
 	} );
 
 	describe( 'downcastImageAttribute', () => {
