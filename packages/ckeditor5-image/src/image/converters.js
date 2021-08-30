@@ -40,7 +40,7 @@ export function upcastImageFigure( imageUtils ) {
 		const viewImage = imageUtils.findViewImgElement( data.viewItem );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
-		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
+		if ( !viewImage || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
 			return;
 		}
 

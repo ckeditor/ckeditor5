@@ -207,6 +207,12 @@ describe( 'Image converters', () => {
 			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 		} );
 
+		it( 'should convert image with missing src attribute', () => {
+			editor.setData( '<figure class="image"><img alt="Empty src attribute" /></figure>' );
+
+			expectModel( '<imageBlock alt="Empty src attribute" src=""></imageBlock>' );
+		} );
+
 		it( 'should not convert if there is no img element among children', () => {
 			editor.setData( '<figure class="image">xyz</figure>' );
 
