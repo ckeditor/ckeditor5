@@ -40,7 +40,7 @@ You can also easily track the progress and changes done in the content with the 
 
 ### Output and exports
 
-If you need to share the document outside your team, use the {@link features/export-pdf export to PDF} feature to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word} feature instead &mdash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/export-word pagination} feature, to ensure all produced documents will always look the way they should.
+If you need to share the document outside your team, use the {@link features/export-pdf export to PDF} feature to produce industry standard, portable, cross-platform final files. If you need to work further on the document, choose the {@link features/export-word export to Word} feature instead &mdash; and keep your comments and changes in the resulting document, ready to be edited further. These two are accompanied by the {@link features/pagination pagination} feature, to ensure all produced documents will always look the way they should.
 
 The CKEditor 5 WYSIWYG editor by default produces HTML output, that can be saved into a database. The default output can be also switched to {@link features/markdown Github-flavored Markdown} formatted text addressing the needs of software professionals.
 
