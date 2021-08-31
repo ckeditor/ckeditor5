@@ -238,7 +238,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
 			} );
 
-			dispatcher.convertInsert( range, [] );
+			dispatcher.convert( range, [] );
 
 			// Check the data passed to called events and the order of them.
 			expect( loggedEvents ).to.deep.equal( [
@@ -272,7 +272,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const range = model.createRangeIn( root );
 
-			dispatcher.convertInsert( range, [] );
+			dispatcher.convert( range, [] );
 
 			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;

@@ -247,11 +247,11 @@ export default class DataController {
 		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
 		// Collapsed markers at element boundary, although considered as not intersecting with the element, will also be returned.
 		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
-			Array.from( modelElementOrFragment.markers ) :
+			modelElementOrFragment.markers :
 			_getMarkersRelativeToElement( modelElementOrFragment );
 
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
-		this.downcastDispatcher.convertInsert( modelRange, markers, viewWriter, options );
+		this.downcastDispatcher.convert( modelRange, markers, viewWriter, options );
 
 		return viewDocumentFragment;
 	}
@@ -523,11 +523,11 @@ mix( DataController, ObservableMixin );
 // at element boundary, it is considered as contained inside the element and marker range is returned. Otherwise, if the marker is
 // intersecting with the element, the intersection is returned.
 function _getMarkersRelativeToElement( element ) {
-	const result = [];
+	const result = new Map();
 	const doc = element.root.document;
 
 	if ( !doc ) {
-		return [];
+		return result;
 	}
 
 	const elementRange = ModelRange._createIn( element );
@@ -539,12 +539,12 @@ function _getMarkersRelativeToElement( element ) {
 		const isMarkerAtElementBoundary = markerRange.start.isEqual( elementRange.start ) || markerRange.end.isEqual( elementRange.end );
 
 		if ( isMarkerCollapsed && isMarkerAtElementBoundary ) {
-			result.push( [ marker.name, markerRange ] );
+			result.set( marker.name, markerRange );
 		} else {
 			const updatedMarkerRange = elementRange.getIntersection( markerRange );
 
 			if ( updatedMarkerRange ) {
-				result.push( [ marker.name, updatedMarkerRange ] );
+				result.set( marker.name, updatedMarkerRange );
 			}
 		}
 	}

@@ -157,20 +157,20 @@ export default class Title extends Plugin {
 		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 ) );
 		const bodyRange = model.createRange( bodyStartPosition, model.createPositionAt( root, 'end' ) );
 
-		const markers = [];
+		const markers = new Map();
 
 		for ( const marker of model.markers ) {
 			const intersection = bodyRange.getIntersection( marker.getRange() );
 
 			if ( intersection ) {
-				markers.push( [ marker.name, intersection ] );
+				markers.set( marker.name, intersection );
 			}
 		}
 
 		// Convert the entire root to view.
 		data.mapper.clearBindings();
 		data.mapper.bindElements( root, viewDocumentFragment );
-		data.downcastDispatcher.convertInsert( rootRange, markers, viewWriter, options );
+		data.downcastDispatcher.convert( rootRange, markers, viewWriter, options );
 
 		// Remove title element from view.
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );

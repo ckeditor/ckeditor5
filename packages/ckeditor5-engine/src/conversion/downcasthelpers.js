@@ -2130,7 +2130,7 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 			}
 		} else {
 			// Note that this is not creating another consumable, it's using the current one.
-			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
+			conversionApi.convert( ModelRange._createOn( modelChildNode ) );
 		}
 	}
 }

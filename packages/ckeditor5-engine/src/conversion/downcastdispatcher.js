@@ -175,17 +175,17 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Starts a conversion of a range and provided markers.
+	 * Starts a conversion of a model range and the provided markers.
 	 *
 	 * @fires insert
 	 * @fires attribute
 	 * @fires addMarker
 	 * @param {module:engine/model/range~Range} range The inserted range.
-	 * @param {Array.<Array>} markers The list of marker entries `[ name, range ]` that should be down-casted.
+	 * @param {Map<String,module:engine/model/range~Range>} markers The map of markers that should be down-casted.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 * @param {Object} [options] Optional options object passed to `convertionApi.options`.
 	 */
-	convertInsert( range, markers, writer, options = {} ) {
+	convert( range, markers, writer, options = {} ) {
 		const conversionApi = this._prepareConversionApi( writer, options );
 
 		this._convertInsert( range, conversionApi );
@@ -535,7 +535,7 @@ export default class DowncastDispatcher {
 			consumable: new Consumable(),
 			writer,
 			options,
-			convertInsert: range => this._convertInsert( range, conversionApi )
+			convert: range => this._convertInsert( range, conversionApi )
 		};
 
 		return conversionApi;

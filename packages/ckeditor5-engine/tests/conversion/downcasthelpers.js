@@ -3788,7 +3788,7 @@ describe( 'downcast selection converters', () => {
 				view.change( writer => {
 					const markers = [ [ marker.name, marker.getRange() ] ];
 
-					dispatcher.convertInsert( model.createRangeIn( modelRoot ), markers, writer );
+					dispatcher.convert( model.createRangeIn( modelRoot ), markers, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
@@ -3815,7 +3815,7 @@ describe( 'downcast selection converters', () => {
 				view.change( writer => {
 					const markers = [ [ marker.name, marker.getRange() ] ];
 
-					dispatcher.convertInsert( model.createRangeIn( modelRoot ), markers, writer );
+					dispatcher.convert( model.createRangeIn( modelRoot ), markers, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
@@ -3845,7 +3845,7 @@ describe( 'downcast selection converters', () => {
 				view.change( writer => {
 					const markers = [ [ marker.name, marker.getRange() ] ];
 
-					dispatcher.convertInsert( model.createRangeIn( modelRoot ), markers, writer );
+					dispatcher.convert( model.createRangeIn( modelRoot ), markers, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
@@ -3875,7 +3875,7 @@ describe( 'downcast selection converters', () => {
 				view.change( writer => {
 					const markers = [ [ marker.name, marker.getRange() ] ];
 
-					dispatcher.convertInsert( model.createRangeIn( modelRoot ), markers, writer );
+					dispatcher.convert( model.createRangeIn( modelRoot ), markers, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
@@ -3920,7 +3920,7 @@ describe( 'downcast selection converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( model.createRangeIn( modelRoot ), [], writer );
+					dispatcher.convert( model.createRangeIn( modelRoot ), [], writer );
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( viewDocument, 'span' );
@@ -3945,7 +3945,7 @@ describe( 'downcast selection converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertInsert( model.createRangeIn( modelRoot ), [], writer );
+					dispatcher.convert( model.createRangeIn( modelRoot ), [], writer );
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( viewDocument, 'span' );
@@ -4226,7 +4226,7 @@ describe( 'downcast selection converters', () => {
 
 		// Convert model to view.
 		view.change( writer => {
-			dispatcher.convertInsert( model.createRangeIn( modelRoot ), model.markers, writer );
+			dispatcher.convert( model.createRangeIn( modelRoot ), model.markers, writer );
 			dispatcher.convertSelection( docSelection, model.markers, writer );
 		} );
 

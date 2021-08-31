@@ -260,18 +260,18 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 		return writer.createUIElement( name );
 	} ) );
 
-	const markerEntries = [];
+	const markersMap = new Map();
 
 	if ( markers ) {
 		// To provide stable results, sort markers by name.
 		for ( const marker of Array.from( markers ).sort( ( a, b ) => a.name < b.name ? 1 : -1 ) ) {
-			markerEntries.push( [ marker.name, marker.getRange() ] );
+			markersMap.set( marker.name, marker.getRange() );
 		}
 	}
 
 	// Convert model to view.
 	const writer = view._writer;
-	downcastDispatcher.convertInsert( range, markerEntries, writer );
+	downcastDispatcher.convert( range, markersMap, writer );
 
 	// Convert model selection to view selection.
 	if ( selection ) {
