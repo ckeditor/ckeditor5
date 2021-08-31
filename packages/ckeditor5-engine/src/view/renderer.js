@@ -511,12 +511,20 @@ export default class Renderer {
 
 		// Add or overwrite attributes.
 		for ( const key of viewAttrKeys ) {
-			domElement.setAttribute( key, viewElement.getAttribute( key ) );
+			const value = viewElement.getAttribute( key );
+
+			if ( !this.domConverter.shouldRenderAttribute( key, value ) ) {
+				domElement.removeAttribute( key );
+			} else {
+				domElement.setAttribute( key, value );
+			}
 		}
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
-			if ( !viewElement.hasAttribute( key ) ) {
+			if ( !viewElement.hasAttribute( key ) &&
+				( viewElement.name !== 'script' || key !== 'data-ck-hidden' ) )
+			{
 				domElement.removeAttribute( key );
 			}
 		}

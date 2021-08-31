@@ -12,6 +12,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Link from '@ckeditor/ckeditor5-link/src/link';
@@ -55,9 +56,11 @@ ClassicEditor
 			Italic,
 			List,
 			Paragraph,
-			Strikethrough
+			Strikethrough,
+			SourceEditing
 		],
 		toolbar: [
+			'sourceEditing',
 			'bold',
 			'italic',
 			'strikethrough',

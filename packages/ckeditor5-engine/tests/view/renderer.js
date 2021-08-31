@@ -3947,6 +3947,29 @@ describe( 'Renderer', () => {
 				return viewData.repeat( repeat );
 			}
 		} );
+
+		describe( 'script tag should not be executed', () => {
+			beforeEach( () => {
+				viewDocument = new ViewDocument( new StylesProcessor() );
+				selection = new DocumentSelection();
+				// Enable editing render mode.
+				domConverter = new DomConverter( viewDocument, { renderMode: 'editing' } );
+				renderer = new Renderer( domConverter, selection );
+				renderer.domDocuments.add( document );
+			} );
+
+			it( 'should handle script tag rendering', () => {
+				window.spy = sinon.spy();
+				viewRoot._appendChild( parse( '<container:script>spy()</container:script>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( window.spy.calledOnce ).to.be.false;
+
+				delete window.spy;
+			} );
+		} );
 	} );
 
 	describe( '#922', () => {

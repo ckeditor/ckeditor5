@@ -47,6 +47,9 @@
 // Skipped hidden elements:
 // noscript
 // script
+//
+// If you wish to add support for (no)script elements, please familiarize yourself with
+// comment https://github.com/cksource/ckeditor5-internal/issues/949#issuecomment-913521257 first.
 
 export default {
 	block: [

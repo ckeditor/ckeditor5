@@ -52,6 +52,8 @@ export default class DomConverter {
 	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options An object with configuration options.
 	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
+	 * @param {'data'|'editing'} [options.renderMode='data'] Whether to leave the View-to-DOM conversion result unchanged
+	 * or improve editing experience by filtering out conflicting data.
 	 */
 	constructor( document, options = {} ) {
 		/**
@@ -66,6 +68,13 @@ export default class DomConverter {
 		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
 		this.blockFillerMode = options.blockFillerMode || 'br';
+
+		/**
+		 * Whether to leave the View-to-DOM conversion result unchanged or improve editing experience by filtering out conflicting data.
+		 *
+		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderModel
+		 */
+		this.renderMode = options.renderMode || 'data';
 
 		/**
 		 * Elements which are considered pre-formatted elements.
@@ -266,9 +275,14 @@ export default class DomConverter {
 
 				return domElement;
 			} else {
+				const shouldFilter = this.renderMode === 'editing';
+
 				// Create DOM element.
 				if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
+				} else if ( shouldFilter && viewNode.name === 'script' ) {
+					// Prevent script from being added and evaluated by inserting its content into a span.
+					domElement = domDocument.createElement( 'span' );
 				} else {
 					domElement = domDocument.createElement( viewNode.name );
 				}
@@ -285,7 +299,17 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					domElement.setAttribute( key, viewNode.getAttribute( key ) );
+					const value = viewNode.getAttribute( key ) || '';
+
+					if ( !this.shouldRenderAttribute( key, value ) ) {
+						continue;
+					}
+
+					domElement.setAttribute( key, value );
+				}
+
+				if ( shouldFilter && viewNode.name === 'script' ) {
+					domElement.setAttribute( 'data-ck-hidden', 'script' );
 				}
 			}
 
@@ -297,6 +321,17 @@ export default class DomConverter {
 
 			return domElement;
 		}
+	}
+
+	shouldRenderAttribute( attributeKey, attributeValue ) {
+		if ( this.renderMode === 'data' ) {
+			return true;
+		}
+
+		return !( attributeKey.toLowerCase().startsWith( 'on' ) ||
+			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
+			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
+		);
 	}
 
 	/**
