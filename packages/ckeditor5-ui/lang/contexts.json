@@ -4,7 +4,6 @@
 	"Edit block": "Label of the block toolbar icon (a block toolbar is displayed next to each paragraph, heading, list item, etc. and contains e.g. block formatting options)",
 	"Next": "Label for a button showing the next thing (tab, page, etc.).",
 	"Previous": "Label for a button showing the previous thing (tab, page, etc.).",
-	"%0 of %1": "Label for a 'page X of Y' status of a typical next/previous page navigation.",
 	"Editor toolbar": "Label used by assistive technologies describing a generic editor toolbar.",
 	"Dropdown toolbar": "Label used by assistive technologies describing a toolbar displayed inside a dropdown.",
 	"Black": "Label of a button that applies a black color in color pickers.",

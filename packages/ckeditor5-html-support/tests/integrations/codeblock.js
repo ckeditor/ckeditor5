@@ -6,8 +6,8 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import GeneralHtmlSupport from '../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from './_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from '../_utils/utils';
 
 /* global document */
 

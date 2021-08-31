@@ -253,6 +253,21 @@ export default class MediaEmbedEditing extends Plugin {
 						return writer.createElement( 'media', { url } );
 					}
 				}
+			} )
+			// Consume `<figure class="media">` elements, that were left after upcast.
+			.add( dispatcher => {
+				dispatcher.on( 'element:figure', converter );
+
+				function converter( evt, data, conversionApi ) {
+					if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+						return;
+					}
+
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+				}
 			} );
 	}
 }

@@ -556,6 +556,69 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.calledOnceWithExactly( spy, 'execute' );
 			} );
 
+			it( 'handles "enter" when pressed in the find input and goes to the next result', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: view._findInputView.fieldView.element
+				};
+
+				view._areCommandsEnabled = { findNext: true };
+
+				const spy = sinon.spy( view._findNextButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
+			} );
+
+			it( 'handles "shift+enter" when pressed in the find input and performs a search', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					shiftKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: view._findInputView.fieldView.element
+				};
+
+				const spy = sinon.spy( view._findButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
+			} );
+
+			it( 'handles "shift+enter" when pressed in the find input and goes to the previous result', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					shiftKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: view._findInputView.fieldView.element
+				};
+
+				view._areCommandsEnabled = { findPrevious: true };
+
+				const spy = sinon.spy( view._findPrevButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.calledOnce( keyEvtData.preventDefault );
+				sinon.assert.calledOnce( keyEvtData.stopPropagation );
+
+				sinon.assert.calledOnce( spy );
+				sinon.assert.calledOnceWithExactly( spy, 'execute' );
+			} );
+
 			it( 'handles "enter" when pressed in the replace input and performs a replacement', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.enter,
@@ -578,6 +641,23 @@ describe( 'FindAndReplaceFormView', () => {
 			it( 'ignores "enter" when pressed somewhere else', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.enter,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				const spy = sinon.spy( view._replaceButtonView, 'fire' );
+
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.notCalled( keyEvtData.preventDefault );
+				sinon.assert.notCalled( keyEvtData.stopPropagation );
+				sinon.assert.notCalled( spy );
+			} );
+
+			it( 'ignores "shift+enter" when pressed somewhere else', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					shiftKey: true,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};

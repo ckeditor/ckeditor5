@@ -16,7 +16,7 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "The tooltip of a find and replace button's in the toolbar."
+msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
 msgstr "Keresés és csere"
 
@@ -56,6 +56,14 @@ msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
 msgstr "Csere erre..."
 
-msgctxt "The text between currently highlighted text offset and the count of all matches in the find and replace dropdown."
-msgid " of "
-msgstr " / "
+msgctxt "An error text displayed when user attempted to find an empty text."
+msgid "Text to find must not be empty."
+msgstr ""
+
+msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
+msgid "Tip: Find some text first in order to replace it."
+msgstr ""
+
+msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
+msgid "Show options"
+msgstr ""

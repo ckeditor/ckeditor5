@@ -719,12 +719,33 @@ export default class FindAndReplaceFormView extends View {
 			const target = event.target;
 
 			if ( target === this._findInputView.fieldView.element ) {
-				this._findButtonView.fire( 'execute' );
+				if ( this._areCommandsEnabled.findNext ) {
+					this._findNextButtonView.fire( 'execute' );
+				} else {
+					this._findButtonView.fire( 'execute' );
+				}
 				stopPropagationAndPreventDefault( event );
 			} else if ( target === this._replaceInputView.fieldView.element ) {
 				this._replaceButtonView.fire( 'execute' );
 				stopPropagationAndPreventDefault( event );
 			}
+		} );
+
+		// Find previous upon pressing Shift+Enter in the find field.
+		this._keystrokes.set( 'shift+enter', event => {
+			const target = event.target;
+
+			if ( target !== this._findInputView.fieldView.element ) {
+				return;
+			}
+
+			if ( this._areCommandsEnabled.findPrevious ) {
+				this._findPrevButtonView.fire( 'execute' );
+			} else {
+				this._findButtonView.fire( 'execute' );
+			}
+
+			stopPropagationAndPreventDefault( event );
 		} );
 
 		// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's

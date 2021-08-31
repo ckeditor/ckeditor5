@@ -33,20 +33,20 @@ import { escapeRegExp } from 'lodash-es';
 export function updateFindResultFromRange( range, model, findCallback, startResults ) {
 	const results = startResults || new Collection();
 
-	[ ...range ].forEach( ( { type, item } ) => {
-		if ( type === 'elementStart' ) {
-			if ( model.schema.checkChild( item, '$text' ) ) {
-				const foundItems = findCallback( {
-					item,
-					text: rangeToText( model.createRangeIn( item ) )
-				} );
+	model.change( writer => {
+		[ ...range ].forEach( ( { type, item } ) => {
+			if ( type === 'elementStart' ) {
+				if ( model.schema.checkChild( item, '$text' ) ) {
+					const foundItems = findCallback( {
+						item,
+						text: rangeToText( model.createRangeIn( item ) )
+					} );
 
-				if ( !foundItems ) {
-					return;
-				}
+					if ( !foundItems ) {
+						return;
+					}
 
-				foundItems.forEach( foundItem => {
-					model.change( writer => {
+					foundItems.forEach( foundItem => {
 						const resultId = `findResult:${ uid() }`;
 						const marker = writer.addMarker( resultId, {
 							usingOperation: false,
@@ -68,9 +68,9 @@ export function updateFindResultFromRange( range, model, findCallback, startResu
 							index
 						);
 					} );
-				} );
+				}
 			}
-		}
+		} );
 	} );
 
 	return results;

@@ -65,6 +65,17 @@ describe( 'FindCommand', () => {
 				);
 			} );
 
+			it( 'calls model.change() only once', () => {
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bar bar bar bom.</paragraph>' );
+				const spy = sinon.spy( model, 'change' );
+
+				command.execute( 'bar' );
+
+				// It's called two additional times
+				// from 'change:highlightedResult' handler in FindAndReplaceEditing.
+				expect( spy.callCount ).to.equal( 3 );
+			} );
+
 			it( 'returns no result if nothing matched', () => {
 				setData( model, '<paragraph>[]Foo bar baz. Bam bar bom.</paragraph>' );
 
