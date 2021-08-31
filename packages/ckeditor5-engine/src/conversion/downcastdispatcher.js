@@ -120,10 +120,10 @@ export default class DowncastDispatcher {
 		/**
 		 * A template for an interface passed by the dispatcher to the event callbacks.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
-		this.conversionApi = { dispatcher: this, ...conversionApi };
+		this._conversionApi = { dispatcher: this, ...conversionApi };
 	}
 
 	/**
@@ -531,7 +531,7 @@ export default class DowncastDispatcher {
 	 */
 	_prepareConversionApi( writer, options = {} ) {
 		const conversionApi = {
-			...this.conversionApi,
+			...this._conversionApi,
 			consumable: new Consumable(),
 			writer,
 			options,

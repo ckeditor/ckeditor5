@@ -1903,15 +1903,6 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			}
 
 			for ( const element of elements ) {
-				// Do not reconvert just inserted elements.
-				// This is needed for the reconversion triggered by some other change (for example a paragraph inside a table cell).
-				const positionBefore = ModelPosition._createBefore( element );
-
-				// Do not reconvert an element that was just inserted in the same changes list.
-				if ( data.changes.find( change => change.type == 'insert' && change.position.isEqual( positionBefore ) ) ) {
-					continue;
-				}
-
 				// If it's already marked for reconversion, so skip this change.
 				if ( data.reconvertedElements.has( element ) ) {
 					continue;

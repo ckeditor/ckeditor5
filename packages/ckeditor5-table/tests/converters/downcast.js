@@ -213,7 +213,7 @@ describe( 'downcast converters', () => {
 
 				assertEqualMarkup( editor.getData(),
 					'<table foo="bar">' +
-						'<tr><td>&nbsp;</td></tr>' +
+						'<tr><td><p>&nbsp;</p></td></tr>' +
 					'</table>'
 				);
 			} );
