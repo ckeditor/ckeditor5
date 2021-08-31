@@ -147,6 +147,7 @@ For example:
 		.then( editor => {
 			window.editor = editor;
 		} );
+</script>
 ```
 
 ## Localization
