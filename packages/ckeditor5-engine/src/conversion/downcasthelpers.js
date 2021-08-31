@@ -1534,6 +1534,7 @@ function downcastElementToStructure( config ) {
 	config = cloneDeep( config );
 
 	config.model = normalizeModelElementConfig( config.model );
+	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
 		dispatcher.on(

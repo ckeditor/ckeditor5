@@ -785,495 +785,1089 @@ describe( 'DowncastHelpers', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
 
-			// TODO those tests are for elementToStructure
-			describe( 'with complex view structure (slot conversion)', () => {
-				beforeEach( () => {
-					model.schema.register( 'complex', {
-						allowIn: '$root',
-						allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
-					} );
-					downcastHelpers.elementToStructure( {
-						model: 'complex',
-						view: ( modelElement, { writer, mapper, slotFor } ) => {
-							const classForMain = !!modelElement.getAttribute( 'classForMain' );
-							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
-							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
+	describe( 'elementToStructure()', () => {
+		it( 'should be chainable', () => {
+			expect( downcastHelpers.elementToStructure( { model: 'paragraph', view: 'p' } ) ).to.equal( downcastHelpers );
+		} );
 
-							const outer = writer.createContainerElement( 'div', {
-								class: `complex-slots${ classForMain ? ' with-class' : '' }`
-							} );
-							const inner = writer.createContainerElement( 'div', {
-								class: `slots${ classForWrap ? ' with-class' : '' }`
-							} );
+		it( 'config.view is a string', () => {
+			downcastHelpers.elementToStructure( { model: 'paragraph', view: 'p' } );
 
-							if ( attributeToElement ) {
-								const optional = writer.createEmptyElement( 'div', { class: 'optional' } );
-								writer.insert( writer.createPositionAt( outer, 0 ), optional );
-							}
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot, 0 );
+			} );
 
-							writer.insert( writer.createPositionAt( outer, 'end' ), inner );
-							mapper.bindElements( modelElement, inner );
+			expectResult( '<p></p>' );
+		} );
 
-							writer.insert( writer.createPositionAt( inner, 0 ), slotFor( modelElement, 'children' ) );
+		it( 'can be overwritten using converterPriority', () => {
+			downcastHelpers.elementToStructure( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.elementToStructure( { model: 'paragraph', view: 'foo', converterPriority: 'high' } );
 
-							// for ( const slot of modelElement.getChildren() ) {
-							// 	const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
-							//
-							// 	writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
-							// 	mapper.bindElements( slot, viewSlot );
-							// }
+			model.change( writer => {
+				writer.insertElement( 'paragraph', modelRoot, 0 );
+			} );
 
-							return outer;
-						},
-						triggerBy: {
-							attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ],
-							children: [ 'slot' ]
-						}
-					} );
+			expectResult( '<foo></foo>' );
+		} );
 
-					downcastHelpers.elementToElement( {
-						model: 'slot',
-						view: { name: 'div', classes: 'slot' }
-					} );
+		it( 'config.view is a view element definition', () => {
+			downcastHelpers.elementToStructure( {
+				model: 'fancyParagraph',
+				view: {
+					name: 'p',
+					classes: 'fancy'
+				}
+			} );
 
-					model.schema.register( 'slot', {
-						allowIn: 'complex'
-					} );
+			model.change( writer => {
+				writer.insertElement( 'fancyParagraph', modelRoot, 0 );
+			} );
 
-					model.schema.register( 'paragraph', {
-						inheritAllFrom: '$block',
-						allowIn: 'slot'
-					} );
-					downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			expectResult( '<p class="fancy"></p>' );
+		} );
+
+		it( 'config.view is a function', () => {
+			downcastHelpers.elementToStructure( {
+				model: 'heading',
+				view: ( modelElement, { writer } ) => writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+			} );
+
+			model.change( writer => {
+				writer.insertElement( 'heading', { level: 2 }, modelRoot, 0 );
+			} );
+
+			expectResult( '<h2></h2>' );
+		} );
+
+		describe( 'with simple block view structure (without children)', () => {
+			beforeEach( () => {
+				model.schema.register( 'simpleBlock', {
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
 				} );
 
-				it( 'should convert on insert', () => {
-					model.change( writer => {
-						writer.insertElement( 'complex', modelRoot, 0 );
-					} );
-
-					expectResult( '<div class="complex-slots"><div class="slots"></div></div>' );
-				} );
-
-				it( 'should convert on attribute set (main element)', () => {
-					setModelData( model, '<complex></complex>' );
-
-					model.change( writer => {
-						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult( '<div class="complex-slots with-class"><div class="slots"></div></div>' );
-				} );
-
-				it( 'should convert on attribute set (other element)', () => {
-					setModelData( model, '<complex></complex>' );
-
-					model.change( writer => {
-						writer.setAttribute( 'classForWrap', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult( '<div class="complex-slots"><div class="slots with-class"></div></div>' );
-				} );
-
-				it( 'should convert on attribute set (insert new view element)', () => {
-					setModelData( model, '<complex></complex>' );
-
-					model.change( writer => {
-						writer.setAttribute( 'attributeToElement', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult( '<div class="complex-slots"><div class="optional"></div><div class="slots"></div></div>' );
-				} );
-
-				it( 'should convert element with slots', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on adding slot', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						insertBazSlot( writer, modelRoot );
-					} );
-
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on removing slot', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
-					} );
-
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on multiple triggers (remove + insert)', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
-						insertBazSlot( writer, modelRoot );
-					} );
-
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on multiple triggers (remove + attribute)', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
-						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult(
-						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on multiple triggers (insert + attribute)', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						insertBazSlot( writer, modelRoot );
-						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult(
-						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should not trigger refresh  on adding a slot to an element without triggerBy conversion', () => {
-					model.schema.register( 'other', {
-						allowIn: '$root'
-					} );
-					model.schema.extend( 'slot', {
-						allowIn: 'other'
-					} );
-					downcastHelpers.elementToElement( {
-						model: 'other',
-						view: {
-							name: 'div',
-							classes: 'other'
-						}
-					} );
-					downcastHelpers.elementToElement( {
-						model: 'slot',
-						view: {
-							name: 'div',
-							classes: 'slot'
-						}
-					} );
-
-					setModelData( model,
-						'<other>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</other>'
-					);
-					const otherView = viewRoot.getChild( 0 );
-
-					model.change( writer => {
-						insertBazSlot( writer, modelRoot );
-					} );
-
-					expectResult(
-						'<div class="other">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>'
-					);
-					const otherViewAfter = viewRoot.getChild( 0 );
-
-					expect( otherView, 'the view should not be refreshed' ).to.equal( otherViewAfter );
-				} );
-
-				describe( 'memoization', () => {
-					it( 'should create new element on re-converting element', () => {
-						setModelData( model, '<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
-							'</complex>'
-						);
-
-						const [ complexView ] = getNodes();
-
-						model.change( writer => {
-							writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-						} );
-
-						const [ viewAfterReRender ] = getNodes();
-
-						expect( viewAfterReRender, 'the view should be refreshed' ).to.not.equal( complexView );
-					} );
-
-					it( 'should not re-create slot\'s child elements on re-converting main element (attribute changed)', () => {
-						setModelData( model, '<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
-							'</complex>'
-						);
-
-						const [ main, /* unused */,
-							slotOne, paraOne, textNodeOne,
-							slotTwo, paraTwo, textNodeTwo ] = getNodes();
-
-						model.change( writer => {
-							writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-						} );
-
-						const [ mainAfter, /* unused */,
-							slotOneAfter, paraOneAfter, textNodeOneAfter,
-							slotTwoAfter, paraTwoAfter, textNodeTwoAfter ] = getNodes();
-
-						expect( mainAfter, 'main view' ).to.not.equal( main );
-						expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
-						expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
-						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
-						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
-						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
-						expect( textNodeTwoAfter, 'second slot text node view' ).to.equal( textNodeTwo );
-					} );
-
-					it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
-						setModelData( model, '<complex>' +
-							'<slot><paragraph>foo</paragraph></slot>' +
-							'<slot><paragraph>bar</paragraph></slot>' +
-							'</complex>'
-						);
-
-						const [ main, /* unused */,
-							slotOne, paraOne, textNodeOne,
-							slotTwo, paraTwo, textNodeTwo ] = getNodes();
-
-						model.change( writer => {
-							const slot = writer.createElement( 'slot' );
-							const paragraph = writer.createElement( 'paragraph' );
-							writer.insertText( 'baz', paragraph, 0 );
-							writer.insert( paragraph, slot, 0 );
-							writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
-						} );
-
-						const [ mainAfter, /* unused */,
-							slotOneAfter, paraOneAfter, textNodeOneAfter,
-							slotTwoAfter, paraTwoAfter, textNodeTwoAfter,
-							slotThreeAfter, paraThreeAfter, textNodeThreeAfter
-						] = getNodes();
-
-						expect( mainAfter, 'main view' ).to.not.equal( main );
-						expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
-						expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
-						expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
-						expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
-						expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
-						expect( textNodeTwoAfter, 'second slot text node view' ).to.equal( textNodeTwo );
-						expect( slotThreeAfter, 'third slot view' ).to.not.be.undefined;
-						expect( paraThreeAfter, 'third slot paragraph view' ).to.not.be.undefined;
-						expect( textNodeThreeAfter, 'third slot text node view' ).to.not.be.undefined;
-					} );
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'simpleBlock',
+						attributes: [ 'toStyle', 'toClass' ]
+					},
+					view: ( modelElement, { writer } ) => {
+						return writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+					}
 				} );
 			} );
 
-			// Skipped, as it would require two-level mapping. See https://github.com/ckeditor/ckeditor5/issues/1589.
-			describe.skip( 'with complex view structure (slot conversion atomic converters for some changes)', () => {
-				beforeEach( () => {
-					model.schema.register( 'complex', {
-						allowIn: '$root',
-						allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
-					} );
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					writer.insertElement( 'simpleBlock', modelRoot, 0 );
+				} );
 
-					function createViewSlot( slot, { writer, mapper } ) {
-						const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
+				expectResult( '<div></div>' );
+			} );
 
-						mapper.bindElements( slot, viewSlot );
+			it( 'should convert on attribute set', () => {
+				setModelData( model, '<simpleBlock></simpleBlock>' );
 
-						return viewSlot;
+				const [ viewBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter ] = getNodes();
+
+				expectResult( '<div style="display:block"></div>' );
+				expect( viewAfter ).to.not.equal( viewBefore );
+			} );
+
+			it( 'should convert on attribute change', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+
+				const [ viewBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+			} );
+
+			it( 'should convert on attribute remove', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div></div>' );
+			} );
+
+			it( 'should convert on one attribute add and other remove', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="is-classy"></div>' );
+			} );
+
+			it( 'should properly re-bind mapper mappings and retain markers', () => {
+				downcastHelpers.elementToElement( {
+					model: 'simpleBlock',
+					view: ( modelElement, { writer } ) => {
+						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+
+						return toWidget( viewElement, writer );
+					},
+					triggerBy: {
+						attributes: [ 'toStyle', 'toClass' ]
+					},
+					converterPriority: 'high'
+				} );
+
+				const mapper = controller.mapper;
+
+				downcastHelpers.markerToHighlight( {
+					model: 'myMarker',
+					view: { classes: 'foo' }
+				} );
+
+				setModelData( model, '<simpleBlock></simpleBlock>' );
+
+				const modelElement = modelRoot.getChild( 0 );
+				const [ viewBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.addMarker( 'myMarker', { range: writer.createRangeOn( modelElement ), usingOperation: false } );
+				} );
+
+				expect( mapper.toViewElement( modelElement ) ).to.equal( viewBefore );
+				expect( mapper.toModelElement( viewBefore ) ).to.equal( modelElement );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.true;
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelElement );
+				} );
+
+				const [ viewAfter ] = getNodes();
+
+				expect( mapper.toViewElement( modelElement ) ).to.equal( viewAfter );
+				expect( mapper.toModelElement( viewBefore ) ).to.be.undefined;
+				expect( mapper.toModelElement( viewAfter ) ).to.equal( modelElement );
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewAfter ) ).to.be.true;
+				expect( mapper.markerNameToElements( 'myMarker' ).has( viewBefore ) ).to.be.false;
+			} );
+
+			it( 'should do nothing if non-triggerBy attribute has changed', () => {
+				setModelData( model, '<simpleBlock></simpleBlock>' );
+
+				const [ viewBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter ] = getNodes();
+
+				expectResult( '<div></div>' );
+
+				expect( viewAfter ).to.equal( viewBefore );
+			} );
+		} );
+
+		describe( 'with simple block view structure (with children)', () => {
+			beforeEach( () => {
+				model.schema.register( 'simpleBlock', {
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
+				} );
+
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'simpleBlock',
+						attributes: [ 'toStyle', 'toClass' ]
+					},
+					view: ( modelElement, { writer, slotFor } ) => {
+						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
+
+						return viewElement;
 					}
-
-					downcastHelpers.elementToElement( {
-						model: 'complex',
-						view: ( modelElement, { writer, mapper, consumable } ) => {
-							const classForMain = !!modelElement.getAttribute( 'classForMain' );
-							const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
-							const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
-
-							const outer = writer.createContainerElement( 'div', {
-								class: `complex-slots${ classForMain ? ' with-class' : '' }`
-							} );
-							const inner = writer.createContainerElement( 'div', {
-								class: `slots${ classForWrap ? ' with-class' : '' }`
-							} );
-
-							if ( attributeToElement ) {
-								const optional = writer.createEmptyElement( 'div', { class: 'optional' } );
-								writer.insert( writer.createPositionAt( outer, 0 ), optional );
-							}
-
-							writer.insert( writer.createPositionAt( outer, 'end' ), inner );
-							mapper.bindElements( modelElement, outer );
-							mapper.bindElements( modelElement, inner );
-
-							for ( const slot of modelElement.getChildren() ) {
-								const viewSlot = createViewSlot( slot, { writer, mapper } );
-
-								writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
-								consumable.consume( slot, 'insert' );
-							}
-
-							return outer;
-						},
-						triggerBy: {
-							attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
-							// Contrary to the previous test - do not act on child changes.
-							// children: [ 'slot' ]
-						}
-					} );
-					downcastHelpers.elementToElement( {
-						model: 'slot',
-						view: createViewSlot
-					} );
-
-					model.schema.register( 'slot', {
-						allowIn: 'complex'
-					} );
-
-					model.schema.register( 'paragraph', {
-						inheritAllFrom: '$block',
-						allowIn: 'slot'
-					} );
-					downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 				} );
 
-				it( 'should convert on insert', () => {
-					model.change( writer => {
-						writer.insertElement( 'complex', modelRoot, 0 );
-					} );
-
-					expectResult( '<div class="complex-slots"><div class="slots"></div></div>' );
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'simpleBlock'
 				} );
 
-				it( 'should convert on attribute set (main element)', () => {
+				downcastHelpers.elementToElement( {
+					model: 'paragraph',
+					view: 'p'
+				} );
+			} );
+
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					const simpleBlock = writer.createElement( 'simpleBlock' );
+					const paragraph = writer.createElement( 'paragraph' );
+
+					writer.insert( simpleBlock, modelRoot, 0 );
+					writer.insert( paragraph, simpleBlock, 0 );
+					writer.insertText( 'foo', paragraph, 0 );
+				} );
+
+				expectResult( '<div><p>foo</p></div>' );
+			} );
+
+			it( 'should convert on attribute set', () => {
+				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:block"><p>foo</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				expect( textAfter, 'text' ).to.equal( textBefore );
+			} );
+
+			it( 'should convert on attribute change', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				expect( textAfter, 'text' ).to.equal( textBefore );
+			} );
+
+			it( 'should convert on attribute remove', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div><p>foo</p></div>' );
+			} );
+
+			it( 'should convert on one attribute add and other remove', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="is-classy"><p>foo</p></div>' );
+			} );
+
+			it( 'should do nothing if non-triggerBy attribute has changed', () => {
+				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div><p>foo</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				// TODO - is text always re-converted?
+				expect( textAfter, 'text' ).to.equal( textBefore );
+			} );
+		} );
+
+		describe( 'with simple block view structure (with children - reconvert on child add)', () => {
+			beforeEach( () => {
+				model.schema.register( 'simpleBlock', {
+					allowIn: '$root'
+				} );
+
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'simpleBlock',
+						children: true
+					},
+					view: ( modelElement, { writer, slotFor } ) => {
+						const viewElement = writer.createContainerElement( 'div' );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
+
+						return viewElement;
+					}
+				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'simpleBlock'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'paragraph',
+					view: 'p'
+				} );
+			} );
+
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					const simpleBlock = writer.createElement( 'simpleBlock' );
+					const paragraph = writer.createElement( 'paragraph' );
+
+					writer.insert( simpleBlock, modelRoot, 0 );
+					writer.insert( paragraph, simpleBlock, 0 );
+					writer.insertText( 'foo', paragraph, 0 );
+				} );
+
+				expectResult( '<div><p>foo</p></div>' );
+			} );
+
+			it( 'should convert on adding a child (at the beginning)', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'bar' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ), 0 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [ viewAfter, /* insertedPara */, /* insertedText */, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div><p>bar</p><p>foo</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				expect( textAfter, 'text' ).to.equal( textBefore );
+			} );
+
+			it( 'should convert on adding a child (in the middle)', () => {
+				setModelData( model,
+					'<simpleBlock toStyle="display:block">' +
+					'<paragraph>foo</paragraph><paragraph>bar</paragraph>' +
+					'</simpleBlock>' );
+
+				const [ viewBefore, paraFooBefore, textFooBefore, paraBarBefore, textBarBefore ] = getNodes();
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'baz' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [ viewAfter,
+					paraFooAfter, textFooAfter, /* insertedPara */, /* insertedText */, paraBarAfter, textBarAfter
+				] = getNodes();
+
+				expectResult( '<div><p>foo</p><p>baz</p><p>bar</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( paraFooAfter, 'para foo' ).to.equal( paraFooBefore );
+				expect( textFooAfter, 'text foo' ).to.equal( textFooBefore );
+				expect( paraBarAfter, 'para bar' ).to.equal( paraBarBefore );
+				expect( textBarAfter, 'text bar' ).to.equal( textBarBefore );
+			} );
+
+			it( 'should convert on adding a child (at the end)', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'bar' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div><p>foo</p><p>bar</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				expect( textAfter, 'text' ).to.equal( textBefore );
+			} );
+
+			it( 'should convert on removing a child', () => {
+				setModelData( model,
+					'<simpleBlock><paragraph>foo</paragraph><paragraph>bar</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.remove( modelRoot.getNodeByPath( [ 0, 1 ] ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div><p>foo</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.not.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				expect( textAfter, 'text' ).to.equal( textBefore );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/9641
+			it( 'should convert on multiple similar child hooks', () => {
+				model.schema.register( 'simpleBlock2', {
+					allowIn: '$root',
+					allowChildren: 'paragraph'
+				} );
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'simpleBlock2',
+						children: true
+					},
+					view: ( modelElement, { writer, slotFor } ) => {
+						const viewElement = writer.createContainerElement( 'div', { class: 'second' } );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
+
+						return viewElement;
+					}
+				} );
+
+				setModelData( model,
+					'<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' +
+					'<simpleBlock2 toStyle="display:block"><paragraph>bar</paragraph></simpleBlock2>'
+				);
+
+				const [ viewBefore0, paraBefore0, textBefore0 ] = getNodes( 0 );
+				const [ viewBefore1, paraBefore1, textBefore1 ] = getNodes( 1 );
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'abc' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [ viewAfter0, paraAfter0, textAfter0 ] = getNodes( 0 );
+				const [ viewAfter1, paraAfter1, textAfter1 ] = getNodes( 1 );
+
+				expectResult(
+					'<div><p>foo</p><p>abc</p></div>' +
+					'<div class="second"><p>bar</p></div>'
+				);
+
+				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+				expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
+				expect( textAfter0, 'text' ).to.equal( textBefore0 );
+
+				expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
+				expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
+				expect( textAfter1, 'text' ).to.equal( textBefore1 );
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( '123' );
+
+					writer.insert( paragraph, modelRoot.getChild( 1 ), 1 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [ viewAfterAfter0, paraAfterAfter0, textAfterAfter0 ] = getNodes( 0 );
+				const [ viewAfterAfter1, paraAfterAfter1, textAfterAfter1 ] = getNodes( 1 );
+
+				expectResult(
+					'<div><p>foo</p><p>abc</p></div>' +
+					'<div class="second"><p>bar</p><p>123</p></div>'
+				);
+
+				expect( viewAfter0, 'simpleBlock' ).to.not.equal( viewBefore0 );
+				expect( paraAfter0, 'para' ).to.equal( paraBefore0 );
+				expect( textAfter0, 'text' ).to.equal( textBefore0 );
+
+				expect( viewAfter1, 'simpleBlock' ).to.equal( viewBefore1 );
+				expect( paraAfter1, 'para' ).to.equal( paraBefore1 );
+				expect( textAfter1, 'text' ).to.equal( textBefore1 );
+
+				expect( viewAfterAfter0, 'simpleBlock' ).to.equal( viewAfter0 );
+				expect( paraAfterAfter0, 'para' ).to.equal( paraAfter0 );
+				expect( textAfterAfter0, 'text' ).to.equal( textAfter0 );
+
+				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
+				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
+				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+			} );
+		} );
+
+		describe( 'with complex view structure - no children allowed', () => {
+			beforeEach( () => {
+				model.schema.register( 'complex', {
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
+				} );
+
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'complex',
+						attributes: [ 'toStyle', 'toClass' ]
+					},
+					view: ( modelElement, { writer } ) => {
+						const outer = writer.createContainerElement( 'div', { class: 'complex-outer' } );
+						const inner = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
+
+						writer.insert( writer.createPositionAt( outer, 0 ), inner );
+
+						return outer;
+					}
+				} );
+			} );
+
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					writer.insertElement( 'complex', modelRoot, 0 );
+				} );
+
+				expectResult( '<div class="complex-outer"><div></div></div>' );
+			} );
+
+			it( 'should convert on attribute set', () => {
+				setModelData( model, '<complex></complex>' );
+
+				const [ outerDivBefore, innerDivBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ outerDivAfter, innerDivAfter ] = getNodes();
+
+				expectResult( '<div class="complex-outer"><div style="display:block"></div></div>' );
+				expect( outerDivAfter, 'outer div' ).to.not.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.not.equal( innerDivBefore );
+			} );
+
+			it( 'should convert on attribute change', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-outer"><div style="display:inline"></div></div>' );
+			} );
+
+			it( 'should convert on attribute remove', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-outer"><div></div></div>' );
+			} );
+
+			it( 'should convert on one attribute add and other remove', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-outer"><div class="is-classy"></div></div>' );
+			} );
+
+			it( 'should do nothing if non-triggerBy attribute has changed', () => {
+				setModelData( model, '<complex></complex>' );
+
+				const [ outerDivBefore, innerDivBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+				} );
+
+				const [ outerDivAfter, innerDivAfter ] = getNodes();
+
+				expectResult( '<div class="complex-outer"><div></div></div>' );
+
+				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
+				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
+			} );
+		} );
+
+		describe( 'with complex view structure (without slots)', () => {
+			beforeEach( () => {
+				model.schema.register( 'complex', {
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
+				} );
+
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'complex',
+						attributes: [ 'toStyle', 'toClass' ]
+					},
+					view: ( modelElement, { writer, slotFor } ) => {
+						const outer = writer.createContainerElement( 'c-outer' );
+						const inner = writer.createContainerElement( 'c-inner', getViewAttributes( modelElement ) );
+
+						writer.insert( writer.createPositionAt( outer, 0 ), inner );
+						writer.insert( writer.createPositionAt( inner, 0 ), slotFor( 'children' ) );
+
+						return outer;
+					}
+				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'complex'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'paragraph',
+					view: 'p'
+				} );
+			} );
+
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					writer.insertElement( 'complex', modelRoot, 0 );
+				} );
+
+				expectResult( '<c-outer><c-inner></c-inner></c-outer>' );
+			} );
+
+			it( 'should convert on attribute set', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<c-outer><c-inner style="display:block"></c-inner></c-outer>' );
+			} );
+
+			it( 'should convert on attribute remove', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<c-outer><c-inner></c-inner></c-outer>' );
+			} );
+
+			it( 'should convert on one attribute add and other remove', () => {
+				setModelData( model, '<complex toStyle="display:block"></complex>' );
+
+				model.change( writer => {
+					writer.removeAttribute( 'toStyle', modelRoot.getChild( 0 ) );
+					writer.setAttribute( 'toClass', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<c-outer><c-inner class="is-classy"></c-inner></c-outer>' );
+			} );
+
+			it( 'should do nothing if non-triggerBy attribute has changed', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'notTriggered', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<c-outer><c-inner></c-inner></c-outer>' );
+			} );
+
+			describe( 'memoization', () => {
+				it( 'should create new element on re-converting element', () => {
 					setModelData( model, '<complex></complex>' );
+
+					const [ outerBefore, innerBefore ] = getNodes();
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+					} );
+
+					const [ outerAfter, innerAfter ] = getNodes();
+
+					expect( outerAfter, 'outer' ).to.not.equal( outerBefore );
+					expect( innerAfter, 'inner' ).to.not.equal( innerBefore );
+				} );
+
+				// Skipped, as it would require two-level mapping. See https://github.com/ckeditor/ckeditor5/issues/1589.
+				// Doable as a similar case works in table scenario for table cells (table is refreshed).
+				it.skip( 'should not re-create child elements on re-converting element', () => {
+					setModelData( model, '<complex><paragraph>Foo bar baz</paragraph></complex>' );
+
+					expectResult( '<c-outer><c-inner><p>Foo bar baz</p></c-inner></c-outer>' );
+					const renderedViewView = viewRoot.getChild( 0 ).getChild( 0 );
+
+					model.change( writer => {
+						writer.setAttribute( 'toStyle', 'display:block', modelRoot.getChild( 0 ) );
+					} );
+
+					const viewAfterReRender = viewRoot.getChild( 0 ).getChild( 0 );
+
+					expect( viewAfterReRender ).to.equal( renderedViewView );
+				} );
+			} );
+		} );
+
+		describe( 'with complex view structure (single slot for all child nodes)', () => {
+			beforeEach( () => {
+				model.schema.register( 'complex', {
+					allowIn: '$root',
+					allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
+				} );
+
+				downcastHelpers.elementToStructure( {
+					model: {
+						name: 'complex',
+						attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ],
+						children: true
+					},
+					view: ( modelElement, { writer, slotFor } ) => {
+						const classForMain = !!modelElement.getAttribute( 'classForMain' );
+						const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
+						const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
+
+						const outer = writer.createContainerElement( 'div', {
+							class: `complex-slots${ classForMain ? ' with-class' : '' }`
+						} );
+
+						const inner = writer.createContainerElement( 'div', {
+							class: `slots${ classForWrap ? ' with-class' : '' }`
+						} );
+
+						if ( attributeToElement ) {
+							const optional = writer.createEmptyElement( 'div', { class: 'optional' } );
+
+							writer.insert( writer.createPositionAt( outer, 0 ), optional );
+						}
+
+						writer.insert( writer.createPositionAt( outer, 'end' ), inner );
+						writer.insert( writer.createPositionAt( inner, 0 ), slotFor( 'children' ) );
+
+						return outer;
+					}
+				} );
+
+				model.schema.register( 'slot', {
+					allowIn: 'complex'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'slot',
+					view: { name: 'div', classes: 'slot' }
+				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'slot'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'paragraph',
+					view: 'p'
+				} );
+			} );
+
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					writer.insertElement( 'complex', modelRoot, 0 );
+				} );
+
+				expectResult( '<div class="complex-slots"><div class="slots"></div></div>' );
+			} );
+
+			it( 'should convert on attribute set (main element)', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-slots with-class"><div class="slots"></div></div>' );
+			} );
+
+			it( 'should convert on attribute set (other element)', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'classForWrap', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-slots"><div class="slots with-class"></div></div>' );
+			} );
+
+			it( 'should convert on attribute set (insert new view element)', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'attributeToElement', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-slots"><div class="optional"></div><div class="slots"></div></div>' );
+			} );
+
+			it( 'should convert element with slots', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on adding slot', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					insertBazSlot( writer, modelRoot );
+				} );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'<div class="slot"><p>baz</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on removing slot', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>bar</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on multiple triggers (remove + insert)', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+					insertBazSlot( writer, modelRoot );
+				} );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>bar</p></div>' +
+					'<div class="slot"><p>baz</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on multiple triggers (remove + attribute)', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+					writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-slots with-class">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>bar</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on multiple triggers (insert + attribute)', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					insertBazSlot( writer, modelRoot );
+					writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-slots with-class">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'<div class="slot"><p>baz</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should not trigger refresh  on adding a slot to an element without triggerBy conversion', () => {
+				model.schema.register( 'other', {
+					allowIn: '$root'
+				} );
+				model.schema.extend( 'slot', {
+					allowIn: 'other'
+				} );
+				downcastHelpers.elementToElement( {
+					model: 'other',
+					view: {
+						name: 'div',
+						classes: 'other'
+					}
+				} );
+				downcastHelpers.elementToElement( {
+					model: 'slot',
+					view: {
+						name: 'div',
+						classes: 'slot'
+					}
+				} );
+
+				setModelData( model,
+					'<other>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</other>'
+				);
+				const otherView = viewRoot.getChild( 0 );
+
+				model.change( writer => {
+					insertBazSlot( writer, modelRoot );
+				} );
+
+				expectResult(
+					'<div class="other">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'<div class="slot"><p>baz</p></div>' +
+					'</div>'
+				);
+				const otherViewAfter = viewRoot.getChild( 0 );
+
+				expect( otherView, 'the view should not be refreshed' ).to.equal( otherViewAfter );
+			} );
+
+			describe( 'memoization', () => {
+				it( 'should create new element on re-converting element', () => {
+					setModelData( model, '<complex>' +
+						'<slot><paragraph>foo</paragraph></slot>' +
+						'<slot><paragraph>bar</paragraph></slot>' +
+						'</complex>'
+					);
+
+					const [ complexView ] = getNodes();
 
 					model.change( writer => {
 						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
 					} );
 
-					expectResult( '<div class="complex-slots with-class"><div class="slots"></div></div>' );
+					const [ viewAfterReRender ] = getNodes();
+
+					expect( viewAfterReRender, 'the view should be refreshed' ).to.not.equal( complexView );
 				} );
 
-				it( 'should convert on attribute set (other element)', () => {
-					setModelData( model, '<complex></complex>' );
-
-					model.change( writer => {
-						writer.setAttribute( 'classForWrap', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult( '<div class="complex-slots"><div class="slots with-class"></div></div>' );
-				} );
-
-				it( 'should convert on attribute set (insert new view element)', () => {
-					setModelData( model, '<complex></complex>' );
-
-					model.change( writer => {
-						writer.setAttribute( 'attributeToElement', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult( '<div class="complex-slots"><div class="optional"></div><div class="slots"></div></div>' );
-				} );
-
-				it( 'should convert element with slots', () => {
-					setModelData( model,
-						'<complex>' +
+				it( 'should not re-create slot\'s child elements on re-converting main element (attribute changed)', () => {
+					setModelData( model, '<complex>' +
 						'<slot><paragraph>foo</paragraph></slot>' +
 						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
-						'</div>'
+						'</complex>'
 					);
+
+					const [ main, /* unused */,
+						slotOne, paraOne, textNodeOne,
+						slotTwo, paraTwo, textNodeTwo ] = getNodes();
+
+					model.change( writer => {
+						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+					} );
+
+					const [ mainAfter, /* unused */,
+						slotOneAfter, paraOneAfter, textNodeOneAfter,
+						slotTwoAfter, paraTwoAfter, textNodeTwoAfter ] = getNodes();
+
+					expect( mainAfter, 'main view' ).to.not.equal( main );
+					expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
+					expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
+					expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
+					expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
+					expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
+					expect( textNodeTwoAfter, 'second slot text node view' ).to.equal( textNodeTwo );
 				} );
 
-				it( 'should not convert element on adding slot', () => {
-					setModelData( model,
-						'<complex>' +
+				it( 'should not re-create slot\'s child elements on re-converting main element (slot added)', () => {
+					setModelData( model, '<complex>' +
 						'<slot><paragraph>foo</paragraph></slot>' +
 						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
+						'</complex>'
+					);
+
+					const [ main, /* unused */,
+						slotOne, paraOne, textNodeOne,
+						slotTwo, paraTwo, textNodeTwo ] = getNodes();
 
 					model.change( writer => {
 						const slot = writer.createElement( 'slot' );
@@ -1283,113 +1877,240 @@ describe( 'DowncastHelpers', () => {
 						writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
 					} );
 
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
+					const [ mainAfter, /* unused */,
+						slotOneAfter, paraOneAfter, textNodeOneAfter,
+						slotTwoAfter, paraTwoAfter, textNodeTwoAfter,
+						slotThreeAfter, paraThreeAfter, textNodeThreeAfter
+					] = getNodes();
 
-				it( 'should not convert element on removing slot', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
-					} );
-
-					expectResult(
-						'<div class="complex-slots">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on a trigger and block atomic converters (remove + attribute)', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
-						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult(
-						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>bar</p></div>' +
-						'</div>' +
-						'</div>'
-					);
-				} );
-
-				it( 'should convert element on a trigger and block atomic converters (insert + attribute)', () => {
-					setModelData( model,
-						'<complex>' +
-						'<slot><paragraph>foo</paragraph></slot>' +
-						'<slot><paragraph>bar</paragraph></slot>' +
-						'</complex>' );
-
-					model.change( writer => {
-						writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
-						writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
-					} );
-
-					expectResult(
-						'<div class="complex-slots with-class">' +
-						'<div class="slots">' +
-						'<div class="slot"><p>foo</p></div>' +
-						'<div class="slot"><p>bar</p></div>' +
-						'<div class="slot"><p>baz</p></div>' +
-						'</div>' +
-						'</div>'
-					);
+					expect( mainAfter, 'main view' ).to.not.equal( main );
+					expect( slotOneAfter, 'first slot view' ).to.equal( slotOne );
+					expect( slotTwoAfter, 'second slot view' ).to.equal( slotTwo );
+					expect( paraOneAfter, 'first slot paragraph view' ).to.equal( paraOne );
+					expect( textNodeOneAfter, 'first slot text node view' ).to.equal( textNodeOne );
+					expect( paraTwoAfter, 'second slot paragraph view' ).to.equal( paraTwo );
+					expect( textNodeTwoAfter, 'second slot text node view' ).to.equal( textNodeTwo );
+					expect( slotThreeAfter, 'third slot view' ).to.not.be.undefined;
+					expect( paraThreeAfter, 'third slot paragraph view' ).to.not.be.undefined;
+					expect( textNodeThreeAfter, 'third slot text node view' ).to.not.be.undefined;
 				} );
 			} );
+		} );
 
-			function getViewAttributes( modelElement ) {
-				const toStyle = modelElement.hasAttribute( 'toStyle' ) && { style: modelElement.getAttribute( 'toStyle' ) };
-				const toClass = modelElement.hasAttribute( 'toClass' ) && { class: 'is-classy' };
+		// Skipped, as it would require two-level mapping.
+		describe.skip( 'with complex view structure (slot conversion atomic converters for some changes)', () => {
+			beforeEach( () => {
+				model.schema.register( 'complex', {
+					allowIn: '$root',
+					allowAttributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
+				} );
 
-				return {
-					...toStyle,
-					...toClass
-				};
-			}
+				function createViewSlot( slot, { writer, mapper } ) {
+					const viewSlot = writer.createContainerElement( 'div', { class: 'slot' } );
 
-			function insertBazSlot( writer, modelRoot ) {
-				const slot = writer.createElement( 'slot' );
-				const paragraph = writer.createElement( 'paragraph' );
-				writer.insertText( 'baz', paragraph, 0 );
-				writer.insert( paragraph, slot, 0 );
-				writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
-			}
+					mapper.bindElements( slot, viewSlot );
 
-			function* getNodes( childIndex = 0 ) {
-				const main = viewRoot.getChild( childIndex );
-				yield main;
-
-				for ( const { item } of controller.view.createRangeIn( main ) ) {
-					if ( item.is( 'textProxy' ) ) {
-						// TreeWalker always create a new instance of a TextProxy so use referenced textNode.
-						yield item.textNode;
-					} else {
-						yield item;
-					}
+					return viewSlot;
 				}
-			}
+
+				downcastHelpers.elementToElement( {
+					model: 'complex',
+					view: ( modelElement, { writer, mapper, consumable } ) => {
+						const classForMain = !!modelElement.getAttribute( 'classForMain' );
+						const classForWrap = !!modelElement.getAttribute( 'classForWrap' );
+						const attributeToElement = !!modelElement.getAttribute( 'attributeToElement' );
+
+						const outer = writer.createContainerElement( 'div', {
+							class: `complex-slots${ classForMain ? ' with-class' : '' }`
+						} );
+						const inner = writer.createContainerElement( 'div', {
+							class: `slots${ classForWrap ? ' with-class' : '' }`
+						} );
+
+						if ( attributeToElement ) {
+							const optional = writer.createEmptyElement( 'div', { class: 'optional' } );
+							writer.insert( writer.createPositionAt( outer, 0 ), optional );
+						}
+
+						writer.insert( writer.createPositionAt( outer, 'end' ), inner );
+						mapper.bindElements( modelElement, outer );
+						mapper.bindElements( modelElement, inner );
+
+						for ( const slot of modelElement.getChildren() ) {
+							const viewSlot = createViewSlot( slot, { writer, mapper } );
+
+							writer.insert( writer.createPositionAt( inner, slot.index ), viewSlot );
+							consumable.consume( slot, 'insert' );
+						}
+
+						return outer;
+					},
+					triggerBy: {
+						attributes: [ 'classForMain', 'classForWrap', 'attributeToElement' ]
+						// Contrary to the previous test - do not act on child changes.
+						// children: [ 'slot' ]
+					}
+				} );
+				downcastHelpers.elementToElement( {
+					model: 'slot',
+					view: createViewSlot
+				} );
+
+				model.schema.register( 'slot', {
+					allowIn: 'complex'
+				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'slot'
+				} );
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			} );
+
+			it( 'should convert on insert', () => {
+				model.change( writer => {
+					writer.insertElement( 'complex', modelRoot, 0 );
+				} );
+
+				expectResult( '<div class="complex-slots"><div class="slots"></div></div>' );
+			} );
+
+			it( 'should convert on attribute set (main element)', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-slots with-class"><div class="slots"></div></div>' );
+			} );
+
+			it( 'should convert on attribute set (other element)', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'classForWrap', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-slots"><div class="slots with-class"></div></div>' );
+			} );
+
+			it( 'should convert on attribute set (insert new view element)', () => {
+				setModelData( model, '<complex></complex>' );
+
+				model.change( writer => {
+					writer.setAttribute( 'attributeToElement', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult( '<div class="complex-slots"><div class="optional"></div><div class="slots"></div></div>' );
+			} );
+
+			it( 'should convert element with slots', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should not convert element on adding slot', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					const slot = writer.createElement( 'slot' );
+					const paragraph = writer.createElement( 'paragraph' );
+					writer.insertText( 'baz', paragraph, 0 );
+					writer.insert( paragraph, slot, 0 );
+					writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+				} );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'<div class="slot"><p>baz</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should not convert element on removing slot', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-slots">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>bar</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on a trigger and block atomic converters (remove + attribute)', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					writer.remove( modelRoot.getChild( 0 ).getChild( 0 ) );
+					writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-slots with-class">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>bar</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
+
+			it( 'should convert element on a trigger and block atomic converters (insert + attribute)', () => {
+				setModelData( model,
+					'<complex>' +
+					'<slot><paragraph>foo</paragraph></slot>' +
+					'<slot><paragraph>bar</paragraph></slot>' +
+					'</complex>' );
+
+				model.change( writer => {
+					writer.insert( modelRoot.getChild( 0 ).getChild( 0 ) );
+					writer.setAttribute( 'classForMain', true, modelRoot.getChild( 0 ) );
+				} );
+
+				expectResult(
+					'<div class="complex-slots with-class">' +
+					'<div class="slots">' +
+					'<div class="slot"><p>foo</p></div>' +
+					'<div class="slot"><p>bar</p></div>' +
+					'<div class="slot"><p>baz</p></div>' +
+					'</div>' +
+					'</div>'
+				);
+			} );
 		} );
 	} );
 
@@ -3263,6 +3984,38 @@ describe( 'DowncastHelpers', () => {
 
 	function expectResult( string ) {
 		expect( stringifyView( viewRoot, null, { ignoreRoot: true } ) ).to.equal( string );
+	}
+
+	function getViewAttributes( modelElement ) {
+		const toStyle = modelElement.hasAttribute( 'toStyle' ) && { style: modelElement.getAttribute( 'toStyle' ) };
+		const toClass = modelElement.hasAttribute( 'toClass' ) && { class: 'is-classy' };
+
+		return {
+			...toStyle,
+			...toClass
+		};
+	}
+
+	function insertBazSlot( writer, modelRoot ) {
+		const slot = writer.createElement( 'slot' );
+		const paragraph = writer.createElement( 'paragraph' );
+		writer.insertText( 'baz', paragraph, 0 );
+		writer.insert( paragraph, slot, 0 );
+		writer.insert( slot, modelRoot.getChild( 0 ), 'end' );
+	}
+
+	function* getNodes( childIndex = 0 ) {
+		const main = viewRoot.getChild( childIndex );
+		yield main;
+
+		for ( const { item } of controller.view.createRangeIn( main ) ) {
+			if ( item.is( 'textProxy' ) ) {
+				// TreeWalker always create a new instance of a TextProxy so use referenced textNode.
+				yield item.textNode;
+			} else {
+				yield item;
+			}
+		}
 	}
 } );
 
