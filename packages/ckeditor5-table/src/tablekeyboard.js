@@ -225,7 +225,7 @@ export default class TableKeyboard extends Plugin {
 				// Selection for sure will not approach cell edge.
 				//
 				// With a special case when all cell content is selected - then selection should expand to the other cell.
-				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.				
+				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.
 				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
 					return false;
 				}
