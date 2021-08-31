@@ -55,6 +55,9 @@ export function upcastImageFigure( imageUtils ) {
 			return;
 		}
 
+		// Consume the figure to prevent other converters from processing it again.
+		conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'image' } );
+
 		// Convert rest of the figure element's children as an image children.
 		conversionApi.convertChildren( data.viewItem, modelImage );
 

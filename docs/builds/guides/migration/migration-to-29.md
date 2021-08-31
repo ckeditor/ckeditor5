@@ -8,6 +8,8 @@ modified_at: 2021-07-25
 
 # Migration to CKEditor 5 v29.x
 
+<!-- Add new guide on top and remove this comment -->
+
 ## Migration to CKEditor 5 v29.1.0
 
 For the entire list of changes introduced in version 29.1.0, see the [changelog for CKEditor 5 v29.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2910-2021-08-02).
