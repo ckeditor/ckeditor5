@@ -648,6 +648,21 @@ describe( 'MediaEmbedEditing', () => {
 								return newEditor.destroy();
 							} );
 					} );
+
+					it( 'should not convert media figure if media url is not matched with any provider url', () => {
+						return createTestEditor( {
+							providers: [
+								testProviders.A
+							]
+						} ).then( newEditor => {
+							newEditor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
+
+							expect( getModelData( newEditor.model, { withoutSelection: true } ) )
+								.to.equal( '' );
+
+							return newEditor.destroy();
+						} );
+					} );
 				} );
 			} );
 
