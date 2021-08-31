@@ -14,10 +14,10 @@
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^29.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^29.1.0",
-    "@ckeditor/ckeditor5-core": "^29.1.0",
-    "@ckeditor/ckeditor5-engine": "^29.1.0",
+    "@ckeditor/ckeditor5-build-classic": "^29.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^29.2.0",
+    "@ckeditor/ckeditor5-engine": "^29.2.0",
     "assertion-error": "^1.1.0",
     "js-beautify": "^1.11.0"
   },
