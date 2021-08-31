@@ -247,7 +247,7 @@ export default class Minimap extends Plugin {
 /**
  * When set to `true`, the minimap will render content as simple boxes instead of replicating the look of the content (default).
  *
- * @member {HTMLElement} module:minimap/minimap~MinimapConfig#useSimplePreview
+ * @member {Boolean} module:minimap/minimap~MinimapConfig#useSimplePreview
  */
 
 /**

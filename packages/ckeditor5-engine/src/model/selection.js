@@ -71,7 +71,7 @@ export default class Selection {
 	 *		// Creates backward selection.
 	 *		const selection = writer.createSelection( range, { backward: true } );
 	 *
-	 * @param {module:engine/model/selection~Selectable} selectable
+	 * @param {module:engine/model/selection~Selectable} [selectable]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.

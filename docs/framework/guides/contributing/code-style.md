@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 30
+modified_at: 2021-08-24
 ---
 
 # Code style
@@ -777,3 +778,126 @@ Widely used standard files do not obey the above rules:
 * `README.md`, `LICENSE.md`, `CONTRIBUTING.md`, `CHANGES.md`
 * `.gitignore` and all standard "dot-files"
 * `node_modules`
+
+## CKEditor 5 custom ESLint rules
+
+In addition to the rules provided by ESLint, CKEditor 5 uses a few custom rules described below.
+
+### Importing between packages: `ckeditor5-rules/no-relative-imports`
+
+While importing modules from the same package, it is allowed to use relative paths, like this:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
+
+import Position from './position';
+import insertContent from './utils/insertcontent';
+```
+
+While importing modules from other packages, it is not allowed to use relative paths, and the import must be done using the package name, like this:
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
+
+import CKEditorError from '../../../ckeditor5-utils/src/ckeditorerror';
+```
+
+Even if the import statement works locally, it will throw an error when developers install packages from npm.
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-engine/src/model/model.js`
+
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/7128)
+
+### Description of an error: `ckeditor5-rules/ckeditor-error-message`
+
+Each time a new error is created, it needs a description to be displayed on the {@link framework/guides/support/error-codes error codes} page, like this:
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Missing the error's description.
+
+throw new CKEditorError( 'ckeditor5-example-error', this );
+
+// ESLint shouldn't expect the definition of the error as it is already described.
+
+throw new CKEditorError( 'editor-wrong-element', this );
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// This error occurs for the first time in the project, so it needs to be defined.
+
+/**
+ * Description of why the error was thrown and how to fix the code.
+ *
+ * @error ckeditor5-example-error
+ */
+throw new CKEditorError( 'ckeditor5-example-error', this );
+
+// This error is already described, so we don't need to provide its documentation.
+// We need to disable ESLint for checking the rule.
+// It is a good practice to include a note that explains where it is described.
+
+// Documented in core/editor/editor.js
+// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+throw new CKEditorError( 'editor-wrong-element', this );
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/7822)
+
+### DLL Builds: `ckeditor5-rules/ckeditor-imports`
+
+To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
+
+Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link builds/guides/development/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
+
+The other CKEditor 5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
+
+When importing modules from the `ckeditor5` package, all imports must come from the `src/` directory. Other directories are not published on npm, so such imports will not work.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+
+// The import uses the `ckeditor5` package, but the specified path does not exist when installing the package from npm.
+
+import Plugin from 'ckeditor5/packages/ckeditor5-core/src/plugin';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-basic-styles/src/bold.js`
+
+import { Plugin } from 'ckeditor5/src/core';
+```
+
+Also, non-DLL packages should not import between non-DLL packages to avoid code duplications when building DLL builds.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-link/src/linkimage.js`
+
+import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/utils.js'
+```
+
+To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose the required function in the `ckeditor5-image` package.
+
+History of changes:
+
+* [Force importing using the `ckeditor5` package.](https://github.com/ckeditor/ckeditor5/issues/8581)
+* [Imports from the `ckeditor5` package must use the `src/` directory.](https://github.com/ckeditor/ckeditor5/issues/10030)

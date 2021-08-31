@@ -130,9 +130,9 @@ ClassicEditor
 					},
 
 					// Finally, you can define `to` as a callback.
-					// This (naive) rule will auto-capitalize the first word after a period.
+					// This (naive) rule will auto-capitalize the first word after a period, question mark, or an exclamation mark.
 					{
-						from: /(\. )([a-z])$/,
+						from: /([.?!] )([a-z])$/,
 						to: matches => [ null, matches[ 1 ].toUpperCase() ]
 					}
 				],
@@ -145,7 +145,7 @@ ClassicEditor
 
 You can read more about the format of transformation rules in {@link module:typing/texttransformation~TextTransformationDescription}.
 
-You can test the custom rules defined above in the demo:
+You can test the custom rules defined above in the demo. Try the emojis and see the editor automatically capitalize words after a full stop, a quotation mark and an exclamation mark.
 
 {@snippet features/text-transformation-extended}
 
