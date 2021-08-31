@@ -202,8 +202,7 @@ export default class Config {
 		// Iterate over parts to check if currently stored configuration has proper structure.
 		for ( const part of parts ) {
 			if ( !isPlainObject( source[ part ] ) ) {
-				source = null;
-				break;
+				return undefined;
 			}
 
 			// Nested object becomes a source.
