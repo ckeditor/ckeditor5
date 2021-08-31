@@ -68,6 +68,11 @@ export default class DomConverter {
 		this.blockFillerMode = options.blockFillerMode || 'br';
 
 		/**
+		 * TODO
+		 */
+		this.shouldFilter = !!options.filter;
+
+		/**
 		 * Elements which are considered pre-formatted elements.
 		 *
 		 * @readonly
@@ -267,6 +272,7 @@ export default class DomConverter {
 				return domElement;
 			} else {
 				// Create DOM element.
+				// TODO: What to do with script tag?
 				if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
 				} else {
@@ -285,7 +291,13 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					domElement.setAttribute( key, viewNode.getAttribute( key ) );
+					const value = viewNode.getAttribute( key ) || '';
+
+					if ( !this.isValidAttribute( key, value ) ) {
+						continue;
+					}
+
+					domElement.setAttribute( key, value );
 				}
 			}
 
@@ -297,6 +309,17 @@ export default class DomConverter {
 
 			return domElement;
 		}
+	}
+
+	isValidAttribute( attributeKey, attributeValue ) {
+		if ( !this.shouldFilter ) {
+			return true;
+		}
+
+		return !( attributeKey.toLowerCase().startsWith( 'on' ) ||
+			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
+			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
+		);
 	}
 
 	/**
@@ -318,7 +341,9 @@ export default class DomConverter {
 				yield this._getBlockFiller( domDocument );
 			}
 
-			yield this.viewToDom( childView, domDocument, options );
+			if ( !this.shouldFilter || !childView.is( 'element', 'script' ) ) {
+				yield this.viewToDom( childView, domDocument, options );
+			}
 
 			offset++;
 		}
