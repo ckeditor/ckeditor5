@@ -71,6 +71,24 @@ LeetchiEditor.defaultConfig = {
 		],
 		shouldNotGroupWhenFull: true,
 	},
+	alignment: {
+		options: ['left', 'right', 'center'],
+	},
+	heading: {
+		options: [
+			{
+				model: 'paragraph',
+				title: 'Paragraph',
+				class: 'ck-heading_paragraph',
+			},
+			{
+				model: 'heading1',
+				view: 'h1',
+				title: 'Heading 1',
+				class: 'ck-heading_heading1',
+			},
+		],
+	},
 	typing: {
 		transformations: {
 			extra: [
