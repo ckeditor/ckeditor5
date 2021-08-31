@@ -98,7 +98,87 @@ export default class DowncastHelpers extends ConversionHelpers {
 	}
 
 	/**
-	 * TODO
+	 * Model element to view structure conversion helper.
+	 *
+	 * This conversion results in creating a view structure with slots for child nodes. For example, model `<table>` becomes
+	 * `<figure class="table"><table><tbody>${ slot for table rows }</tbody></figure>` in the view.
+	 *
+	 * Simple slot for all child nodes:
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+	 *			model: 'wrappedParagraph',
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer, slotFor } = conversionApi;
+	 *
+	 * 				const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
+	 * 				const paragraphViewElement = writer.createContainerElement( 'p' );
+	 *
+	 * 				writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
+	 * 				writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), slotFor( 'children' ) );
+	 *
+	 *				return wrapperViewElement;
+	 *			}
+	 *		} );
+	 *
+	 * The conversion with slots dedicated for specific model children and with reconversion trigger defined.
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+	 *			model: {
+	 *				name: 'table',
+	 *				attributes: [ 'headingRows' ],
+	 *				children: true
+	 *			},
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer, slotFor } = conversionApi;
+	 *
+	 *				const figureElement = writer.createContainerElement( 'figure', { class: 'table' } );
+	 *				const tableElement = writer.createContainerElement( 'table' );
+	 *
+	 *				writer.insert( writer.createPositionAt( figureElement, 0 ), tableElement );
+	 *
+	 *				const headingRows = modelElement.getAttribute( 'headingRows' ) || 0;
+	 *
+	 *				if ( headingRows > 0 ) {
+	 *					const tableHead = writer.createContainerElement( 'thead' );
+	 *
+	 *					const headSlot = slotFor( element => element.is( 'element', 'tableRow' ) && element.index < headingRows );
+	 *
+	 *					writer.insert( writer.createPositionAt( tableElement, 'end' ), tableHead );
+	 *					writer.insert( writer.createPositionAt( tableHead, 0 ), headSlot );
+	 *				}
+	 *
+	 *				if ( headingRows < tableUtils.getRows( table ) ) {
+	 *					const tableBody = writer.createContainerElement( 'tbody' );
+	 *
+	 *					const bodySlot = slotFor( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows );
+	 *
+	 *					writer.insert( writer.createPositionAt( tableElement, 'end' ), tableBody );
+	 *					writer.insert( writer.createPositionAt( tableBody, 0 ), bodySlot );
+	 *				}
+	 *
+	 *				const restSlot = slotFor( element => !element.is( 'element', 'tableRow' ) );
+	 *
+	 *				writer.insert( writer.createPositionAt( figureElement, 'end' ), restSlot );
+	 *
+	 *				return figureElement;
+	 *			}
+	 *		} );
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
+	 *
+	 * @method #elementToStructure
+	 * @param {Object} config Conversion configuration.
+ 	 * @param {String|Object} config.model The description or a name of the model element to convert.
+	 * @param {String} [config.model.name] The name of the model element to convert.
+ 	 * @param {Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
+	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
+ 	 * @param {Boolean} [config.model.children] Specifies whether the view structure requires reconversion if the list
+	 * of model child nodes changed.
+	 * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view A function
+	 * that takes the model element and {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi downcast
+	 * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToStructure( config ) {
 		return this.add( downcastElementToStructure( config ) );
@@ -844,6 +924,8 @@ export function insertElement( elementCreator ) {
  * It is expected that the passed element creator function returns an {@link module:engine/view/element~Element} with attached slots
  * created with `conversionApi.slotFor()` to indicate where child nodes should be converted.
  *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ *
  * @protected
  * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} elementCreator Function returning a view structure,
  * which will be inserted.
@@ -1470,15 +1552,15 @@ function downcastElementToElement( config ) {
 //
 // @param {Object} config Conversion configuration.
 // @param {String|Object} config.model
+// @param {String} [config.model.name]
 // @param {Array.<String>} [config.model.attributes]
 // @param {Boolean} [config.model.children]
-// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
+// @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view
 // @returns {Function} Conversion helper.
 function downcastElementToStructure( config ) {
 	config = cloneDeep( config );
 
 	config.model = normalizeModelElementConfig( config.model );
-	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
 		dispatcher.on(
@@ -1894,7 +1976,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @returns {Function}
+// @returns {module:engine/conversion/downcasthelpers~ConsumerFunction}
 function createConsumer( model ) {
 	return ( node, consumable ) => {
 		const events = [ 'insert' ];
@@ -2142,24 +2224,27 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
  */
 
 /**
- * TODO
+ * A function that takes the model element and {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi downcast
+ * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
  *
  * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
- * @param {module:engine/model/element~Element} element TODO
- * @param {module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi} conversionApi TODO with mixed slotFor
- * @returns {module:engine/view/element~Element} TODO
+ * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
+ * @param {module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi} conversionApi The conversion interface with
+ * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor `slotFor()`} factory.
+ * @returns {module:engine/view/element~Element} The view structure with slots for model child nodes.
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
 
 /**
- * TODO
+ * A function that is expected to consume all the consumables that were used by the element creator.
  *
  * @callback module:engine/conversion/downcasthelpers~ConsumerFunction
- * @param {module:engine/model/element~Element} element TODO
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable TODO
- * @returns {Boolean} TODO
+ * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The `ModelConsumable` same as in
+ * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.
+ * @returns {Boolean} `true` if all consumable values were available and were consumed, `false` otherwise.
  *
  * @see module:engine/conversion/downcasthelpers~insertStructure
  */
