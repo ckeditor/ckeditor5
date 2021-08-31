@@ -492,12 +492,12 @@ class Position {
 /**
  * Viewport offset config object. It restricts the visible viewport available to the `getOptimalPosition()` from each side.
  *
- *	{
- *		top: 50,
- *		right: 50,
- *		bottom: 50,
- *		left: 50
- *	}
+ *		{
+ *			top: 50,
+ *			right: 50,
+ *			bottom: 50,
+ *			left: 50
+ *		}
  *
  * @member {Object} #viewportOffsetConfig
  */
@@ -524,7 +524,7 @@ class Position {
  *			}
  *		} );
  *
- * @function module:utils/dom/position~positioningFunction
+ * @callback module:utils/dom/position~positioningFunction
  * @param {module:utils/dom/rect~Rect} elementRect The rect of the element to be positioned.
  * @param {module:utils/dom/rect~Rect} targetRect The rect of the target the element (its rect) is relatively positioned to.
  * @param {module:utils/dom/rect~Rect} viewportRect The rect of the visual browser viewport.
