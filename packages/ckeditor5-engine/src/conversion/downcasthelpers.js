@@ -903,8 +903,6 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
-		// TODO throw if viewElement has any children - this should be handled by toStructure converters
-
 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
@@ -913,8 +911,6 @@ export function insertElement( elementCreator ) {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
-
-		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -1516,33 +1512,10 @@ function removeHighlight( highlightDescriptor ) {
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
-	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model.name, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
-
-		if ( config.model.children || config.model.attributes.length ) {
-			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
-		}
-
-		if ( config.triggerBy ) {
-			dispatcher.on( 'reduceChanges', createChangeReducer( config.model, ( node, change ) => {
-				if ( !config.triggerBy( node, change ) ) {
-					return null;
-				}
-
-				const elements = [];
-
-				for ( const { item } of ModelRange._createOn( node ) ) {
-					if ( item.is( 'element', config.model.name ) ) {
-						elements.push( item );
-					}
-				}
-
-				return { elements, keepChange: true };
-			} ) );
-		}
+		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -1896,7 +1869,7 @@ function createChangeReducerCallback( model ) {
 			}
 		}
 
-		return { elements: [ node ] };
+		return [ node ];
 	};
 }
 
@@ -1911,7 +1884,6 @@ function createChangeReducerCallback( model ) {
 function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
 	return ( evt, data ) => {
 		const reducedChanges = [];
-		const additionalChanges = [];
 
 		if ( !data.reconvertedElements ) {
 			data.reconvertedElements = new Set();
@@ -1922,7 +1894,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			const { elements, keepChange } = callback( node, change ) || {};
+			const elements = callback( node, change );
 
 			if ( !elements ) {
 				reducedChanges.push( change );
@@ -1930,15 +1902,12 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 				continue;
 			}
 
-			if ( keepChange ) {
-				reducedChanges.push( change );
-			}
-
 			for ( const element of elements ) {
 				// Do not reconvert just inserted elements.
 				// This is needed for the reconversion triggered by some other change (for example a paragraph inside a table cell).
 				const positionBefore = ModelPosition._createBefore( element );
 
+				// Do not reconvert an element that was just inserted in the same changes list.
 				if ( data.changes.find( change => change.type == 'insert' && change.position.isEqual( positionBefore ) ) ) {
 					continue;
 				}
@@ -1952,7 +1921,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 
 				const position = ModelPosition._createBefore( element );
 
-				( keepChange ? additionalChanges : reducedChanges ).push( {
+				reducedChanges.push( {
 					type: 'remove',
 					name: element.name,
 					position,
@@ -1966,7 +1935,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			}
 		}
 
-		data.changes = [ ...reducedChanges, ...additionalChanges ];
+		data.changes = reducedChanges;
 	};
 }
 

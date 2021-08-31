@@ -9,9 +9,15 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import TableUtils from '../src/tableutils';
 import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
-import { convertParagraphInTableCell, downcastCell, downcastTable } from './converters/downcast';
+import {
+	convertParagraphInTableCell,
+	downcastInsertCell,
+	downcastInsertRow,
+	downcastInsertTable,
+	downcastRemoveRow,
+	downcastTableHeadingColumnsChange
+} from './converters/downcast';
 
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
@@ -25,9 +31,12 @@ import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import MergeCellsCommand from './commands/mergecellscommand';
 import SelectRowCommand from './commands/selectrowcommand';
 import SelectColumnCommand from './commands/selectcolumncommand';
+import TableUtils from '../src/tableutils';
 
 import injectTableLayoutPostFixer from './converters/table-layout-post-fixer';
 import injectTableCellParagraphPostFixer from './converters/table-cell-paragraph-post-fixer';
+import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-post-fixer';
+import injectTableHeadingRowsRefreshPostFixer from './converters/table-heading-rows-refresh-post-fixer';
 
 import '../theme/tableediting.css';
 
@@ -47,19 +56,11 @@ export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	static get requires() {
-		return [ TableUtils ];
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
 		const schema = model.schema;
 		const conversion = editor.conversion;
-		const tableUtils = editor.plugins.get( TableUtils );
 
 		schema.register( 'table', {
 			allowWhere: '$block',
@@ -87,33 +88,15 @@ export default class TableEditing extends Plugin {
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
 
-		conversion.for( 'editingDowncast' ).elementToStructure( {
-			model: {
-				name: 'table',
-				attributes: [ 'headingRows' ],
-				children: true
-			},
-			view: downcastTable( tableUtils, { asWidget: true } )
-		} );
-		conversion.for( 'dataDowncast' ).elementToStructure( {
-			model: {
-				name: 'table',
-				attributes: [ 'headingRows' ],
-				children: true
-			},
-			view: downcastTable( tableUtils )
-		} );
+		conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
 
 		// Table row conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableRow', view: 'tr' } );
 		conversion.for( 'upcast' ).add( skipEmptyTableRow() );
 
-		conversion.for( 'downcast' ).elementToElement( {
-			model: 'tableRow',
-			view: ( modelElement, { writer } ) => (
-				modelElement.isEmpty ? writer.createEmptyElement( 'tr' ) : writer.createContainerElement( 'tr' )
-			)
-		} );
+		conversion.for( 'editingDowncast' ).add( downcastInsertRow() );
+		conversion.for( 'editingDowncast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
 		conversion.for( 'upcast' ).elementToElement( { model: 'tableCell', view: 'td' } );
@@ -121,43 +104,12 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'td' ) );
 		conversion.for( 'upcast' ).add( ensureParagraphInTableCell( 'th' ) );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
-			model: 'tableCell',
-			view: downcastCell( { asWidget: true } ),
-			triggerBy: ( node, change ) => (
-				node.is( 'element', 'table' ) && change.type == 'attribute' &&
-				[ 'headingRows', 'headingColumns' ].includes( change.attributeKey )
-			)
-		} );
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'tableCell',
-			view: downcastCell()
-		} );
+		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
-			view: convertParagraphInTableCell( { asWidget: true } ),
-			triggerBy: ( node, change ) => {
-				if ( node.is( 'element', 'tableCell' ) ) {
-					const isReducedToSingleParagraph = node.childCount == 1 && change.type == 'remove';
-					const isExtendedFromSingleParagraph = node.childCount > 1 && change.type == 'insert' && change.position.offset <= 1;
-
-					return isReducedToSingleParagraph || isExtendedFromSingleParagraph;
-				} else if ( change.type == 'attribute' && node.is( 'element', 'paragraph' ) && node.parent.is( 'element', 'tableCell' ) ) {
-					const isSingleChildElement = node.parent.childCount == 1;
-					const isAttributeSetOrClear = change.attributeOldValue == null || change.attributeNewValue == null;
-
-					// TODO maybe we should be able to access the old attributes (from differ)
-					//  to check if there were no attributes and now there is any
-					return isSingleChildElement && isAttributeSetOrClear;
-				}
-			},
-			converterPriority: 'high'
-		} );
-		conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'paragraph',
-			view: convertParagraphInTableCell(),
+			view: convertParagraphInTableCell,
 			converterPriority: 'high'
 		} );
 
@@ -173,6 +125,9 @@ export default class TableEditing extends Plugin {
 			model: { key: 'rowspan', value: upcastCellSpan( 'rowspan' ) },
 			view: 'rowspan'
 		} );
+
+		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
+		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
 
 		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
 		// to its parent (to the table cell). This custom model-to-view position mapping is necessary in data pipeline only,
@@ -209,8 +164,17 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'selectTableRow', new SelectRowCommand( editor ) );
 		editor.commands.add( 'selectTableColumn', new SelectColumnCommand( editor ) );
 
+		injectTableHeadingRowsRefreshPostFixer( model );
 		injectTableLayoutPostFixer( model );
+		injectTableCellRefreshPostFixer( model, editor.editing.mapper );
 		injectTableCellParagraphPostFixer( model );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableUtils ];
 	}
 }
 
