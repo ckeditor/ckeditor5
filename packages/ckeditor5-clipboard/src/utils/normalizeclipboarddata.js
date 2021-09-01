@@ -9,7 +9,7 @@
 
 /**
  * Removes some popular browser quirks out of the clipboard data (HTML).
- * Removes all HTML comments. Comments are considered as an internal thing and it makes little sense if they leak to editor data.
+ * Removes all HTML comments. These are considered an internal thing and it makes little sense if they leak into the editor data.
  *
  * @param {String} data The HTML data to normalize.
  * @returns {String} Normalized HTML.

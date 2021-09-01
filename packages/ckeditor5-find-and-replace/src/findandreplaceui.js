@@ -55,10 +55,10 @@ export default class FindAndReplaceUI extends Plugin {
 			dropdown.bind( 'isEnabled' ).to( editor.commands.get( 'find' ) );
 			dropdown.panelView.children.add( formView );
 
-			// Each time a dropdown is opened, the search text field should get focused and selected for better UX.
-			// Note: Using the low priority here to make sure the following listener starts working after the
-			// default action of the drop-down is executed (i.e. the panel showed up). Otherwise, the
-			// invisible form/input cannot be focused/selected.
+			// Every time a dropdown is opened, the search text field should get focused and selected for better UX.
+			// Note: Using the low priority here to make sure the following listener starts working after
+			// the default action of the drop-down is executed (i.e. the panel showed up). Otherwise,
+			// the invisible form/input cannot be focused/selected.
 			//
 			// Each time a dropdown is closed, move the focus back to the editing root (to preserve it)
 			// and let the find and replace editing feature know that all search results can be invalidated
