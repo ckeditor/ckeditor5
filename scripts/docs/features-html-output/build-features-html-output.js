@@ -11,7 +11,7 @@ const glob = require( 'glob' );
 const chalk = require( 'chalk' );
 
 // When executing the script from the `{@exec...}` expression, relative paths used in the script will not work as this script can be
-// executed in the documentation builder context. Let current work directory points to CKEditor 5 repository.
+// executed in the documentation builder context. Let current work directory point to CKEditor 5 repository.
 // After building the HTML output, CWD will be restored.
 const CURRENT_WORK_DIRECTORY = process.cwd();
 const CKEDITOR5_ROOT = path.join( __dirname, '..', '..', '..' );
