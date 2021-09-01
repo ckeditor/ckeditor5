@@ -931,15 +931,12 @@ export function insertElement( elementCreator ) {
 */
 export function insertStructure( elementCreator, consumer ) {
 	return ( evt, data, conversionApi ) => {
-		let debugSlots = false; // eslint-disable-line
-		// @if CK_DEBUG_SLOTS // debugSlots = true;
-
 		const slotsMap = new Map();
 
 		// View creation.
 		const viewElement = elementCreator( data.item, {
 			...conversionApi,
-			slotFor: createSlotFactory( data.item, slotsMap, conversionApi.writer, { debugSlots } )
+			slotFor: createSlotFactory( data.item, slotsMap, conversionApi.writer )
 		} );
 
 		if ( !viewElement ) {
@@ -960,10 +957,7 @@ export function insertStructure( elementCreator, consumer ) {
 		conversionApi.writer.insert( viewPosition, viewElement );
 
 		// Fill view slots with previous view elements or create new ones.
-		fillSlots( viewElement, slotsMap, conversionApi, {
-			reconversion: data.reconversion,
-			debugSlots
-		} );
+		fillSlots( viewElement, slotsMap, conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -1962,14 +1956,10 @@ function createConsumer( model ) {
 // @param {module:engine/model/element~Element} element
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/view/downcastwriter~DowncastWriter} writer
-// @param {Object} options
-// @param {Boolean} [options.debugSlots]
 // @returns {Function}
-function createSlotFactory( element, slotsMap, writer, options ) {
+function createSlotFactory( element, slotsMap, writer ) {
 	return modeOrFilter => {
-		const slot = options.debugSlots ?
-			writer.createContainerElement( 'div', { 'data-slot': String( modeOrFilter ) } ) :
-			writer.createContainerElement( '$slot' );
+		const slot = writer.createContainerElement( '$slot' );
 
 		let children = null;
 
@@ -1983,7 +1973,7 @@ function createSlotFactory( element, slotsMap, writer, options ) {
 			 *
 			 * @error conversion-slot-mode-unknown
 			 */
-			throw new CKEditorError( 'conversion-slot-mode-unknown', this, { modeOrFilter } );
+			throw new CKEditorError( 'conversion-slot-mode-unknown', null, { modeOrFilter } );
 		}
 
 		slotsMap.set( slot, children );
@@ -2026,10 +2016,9 @@ function validateSlotsChildren( element, slotsMap ) {
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Object} options
 // @param {Boolean} [options.reconversion]
-// @param {Boolean} [options.debugSlots]
 function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 	// Set temporary position mapping to redirect child view elements into a proper slots.
-	conversionApi.mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'high' } );
+	conversionApi.mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
 
 	let currentSlot = null;
 
@@ -2039,27 +2028,21 @@ function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 
 		reinsertNodes( viewElement, nodes, conversionApi, options );
 
-		if ( !options.debugSlots ) {
-			conversionApi.writer.move( conversionApi.writer.createRangeIn( slot ), conversionApi.writer.createPositionBefore( slot ) );
-			conversionApi.writer.remove( slot );
-		}
+		conversionApi.writer.move( conversionApi.writer.createRangeIn( slot ), conversionApi.writer.createPositionBefore( slot ) );
+		conversionApi.writer.remove( slot );
 	}
 
 	conversionApi.mapper.off( 'modelToViewPosition', toViewPositionMapping );
 
 	function toViewPositionMapping( evt, data ) {
-		if ( data.viewPosition || !currentSlot ) {
+		if ( !currentSlot ) {
 			return;
 		}
 
-		const nodeAfter = data.modelPosition.nodeAfter;
-
-		if ( !nodeAfter ) {
-			return;
-		}
+		const element = data.modelPosition.nodeAfter;
 
 		// Find the proper offset within the slot.
-		const index = slotsMap.get( currentSlot ).indexOf( nodeAfter );
+		const index = slotsMap.get( currentSlot ).indexOf( element );
 
 		if ( index < 0 ) {
 			return;
