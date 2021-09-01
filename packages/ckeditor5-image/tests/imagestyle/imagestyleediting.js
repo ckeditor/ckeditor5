@@ -486,6 +486,32 @@ describe( 'ImageStyleEditing', () => {
 					} );
 				} );
 			} );
+
+			it( 'should not convert figure if element has invalid class', () => {
+				editor.conversion.for( 'upcast' ).add( dispatcher => {
+					dispatcher.on( 'element:figure', converter );
+
+					function converter( evt, data, conversionApi ) {
+						if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+							return;
+						}
+
+						const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+						data.modelRange = modelRange;
+						data.modelCursor = modelCursor;
+					}
+				} );
+
+				editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph></paragraph>'
+				);
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<p></p>'
+				);
+			} );
 		} );
 
 		describe( 'model to view', () => {
