@@ -936,7 +936,7 @@ export function insertStructure( elementCreator, consumer ) {
 		// View creation.
 		const viewElement = elementCreator( data.item, {
 			...conversionApi,
-			slotFor: createSlotFactory( data.item, slotsMap, conversionApi.writer )
+			slotFor: createSlotFactory( data.item, slotsMap, conversionApi )
 		} );
 
 		if ( !viewElement ) {
@@ -944,7 +944,7 @@ export function insertStructure( elementCreator, consumer ) {
 		}
 
 		// Check if all children are covered by slots and there is no child that landed in multiple slots.
-		validateSlotsChildren( data.item, slotsMap );
+		validateSlotsChildren( data.item, slotsMap, conversionApi );
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		if ( !consumer( data.item, conversionApi.consumable ) ) {
@@ -1272,7 +1272,7 @@ function changeAttribute( attributeCreator ) {
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
-			throw new CKEditorError( 'conversion-attribute-to-attribute-on-text', this, data );
+			throw new CKEditorError( 'conversion-attribute-to-attribute-on-text', conversionApi.dispatcher, data );
 		}
 
 		// First remove the old attribute if there was one.
@@ -1955,11 +1955,11 @@ function createConsumer( model ) {
 //
 // @param {module:engine/model/element~Element} element
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
-// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {Function}
-function createSlotFactory( element, slotsMap, writer ) {
+function createSlotFactory( element, slotsMap, conversionApi ) {
 	return modeOrFilter => {
-		const slot = writer.createContainerElement( '$slot' );
+		const slot = conversionApi.writer.createContainerElement( '$slot' );
 
 		let children = null;
 
@@ -1973,7 +1973,7 @@ function createSlotFactory( element, slotsMap, writer ) {
 			 *
 			 * @error conversion-slot-mode-unknown
 			 */
-			throw new CKEditorError( 'conversion-slot-mode-unknown', null, { modeOrFilter } );
+			throw new CKEditorError( 'conversion-slot-mode-unknown', conversionApi.dispatcher, { modeOrFilter } );
 		}
 
 		slotsMap.set( slot, children );
@@ -1986,7 +1986,8 @@ function createSlotFactory( element, slotsMap, writer ) {
 //
 // @param {module:engine/model/element~Element}
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
-function validateSlotsChildren( element, slotsMap ) {
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+function validateSlotsChildren( element, slotsMap, conversionApi ) {
 	const childrenInSlots = Array.from( slotsMap.values() ).flat();
 	const uniqueChildrenInSlots = new Set( childrenInSlots );
 
@@ -1996,7 +1997,7 @@ function validateSlotsChildren( element, slotsMap ) {
 		 *
 		 * @error conversion-slot-filter-to-permissive
 		 */
-		throw new CKEditorError( 'conversion-slot-filter-to-permissive', this, { element, slotsMap } );
+		throw new CKEditorError( 'conversion-slot-filter-to-permissive', conversionApi.dispatcher, { element, slotsMap } );
 	}
 
 	if ( uniqueChildrenInSlots.size != element.childCount ) {
@@ -2005,7 +2006,7 @@ function validateSlotsChildren( element, slotsMap ) {
 		 *
 		 * @error conversion-slot-filter-to-restrictive
 		 */
-		throw new CKEditorError( 'conversion-slot-filter-to-restrictive', this, { element, slotsMap } );
+		throw new CKEditorError( 'conversion-slot-filter-to-restrictive', conversionApi.dispatcher, { element, slotsMap } );
 	}
 }
 
@@ -2021,28 +2022,26 @@ function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 	conversionApi.mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
 
 	let currentSlot = null;
+	let currentSlotNodes = null;
 
 	// Fill slots with nested view nodes.
-	for ( const [ slot, nodes ] of slotsMap ) {
-		currentSlot = slot;
+	for ( [ currentSlot, currentSlotNodes ] of slotsMap ) {
+		reinsertNodes( viewElement, currentSlotNodes, conversionApi, options );
 
-		reinsertNodes( viewElement, nodes, conversionApi, options );
-
-		conversionApi.writer.move( conversionApi.writer.createRangeIn( slot ), conversionApi.writer.createPositionBefore( slot ) );
-		conversionApi.writer.remove( slot );
+		conversionApi.writer.move(
+			conversionApi.writer.createRangeIn( currentSlot ),
+			conversionApi.writer.createPositionBefore( currentSlot )
+		);
+		conversionApi.writer.remove( currentSlot );
 	}
 
 	conversionApi.mapper.off( 'modelToViewPosition', toViewPositionMapping );
 
 	function toViewPositionMapping( evt, data ) {
-		if ( !currentSlot ) {
-			return;
-		}
-
 		const element = data.modelPosition.nodeAfter;
 
 		// Find the proper offset within the slot.
-		const index = slotsMap.get( currentSlot ).indexOf( element );
+		const index = currentSlotNodes.indexOf( element );
 
 		if ( index < 0 ) {
 			return;
@@ -2061,17 +2060,19 @@ function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 // @param {Object} options
 // @param {Boolean} [options.reconversion]
 function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
+	const { writer, mapper, consumable } = conversionApi;
+
 	// Fill with nested view nodes.
 	for ( const modelChildNode of modelNodes ) {
-		const viewChildNode = conversionApi.mapper.toViewElement( modelChildNode );
+		const viewChildNode = mapper.toViewElement( modelChildNode );
 
 		if ( options.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
-			if ( conversionApi.consumable.consume( modelChildNode, 'insert' ) ) {
-				conversionApi.writer.move(
-					conversionApi.writer.createRangeOn( viewChildNode ),
-					conversionApi.mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
-				);
-			}
+			consumable.consume( modelChildNode, 'insert' );
+
+			writer.move(
+				writer.createRangeOn( viewChildNode ),
+				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+			);
 		} else {
 			// Note that this is not creating another consumable, it's using the current one.
 			conversionApi.convert( ModelRange._createOn( modelChildNode ) );

@@ -1403,6 +1403,54 @@ describe( 'DowncastHelpers', () => {
 			} );
 		} );
 
+		it( 'should consume reinserted elements', () => {
+			model.schema.register( 'simple', {
+				allowIn: '$root'
+			} );
+
+			downcastHelpers.elementToStructure( {
+				model: {
+					name: 'simple',
+					children: true
+				},
+				view: ( modelElement, { writer, slotFor } ) => {
+					const element = writer.createContainerElement( 'div' );
+
+					writer.insert( writer.createPositionAt( element, 'end' ), slotFor( 'children' ) );
+
+					return element;
+				}
+			} );
+
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block',
+				allowIn: 'simple'
+			} );
+
+			downcastHelpers.elementToElement( {
+				model: 'paragraph',
+				view: 'p'
+			} );
+
+			setModelData( model, '<simple><paragraph>foo</paragraph></simple>' );
+
+			let consumable;
+
+			controller.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+				consumable = conversionApi.consumable;
+			} );
+
+			model.change( writer => {
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insertText( 'bar', paragraph, 0 );
+				writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
+			} );
+
+			expect( consumable.test( modelRoot.getNodeByPath( [ 0, 0 ] ), 'insert' ) ).to.be.false;
+			expect( consumable.test( modelRoot.getNodeByPath( [ 0, 1 ] ), 'insert' ) ).to.be.false;
+		} );
+
 		it( 'should throw an exception if invalid slot mode or filter was provided', () => {
 			model.schema.register( 'simple', {
 				allowIn: '$root'
@@ -1440,36 +1488,102 @@ describe( 'DowncastHelpers', () => {
 					writer.insert( paragraph, simple, 0 );
 					writer.insert( simple, modelRoot, 0 );
 				} );
-			}, /^conversion-slot-mode-unknown/, null, { modeOrFilter: 'foo' } );
-
-			// TODO add context instead of null
+			}, /^conversion-slot-mode-unknown/, controller.downcastDispatcher, { modeOrFilter: 'foo' } );
 		} );
 
-		// it( 'should throw an exception if invalid slot mode or filrer was provided', () => {
-		// 	model.schema.register( 'complex', {
-		// 		allowIn: '$root'
-		// 	} );
-		//
-		// 	downcastHelpers.elementToStructure( {
-		// 		model: {
-		// 			name: 'complex',
-		// 			children: true
-		// 		},
-		// 		view: ( modelElement, { writer, slotFor } ) => {
-		// 			const outer = writer.createContainerElement( 'div' );
-		// 			const inner1 = writer.createContainerElement( 'div', { class: 'inner-first' } );
-		// 			const inner2 = writer.createContainerElement( 'div', { class: 'inner-second' } );
-		//
-		// 			writer.insert( writer.createPositionAt( outer, 'end' ), inner1 );
-		// 			writer.insert( writer.createPositionAt( outer, 'end' ), inner2 );
-		//
-		// 			writer.insert( writer.createPositionAt( inner1, 0 ), slotFor( element => element.index < 2 ) );
-		// 			writer.insert( writer.createPositionAt( inner2, 0 ), slotFor( element => element.index >= 2 ) );
-		//
-		// 			return outer;
-		// 		}
-		// 	} );
-		// } );
+		it( 'should throw an exception if slot filter results overlap', () => {
+			model.schema.register( 'complex', {
+				allowIn: '$root'
+			} );
+
+			downcastHelpers.elementToStructure( {
+				model: {
+					name: 'complex',
+					children: true
+				},
+				view: ( modelElement, { writer, slotFor } ) => {
+					const outer = writer.createContainerElement( 'div' );
+					const inner1 = writer.createContainerElement( 'div', { class: 'inner-first' } );
+					const inner2 = writer.createContainerElement( 'div', { class: 'inner-second' } );
+
+					writer.insert( writer.createPositionAt( outer, 'end' ), inner1 );
+					writer.insert( writer.createPositionAt( outer, 'end' ), inner2 );
+
+					writer.insert( writer.createPositionAt( inner1, 0 ), slotFor( element => element.index <= 1 ) );
+					writer.insert( writer.createPositionAt( inner2, 0 ), slotFor( element => element.index >= 1 ) );
+
+					return outer;
+				}
+			} );
+
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block',
+				allowIn: 'complex'
+			} );
+
+			downcastHelpers.elementToElement( {
+				model: 'paragraph',
+				view: 'p'
+			} );
+
+			expectToThrowCKEditorError( () => {
+				model.change( writer => {
+					const complex = writer.createElement( 'complex' );
+
+					writer.insertElement( 'paragraph', complex, 0 );
+					writer.insertElement( 'paragraph', complex, 0 );
+					writer.insertElement( 'paragraph', complex, 0 );
+					writer.insert( complex, modelRoot, 0 );
+				} );
+			}, /^conversion-slot-filter-to-permissive/, controller.downcastDispatcher );
+		} );
+
+		it( 'should throw an exception if slot filter not include all children', () => {
+			model.schema.register( 'complex', {
+				allowIn: '$root'
+			} );
+
+			downcastHelpers.elementToStructure( {
+				model: {
+					name: 'complex',
+					children: true
+				},
+				view: ( modelElement, { writer, slotFor } ) => {
+					const outer = writer.createContainerElement( 'div' );
+					const inner1 = writer.createContainerElement( 'div', { class: 'inner-first' } );
+					const inner2 = writer.createContainerElement( 'div', { class: 'inner-second' } );
+
+					writer.insert( writer.createPositionAt( outer, 'end' ), inner1 );
+					writer.insert( writer.createPositionAt( outer, 'end' ), inner2 );
+
+					writer.insert( writer.createPositionAt( inner1, 0 ), slotFor( element => element.index < 1 ) );
+					writer.insert( writer.createPositionAt( inner2, 0 ), slotFor( element => element.index > 1 ) );
+
+					return outer;
+				}
+			} );
+
+			model.schema.register( 'paragraph', {
+				inheritAllFrom: '$block',
+				allowIn: 'complex'
+			} );
+
+			downcastHelpers.elementToElement( {
+				model: 'paragraph',
+				view: 'p'
+			} );
+
+			expectToThrowCKEditorError( () => {
+				model.change( writer => {
+					const complex = writer.createElement( 'complex' );
+
+					writer.insertElement( 'paragraph', complex, 0 );
+					writer.insertElement( 'paragraph', complex, 0 );
+					writer.insertElement( 'paragraph', complex, 0 );
+					writer.insert( complex, modelRoot, 0 );
+				} );
+			}, /^conversion-slot-filter-to-restrictive/, controller.downcastDispatcher );
+		} );
 	} );
 
 	describe( 'attributeToElement()', () => {
@@ -2014,7 +2128,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertText( 'Foo', { test: '2' }, modelRoot.getChild( 0 ), 0 );
 					writer.insertText( 'Bar', { test: '3' }, modelRoot.getChild( 1 ), 0 );
 				} );
-			}, /^conversion-attribute-to-attribute-on-text/ );
+			}, /^conversion-attribute-to-attribute-on-text/, controller.downcastDispatcher );
 		} );
 
 		it( 'should convert attribute insert/change/remove on a model node', () => {
