@@ -293,7 +293,7 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key ) || '';
 
-					if ( !this.isValidAttribute( key, value ) ) {
+					if ( !this.shouldRenderAttribute( key, value ) ) {
 						continue;
 					}
 
@@ -311,7 +311,7 @@ export default class DomConverter {
 		}
 	}
 
-	isValidAttribute( attributeKey, attributeValue ) {
+	shouldRenderAttribute( attributeKey, attributeValue ) {
 		if ( !this.shouldFilter ) {
 			return true;
 		}
