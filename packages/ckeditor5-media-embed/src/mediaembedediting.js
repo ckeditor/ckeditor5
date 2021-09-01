@@ -265,10 +265,8 @@ export default class MediaEmbedEditing extends Plugin {
 
 					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
 
-					if ( !modelRange.isCollapsed ) {
-						data.modelRange = modelRange;
-						data.modelCursor = modelCursor;
-					}
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
 				}
 			} );
 	}
