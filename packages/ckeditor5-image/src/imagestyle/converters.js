@@ -61,8 +61,8 @@ export function viewToModelStyleAttribute( styles ) {
 		const viewElement = data.viewItem;
 		const modelImageElement = first( data.modelRange.getItems() );
 
-		// Element figure is being used by multiple features and we want this converter to run
-		// only for image figure. Note that this converter is also used in inline images.
+		// Run this converter only if an image has been found in the model.
+		// In some cases it may not be found (for example if we run this on a figure with different type than image).
 		if ( !modelImageElement ) {
 			return;
 		}
