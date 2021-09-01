@@ -995,15 +995,6 @@ describe( 'BalloonPanelView', () => {
 			positions = BalloonPanelView.defaultPositions;
 			stickyOffset = BalloonPanelView.stickyVerticalOffset;
 
-			viewportRect = new Rect( {
-				top: 300,
-				bottom: 800,
-				left: 0,
-				right: 200,
-				width: 0,
-				height: 0
-			} );
-
 			balloonRect = new Rect( {
 				top: 0,
 				bottom: 0,
@@ -1014,8 +1005,17 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
-		it( 'should stick position to the top when top position of the element is above the viewport' +
-			'and the element area intersects with the viewport area', () => {
+		it( 'should stick position to the top when top position of the element is above the viewport and the element' +
+			'area intersects with the viewport area', () => {
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 0,
+				height: 0
+			} );
+
 			targetRect = new Rect( {
 				top: 200,
 				bottom: 400,
@@ -1033,6 +1033,28 @@ describe( 'BalloonPanelView', () => {
 					withArrow: false
 				}
 			} );
+		} );
+
+		it( 'should return null if not sticky because element is fully outside of the viewport', () => {
+			viewportRect = new Rect( {
+				top: 200,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 200,
+				height: 200
+			} );
+
+			targetRect = new Rect( {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
 		} );
 	} );
 } );
