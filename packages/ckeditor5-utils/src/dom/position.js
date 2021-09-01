@@ -163,7 +163,7 @@ function getConstrainedViewportRect( viewportOffsetConfig ) {
 //
 // @returns {Array} An array containing the name of the position and it's rect.
 function getBestPosition( positions, options ) {
-	const { elementRect, viewportRect } = options;
+	const { elementRect } = options;
 
 	// This is when element is fully visible.
 	const elementRectArea = elementRect.getArea();
@@ -173,37 +173,13 @@ function getBestPosition( positions, options ) {
 		// Some positioning functions may return `null` if they don't want to participate.
 		.filter( position => !!position.name );
 
-	// First let's check all positions that fully fit in the viewport.
-	if ( viewportRect ) {
-		const positionsInViewport = positionInstances.filter( position => {
-			return position.viewportIntersectionArea === elementRectArea;
-		} );
-
-		// Try to find best position from those which fit completely in viewport.
-		const bestPosition = getBestConstrainedPosition( positionsInViewport, elementRectArea );
-
-		if ( bestPosition ) {
-			return bestPosition;
-		}
-	}
-
-	// Either there is no viewportRect or there is no position that fits completely in the viewport.
-	return getBestConstrainedPosition( positionInstances, elementRectArea );
-}
-
-// From an array of pre-filtered positions, it selects the best one fitting in the limiter and the viewport.
-//
-// @param {Array.<module:utils/dom/position~Position>} processedPositions Pre-filtered positions to choose the best from.
-// @param {Number} elementRectArea Area of positioned {@link module:utils/dom/position~Options#element}.
-// @returns {module:utils/dom/position~Position} The best position, or `null` if not found.
-function getBestConstrainedPosition( processedPositions, elementRectArea ) {
 	let maxFitFactor = 0;
 	let bestPosition = null;
 
-	for ( const position of processedPositions ) {
+	for ( const position of positionInstances ) {
 		const { _limiterIntersectionArea, _viewportIntersectionArea } = position;
 
-		// If a such position is found that element is fully container by the limiter then, obviously,
+		// If a such position is found that element is fully contained by the limiter then, obviously,
 		// there will be no better one, so finishing.
 		if ( _limiterIntersectionArea === elementRectArea ) {
 			return position;
