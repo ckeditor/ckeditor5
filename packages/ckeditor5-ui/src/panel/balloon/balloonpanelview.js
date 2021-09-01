@@ -432,11 +432,20 @@ BalloonPanelView.arrowVerticalOffset = 10;
  * A vertical offset of the balloon panel from the edge of the viewport if sticky.
  * It helps in accessing toolbar buttons underneath the balloon panel.
  *
- *       Toolbar                        /-- vertical offset
- *       +-----------------------------V--------------------+
- *       |                  +-------------+                 |
- *       +------------------|   Balloon   |-----------------+
- *                          +-------------+
+ *		  +---------------------------------------------------+
+ *		  |                      Target                       |
+ *		  |                                                   |
+ *		  |                            /-- vertical offset    |
+ *		+-----------------------------V-------------------------+
+ *		| Toolbar            +-------------+                    |
+ *		+--------------------|   Balloon   |--------------------+
+ *		| |                  +-------------+                  | |
+ *		| |                                                   | |
+ *		| |                                                   | |
+ *		| |                                                   | |
+ *		| +---------------------------------------------------+ |
+ *		|                        Viewport                       |
+ *		+-------------------------------------------------------+
  *
  * @default 20
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset
