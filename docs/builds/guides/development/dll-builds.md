@@ -2,6 +2,7 @@
 menu-title: DLL builds
 category: builds-development
 order: 30
+modified_at: 2021-08-31
 ---
 
 # CKEditor 5 DLL builds
@@ -147,7 +148,6 @@ For example:
 		.then( editor => {
 			window.editor = editor;
 		} );
-</script>
 ```
 
 ## Localization
