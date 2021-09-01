@@ -266,7 +266,7 @@ function getRectForAbsolutePositioning( rect ) {
  * translate directly to the `top` and `left` properties in CSS "`position: absolute` coordinate system". If set on the positioned element
  * in DOM, they will make it display it in the right place in the viewport.
  */
-class Position {
+export class Position {
 	/**
 	 * Creates an instance of the {@link module:utils/dom/position~Position} class.
 	 *
