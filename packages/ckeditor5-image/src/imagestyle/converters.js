@@ -59,14 +59,13 @@ export function viewToModelStyleAttribute( styles ) {
 		}
 
 		const viewElement = data.viewItem;
+		const modelImageElement = first( data.modelRange.getItems() );
 
 		// Element figure is being used by multiple features and we want this converter to run
 		// only for image figure. Note that this converter is also used in inline images.
-		if ( viewElement.is( 'element', 'figure' ) && !viewElement.hasClass( 'image' ) ) {
+		if ( !modelImageElement ) {
 			return;
 		}
-
-		const modelImageElement = first( data.modelRange.getItems() );
 
 		// ...and the `imageStyle` attribute is allowed for that element, otherwise stop conversion early.
 		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {

@@ -55,7 +55,7 @@ export function getImgViewElementMatcher( editor, matchImageType ) {
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return element => {
-		// check if view element is an `img`
+		// Check if view element is an `img`.
 		if ( !imageUtils.isInlineImageView( element ) ) {
 			return null;
 		}
