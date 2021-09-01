@@ -1014,7 +1014,8 @@ describe( 'BalloonPanelView', () => {
 			} );
 		} );
 
-		it( 'should stick position to the top when target element is above viewport', () => {
+		it( 'should stick position to the top when top position of the element is above the viewport' +
+			'and the element area intersects with the viewport area', () => {
 			targetRect = new Rect( {
 				top: 200,
 				bottom: 400,
