@@ -193,7 +193,7 @@ htmlSupport: {
 ```
 
 <info-box>
-	Please, keep in mind that enabling all HTML features creates a security risk. It's recommended to pass to the configuration a list of disallowed elements and attributes to make sure that any malicious code won't be saved and executed in the editor.
+	Please, keep in mind that enabling all HTML features creates a security risk. It is recommended to pass a list of disallowed elements and attributes to the configuration to make sure that any malicious code will not be saved and executed in the editor.
 </info-box>
 
 The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
