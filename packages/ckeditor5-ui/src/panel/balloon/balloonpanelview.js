@@ -247,7 +247,7 @@ export default class BalloonPanelView extends View {
 		const top = parseInt( optimalPosition.top );
 
 		const { name: position, config = {} } = optimalPosition;
-		const { withArrow } = config;
+		const { withArrow = true } = config;
 
 		Object.assign( this, { top, left, position, withArrow } );
 	}
