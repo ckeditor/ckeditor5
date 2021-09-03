@@ -897,7 +897,26 @@ import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/util
 
 To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose the required function in the `ckeditor5-image` package.
 
+When importing a DLL package from another DLL package, an import statement must use the full name of the imported package instead of using the `ckeditor5` notation.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
+
+import { Plugin } from 'ckeditor5/src/core';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+```
+
 History of changes:
 
 * [Force importing using the `ckeditor5` package.](https://github.com/ckeditor/ckeditor5/issues/8581)
 * [Imports from the `ckeditor5` package must use the `src/` directory.](https://github.com/ckeditor/ckeditor5/issues/10030)
+* [Imports between DLL packages must use full names of packages.](https://github.com/ckeditor/ckeditor5/issues/10375)
