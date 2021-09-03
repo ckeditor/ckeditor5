@@ -60,6 +60,16 @@ function removeNodeModulesInRepository( rootDir ) {
 
 	for ( const absolutePath of getDirectories( directoryPath ) ) {
 		fs.rmdirSync( path.join( absolutePath, 'node_modules' ), { recursive: true } );
+
+		// Remove `node_modules/` within the `frontend/` directory in a single package.
+		if ( fs.existsSync( path.join( absolutePath, 'frontend' ) ) ) {
+			fs.rmdirSync( path.join( absolutePath, 'frontend', 'node_modules' ), { recursive: true } );
+		}
+
+		// Remove `node_modules/` within the `vendor/ckeditor5/` directory in a single package.
+		if ( fs.existsSync( path.join( absolutePath, 'vendor', 'ckeditor5' ) ) ) {
+			fs.rmdirSync( path.join( absolutePath, 'vendor', 'ckeditor5', 'node_modules' ), { recursive: true } );
+		}
 	}
 }
 
