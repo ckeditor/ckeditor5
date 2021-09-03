@@ -16,31 +16,20 @@
  *
  * Directories to remove:
  *      * ./node_modules/
- *      * ./packages/ ** /node_modules
- *      * ./external/ ** /node_modules
- *
- * To find the nested directories, the "**" pattern is used.
+ *      * ./packages/ * /node_modules
+ *      * ./external/ * /node_modules
+ *      * ./external/ * /packages/ * /node_modules
  */
 
 const fs = require( 'fs' );
 const path = require( 'path' );
 
-try {
-	// Check whether packages are installed.
-	require.resolve( '@ckeditor/ckeditor5-dev-utils' );
-} catch ( error ) {
-	console.log( 'Required @ckeditor/ckeditor5-dev-utils package cannot be found. Please install node deps before calling this script.' );
-
-	process.exit();
-}
-
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-const cwd = process.cwd();
+const CWD = process.cwd();
+const EXTERNAL_PATH = path.join( CWD, 'external' );
 
 const filesToRemove = [
-	path.join( cwd, 'yarn.lock' ),
-	path.join( cwd, 'package-lock.json' )
+	path.join( CWD, 'yarn.lock' ),
+	path.join( CWD, 'package-lock.json' )
 ];
 
 console.log( 'Removing "lock" files...' );
@@ -51,9 +40,45 @@ for ( const file of filesToRemove ) {
 	}
 }
 
-console.log( 'Removing the nested "node_modules/" directories...' );
+console.log( 'Removing "node_modules/" directory...' );
+fs.rmdirSync( path.join( CWD, 'node_modules' ), { recursive: true } );
 
-tools.clean( cwd, './**/node_modules', { verbosity: 'error' } )
-	.then( () => {
-		console.log( 'Done.' );
-	} );
+console.log( 'Removing the nested "packages/*/node_modules/" directories...' );
+removeDirectoryInPackages( CWD, 'node_modules' );
+
+console.log( 'Checking whether the "external/" directory exists...' );
+
+if ( fs.existsSync( EXTERNAL_PATH ) ) {
+	console.log( `Removing the nested "external/**/node_modules/" directories...` );
+
+	for ( const externalRepo of getDirectories( EXTERNAL_PATH ) ) {
+		fs.rmdirSync( path.join( externalRepo, 'node_modules' ), { recursive: true } );
+		removeDirectoryInPackages( externalRepo, 'node_modules' );
+	}
+}
+
+console.log( 'Done.' );
+
+// Removes a directory specified as `directoryName` in all found packages.
+//
+// Substitute of `rm -rf packages/*/node_modules` on Unix environments.
+//
+// @param {String} rootDir
+// @param {String} directoryName
+function removeDirectoryInPackages( rootDir, directoryName ) {
+	const directoryPath = path.join( rootDir, 'packages' );
+
+	for ( const absolutePath of getDirectories( directoryPath ) ) {
+		fs.rmdirSync( path.join( absolutePath, directoryName ), { recursive: true } );
+	}
+}
+
+// Returns an array containing absolute paths to all directories found in the `rootDir` directory.
+//
+// @param {String} rootDir
+// @return {Array.<String>}
+function getDirectories( rootDir ) {
+	return fs.readdirSync( rootDir, { withFileTypes: true } )
+		.filter( dirent => dirent.isDirectory() )
+		.map( dirent => path.join( rootDir, dirent.name ) )
+}
