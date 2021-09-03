@@ -56,7 +56,7 @@ export default class Collection {
 	 *		console.log( collection.get( 'George' ) ); // -> { name: 'George' }
 	 *		console.log( collection.get( 'John' ) ); // -> { name: 'John' }
 	 *
-	 * @param {Iterable.<Object>|Object} initialItemsOrOptions The initial items of the collection or
+	 * @param {Iterable.<Object>|Object} [initialItemsOrOptions] The initial items of the collection or
 	 * the options object.
 	 * @param {Object} [options={}] The options object, when the first argument is an array of initial items.
 	 * @param {String} [options.idProperty='id'] The name of the property which is used to identify an item.
