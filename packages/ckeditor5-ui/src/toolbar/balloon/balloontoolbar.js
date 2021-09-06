@@ -7,7 +7,7 @@
  * @module ui/toolbar/balloon/balloontoolbar
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';

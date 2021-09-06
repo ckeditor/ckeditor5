@@ -9,7 +9,8 @@
 
 /* global window */
 
-import { Plugin, icons } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 
 import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
@@ -273,7 +274,7 @@ export default class BlockToolbar extends Plugin {
 
 		buttonView.set( {
 			label: t( 'Edit block' ),
-			icon: icons.pilcrow,
+			icon: pilcrow,
 			withText: false
 		} );
 
