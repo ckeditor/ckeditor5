@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals window, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
@@ -41,7 +41,7 @@ function mapMeta( editor ) {
 }
 
 function getChildren( editor, viewElement ) {
-	return [ ...( editor.editing.view.createRangeIn( viewElement ) ) ]
+	return Array.from( editor.editing.view.createRangeIn( viewElement ) )
 		.filter( ( { type } ) => type === 'elementStart' )
 		.map( ( { item } ) => item );
 }
@@ -73,62 +73,67 @@ function getBoxUpcastConverter( editor ) {
 		for ( const field of fields ) {
 			const boxField = writer.createElement( 'boxField' );
 
-			conversionApi.safeInsert( boxField, writer.createPositionAt( box, field.index ) );
+			conversionApi.safeInsert( boxField, writer.createPositionAt( box, 'end' ) );
 			conversionApi.convertChildren( field, boxField );
 		}
 
 		conversionApi.consumable.consume( viewElement, { name: true } );
-		elements.map( element => {
-			conversionApi.consumable.consume( element, { name: true } );
-		} );
+		elements.forEach( element => conversionApi.consumable.consume( element, { name: true } ) );
 
 		conversionApi.updateConversionResult( box, data );
 	} );
 }
 
-function downcastBox( modelElement, conversionApi ) {
-	const { writer, slotFor } = conversionApi;
+function getBoxDowncastCreator( multiSlot ) {
+	return ( modelElement, conversionApi ) => {
+		const { writer, slotFor } = conversionApi;
 
-	const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
-	const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
+		const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
+		const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
 
-	writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
+		writer.insert( writer.createPositionAt( viewBox, 0 ), contentWrap );
 
-	for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
-		if ( meta === 'header' ) {
-			const header = writer.createRawElement( 'div', {
-				class: 'box-meta box-meta-header'
-			}, domElement => {
-				domElement.innerHTML = `<div class="box-meta-header-title"><h2>${ metaValue.title }</h2></div>`;
-			} );
+		for ( const [ meta, metaValue ] of Object.entries( modelElement.getAttribute( 'meta' ) ) ) {
+			if ( meta === 'header' ) {
+				const header = writer.createRawElement( 'div', {
+					class: 'box-meta box-meta-header'
+				}, domElement => {
+					domElement.innerHTML = `<div class="box-meta-header-title"><h2>${ metaValue.title }</h2></div>`;
+				} );
 
-			writer.insert( writer.createPositionBefore( contentWrap ), header );
+				writer.insert( writer.createPositionBefore( contentWrap ), header );
+			}
+
+			if ( meta === 'author' ) {
+				const author = writer.createRawElement( 'div', {
+					class: 'box-meta box-meta-author'
+				}, domElement => {
+					domElement.innerHTML = `<a href="${ metaValue.website }">${ metaValue.name }</a>`;
+				} );
+
+				writer.insert( writer.createPositionAfter( contentWrap ), author );
+			}
 		}
 
-		if ( meta === 'author' ) {
-			const author = writer.createRawElement( 'div', {
-				class: 'box-meta box-meta-author'
-			}, domElement => {
-				domElement.innerHTML = `<a href="${ metaValue.website }">${ metaValue.name }</a>`;
+		if ( !multiSlot ) {
+			writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( 'children' ) );
+		} else {
+			writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( element => element.index < 2 ) );
+
+			const contentWrap2 = writer.createContainerElement( 'div', { class: 'box-content' } );
+
+			writer.insert( writer.createPositionAt( viewBox, 'end' ), contentWrap2 );
+			writer.insert( writer.createPositionAt( contentWrap2, 0 ), slotFor( element => element.index >= 2 ) );
+
+			const footer = writer.createRawElement( 'div', { class: 'box-footer' }, domElement => {
+				domElement.innerHTML = 'Footer';
 			} );
 
-			writer.insert( writer.createPositionAfter( contentWrap ), author );
+			writer.insert( writer.createPositionAfter( contentWrap2 ), footer );
 		}
-	}
 
-	// switch for testing filtered vs all children
-	if ( 0 ) {
-		writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( 'children' ) );
-	} else {
-		writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( element => element.index < 2 ) );
-
-		const contentWrap2 = writer.createContainerElement( 'div', { class: 'box-content' } );
-
-		writer.insert( writer.createPositionAt( viewBox, 'end' ), contentWrap2 );
-		writer.insert( writer.createPositionAt( contentWrap2, 0 ), slotFor( element => element.index >= 2 ) );
-	}
-
-	return viewBox;
+		return viewBox;
+	};
 }
 
 function addButton( editor, uiName, label, callback ) {
@@ -183,7 +188,7 @@ function Box( editor ) {
 			attributes: [ 'meta' ],
 			children: true
 		},
-		view: downcastBox
+		view: getBoxDowncastCreator( editor.config.get( 'box.multiSlot' ) )
 	} );
 
 	editor.conversion.for( 'downcast' ).elementToElement( {
@@ -230,8 +235,8 @@ function AddRenderCount( editor ) {
 	}, { priority: 'lowest' } ) );
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
+async function createEditor( multiSlot ) {
+	const editor = await ClassicEditor.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Box, AddRenderCount ],
 		toolbar: [
 			'heading',
@@ -265,11 +270,23 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
+		},
+		box: { multiSlot }
 	} );
+
+	window.editor = editor;
+}
+
+for ( const option of document.querySelectorAll( 'input[name=box-mode]' ) ) {
+	option.addEventListener( 'change', async event => {
+		if ( window.editor ) {
+			await window.editor.destroy();
+		}
+
+		await createEditor( event.target.value == 'multi' );
+	} );
+
+	if ( option.checked ) {
+		createEditor( option.value == 'multi' );
+	}
+}
