@@ -12,7 +12,7 @@
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -52,6 +52,39 @@ export default class EditorUI {
 		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
 		 */
 		this.focusTracker = new FocusTracker();
+
+		/**
+		 * Stores viewport offsets from every direction.
+		 *
+		 * Viewport offset can be used to constrain balloons or other UI elements into an element smaller than the viewport.
+		 * This can be useful if there are any other absolutely positioned elements that may interfere with editor UI.
+		 *
+		 * Example `editor.ui.viewportOffset` returns:
+		 *
+		 * ```js
+		 * {
+		 * 	top: 50,
+		 * 	right: 50,
+		 * 	bottom: 50,
+		 * 	left: 50
+		 * }
+		 * ```
+		 *
+		 * This property can be overriden after editor already being initialized:
+		 *
+		 * ```js
+		 * editor.ui.viewportOffset = {
+		 * 	top: 100,
+		 * 	right: 0,
+		 * 	bottom: 0,
+		 * 	left: 0
+		 * };
+		 * ```
+		 *
+		 * @observable
+		 * @member {Object} #viewportOffset
+		 */
+		this.set( 'viewportOffset', this._readViewportOffsetFromConfig() );
 
 		/**
 		 * Stores all editable elements used by the editor instance.
@@ -173,6 +206,55 @@ export default class EditorUI {
 	}
 
 	/**
+	 * Returns viewport offsets object:
+	 *
+	 * ```js
+	 * {
+	 * 	top: Number,
+	 * 	right: Number,
+	 * 	bottom: Number,
+	 * 	left: Number
+	 * }
+	 * ```
+	 *
+	 * Only top property is currently supported.
+	 *
+	 * @private
+	 * @return {Object}
+	 */
+	_readViewportOffsetFromConfig() {
+		const editor = this.editor;
+		const viewportOffsetConfig = editor.config.get( 'ui.viewportOffset' );
+
+		if ( viewportOffsetConfig ) {
+			return viewportOffsetConfig;
+		}
+
+		const legacyOffsetConfig = editor.config.get( 'toolbar.viewportTopOffset' );
+
+		// Fall back to deprecated toolbar config.
+		if ( legacyOffsetConfig ) {
+			/**
+			 * The {@link module:core/editor/editorconfig~EditorConfig#toolbar `EditorConfig#toolbar.viewportTopOffset`}
+			 * property has been deprecated and will be removed in the near future. Please use
+			 * {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} instead.
+			 *
+			 * @error editor-ui-deprecated-viewport-offset-config
+			 */
+			console.warn(
+				'editor-ui-deprecated-viewport-offset-config: ' +
+				'The `toolbar.vieportTopOffset` configuration option is deprecated. ' +
+				'It will be removed from future CKEditor versions. Use `ui.viewportOffset.top` instead.'
+			);
+
+			return { top: legacyOffsetConfig };
+		}
+
+		// More keys to come in the future.
+		return { top: 0 };
+	}
+
+	/**
 	 * Fired when the editor UI is ready.
 	 *
 	 * Fired before {@link module:engine/controller/datacontroller~DataController#event:ready}.
@@ -190,4 +272,4 @@ export default class EditorUI {
 	 */
 }
 
-mix( EditorUI, EmitterMixin );
+mix( EditorUI, ObservableMixin );

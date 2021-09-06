@@ -232,7 +232,6 @@ class App extends React.Component {
 				ProductPreviewEditing
 			],
 			toolbar: {
-				viewportTopOffset: window.getViewportTopOffsetConfig(),
 				items: [
 					'heading',
 					'|',
@@ -242,6 +241,11 @@ class App extends React.Component {
 					'|',
 					'undo', 'redo'
 				]
+			},
+			ui: {
+				viewportOffset: {
+					top: window.getViewportTopOffsetConfig()
+				}
 			},
 			table: {
 				contentToolbar: [
