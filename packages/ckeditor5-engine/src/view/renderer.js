@@ -514,10 +514,10 @@ export default class Renderer {
 			const value = viewElement.getAttribute( key );
 
 			if ( !this.domConverter.shouldRenderAttribute( key, value ) ) {
-				continue;
+				domElement.removeAttribute( key );
+			} else {
+				domElement.setAttribute( key, value );
 			}
-
-			domElement.setAttribute( key, value );
 		}
 
 		// Remove from DOM attributes which do not exists in the view.

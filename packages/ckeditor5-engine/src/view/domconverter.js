@@ -272,7 +272,6 @@ export default class DomConverter {
 				return domElement;
 			} else {
 				// Create DOM element.
-				// TODO: What to do with script tag?
 				if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
 				} else {
@@ -341,9 +340,7 @@ export default class DomConverter {
 				yield this._getBlockFiller( domDocument );
 			}
 
-			if ( !this.shouldFilter || !childView.is( 'element', 'script' ) ) {
-				yield this.viewToDom( childView, domDocument, options );
-			}
+			yield this.viewToDom( childView, domDocument, options );
 
 			offset++;
 		}
