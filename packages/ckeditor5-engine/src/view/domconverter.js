@@ -68,7 +68,9 @@ export default class DomConverter {
 		this.blockFillerMode = options.blockFillerMode || 'br';
 
 		/**
-		 * TODO
+		 * Enable content filtering on View-to-DOM conversion.
+		 *
+		 * @member {Boolean} module:engine/view/domconverter~DomConverter#shouldFilter
 		 */
 		this.shouldFilter = !!options.filter;
 

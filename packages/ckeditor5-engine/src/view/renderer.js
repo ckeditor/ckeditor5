@@ -522,7 +522,6 @@ export default class Renderer {
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
-			// TODO: Limit checking script to only a single data attribute and hide the script/span using stylesheet.
 			if ( !viewElement.hasAttribute( key ) &&
 				( viewElement.name !== 'script' || key !== 'data-ck-hidden' ) )
 			{
