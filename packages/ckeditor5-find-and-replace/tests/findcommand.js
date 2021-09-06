@@ -61,7 +61,7 @@ describe( 'FindCommand', () => {
 				const markers = getSimplifiedMarkersFromResults( results );
 
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
-					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</paragraph>'
+					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <Y:start></Y:start>bar<Y:end></Y:end> bom.</paragraph>'
 				);
 			} );
 
@@ -325,7 +325,7 @@ describe( 'FindCommand', () => {
 					);
 
 					expect( stringify( multiRootModel.document.getRoot( 'second' ), null, [ markerSecond ] ) ).to.equal(
-						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
+						'<paragraph>Foo bar ba<Y:start></Y:start>z<Y:end></Y:end></paragraph>'
 					);
 				} );
 
@@ -358,9 +358,13 @@ describe( 'FindCommand', () => {
 		 * random and unique.
 		 */
 		function getSimplifiedMarkersFromResults( results ) {
+			let letter = 'X';
+
 			return results.map( item => {
 				// Replace markers id to a predefined value, as originally these are unique random ids.
-				item.marker.name = 'X';
+				item.marker.name = letter;
+
+				letter = String.fromCharCode( letter.charCodeAt( 0 ) + 1 );
 
 				return item.marker;
 			} );
