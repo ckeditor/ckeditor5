@@ -47,7 +47,7 @@ describe( 'TableEditing', () => {
 		editor.destroy();
 	} );
 
-	it.only( 'should reorder rows with header correctly', () => {
+	it.only( 'should reorder rows with header correctly - up', () => {
 		setModelData( editor.model, '<table headingRows="1"><tableRow><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow><tableRow><tableCell><paragraph>[b]</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow></table>' );
 
 		const selection = editor.model.document.selection;
@@ -63,10 +63,29 @@ describe( 'TableEditing', () => {
 
 		expect( editor.getData() ).to.equal( '<figure class="table"><table><thead><tr><th>b</th><th>1</th><th>2</th></tr></thead><tbody><tr><td>a</td><td>1</td><td>2</td></tr></tbody></table></figure>' );
 
-		expect( getViewData(editor.editing.view, { withoutSelection: true } ) ).to.equal( '<figure class="table ck-widget ck-widget_with-selection-handle" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><thead><tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">b</span></th><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></th><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></th></tr></thead><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">a</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></td></tr></tbody></table></figure>' );
+		expect( getViewData(editor.editing.view, { withoutSelection: true } ) ).to.equal( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><thead><tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">b</span></th><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></th><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></th></tr></thead><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">a</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></td></tr></tbody></table></figure>' );
 	} );
 
-	it.only( 'should reorder column with header correctly', () => {
+	it.only( 'should reorder rows with header correctly - down', () => {
+		setModelData( editor.model, '<table headingRows="1"><tableRow><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow><tableRow><tableCell><paragraph>[b]</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow></table>' );
+
+		const selection = editor.model.document.selection;
+		const table = getSelectionAffectedTable( selection );
+
+		editor.model.change( writer => {
+			const row = table.getChild( 0 );
+
+			writer.move( writer.createRangeOn( row ), writer.createPositionAt( table, 2 ) );
+		} );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<table headingRows="1"><tableRow><tableCell><paragraph>b</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow><tableRow><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow></table>' );
+
+		expect( editor.getData() ).to.equal( '<figure class="table"><table><thead><tr><th>b</th><th>1</th><th>2</th></tr></thead><tbody><tr><td>a</td><td>1</td><td>2</td></tr></tbody></table></figure>' );
+
+		expect( getViewData(editor.editing.view, { withoutSelection: true } ) ).to.equal( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><thead><tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">b</span></th><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></th><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></th></tr></thead><tbody><tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">a</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></td></tr></tbody></table></figure>' );
+	} );
+
+	it.only( 'should reorder column with header correctly - left', () => {
 		setModelData( editor.model, '<table headingColumns="1"><tableRow><tableCell><paragraph>b</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow><tableRow><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow></table>' );
 
 		const selection = editor.model.document.selection;
@@ -77,6 +96,27 @@ describe( 'TableEditing', () => {
 				const cellToMove = row.getChild( 1 );
 
 				writer.move( writer.createRangeOn( cellToMove ), writer.createPositionAt( row, cellToMove.startOffset - 1 ) );
+			}
+		} );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<table headingColumns="1"><tableRow><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>b</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow><tableRow><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow></table>' );
+
+		expect( editor.getData() ).to.equal( '<figure class="table"><table><tbody><tr><th>1</th><td>b</td><td>2</td></tr><tr><th>1</th><td>a</td><td>2</td></tr></tbody></table></figure>' );
+
+		expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false"><div class="ck ck-widget__selection-handle"></div><table><tbody><tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></th><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">b</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></td></tr><tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">1</span></th><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">a</span></td><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"><span class="ck-table-bogus-paragraph">2</span></td></tr></tbody></table></figure>' );
+	} );
+
+	it.only( 'should reorder column with header correctly - right', () => {
+		setModelData( editor.model, '<table headingColumns="1"><tableRow><tableCell><paragraph>b</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow><tableRow><tableCell><paragraph>a</paragraph></tableCell><tableCell><paragraph>1</paragraph></tableCell><tableCell><paragraph>2</paragraph></tableCell></tableRow></table>' );
+
+		const selection = editor.model.document.selection;
+		const table = getSelectionAffectedTable( selection );
+
+		editor.model.change( writer => {
+			for ( const row of table.getChildren() ) {
+				const cellToMove = row.getChild( 0 );
+
+				writer.move( writer.createRangeOn( cellToMove ), writer.createPositionAt( row, cellToMove.startOffset + 2 ) );
 			}
 		} );
 
