@@ -36,28 +36,8 @@
 			padding: 0 2px;
 			opacity: 0.8;
 		}
-		.ck.ck-content div[data-slot] {
-			padding: 15px;
-			border: 1px dotted hsl(285, 100%, 50%);
-			background: hsla(285, 100%, 50%, .3);
-			position: relative;
-		}
-		.ck.ck-content div[data-slot]:after {
-			content: attr(data-slot);
-			position: absolute;
-			font-size: 10px;
-			top: -1px;
-			right: -1px;
-			color: hsl(0, 0%, 100%);
-			border: 1px solid hsl(285, 100%, 50%);
-			background: hsla(285, 100%, 50%, .6);
-			padding: 1px 5px;
-		}
 	</style>
 </head>
-
-<h2><code>elementToStructure</code></h2>
-<h3>Separate converters for <code>box</code> (with slots) and <code>boxField</code></h3>
 
 <div id="editor">
 	<div class="box">
