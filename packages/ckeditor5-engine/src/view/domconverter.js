@@ -274,6 +274,9 @@ export default class DomConverter {
 				// Create DOM element.
 				if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
+				} else if ( viewNode.name === 'script' && this.shouldFilter ) {
+					// Prevent script from being added and evaluated by inserting its content into a span.
+					domElement = domDocument.createElement( 'span' );
 				} else {
 					domElement = domDocument.createElement( viewNode.name );
 				}
@@ -297,6 +300,10 @@ export default class DomConverter {
 					}
 
 					domElement.setAttribute( key, value );
+				}
+
+				if ( this.shouldFilter && viewNode.name === 'script' ) {
+					domElement.setAttribute( 'data-ck-hidden', 'script' );
 				}
 			}
 
