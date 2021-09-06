@@ -112,9 +112,10 @@ export default class ImageBlockEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImgViewElementMatcher( editor, 'imageBlock' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageBlock', viewImage.hasAttribute( 'src' ) ? {
-					src: viewImage.getAttribute( 'src' )
-				} : null )
+				model: ( viewImage, { writer } ) => writer.createElement(
+					'imageBlock',
+					viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+				)
 			} )
 			.add( upcastImageFigure( imageUtils ) );
 	}

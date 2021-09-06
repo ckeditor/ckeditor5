@@ -120,9 +120,10 @@ export default class ImageInlineEditing extends Plugin {
 		conversion.for( 'upcast' )
 			.elementToElement( {
 				view: getImgViewElementMatcher( editor, 'imageInline' ),
-				model: ( viewImage, { writer } ) => writer.createElement( 'imageInline', viewImage.hasAttribute( 'src' ) ? {
-					src: viewImage.getAttribute( 'src' )
-				} : null )
+				model: ( viewImage, { writer } ) => writer.createElement(
+					'imageInline',
+					viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+				)
 			} );
 	}
 

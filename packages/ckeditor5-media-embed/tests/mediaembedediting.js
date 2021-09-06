@@ -649,16 +649,22 @@ describe( 'MediaEmbedEditing', () => {
 							} );
 					} );
 
-					it( 'should not convert media figure if media url is not matched with any provider url', () => {
+					it( 'should not consume media figure if media url is not matched with any provider url', () => {
 						return createTestEditor( {
 							providers: [
 								testProviders.A
 							]
 						} ).then( newEditor => {
+							let wasConsumed = false;
+
+							newEditor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+								wasConsumed = !conversionApi.consumable.test( data.viewItem, { name: true } );
+							}, { priority: 'lowest' } );
+
 							newEditor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
 
-							expect( getModelData( newEditor.model, { withoutSelection: true } ) )
-								.to.equal( '' );
+							expect( getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal( '' );
+							expect( wasConsumed ).to.be.false;
 
 							return newEditor.destroy();
 						} );

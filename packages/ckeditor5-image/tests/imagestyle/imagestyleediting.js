@@ -364,7 +364,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 
 				describe( 'with non-existing resource', () => {
-					it( 'inserts an am image with no "src" when the "src" attribute is missing', () => {
+					it( 'inserts an image with no "src" when the "src" attribute is missing', () => {
 						editor.setData(
 							'<p><span><img class="image-style-align-left" /></span></p>'
 						);
@@ -487,7 +487,7 @@ describe( 'ImageStyleEditing', () => {
 				} );
 			} );
 
-			it( 'should not convert figure if element has invalid class', () => {
+			it( 'should not convert figure from another feature (for example media embed or table)', () => {
 				editor.conversion.for( 'upcast' ).add( dispatcher => {
 					dispatcher.on( 'element:figure', converter );
 

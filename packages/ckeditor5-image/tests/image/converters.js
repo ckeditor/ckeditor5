@@ -92,9 +92,10 @@ describe( 'Image converters', () => {
 					model: ( viewImage, { writer } ) => {
 						imgConverterCalled = true;
 
-						return writer.createElement( 'imageBlock', viewImage.hasAttribute( 'src' ) ? {
-							src: viewImage.getAttribute( 'src' )
-						} : null );
+						return writer.createElement(
+							'imageBlock',
+							viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+						);
 					}
 				} );
 		} );
