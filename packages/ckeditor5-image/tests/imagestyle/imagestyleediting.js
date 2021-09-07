@@ -363,15 +363,14 @@ describe( 'ImageStyleEditing', () => {
 					);
 				} );
 
-				// See: #9563.
 				describe( 'with non-existing resource', () => {
-					it( 'inserts an empty paragraph when the "src" attribute is missing', () => {
+					it( 'inserts an image with no "src" when the "src" attribute is missing', () => {
 						editor.setData(
 							'<p><span><img class="image-style-align-left" /></span></p>'
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( '<paragraph></paragraph>' );
+							.to.equal( '<paragraph><imageInline imageStyle="alignLeft"></imageInline></paragraph>' );
 					} );
 				} );
 			} );
@@ -400,13 +399,12 @@ describe( 'ImageStyleEditing', () => {
 					);
 				} );
 
-				// it( 'should not convert from view to model when no image in the figure', () => {
-				// 	editor.setData( '<figure class="image-style-align-center"></figure>' );
+				it( 'should not convert from view to model when no image in the figure', () => {
+					editor.setData( '<figure class="image-style-align-center"></figure>' );
 
-				// 	expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '' );
-				// 	expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '' );
-				// 	// ASK: converts to paragraph, why? Test wasn't changed.
-				// } );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+					expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '<p></p>' );
+				} );
 
 				it( 'should not convert from view to model if schema prevents it', () => {
 					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
@@ -451,9 +449,8 @@ describe( 'ImageStyleEditing', () => {
 					await customEditor.destroy();
 				} );
 
-				// See: #9563.
 				describe( 'with non-existing resource', () => {
-					it( 'inserts an empty paragraph when the "src" attribute is missing', () => {
+					it( 'inserts an image when the "src" attribute is missing', () => {
 						editor.setData(
 							'<figure class="image image-style-align-center">' +
 								'<img alt="Foo." />' +
@@ -461,10 +458,10 @@ describe( 'ImageStyleEditing', () => {
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( '<paragraph></paragraph>' );
+							.to.equal( '<imageBlock alt="Foo." imageStyle="alignCenter"></imageBlock>' );
 					} );
 
-					it( 'inserts a paragraph with the "figcaption" content when the "src" attribute is missing (img + figcaption)', () => {
+					it( 'inserts an image with the "figcaption" content when the "src" attribute is missing (img + figcaption)', () => {
 						editor.setData(
 							'<figure class="image image-style-align-center">' +
 								'<img alt="Foo." />' +
@@ -473,10 +470,10 @@ describe( 'ImageStyleEditing', () => {
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( '<paragraph>Bar.</paragraph>' );
+							.to.equal( '<imageBlock alt="Foo." imageStyle="alignCenter"></imageBlock>' );
 					} );
 
-					it( 'inserts a paragraph with the "figcaption" content when the "src" attribute is missing (figcaption + img)', () => {
+					it( 'inserts an image with the "figcaption" content when the "src" attribute is missing (figcaption + img)', () => {
 						editor.setData(
 							'<figure class="image image-style-align-center">' +
 								'<figcaption>Bar.</figcaption>' +
@@ -485,9 +482,35 @@ describe( 'ImageStyleEditing', () => {
 						);
 
 						expect( getModelData( model, { withoutSelection: true } ) )
-							.to.equal( '<paragraph>Bar.</paragraph>' );
+							.to.equal( '<imageBlock alt="Foo." imageStyle="alignCenter"></imageBlock>' );
 					} );
 				} );
+			} );
+
+			it( 'should not convert figure from another feature (for example media embed or table)', () => {
+				editor.conversion.for( 'upcast' ).add( dispatcher => {
+					dispatcher.on( 'element:figure', converter );
+
+					function converter( evt, data, conversionApi ) {
+						if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+							return;
+						}
+
+						const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+						data.modelRange = modelRange;
+						data.modelCursor = modelCursor;
+					}
+				} );
+
+				editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph></paragraph>'
+				);
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<p></p>'
+				);
 			} );
 		} );
 

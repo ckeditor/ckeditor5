@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 import { modelToViewUrlAttributeConverter } from './converters';
 import MediaEmbedCommand from './mediaembedcommand';
@@ -259,7 +260,7 @@ export default class MediaEmbedEditing extends Plugin {
 				dispatcher.on( 'element:figure', converter );
 
 				function converter( evt, data, conversionApi ) {
-					if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+					if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'media' } ) ) {
 						return;
 					}
 
@@ -267,6 +268,14 @@ export default class MediaEmbedEditing extends Plugin {
 
 					data.modelRange = modelRange;
 					data.modelCursor = modelCursor;
+
+					const modelElement = first( modelRange.getItems() );
+
+					if ( !modelElement ) {
+						return;
+					}
+
+					conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } );
 				}
 			} );
 	}
