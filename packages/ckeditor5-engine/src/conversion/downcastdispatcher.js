@@ -339,7 +339,7 @@ export default class DowncastDispatcher {
 		this._addConsumablesForInsert( conversionApi.consumable, range );
 
 		// Convert the elements - without converting children.
-		const walkerValues = Array.from( range.getWalker( { shallow: true, ignoreElementEnd: true } ) );
+		const walkerValues = Array.from( range.getWalker( { shallow: true } ) );
 
 		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
 		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
@@ -445,8 +445,8 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
 	 */
-	_addConsumablesForInsert( consumable, range ) {
-		for ( const value of range ) {
+	_addConsumablesForInsert( consumable, walkerValues ) {
+		for ( const value of walkerValues ) {
 			const item = value.item;
 
 			// Add consumable if it wasn't there yet.
