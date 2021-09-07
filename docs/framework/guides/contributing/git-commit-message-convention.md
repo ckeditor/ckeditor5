@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 50
+modified_at: 2021-09-07
 ---
 
 # Git commit message convention
@@ -74,7 +75,7 @@ If your change is related to the main package only, use `ckeditor5` as the packa
 
 When creating PRs that address specific issues, use the following messages to indicate it. Add these in the same line with the merge message:
 * `Closes #123` &ndash; when the PR closes an issue.
-* `Closes #123` (outside the merge message) &ndash; when the PR closes an issue from a private repository.
+* `Closes #123` (outside the merge message) &ndash; when a PR in a public repo closes an issue from a private repository.
 * `See #123` &ndash; when the PR only references an issue, but does not close it yet.
 * _No reference_ &ndash; when the PR does not reference any issue.
 
