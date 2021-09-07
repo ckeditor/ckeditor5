@@ -187,6 +187,17 @@ describe( 'FindAndReplaceState', () => {
 
 			expect( state.searchText ).to.be.equal( '' );
 		} );
+
+		it( 'should clear results', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( '<p>foo foo foo</p>' );
+			editor.execute( 'find', 'foo' );
+
+			state.clear( model );
+
+			expect( state.results ).to.be.length( 0 );
+		} );
 	} );
 
 	function addMarker( name, secondParagraph, start, end ) {
