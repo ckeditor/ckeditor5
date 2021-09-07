@@ -176,6 +176,19 @@ describe( 'FindAndReplaceState', () => {
 		} );
 	} );
 
+	describe( 'clear()', () => {
+		it( 'should remove searchText', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( '<p>foo foo foo</p>' );
+			editor.execute( 'find', 'foo' );
+
+			state.clear( model );
+
+			expect( state.searchText ).to.be.equal( '' );
+		} );
+	} );
+
 	function addMarker( name, secondParagraph, start, end ) {
 		let marker = null;
 		model.change( writer => {
