@@ -276,6 +276,11 @@
 					"slug": "lists"
 				},
 				{
+					"name": "Pagination",
+					"id": "features-pagination",
+					"slug": "pagination"
+				},
+				{
 					"name": "Pasting",
 					"id": "features-pasting",
 					"slug": "pasting"
