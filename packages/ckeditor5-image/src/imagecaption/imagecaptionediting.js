@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
-import { setHighlightHandling, toWidgetEditable } from 'ckeditor5/src/widget';
+import { toWidgetEditable } from 'ckeditor5/src/widget';
 
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 
@@ -131,11 +131,7 @@ export default class ImageCaptionEditing extends Plugin {
 					keepOnFocus: true
 				} );
 
-				const widgetEditable = toWidgetEditable( figcaptionElement, writer );
-
-				setHighlightHandling( widgetEditable, writer );
-
-				return widgetEditable;
+				return toWidgetEditable( figcaptionElement, writer );
 			}
 		} );
 

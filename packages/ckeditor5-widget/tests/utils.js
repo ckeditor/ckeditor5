@@ -243,6 +243,58 @@ describe( 'widget utils', () => {
 			element.isFocused = false;
 			expect( element.hasClass( 'ck-editor__nested-editable_focused' ) ).to.be.false;
 		} );
+
+		it( 'should set default highlight handling methods - CSS class', () => {
+			toWidgetEditable( element, writer );
+
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, { priority: 1, classes: 'highlight', id: 'highlight' }, writer );
+			expect( element.hasClass( 'highlight' ) ).to.be.true;
+
+			remove( element, 'highlight', writer );
+			expect( element.hasClass( 'highlight' ) ).to.be.false;
+		} );
+
+		it( 'should set default highlight handling methods - CSS classes array', () => {
+			toWidgetEditable( element, writer );
+
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, { priority: 1, classes: [ 'highlight', 'foo' ], id: 'highlight' }, writer );
+			expect( element.hasClass( 'highlight' ) ).to.be.true;
+			expect( element.hasClass( 'foo' ) ).to.be.true;
+
+			remove( element, 'highlight', writer );
+			expect( element.hasClass( 'highlight' ) ).to.be.false;
+			expect( element.hasClass( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should set default highlight handling methods - attributes', () => {
+			toWidgetEditable( element, writer );
+
+			const set = element.getCustomProperty( 'addHighlight' );
+			const remove = element.getCustomProperty( 'removeHighlight' );
+
+			expect( typeof set ).to.equal( 'function' );
+			expect( typeof remove ).to.equal( 'function' );
+
+			set( element, { priority: 1, attributes: { foo: 'bar', abc: 'xyz' }, id: 'highlight' }, writer );
+			expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			expect( element.getAttribute( 'abc' ) ).to.equal( 'xyz' );
+
+			remove( element, 'highlight', writer );
+			expect( element.hasAttribute( 'foo' ) ).to.be.false;
+			expect( element.hasAttribute( 'abc' ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'setHighlightHandling()', () => {
