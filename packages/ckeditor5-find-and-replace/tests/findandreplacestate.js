@@ -194,6 +194,7 @@ describe( 'FindAndReplaceState', () => {
 			const paragraph = root.getChild( 0 );
 			const firstMarker = addMarker( 'findResult:test1', paragraph, 1, 3 );
 			const secondMarker = addMarker( 'findResult:test2', paragraph, 4, 6 );
+
 			addSearchResultToState( firstMarker );
 			addSearchResultToState( secondMarker );
 
@@ -237,6 +238,7 @@ describe( 'FindAndReplaceState', () => {
 
 	function addMarker( name, secondParagraph, start, end ) {
 		let marker = null;
+
 		model.change( writer => {
 			marker = writer.addMarker( name, {
 				usingOperation: false,
@@ -253,8 +255,7 @@ describe( 'FindAndReplaceState', () => {
 
 	function removeMarker( name ) {
 		model.change( writer => {
-			const marker = model.markers.get( name );
-			if ( marker ) {
+			if ( model.markers.has( name ) ) {
 				writer.removeMarker( name );
 			}
 		} );

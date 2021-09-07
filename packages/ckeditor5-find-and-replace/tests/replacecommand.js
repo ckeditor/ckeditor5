@@ -87,10 +87,7 @@ describe( 'ReplaceCommand', () => {
 				const marker = writer.addMarker( markerId, {
 					usingOperation: false,
 					affectsData: false,
-					range: writer.createRange(
-						writer.createPositionAt( root, 0 ),
-						writer.createPositionAt( root, 'end' )
-					)
+					range: writer.createRangeIn( root )
 				} );
 
 				editor.execute( 'replace', 'new', { marker } );
