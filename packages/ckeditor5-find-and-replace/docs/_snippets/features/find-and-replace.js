@@ -21,8 +21,12 @@ ClassicEditor
 				'redo',
 				'|',
 				'findAndReplace'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

@@ -2,6 +2,7 @@
 menu-title: DLL builds
 category: builds-development
 order: 30
+modified_at: 2021-08-31
 ---
 
 # CKEditor 5 DLL builds
@@ -147,19 +148,20 @@ For example:
 		.then( editor => {
 			window.editor = editor;
 		} );
+</script>
 ```
 
 ## Localization
 
-By default, all DLL builds use the default (English) translation files. However, the editor can be localized.
+All DLL builds use the default (English) translation files. However, a localized version of the the editor can be easily configured.
 
-The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain own translations files per a package.
+The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain their own translations files per package.
 
 <info-box info>
 	Some of the CKEditor 5 features do not provide translation files as they do not offer UI elements or toolbar items.
 </info-box>
 
-To create the editor with localized UI, you need to load necessary translation files (similar to loading DLL builds).
+To create an editor with a localized UI, you need to load the necessary translation files (similar to loading DLL builds).
 
 For example:
 

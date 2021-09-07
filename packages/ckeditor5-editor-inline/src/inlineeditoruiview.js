@@ -52,8 +52,13 @@ export default class InlineEditorUIView extends EditorUIView {
 		 * either using `position: fixed` or `position: sticky`, which would cover the
 		 * UI or vice–versa (depending on the `z-index` hierarchy).
 		 *
-		 * @readonly
+		 * Bound to {@link module:core/editor/editorui~EditorUI#viewportOffset `EditorUI#viewportOffset`}.
+		 *
+		 * If {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset.top`} is defined, then
+		 * it will override the default value.
+		 *
 		 * @observable
+		 * @default 0
 		 * @member {Number} #viewportTopOffset
 		 */
 		this.set( 'viewportTopOffset', 0 );
