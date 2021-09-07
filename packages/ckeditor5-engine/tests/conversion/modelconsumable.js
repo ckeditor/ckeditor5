@@ -52,6 +52,13 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( modelElement, 'foo:xxx' ) ).to.be.null;
 		} );
 
+		it( 'should normalize type name for inserts', () => {
+			modelConsumable.add( modelElement, 'insert:foo' );
+
+			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).to.be.true;
+			expect( modelConsumable.test( modelElement, 'insert' ) ).to.be.true;
+		} );
+
 		it( 'should not normalize type name for markers', () => {
 			modelConsumable.add( modelElement, 'addMarker:foo:bar:baz:abc' );
 			modelConsumable.add( modelElement, 'removeMarker:foo:bar:baz:abc' );
@@ -112,6 +119,16 @@ describe( 'ModelConsumable', () => {
 			expect( modelConsumable.test( modelElement, 'foo:bar:baz:abc' ) ).to.be.false;
 			expect( modelConsumable.test( modelElement, 'foo:bar:baz' ) ).to.be.false;
 			expect( modelConsumable.test( modelElement, 'foo:bar' ) ).to.be.false;
+		} );
+
+		it( 'should normalize type name for inserts', () => {
+			modelConsumable.add( modelElement, 'insert' );
+			const result = modelConsumable.consume( modelElement, 'insert:foo' );
+
+			expect( result ).to.be.true;
+
+			expect( modelConsumable.test( modelElement, 'insert:foo' ) ).to.be.false;
+			expect( modelConsumable.test( modelElement, 'insert' ) ).to.be.false;
 		} );
 
 		it( 'should not normalize type names for markers', () => {

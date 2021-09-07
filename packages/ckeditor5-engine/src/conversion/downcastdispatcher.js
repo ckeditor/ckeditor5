@@ -267,7 +267,7 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertInsert( range, conversionApi ) {
-		// Create a list of things that can be consumed, consisting of nodes and their attributes.
+		// Collect a list of things that can be consumed, consisting of nodes and their attributes.
 		this._addConsumablesForInsert( conversionApi.consumable, range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
@@ -335,13 +335,14 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertReinsert( range, conversionApi ) {
-		// Create a list of things that can be consumed, consisting of nodes and their attributes.
+		// Collect a list of things that can be consumed, consisting of nodes and their attributes.
 		this._addConsumablesForInsert( conversionApi.consumable, range );
 
 		// Convert the elements - without converting children.
-		//
-		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
+		const walkerValues = Array.from( range.getWalker( { shallow: true, ignoreElementEnd: true } ) );
+
+		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
+		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
 			this._convertInsertWithAttributes( { ...data, reconversion: true }, conversionApi );
 		}
 	}
@@ -436,7 +437,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
+	 * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume from a given range,
 	 * assuming that the range has just been inserted to the model.
 	 *
 	 * @private
@@ -462,7 +463,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for a given range.
+	 * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with values to consume for a given range.
 	 *
 	 * @private
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
@@ -479,7 +480,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Creates {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
+	 * Populates provided {@link module:engine/conversion/modelconsumable~ModelConsumable} with selection consumable values.
 	 *
 	 * @private
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
