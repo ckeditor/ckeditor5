@@ -246,6 +246,29 @@ describe( 'FindAndReplace', () => {
 			} );
 		} );
 
+		describe( 'subsequent findNext events', () => {
+			it( 'causes just a findNext command call', () => {
+				editor.setData( LONG_TEXT );
+
+				// The first call, it will call different logic.
+				findAndReplaceUI.fire( 'findNext', { searchText: 'cake' } );
+
+				const findSpy = getCommandExecutionSpy( 'find' );
+				const findNextSpy = getCommandExecutionSpy( 'findNext' );
+
+				// Second call (only if the search text remains the same) should just move the highlight.
+				findAndReplaceUI.fire( 'findNext', { searchText: 'cake' } );
+
+				sinon.assert.callCount( findSpy, 1 );
+				sinon.assert.callCount( findNextSpy, 0 );
+
+				// Third call without passing any searchText should just move the highlight.
+				findAndReplaceUI.fire( 'findNext' );
+
+				sinon.assert.callCount( findNextSpy, 1 );
+			} );
+		} );
+
 		describe( 'subsequent findPrevious events', () => {
 			it( 'causes just a findPrevious command call', () => {
 				editor.setData( LONG_TEXT );

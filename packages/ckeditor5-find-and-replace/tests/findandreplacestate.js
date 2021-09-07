@@ -103,19 +103,6 @@ describe( 'FindAndReplaceState', () => {
 			expect( editor.model.markers.has( 'findResultHighlighted:test1' ) ).to.be.false;
 			expect( editor.model.markers.has( 'findResultHighlighted:test2' ) ).to.be.true;
 		} );
-
-		function addSearchResultToState( marker ) {
-			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
-			const matchInfo = {
-				id: marker.name.replace( /^findResult:/, '' ),
-				label: 'label',
-				marker
-			};
-
-			state.results.add( matchInfo );
-
-			return matchInfo;
-		}
 	} );
 
 	describe( 'state', () => {
@@ -176,8 +163,82 @@ describe( 'FindAndReplaceState', () => {
 		} );
 	} );
 
+	describe( 'clear()', () => {
+		it( 'should remove searchText', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( '<p>foo foo foo</p>' );
+			editor.execute( 'find', 'foo' );
+
+			state.clear( model );
+
+			expect( state.searchText ).to.be.equal( '' );
+		} );
+
+		it( 'should clear results', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( '<p>foo foo foo</p>' );
+			editor.execute( 'find', 'foo' );
+
+			state.clear( model );
+
+			expect( state.results ).to.be.length( 0 );
+		} );
+
+		it( 'should remove findResult markers', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( FOO_BAR_PARAGRAPH );
+
+			const paragraph = root.getChild( 0 );
+			const firstMarker = addMarker( 'findResult:test1', paragraph, 1, 3 );
+			const secondMarker = addMarker( 'findResult:test2', paragraph, 4, 6 );
+
+			addSearchResultToState( firstMarker );
+			addSearchResultToState( secondMarker );
+
+			state.clear( model );
+
+			expect( editor.model.markers.has( 'findResult:test1' ) ).to.be.false;
+			expect( editor.model.markers.has( 'findResult:test2' ) ).to.be.false;
+		} );
+
+		it( 'should remove findResultHighlighted marker', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( FOO_BAR_PARAGRAPH );
+
+			const paragraph = root.getChild( 0 );
+			const marker = addMarker( 'findResult:test1', paragraph, 1, 3 );
+			const match = addSearchResultToState( marker );
+
+			state.highlightedResult = match;
+
+			state.clear( model );
+
+			expect( editor.model.markers.has( 'findResultHighlighted:test1' ) ).to.be.false;
+		} );
+
+		it( 'should not throw exception when there is no findResultHighlighted marker', () => {
+			const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+
+			editor.setData( FOO_BAR_PARAGRAPH );
+
+			const paragraph = root.getChild( 0 );
+			const marker = addMarker( 'findResult:test1', paragraph, 1, 3 );
+			const match = addSearchResultToState( marker );
+
+			state.highlightedResult = match;
+			removeMarker( 'findResultHighlighted:test1' );
+
+			expect( () => state.clear( model ) ).to.not.throw();
+		} );
+	} );
+
 	function addMarker( name, secondParagraph, start, end ) {
 		let marker = null;
+
 		model.change( writer => {
 			marker = writer.addMarker( name, {
 				usingOperation: false,
@@ -190,5 +251,26 @@ describe( 'FindAndReplaceState', () => {
 		} );
 
 		return marker;
+	}
+
+	function removeMarker( name ) {
+		model.change( writer => {
+			if ( model.markers.has( name ) ) {
+				writer.removeMarker( name );
+			}
+		} );
+	}
+
+	function addSearchResultToState( marker ) {
+		const state = editor.plugins.get( 'FindAndReplaceEditing' ).state;
+		const matchInfo = {
+			id: marker.name.replace( /^findResult:/, '' ),
+			label: 'label',
+			marker
+		};
+
+		state.results.add( matchInfo );
+
+		return matchInfo;
 	}
 } );
