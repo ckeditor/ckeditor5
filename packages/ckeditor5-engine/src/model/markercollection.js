@@ -52,7 +52,7 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Checks if given {@link ~Marker marker} or marker with given name is in the collection.
+	 * Checks if given {@link ~Marker marker} or marker name is in the collection.
 	 *
 	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker or marker instance to check.
 	 * @returns {Boolean} `true` if marker is in the collection, `false` otherwise.
