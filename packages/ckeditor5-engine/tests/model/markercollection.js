@@ -142,8 +142,8 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should return false if given instance of marker is not in the collection', () => {
-			const markerCollection = new MarkerCollection();
-			const marker = markerCollection._set( 'differentName', range );
+			const differentMarkerCollection = new MarkerCollection();
+			const marker = differentMarkerCollection._set( 'differentName', range );
 			expect( markers.has( marker ) ).to.be.false;
 		} );
 
