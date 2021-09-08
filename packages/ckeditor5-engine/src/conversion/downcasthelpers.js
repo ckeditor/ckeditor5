@@ -909,14 +909,28 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
+		if ( !viewElement.isEmpty ) {
+			console.log( '!!!', viewElement );
+		}
+
 		console.log( '  insertElement: ' + data.range.start.path );
 
+		const oldView = conversionApi.mapper.toViewElement( data.item );
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
+		if ( data.reconversion && oldView ) {
+			console.log( '    reusing content of: ' + data.range.start.path );
+			// TODO only for nodes that are not at the current root?
+			conversionApi.writer.move(
+				conversionApi.writer.createRangeIn( oldView ),
+				conversionApi.writer.createPositionAt( viewElement, 0 )
+			);
+		}
+
+		// reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -2085,6 +2099,17 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 				writer.createRangeOn( viewChildNode ),
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
+
+			// let viewNode = viewChildNode;
+			//
+			// while ( !mapper.toModelElement( viewNode.parent ) ) {
+			// 	viewNode = viewNode.parent;
+			// }
+			//
+			// writer.move(
+			// 	writer.createRangeOn( viewNode ),
+			// 	mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
+			// );
 		} else {
 			console.log( '    creating: ' + ModelPosition._createBefore( modelChildNode ).path );
 			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
