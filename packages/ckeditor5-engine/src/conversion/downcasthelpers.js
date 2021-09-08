@@ -1993,20 +1993,25 @@ function validateSlotsChildren( element, slotsMap, conversionApi ) {
 
 	if ( uniqueChildrenInSlots.size != childrenInSlots.length ) {
 		/**
-		 * A filter provided to `conversionApi.slotFor()` is to permissive and leads to downcasting a same node to a multiple slots.
+		 * Filters provided to `conversionApi.slotFor()` overlap (at least two filters accept the same child element).
 		 *
-		 * @error conversion-slot-filter-to-permissive
+		 * @error conversion-slot-filter-overlap
+		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * allocated to multiple slots.
 		 */
-		throw new CKEditorError( 'conversion-slot-filter-to-permissive', conversionApi.dispatcher, { element, slotsMap } );
+		throw new CKEditorError( 'conversion-slot-filter-overlap', conversionApi.dispatcher, { element } );
 	}
 
 	if ( uniqueChildrenInSlots.size != element.childCount ) {
 		/**
-		 * A filter provided to `conversionApi.slotFor()` is to restrictive and leads to missing some nodes while downcasting.
+		 * Filters provided to `conversionApi.slotFor()` are incomplete and exclude at least one children element (one of
+		 * the children elements would not be assigned to any of the slots).
 		 *
-		 * @error conversion-slot-filter-to-restrictive
+		 * @error conversion-slot-filter-incomplete
+		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * allocated to multiple slots.
 		 */
-		throw new CKEditorError( 'conversion-slot-filter-to-restrictive', conversionApi.dispatcher, { element, slotsMap } );
+		throw new CKEditorError( 'conversion-slot-filter-incomplete', conversionApi.dispatcher, { element } );
 	}
 }
 

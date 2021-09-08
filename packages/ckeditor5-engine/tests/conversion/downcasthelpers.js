@@ -1487,7 +1487,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'paragraph', complex, 0 );
 					writer.insert( complex, modelRoot, 0 );
 				} );
-			}, /^conversion-slot-filter-to-permissive/, controller.downcastDispatcher );
+			}, /^conversion-slot-filter-overlap/, controller.downcastDispatcher );
 		} );
 
 		it( 'should throw an exception if slot filter not include all children', () => {
@@ -1534,7 +1534,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'paragraph', complex, 0 );
 					writer.insert( complex, modelRoot, 0 );
 				} );
-			}, /^conversion-slot-filter-to-restrictive/, controller.downcastDispatcher );
+			}, /^conversion-slot-filter-incomplete/, controller.downcastDispatcher );
 		} );
 	} );
 
