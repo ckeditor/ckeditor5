@@ -18,6 +18,17 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * @extends module:core/plugin~Plugin
  */
 export default class Delete extends Plugin {
+	static get requires() {
+		return [ 'Undo' ];
+	}
+
+	/**
+	 * Whether pressing backspace should trigger undo action
+	 *
+	 * @private
+	 * @member {Boolean} #_undoByBackspace
+	 */
+
 	/**
 	 * @inheritDoc
 	 */
@@ -29,8 +40,11 @@ export default class Delete extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const modelDocument = editor.model.document;
 
 		view.addObserver( DeleteObserver );
+
+		this._undoByBackspace = false;
 
 		const deleteForwardCommand = new DeleteCommand( editor, 'forward' );
 
@@ -41,23 +55,30 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
+			if ( this._undoByBackspace && data.direction == 'backward' && data.sequence == 1 ) {
+				this._undoByBackspace = false;
 
-			// If a specific (view) selection to remove was set, convert it to a model selection and set as a parameter for `DeleteCommand`.
-			if ( data.selectionToRemove ) {
-				const modelSelection = editor.model.createSelection();
-				const ranges = [];
+				editor.execute( 'undo' );
+			} else {
+				const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
 
-				for ( const viewRange of data.selectionToRemove.getRanges() ) {
-					ranges.push( editor.editing.mapper.toModelRange( viewRange ) );
+				// If a specific (view) selection to remove was set,
+				// convert it to a model selection and set as a parameter for `DeleteCommand`.
+				if ( data.selectionToRemove ) {
+					const modelSelection = editor.model.createSelection();
+					const ranges = [];
+
+					for ( const viewRange of data.selectionToRemove.getRanges() ) {
+						ranges.push( editor.editing.mapper.toModelRange( viewRange ) );
+					}
+
+					modelSelection.setTo( ranges );
+
+					deleteCommandParams.selection = modelSelection;
 				}
 
-				modelSelection.setTo( ranges );
-
-				deleteCommandParams.selection = modelSelection;
+				editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
 			}
-
-			editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
 
 			data.preventDefault();
 
@@ -97,5 +118,16 @@ export default class Delete extends Plugin {
 				}
 			} );
 		}
+
+		this.listenTo( modelDocument, 'change', () => {
+			this._undoByBackspace = false;
+		} );
+	}
+
+	/**
+	 * If the next user action after calling this method is pressing backspace, it would undo the last change.
+	 */
+	enableUndoOnDelete() {
+		this._undoByBackspace = true;
 	}
 }
