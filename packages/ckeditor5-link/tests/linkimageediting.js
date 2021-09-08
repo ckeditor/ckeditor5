@@ -229,11 +229,11 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
-				it( 'should not convert without src attribute', () => {
+				it( 'should convert without src attribute', () => {
 					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" /></a></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<paragraph></paragraph>' );
+						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
 				it( 'should not convert in wrong context', () => {
@@ -307,11 +307,11 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
-				it( 'should not convert an image surrounded by a link without src attribute', () => {
+				it( 'should convert an image surrounded by a link without src attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img alt="alt text" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<paragraph></paragraph>' );
+						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
 				it( 'should not convert in wrong context', () => {

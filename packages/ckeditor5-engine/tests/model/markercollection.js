@@ -140,6 +140,17 @@ describe( 'MarkerCollection', () => {
 			markers._set( 'name', range );
 			expect( markers.has( 'name' ) ).to.be.true;
 		} );
+
+		it( 'should return false if given instance of marker is not in the collection', () => {
+			const differentMarkerCollection = new MarkerCollection();
+			const marker = differentMarkerCollection._set( 'differentName', range );
+			expect( markers.has( marker ) ).to.be.false;
+		} );
+
+		it( 'should return true if given instance of marker is in the collection', () => {
+			const marker = markers._set( 'name', range );
+			expect( markers.has( marker ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'get', () => {

@@ -66,6 +66,19 @@ describe( 'FindNextCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
+		it( 'should be enabled after disabling readonly mode', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command._state.results.clear();
+			command._state.results.add( {} );
+			command._state.results.add( {} );
+
+			editor.isReadOnly = true;
+			editor.isReadOnly = false;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be enabled if the next occurrence is not in the main root', async () => {
 			const multiRootEditor = await initMultiRootEditor();
 

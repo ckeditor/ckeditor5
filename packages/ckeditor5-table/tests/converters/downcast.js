@@ -1647,15 +1647,117 @@ describe( 'downcast converters', () => {
 			} );
 		} );
 
-		function markerConversion( conversion, extraClasses = null ) {
+		describe( 'attributes in highlight descriptor', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
+
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				view = editor.editing.view;
+
+				markerConversion( editor.conversion, [], { 'data-foo': 'bar', 'data-abc': 'xyz' } );
+			} );
+
+			it( 'should apply attributes on tableCell - on inserting a table', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 0 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+
+					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow"' +
+										' contenteditable="true" data-abc="xyz" data-foo="bar">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should preserve attributes on tableCell - when changing heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 3, table );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+				const viewElement = editor.editing.mapper.toViewElement( cell );
+
+				expect( viewElement.getAttribute( 'data-foo' ) ).to.equal( 'bar' );
+				expect( viewElement.getAttribute( 'data-abc' ) ).to.equal( 'xyz' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( viewElement.hasAttribute( 'data-foo' ) ).to.be.false;
+				expect( viewElement.hasAttribute( 'data-abc' ) ).to.be.false;
+			} );
+		} );
+
+		function markerConversion( conversion, extraClasses = null, extraAttributes ) {
 			conversion.for( 'editingDowncast' ).markerToHighlight( {
 				model: 'marker',
 				view: data => {
 					const className = 'highlight-' + data.markerName.split( ':' )[ 1 ];
+					const descriptor = {};
 
-					return {
-						classes: extraClasses ? [ ...extraClasses, className ] : className
-					};
+					descriptor.classes = extraClasses ? [ ...extraClasses, className ] : className;
+
+					if ( extraAttributes ) {
+						descriptor.attributes = extraAttributes;
+					}
+
+					return descriptor;
 				}
 			} );
 		}
