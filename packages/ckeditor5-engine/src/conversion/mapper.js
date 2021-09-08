@@ -89,7 +89,7 @@ export default class Mapper {
 		this._elementToMarkerNames = new Map();
 
 		/**
-		 * Map of removed view elements with their current root (used for deferred unbinding).
+		 * The map of removed view elements with their current root (used for deferred unbinding).
 		 *
 		 * @private
 		 * @member {Map.<module:engine/view/element~Element,module:engine/view/documentfragment~DocumentFragment>}
@@ -145,17 +145,17 @@ export default class Mapper {
 	}
 
 	/**
-	 * Unbinds given {@link module:engine/view/element~Element view element} from the map.
+	 * Unbinds the given {@link module:engine/view/element~Element view element} from the map.
 	 *
 	 * **Note:** view-to-model binding will be removed, if it existed. However, corresponding model-to-view binding
-	 * will be removed only if model element is still bound to passed `viewElement`.
+	 * will be removed only if model element is still bound to the passed `viewElement`.
 	 *
 	 * This behavior lets for re-binding model element to another view element without fear of losing the new binding
 	 * when the previously bound view element is unbound.
 	 *
 	 * @param {module:engine/view/element~Element} viewElement View element to unbind.
 	 * @param {Object} [options={}] The options object.
-	 * @param {Boolean} [options.defer=false] Controls whether binding should be immediately removed or deferred until the
+	 * @param {Boolean} [options.defer=false] Controls whether the binding should be removed immediately or deferred until a
 	 * {@link #flushDeferredBindings `flushDeferredBindings()`} call.
 	 */
 	unbindViewElement( viewElement, options = {} ) {
@@ -260,7 +260,9 @@ export default class Mapper {
 	}
 
 	/**
-	 * Unbinds all deferred binding removals that were not re-attached to some root or document fragment.
+	 * Unbinds all deferred binding removals of view elements that were not re-attached in the meantime to some root or document fragment.
+	 *
+	 * See: {@link #unbindViewElement `unbindViewElement()`}.
 	 */
 	flushDeferredBindings() {
 		for ( const [ viewElement, root ] of this._deferredBindingRemovals ) {

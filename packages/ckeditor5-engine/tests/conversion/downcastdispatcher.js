@@ -492,7 +492,7 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			view.change( writer => {
-				dispatcher._convertInsert( range, dispatcher._prepareConversionApi( writer ) );
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
 			} );
 
 			// Check the data passed to called events and the order of them.
@@ -529,7 +529,7 @@ describe( 'DowncastDispatcher', () => {
 			const range = model.createRangeIn( root );
 
 			view.change( writer => {
-				dispatcher._convertInsert( range, dispatcher._prepareConversionApi( writer ) );
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
 			} );
 
 			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
@@ -586,7 +586,7 @@ describe( 'DowncastDispatcher', () => {
 			const range = model.createRangeIn( root );
 
 			view.change( writer => {
-				dispatcher._convertInsert( range, dispatcher._prepareConversionApi( writer ) );
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
 			} );
 
 			expect( loggedEvents ).to.deep.equal( [
@@ -639,7 +639,7 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			view.change( writer => {
-				dispatcher._convertReinsert( range, dispatcher._prepareConversionApi( writer ) );
+				dispatcher._convertReinsert( range, dispatcher._createConversionApi( writer ) );
 			} );
 
 			// Check the data passed to called events and the order of them.
@@ -950,7 +950,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
 			} );
 
-			dispatcher._convertMarkerAdd( 'name', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spy.calledOnce ).to.be.true;
 
@@ -964,7 +964,7 @@ describe( 'DowncastDispatcher', () => {
 			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher._convertMarkerAdd( 'name', eleRange, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'name', eleRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.true;
 
@@ -976,7 +976,7 @@ describe( 'DowncastDispatcher', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher._convertMarkerAdd( 'name', gyRange, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'name', gyRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.false;
 
@@ -1013,7 +1013,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			} );
 
-			dispatcher._convertMarkerAdd( 'name', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spyWholeRange.calledOnce ).to.be.true;
 			expect( spyItems.calledTwice ).to.be.true;
@@ -1042,7 +1042,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			} );
 
-			dispatcher._convertMarkerAdd( 'name', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spyItems.called ).to.be.false;
 
@@ -1070,7 +1070,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			}, { priority: 'high' } );
 
-			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._createConversionApi() );
 
 			expect( addMarkerSpy.called ).to.be.false;
 			expect( highAddMarkerSpy.calledOnce ).to.be.true;
@@ -1099,7 +1099,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			}, { priority: 'high' } );
 
-			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._createConversionApi() );
 
 			expect( addMarkerSpy.called ).to.be.false;
 
@@ -1125,7 +1125,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire removeMarker event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher._convertMarkerRemove( 'name', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerRemove( 'name', range, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.calledWith( 'removeMarker:name' ) ).to.be.true;
 
@@ -1137,7 +1137,7 @@ describe( 'DowncastDispatcher', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher._convertMarkerRemove( 'name', gyRange, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerRemove( 'name', gyRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.false;
 
@@ -1151,7 +1151,7 @@ describe( 'DowncastDispatcher', () => {
 			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher._convertMarkerRemove( 'name', eleRange, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerRemove( 'name', eleRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.true;
 
@@ -1167,7 +1167,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
 			} );
 
-			dispatcher._convertMarkerRemove( 'name', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerRemove( 'name', range, dispatcher._createConversionApi() );
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
@@ -1187,7 +1187,7 @@ describe( 'DowncastDispatcher', () => {
 				evt.stop();
 			}, { priority: 'high' } );
 
-			dispatcher._convertMarkerRemove( 'marker', range, dispatcher._prepareConversionApi() );
+			dispatcher._convertMarkerRemove( 'marker', range, dispatcher._createConversionApi() );
 
 			expect( removeMarkerSpy.called ).to.be.false;
 			expect( highRemoveMarkerSpy.calledOnce ).to.be.true;

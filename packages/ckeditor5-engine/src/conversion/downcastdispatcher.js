@@ -127,14 +127,21 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Takes a {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
+	 * Converts changes buffered in the given {@link module:engine/model/differ~Differ model differ}
+	 * and fires conversion events based on it.
 	 *
+	 * @fires insert
+	 * @fires remove
+	 * @fires attribute
+	 * @fires addMarker
+ 	 * @fires removeMarker
+	 * @fires reducedChanges
 	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
-	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers connected with the converted model.
+	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers related to the model fragment to convert.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertChanges( differ, markers, writer ) {
-		const conversionApi = this._prepareConversionApi( writer );
+		const conversionApi = this._createConversionApi( writer );
 
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
@@ -186,7 +193,7 @@ export default class DowncastDispatcher {
 	 * @param {Object} [options] Optional options object passed to `convertionApi.options`.
 	 */
 	convert( range, markers, writer, options = {} ) {
-		const conversionApi = this._prepareConversionApi( writer, options );
+		const conversionApi = this._createConversionApi( writer, options );
 
 		this._convertInsert( range, conversionApi );
 
@@ -210,7 +217,7 @@ export default class DowncastDispatcher {
 	convertSelection( selection, markers, writer ) {
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
 
-		const conversionApi = this._prepareConversionApi( writer );
+		const conversionApi = this._createConversionApi( writer );
 
 		this._addConsumablesForSelection( conversionApi.consumable, selection, markersAtSelection );
 
@@ -255,7 +262,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Fires insertion conversion of a range of elements.
+	 * Fires insertion conversion of a range of nodes.
 	 *
 	 * For each node in the range, {@link #event:insert `insert` event is fired}. For each attribute on each node,
 	 * {@link #event:attribute `attribute` event is fired}.
@@ -325,9 +332,10 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Fires re-insertion conversion of a range of elements (only elements on the range depth, without children).
+	 * Fires re-insertion conversion (with a `reconversion` flag passed to `insert` events)
+	 * of a range of elements (only elements on the range depth, without children).
 	 *
-	 * For each node in the range on it's depth (without children), {@link #event:insert `insert` event} is fired.
+	 * For each node in the range on its depth (without children), {@link #event:insert `insert` event} is fired.
 	 * For each attribute on each node, {@link #event:attribute `attribute` event} is fired.
 	 *
 	 * @protected
@@ -532,7 +540,7 @@ export default class DowncastDispatcher {
 	 * @param {Object} [options] Optional options passed to `convertionApi.options`.
 	 * @return {module:engine/conversion/downcastdispatcher~DowncastConversionApi} The conversion API object.
 	 */
-	_prepareConversionApi( writer, options = {} ) {
+	_createConversionApi( writer, options = {} ) {
 		const conversionApi = {
 			...this._conversionApi,
 			consumable: new Consumable(),
@@ -569,12 +577,14 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Fired for the reduction of changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
-	 * {@link #convertChanges `convertChanges()`} will fire any events to convert changes.
+	 * Fired to enable reducing (transforming) changes buffered in the {@link module:engine/model/differ~Differ `Differ`} before
+	 * {@link #convertChanges `convertChanges()`} will fire any conversion events.
 	 *
-	 * Features can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with `reinsert` entries to trigger
-	 * reconversion. The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
-	 * `DowncastHelpers.elementToStructure()`} is using this event to trigger reconversion.
+	 * For instance, a feature can replace selected {@link module:engine/model/differ~DiffItem `DiffItem`}s with a `reinsert` entry
+	 * to trigger reconversion of an element when e.g. its attribute has changes.
+	 * The {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+	 * `DowncastHelpers.elementToStructure()`} helper is using this event to trigger reconversion of an element when the element,
+	 * its attributes or direct children changed.
 	 *
 	 * @param {Object} data
 	 * @param {Iterable.<module:engine/model/differ~DiffItem>} data.changes A buffered changes to get reduced.
@@ -784,7 +794,8 @@ function walkerValueToEventData( value ) {
  */
 
 /**
- * Triggers the nested insert conversion on a specified range.
+ * Triggers conversion of a specified range.
+ * This conversion is triggered within (as a separate process of) the parent conversion.
  *
  * @method #convertInsert
  * @param {module:engine/model/range~Range} range The range to trigger nested insert conversion on.

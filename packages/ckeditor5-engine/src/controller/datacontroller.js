@@ -250,7 +250,6 @@ export default class DataController {
 			modelElementOrFragment.markers :
 			_getMarkersRelativeToElement( modelElementOrFragment );
 
-		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convert( modelRange, markers, viewWriter, options );
 
 		return viewDocumentFragment;
