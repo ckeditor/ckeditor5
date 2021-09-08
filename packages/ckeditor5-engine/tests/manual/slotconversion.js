@@ -171,7 +171,7 @@ function Box( editor ) {
 		allowIn: '$root',
 		isObject: true,
 		isSelectable: true,
-		allowAttributes: [ 'infoBoxMeta' ]
+		allowAttributes: [ 'meta' ]
 	} );
 
 	editor.model.schema.register( 'boxField', {
