@@ -138,6 +138,7 @@ export default class FindAndReplaceEditing extends Plugin {
 		// This would result with accessing a view three that is no longer in DOM.
 		this.listenTo( this.editor, 'destroy', debouncedScrollListener.cancel );
 
+		/* istanbul ignore next */
 		function scrollToHighlightedResult( eventInfo, name, newValue ) {
 			if ( newValue ) {
 				const domConverter = this.editor.editing.view.domConverter;

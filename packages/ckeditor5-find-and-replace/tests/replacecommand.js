@@ -77,6 +77,25 @@ describe( 'ReplaceCommand', () => {
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo new baz</p>' );
 		} );
 
+		it( 'should replace all with text', () => {
+			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+
+			const root = editor.model.document.getRoot();
+			const markerId = 'my-marker-id';
+
+			model.change( writer => {
+				const marker = writer.addMarker( markerId, {
+					usingOperation: false,
+					affectsData: false,
+					range: writer.createRangeIn( root )
+				} );
+
+				editor.execute( 'replace', 'new', { marker } );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>new</p>' );
+		} );
+
 		it( 'should highlight next match', () => {
 			setData( model, '<paragraph>foo foo foo foo []</paragraph>' );
 

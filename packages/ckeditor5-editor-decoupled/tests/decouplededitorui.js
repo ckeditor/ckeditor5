@@ -157,8 +157,12 @@ describe( 'DecoupledEditorUI', () => {
 					return VirtualDecoupledTestEditor
 						.create( '', {
 							toolbar: {
-								items: [ 'foo', 'bar' ],
-								viewportTopOffset: 100
+								items: [ 'foo', 'bar' ]
+							},
+							ui: {
+								viewportOffset: {
+									top: 100
+								}
 							}
 						} )
 						.then( editor => {

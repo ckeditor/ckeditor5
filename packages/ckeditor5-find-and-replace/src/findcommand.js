@@ -30,10 +30,8 @@ export default class FindCommand extends Command {
 		this.state = state;
 
 		// Do not block the command if the editor goes into the read-only mode as it does not impact the data. See #9975.
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value ) {
-				this.clearForceDisabled( 'readOnlyMode' );
-			}
+		this.listenTo( editor, 'change:isReadOnly', () => {
+			this.clearForceDisabled( 'readOnlyMode' );
 		} );
 	}
 

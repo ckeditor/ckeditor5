@@ -17,7 +17,7 @@ There were also a few bug fixes:
 
 * Switching to source editing no longer [scrolls to the end of the content](https://github.com/ckeditor/ckeditor5/issues/10180).
 * The highlight feature [can now be used while typing](https://github.com/ckeditor/ckeditor5/issues/2616).
-* Pasted HTML comments [are no longer filtered out](https://github.com/ckeditor/ckeditor5/issues/10213).
+* Pasted HTML comments [are filtered out](https://github.com/ckeditor/ckeditor5/issues/10213).
 
 <!-- TODO: Add a link to the blog post. -->
 
