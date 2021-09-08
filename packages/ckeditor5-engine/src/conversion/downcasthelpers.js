@@ -2060,22 +2060,19 @@ function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 // @param {Object} options
 // @param {Boolean} [options.reconversion]
 function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
-	const { writer, mapper, consumable } = conversionApi;
+	const { writer, mapper } = conversionApi;
 
 	// Fill with nested view nodes.
 	for ( const modelChildNode of modelNodes ) {
 		const viewChildNode = mapper.toViewElement( modelChildNode );
 
 		if ( options.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
-			consumable.consume( modelChildNode, 'insert' );
-
 			writer.move(
 				writer.createRangeOn( viewChildNode ),
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
 		} else {
-			// Note that this is not creating another consumable, it's using the current one.
-			conversionApi.convert( ModelRange._createOn( modelChildNode ) );
+			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
 		}
 	}
 }

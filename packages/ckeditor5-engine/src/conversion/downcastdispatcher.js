@@ -267,11 +267,13 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertInsert( range, conversionApi ) {
+		const walkerValues = Array.from( range );
+
 		// Collect a list of things that can be consumed, consisting of nodes and their attributes.
-		this._addConsumablesForInsert( conversionApi.consumable, range );
+		this._addConsumablesForInsert( conversionApi.consumable, walkerValues );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of Array.from( range ).map( walkerValueToEventData ) ) {
+		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
 			this._convertInsertWithAttributes( data, conversionApi );
 		}
 	}
@@ -335,11 +337,11 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_convertReinsert( range, conversionApi ) {
-		// Collect a list of things that can be consumed, consisting of nodes and their attributes.
-		this._addConsumablesForInsert( conversionApi.consumable, range );
-
 		// Convert the elements - without converting children.
 		const walkerValues = Array.from( range.getWalker( { shallow: true } ) );
+
+		// Collect a list of things that can be consumed, consisting of nodes and their attributes.
+		this._addConsumablesForInsert( conversionApi.consumable, walkerValues );
 
 		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
 		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
@@ -442,7 +444,7 @@ export default class DowncastDispatcher {
 	 *
 	 * @private
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The consumable.
-	 * @param {module:engine/model/range~Range} range The inserted range.
+	 * @param {Iterable.<module:engine/model/treewalker~TreeWalkerValue>} walkerValues The walker values for the inserted range.
 	 * @returns {module:engine/conversion/modelconsumable~ModelConsumable} The values to consume.
 	 */
 	_addConsumablesForInsert( consumable, walkerValues ) {
@@ -536,7 +538,7 @@ export default class DowncastDispatcher {
 			consumable: new Consumable(),
 			writer,
 			options,
-			convert: range => this._convertInsert( range, conversionApi )
+			convertInsert: range => this._convertInsert( range, conversionApi )
 		};
 
 		return conversionApi;

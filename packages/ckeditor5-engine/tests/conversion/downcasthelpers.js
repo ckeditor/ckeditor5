@@ -1403,54 +1403,6 @@ describe( 'DowncastHelpers', () => {
 			} );
 		} );
 
-		it( 'should consume reinserted elements', () => {
-			model.schema.register( 'simple', {
-				allowIn: '$root'
-			} );
-
-			downcastHelpers.elementToStructure( {
-				model: {
-					name: 'simple',
-					children: true
-				},
-				view: ( modelElement, { writer, slotFor } ) => {
-					const element = writer.createContainerElement( 'div' );
-
-					writer.insert( writer.createPositionAt( element, 'end' ), slotFor( 'children' ) );
-
-					return element;
-				}
-			} );
-
-			model.schema.register( 'paragraph', {
-				inheritAllFrom: '$block',
-				allowIn: 'simple'
-			} );
-
-			downcastHelpers.elementToElement( {
-				model: 'paragraph',
-				view: 'p'
-			} );
-
-			setModelData( model, '<simple><paragraph>foo</paragraph></simple>' );
-
-			let consumable;
-
-			controller.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
-				consumable = conversionApi.consumable;
-			} );
-
-			model.change( writer => {
-				const paragraph = writer.createElement( 'paragraph' );
-
-				writer.insertText( 'bar', paragraph, 0 );
-				writer.insert( paragraph, modelRoot.getChild( 0 ), 1 );
-			} );
-
-			expect( consumable.test( modelRoot.getNodeByPath( [ 0, 0 ] ), 'insert' ) ).to.be.false;
-			expect( consumable.test( modelRoot.getNodeByPath( [ 0, 1 ] ), 'insert' ) ).to.be.false;
-		} );
-
 		it( 'should throw an exception if invalid slot mode or filter was provided', () => {
 			model.schema.register( 'simple', {
 				allowIn: '$root'

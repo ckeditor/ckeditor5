@@ -571,7 +571,7 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
 				if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
-					conversionApi.convert( data.range );
+					conversionApi.convertInsert( data.range );
 				}
 			} );
 
