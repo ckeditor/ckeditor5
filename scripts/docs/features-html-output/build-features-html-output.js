@@ -268,7 +268,7 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">Feature guide</a>`;
 }
 
 /**
@@ -295,7 +295,7 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ pluginClassName }">API documentation</a>`;
 }
 
 /**
