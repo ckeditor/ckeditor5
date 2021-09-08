@@ -9,6 +9,8 @@
  * @module engine/conversion/downcasthelpers
  */
 
+/* global console */
+
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
@@ -907,10 +909,14 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
+		console.log( '  insertElement: ' + data.range.start.path );
+
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
+
+		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -950,6 +956,8 @@ export function insertStructure( elementCreator, consumer ) {
 		if ( !consumer( data.item, conversionApi.consumable ) ) {
 			return;
 		}
+
+		console.log( '  insertStructure: ' + data.range.start.path );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -2072,11 +2080,13 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 		const viewChildNode = mapper.toViewElement( modelChildNode );
 
 		if ( options.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
+			console.log( '    reusing: ' + ModelPosition._createBefore( modelChildNode ).path );
 			writer.move(
 				writer.createRangeOn( viewChildNode ),
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
 		} else {
+			console.log( '    creating: ' + ModelPosition._createBefore( modelChildNode ).path );
 			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
 		}
 	}

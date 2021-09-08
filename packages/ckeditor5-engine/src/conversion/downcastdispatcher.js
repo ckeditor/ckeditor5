@@ -9,6 +9,7 @@
 
 import Consumable from './modelconsumable';
 import Range from '../model/range';
+import Position from '../model/position';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -150,6 +151,22 @@ export default class DowncastDispatcher {
 
 		// Let features modify the change list (for example to allow reconversion).
 		const changes = this._reduceChanges( differ.getChanges() );
+
+		for ( const element of differ.getItemsToReconvert() ) {
+			const position = Position._createBefore( element );
+
+			changes.push( {
+				type: 'remove',
+				name: element.name,
+				position,
+				length: 1
+			}, {
+				type: 'reinsert',
+				name: element.name,
+				position,
+				length: 1
+			} );
+		}
 
 		// Convert changes that happened on model tree.
 		for ( const entry of changes ) {

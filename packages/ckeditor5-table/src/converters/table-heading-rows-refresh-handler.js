@@ -7,7 +7,11 @@
  * @module table/converters/table-heading-rows-refresh-post-fixer
  */
 
+import TableWalker from '../tablewalker';
+
 /**
+ * TODO
+ *
  * Injects a table post-fixer into the model which marks the table in the differ to have it re-rendered.
  *
  * Table heading rows are represented in the model by a `headingRows` attribute. However, in the view, it's represented as separate
@@ -18,15 +22,8 @@
  *
  * @param {module:engine/model/model~Model} model
  */
-export default function injectTableHeadingRowsRefreshPostFixer( model ) {
-	model.document.registerPostFixer( () => tableHeadingRowsRefreshPostFixer( model ) );
-}
-
-function tableHeadingRowsRefreshPostFixer( model ) {
+export default function tableHeadingRowsRefreshHandler( model ) {
 	const differ = model.document.differ;
-
-	// Stores tables to be refreshed so the table will be refreshed once for multiple changes.
-	const tablesToRefresh = new Set();
 
 	for ( const change of differ.getChanges() ) {
 		if ( change.type != 'attribute' ) {
@@ -35,21 +32,29 @@ function tableHeadingRowsRefreshPostFixer( model ) {
 
 		const element = change.range.start.nodeAfter;
 
-		if ( element && element.is( 'element', 'table' ) && change.attributeKey == 'headingRows' ) {
-			tablesToRefresh.add( element );
-		}
-	}
-
-	if ( tablesToRefresh.size ) {
-		// @if CK_DEBUG_TABLE // console.log( `Post-fixing table: refreshing heading rows (${ tablesToRefresh.size }).` );
-
-		for ( const table of tablesToRefresh.values() ) {
-			// Should be handled by a `triggerBy` configuration. See: https://github.com/ckeditor/ckeditor5/issues/8138.
-			differ.refreshItem( table );
+		if ( !element || !element.is( 'element', 'table' ) ) {
+			continue;
 		}
 
-		return true;
+		if ( change.attributeKey == 'headingRows' ) {
+			reconvertCells( differ, change, element, 'startRow', 'endRow' );
+		} else if ( change.attributeKey == 'headingColumns' ) {
+			reconvertCells( differ, change, element, 'startColumn', 'endColumn' );
+		}
 	}
+}
 
-	return false;
+// TODO
+function reconvertCells( differ, change, table, startOption, endOption ) {
+	const oldHeadings = change.attributeOldValue || 0;
+	const newHeadings = change.attributeNewValue || 0;
+
+	const tableWalker = new TableWalker( table, {
+		[ startOption ]: Math.min( oldHeadings, newHeadings ),
+		[ endOption ]: Math.max( oldHeadings, newHeadings ) - 1
+	} );
+
+	for ( const tableSlot of tableWalker ) {
+		differ.reconvertItem( tableSlot.cell );
+	}
 }

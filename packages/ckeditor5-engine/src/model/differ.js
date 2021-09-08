@@ -7,6 +7,8 @@
  * @module engine/model/differ
  */
 
+/* global console */
+
 import Position from './position';
 import Range from './range';
 
@@ -65,6 +67,13 @@ export default class Differ {
 		 * @type {Map}
 		 */
 		this._changedMarkers = new Map();
+
+		/**
+		 * TODO
+		 *
+		 * @private
+		 */
+		this._itemsToReconvert = new Set();
 
 		/**
 		 * Stores the number of changes that were processed. Used to order the changes chronologically. It is important
@@ -134,6 +143,16 @@ export default class Differ {
 
 		// Clear cache after each buffered operation as it is no longer valid.
 		this._cachedChanges = null;
+	}
+
+	/**
+	 * TODO
+	 * @param {module:engine/model/item~Item} item Item to reconvert.
+	 */
+	reconvertItem( item ) {
+		console.log( 'reconvert: ' + Position._createBefore( item ).path );
+
+		this._itemsToReconvert.add( item );
 	}
 
 	/**
@@ -551,12 +570,20 @@ export default class Differ {
 	}
 
 	/**
+	 * TODO
+	 */
+	getItemsToReconvert() {
+		return Array.from( this._itemsToReconvert );
+	}
+
+	/**
 	 * Resets `Differ`. Removes all buffered changes.
 	 */
 	reset() {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._itemsToReconvert.clear();
 		this._cachedChanges = null;
 	}
 
