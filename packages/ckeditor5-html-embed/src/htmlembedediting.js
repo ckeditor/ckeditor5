@@ -118,11 +118,8 @@ export default class HtmlEmbedEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
-			triggerBy: {
-				attributes: [ 'value' ]
-			},
-			model: 'rawHtml',
+		editor.conversion.for( 'editingDowncast' ).elementToStructure( {
+			model: { name: 'rawHtml', attributes: [ 'value' ] },
 			view: ( modelElement, { writer } ) => {
 				let domContentWrapper, state, props;
 

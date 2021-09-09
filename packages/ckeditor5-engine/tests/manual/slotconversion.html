@@ -16,6 +16,12 @@
 			background: hsl(0, 0%, 60%);
 		}
 
+		.box-footer {
+			border: 1px solid hsl(0, 0%, 80%);
+			background: hsl(0, 0%, 40%);
+			color: hsl(0, 0%, 80%);
+		}
+
 		.box-content-field {
 			padding: .5em;
 			background: hsl(0, 0%, 100%);
@@ -38,6 +44,11 @@
 		}
 	</style>
 </head>
+
+<div style="margin-bottom: 10px;">
+	<label><input type="radio" name="box-mode" value="single" checked>Single slot</label>
+	<label><input type="radio" name="box-mode" value="multi">Multi slot</label>
+</div>
 
 <div id="editor">
 	<div class="box">

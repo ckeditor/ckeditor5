@@ -140,6 +140,7 @@ export default class Conversion {
 	 * * downcast (model-to-view) conversion helpers:
 	 *
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`},
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`},
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement `attributeToElement()`},
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute `attributeToAttribute()`}.
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement `markerToElement()`}.

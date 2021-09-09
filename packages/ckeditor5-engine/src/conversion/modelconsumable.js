@@ -270,24 +270,26 @@ export default class ModelConsumable {
 		}
 
 		if ( !symbol ) {
-			symbol = this._addSymbolForTextProxy( textProxy.startOffset, textProxy.endOffset, textProxy.parent );
+			symbol = this._addSymbolForTextProxy( textProxy );
 		}
 
 		return symbol;
 	}
 
 	/**
-	 * Adds a symbol for given properties that characterizes a {@link module:engine/model/textproxy~TextProxy} instance.
+	 * Adds a symbol for given {@link module:engine/model/textproxy~TextProxy} instance.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
 	 * @private
-	 * @param {Number} startIndex Text proxy start index in it's parent.
-	 * @param {Number} endIndex Text proxy end index in it's parent.
-	 * @param {module:engine/model/element~Element} parent Text proxy parent.
-	 * @returns {Symbol} Symbol generated for given properties.
+	 * @param {module:engine/model/textproxy~TextProxy} textProxy Text proxy instance.
+	 * @returns {Symbol} Symbol generated for given `TextProxy`.
 	 */
-	_addSymbolForTextProxy( start, end, parent ) {
+	_addSymbolForTextProxy( textProxy ) {
+		const start = textProxy.startOffset;
+		const end = textProxy.endOffset;
+		const parent = textProxy.parent;
+
 		const symbol = Symbol( 'textProxySymbol' );
 		let startMap, endMap;
 
@@ -319,6 +321,11 @@ export default class ModelConsumable {
 // @returns {String} Normalized consumable type.
 function _normalizeConsumableType( type ) {
 	const parts = type.split( ':' );
+
+	// For inserts allow passing event name, it's stored in the context of a specified element so the element name is not needed.
+	if ( parts[ 0 ] == 'insert' ) {
+		return parts[ 0 ];
+	}
 
 	// Markers are identified by the whole name (otherwise we would consume the whole markers group).
 	if ( parts[ 0 ] == 'addMarker' || parts[ 0 ] == 'removeMarker' ) {

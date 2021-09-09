@@ -11,20 +11,23 @@ import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelRange from '../../src/model/range';
+import ModelConsumable from '../../src/conversion/modelconsumable';
 
 import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
+import DowncastWriter from '../../src/view/downcastwriter';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
 describe( 'DowncastDispatcher', () => {
-	let dispatcher, doc, root, differStub, model, view, mapper;
+	let dispatcher, doc, root, differStub, model, view, mapper, apiObj;
 
 	beforeEach( () => {
 		model = new Model();
 		view = new View( new StylesProcessor() );
 		doc = model.document;
 		mapper = new Mapper();
-		dispatcher = new DowncastDispatcher( { mapper } );
+		apiObj = {};
+		dispatcher = new DowncastDispatcher( { mapper, apiObj } );
 		root = doc.createRoot();
 
 		differStub = {
@@ -35,17 +38,18 @@ describe( 'DowncastDispatcher', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create DowncastDispatcher with given api', () => {
+		it( 'should create DowncastDispatcher with given api template', () => {
 			const apiObj = {};
 			const dispatcher = new DowncastDispatcher( { apiObj } );
 
-			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
+			expect( dispatcher._conversionApi.apiObj ).to.equal( apiObj );
 		} );
 	} );
 
 	describe( 'convertChanges', () => {
-		it( 'should call convertInsert for insert change', () => {
-			sinon.stub( dispatcher, 'convertInsert' );
+		it( 'should call _convertInsert for insert change', () => {
+			sinon.stub( dispatcher, '_convertInsert' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 			const range = ModelRange._createFromPositionAndShift( position, 1 );
@@ -56,15 +60,42 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
-			expect( dispatcher.convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
+			expect( dispatcher._convertInsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			assertConversionApi( dispatcher._convertInsert.firstCall.args[ 1 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertRemove for remove change', () => {
-			sinon.stub( dispatcher, 'convertRemove' );
+		it( 'should call _convertReinsert for reinsert change', () => {
+			sinon.stub( dispatcher, '_convertReinsert' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
+
+			const position = model.createPositionFromPath( root, [ 0 ] );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
+
+			differStub.getChanges = () => [ { type: 'reinsert', position, length: 1 } ];
+
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, model.markers, writer );
+			} );
+
+			expect( dispatcher._convertReinsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertReinsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
+
+			assertConversionApi( dispatcher._convertReinsert.firstCall.args[ 1 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should call _convertRemove for remove change', () => {
+			sinon.stub( dispatcher, '_convertRemove' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 
@@ -74,15 +105,18 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
+			expect( dispatcher._convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			assertConversionApi( dispatcher._convertRemove.firstCall.args[ 3 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertAttribute for attribute change', () => {
-			sinon.stub( dispatcher, 'convertAttribute' );
-			sinon.stub( dispatcher, '_mapChangesWithAutomaticReconversion' ).callsFake( differ => differ.getChanges() );
+		it( 'should call _convertAttribute for attribute change', () => {
+			sinon.stub( dispatcher, '_convertAttribute' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 			const range = ModelRange._createFromPositionAndShift( position, 1 );
@@ -95,23 +129,28 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
+			expect( dispatcher._convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			assertConversionApi( dispatcher._convertAttribute.firstCall.args[ 4 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should handle multiple changes', () => {
-			sinon.stub( dispatcher, 'convertInsert' );
-			sinon.stub( dispatcher, 'convertRemove' );
-			sinon.stub( dispatcher, 'convertAttribute' );
-			sinon.stub( dispatcher, '_mapChangesWithAutomaticReconversion' ).callsFake( differ => differ.getChanges() );
+			sinon.stub( dispatcher, '_convertInsert' );
+			sinon.stub( dispatcher, '_convertReinsert' );
+			sinon.stub( dispatcher, '_convertRemove' );
+			sinon.stub( dispatcher, '_convertAttribute' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
 			const range = ModelRange._createFromPositionAndShift( position, 1 );
 
 			differStub.getChanges = () => [
 				{ type: 'insert', position, length: 1 },
+				{ type: 'reinsert', position, length: 1 },
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' },
 				{ type: 'remove', position, length: 1, name: 'paragraph' },
 				{ type: 'insert', position, length: 3 }
@@ -121,16 +160,56 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
-			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
-			expect( dispatcher.convertAttribute.calledOnce ).to.be.true;
+			expect( dispatcher._convertInsert.calledTwice ).to.be.true;
+			expect( dispatcher._convertReinsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertRemove.calledOnce ).to.be.true;
+			expect( dispatcher._convertAttribute.calledOnce ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertMarkerAdd when markers are added', () => {
-			sinon.stub( dispatcher, 'convertMarkerAdd' );
+		it( 'should fire "reduceChanges" event and use replaced changes', () => {
+			sinon.stub( dispatcher, '_convertInsert' );
+			sinon.stub( dispatcher, '_convertReinsert' );
+			sinon.stub( dispatcher, '_convertRemove' );
+			sinon.stub( dispatcher, '_convertAttribute' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
+
+			const position = model.createPositionFromPath( root, [ 0 ] );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
+
+			differStub.getChanges = () => [
+				{ type: 'insert', position, length: 1 },
+				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
+			];
+
+			dispatcher.on( 'reduceChanges', ( evt, data ) => {
+				data.changes = [
+					{ type: 'insert', position, length: 1 },
+					{ type: 'remove', position, length: 1 },
+					{ type: 'reinsert', position, length: 1 }
+				];
+			} );
+
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, model.markers, writer );
+			} );
+
+			expect( dispatcher._convertInsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertReinsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertRemove.calledOnce ).to.be.true;
+			expect( dispatcher._convertAttribute.notCalled ).to.be.true;
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should call _convertMarkerAdd when markers are added', () => {
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
 			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
@@ -144,15 +223,20 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'bar', barRange ) );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			assertConversionApi( dispatcher._convertMarkerAdd.firstCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerAdd.secondCall.args[ 2 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should call convertMarkerRemove when markers are removed', () => {
-			sinon.stub( dispatcher, 'convertMarkerRemove' );
+		it( 'should call _convertMarkerRemove when markers are removed', () => {
+			sinon.stub( dispatcher, '_convertMarkerRemove' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
 			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
@@ -166,16 +250,21 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'bar', barRange ) );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			assertConversionApi( dispatcher._convertMarkerRemove.firstCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerRemove.secondCall.args[ 2 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should re-render markers which view elements got unbound during conversion', () => {
-			sinon.stub( dispatcher, 'convertMarkerRemove' );
-			sinon.stub( dispatcher, 'convertMarkerAdd' );
+			sinon.stub( dispatcher, '_convertMarkerRemove' );
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
+			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
 			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
@@ -184,23 +273,29 @@ describe( 'DowncastDispatcher', () => {
 			model.markers._set( 'bar', barRange );
 
 			// Stub `Mapper#flushUnboundMarkerNames`.
-			dispatcher.conversionApi.mapper.flushUnboundMarkerNames = () => [ 'foo', 'bar' ];
+			dispatcher._conversionApi.mapper.flushUnboundMarkerNames = () => [ 'foo', 'bar' ];
 
 			view.change( writer => {
 				dispatcher.convertChanges( differStub, model.markers, writer );
 			} );
 
-			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
-			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
-			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerRemove.calledWith( 'bar', barRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'bar', barRange ) );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			assertConversionApi( dispatcher._convertMarkerRemove.firstCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerRemove.secondCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerAdd.firstCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerAdd.secondCall.args[ 2 ] );
+
+			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'convertInsert', () => {
+	describe( 'convert', () => {
 		it( 'should fire event with correct parameters for every item in passed range', () => {
 			root._appendChild( [
 				new ModelText( 'foo', { bold: true } ),
@@ -240,7 +335,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
 			} );
 
-			dispatcher.convertInsert( range );
+			dispatcher.convert( range, [] );
 
 			// Check the data passed to called events and the order of them.
 			expect( loggedEvents ).to.deep.equal( [
@@ -254,8 +349,8 @@ describe( 'DowncastDispatcher', () => {
 				'attribute:italic:true:$text:xx:7,0:7,2'
 			] );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire events for already consumed parts of model', () => {
@@ -274,7 +369,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const range = model.createRangeIn( root );
 
-			dispatcher.convertInsert( range );
+			dispatcher.convert( range, [] );
 
 			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
@@ -284,12 +379,285 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should call _convertMarkerAdd for all provided markers', () => {
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
+
+			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
+			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
+
+			const markers = new Map( [
+				[ 'foo', fooRange ],
+				[ 'bar', barRange ]
+			] );
+
+			const range = model.createRangeIn( root );
+
+			view.change( writer => {
+				dispatcher.convert( range, markers, writer );
+			} );
+
+			expect( dispatcher._convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'bar', barRange ) );
+
+			assertConversionApi( dispatcher._convertMarkerAdd.firstCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerAdd.secondCall.args[ 2 ] );
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should pass options object to conversionApi', () => {
+			sinon.stub( dispatcher, '_convertInsert' );
+			sinon.stub( dispatcher, '_convertMarkerAdd' );
+
+			const position = model.createPositionFromPath( root, [ 0 ] );
+			const range = ModelRange._createFromPositionAndShift( position, 1 );
+
+			const fooRange = model.createRange( model.createPositionAt( root, 0 ), model.createPositionAt( root, 1 ) );
+			const barRange = model.createRange( model.createPositionAt( root, 3 ), model.createPositionAt( root, 6 ) );
+
+			const markers = new Map( [
+				[ 'foo', fooRange ],
+				[ 'bar', barRange ]
+			] );
+
+			const options = {};
+
+			view.change( writer => {
+				dispatcher.convert( range, markers, writer, options );
+			} );
+
+			expect( dispatcher._convertInsert.calledOnce ).to.be.true;
+			expect( dispatcher._convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
+
+			expect( dispatcher._convertMarkerAdd.calledWith( 'foo', fooRange ) );
+			expect( dispatcher._convertMarkerAdd.calledWith( 'bar', barRange ) );
+
+			assertConversionApi( dispatcher._convertInsert.firstCall.args[ 1 ] );
+			assertConversionApi( dispatcher._convertMarkerAdd.firstCall.args[ 2 ] );
+			assertConversionApi( dispatcher._convertMarkerAdd.secondCall.args[ 2 ] );
+
+			expect( dispatcher._convertInsert.firstCall.args[ 1 ].options ).to.equal( options );
+			expect( dispatcher._convertMarkerAdd.firstCall.args[ 2 ].options ).to.equal( options );
+			expect( dispatcher._convertMarkerAdd.firstCall.args[ 2 ].options ).to.equal( options );
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'convertRemove', () => {
+	describe( '_convertInsert', () => {
+		it( 'should fire event with correct parameters for every item in passed range', () => {
+			root._appendChild( [
+				new ModelText( 'foo', { bold: true } ),
+				new ModelElement( 'imageBlock', null, new ModelElement( 'caption' ) ),
+				new ModelText( 'bar' ),
+				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
+			] );
+
+			const range = model.createRangeIn( root );
+			const loggedEvents = [];
+
+			// We will check everything connected with insert event:
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				// Check if the item is correct.
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				// Check if the range is correct.
+				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				// Check if the event name is correct.
+				expect( evt.name ).to.equal( 'insert:' + ( data.item.name || '$text' ) );
+				// Check if model consumable is correct.
+				expect( conversionApi.consumable.consume( data.item, 'insert' ) ).to.be.true;
+				expect( data ).to.not.have.property( 'reconversion' );
+			} );
+
+			// Same here.
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const key = data.attributeKey;
+				const value = data.attributeNewValue;
+				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				expect( evt.name ).to.equal( 'attribute:' + key + ':' + ( data.item.name || '$text' ) );
+				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
+			} );
+
+			view.change( writer => {
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
+			} );
+
+			// Check the data passed to called events and the order of them.
+			expect( loggedEvents ).to.deep.equal( [
+				'insert:$text:foo:0:3',
+				'attribute:bold:true:$text:foo:0:3',
+				'insert:imageBlock:3:4',
+				'insert:caption:3,0:3,1',
+				'insert:$text:bar:4:7',
+				'insert:paragraph:7:8',
+				'attribute:class:nice:paragraph:7:8',
+				'insert:$text:xx:7,0:7,2',
+				'attribute:italic:true:$text:xx:7,0:7,2'
+			] );
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should not fire events for already consumed parts of model', () => {
+			root._appendChild( [
+				new ModelElement( 'imageBlock', { src: 'foo.jpg', title: 'bar', bold: true }, [
+					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
+				] )
+			] );
+
+			sinon.spy( dispatcher, 'fire' );
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item.getChild( 0 ), 'insert' );
+				conversionApi.consumable.consume( data.item, 'attribute:bold' );
+			} );
+
+			const range = model.createRangeIn( root );
+
+			view.change( writer => {
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
+			} );
+
+			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'attribute:title:imageBlock' ) ).to.be.true;
+			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.true;
+
+			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should not add consumable item if it was added already in consumable', () => {
+			root._appendChild( [
+				new ModelElement( 'imageBlock', {}, [
+					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
+				] )
+			] );
+
+			const loggedEvents = [];
+
+			// We will check everything connected with insert event:
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				// Check if the item is correct.
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				// Check if the range is correct.
+				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				// Check if the event name is correct.
+				expect( evt.name ).to.equal( 'insert:' + ( data.item.name || '$text' ) );
+				// Check if model consumable is correct.
+				expect( conversionApi.consumable.test( data.item, 'insert' ) ).to.be.true;
+				expect( data ).to.not.have.property( 'reconversion' );
+			} );
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
+					conversionApi.convertInsert( data.range );
+				}
+			} );
+
+			dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'insert' );
+			} );
+
+			dispatcher.on( 'insert:$text', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'insert' );
+			} );
+
+			const range = model.createRangeIn( root );
+
+			view.change( writer => {
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
+			} );
+
+			expect( loggedEvents ).to.deep.equal( [
+				'insert:imageBlock:0:1',
+				'insert:caption:0,0:0,1',
+				'insert:$text:title:0,0,0:0,0,5'
+			] );
+		} );
+	} );
+
+	describe( '_convertReinsert', () => {
+		it( 'should fire event with correct parameters for every item in passed range (shallow)', () => {
+			root._appendChild( [
+				new ModelText( 'foo', { bold: true } ),
+				new ModelElement( 'imageBlock', null, new ModelElement( 'caption' ) ),
+				new ModelText( 'bar' ),
+				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
+			] );
+
+			const range = model.createRangeIn( root );
+			const loggedEvents = [];
+
+			// We will check everything connected with insert event:
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				// Check if the item is correct.
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				// Check if the range is correct.
+				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				// Check if the event name is correct.
+				expect( evt.name ).to.equal( 'insert:' + ( data.item.name || '$text' ) );
+				// Check if model consumable is correct.
+				expect( conversionApi.consumable.consume( data.item, 'insert' ) ).to.be.true;
+				expect( data ).to.have.property( 'reconversion' ).to.be.true;
+			} );
+
+			// Same here.
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const key = data.attributeKey;
+				const value = data.attributeNewValue;
+				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				expect( evt.name ).to.equal( 'attribute:' + key + ':' + ( data.item.name || '$text' ) );
+				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
+			} );
+
+			view.change( writer => {
+				dispatcher._convertReinsert( range, dispatcher._createConversionApi( writer ) );
+			} );
+
+			// Check the data passed to called events and the order of them.
+			expect( loggedEvents ).to.deep.equal( [
+				'insert:$text:foo:0:3',
+				'attribute:bold:true:$text:foo:0:3',
+				'insert:imageBlock:3:4',
+				'insert:$text:bar:4:7',
+				'insert:paragraph:7:8',
+				'attribute:class:nice:paragraph:7:8'
+			] );
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+	} );
+
+	describe( '_convertRemove', () => {
 		it( 'should fire event for removed range', () => {
 			const loggedEvents = [];
 
@@ -298,12 +666,12 @@ describe( 'DowncastDispatcher', () => {
 				loggedEvents.push( log );
 			} );
 
-			dispatcher.convertRemove( model.createPositionAt( root, 3 ), 3, '$text' );
+			dispatcher._convertRemove( model.createPositionAt( root, 3 ), 3, '$text' );
 
 			expect( loggedEvents ).to.deep.equal( [ 'remove:3:3' ] );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
@@ -330,8 +698,8 @@ describe( 'DowncastDispatcher', () => {
 				{ selection: sinon.match.instanceOf( doc.selection.constructor ) }
 			) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should prepare correct list of consumable values', () => {
@@ -350,8 +718,8 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire attributes events for non-collapsed selection', () => {
@@ -369,8 +737,8 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'attribute:italic' ) ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire attributes events for collapsed selection', () => {
@@ -390,8 +758,8 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold:$text' ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire attributes events if attribute has been consumed', () => {
@@ -418,8 +786,8 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire events for markers for collapsed selection', () => {
@@ -438,8 +806,8 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire events for all markers of the same group for collapsed selection', () => {
@@ -467,8 +835,8 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'addMarker:name:1' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:name:2' ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire events for markers for non-collapsed selection', () => {
@@ -484,8 +852,8 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire event for marker if selection is in a element with custom highlight handling', () => {
@@ -506,7 +874,7 @@ describe( 'DowncastDispatcher', () => {
 			viewFigure._setCustomProperty( 'removeHighlight', () => {} );
 
 			// Create mapper mock.
-			dispatcher.conversionApi.mapper = {
+			dispatcher._conversionApi.mapper = {
 				toViewElement( modelElement ) {
 					if ( modelElement == image ) {
 						return viewFigure;
@@ -529,8 +897,8 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire events if information about marker has been consumed', () => {
@@ -556,12 +924,12 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'convertMarkerAdd', () => {
+	describe( '_convertMarkerAdd', () => {
 		let element, text;
 
 		beforeEach( () => {
@@ -582,12 +950,12 @@ describe( 'DowncastDispatcher', () => {
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
 			} );
 
-			dispatcher.convertMarkerAdd( 'name', range );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spy.calledOnce ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should convert marker in document fragment', () => {
@@ -596,24 +964,24 @@ describe( 'DowncastDispatcher', () => {
 			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerAdd( 'name', eleRange );
+			dispatcher._convertMarkerAdd( 'name', eleRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerAdd( 'name', gyRange );
+			dispatcher._convertMarkerAdd( 'name', gyRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire addMarker event for whole non-collapsed marker and for each item in the range', () => {
@@ -645,7 +1013,7 @@ describe( 'DowncastDispatcher', () => {
 				}
 			} );
 
-			dispatcher.convertMarkerAdd( 'name', range );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spyWholeRange.calledOnce ).to.be.true;
 			expect( spyItems.calledTwice ).to.be.true;
@@ -653,8 +1021,8 @@ describe( 'DowncastDispatcher', () => {
 			expect( items[ 0 ] ).to.equal( element );
 			expect( items[ 1 ].data ).to.equal( text.data );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not fire conversion for non-collapsed marker items if marker was consumed in earlier event', () => {
@@ -674,12 +1042,12 @@ describe( 'DowncastDispatcher', () => {
 				}
 			} );
 
-			dispatcher.convertMarkerAdd( 'name', range );
+			dispatcher._convertMarkerAdd( 'name', range, dispatcher._createConversionApi() );
 
 			expect( spyItems.called ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should be possible to override #1', () => {
@@ -702,13 +1070,13 @@ describe( 'DowncastDispatcher', () => {
 				}
 			}, { priority: 'high' } );
 
-			dispatcher.convertMarkerAdd( 'marker', range );
+			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._createConversionApi() );
 
 			expect( addMarkerSpy.called ).to.be.false;
 			expect( highAddMarkerSpy.calledOnce ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should be possible to override #2', () => {
@@ -731,19 +1099,19 @@ describe( 'DowncastDispatcher', () => {
 				}
 			}, { priority: 'high' } );
 
-			dispatcher.convertMarkerAdd( 'marker', range );
+			dispatcher._convertMarkerAdd( 'marker', range, dispatcher._createConversionApi() );
 
 			expect( addMarkerSpy.called ).to.be.false;
 
 			// Called once for each item, twice total.
 			expect( highAddMarkerSpy.calledTwice ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
-	describe( 'convertMarkerRemove', () => {
+	describe( '_convertMarkerRemove', () => {
 		let range, element, text;
 
 		beforeEach( () => {
@@ -757,24 +1125,24 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire removeMarker event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerRemove( 'name', range );
+			dispatcher._convertMarkerRemove( 'name', range, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.calledWith( 'removeMarker:name' ) ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should not convert marker if it is in graveyard', () => {
 			const gyRange = model.createRange( model.createPositionAt( doc.graveyard, 0 ), model.createPositionAt( doc.graveyard, 0 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerRemove( 'name', gyRange );
+			dispatcher._convertMarkerRemove( 'name', gyRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.false;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should convert marker in document fragment', () => {
@@ -783,12 +1151,12 @@ describe( 'DowncastDispatcher', () => {
 			const eleRange = model.createRange( model.createPositionAt( docFrag, 1 ), model.createPositionAt( docFrag, 2 ) );
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertMarkerRemove( 'name', eleRange );
+			dispatcher._convertMarkerRemove( 'name', eleRange, dispatcher._createConversionApi() );
 
 			expect( dispatcher.fire.called ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should fire conversion for the range', () => {
@@ -799,10 +1167,10 @@ describe( 'DowncastDispatcher', () => {
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
 			} );
 
-			dispatcher.convertMarkerRemove( 'name', range );
+			dispatcher._convertMarkerRemove( 'name', range, dispatcher._createConversionApi() );
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
 		it( 'should be possible to override', () => {
@@ -819,13 +1187,20 @@ describe( 'DowncastDispatcher', () => {
 				evt.stop();
 			}, { priority: 'high' } );
 
-			dispatcher.convertMarkerRemove( 'marker', range );
+			dispatcher._convertMarkerRemove( 'marker', range, dispatcher._createConversionApi() );
 
 			expect( removeMarkerSpy.called ).to.be.false;
 			expect( highRemoveMarkerSpy.calledOnce ).to.be.true;
 
-			expect( dispatcher.conversionApi.writer ).to.be.undefined;
-			expect( dispatcher.conversionApi.consumable ).to.be.undefined;
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
+
+	function assertConversionApi( conversionApi ) {
+		expect( conversionApi ).to.have.property( 'writer' ).that.is.instanceof( DowncastWriter );
+		expect( conversionApi ).to.have.property( 'consumable' ).that.is.instanceof( ModelConsumable );
+		expect( conversionApi ).to.have.property( 'mapper' ).that.is.equal( mapper );
+		expect( conversionApi ).to.have.property( 'apiObj' ).that.is.equal( apiObj );
+	}
 } );

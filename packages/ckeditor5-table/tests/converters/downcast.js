@@ -473,6 +473,8 @@ describe( 'downcast converters', () => {
 				model.change( writer => {
 					const row = writer.createElement( 'tableRow' );
 
+					writer.setAttribute( 'headingRows', 3, table );
+
 					writer.insert( row, table, 1 );
 
 					writer.insertElement( 'tableCell', row, 'end' );
