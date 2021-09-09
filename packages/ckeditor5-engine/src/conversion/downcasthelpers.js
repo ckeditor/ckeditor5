@@ -98,29 +98,81 @@ export default class DowncastHelpers extends ConversionHelpers {
 	}
 
 	/**
-	 * Model element to view structure conversion helper.
+	 * Model element to view structure (several elements) conversion helper.
 	 *
-	 * This conversion results in creating a view structure with slots for child nodes. For example, model `<table>` becomes
-	 * `<figure class="table"><table><tbody>${ slot for table rows }</tbody></figure>` in the view.
+	 * This conversion results in creating a view structure with defined one or more slots for the child nodes.
+	 * For example, a model `<table>` may become this structure in the view:
 	 *
-	 * Simple slot for all child nodes:
+	 *		<figure class="table">
+	 *			<table>
+	 *				<tbody>${ slot for table rows }</tbody>
+	 *			</table>
+	 *		</figure>
+	 *
+	 * The children of the model's `<table>` element will be inserted into the `<tbody>` element.
+	 * If a `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
+	 *
+	 * An example converter that converts the following model structure:
+	 *
+	 *		<wrappedParagraph>Some text.</wrappedParagraph>
+	 *
+	 * into this sturcture in the view:
+	 *
+	 *		<div class="wrapper">
+	 *			<p>Some text.</p>
+	 *		</div>
+	 *
+	 * would look like this:
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
 	 *			model: 'wrappedParagraph',
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer, slotFor } = conversionApi;
 	 *
-	 * 				const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
-	 * 				const paragraphViewElement = writer.createContainerElement( 'p' );
+	 *				const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
+	 *				const paragraphViewElement = writer.createContainerElement( 'p' );
 	 *
-	 * 				writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
-	 * 				writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), slotFor( 'children' ) );
+	 *				writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
+	 *				writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), slotFor( 'children' ) );
 	 *
 	 *				return wrapperViewElement;
 	 *			}
 	 *		} );
 	 *
-	 * The conversion with slots dedicated for specific model children and with reconversion trigger defined.
+	 * The `slorFor()` function can also take a callback that allows filtering which children of the model element
+	 * should be converted into this slot.
+	 *
+	 * Imagine a table feature where for this model structure:
+	 *
+	 *		<table headingRows="1">
+	 *			<tableRow> ... table cells 1 ... </tableRow>
+	 *			<tableRow> ... table cells 2 ... </tableRow>
+	 *			<tableRow> ... table cells 3 ... </tableRow>
+	 *			<caption>Caption text</caption>
+	 *		</table>
+	 *
+	 * We want to generate this view structure:
+	 *
+	 *		<figure class="table">
+	 *			<table>
+	 *				<thead>
+	 *					<tr> ... table cells 1 ... </tr>
+	 *				</thead>
+	 *				<tbody>
+	 *					<tr> ... table cells 2 ... </tr>
+	 *					<tr> ... table cells 3 ... </tr>
+	 *				</tbody>
+	 *			</table>
+	 *			<figcaption>Caption text</figcaption>
+	 *		</figure>
+	 *
+	 * The converter has to take `headingRows` attribute into consideration when allocating `<tableRow>` elements
+	 * into the `<tbody>` and `<thead>` elements. Hence, we need two slots and define proper filter callbacks for them.
+	 *
+	 * Additionally, all other elements than `<tableRow>` should be placed outside `<table>`. In the example above, this will
+	 * handle the table caption.
+	 *
+	 * Such a converter would look like this:
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
 	 *			model: {
@@ -163,6 +215,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *				return figureElement;
 	 *			}
 	 *		} );
+	 *
+	 * Note: The children of a model element that's being converted must be allocated in the same order in the view
+	 * in which they are placed in the model.
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
@@ -552,7 +607,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		// Model:
 	 *		<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>
 	 *
-	 * 		// View:
+	 *		// View:
 	 *		<blockquote><p data-group-end-before="name" data-group-start-before="name">Foo</p></blockquote>
 	 *
 	 * Similarly, when a marker is collapsed after the last element:
@@ -2118,9 +2173,9 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
  */
 
 /**
- * A filtering function used to choose model child nodes to be downcasted into a specific view
- * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor "slot"} while converting
- * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
+ * A filtering function used to choose model child nodes to be downcasted into the specific view
+ * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor "slot"} while executing the
+ * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`} converter.
  *
  * @callback module:engine/conversion/downcasthelpers~SlotFilter
  *
@@ -2147,22 +2202,22 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 /**
  * A helper that creates placeholders for child elements.
  *
- * 		const viewSlot = conversionApi.slotFor( 'children' );
- * 		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+ *		const viewSlot = conversionApi.slotFor( 'children' );
+ *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
  *
- * 		conversionApi.writer.insert( viewPosition, viewSlot );
+ *		conversionApi.writer.insert( viewPosition, viewSlot );
  *
- * It could be filtered to a specific subset of children:
+ * It could be filtered to a specific subset of children (only `<foo>` model elements in this case):
  *
- * 		const viewSlot = conversionApi.slotFor( node => node.is( 'element', 'foo' ) );
- * 		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+ *		const viewSlot = conversionApi.slotFor( node => node.is( 'element', 'foo' ) );
+ *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
  *
- * 		conversionApi.writer.insert( viewPosition, viewSlot );
+ *		conversionApi.writer.insert( viewPosition, viewSlot );
  *
  * While providing a filtered slot make sure to provide slots for all child nodes. A single node can not be downcasted into
  * multiple slots.
  *
- * **Note**: You should not change an order of nodes, view elements should be in the same order as model nodes.
+ * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
  *
  * @method #slotFor
  * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} modeOrFilter The filter for child nodes.
