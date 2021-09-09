@@ -96,6 +96,18 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
+		it( 'should request next backspace to undo auto-embeding', () => {
+			const deletePlugin = editor.plugins.get( 'Delete' );
+			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
+
+			clock.tick( 100 );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		it( 'works for a full URL (https + "www" sub-domain)', () => {
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
