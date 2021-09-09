@@ -259,14 +259,10 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
-		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
-			direction: 'backward',
-			unit: 'character',
-			sequence: 5
-		} ) );
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
 
 		expect( spy.calledTwice ).to.be.true;
-		expect( spy.calledWithMatch( 'delete', { unit: 'character', sequence: 5 } ) ).to.be.true;
+		expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
 	} );
 
 	describe( 'does not execute `undo` instead of deleting', () => {
