@@ -125,7 +125,7 @@ export default class Delete extends Plugin {
 	 *
 	 * Requires {@link module:undo/undoediting~UndoEditing} plugin. If not loaded, does nothing.
 	 */
-	enableUndoOnBackspace() {
+	requestUndoOnBackspace() {
 		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
 			this._undoOnBackspace = true;
 		}
