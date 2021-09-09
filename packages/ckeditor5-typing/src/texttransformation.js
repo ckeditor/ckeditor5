@@ -171,7 +171,7 @@ export default class TextTransformation extends Plugin {
 				}
 
 				model.enqueueChange( () => {
-					deletePlugin.enableUndoOnDelete();
+					deletePlugin.enableUndoOnBackspace();
 				} );
 			} );
 		};

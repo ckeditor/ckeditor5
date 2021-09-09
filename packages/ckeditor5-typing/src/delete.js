@@ -26,7 +26,7 @@ export default class Delete extends Plugin {
 	 * Whether pressing backspace should trigger undo action
 	 *
 	 * @private
-	 * @member {Boolean} #_undoByBackspace
+	 * @member {Boolean} #_undoOnBackspace
 	 */
 
 	/**
@@ -44,7 +44,7 @@ export default class Delete extends Plugin {
 
 		view.addObserver( DeleteObserver );
 
-		this._undoByBackspace = false;
+		this._undoOnBackspace = false;
 
 		const deleteForwardCommand = new DeleteCommand( editor, 'forward' );
 
@@ -55,8 +55,8 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			if ( this._undoByBackspace && data.direction == 'backward' && data.sequence == 1 ) {
-				this._undoByBackspace = false;
+			if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 ) {
+				this._undoOnBackspace = false;
 
 				editor.execute( 'undo' );
 			} else {
@@ -120,14 +120,14 @@ export default class Delete extends Plugin {
 		}
 
 		this.listenTo( modelDocument, 'change', () => {
-			this._undoByBackspace = false;
+			this._undoOnBackspace = false;
 		} );
 	}
 
 	/**
 	 * If the next user action after calling this method is pressing backspace, it would undo the last change.
 	 */
-	enableUndoOnDelete() {
-		this._undoByBackspace = true;
+	enableUndoOnBackspace() {
+		this._undoOnBackspace = true;
 	}
 }
