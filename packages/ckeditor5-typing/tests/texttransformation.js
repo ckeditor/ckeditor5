@@ -186,6 +186,17 @@ describe( 'Text transformation feature', () => {
 				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
 
+		it( 'should request next backspace to undo the transformation', () => {
+			const deletePlugin = editor.plugins.get( 'Delete' );
+			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+
+			setData( model, '<paragraph>Foo[]</paragraph>' );
+
+			simulateTyping( '1/2' );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
