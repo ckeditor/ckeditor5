@@ -18,10 +18,6 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * @extends module:core/plugin~Plugin
  */
 export default class Delete extends Plugin {
-	static get requires() {
-		return [ 'Undo' ];
-	}
-
 	/**
 	 * Whether pressing backspace should trigger undo action
 	 *
@@ -126,8 +122,12 @@ export default class Delete extends Plugin {
 
 	/**
 	 * If the next user action after calling this method is pressing backspace, it would undo the last change.
+	 *
+	 * Requires {@link module:undo/undoediting~UndoEditing} plugin. If not loaded, does nothing.
 	 */
 	enableUndoOnBackspace() {
-		this._undoOnBackspace = true;
+		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
+			this._undoOnBackspace = true;
+		}
 	}
 }
