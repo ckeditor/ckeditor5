@@ -240,7 +240,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 			const apiDocsLink = createApiLink( packageData, plugin );
 
 			const pluginNameMarkup = `
-				<h4>${ plugin.name }</h4>
+				<b>${ plugin.name }</b>
 				<p>${ featureGuideLink }</p>
 				<p>${ apiDocsLink }</p>
 			`;
