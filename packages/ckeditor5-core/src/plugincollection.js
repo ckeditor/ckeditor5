@@ -108,7 +108,7 @@ export default class PluginCollection {
 	 * to check if a plugin is available.
 	 *
 	 * @param {Function|String} key The plugin constructor or {@link module:core/plugin~PluginInterface.pluginName name}.
-	 * @returns {module:core/plugin~PluginInterface}
+	 * @returns {module:core/plugin~PluginInterface|undefined}
 	 */
 	get( key ) {
 		const plugin = this._plugins.get( key );
