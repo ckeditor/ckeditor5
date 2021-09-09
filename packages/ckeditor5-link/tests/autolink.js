@@ -388,6 +388,15 @@ describe( 'AutoLink', () => {
 				'<paragraph>[]</paragraph>'
 			);
 		} );
+
+		it( 'should request next backspace to undo the transformation', () => {
+			const deletePlugin = editor.plugins.get( 'Delete' );
+			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+
+			simulateTyping( ' ' );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
 	} );
 
 	describe( 'Code blocks integration', () => {
