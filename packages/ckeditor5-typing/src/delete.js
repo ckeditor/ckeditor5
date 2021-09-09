@@ -51,7 +51,7 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 ) {
+			if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
 				this._undoOnBackspace = false;
 
 				editor.execute( 'undo' );
