@@ -51,30 +51,24 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
-				this._undoOnBackspace = false;
+			const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
 
-				editor.execute( 'undo' );
-			} else {
-				const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
+			// If a specific (view) selection to remove was set,
+			// convert it to a model selection and set as a parameter for `DeleteCommand`.
+			if ( data.selectionToRemove ) {
+				const modelSelection = editor.model.createSelection();
+				const ranges = [];
 
-				// If a specific (view) selection to remove was set,
-				// convert it to a model selection and set as a parameter for `DeleteCommand`.
-				if ( data.selectionToRemove ) {
-					const modelSelection = editor.model.createSelection();
-					const ranges = [];
-
-					for ( const viewRange of data.selectionToRemove.getRanges() ) {
-						ranges.push( editor.editing.mapper.toModelRange( viewRange ) );
-					}
-
-					modelSelection.setTo( ranges );
-
-					deleteCommandParams.selection = modelSelection;
+				for ( const viewRange of data.selectionToRemove.getRanges() ) {
+					ranges.push( editor.editing.mapper.toModelRange( viewRange ) );
 				}
 
-				editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
+				modelSelection.setTo( ranges );
+
+				deleteCommandParams.selection = modelSelection;
 			}
+
+			editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
 
 			data.preventDefault();
 
@@ -115,9 +109,22 @@ export default class Delete extends Plugin {
 			} );
 		}
 
-		this.listenTo( modelDocument, 'change', () => {
-			this._undoOnBackspace = false;
-		} );
+		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
+			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+				if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
+					this._undoOnBackspace = false;
+
+					editor.execute( 'undo' );
+
+					data.preventDefault();
+					evt.stop();
+				}
+			}, { context: '$capture' } );
+
+			this.listenTo( modelDocument, 'change', () => {
+				this._undoOnBackspace = false;
+			} );
+		}
 	}
 
 	/**
