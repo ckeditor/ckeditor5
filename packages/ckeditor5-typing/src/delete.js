@@ -53,8 +53,7 @@ export default class Delete extends Plugin {
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
 
-			// If a specific (view) selection to remove was set,
-			// convert it to a model selection and set as a parameter for `DeleteCommand`.
+			// If a specific (view) selection to remove was set, convert it to a model selection and set as a parameter for `DeleteCommand`.
 			if ( data.selectionToRemove ) {
 				const modelSelection = editor.model.createSelection();
 				const ranges = [];
