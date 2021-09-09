@@ -51,3 +51,10 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 		display: inline;
 	}
 }
+
+/* https://github.com/ckeditor/ckeditor5/issues/9700 */
+.main .main__content-inner img.plugin-table-img {
+	display: inline;
+	margin: 0;
+	height: 1rem;
+}

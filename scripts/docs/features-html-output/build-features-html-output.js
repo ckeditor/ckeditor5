@@ -235,16 +235,22 @@ function createSourceFileMarkupForThirdPartyPackage( filePath ) {
 function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const pluginNameLink = createFeatureLink( packageData, plugin );
+			const featureGuideLink = createFeatureLink( packageData, plugin );
 
-			const pluginClassNameLink = createApiLink( packageData, plugin );
+			const apiDocsLink = createApiLink( packageData, plugin );
+
+			const pluginNameMarkup = `
+				<h4>${ plugin.name }</h4>
+				<p>${ featureGuideLink }</p>
+				<p>${ apiDocsLink }</p>
+			`;
 
 			const htmlOutputMarkup = plugin.htmlOutput ?
 				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
 				[ '<p>None.</p>' ];
 
 			return {
-				pluginNameMarkup: `<p>${ pluginNameLink }</p><p>${ pluginClassNameLink }</p>`,
+				pluginNameMarkup,
 				htmlOutputMarkup
 			};
 		} );
@@ -268,7 +274,9 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
+	const bookImg = '<img src="%BASE_PATH%/assets/img/book.svg" alt="Book" class="plugin-table-img">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ bookImg } Feature guide</a>`;
 }
 
 /**
@@ -295,7 +303,9 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
+	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="plugin-table-img">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ pluginClassName }">${ cogImg } API documentation</a>`;
 }
 
 /**
