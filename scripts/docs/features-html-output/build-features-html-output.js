@@ -265,7 +265,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
  */
 function createFeatureLink( packageData, plugin ) {
 	if ( !plugin.docs ) {
-		return plugin.name;
+		return '';
 	}
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
@@ -274,7 +274,7 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	const bookImg = '<img src="%BASE_PATH%/assets/img/book.svg" alt="Book" class="plugin-table-img">';
+	const bookImg = '<img src="%BASE_PATH%/assets/img/exportword.svg" alt="Book" class="plugin-table-img">';
 
 	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ bookImg } Feature guide</a>`;
 }
@@ -290,7 +290,7 @@ function createApiLink( packageData, plugin ) {
 	const pluginClassName = `<code>${ plugin.className }</code>`;
 
 	if ( packageData.isThirdPartyPackage ) {
-		return pluginClassName;
+		return '';
 	}
 
 	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
