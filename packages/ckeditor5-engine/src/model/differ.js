@@ -150,6 +150,10 @@ export default class Differ {
 	 * @param {module:engine/model/item~Item} item Item to reconvert.
 	 */
 	reconvertItem( item ) {
+		if ( this._isInInsertedElement( item ) ) {
+			return;
+		}
+
 		console.log( 'reconvert: ' + Position._createBefore( item ).path );
 
 		this._itemsToReconvert.add( item );
@@ -559,21 +563,39 @@ export default class Differ {
 		this._changeCount = 0;
 
 		// Cache changes.
-		this._cachedChangesWithGraveyard = diffSet.slice();
+		this._cachedChangesWithGraveyard = diffSet;
 		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
-			return this._cachedChangesWithGraveyard;
+			return this._cachedChangesWithGraveyard.slice();
 		} else {
-			return this._cachedChanges;
+			return this._cachedChanges.slice();
 		}
 	}
 
 	/**
 	 * TODO
 	 */
-	getItemsToReconvert() {
-		return Array.from( this._itemsToReconvert );
+	getChangesForReconversion() {
+		const changes = [];
+
+		for ( const element of this._itemsToReconvert ) {
+			const position = Position._createBefore( element );
+
+			changes.push( {
+				type: 'remove',
+				name: element.name,
+				position,
+				length: 1
+			}, {
+				type: 'reinsert',
+				name: element.name,
+				position,
+				length: 1
+			} );
+		}
+
+		return changes;
 	}
 
 	/**
@@ -1058,6 +1080,7 @@ export default class Differ {
 			if ( item.is( 'element' ) ) {
 				this._elementSnapshots.delete( item );
 				this._changesInElement.delete( item );
+				this._itemsToReconvert.delete( item );
 
 				this._removeAllNestedChanges( item, 0, item.maxOffset );
 			}

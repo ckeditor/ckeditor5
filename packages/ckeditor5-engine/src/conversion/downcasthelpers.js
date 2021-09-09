@@ -905,7 +905,7 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -921,7 +921,7 @@ export function insertElement( elementCreator ) {
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		if ( data.reconversion && oldView ) {
+		if ( data.reconversion && oldView && viewElement.isEmpty ) {
 			console.log( '    reusing content of: ' + data.range.start.path );
 			// TODO only for nodes that are not at the current root?
 			conversionApi.writer.move(
@@ -1528,10 +1528,15 @@ function removeHighlight( highlightDescriptor ) {
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
+	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'insert:' + config.model.name, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.model.children || config.model.attributes.length ) {
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model, true ), { priority: 'low' } );
+		}
 	};
 }
 
@@ -1869,24 +1874,24 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @returns {Function}
+// @returns {Boolean}
 function createChangeReducerCallback( model ) {
 	return ( node, change ) => {
 		if ( !node.is( 'element', model.name ) ) {
-			return null;
+			return false;
 		}
 
 		if ( change.type == 'attribute' ) {
-			if ( !model.attributes.includes( change.attributeKey ) ) {
-				return null;
+			if ( model.attributes.includes( change.attributeKey ) ) {
+				return true;
 			}
 		} else {
-			if ( !model.children ) {
-				return null;
+			if ( model.children ) {
+				return true;
 			}
 		}
 
-		return [ node ];
+		return false;
 	};
 }
 
@@ -1896,9 +1901,10 @@ function createChangeReducerCallback( model ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @param {Function} The callback for checking a single diff item whether it should trigger reconversion.
 // @returns {Function}
-function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
+function createChangeReducer( model, keepChangeForChildChange = false ) {
+	const shouldReplace = createChangeReducerCallback( model );
+
 	return ( evt, data ) => {
 		const reducedChanges = [];
 
@@ -1911,36 +1917,37 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			const elements = callback( node, change );
-
-			if ( !elements ) {
+			if ( !shouldReplace( node, change ) ) {
 				reducedChanges.push( change );
 
 				continue;
 			}
 
-			for ( const element of elements ) {
-				// If it's already marked for reconversion, so skip this change.
-				if ( data.reconvertedElements.has( element ) ) {
-					continue;
-				}
-
-				data.reconvertedElements.add( element );
-
-				const position = ModelPosition._createBefore( element );
-
-				reducedChanges.push( {
-					type: 'remove',
-					name: element.name,
-					position,
-					length: 1
-				}, {
-					type: 'reinsert',
-					name: element.name,
-					position,
-					length: 1
-				} );
+			// This is elementToElement so allow inserting new items and reconvert parent.
+			if ( keepChangeForChildChange && change.type != 'attribute' ) {
+				reducedChanges.push( change );
 			}
+
+			// If it's already marked for reconversion, so skip this change.
+			if ( data.reconvertedElements.has( node ) ) {
+				continue;
+			}
+
+			data.reconvertedElements.add( node );
+
+			const position = ModelPosition._createBefore( node );
+
+			reducedChanges.push( {
+				type: 'remove',
+				name: node.name,
+				position,
+				length: 1
+			}, {
+				type: 'reinsert',
+				name: node.name,
+				position,
+				length: 1
+			} );
 		}
 
 		data.changes = reducedChanges;
