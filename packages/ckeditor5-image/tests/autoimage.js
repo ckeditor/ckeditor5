@@ -102,6 +102,18 @@ describe( 'AutoImage - integration', () => {
 			);
 		} );
 
+		it( 'should request next backspace to undo auto-embeding', () => {
+			const deletePlugin = editor.plugins.get( 'Delete' );
+			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'http://example.com/image.png' );
+
+			clock.tick( 100 );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
 		describe( 'supported URL', () => {
 			const supportedURLs = [
 				'example.com/image.png',
