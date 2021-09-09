@@ -74,6 +74,9 @@ const DEFAULT_TRANSFORMATIONS = [
  * @extends module:core/plugin~Plugin
  */
 export default class TextTransformation extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ 'Delete', 'Input' ];
 	}
