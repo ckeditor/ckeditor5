@@ -2168,6 +2168,37 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		} );
+
+		describe( 'overriding the default number of visible mentions using config.mention.dropdownLimit', () => {
+			const itemsList = {
+				marker: '@',
+				feed: [
+					'@01', '@02', '@03', '@04', '@05', '@06', '@07', '@08', '@09', '@10',
+					'@11', '@12', '@13', '@16', '@17', '@18', '@17', '@18', '@19', '@20',
+					'@21', '@22', '@23', '@24', '@25', '@26', '@27', '@28', '@29', '@30'
+				]
+			};
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					dropdownLimit: 25,
+					feeds: [ itemsList ] } );
+			} );
+
+			it( 'dropdown list length should be equal to dropdownLimit configuration value', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 25 );
+					} );
+			} );
+		} );
 	} );
 
 	describe( 'execute', () => {

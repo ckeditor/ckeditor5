@@ -132,6 +132,31 @@ export default class Mention extends Plugin {
  */
 
 /**
+ * The configuration of the custom number of visible mentions.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ Mention, ... ],
+ *				mention: {
+ *					// [ Enter, Space ]
+ *	 				dropdownLimit: 20,
+ *					feeds: [
+ *						{ ... }
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ * Customizing the number of visible mentions allows you to specify how many available elements will users be able to see
+ * in the dropdown list. You can specify any number you'll see fit. For example, in the snippet above the dropdownLimit is
+ * set to 20 and will result in up to 20 visible mentions.
+ *
+ * @member {Array.<Number>} module:mention/mention~MentionConfig#dropdownLimit
+ * @default 10
+ */
+
+/**
  * The mention feed descriptor. Used in {@link module:mention/mention~MentionConfig `config.mention`}.
  *
  * See {@link module:mention/mention~MentionConfig} to learn more.
