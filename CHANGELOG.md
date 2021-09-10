@@ -19,7 +19,7 @@ There were also a few bug fixes:
 * The highlight feature [can now be used while typing](https://github.com/ckeditor/ckeditor5/issues/2616).
 * Pasted HTML comments [are filtered out](https://github.com/ckeditor/ckeditor5/issues/10213).
 
-<!-- TODO: Add a link to the blog post. -->
+Read more in the blog post: https://ckeditor.com/blog/ckeditor-5-v29.2.0-with-redesigned-find-and-replace-and-localized-dll-builds/
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
