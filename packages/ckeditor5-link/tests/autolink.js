@@ -11,6 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
@@ -389,13 +390,21 @@ describe( 'AutoLink', () => {
 			);
 		} );
 
-		it( 'should request next backspace to undo the transformation', () => {
-			const deletePlugin = editor.plugins.get( 'Delete' );
-			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+		it( 'should undo auto-linking by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
 
 			simulateTyping( ' ' );
 
-			expect( spy.calledOnce ).to.be.true;
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model ) ).to.equal(
+				'<paragraph>https://www.cksource.com []</paragraph>'
+			);
 		} );
 	} );
 

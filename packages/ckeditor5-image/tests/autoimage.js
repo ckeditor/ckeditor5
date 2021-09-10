@@ -20,6 +20,7 @@ import Image from '../src/image';
 import ImageUtils from '../src/imageutils';
 import ImageCaption from '../src/imagecaption';
 import AutoImage from '../src/autoimage';
+import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'AutoImage - integration', () => {
 	let editorElement, editor;
@@ -102,16 +103,28 @@ describe( 'AutoImage - integration', () => {
 			);
 		} );
 
-		it( 'should request next backspace to undo auto-embeding', () => {
-			const deletePlugin = editor.plugins.get( 'Delete' );
-			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+		it( 'can undo auto-embeding by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
 
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'http://example.com/image.png' );
 
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>http://example.com/image.png[]</paragraph>'
+			);
+
 			clock.tick( 100 );
 
-			expect( spy.calledOnce ).to.be.true;
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>http://example.com/image.png[]</paragraph>'
+			);
 		} );
 
 		describe( 'supported URL', () => {

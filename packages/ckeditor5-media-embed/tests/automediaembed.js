@@ -18,6 +18,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'AutoMediaEmbed - integration', () => {
 	let editorElement, editor;
@@ -96,16 +97,28 @@ describe( 'AutoMediaEmbed - integration', () => {
 			);
 		} );
 
-		it( 'should request next backspace to undo auto-embeding', () => {
-			const deletePlugin = editor.plugins.get( 'Delete' );
-			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+		it( 'can undo auto-embeding by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
 
 			setData( editor.model, '<paragraph>[]</paragraph>' );
 			pasteHtml( editor, 'https://www.youtube.com/watch?v=H08tGjXNHO4' );
 
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
+			);
+
 			clock.tick( 100 );
 
-			expect( spy.calledOnce ).to.be.true;
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>https://www.youtube.com/watch?v=H08tGjXNHO4[]</paragraph>'
+			);
 		} );
 
 		it( 'works for a full URL (https + "www" sub-domain)', () => {

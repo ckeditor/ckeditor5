@@ -12,6 +12,8 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -186,15 +188,33 @@ describe( 'Text transformation feature', () => {
 				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
 
-		it( 'should request next backspace to undo the transformation', () => {
-			const deletePlugin = editor.plugins.get( 'Delete' );
-			const spy = deletePlugin.requestUndoOnBackspace = sinon.spy();
+		it( 'can undo transformation', () => {
+			setData( model, '<paragraph>Foo[]</paragraph>' );
+
+			simulateTyping( '1/2' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo1/2</paragraph>' );
+		} );
+
+		it( 'can undo transformation by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
 
 			setData( model, '<paragraph>Foo[]</paragraph>' );
 
 			simulateTyping( '1/2' );
 
-			expect( spy.calledOnce ).to.be.true;
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo1/2</paragraph>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
@@ -397,7 +417,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock ]
+				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock, UndoEditing ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;
