@@ -14,13 +14,13 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Image from '../src/image';
 import ImageUtils from '../src/imageutils';
 import ImageCaption from '../src/imagecaption';
 import AutoImage from '../src/autoimage';
-import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 describe( 'AutoImage - integration', () => {
 	let editorElement, editor;
