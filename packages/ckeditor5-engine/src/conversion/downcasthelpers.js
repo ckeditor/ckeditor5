@@ -1976,7 +1976,9 @@ function createConsumer( model ) {
 			return false;
 		}
 
-		return events.every( event => consumable.consume( node, event ) );
+		events.forEach( event => consumable.consume( node, event ) );
+
+		return true;
 	};
 }
 
@@ -1985,7 +1987,7 @@ function createConsumer( model ) {
 // @param {module:engine/model/element~Element} element
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @returns {Function}
+// @returns {Function} Exposed by conversionApi as {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor}.
 function createSlotFactory( element, slotsMap, conversionApi ) {
 	return modeOrFilter => {
 		const slot = conversionApi.writer.createContainerElement( '$slot' );
