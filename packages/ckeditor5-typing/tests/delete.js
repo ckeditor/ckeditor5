@@ -8,9 +8,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /* globals window, document */
 
@@ -249,14 +250,16 @@ describe( 'Delete feature - undo by pressing backspace', () => {
 	it( 'executes `undo` once on pressing backspace after requestUndoOnBackspace()', () => {
 		const spy = editor.execute = sinon.spy();
 		const domEvt = getDomEvent();
+		const event = new EventInfo( viewDocument, 'delete' );
 
 		plugin.requestUndoOnBackspace();
 
-		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvt, deleteEventEventData ) );
+		viewDocument.fire( event, new DomEventData( viewDocument, domEvt, deleteEventEventData ) );
 
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithMatch( 'undo' ) ).to.be.true;
 
+		expect( event.stop.called ).to.be.true;
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
 		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
