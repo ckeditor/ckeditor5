@@ -7,16 +7,8 @@
 
 'use strict';
 
-const fs = require( 'fs' );
-const path = require( 'path' );
-
-const dllPackages = fs.readdirSync( path.join( __dirname, 'src' ) ).map( directory => directory.replace( /\.js$/, '' ) );
-
 module.exports = {
 	extends: 'ckeditor5',
-	settings: {
-		dllPackages
-	},
 	rules: {
 		'ckeditor5-rules/ckeditor-imports': 'error'
 	},
