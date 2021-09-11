@@ -2179,24 +2179,48 @@ describe( 'MentionUI', () => {
 				]
 			};
 
-			beforeEach( () => {
-				return createClassicTestEditor( {
-					dropdownLimit: 25,
-					feeds: [ itemsList ] } );
-			} );
-
-			it( 'dropdown list length should be equal to dropdownLimit configuration value', () => {
-				setData( model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
+			describe( 'when dropdownLimit is a specific number', () => {
+				beforeEach( () => {
+					return createClassicTestEditor( {
+						dropdownLimit: 25,
+						feeds: [ itemsList ] } );
 				} );
 
-				return waitForDebounce()
-					.then( () => {
-						expect( panelView.isVisible ).to.be.true;
-						expect( mentionsView.items ).to.have.length( 25 );
+				it( 'dropdown list length should be equal to the dropdownLimit value', () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
 					} );
+
+					return waitForDebounce()
+						.then( () => {
+							expect( panelView.isVisible ).to.be.true;
+							expect( mentionsView.items ).to.have.length( 25 );
+						} );
+				} );
+			} );
+
+			describe( 'when dropdownLimit is set to `Infinity`', () => {
+				beforeEach( () => {
+					return createClassicTestEditor( {
+						dropdownLimit: Infinity,
+						feeds: [ itemsList ] } );
+				} );
+
+				it( 'dropdown list length should be equal to the length of the feed provided', () => {
+					setData( model, '<paragraph>foo []</paragraph>' );
+
+					model.change( writer => {
+						writer.insertText( '@', doc.selection.getFirstPosition() );
+					} );
+
+					return waitForDebounce()
+						.then( () => {
+							expect( panelView.isVisible ).to.be.true;
+							expect( mentionsView.items ).to.have.length( itemsList.feed.length );
+						} );
+				} );
 			} );
 		} );
 	} );
