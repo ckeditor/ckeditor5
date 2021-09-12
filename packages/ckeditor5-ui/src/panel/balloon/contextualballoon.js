@@ -498,11 +498,18 @@ export default class ContextualBalloon extends Plugin {
 	_getBalloonPosition() {
 		let position = Array.from( this._visibleStack.values() ).pop().position;
 
-		// Use the default limiter if none has been specified.
-		if ( position && !position.limiter ) {
+		if ( position ) {
+			// Use the default limiter if none has been specified.
+			if ( !position.limiter ) {
+				// Don't modify the original options object.
+				position = Object.assign( {}, position, {
+					limiter: this.positionLimiter
+				} );
+			}
+
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				limiter: this.positionLimiter
+				viewportOffsetConfig: this.editor.config.get( 'ui.viewportOffset' )
 			} );
 		}
 
