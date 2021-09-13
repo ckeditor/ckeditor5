@@ -235,15 +235,18 @@ function createSourceFileMarkupForThirdPartyPackage( filePath ) {
 function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const featureGuideLink = createFeatureLink( packageData, plugin );
+			const links = [
+				createFeatureLink( packageData, plugin ),
+				createApiLink( packageData, plugin )
+			];
 
-			const apiDocsLink = createApiLink( packageData, plugin );
+			let pluginNameMarkup = `<b>${ plugin.name }</b>`;
 
-			const pluginNameMarkup = `
-				<b>${ plugin.name }</b>
-				<p>${ featureGuideLink }</p>
-				<p>${ apiDocsLink }</p>
-			`;
+			for ( const link of links ) {
+				if ( link ) {
+					pluginNameMarkup += `<p>${ link }</p>`;
+				}
+			}
 
 			const htmlOutputMarkup = plugin.htmlOutput ?
 				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
@@ -265,7 +268,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
  */
 function createFeatureLink( packageData, plugin ) {
 	if ( !plugin.docs ) {
-		return '';
+		return;
 	}
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
@@ -288,7 +291,7 @@ function createFeatureLink( packageData, plugin ) {
  */
 function createApiLink( packageData, plugin ) {
 	if ( packageData.isThirdPartyPackage ) {
-		return '';
+		return;
 	}
 
 	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
