@@ -274,9 +274,9 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	const bookImg = '<img src="%BASE_PATH%/assets/img/exportword.svg" alt="Book" class="plugin-table-img">';
+	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="plugin-table-img">';
 
-	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ bookImg } Feature guide</a>`;
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ docImg } Feature guide</a>`;
 }
 
 /**
