@@ -181,7 +181,8 @@ class UploadAdapter {
 	_sendRequest( file ) {
 		// Prepare form data.
 		const data = new FormData();
-		data.append( 'upload', file );
+		const fieldName = this.editor.config.get( 'ckfinder.fieldName' ) ? this.editor.config.get( 'ckfinder.fieldName' ) : 'upload'
+		data.append( fieldName, file );
 		data.append( 'ckCsrfToken', getCsrfToken() );
 
 		// Send request.
