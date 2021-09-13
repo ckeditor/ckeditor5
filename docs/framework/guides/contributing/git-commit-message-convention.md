@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 50
+modified_at: 2021-09-07
 ---
 
 # Git commit message convention
@@ -70,6 +71,14 @@ If your change is related to the main package only, use `ckeditor5` as the packa
 	If the commit introduces a breaking change across the entire project (a generic change), the package name does not have to be specified.
 </info-box>
 
+### Referencing issues
+
+When creating PRs that address specific issues, use the following messages to indicate it. Add these in the same line with the merge message:
+* `Closes #123` &ndash; when the PR closes an issue.
+* `Closes #123` (outside the merge message) &ndash; when a PR in a public repo closes an issue from a private repository.
+* `See #123` &ndash; when the PR only references an issue, but does not close it yet.
+* _No reference_ &ndash; when the PR does not reference any issue.
+
 ### Order of entries
 
 The proper order of sections for a commit message is as follows:
@@ -84,9 +93,9 @@ All entries must be separated with a blank line, otherwise the lines will not be
 Example of a proper commit message:
 
 ```
-Feature (package-name-1): Message 1.
+Feature (package-name-1): Message 1. Closes: #123
 
-Fix (package-name-2): Message 2.
+Fix (package-name-2): Message 2. Closes: #456
 
 Tests: A change across the entire project.
 ```
