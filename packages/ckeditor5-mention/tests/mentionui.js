@@ -2170,20 +2170,29 @@ describe( 'MentionUI', () => {
 		} );
 
 		describe( 'overriding the default number of visible mentions using config.mention.dropdownLimit', () => {
-			const itemsList = {
+			const longFeed = [
+				'@01', '@02', '@03', '@04', '@05', '@06', '@07', '@08', '@09', '@10',
+				'@11', '@12', '@13', '@16', '@17', '@18', '@17', '@18', '@19', '@20',
+				'@21', '@22', '@23', '@24', '@25', '@26', '@27', '@28', '@29', '@30'
+			];
+
+			const simpleArrayFeed = {
 				marker: '@',
-				feed: [
-					'@01', '@02', '@03', '@04', '@05', '@06', '@07', '@08', '@09', '@10',
-					'@11', '@12', '@13', '@16', '@17', '@18', '@17', '@18', '@19', '@20',
-					'@21', '@22', '@23', '@24', '@25', '@26', '@27', '@28', '@29', '@30'
-				]
+				feed: longFeed
+			};
+
+			const customFunctionFeed = {
+				marker: '@',
+				feed: () => {
+					return longFeed;
+				}
 			};
 
 			describe( 'when dropdownLimit is a specific number', () => {
 				beforeEach( () => {
 					return createClassicTestEditor( {
 						dropdownLimit: 25,
-						feeds: [ itemsList ] } );
+						feeds: [ simpleArrayFeed ] } );
 				} );
 
 				it( 'dropdown list length should be equal to the dropdownLimit value', () => {
@@ -2201,11 +2210,31 @@ describe( 'MentionUI', () => {
 				} );
 			} );
 
+			it( 'works with specific number in case of custom function feed', async () => {
+				const mentionsLimit = 3;
+
+				await createClassicTestEditor( {
+					dropdownLimit: mentionsLimit,
+					feeds: [ customFunctionFeed ] } );
+
+				setData( editor.model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( mentionsLimit );
+					} );
+			} );
+
 			describe( 'when dropdownLimit is set to `Infinity`', () => {
 				beforeEach( () => {
 					return createClassicTestEditor( {
 						dropdownLimit: Infinity,
-						feeds: [ itemsList ] } );
+						feeds: [ simpleArrayFeed ] } );
 				} );
 
 				it( 'dropdown list length should be equal to the length of the feed provided', () => {
@@ -2218,7 +2247,7 @@ describe( 'MentionUI', () => {
 					return waitForDebounce()
 						.then( () => {
 							expect( panelView.isVisible ).to.be.true;
-							expect( mentionsView.items ).to.have.length( itemsList.feed.length );
+							expect( mentionsView.items ).to.have.length( simpleArrayFeed.feed.length );
 						} );
 				} );
 			} );
