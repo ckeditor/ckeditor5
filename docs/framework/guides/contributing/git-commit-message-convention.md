@@ -79,6 +79,14 @@ When creating PRs that address specific issues, use the following messages to in
 * `See #123` &ndash; when the PR only references an issue, but does not close it yet.
 * _No reference_ &ndash; when the PR does not reference any issue.
 
+### Methods name syntax
+
+ALl methods mentioned in the git commit message should use the **#** sign inbetween the class name and the method name. And example of a properly named method:
+
+```
+MarkerCollection#has()
+```
+
 ### Order of entries
 
 The proper order of sections for a commit message is as follows:
