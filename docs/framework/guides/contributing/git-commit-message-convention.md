@@ -149,11 +149,11 @@ Tests (widget): Introduced missing tests. Closes #5.
 An improvement that is not backward compatible and sent by a non-core contributor. Public API was changed:
 
 ```
-Other (utils): Extracted the `utils.foo()` to a separate package. Closes #9.
+Other (utils): Extracted the `utils#foo()` to a separate package. Closes #9.
 
-Feature (engine): Introduced the `engine.foo()` method. Closes #9.
+Feature (engine): Introduced the `engine#foo()` method. Closes #9.
 
-MAJOR BREAKING CHANGE (utils): The `utils.foo()` method was moved to the `engine` package. See #9.
+MAJOR BREAKING CHANGE (utils): The `utils#foo()` method was moved to the `engine` package. See #9.
 ```
 
 For the commits shown above the changelog will look like this:
