@@ -343,7 +343,7 @@ describe( 'ButtonView', () => {
 	} );
 
 	describe( '#keystrokeView', () => {
-		it( 'is omitted in #children when view#withKeystroke is false', () => {
+		it( 'is omitted in #children when view#withKeystroke is not set', () => {
 			view = new ButtonView( locale );
 			view.render();
 
@@ -370,6 +370,7 @@ describe( 'ButtonView', () => {
 		} );
 
 		it( 'is omitted in #children when view#keystroke is not defined', () => {
+			// (#9412)
 			view = new ButtonView( locale );
 			view.withKeystroke = true;
 			view.render();
