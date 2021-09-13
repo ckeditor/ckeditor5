@@ -166,11 +166,11 @@ Changelog
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils.foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils#foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 
 ### Features
 
-* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine.foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine#foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 * **[ui](http://npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5/issue/1). ([adc59ed](https://github.com/ckeditor/ckeditor5/commit/adc59ed))
 
    RTL content will now be rendered correctly.
@@ -181,7 +181,7 @@ Changelog
 
 ### Other changes
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils.foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils#foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 ```
 
 ## Handling pull requests
