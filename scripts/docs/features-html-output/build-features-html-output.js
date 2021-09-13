@@ -287,8 +287,6 @@ function createFeatureLink( packageData, plugin ) {
  * @returns {String}
  */
 function createApiLink( packageData, plugin ) {
-	const pluginClassName = `<code>${ plugin.className }</code>`;
-
 	if ( packageData.isThirdPartyPackage ) {
 		return '';
 	}
@@ -305,7 +303,7 @@ function createApiLink( packageData, plugin ) {
 
 	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="plugin-table-img">';
 
-	return `<a href="${ link }" ${ skipLinkValidation } alt="${ pluginClassName }">${ cogImg } API documentation</a>`;
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">${ cogImg } API documentation</a>`;
 }
 
 /**
