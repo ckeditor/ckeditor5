@@ -10,8 +10,8 @@ import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 import LinkEditing from '../src/linkediting';
 import AutoLink from '../src/autolink';
