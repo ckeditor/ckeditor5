@@ -2169,7 +2169,7 @@ describe( 'MentionUI', () => {
 			} );
 		} );
 
-		describe( 'overriding the default number of visible mentions using config.mention.dropdownLimit', () => {
+		describe( 'overriding the number of visible mentions using config.mention.dropdownLimit', () => {
 			const itemsList = {
 				marker: '@',
 				feed: [
