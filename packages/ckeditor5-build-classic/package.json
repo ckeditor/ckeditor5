@@ -31,7 +31,6 @@
     "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
     "@ckeditor/ckeditor5-block-quote": "^29.2.0",
     "@ckeditor/ckeditor5-ckfinder": "^29.2.0",
-    "@ckeditor/ckeditor5-cloud-services": "^29.2.0",
     "@ckeditor/ckeditor5-easy-image": "^29.2.0",
     "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
     "@ckeditor/ckeditor5-essentials": "^29.2.0",
@@ -44,7 +43,8 @@
     "@ckeditor/ckeditor5-paragraph": "^29.2.0",
     "@ckeditor/ckeditor5-paste-from-office": "^29.2.0",
     "@ckeditor/ckeditor5-table": "^29.2.0",
-    "@ckeditor/ckeditor5-typing": "^29.2.0"
+    "@ckeditor/ckeditor5-typing": "^29.2.0",
+    "@ckeditor/ckeditor5-alignment":"^29.2.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^29.2.0",
