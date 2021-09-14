@@ -42,10 +42,12 @@
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "bugs": {
+    "url": "https://github.com/ckeditor/ckeditor5/issues"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "url": "git+https://github.com/ckeditor/ckeditor5.git",
     "directory": "packages/ckeditor5-media-embed"
   },
   "files": [
@@ -57,5 +59,9 @@
   ],
   "scripts": {
     "dll:build": "webpack"
+  },
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
   }
 }
