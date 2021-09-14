@@ -29,8 +29,8 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
-// NEW STUFFS
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
@@ -45,6 +45,7 @@ ClassicEditor.builtinPlugins = [
 	Italic,
 	BlockQuote,
 	CKFinder,
+	CloudServices,
 	EasyImage,
 	Heading,
 	Image,
@@ -61,7 +62,7 @@ ClassicEditor.builtinPlugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-	// NEW
+	// New stuff
 	Alignment,
 	Underline
 ];
@@ -75,7 +76,8 @@ ClassicEditor.defaultConfig = {
 			'bold',
 			'italic',
 			'underline',
-			'link',
+			'|',
+			'alignment',
 			'bulletedList',
 			'numberedList',
 			'|',
@@ -83,9 +85,11 @@ ClassicEditor.defaultConfig = {
 			'indent',
 			'|',
 			'uploadImage',
+			'link',
 			'blockQuote',
-			'insertTable',
 			'mediaEmbed',
+			'insertTable',
+			'|',
 			'undo',
 			'redo'
 		]
