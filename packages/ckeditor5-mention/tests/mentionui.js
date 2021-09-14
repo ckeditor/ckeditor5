@@ -23,7 +23,7 @@ import MentionsView from '../src/ui/mentionsview';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MentionUI', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, clock;
 
 	const staticConfig = {
 		feeds: [
@@ -37,6 +37,7 @@ describe( 'MentionUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		clock = sinon.useFakeTimers( { now: Date.now() } );
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 	} );
@@ -938,6 +939,7 @@ describe( 'MentionUI', () => {
 
 				function feedCallback( feedText ) {
 					return new Promise( resolve => {
+						// sinon.clock.tick( feedCallbackTimeout );
 						setTimeout( () => {
 							feedCallbackCallTimes++;
 							resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
@@ -2265,9 +2267,8 @@ describe( 'MentionUI', () => {
 
 	function wait( timeout ) {
 		return () => new Promise( resolve => {
-			setTimeout( () => {
-				resolve();
-			}, timeout );
+			clock.tick( timeout );
+			resolve();
 		} );
 	}
 
