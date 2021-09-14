@@ -939,7 +939,6 @@ describe( 'MentionUI', () => {
 
 				function feedCallback( feedText ) {
 					return new Promise( resolve => {
-						// sinon.clock.tick( feedCallbackTimeout );
 						setTimeout( () => {
 							feedCallbackCallTimes++;
 							resolve( issuesNumbers.filter( number => number.includes( feedText ) ) );
@@ -2272,8 +2271,8 @@ describe( 'MentionUI', () => {
 		} );
 	}
 
-	function waitForDebounce() {
-		return wait( 180 )();
+	async function waitForDebounce() {
+		return await wait( 180 )();
 	}
 
 	function fireKeyDownEvent( options ) {
