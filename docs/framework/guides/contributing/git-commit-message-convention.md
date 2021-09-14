@@ -81,7 +81,7 @@ When creating PRs that address specific issues, use the following messages to in
 
 ### Methods name syntax
 
-ALl methods mentioned in the git commit message should use the **#** sign inbetween the class name and the method name. And example of a properly named method:
+All methods mentioned in the git commit message should use the **#** sign inbetween the class name and the method name. And example of a properly named method:
 
 ```
 MarkerCollection#has()
@@ -98,7 +98,7 @@ All entries must be separated with a blank line, otherwise the lines will not be
 
 ### Examples of correct and incorrect message formatting
 
-Example of a proper commit message:
+An example of a proper commit message:
 
 ```
 Feature (package-name-1): Message 1. Closes: #123
