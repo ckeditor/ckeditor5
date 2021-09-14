@@ -4,6 +4,12 @@ menu-title: Migration to v27.x
 order: 97
 ---
 
+<info-box>
+	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+
+	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
+</info-box>
+
 # Migration to CKEditor 5 v27.x
 
 ## Migration to CKEditor 5 v27.1.0
