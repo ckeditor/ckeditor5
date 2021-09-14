@@ -1917,7 +1917,9 @@ function createChangeReducer( model, keepChangeForChildChange = false ) {
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			if ( !shouldReplace( node, change ) ) {
+			// TODO Node might not be here if it's change of an attribute in the middle of some text.
+			//  undoediting-integration.js line 323 fails without this check
+			if ( !node || !shouldReplace( node, change ) ) {
 				reducedChanges.push( change );
 
 				continue;
@@ -2108,17 +2110,6 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 				writer.createRangeOn( viewChildNode ),
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
-
-			// let viewNode = viewChildNode;
-			//
-			// while ( !mapper.toModelElement( viewNode.parent ) ) {
-			// 	viewNode = viewNode.parent;
-			// }
-			//
-			// writer.move(
-			// 	writer.createRangeOn( viewNode ),
-			// 	mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
-			// );
 		} else {
 			console.log( '    creating: ' + ModelPosition._createBefore( modelChildNode ).path );
 			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );

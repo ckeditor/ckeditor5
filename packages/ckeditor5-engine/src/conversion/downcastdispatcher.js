@@ -183,6 +183,23 @@ export default class DowncastDispatcher {
 
 		// Remove mappings for all removed view elements.
 		conversionApi.mapper.flushDeferredBindings();
+
+		const notConsumed = [];
+
+		for ( const [ item, value ] of conversionApi.consumable._consumable ) {
+			for ( const [ event, canConsume ] of value ) {
+				if ( canConsume && event == 'insert' ) {
+					notConsumed.push( `${ event } ${ ( item.name || item.data ) }` );
+				}
+			}
+		}
+
+		if ( notConsumed.length ) {
+			throw new Error( 'notConsumed:\n  ' + notConsumed.join( '\n  ' ) );
+		// 	console.log( 'notConsumed:\n  ' + notConsumed.join( '\n  ' ) );
+		// } else {
+		// 	console.log( 'all consumed' );
+		}
 	}
 
 	/**
