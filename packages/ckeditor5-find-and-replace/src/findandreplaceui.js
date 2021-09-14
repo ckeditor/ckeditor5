@@ -60,7 +60,7 @@ export default class FindAndReplaceUI extends Plugin {
 			// the default action of the drop-down is executed (i.e. the panel showed up). Otherwise,
 			// the invisible form/input cannot be focused/selected.
 			//
-			// Each time a dropdown is closed, move the focus back to the editing root (to preserve it)
+			// Each time a dropdown is closed, move the focus back to the find and replace toolbar button
 			// and let the find and replace editing feature know that all search results can be invalidated
 			// and no longer should be marked in the content.
 			dropdown.on( 'change:isOpen', ( event, name, isOpen ) => {
@@ -73,7 +73,7 @@ export default class FindAndReplaceUI extends Plugin {
 
 					formView.enableCssTransitions();
 				} else {
-					editor.editing.view.focus();
+					formView.focus();
 
 					this.fire( 'searchReseted' );
 				}
