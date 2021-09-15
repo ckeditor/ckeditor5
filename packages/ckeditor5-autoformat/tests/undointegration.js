@@ -187,7 +187,7 @@ describe( 'Autoformat undo integration', () => {
 		} );
 	} );
 
-	describe( 'should undo by pressing backspace', () => {
+	describe( 'by pressing backspace', () => {
 		let viewDocument, deleteEvent;
 
 		beforeEach( async () => {
@@ -214,14 +214,7 @@ describe( 'Autoformat undo integration', () => {
 			);
 		} );
 
-		it( 'after inline autoformat', () => {
-			const viewDocument = editor.editing.view.document;
-			const deleteEvent = new DomEventData(
-				viewDocument,
-				{ preventDefault: sinon.spy() },
-				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
-			);
-
+		it( 'should undo after inline autoformat', () => {
 			setData( model, '<paragraph>**foobar*[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( '*', doc.selection.getFirstPosition() );
@@ -234,7 +227,7 @@ describe( 'Autoformat undo integration', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
 		} );
 
-		it( 'after block autoformat', () => {
+		it( 'should undo after block autoformat', () => {
 			setData( model, '<paragraph>-[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
@@ -245,6 +238,25 @@ describe( 'Autoformat undo integration', () => {
 			viewDocument.fire( 'delete', deleteEvent );
 
 			expect( getData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
+		} );
+
+		it( 'should not undo after selection has changed', () => {
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+
+			model.change( writer => {
+				const selection = model.createSelection();
+				writer.setSelection( selection );
+			} );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foobar</$text></paragraph>' );
 		} );
 	} );
 
