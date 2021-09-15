@@ -191,8 +191,6 @@ export default class Mention extends Plugin {
  *					.filter( tag => {
  *						return tag.toLowerCase().includes( queryText.toLowerCase() );
  *					} )
- *					// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
- *					.slice( 0, 10 );
  *			}
  * 		};
  *
