@@ -1,0 +1,58 @@
+<head>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+
+		.box {
+			border: 1px solid hsl(0, 0%, 20%);
+			padding: 2px;
+			background: hsl(0, 0%, 40%);
+		}
+
+		.box-content {
+			padding: .5em;
+			background: hsl(0, 0%, 100%);
+			border: 1px solid hsl(0, 0%, 60%)
+		}
+
+		.box figcaption {
+			padding: .5em;
+			background: hsl(0, 0%, 90%);
+			border: 1px solid hsl(0, 0%, 60%)
+		}
+
+		.ck.ck-content [data-insert-count] {
+			position: relative;
+		}
+		.ck.ck-content [data-insert-count]:after {
+			content: attr(data-insert-count);
+			position: absolute;
+			font-size: 10px;
+			top: 2px;
+			right: 2px;
+			border: 1px solid hsl(219, 86%, 31%);
+			background: hsl(219, 100%, 91%);
+			padding: 0 2px;
+			opacity: 0.8;
+		}
+	</style>
+</head>
+
+<div id="editor">
+	<figure class="box">
+		<div class="box-content">
+			<p>Foo</p>
+			<ul>
+				<li>Bar</li>
+			</ul>
+			<p>Baz</p>
+			<pre><code class="language-plaintext">code block</code></pre>
+			<p>abc</p>
+		</div>
+		<figcaption>
+			This is caption
+		</figcaption>
+	</figure>
+</div>
