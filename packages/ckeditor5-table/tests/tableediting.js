@@ -275,14 +275,14 @@ describe( 'TableEditing', () => {
 				], { headingColumns: 1 } ) );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ 'b', 'a', 'c' ],
-					[ 'e', 'd', 'f' ]
-				], { headingColumns: 1, asWidget: true } ) );
+					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
+					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
+				], { asWidget: true } ) );
 
 				assertEqualMarkup( editor.getData(), viewTable( [
-					[ 'b', 'a', 'c' ],
-					[ 'e', 'd', 'f' ]
-				], { headingColumns: 1 } ) );
+					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
+					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
+				] ) );
 			} );
 
 			it( 'should reorder columns with header correctly - right direction', () => {
@@ -308,14 +308,14 @@ describe( 'TableEditing', () => {
 				], { headingColumns: 1 } ) );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ 'b', 'a', 'c' ],
-					[ 'e', 'd', 'f' ]
-				], { headingColumns: 1, asWidget: true } ) );
+					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
+					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
+				], { asWidget: true } ) );
 
 				assertEqualMarkup( editor.getData(), viewTable( [
-					[ 'b', 'a', 'c' ],
-					[ 'e', 'd', 'f' ]
-				], { headingColumns: 1 } ) );
+					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
+					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
+				] ) );
 			} );
 		} );
 
