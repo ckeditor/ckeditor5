@@ -102,6 +102,16 @@ export default class Renderer {
 		this.isFocused = false;
 
 		/**
+		 * TODO
+		 */
+		this._selectionRenderingDisabled = false;
+
+		/**
+		 * TODO
+		 */
+		this._isSelectionRenderPending = false;
+
+		/**
 		 * The text node in which the inline filler was rendered.
 		 *
 		 * @private
@@ -154,6 +164,23 @@ export default class Renderer {
 				 */
 				throw new CKEditorError( 'view-renderer-unknown-type', this );
 			}
+		}
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {TODO} flag
+	 */
+	disableSelectionRendering( flag ) {
+		this._selectionRenderingDisabled = flag;
+
+		if ( !flag && this._isSelectionRenderPending ) {
+			this._isSelectionRenderPending = false;
+
+			// @if CK_DEBUG // console.log( '[Renderer] Unblocked selection rendering -> rendering pending updates.' );
+
+			this._updateSelection();
 		}
 	}
 
@@ -684,6 +711,16 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
+		if ( this._selectionRenderingDisabled ) {
+			this._isSelectionRenderPending = true;
+
+			// @if CK_DEBUG // console.warn( '[Renderer] Selection update blocked.' );
+
+			return;
+		}
+
+		// @if CK_DEBUG // console.log( '[Renderer] Selection update.' );
+
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();

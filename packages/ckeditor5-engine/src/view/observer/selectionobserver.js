@@ -100,6 +100,10 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
+		this.listenTo( domDocument, 'selectstart', () => {
+			this.document.fire( 'selectStart' );
+		} );
+
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 		} );

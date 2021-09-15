@@ -687,6 +687,17 @@ export default class View {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @param {TODO} flag
+	 */
+	_disableSelectionRendering( flag ) {
+		this._renderer.disableSelectionRendering( flag );
+
+		// @if CK_DEBUG // window.updateSelectionRenderingStatus( !flag );
+	}
+
+	/**
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *
