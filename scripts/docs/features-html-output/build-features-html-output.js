@@ -240,7 +240,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 				createApiLink( packageData, plugin )
 			];
 
-			let pluginNameMarkup = `<b>${ plugin.name }</b>`;
+			let pluginNameMarkup = `<p><b>${ plugin.name }</b></p>`;
 
 			for ( const link of links ) {
 				if ( link ) {
@@ -277,7 +277,7 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="plugin-table-img">';
+	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="output-overview-table-icon">';
 
 	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ docImg } Feature guide</a>`;
 }
@@ -304,7 +304,7 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="plugin-table-img">';
+	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="output-overview-table-icon">';
 
 	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">${ cogImg } API documentation</a>`;
 }

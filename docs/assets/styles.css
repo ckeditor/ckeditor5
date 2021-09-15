@@ -53,8 +53,11 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 }
 
 /* https://github.com/ckeditor/ckeditor5/issues/9700 */
-.main .main__content-inner img.plugin-table-img {
+.main .main__content-inner img.output-overview-table-icon {
 	display: inline;
 	margin: 0;
 	height: 1rem;
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
 }
