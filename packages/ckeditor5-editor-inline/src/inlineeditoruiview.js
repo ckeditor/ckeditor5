@@ -71,8 +71,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		 */
 		this.panel = new BalloonPanelView( locale );
 
-		this.panel.withArrow = false;
-
 		/**
 		 * A set of positioning functions used by the {@link #panel} to float around
 		 * {@link #element editableElement}.
@@ -217,14 +215,20 @@ export default class InlineEditorUIView extends EditorUIView {
 				return {
 					top: this._getPanelPositionTop( editableRect, panelRect ),
 					left: editableRect.left,
-					name: 'toolbar_west'
+					name: 'toolbar_west',
+					config: {
+						withArrow: false
+					}
 				};
 			},
 			( editableRect, panelRect ) => {
 				return {
 					top: this._getPanelPositionTop( editableRect, panelRect ),
 					left: editableRect.left + editableRect.width - panelRect.width,
-					name: 'toolbar_east'
+					name: 'toolbar_east',
+					config: {
+						withArrow: false
+					}
 				};
 			}
 		];
