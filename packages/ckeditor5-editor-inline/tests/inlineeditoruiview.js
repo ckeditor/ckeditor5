@@ -89,10 +89,6 @@ describe( 'InlineEditorUIView', () => {
 				expect( view.panel.locale ).to.equal( locale );
 			} );
 
-			it( 'gets view.panel#withArrow set', () => {
-				expect( view.panel.withArrow ).to.be.false;
-			} );
-
 			it( 'is not rendered', () => {
 				expect( view.panel.isRendered ).to.be.false;
 			} );
