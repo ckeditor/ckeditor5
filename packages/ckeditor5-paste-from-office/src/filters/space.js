@@ -39,9 +39,13 @@ export function normalizeSpacing( htmlString ) {
  */
 export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
-		const innerTextLength = el.innerText.length || 0;
+		// For paste contents from WPS Office, the span's inner text is not all of spaces or blank,
+		// so we should keep the origin contents, or replace ONLY space characters.
+		if ( /[^\b]/.test( el.innerText.trim() ) === false ) {
+			const innerTextLength = el.innerText.length || 0;
 
-		el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+			el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
+		}
 	} );
 }
 

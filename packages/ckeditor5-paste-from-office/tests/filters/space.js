@@ -136,6 +136,21 @@ describe( 'PasteFromOffice - filters', () => {
 
 				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
 			} );
+
+			it( 'should not normalize spaces inside special "span.spacerun" elements pasted from WPS', () => {
+				const input = '演出单位：   成都市木偶皮影剧团';
+
+				const expected = input;
+
+				const domParser = new DOMParser();
+				const htmlDocument = domParser.parseFromString( input, 'text/html' );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
+
+				normalizeSpacerunSpans( htmlDocument );
+
+				expect( htmlDocument.body.innerHTML.replace( /'/g, '"' ).replace( /: /g, ':' ) ).to.equal( expected );
+			} );
 		} );
 	} );
 } );
