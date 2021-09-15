@@ -25,29 +25,29 @@ const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-
  * - use the parsed data to create tables for each package, that contains all plugins and their possible HTML output.
  *
  * Each generated table contains 2 columns: "Plugin" and "HTML output". Each table cell in the "Plugin" column has a human-readable name of
- * the plugin (which is a link to the feature documentation) and the name of the class used to create the plugin (which is a link to the API
- * documentation). For each row in the "Plugin" column there is at least one row in the "HTML output" column. If given plugin does not
- * generate any output, the one and only row in the "HTML output" column contains the word "None". Each item from the `htmlOutput` property
- * from the package metadata file corresponds to a separate row in the "HTML output" column. It contains one or more preformatted paragraphs
- * describing the possible HTML output: HTML elements, their CSS classes, inline styles, other attributes and comments.
+ * the plugin, a link to the feature documentation, and a link to the API documentation. For each row in the "Plugin" column there is at
+ * least one row in the "HTML output" column. If given plugin does not generate any output, the one and only row in the "HTML output"
+ * column contains the word "None". Each item from the `htmlOutput` property from the package metadata file corresponds to a separate row
+ * in the "HTML output" column. It contains one or more preformatted paragraphs describing the possible HTML output: HTML elements, their
+ * CSS classes, inline styles, other attributes and comments.
  *
- * ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
- * ┃    Plugin    ┃           HTML output          ┃
- * ┣━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
- * ┃ first plugin │ output #1 for the first plugin ┃
- * ┃              ├────────────────────────────────┨
- * ┃              ┄                                ┄
- * ┃              ├────────────────────────────────┨
- * ┃              │ output #N for the first plugin ┃
- * ┃──────────────┼────────────────────────────────┨
- * ┄              ┄                                ┄
- * ┃──────────────┼────────────────────────────────┨
- * ┃ last plugin  │ output #1 for the last plugin  ┃
- * ┃              ├────────────────────────────────┨
- * ┃              ┄                                ┄
- * ┃              ├────────────────────────────────┨
- * ┃              │ output #N for the last plugin  ┃
- * ┗━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ * ┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃         Plugin         ┃         HTML output         ┃
+ * ┣━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+ * ┃ #1 plugin name         │ output #1 for the #1 plugin ┃
+ * ┃ Feature guide link     ├─────────────────────────────┨
+ * ┃ API documentation link ┄                             ┄
+ * ┃                        ├─────────────────────────────┨
+ * ┃                        │ output #N for the #1 plugin ┃
+ * ┃────────────────────────┼─────────────────────────────┨
+ * ┄                        ┄                             ┄
+ * ┃────────────────────────┼─────────────────────────────┨
+ * ┃ #N plugin name         │ output #1 for the #N plugin ┃
+ * ┃ Feature guide link     ├─────────────────────────────┨
+ * ┃ API documentation link ┄                             ┄
+ * ┃                        ├─────────────────────────────┨
+ * ┃                        │ output #N for the #N plugin ┃
+ * ┗━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
  *
  * Generated table is preceded by the package name as a heading and the link to a source package metadata file on GitHub.
  *
@@ -235,23 +235,32 @@ function createSourceFileMarkupForThirdPartyPackage( filePath ) {
 function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const pluginNameLink = createFeatureLink( packageData, plugin );
+			const links = [
+				createFeatureLink( packageData, plugin ),
+				createApiLink( packageData, plugin )
+			];
 
-			const pluginClassNameLink = createApiLink( packageData, plugin );
+			let pluginNameMarkup = `<p><b>${ plugin.name }</b></p>`;
+
+			for ( const link of links ) {
+				if ( link ) {
+					pluginNameMarkup += `<p>${ link }</p>`;
+				}
+			}
 
 			const htmlOutputMarkup = plugin.htmlOutput ?
 				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
 				[ '<p>None.</p>' ];
 
 			return {
-				pluginNameMarkup: `<p>${ pluginNameLink }</p><p>${ pluginClassNameLink }</p>`,
+				pluginNameMarkup,
 				htmlOutputMarkup
 			};
 		} );
 }
 
 /**
- * Creates link to the plugin's feature documentation. If the feature documentation is missing, just the plugin name is returned.
+ * Creates link to the plugin's feature documentation. If the feature documentation is missing, it returns undefined.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
@@ -259,7 +268,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
  */
 function createFeatureLink( packageData, plugin ) {
 	if ( !plugin.docs ) {
-		return plugin.name;
+		return;
 	}
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
@@ -268,21 +277,21 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
+	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="output-overview-table-icon">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ docImg } Feature guide</a>`;
 }
 
 /**
- * Creates link to the plugin's API documentation. If given package is a third-party one, just the plugin class name is returned.
+ * Creates link to the plugin's API documentation. If given package is a third-party one, it returns undefined.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
 function createApiLink( packageData, plugin ) {
-	const pluginClassName = `<code>${ plugin.className }</code>`;
-
 	if ( packageData.isThirdPartyPackage ) {
-		return pluginClassName;
+		return;
 	}
 
 	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
@@ -295,7 +304,9 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
+	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="output-overview-table-icon">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">${ cogImg } API documentation</a>`;
 }
 
 /**
