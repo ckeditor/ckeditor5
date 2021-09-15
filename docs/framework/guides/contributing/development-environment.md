@@ -97,22 +97,22 @@ This task accepts the following arguments:
 * `--skip-snippets` &ndash; Skips building live snippets.
 * `--snippets=snippet-name` &ndash; Snippets to build. Accepts glob patterns that are matched against snippet names used in `{@snippet ...}` tags. Examples:
 
-    ```
-    --snippets=image         // matches roughly {@snippet *image*}
-    --snippets="features/*"  // matches roughly {@snippet *features/*}
-    --snippets=classic-editor,build-classic-source
-    ```
+	```
+	--snippets=image         // matches roughly {@snippet *image*}
+	--snippets="features/*"  // matches roughly {@snippet *features/*}
+	--snippets=classic-editor,build-classic-source
+	```
 
-    Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (e.g. `--files=features/default-headings,build-classic-source`).
+	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (e.g. `--files=features/default-headings,build-classic-source`).
 * `--skip-validation` &ndash; Skips the final link validation.
 * `--skip-guides` &ndash; Skips building all guides except `index.md` files to allows navigating over the partially built documentation.
 * `--guides=guide-name` &ndash; Guides to build. Accepts Accepts glob patterns that are matched against guide names. Examples:
 
-  ```
-  --guides=image         // matches roughly "*image*"
-  --guides="features/*"  // matches roughly "*features/*"
-  --guides=features/image
-  ```
+	```
+	--guides=image         // matches roughly "*image*"
+	--guides="features/*"  // matches roughly "*features/*"
+	--guides=features/image
+	```
 
 * `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
 * `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
