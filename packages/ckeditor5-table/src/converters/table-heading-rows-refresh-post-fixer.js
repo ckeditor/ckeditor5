@@ -35,20 +35,23 @@ function tableHeadingRowsRefreshPostFixer( model ) {
 			if ( element && element.is( 'element', 'table' ) && change.attributeKey === 'headingRows' ) {
 				tablesToRefresh.add( element );
 			}
-		} else if ( change.type === 'insert' || change.type === 'remove' ) {
-			if ( change.name === 'tableRow' ) {
-				const table = change.position.findAncestor( 'table' );
-				const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		} else {
+			/* istanbul ignore else */
+			if ( change.type === 'insert' || change.type === 'remove' ) {
+				if ( change.name === 'tableRow' ) {
+					const table = change.position.findAncestor( 'table' );
+					const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-				if ( change.position.offset < headingRows ) {
-					tablesToRefresh.add( table );
-				}
-			} else if ( change.name === 'tableCell' ) {
-				const table = change.position.findAncestor( 'table' );
-				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+					if ( change.position.offset < headingRows ) {
+						tablesToRefresh.add( table );
+					}
+				} else if ( change.name === 'tableCell' ) {
+					const table = change.position.findAncestor( 'table' );
+					const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
-				if ( change.position.offset < headingColumns ) {
-					tablesToRefresh.add( table );
+					if ( change.position.offset < headingColumns ) {
+						tablesToRefresh.add( table );
+					}
 				}
 			}
 		}
