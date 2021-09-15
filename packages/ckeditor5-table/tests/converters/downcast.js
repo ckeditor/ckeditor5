@@ -761,7 +761,7 @@ describe( 'downcast converters', () => {
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 					[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
 					[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
-				], { headingColumns: 3, asWidget: true } ) );
+				], { headingColumns: 1, asWidget: true } ) );
 			} );
 
 			it( 'should work for removing heading columns', () => {

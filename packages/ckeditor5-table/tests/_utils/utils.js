@@ -142,6 +142,7 @@ export function setTableWithObjectAttributes( model, attributes, cellContent ) {
  */
 export function viewTable( tableData, attributes = {} ) {
 	const headingRows = attributes.headingRows || 0;
+	const headingColumns = attributes.headingColumns || 0;
 	const asWidget = !!attributes.asWidget;
 
 	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), {
@@ -150,7 +151,8 @@ export function viewTable( tableData, attributes = {} ) {
 		headingElement: 'th',
 		wrappingElement: asWidget ? 'span' : 'p',
 		enforceWrapping: asWidget,
-		asWidget
+		asWidget,
+		headingColumns
 	} ) }</thead>` : '';
 
 	const tbody = tableData.length > headingRows ?
@@ -160,7 +162,8 @@ export function viewTable( tableData, attributes = {} ) {
 			headingElement: 'th',
 			wrappingElement: asWidget ? 'span' : 'p',
 			enforceWrapping: asWidget,
-			asWidget
+			asWidget,
+			headingColumns
 		} ) }</tbody>` : '';
 
 	const figureAttributes = asWidget ?
@@ -343,17 +346,21 @@ function formatAttributes( attributes ) {
 
 // Formats passed table data to a set of table rows.
 function makeRows( tableData, options ) {
-	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping, asWidget } = options;
+	const { cellElement, rowElement, headingElement, wrappingElement, enforceWrapping, asWidget, headingColumns } = options;
 
 	return tableData
 		.reduce( ( previousRowsString, tableRow ) => {
-			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
+			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData, index ) => {
 				const isObject = typeof tableCellData === 'object';
 
 				let contents = isObject ? tableCellData.contents : tableCellData;
 
 				let resultingCellElement = cellElement;
 				let isSelected = false;
+
+				if ( index < headingColumns ) {
+					resultingCellElement = headingElement;
+				}
 
 				if ( isObject ) {
 					if ( tableCellData.isHeading ) {
