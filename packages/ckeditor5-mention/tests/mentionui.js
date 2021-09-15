@@ -2208,12 +2208,13 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 
-			it( 'dropdown list length should be equal to the dropdownLimit value', async () => {
+			it( 'dropdown list length should be equal to the dropdownLimit value', () => {
 				return createClassicTestEditor( {
 					dropdownLimit: 25,
 					feeds: [ simpleArrayFeed ] } )
 					.then( () => {
 						setData( model, '<paragraph>foo []</paragraph>' );
+
 						model.change( writer => {
 							writer.insertText( '@', doc.selection.getFirstPosition() );
 						} );

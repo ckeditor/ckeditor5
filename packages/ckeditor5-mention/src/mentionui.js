@@ -97,8 +97,6 @@ export default class MentionUI extends Plugin {
 		const commitKeys = editor.config.get( 'mention.commitKeys' ) || defaultCommitKeyCodes;
 		const handledKeyCodes = defaultHandledKeyCodes.concat( commitKeys );
 
-		const dropdownLimit = editor.config.get( 'mention.dropdownLimit' ) || 10;
-
 		/**
 		 * The contextual balloon plugin instance.
 		 *
@@ -163,7 +161,7 @@ export default class MentionUI extends Plugin {
 			}
 
 			const minimumCharacters = mentionDescription.minimumCharacters || 0;
-			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed, dropdownLimit );
+			const feedCallback = typeof feed == 'function' ? feed.bind( this.editor ) : createFeedCallback( feed );
 			const watcher = this._setupTextWatcherForFeed( marker, minimumCharacters );
 			const itemRenderer = mentionDescription.itemRenderer;
 
@@ -221,6 +219,13 @@ export default class MentionUI extends Plugin {
 
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
+
+			// See: #10479
+			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
+
+			if ( mentionsView.items.length >= dropdownLimit ) {
+				return;
+			}
 
 			const listItemView = new MentionListItemView( locale );
 
@@ -685,7 +690,7 @@ function requestFeedText( marker, text ) {
 }
 
 // The default feed callback.
-function createFeedCallback( feedItems, dropdownLimit ) {
+function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems
 		// Make the default mention feed case-insensitive.
@@ -695,10 +700,7 @@ function createFeedCallback( feedItems, dropdownLimit ) {
 
 				// The default feed is case insensitive.
 				return itemId.toLowerCase().includes( feedText.toLowerCase() );
-			} )
-			// Do not return more than `dropdownLimit` items (10 by default).
-			.slice( 0, dropdownLimit );
-
+			} );
 		return filteredItems;
 	};
 }
