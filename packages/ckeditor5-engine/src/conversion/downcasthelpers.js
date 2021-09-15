@@ -9,8 +9,6 @@
  * @module engine/conversion/downcasthelpers
  */
 
-/* global console */
-
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
@@ -633,6 +631,19 @@ export function insertText() {
 }
 
 /**
+ * TODO
+ */
+export function insertAttributesAndChildren() {
+	return ( evt, data, conversionApi ) => {
+		conversionApi.convertAttributes( data.item );
+
+		if ( data.item.is( 'element' ) && !data.item.isEmpty ) {
+			conversionApi.convertChildren( data.item );
+		}
+	};
+}
+
+/**
  * Function factory that creates a default downcast converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
@@ -910,10 +921,16 @@ export function insertElement( elementCreator ) {
 		}
 
 		if ( !viewElement.isEmpty ) {
-			console.log( '!!!', viewElement );
+			/**
+			 * TODO
+			 *
+			 * @error conversion-todo
+			 */
+			throw new CKEditorError( 'conversion-todo', conversionApi.dispatcher, {
+				name: viewElement.name,
+				attributes: Object.fromEntries( viewElement.getAttributes() )
+			} );
 		}
-
-		console.log( '  insertElement: ' + data.range.start.path );
 
 		const oldView = conversionApi.mapper.toViewElement( data.item );
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -921,16 +938,12 @@ export function insertElement( elementCreator ) {
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		if ( data.reconversion && oldView && viewElement.isEmpty ) {
-			console.log( '    reusing content of: ' + data.range.start.path );
-			// TODO only for nodes that are not at the current root?
+		if ( data.reconversion && oldView && viewElement.isEmpty ) { // TODO remove: viewElement.isEmpty
 			conversionApi.writer.move(
 				conversionApi.writer.createRangeIn( oldView ),
 				conversionApi.writer.createPositionAt( viewElement, 0 )
 			);
 		}
-
-		// reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -970,8 +983,6 @@ export function insertStructure( elementCreator, consumer ) {
 		if ( !consumer( data.item, conversionApi.consumable ) ) {
 			return;
 		}
-
-		console.log( '  insertStructure: ' + data.range.start.path );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -1535,7 +1546,7 @@ function downcastElementToElement( config ) {
 		dispatcher.on( 'insert:' + config.model.name, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 
 		if ( config.model.children || config.model.attributes.length ) {
-			dispatcher.on( 'reduceChanges', createChangeReducer( config.model, true ), { priority: 'low' } );
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model, { keepChangeForChildChange: true } ), { priority: 'low' } );
 		}
 	};
 }
@@ -1901,8 +1912,10 @@ function createChangeReducerCallback( model ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @param {Object} [options]
+// @param {Boolean} [options.keepChangeForChildChange=false] Whether original change for insert/remove should be kept.
 // @returns {Function}
-function createChangeReducer( model, keepChangeForChildChange = false ) {
+function createChangeReducer( model, options = { keepChangeForChildChange: false } ) {
 	const shouldReplace = createChangeReducerCallback( model );
 
 	return ( evt, data ) => {
@@ -1925,31 +1938,29 @@ function createChangeReducer( model, keepChangeForChildChange = false ) {
 				continue;
 			}
 
-			// This is elementToElement so allow inserting new items and reconvert parent.
-			if ( keepChangeForChildChange && change.type != 'attribute' ) {
+			// If it's already marked for reconversion, so skip this change, otherwise add the diff items.
+			if ( !data.reconvertedElements.has( node ) ) {
+				data.reconvertedElements.add( node );
+
+				const position = ModelPosition._createBefore( node );
+
+				reducedChanges.push( {
+					type: 'remove',
+					name: node.name,
+					position,
+					length: 1
+				}, {
+					type: 'reinsert',
+					name: node.name,
+					position,
+					length: 1
+				} );
+			}
+
+			// Keep insert child and remove child changes, replace only attribute changes.
+			if ( options.keepChangeForChildChange && change.type != 'attribute' ) {
 				reducedChanges.push( change );
 			}
-
-			// If it's already marked for reconversion, so skip this change.
-			if ( data.reconvertedElements.has( node ) ) {
-				continue;
-			}
-
-			data.reconvertedElements.add( node );
-
-			const position = ModelPosition._createBefore( node );
-
-			reducedChanges.push( {
-				type: 'remove',
-				name: node.name,
-				position,
-				length: 1
-			}, {
-				type: 'reinsert',
-				name: node.name,
-				position,
-				length: 1
-			} );
 		}
 
 		data.changes = reducedChanges;
@@ -2105,14 +2116,12 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 		const viewChildNode = mapper.toViewElement( modelChildNode );
 
 		if ( options.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
-			console.log( '    reusing: ' + ModelPosition._createBefore( modelChildNode ).path );
 			writer.move(
 				writer.createRangeOn( viewChildNode ),
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
 		} else {
-			console.log( '    creating: ' + ModelPosition._createBefore( modelChildNode ).path );
-			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
+			conversionApi.convertItem( modelChildNode );
 		}
 	}
 }

@@ -17,6 +17,7 @@ import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 import DowncastWriter from '../../src/view/downcastwriter';
 import { StylesProcessor } from '../../src/view/stylesmap';
+import { insertAttributesAndChildren } from '../../src/conversion/downcasthelpers';
 
 describe( 'DowncastDispatcher', () => {
 	let dispatcher, doc, root, differStub, model, view, mapper, apiObj;
@@ -29,6 +30,8 @@ describe( 'DowncastDispatcher', () => {
 		apiObj = {};
 		dispatcher = new DowncastDispatcher( { mapper, apiObj } );
 		root = doc.createRoot();
+
+		dispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
 		differStub = {
 			getMarkersToRemove: () => [],
@@ -375,10 +378,10 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:title:imageBlock' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.true;
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.false;
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
@@ -536,10 +539,10 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'attribute:title:imageBlock' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.true;
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
+			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.false;
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
@@ -572,7 +575,7 @@ describe( 'DowncastDispatcher', () => {
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
 				if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
-					conversionApi.convertInsert( data.range );
+					conversionApi.convertItem( data.item );
 				}
 			} );
 

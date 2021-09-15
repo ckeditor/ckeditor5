@@ -98,16 +98,16 @@ export default class ImageInlineEditing extends Plugin {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
-			.elementToElement( {
-				model: 'imageInline',
+			.elementToStructure( {
+				model: { name: 'imageInline', children: true },
 				view: ( modelElement, { writer } ) => writer.createEmptyElement( 'img' )
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
-				model: 'imageInline',
-				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
+			.elementToStructure( {
+				model: { name: 'imageInline', children: true },
+				view: ( modelElement, conversionApi ) => imageUtils.toImageWidget(
+					createImageViewElement( conversionApi, 'imageInline' ), conversionApi.writer, t( 'image widget' )
 				)
 			} );
 

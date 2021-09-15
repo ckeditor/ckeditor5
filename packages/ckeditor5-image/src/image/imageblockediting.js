@@ -90,16 +90,16 @@ export default class ImageBlockEditing extends Plugin {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		conversion.for( 'dataDowncast' )
-			.elementToElement( {
-				model: 'imageBlock',
-				view: ( modelElement, { writer } ) => createImageViewElement( writer, 'imageBlock' )
+			.elementToStructure( {
+				model: { name: 'imageBlock', children: true },
+				view: ( modelElement, conversionApi ) => createImageViewElement( conversionApi, 'imageBlock' )
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
-				model: 'imageBlock',
-				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageBlock' ), writer, t( 'image widget' )
+			.elementToStructure( {
+				model: { name: 'imageBlock', children: true },
+				view: ( modelElement, conversionApi ) => imageUtils.toImageWidget(
+					createImageViewElement( conversionApi, 'imageBlock' ), conversionApi.writer, t( 'image widget' )
 				)
 			} );
 

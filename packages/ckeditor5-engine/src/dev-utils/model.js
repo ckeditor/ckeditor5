@@ -31,7 +31,7 @@ import Mapper from '../conversion/mapper';
 import {
 	convertCollapsedSelection,
 	convertRangeSelection,
-	insertElement,
+	insertElement, insertAttributesAndChildren,
 	insertText,
 	insertUIElement,
 	wrap
@@ -233,6 +233,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 	mapper.bindElements( node.root, viewRoot );
 
 	downcastDispatcher.on( 'insert:$text', insertText() );
+	downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 	downcastDispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( '$textProxy' ) ) {
 			const converter = wrap( ( modelAttributeValue, { writer } ) => {

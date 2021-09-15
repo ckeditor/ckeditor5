@@ -23,11 +23,12 @@ import { first } from 'ckeditor5/src/utils';
  * Note that `alt` and `src` attributes are converted separately, so they are not included.
  *
  * @protected
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer TODO
  * @param {'imageBlock'|'imageInline'} imageType The type of created image.
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createImageViewElement( writer, imageType ) {
+export function createImageViewElement( conversionApi, imageType ) {
+	const { writer } = conversionApi;
 	const emptyElement = writer.createEmptyElement( 'img' );
 
 	const container = imageType === 'imageBlock' ?
@@ -35,6 +36,7 @@ export function createImageViewElement( writer, imageType ) {
 		writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
 
 	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+	writer.insert( writer.createPositionAt( container, 'end' ), conversionApi.slotFor( 'children' ) );
 
 	return container;
 }

@@ -46,18 +46,18 @@ describe( 'Image converters', () => {
 				isInline: true
 			} );
 
-			const imageEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'imageBlock' ), writer, '' );
+			const imageEditingElementCreator = ( modelElement, conversionApi ) =>
+				imageUtils.toImageWidget( createImageViewElement( conversionApi, 'imageBlock' ), conversionApi.writer, '' );
 
-			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
+			const imageInlineEditingElementCreator = ( modelElement, conversionApi ) =>
+				imageUtils.toImageWidget( createImageViewElement( conversionApi, 'imageInline' ), conversionApi.writer, '' );
 
-			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
 				model: 'imageBlock',
 				view: imageEditingElementCreator
 			} );
 
-			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
 				model: 'imageInline',
 				view: imageInlineEditingElementCreator
 			} );

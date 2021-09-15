@@ -7,8 +7,6 @@
  * @module engine/model/differ
  */
 
-/* global console */
-
 import Position from './position';
 import Range from './range';
 
@@ -153,8 +151,6 @@ export default class Differ {
 		if ( this._isInInsertedElement( item ) ) {
 			return;
 		}
-
-		console.log( 'reconvert: ' + Position._createBefore( item ).path );
 
 		this._itemsToReconvert.add( item );
 	}
