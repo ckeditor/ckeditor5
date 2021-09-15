@@ -13,7 +13,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import { DomEventData } from '@ckeditor/ckeditor5-engine';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
