@@ -9,8 +9,8 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import LinkEditing from './linkediting';
-import LinkUI from './linkui';
-import AutoLink from './autolink';
+// import LinkUI from './linkui';
+// import AutoLink from './autolink';
 
 /**
  * The link plugin.
@@ -25,14 +25,14 @@ export default class Link extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ LinkEditing, LinkUI, AutoLink ];
+		return [ LinkEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'Link';
+		return 'ResourceLink';
 	}
 }
 

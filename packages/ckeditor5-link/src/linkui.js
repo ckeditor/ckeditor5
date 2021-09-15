@@ -19,6 +19,14 @@ import linkIcon from '../theme/icons/link.svg';
 
 const VISUAL_SELECTION_MARKER_NAME = 'link-ui';
 
+import {
+  RESOURCE_LINK,
+  RESOURCE_LINK_UI,
+  RESOURCE_LINK_COMMAND,
+  RESOURCE_UNLINK_COMMAND 
+} from './constants'
+
+
 /**
  * The link UI plugin. It introduces the `'link'` and `'unlink'` buttons and support for the <kbd>Ctrl+K</kbd> keystroke.
  *
@@ -39,7 +47,7 @@ export default class LinkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'LinkUI';
+		return RESOURCE_LINK_UI;
 	}
 
 	/**
@@ -115,10 +123,10 @@ export default class LinkUI extends Plugin {
 	_createActionsView() {
 		const editor = this.editor;
 		const actionsView = new LinkActionsView( editor.locale );
-		const linkCommand = editor.commands.get( 'link' );
-		const unlinkCommand = editor.commands.get( 'unlink' );
+		const linkCommand = editor.commands.get( RESOURCE_LINK_COMMAND );
+		const unlinkCommand = editor.commands.get( RESOURCE_UNLINK_COMMAND );
 
-		actionsView.bind( 'href' ).to( linkCommand, 'value' );
+		actionsView.bind( 'data-uuid' ).to( linkCommand, 'value' );
 		actionsView.editButtonView.bind( 'isEnabled' ).to( linkCommand );
 		actionsView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
 
@@ -128,8 +136,8 @@ export default class LinkUI extends Plugin {
 		} );
 
 		// Execute unlink command after clicking on the "Unlink" button.
-		this.listenTo( actionsView, 'unlink', () => {
-			editor.execute( 'unlink' );
+		this.listenTo( actionsView, RESOURCE_UNLINK_COMMAND, () => {
+			editor.execute( RESOURCE_UNLINK_COMMAND );
 			this._hideUI();
 		} );
 
@@ -156,7 +164,7 @@ export default class LinkUI extends Plugin {
 	 */
 	_createFormView() {
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' );
+		const linkCommand = editor.commands.get( RESOURCE_LINK_COMMAND );
 		const defaultProtocol = editor.config.get( 'link.defaultProtocol' );
 
 		const formView = new LinkFormView( editor.locale, linkCommand );
@@ -171,7 +179,7 @@ export default class LinkUI extends Plugin {
 		this.listenTo( formView, 'submit', () => {
 			const { value } = formView.urlInputView.fieldView.element;
 			const parsedUrl = addLinkProtocolIfApplicable( value, defaultProtocol );
-			editor.execute( 'link', parsedUrl, formView.getDecoratorSwitchesState() );
+			editor.execute(RESOURCE_LINK_COMMAND, parsedUrl, formView.getDecoratorSwitchesState() );
 			this._closeFormView();
 		} );
 
@@ -197,7 +205,7 @@ export default class LinkUI extends Plugin {
 	 */
 	_createToolbarLinkButton() {
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' );
+		const linkCommand = editor.commands.get( RESOURCE_LINK_COMMAND );
 		const t = editor.t;
 
 		// Handle the `Ctrl+K` keystroke and show the panel.
@@ -214,9 +222,10 @@ export default class LinkUI extends Plugin {
 			const button = new ButtonView( locale );
 
 			button.isEnabled = true;
-			button.label = t( 'Link' );
+			button.label = t( 'Resource Link' );
 			button.icon = linkIcon;
-			button.keystroke = LINK_KEYSTROKE;
+                  button.text = 'Link Resource';
+                  button.keystroke = LINK_KEYSTROKE;
 			button.tooltip = true;
 			button.isToggleable = true;
 
@@ -308,7 +317,7 @@ export default class LinkUI extends Plugin {
 		}
 
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' );
+		const linkCommand = editor.commands.get( RESOURCE_LINK );
 
 		this.formView.disableCssTransitions();
 
@@ -343,7 +352,7 @@ export default class LinkUI extends Plugin {
 	 * @private
 	 */
 	_closeFormView() {
-		const linkCommand = this.editor.commands.get( 'link' );
+		const linkCommand = this.editor.commands.get( RESOURCE_LINK );
 
 		// Restore manual decorator states to represent the current model state. This case is important to reset the switch buttons
 		// when the user cancels the editing form.

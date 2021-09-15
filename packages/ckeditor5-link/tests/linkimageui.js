@@ -92,7 +92,7 @@ describe( 'LinkImageUI', () => {
 			} );
 
 			it( 'should call #_showUI upon #execute', () => {
-				const spy = testUtils.sinon.stub( editor.plugins.get( 'LinkUI' ), '_showUI' );
+				const spy = testUtils.sinon.stub( editor.plugins.get( RESOURCE_LINK_UI ), '_showUI' );
 
 				linkButton.fire( 'execute' );
 				sinon.assert.calledWithExactly( spy, true );
@@ -142,7 +142,7 @@ describe( 'LinkImageUI', () => {
 			let linkUI;
 
 			beforeEach( () => {
-				linkUI = editor.plugins.get( 'LinkUI' );
+				linkUI = editor.plugins.get( RESOURCE_LINK_UI );
 			} );
 
 			it( 'should not show the LinkUI when clicked the linked image', () => {
@@ -196,7 +196,7 @@ describe( 'LinkImageUI', () => {
 
 		describe( 'when a block image is selected', () => {
 			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
-				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+				const linkUIPlugin = editor.plugins.get( RESOURCE_LINK_UI );
 
 				editor.setData( '<figure class="image"><a href="https://example.com"><img src="" /></a></figure>' );
 
@@ -210,7 +210,7 @@ describe( 'LinkImageUI', () => {
 			} );
 
 			it( 'should show plugin#formView after "execute" if image is not linked', () => {
-				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+				const linkUIPlugin = editor.plugins.get( RESOURCE_LINK_UI );
 
 				editor.setData( '<figure class="image"><img src="" /></a>' );
 
@@ -226,7 +226,7 @@ describe( 'LinkImageUI', () => {
 
 		describe( 'when an inline image is selected', () => {
 			it( 'should show plugin#actionsView after "execute" if an image is already linked', () => {
-				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+				const linkUIPlugin = editor.plugins.get( RESOURCE_LINK_UI );
 
 				editor.setData( '<p><a href="https://example.com"><img src="/assets/sample.png" /></a></p>' );
 
@@ -240,7 +240,7 @@ describe( 'LinkImageUI', () => {
 			} );
 
 			it( 'should show plugin#formView after "execute" if image is not linked', () => {
-				const linkUIPlugin = editor.plugins.get( 'LinkUI' );
+				const linkUIPlugin = editor.plugins.get( RESOURCE_LINK_UI );
 
 				editor.setData( '<p><img src="" /></p>' );
 

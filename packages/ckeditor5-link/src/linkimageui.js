@@ -17,6 +17,8 @@ import { LINK_KEYSTROKE } from './utils';
 
 import linkIcon from '../theme/icons/link.svg';
 
+import { RESOURCE_LINK_UI } from './constants'
+
 /**
  * The link image UI plugin.
  *
@@ -37,7 +39,7 @@ export default class LinkImageUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'LinkImageUI';
+		return 'ResourceLinkImageUI';
 	}
 
 	/**
@@ -74,9 +76,9 @@ export default class LinkImageUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		editor.ui.componentFactory.add( 'linkImage', locale => {
+		editor.ui.componentFactory.add( 'linkResourceImage', locale => {
 			const button = new ButtonView( locale );
-			const plugin = editor.plugins.get( 'LinkUI' );
+			const plugin = editor.plugins.get( RESOURCE_LINK_UI );
 			const linkCommand = editor.commands.get( 'link' );
 
 			button.set( {

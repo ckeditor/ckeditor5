@@ -33,6 +33,6 @@ export default class LinkImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'LinkImage';
+		return 'ResourceLinkImage';
 	}
 }

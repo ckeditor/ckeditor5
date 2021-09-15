@@ -32,6 +32,12 @@ const DECORATOR_AUTOMATIC = 'automatic';
 const DECORATOR_MANUAL = 'manual';
 const EXTERNAL_LINKS_REGEXP = /^(https?:)?\/\//;
 
+import {
+  RESOURCE_LINK,
+  RESOURCE_LINK_COMMAND,
+  RESOURCE_UNLINK_COMMAND 
+} from './constants'
+
 /**
  * The link engine feature.
  *
@@ -45,7 +51,7 @@ export default class LinkEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'LinkEditing';
+		return 'ResourceLinkEditing';
 	}
 
 	/**
@@ -62,7 +68,7 @@ export default class LinkEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'link', {
+		editor.config.define( 'resourceLink', {
 			addTargetToExternalLinks: false
 		} );
 	}
@@ -74,14 +80,14 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 
 		// Allow link attribute on all inline nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
+		editor.model.schema.extend( '$text', { allowAttributes: RESOURCE_LINK } );
 
 		editor.conversion.for( 'dataDowncast' )
-			.attributeToElement( { model: 'linkHref', view: createLinkElement } );
+			.attributeToElement( { model: RESOURCE_LINK, view: createLinkElement } );
 
 		editor.conversion.for( 'editingDowncast' )
-			.attributeToElement( { model: 'linkHref', view: ( href, conversionApi ) => {
-				return createLinkElement( ensureSafeUrl( href ), conversionApi );
+			.attributeToElement( { model: RESOURCE_LINK, view: ( uuid, conversionApi ) => {
+				return createLinkElement( uuid, conversionApi );
 			} } );
 
 		editor.conversion.for( 'upcast' )
@@ -89,18 +95,18 @@ export default class LinkEditing extends Plugin {
 				view: {
 					name: 'a',
 					attributes: {
-						href: true
+						'data-uuid': true
 					}
 				},
 				model: {
-					key: 'linkHref',
-					value: viewElement => viewElement.getAttribute( 'href' )
+					key: RESOURCE_LINK,
+					value: viewElement => viewElement.getAttribute( 'data-uuid' )
 				}
 			} );
 
 		// Create linking commands.
-		editor.commands.add( 'link', new LinkCommand( editor ) );
-		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
+		editor.commands.add( RESOURCE_LINK_COMMAND, new LinkCommand( editor ) );
+		editor.commands.add( RESOURCE_UNLINK_COMMAND, new UnlinkCommand( editor ) );
 
 		const linkDecorators = getLocalizedDecorators( editor.t, normalizeDecorators( editor.config.get( 'link.decorators' ) ) );
 
@@ -109,10 +115,10 @@ export default class LinkEditing extends Plugin {
 
 		// Enable two-step caret movement for `linkHref` attribute.
 		const twoStepCaretMovementPlugin = editor.plugins.get( TwoStepCaretMovement );
-		twoStepCaretMovementPlugin.registerAttribute( 'linkHref' );
+		twoStepCaretMovementPlugin.registerAttribute( RESOURCE_LINK );
 
 		// Setup highlight over selected link.
-		inlineHighlight( editor, 'linkHref', 'a', HIGHLIGHT_CLASS );
+		inlineHighlight( editor, RESOURCE_LINK, 'a', HIGHLIGHT_CLASS );
 
 		// Handle link following by CTRL+click or ALT+ENTER
 		this._enableLinkOpen();
@@ -149,7 +155,7 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		// Store automatic decorators in the command instance as we do the same with manual decorators.
 		// Thanks to that, `LinkImageEditing` plugin can re-use the same definitions.
-		const command = editor.commands.get( 'link' );
+		const command = editor.commands.get( RESOURCE_LINK_COMMAND );
 		const automaticDecorators = command.automaticDecorators;
 
 		// Adds a default decorator for external links.
@@ -190,7 +196,7 @@ export default class LinkEditing extends Plugin {
 		}
 
 		const editor = this.editor;
-		const command = editor.commands.get( 'link' );
+		const command = editor.commands.get( RESOURCE_LINK_COMMAND );
 		const manualDecorators = command.manualDecorators;
 
 		manualDecoratorDefinitions.forEach( decorator => {
@@ -323,7 +329,7 @@ export default class LinkEditing extends Plugin {
 			//
 			// If the selection is not "trapped" by the `linkHref` attribute after inserting, there's nothing
 			// to fix there.
-			if ( !selection.hasAttribute( 'linkHref' ) ) {
+			if ( !selection.hasAttribute( RESOURCE_LINK ) ) {
 				return;
 			}
 
@@ -355,7 +361,7 @@ export default class LinkEditing extends Plugin {
 			//		                                                          ↱
 			//		<$text bold="true">INSERTED</$text><$text linkHref="foo">[]link</$text>
 			//
-			if ( !nodeBefore.hasAttribute( 'linkHref' ) ) {
+			if ( !nodeBefore.hasAttribute( RESOURCE_LINK ) ) {
 				return;
 			}
 
@@ -373,7 +379,7 @@ export default class LinkEditing extends Plugin {
 			//		                                                             ↰
 			//		<$text linkHref="foo">l</$text><$text linkHref="bar">INSERTED[]</$text><$text linkHref="foo">ink</$text>
 			//
-			if ( nodeAfter && nodeAfter.hasAttribute( 'linkHref' ) ) {
+			if ( nodeAfter && nodeAfter.hasAttribute( RESOURCE_LINK ) ) {
 				return;
 			}
 
@@ -424,12 +430,12 @@ export default class LinkEditing extends Plugin {
 			}
 
 			// ...and clicked text is the link...
-			if ( !selection.hasAttribute( 'linkHref' ) ) {
+			if ( !selection.hasAttribute( RESOURCE_LINK ) ) {
 				return;
 			}
 
 			const position = selection.getFirstPosition();
-			const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
+			const linkRange = findAttributeRange( position, RESOURCE_LINK, selection.getAttribute( RESOURCE_LINK ), model );
 
 			// ...check whether clicked start/end boundary of the link.
 			// If so, remove the `linkHref` attribute.
@@ -555,13 +561,13 @@ export default class LinkEditing extends Plugin {
 			shouldPreserveAttributes = false;
 
 			const position = selection.getFirstPosition();
-			const linkHref = selection.getAttribute( 'linkHref' );
+			const linkHref = selection.getAttribute( RESOURCE_LINK );
 
 			if ( !linkHref ) {
 				return;
 			}
 
-			const linkRange = findAttributeRange( position, 'linkHref', linkHref, model );
+			const linkRange = findAttributeRange( position, RESOURCE_LINK, linkHref, model );
 
 			// Preserve `linkHref` attribute if the selection is in the middle of the link or
 			// the selection is at the end of the link and 2-SCM is activated.
@@ -626,7 +632,7 @@ export default class LinkEditing extends Plugin {
 // @param {module:engine/model/writer~Writer} writer
 // @param {Array.<String>} linkAttributes
 function removeLinkAttributesFromSelection( writer, linkAttributes ) {
-	writer.removeSelectionAttribute( 'linkHref' );
+	writer.removeSelectionAttribute( RESOURCE_LINK );
 
 	for ( const attribute of linkAttributes ) {
 		writer.removeSelectionAttribute( attribute );
@@ -654,7 +660,7 @@ function shouldCopyAttributes( model ) {
 	}
 
 	// ...or isn't the link.
-	if ( !nodeAtFirstPosition.hasAttribute( 'linkHref' ) ) {
+	if ( !nodeAtFirstPosition.hasAttribute( RESOURCE_LINK ) ) {
 		return false;
 	}
 
@@ -669,7 +675,7 @@ function shouldCopyAttributes( model ) {
 
 	// If nodes are not equal, maybe the link nodes has defined additional attributes inside.
 	// First, we need to find the entire link range.
-	const linkRange = findAttributeRange( firstPosition, 'linkHref', nodeAtFirstPosition.getAttribute( 'linkHref' ), model );
+	const linkRange = findAttributeRange( firstPosition, RESOURCE_LINK, nodeAtFirstPosition.getAttribute( RESOURCE_LINK ), model );
 
 	// Then we can check whether selected range is inside the found link range. If so, attributes should be preserved.
 	return linkRange.containsRange( model.createRange( firstPosition, lastPosition ), true );
@@ -692,5 +698,5 @@ function isTyping( editor ) {
 function getLinkAttributesAllowedOnText( schema ) {
 	const textAttributes = schema.getDefinition( '$text' ).allowAttributes;
 
-	return textAttributes.filter( attribute => attribute.startsWith( 'link' ) );
+	return textAttributes.filter( attribute => attribute.startsWith( 'resource' ) );
 }

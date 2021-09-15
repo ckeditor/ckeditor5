@@ -27,7 +27,7 @@ import LinkUI from '../src/linkui';
 import LinkFormView from '../src/ui/linkformview';
 import LinkActionsView from '../src/ui/linkactionsview';
 
-describe( 'LinkUI', () => {
+describe( RESOURCE_LINK_UI, () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
 
 	testUtils.createSinonSandbox();
@@ -64,7 +64,7 @@ describe( 'LinkUI', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( LinkUI.pluginName ).to.equal( 'LinkUI' );
+		expect( LinkUI.pluginName ).to.equal( RESOURCE_LINK_UI );
 	} );
 
 	it( 'should load ContextualBalloon', () => {

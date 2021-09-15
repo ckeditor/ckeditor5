@@ -80,7 +80,7 @@ export default class AutoLink extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'AutoLink';
+		return 'ResourceAutoLink';
 	}
 
 	/**

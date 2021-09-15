@@ -1,7 +1,8 @@
 {
-  "name": "@ckeditor/ckeditor5-link",
-  "version": "35.4.0",
-  "description": "Link feature for CKEditor 5.",
+  "name": "@mitodl/ckeditor5-resource-link",
+  "version": "29.2.0-beta.4",
+  "description": "MITODL fork of CKEditor 5 link feature.",
+  "public": true,
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -45,11 +46,11 @@
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "GPL-2.0-or-later",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "homepage": "https://github.com/mitodl/ckeditor5/",
+  "bugs": "https://github.com/mitodl/ckeditor5/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "url": "https://github.com/mitodl/ckeditor5.git",
     "directory": "packages/ckeditor5-link"
   },
   "files": [
