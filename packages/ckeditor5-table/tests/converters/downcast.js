@@ -477,6 +477,8 @@ describe( 'downcast converters', () => {
 
 					writer.insertElement( 'tableCell', row, 'end' );
 					writer.insertElement( 'tableCell', row, 'end' );
+
+					writer.setAttribute( 'headingRows', 3, table );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
