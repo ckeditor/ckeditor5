@@ -287,7 +287,7 @@ describe( 'table clipboard', () => {
 			assertClipboardContentOnMethod( 'copy', viewTable( [
 				[ '11', '12', '13' ],
 				[ '21', '22', '23' ],
-				[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
+				[ { contents: '31', isHeading: true }, '32', '33' ]
 			], { headingRows: 2 } ) );
 		} );
 
