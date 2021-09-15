@@ -32,7 +32,7 @@ function tableHeadingRowsRefreshPostFixer( model ) {
 		if ( change.type === 'attribute' ) {
 			const element = change.range.start.nodeAfter;
 
-			if ( element && element.is( 'element', 'table' ) && change.attributeKey == 'headingRows' ) {
+			if ( element && element.is( 'element', 'table' ) && change.attributeKey === 'headingRows' ) {
 				tablesToRefresh.add( element );
 			}
 		} else if ( change.type === 'insert' || change.type === 'remove' ) {
