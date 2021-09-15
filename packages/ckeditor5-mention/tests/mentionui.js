@@ -44,6 +44,7 @@ describe( 'MentionUI', () => {
 
 	afterEach( () => {
 		sinon.restore();
+		clock.restore();
 		editorElement.remove();
 
 		if ( editor ) {
