@@ -214,6 +214,8 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'a' ) ).to.equal( 'A' );
 				expect( getEnvKeystrokeText( 'CTRL+a' ) ).to.equal( '⌘A' );
 				expect( getEnvKeystrokeText( 'ctrl+b' ) ).to.equal( '⌘B' );
+				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( '⌘[' );
+				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( '⌘]' );
 			} );
 		} );
 
@@ -234,6 +236,8 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'Shift+A' );
 				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( 'Alt+A' );
 				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'Ctrl+Shift+A' );
+				expect( getEnvKeystrokeText( 'CTRL+[' ) ).to.equal( 'Ctrl+[' );
+				expect( getEnvKeystrokeText( 'CTRL+]' ) ).to.equal( 'Ctrl+]' );
 			} );
 		} );
 	} );
