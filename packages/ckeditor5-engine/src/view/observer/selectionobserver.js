@@ -100,31 +100,39 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
+		const debouncedSelectionInactivityTimeout = debounce( () => {
+			if ( !this.document.isSelecting ) {
+				return;
+			}
+
+			// @if CK_DEBUG // console.group( '[SelectionObserver] Selection inactivity timeout ⌛️.' );
+			this.document.isSelecting = false;
+			// @if CK_DEBUG // console.groupEnd();
+		}, 10000 );
+
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
+			debouncedSelectionInactivityTimeout();
 		} );
 
 		this.listenTo( domDocument, 'mousedown', () => {
 			// @if CK_DEBUG // console.clear();
-			// @if CK_DEBUG // console.group( '[SelectionObserver] 🐭 Mousedown ⬇️.' );
+			// @if CK_DEBUG // console.group( '[SelectionObserver] 🖱 Mousedown ⬇️.' );
 			this.document.isSelecting = true;
 			// @if CK_DEBUG // console.groupEnd();
-		} );
+
+			debouncedSelectionInactivityTimeout();
+		}, { priority: 'highest' } );
 
 		this.listenTo( domDocument, 'mouseup', () => {
-			// @if CK_DEBUG // console.group( '[SelectionObserver] 🐭 Mouseup ⬆️.' );
+			// @if CK_DEBUG // console.group( '[SelectionObserver] 🖱 Mouseup ⬆️.' );
 			this.document.isSelecting = false;
+			debouncedSelectionInactivityTimeout.cancel();
 			// @if CK_DEBUG // console.groupEnd();
-		} );
-
-		this.listenTo( domDocument, 'mouseleave', () => {
-			// @if CK_DEBUG // console.group( '[SelectionObserver] 🐭 Mouseleave 🚪.' );
-			this.document.isSelecting = false;
-			// @if CK_DEBUG // console.groupEnd();
-		} );
+		}, { priority: 'highest' } );
 
 		// TODO: Probably selectstart instead of mousedown.
-		// TODO: Mouseleave + mousedown timeout for edge cases like changing browser tab etc. + TableMouse integration (???).
+		// TODO: TableMouse integration (???).
 
 		this._documents.add( domDocument );
 	}
