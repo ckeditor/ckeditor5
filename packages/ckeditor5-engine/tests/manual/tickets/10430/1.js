@@ -40,6 +40,11 @@ const config = {
 	]
 };
 
+const selectionStatusBanner = document.createElement( 'div' );
+selectionStatusBanner.classList.add( 'status-banner' );
+selectionStatusBanner.innerHTML = 'Selection rendering is ';
+document.body.appendChild( selectionStatusBanner );
+
 ClassicEditor
 	.create( document.querySelector( '#editor' ), config )
 	.then( editor => {
@@ -62,22 +67,19 @@ ClassicEditor
 			writer.addMarker( name, { range, usingOperation: false } );
 		} );
 
-		window.updateSelectionRenderingStatus( true );
+		window.updateSelectionRenderingInfo = function( isBlocked ) {
+			selectionStatusBanner.classList.toggle( 'blocked', !isBlocked );
+		};
+
+		function updateTestUI() {
+			window.updateSelectionRenderingInfo( !editor.editing.view.document.isSelecting );
+		}
+
+		editor.editing.view.document.on( 'change:isSelecting', updateTestUI );
+
+		updateTestUI();
 	} )
 	.catch( error => {
 		console.error( error.stack );
 	} );
 
-const blockedBanner = document.createElement( 'div' );
-blockedBanner.classList.add( 'block-banner' );
-blockedBanner.innerHTML = 'Selection rendering is ';
-
-document.body.appendChild( blockedBanner );
-
-window.updateSelectionRenderingStatus = function( isAllowed ) {
-	if ( isAllowed ) {
-		blockedBanner.classList.remove( 'blocked' );
-	} else {
-		blockedBanner.classList.add( 'blocked' );
-	}
-};

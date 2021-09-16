@@ -99,24 +99,6 @@ export default class EditingController {
 		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
-		this.listenTo( this.view.document, 'selectStart', () => {
-			// @if CK_DEBUG // console.group( '[EditingController] SelectStart.' );
-			this.view._disableSelectionRendering( true );
-			// @if CK_DEBUG // console.groupEnd();
-		} );
-
-		this.listenTo( this.view.document, 'mouseup', () => {
-			// @if CK_DEBUG // console.group( '[EditingController] Mouseup.' );
-			this.view._disableSelectionRendering( false );
-			// @if CK_DEBUG // console.groupEnd();
-		} );
-
-		// this.listenTo( this.view.document, 'mouseleave', ( evt, data ) => {
-		// 	console.group( '[EditingController] Mouseleave.' );
-		// 	this.view._disableSelectionRendering( false );
-		// 	console.groupEnd();
-		// } );
-
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 		this.downcastDispatcher.on( 'remove', remove(), { priority: 'low' } );

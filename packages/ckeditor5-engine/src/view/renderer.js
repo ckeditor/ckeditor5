@@ -98,13 +98,27 @@ export default class Renderer {
 		 * this is set to `false`.
 		 *
 		 * @member {Boolean}
+		 * @observable
 		 */
-		this.isFocused = false;
+		this.set( 'isFocused', false );
 
 		/**
 		 * TODO
+		 *
+		 * @member {Boolean}
+		 * @observable
 		 */
-		this._selectionRenderingDisabled = false;
+		this.set( 'isSelecting', false );
+
+		this.on( 'change:isSelecting', () => {
+			if ( !this.isSelecting && this._isSelectionRenderPending ) {
+				this._isSelectionRenderPending = false;
+
+				// @if CK_DEBUG // console.log( '[Renderer] Unblocked selection rendering -> rendering pending updates.' );
+
+				this._updateSelection();
+			}
+		} );
 
 		/**
 		 * TODO
@@ -164,23 +178,6 @@ export default class Renderer {
 				 */
 				throw new CKEditorError( 'view-renderer-unknown-type', this );
 			}
-		}
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {TODO} flag
-	 */
-	disableSelectionRendering( flag ) {
-		this._selectionRenderingDisabled = flag;
-
-		if ( !flag && this._isSelectionRenderPending ) {
-			this._isSelectionRenderPending = false;
-
-			// @if CK_DEBUG // console.log( '[Renderer] Unblocked selection rendering -> rendering pending updates.' );
-
-			this._updateSelection();
 		}
 	}
 
@@ -711,15 +708,14 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		if ( this._selectionRenderingDisabled ) {
+		if ( this.isSelecting ) {
 			this._isSelectionRenderPending = true;
 
 			// @if CK_DEBUG // console.warn( '[Renderer] Selection update blocked.' );
-
 			return;
 		}
 
-		// @if CK_DEBUG // console.log( '[Renderer] Selection update.' );
+		// @if CK_DEBUG // console.log( '[Renderer] DOM selection gets updated.' );
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {

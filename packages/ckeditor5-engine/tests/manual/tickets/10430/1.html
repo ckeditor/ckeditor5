@@ -141,7 +141,7 @@
 		background: hsl(170deg 100% 84%);
 	}
 
-	.block-banner {
+	.status-banner {
 		position: fixed;
 		top: 0;
 		padding: 3px 8px;
@@ -153,15 +153,19 @@
 		z-index: 9999;
 	}
 
-	.block-banner::after {
+	.status-banner::after {
 		content: "allowed ✅"
 	}
 
-	.block-banner.blocked {
+	.status-banner.blocked {
 		background: hsl(0deg 100% 50% / 43%);
 	}
 
-	.block-banner.blocked::after {
+	.status-banner.blocked::after {
 		content: "blocked ❌"
+	}
+
+	.ck.ck-content {
+		padding: 50px;
 	}
 </style>
