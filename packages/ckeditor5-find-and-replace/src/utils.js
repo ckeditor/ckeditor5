@@ -79,6 +79,9 @@ export function updateFindResultFromRange( range, model, findCallback, startResu
 /**
  * Returns text representation of a range. The returned text length should be the same as range length.
  * In order to achieve this this function will replace inline elements (text-line) as new line character ("\n").
+ *
+ * @param {module:engine/model/range~Range} range
+ * @returns {String}
  */
 export function rangeToText( range ) {
 	return Array.from( range.getItems() ).reduce( ( rangeText, node ) => {

@@ -29,6 +29,9 @@ export default class FindAndReplaceUI extends Plugin {
 		return 'FindAndReplaceUI';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 

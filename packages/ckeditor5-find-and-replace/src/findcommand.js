@@ -20,6 +20,7 @@ export default class FindCommand extends Command {
 	 * Creates a new `FindCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state
 	 */
 	constructor( editor, state ) {
 		super( editor );
@@ -42,6 +43,7 @@ export default class FindCommand extends Command {
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be matched.
 	 * @param {Boolean} [options.wholeWords=false] If set to `true`, only whole words that match `callbackOrText` will be matched.
+	 *
 	 * @fires execute
 	 */
 	execute( callbackOrText, { matchCase, wholeWords } = {} ) {
