@@ -124,20 +124,16 @@ export default class Widget extends Plugin {
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
 
-			let lastMarked = null;
-
 			for ( const range of viewSelection.getRanges() ) {
 				// Note: There could be multiple selected widgets in a range but no fake selection.
 				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
 
-					// Do not mark nested widgets in selected one. See: #57.
-					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
+					// Do not mark nested widgets in selected one. See: #9491.
+					if ( isWidget( node ) && !hasWidgetParent( node ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
-
 						this._previouslySelected.add( node );
-						lastMarked = node;
 					}
 				}
 			}
@@ -467,15 +463,18 @@ function isInsideNestedEditable( element ) {
 	return false;
 }
 
-// Checks whether the specified `element` is a child of the `parent` element.
-//
-// @param {module:engine/view/element~Element} element An element to check.
-// @param {module:engine/view/element~Element|null} parent A parent for the element.
-// @returns {Boolean}
-function isChild( element, parent ) {
-	if ( !parent ) {
-		return false;
+/**
+ * Checks if {@link module:engine/model/element~Element element} has any widget as parent
+ *
+ * @param {module:engine/view/element~Element} element - element to check.
+ * @returns {Boolean}
+ */
+function hasWidgetParent( element ) {
+	for ( const ancestor of element.getAncestors() ) {
+		if ( isWidget( ancestor ) ) {
+			return true;
+		}
 	}
 
-	return Array.from( element.getAncestors() ).includes( parent );
+	return false;
 }
