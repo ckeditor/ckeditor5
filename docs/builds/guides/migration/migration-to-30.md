@@ -6,17 +6,17 @@ order: 94
 modified_at: 2021-09-16
 ---
 
+# Migration to CKEditor 5 v30.x
+
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-# Migration to CKEditor 5 v30.x
-
 ## Migration to CKEditor 5 v30.0.0
 
-For the entire list of changes introduced in version 30.0.0, see the [changelog for CKEditor 5 v30.0.0](TODO: update changelog link).
+<!-- For the entire list of changes introduced in version 30.0.0, see the [changelog for CKEditor 5 v30.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3000-2021-09-26).-->
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v30.0.0.
 
@@ -34,7 +34,7 @@ const config = {
 }
 ```
 
-Here is an exact change you may need for proper integration with the new {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} config change:
+Here is the exact change you would need to introduce for proper integration with the new {@link module:core/editor/editorconfig~EditorConfig#ui `EditorConfig#ui.viewportOffset`} config change:
 
 ```js
 // Before v30.0.0
