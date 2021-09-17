@@ -10,7 +10,7 @@
 import FindNextCommand from './findnextcommand';
 
 /**
- * The find next command. Moves the highlight to the previous search result.
+ * The find previous command. Moves the highlight to the previous search result.
  *
  * It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *

@@ -18,15 +18,14 @@ export default class FindAndReplaceState {
 	/**
 	 * Creates an instance of the state.
 	 *
-	 * It sets appropriate markers on the model when the results of the search change.
-	 *
 	 * @param {module:engine/model/model~Model} model
 	 */
 	constructor( model ) {
 		/**
 		 * A collection of find matches.
 		 *
-		 * @private
+		 * @protected
+		 * @observable
 		 * @member {module:utils/collection~Collection} #results
 		 */
 		this.set( 'results', new Collection() );

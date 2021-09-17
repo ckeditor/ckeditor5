@@ -21,7 +21,7 @@ export default class FindNextCommand extends Command {
 	 * Creates a new `FindNextCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
-	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state.
 	 */
 	constructor( editor, state ) {
 		super( editor );
@@ -29,7 +29,7 @@ export default class FindNextCommand extends Command {
 		/**
 		 * The find and replace state object used for command operations.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
 		 */
 		this._state = state;

@@ -19,7 +19,7 @@ export default class ReplaceCommand extends Command {
 	 * Creates a new `ReplaceCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
-	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state.
 	 */
 	constructor( editor, state ) {
 		super( editor );
@@ -30,7 +30,7 @@ export default class ReplaceCommand extends Command {
 		/**
 		 * The find and replace state object used for command operations.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
 		 */
 		this._state = state;
