@@ -690,7 +690,6 @@ export default class TablePropertiesView extends View {
 			label: t( 'Cancel' ),
 			icon: icons.cancel,
 			class: 'ck-button-cancel',
-			type: 'cancel',
 			withText: true
 		} );
 

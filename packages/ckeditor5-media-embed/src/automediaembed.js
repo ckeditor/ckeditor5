@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { LiveRange, LivePosition } from 'ckeditor5/src/engine';
 import { Clipboard } from 'ckeditor5/src/clipboard';
+import { Delete } from 'ckeditor5/src/typing';
 import { Undo } from 'ckeditor5/src/undo';
 import { global } from 'ckeditor5/src/utils';
 
@@ -29,7 +30,7 @@ export default class AutoMediaEmbed extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard, Undo ];
+		return [ Clipboard, Delete, Undo ];
 	}
 
 	/**
@@ -174,6 +175,8 @@ export default class AutoMediaEmbed extends Plugin {
 				this._positionToInsert.detach();
 				this._positionToInsert = null;
 			} );
+
+			editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
 		}, 100 );
 	}
 }
