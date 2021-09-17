@@ -19,11 +19,11 @@ const TRANSFORMATIONS = {
 	trademark: { from: '(tm)', to: '™' },
 
 	// Mathematical:
-	oneHalf: { from: /(^|[^/a-z0-9])(1\/2)([^/a-z0-9])/i, to: [ null, '½', null ] },
-	oneThird: { from: /(^|[^/a-z0-9])(1\/3)([^/a-z0-9])/i, to: [ null, '⅓', null ] },
-	twoThirds: { from: /(^|[^/a-z0-9])(2\/3)([^/a-z0-9])/i, to: [ null, '⅔', null ] },
-	oneForth: { from: /(^|[^/a-z0-9])(1\/4)([^/a-z0-9])/i, to: [ null, '¼', null ] },
-	threeQuarters: { from: /(^|[^/a-z0-9])(3\/4)([^/a-z0-9])/i, to: [ null, '¾', null ] },
+	oneHalf: { from: /(^|[^/a-z0-9])(1\/2)([^/a-z0-9])$/i, to: [ null, '½', null ] },
+	oneThird: { from: /(^|[^/a-z0-9])(1\/3)([^/a-z0-9])$/i, to: [ null, '⅓', null ] },
+	twoThirds: { from: /(^|[^/a-z0-9])(2\/3)([^/a-z0-9])$/i, to: [ null, '⅔', null ] },
+	oneForth: { from: /(^|[^/a-z0-9])(1\/4)([^/a-z0-9])$/i, to: [ null, '¼', null ] },
+	threeQuarters: { from: /(^|[^/a-z0-9])(3\/4)([^/a-z0-9])$/i, to: [ null, '¾', null ] },
 	lessThanOrEqual: { from: '<=', to: '≤' },
 	greaterThanOrEqual: { from: '>=', to: '≥' },
 	notEqual: { from: '!=', to: '≠' },

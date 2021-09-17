@@ -249,6 +249,20 @@ describe( 'Text transformation feature', () => {
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
 			} );
+
+			it( `should not transform "${ transformFrom }" to "${ transformTo } if not right before selection"`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				// Insert text - should not be transformed.
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( `${ textInParagraph }${ transformFrom }`, doc.selection.focus );
+				} );
+
+				simulateTyping( ' ' );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } </paragraph>` );
+			} );
 		}
 
 		function testShouldNotTransform( transformFrom, transformTo ) {
