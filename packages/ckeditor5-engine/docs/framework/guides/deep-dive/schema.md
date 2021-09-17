@@ -111,6 +111,15 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_negative"><code>false</code></td>
 		</tr>
 		<tr>
+			<td><code>$documentFragment</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
 			<td><code>$marker</code></td>
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_negative"><code>false</code></td>
