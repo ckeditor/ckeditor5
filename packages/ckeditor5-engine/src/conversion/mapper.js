@@ -15,6 +15,7 @@ import ViewRange from '../view/range';
 import ViewText from '../view/text';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -112,6 +113,15 @@ export default class Mapper {
 			}
 
 			const viewContainer = this._modelToViewMapping.get( data.modelPosition.parent );
+
+			if ( !viewContainer ) {
+				/**
+				 * TODO
+				 *
+				 * @error mapping-view-position-parent-not-found
+				 */
+				throw new CKEditorError( 'mapping-view-position-parent-not-found', this, { modelPosition: data.modelPosition } );
+			}
 
 			data.viewPosition = this.findPositionIn( viewContainer, data.modelPosition.offset );
 		}, { priority: 'low' } );

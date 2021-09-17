@@ -14,7 +14,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Mapper from '../conversion/mapper';
 
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { insertText } from '../conversion/downcasthelpers';
+import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers';
 
 import UpcastDispatcher from '../conversion/upcastdispatcher';
 import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
@@ -81,6 +81,7 @@ export default class DataController {
 			schema: model.schema
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
 		/**
 		 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.

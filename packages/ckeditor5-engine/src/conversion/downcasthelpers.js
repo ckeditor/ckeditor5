@@ -673,7 +673,7 @@ export default class DowncastHelpers extends ConversionHelpers {
  */
 export function insertText() {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -682,6 +682,19 @@ export function insertText() {
 		const viewText = viewWriter.createText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
+	};
+}
+
+/**
+ * TODO
+ */
+export function insertAttributesAndChildren() {
+	return ( evt, data, conversionApi ) => {
+		conversionApi.convertAttributes( data.item );
+
+		if ( data.item.is( 'element' ) && !data.item.isEmpty ) {
+			conversionApi.convertChildren( data.item );
+		}
 	};
 }
 
@@ -888,6 +901,10 @@ export function clearAttributes() {
  */
 export function wrap( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
 		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi );
@@ -952,13 +969,17 @@ export function wrap( elementCreator ) {
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		const viewElement = elementCreator( data.item, conversionApi );
 
 		if ( !viewElement ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -986,6 +1007,10 @@ export function insertElement( elementCreator ) {
 */
 export function insertStructure( elementCreator, consumer ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !consumer( data.item, conversionApi.consumable, { preflight: true } ) ) {
+			return;
+		}
+
 		const slotsMap = new Map();
 
 		// View creation.
@@ -1276,6 +1301,10 @@ function removeMarkerData( viewCreator ) {
 // @returns {Function} Set/change attribute converter.
 function changeAttribute( attributeCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
 		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
 
@@ -1902,24 +1931,24 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @returns {Function}
+// @returns {Boolean}
 function createChangeReducerCallback( model ) {
 	return ( node, change ) => {
 		if ( !node.is( 'element', model.name ) ) {
-			return null;
+			return false;
 		}
 
 		if ( change.type == 'attribute' ) {
-			if ( !model.attributes.includes( change.attributeKey ) ) {
-				return null;
+			if ( model.attributes.includes( change.attributeKey ) ) {
+				return true;
 			}
 		} else {
-			if ( !model.children ) {
-				return null;
+			if ( model.children ) {
+				return true;
 			}
 		}
 
-		return [ node ];
+		return false;
 	};
 }
 
@@ -1929,9 +1958,10 @@ function createChangeReducerCallback( model ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @param {Function} The callback for checking a single diff item whether it should trigger reconversion.
 // @returns {Function}
-function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
+function createChangeReducer( model ) {
+	const shouldReplace = createChangeReducerCallback( model );
+
 	return ( evt, data ) => {
 		const reducedChanges = [];
 
@@ -1944,32 +1974,28 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			const elements = callback( node, change );
-
-			if ( !elements ) {
+			// TODO Node might not be here if it's change of an attribute in the middle of some text.
+			//  undoediting-integration.js line 323 fails without this check
+			if ( !node || !shouldReplace( node, change ) ) {
 				reducedChanges.push( change );
 
 				continue;
 			}
 
-			for ( const element of elements ) {
-				// If it's already marked for reconversion, so skip this change.
-				if ( data.reconvertedElements.has( element ) ) {
-					continue;
-				}
+			// If it's already marked for reconversion, so skip this change, otherwise add the diff items.
+			if ( !data.reconvertedElements.has( node ) ) {
+				data.reconvertedElements.add( node );
 
-				data.reconvertedElements.add( element );
-
-				const position = ModelPosition._createBefore( element );
+				const position = ModelPosition._createBefore( node );
 
 				reducedChanges.push( {
 					type: 'remove',
-					name: element.name,
+					name: node.name,
 					position,
 					length: 1
 				}, {
 					type: 'reinsert',
-					name: element.name,
+					name: node.name,
 					position,
 					length: 1
 				} );
@@ -1988,7 +2014,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
 // @returns {module:engine/conversion/downcasthelpers~ConsumerFunction}
 function createConsumer( model ) {
-	return ( node, consumable ) => {
+	return ( node, consumable, options = {} ) => {
 		const events = [ 'insert' ];
 
 		// Collect all set attributes that are triggering conversion.
@@ -2002,7 +2028,11 @@ function createConsumer( model ) {
 			return false;
 		}
 
-		return events.every( event => consumable.consume( node, event ) );
+		if ( !options.preflight ) {
+			events.forEach( event => consumable.consume( node, event ) );
+		}
+
+		return true;
 	};
 }
 
@@ -2011,7 +2041,7 @@ function createConsumer( model ) {
 // @param {module:engine/model/element~Element} element
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @returns {Function}
+// @returns {Function} Exposed by conversionApi as {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor}.
 function createSlotFactory( element, slotsMap, conversionApi ) {
 	return modeOrFilter => {
 		const slot = conversionApi.writer.createContainerElement( '$slot' );
@@ -2132,7 +2162,7 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
 		} else {
-			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
+			conversionApi.convertItem( modelChildNode );
 		}
 	}
 }

@@ -272,16 +272,17 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 * @param {Object} [options] TODO
 	 */
-	_convertInsert( range, conversionApi ) {
-		const walkerValues = Array.from( range );
-
-		// Collect a list of things that can be consumed, consisting of nodes and their attributes.
-		this._addConsumablesForInsert( conversionApi.consumable, walkerValues );
+	_convertInsert( range, conversionApi, options = {} ) {
+		if ( !options.doNotAddConsumables ) {
+			// Collect a list of things that can be consumed, consisting of nodes and their attributes.
+			this._addConsumablesForInsert( conversionApi.consumable, Array.from( range ) );
+		}
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
-		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( data, conversionApi );
+		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
+			this.fire( getEventName( 'insert', data ), data, conversionApi );
 		}
 	}
 
@@ -317,17 +318,15 @@ export default class DowncastDispatcher {
 
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
-			const item = value.item;
-			const itemRange = Range._createFromPositionAndShift( value.previousPosition, value.length );
 			const data = {
-				item,
-				range: itemRange,
+				item: value.item,
+				range: Range._createFromPositionAndShift( value.previousPosition, value.length ),
 				attributeKey: key,
 				attributeOldValue: oldValue,
 				attributeNewValue: newValue
 			};
 
-			this._testAndFire( `attribute:${ key }`, data, conversionApi );
+			this.fire( getEventName( `attribute:${ key }`, data ), data, conversionApi );
 		}
 	}
 
@@ -353,7 +352,7 @@ export default class DowncastDispatcher {
 
 		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
 		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
-			this._convertInsertWithAttributes( { ...data, reconversion: true }, conversionApi );
+			this.fire( getEventName( 'insert', data ), { ...data, reconversion: true }, conversionApi );
 		}
 	}
 
@@ -513,22 +512,23 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * Tests passed `consumable` to check whether given event can be fired and if so, fires it.
+	 * TODO
 	 *
 	 * @private
-	 * @fires insert
-	 * @fires attribute
-	 * @param {String} type Event type.
-	 * @param {Object} data Event data.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
-	_testAndFire( type, data, conversionApi ) {
-		if ( !conversionApi.consumable.test( data.item, type ) ) {
-			// Do not fire event if the item was consumed.
-			return;
-		}
+	_fireAddAttributes( item, conversionApi ) {
+		const data = {
+			item,
+			range: Range._createOn( item )
+		};
 
-		this.fire( getEventName( type, data ), data, conversionApi );
+		for ( const key of data.item.getAttributeKeys() ) {
+			data.attributeKey = key;
+			data.attributeOldValue = null;
+			data.attributeNewValue = data.item.getAttribute( key );
+
+			this.fire( getEventName( `attribute:${ key }`, data ), data, conversionApi );
+		}
 	}
 
 	/**
@@ -546,34 +546,13 @@ export default class DowncastDispatcher {
 			consumable: new Consumable(),
 			writer,
 			options,
-			convertInsert: range => this._convertInsert( range, conversionApi )
+			// TODO docs for those methods in DowncastConversionApi
+			convertItem: modelItem => this._convertInsert( Range._createOn( modelItem ), conversionApi ),
+			convertChildren: modelItem => this._convertInsert( Range._createIn( modelItem ), conversionApi, { doNotAddConsumables: true } ),
+			convertAttributes: modelItem => this._fireAddAttributes( modelItem, conversionApi )
 		};
 
 		return conversionApi;
-	}
-
-	/**
-	 * Internal method for converting element insertion. It will fire events for the inserted element and events for its attributes.
-	 *
-	 * @private
-	 * @fires insert
-	 * @fires attribute
-	 * @param {Object} data Event data.
-	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
-	 */
-	_convertInsertWithAttributes( data, conversionApi ) {
-		this._testAndFire( 'insert', data, conversionApi );
-
-		// Fire a separate addAttribute event for each attribute that was set on inserted items.
-		// This is important because most attributes converters will listen only to add/change/removeAttribute events.
-		// If we would not add this part, attributes on inserted nodes would not be converted.
-		for ( const key of data.item.getAttributeKeys() ) {
-			data.attributeKey = key;
-			data.attributeOldValue = null;
-			data.attributeNewValue = data.item.getAttribute( key );
-
-			this._testAndFire( `attribute:${ key }`, data, conversionApi );
-		}
 	}
 
 	/**

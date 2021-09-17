@@ -87,6 +87,9 @@ export default class Title extends Plugin {
 
 		// Conversion.
 		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
+		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'insert:title', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.item, evt.name );
+		} ) );
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
 		editor.data.upcastDispatcher.on( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
