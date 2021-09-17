@@ -23,7 +23,7 @@ import MentionsView from '../src/ui/mentionsview';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MentionUI', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, clock;
 
 	const staticConfig = {
 		feeds: [
@@ -37,12 +37,14 @@ describe( 'MentionUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		clock = sinon.useFakeTimers( { now: Date.now() } );
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 	} );
 
 	afterEach( () => {
 		sinon.restore();
+		clock.restore();
 		editorElement.remove();
 
 		if ( editor ) {
@@ -196,25 +198,37 @@ describe( 'MentionUI', () => {
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_se',
-						top: 121
+						top: 121,
+						config: {
+							withArrow: false
+						}
 					} );
 
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
-						top: 121
+						top: 121,
+						config: {
+							withArrow: false
+						}
 					} );
 
 					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_ne',
-						top: -53
+						top: -53,
+						config: {
+							withArrow: false
+						}
 					} );
 
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_nw',
-						top: -53
+						top: -53,
+						config: {
+							withArrow: false
+						}
 					} );
 				} );
 		} );
@@ -2253,14 +2267,13 @@ describe( 'MentionUI', () => {
 
 	function wait( timeout ) {
 		return () => new Promise( resolve => {
-			setTimeout( () => {
-				resolve();
-			}, timeout );
+			clock.tick( timeout );
+			resolve();
 		} );
 	}
 
-	function waitForDebounce() {
-		return wait( 180 )();
+	async function waitForDebounce() {
+		return await wait( 180 )();
 	}
 
 	function fireKeyDownEvent( options ) {

@@ -77,6 +77,13 @@ export default class TextTransformation extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ 'Delete', 'Input' ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'TextTransformation';
 	}
@@ -117,7 +124,8 @@ export default class TextTransformation extends Plugin {
 	_enableTransformationWatchers() {
 		const editor = this.editor;
 		const model = editor.model;
-		const input = editor.plugins.get( 'Input' );
+		const inputPlugin = editor.plugins.get( 'Input' );
+		const deletePlugin = editor.plugins.get( 'Delete' );
 		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
 
 		const testCallback = text => {
@@ -132,7 +140,7 @@ export default class TextTransformation extends Plugin {
 		};
 
 		const watcherCallback = ( evt, data ) => {
-			if ( !input.isInput( data.batch ) ) {
+			if ( !inputPlugin.isInput( data.batch ) ) {
 				return;
 			}
 
@@ -164,6 +172,10 @@ export default class TextTransformation extends Plugin {
 
 					changeIndex += replaceWith.length;
 				}
+
+				model.enqueueChange( () => {
+					deletePlugin.requestUndoOnBackspace();
+				} );
 			} );
 		};
 

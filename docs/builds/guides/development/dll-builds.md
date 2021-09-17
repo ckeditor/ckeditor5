@@ -2,6 +2,7 @@
 menu-title: DLL builds
 category: builds-development
 order: 30
+modified_at: 2021-08-31
 ---
 
 # CKEditor 5 DLL builds
@@ -21,7 +22,7 @@ DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plu
 
 Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this integration method requires creating it on your own, based on the tools available in the {@link framework/guides/contributing/development-environment CKEditor 5 development environment}.
 
-Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍 if you are interested in this functionality).
+Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp; if you are interested in this functionality).
 
 ## Anatomy of a DLL build
 
@@ -147,19 +148,26 @@ For example:
 		.then( editor => {
 			window.editor = editor;
 		} );
+</script>
 ```
+
+## Live implementation sample
+
+Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor 5 instance.
+
+<iframe width="100%" height="680" src="//jsfiddle.net/ckeditor/mv05bweu/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 ## Localization
 
-By default, all DLL builds use the default (English) translation files. However, the editor can be localized.
+All DLL builds use the default (English) translation files. However, a localized version of the the editor can be easily configured.
 
-The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain own translations files per a package.
+The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain their own translations files per package.
 
 <info-box info>
 	Some of the CKEditor 5 features do not provide translation files as they do not offer UI elements or toolbar items.
 </info-box>
 
-To create the editor with localized UI, you need to load necessary translation files (similar to loading DLL builds).
+To create an editor with a localized UI, you need to load the necessary translation files (similar to loading DLL builds).
 
 For example:
 

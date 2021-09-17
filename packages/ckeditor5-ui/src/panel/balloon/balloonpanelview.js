@@ -232,7 +232,8 @@ export default class BalloonPanelView extends View {
 				defaultPositions.northArrowSouthMiddleWest,
 				defaultPositions.northArrowSouthMiddleEast,
 				defaultPositions.northArrowSouthWest,
-				defaultPositions.northArrowSouthEast
+				defaultPositions.northArrowSouthEast,
+				defaultPositions.viewportStickyNorth
 			],
 			limiter: defaultLimiterElement,
 			fitInViewport: true
@@ -244,9 +245,11 @@ export default class BalloonPanelView extends View {
 		// so it is better to use int values.
 		const left = parseInt( optimalPosition.left );
 		const top = parseInt( optimalPosition.top );
-		const position = optimalPosition.name;
 
-		Object.assign( this, { top, left, position } );
+		const { name: position, config = {} } = optimalPosition;
+		const { withArrow = true } = config;
+
+		Object.assign( this, { top, left, position, withArrow } );
 	}
 
 	/**
@@ -401,7 +404,7 @@ function getDomElement( object ) {
  *		      \|/
  *	    >|-----|<---------------- horizontal offset
  *
- * @default 30
+ * @default 25
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHorizontalOffset
  */
 BalloonPanelView.arrowHorizontalOffset = 25;
@@ -420,10 +423,34 @@ BalloonPanelView.arrowHorizontalOffset = 25;
  *		-------------------------------
  *		                       ^
  *
- * @default 15
+ * @default 10
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
 BalloonPanelView.arrowVerticalOffset = 10;
+
+/**
+ * A vertical offset of the balloon panel from the edge of the viewport if sticky.
+ * It helps in accessing toolbar buttons underneath the balloon panel.
+ *
+ *		  +---------------------------------------------------+
+ *		  |                      Target                       |
+ *		  |                                                   |
+ *		  |                            /-- vertical offset    |
+ *		+-----------------------------V-------------------------+
+ *		| Toolbar            +-------------+                    |
+ *		+--------------------|   Balloon   |--------------------+
+ *		| |                  +-------------+                  | |
+ *		| |                                                   | |
+ *		| |                                                   | |
+ *		| |                                                   | |
+ *		| +---------------------------------------------------+ |
+ *		|                        Viewport                       |
+ *		+-------------------------------------------------------+
+ *
+ * @default 20
+ * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset
+ */
+BalloonPanelView.stickyVerticalOffset = 20;
 
 /**
  * Function used to calculate the optimal position for the balloon.
@@ -702,6 +729,22 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *		|     Balloon     |
  *		+-----------------+
  *
+ * * `viewportStickyNorth`
+ *
+ *		    +---------------------------+
+ *		    |        [ Target ]         |
+ *		    |                           |
+ *		+-----------------------------------+
+ *		|   |    +-----------------+    |   |
+ *		|   |    |     Balloon     |    |   |
+ *		|   |    +-----------------+    |   |
+ *		|   |                           |   |
+ *		|   |                           |   |
+ *		|   |                           |   |
+ *		|   |                           |   |
+ *		|   +---------------------------+   |
+ *		|             Viewport              |
+ *		+-----------------------------------+
  *
  * See {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#attachTo}.
  *
@@ -710,7 +753,8 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * The name that the position function returns will be reflected in the balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
  *
- * @member {Object} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
+ * @member {Object.<String,module:utils/dom/position~positioningFunction>}
+ * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = {
 
@@ -791,6 +835,7 @@ BalloonPanelView.defaultPositions = {
 		left: targetRect.right - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_smw'
 	} ),
+
 	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
 		top: getNorthTop( targetRect, balloonRect ),
 		left: targetRect.right - balloonRect.width / 2,
@@ -808,6 +853,7 @@ BalloonPanelView.defaultPositions = {
 		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_se'
 	} ),
+
 	// ------- South west
 
 	southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
@@ -901,8 +947,24 @@ BalloonPanelView.defaultPositions = {
 		top: getSouthTop( targetRect, balloonRect ),
 		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
 		name: 'arrow_ne'
-	} )
+	} ),
 
+	// ------- Sticky
+
+	viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
+		if ( !targetRect.getIntersection( viewportRect ) ) {
+			return null;
+		}
+
+		return {
+			top: viewportRect.top + BalloonPanelView.stickyVerticalOffset,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 'arrowless',
+			config: {
+				withArrow: false
+			}
+		};
+	}
 };
 
 // Returns the top coordinate for positions starting with `north*`.

@@ -8,6 +8,7 @@
 	},
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
+	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": ["packages", "external", "external/*/packages" ],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
@@ -273,6 +274,11 @@
 					"name": "Lists",
 					"id": "features-lists",
 					"slug": "lists"
+				},
+				{
+					"name": "Pagination",
+					"id": "features-pagination",
+					"slug": "pagination"
 				},
 				{
 					"name": "Pasting",

@@ -19,6 +19,13 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  */
 export default class Delete extends Plugin {
 	/**
+	 * Whether pressing backspace should trigger undo action
+	 *
+	 * @private
+	 * @member {Boolean} #_undoOnBackspace
+	 */
+
+	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
@@ -29,8 +36,11 @@ export default class Delete extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const modelDocument = editor.model.document;
 
 		view.addObserver( DeleteObserver );
+
+		this._undoOnBackspace = false;
 
 		const deleteForwardCommand = new DeleteCommand( editor, 'forward' );
 
@@ -96,6 +106,34 @@ export default class Delete extends Plugin {
 					domSelectionAfterDeletion = null;
 				}
 			} );
+		}
+
+		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
+			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+				if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
+					this._undoOnBackspace = false;
+
+					editor.execute( 'undo' );
+
+					data.preventDefault();
+					evt.stop();
+				}
+			}, { context: '$capture' } );
+
+			this.listenTo( modelDocument, 'change', () => {
+				this._undoOnBackspace = false;
+			} );
+		}
+	}
+
+	/**
+	 * If the next user action after calling this method is pressing backspace, it would undo the last change.
+	 *
+	 * Requires {@link module:undo/undoediting~UndoEditing} plugin. If not loaded, does nothing.
+	 */
+	requestUndoOnBackspace() {
+		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
+			this._undoOnBackspace = true;
 		}
 	}
 }

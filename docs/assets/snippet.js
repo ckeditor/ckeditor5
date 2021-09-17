@@ -109,7 +109,7 @@ window.createNotification = function( title, message ) {
 };
 
 /**
- * Returns the `config.toolbar.viewportTopOffset` config value for editors using floating toolbars that
+ * Returns the `config.ui.viewportOffset.top` config value for editors using floating toolbars that
  * stick to the top of the viewport to remain visible to the user.
  *
  * The value is determined in styles by the `--ck-snippet-viewport-top-offset` custom property

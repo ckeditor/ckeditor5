@@ -40,7 +40,17 @@ describe( 'FindCommand', () => {
 
 		it( 'should be enabled in readonly mode editor', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
+
 			editor.isReadOnly = true;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be enabled after disabling readonly mode', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			editor.isReadOnly = true;
+			editor.isReadOnly = false;
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -63,6 +73,17 @@ describe( 'FindCommand', () => {
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</paragraph>'
 				);
+			} );
+
+			it( 'calls model.change() only once', () => {
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bar bar bar bom.</paragraph>' );
+				const spy = sinon.spy( model, 'change' );
+
+				command.execute( 'bar' );
+
+				// It's called two additional times
+				// from 'change:highlightedResult' handler in FindAndReplaceEditing.
+				expect( spy.callCount ).to.equal( 3 );
 			} );
 
 			it( 'returns no result if nothing matched', () => {
@@ -229,6 +250,30 @@ describe( 'FindCommand', () => {
 					editor.setData( '<p>foo 🦄bar🦄baz</p>' );
 
 					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text ending with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( 'bar ', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text starting with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( ' bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text starting and ending with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( ' bar ', { wholeWords: true } );
 
 					expect( results.length ).to.equal( 1 );
 				} );

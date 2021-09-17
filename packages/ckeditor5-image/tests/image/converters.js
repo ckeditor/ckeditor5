@@ -88,16 +88,14 @@ describe( 'Image converters', () => {
 			editor.conversion.for( 'upcast' )
 				.add( upcastImageFigure( editor.plugins.get( 'ImageUtils' ) ) )
 				.elementToElement( {
-					view: {
-						name: 'img',
-						attributes: {
-							src: true
-						}
-					},
+					view: { name: 'img' },
 					model: ( viewImage, { writer } ) => {
 						imgConverterCalled = true;
 
-						return writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } );
+						return writer.createElement(
+							'imageBlock',
+							viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+						);
 					}
 				} );
 		} );
@@ -207,6 +205,19 @@ describe( 'Image converters', () => {
 			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 		} );
 
+		it( 'should convert image with missing src attribute', () => {
+			editor.setData( '<figure class="image"><img alt="Empty src attribute" /></figure>' );
+
+			expectModel( '<imageBlock alt="Empty src attribute"></imageBlock>' );
+		} );
+
+		it( 'should convert if img element has no src and figure has text', () => {
+			// Image element missing src attribute.
+			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+
+			expectModel( '<imageBlock alt="abc">xyz</imageBlock>' );
+		} );
+
 		it( 'should not convert if there is no img element among children', () => {
 			editor.setData( '<figure class="image">xyz</figure>' );
 
@@ -214,12 +225,12 @@ describe( 'Image converters', () => {
 			expectModel( '' );
 		} );
 
-		it( 'should not convert if img element was not converted', () => {
-			// Image element missing src attribute.
-			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+		it( 'should not left unconverted figure media element', () => {
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
 
-			// Figure converter outputs nothing and text is disallowed in root.
-			expectModel( '' );
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 		} );
 	} );
 

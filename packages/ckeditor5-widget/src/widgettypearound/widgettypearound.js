@@ -398,6 +398,10 @@ export default class WidgetTypeAround extends Plugin {
 		else if ( modelSelection.isCollapsed ) {
 			shouldStopAndPreventDefault = this._handleArrowKeyPressWhenSelectionNextToAWidget( isForward );
 		}
+		// Handle collapsing a non-collapsed selection that is wider than on a single widget.
+		else if ( !domEventData.shiftKey ) {
+			shouldStopAndPreventDefault = this._handleArrowKeyPressWhenNonCollapsedSelection( isForward );
+		}
 
 		if ( shouldStopAndPreventDefault ) {
 			domEventData.preventDefault();
@@ -486,6 +490,42 @@ export default class WidgetTypeAround extends Plugin {
 
 			// The change() block above does the same job as the Widget plugin. The event can
 			// be safely canceled.
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Handles the keyboard navigation on "keydown" when a widget is currently selected (together with some other content)
+	 * and the widget is the first or last element in the selection. It activates or deactivates the fake caret for that widget.
+	 *
+	 * @private
+	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
+	 * as in {@link module:utils/keyboard~isForwardArrowKeyCode}.
+	 * @returns {Boolean} Returns `true` when the keypress was handled and no other keydown listener of the editor should
+	 * process the event any further. Returns `false` otherwise.
+	 */
+	_handleArrowKeyPressWhenNonCollapsedSelection( isForward ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
+		const mapper = editor.editing.mapper;
+		const modelSelection = model.document.selection;
+
+		const selectedModelNode = isForward ?
+			modelSelection.getLastPosition().nodeBefore :
+			modelSelection.getFirstPosition().nodeAfter;
+
+		const selectedViewNode = mapper.toViewElement( selectedModelNode );
+
+		// There is a widget at the collapse position so collapse the selection to the fake caret on it.
+		if ( isTypeAroundWidget( selectedViewNode, selectedModelNode, schema ) ) {
+			model.change( writer => {
+				writer.setSelection( selectedModelNode, 'on' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
+			} );
+
 			return true;
 		}
 
