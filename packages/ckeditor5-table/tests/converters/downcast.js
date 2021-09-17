@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { modelTable, viewTable } from '../_utils/utils';
 
@@ -1030,6 +1030,114 @@ describe( 'downcast converters', () => {
 					[ '10', '11' ],
 					[ '20', '21' ]
 				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with header correctly - up direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 1 ) ),
+						writer.createPositionAt( table, 0 )
+					);
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with header correctly - down direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 0 ) ),
+						writer.createPositionAt( table, 2 )
+					);
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder columns with header correctly - left direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					for ( const tableRow of table.getChildren() ) {
+						writer.move(
+							writer.createRangeOn( tableRow.getChild( 1 ) ),
+							writer.createPositionAt( tableRow, 0 )
+						);
+					}
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '01', '00', '02' ],
+					[ '11', '10', '12' ]
+				], { headingColumns: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '01' }, '00', '02' ],
+					[ { isHeading: true, contents: '11' }, '10', '12' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should reorder columns with header correctly - right direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					for ( const tableRow of table.getChildren() ) {
+						writer.move(
+							writer.createRangeOn( tableRow.getChild( 0 ) ),
+							writer.createPositionAt( tableRow, 2 )
+						);
+					}
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '01', '00', '02' ],
+					[ '11', '10', '12' ]
+				], { headingColumns: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '01' }, '00', '02' ],
+					[ { isHeading: true, contents: '11' }, '10', '12' ]
+				], { asWidget: true } ) );
 			} );
 
 			it( 'should create renamed cell as a widget', () => {

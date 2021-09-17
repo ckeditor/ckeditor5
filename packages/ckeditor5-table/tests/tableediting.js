@@ -9,7 +9,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 
 import TableEditing from '../src/tableediting';
-import { modelTable, viewTable } from './_utils/utils';
+import { modelTable } from './_utils/utils';
 import InsertRowCommand from '../src/commands/insertrowcommand';
 import InsertTableCommand from '../src/commands/inserttablecommand';
 import InsertColumnCommand from '../src/commands/insertcolumncommand';
@@ -21,14 +21,11 @@ import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
-import { getSelectionAffectedTable } from '../src/tablecaption/utils';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
-
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
-import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'TableEditing', () => {
-	let editor, model, view;
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -39,7 +36,6 @@ describe( 'TableEditing', () => {
 				editor = newEditor;
 
 				model = editor.model;
-				view = editor.editing.view;
 			} );
 	} );
 
@@ -188,134 +184,6 @@ describe( 'TableEditing', () => {
 						'</table>' +
 					'</figure>'
 				);
-			} );
-
-			it( 'should reorder rows with header correctly - up direction', () => {
-				setModelData( model, modelTable( [
-					[ '<paragraph>a</paragraph>', '<paragraph>b</paragraph>', '<paragraph>c</paragraph>' ],
-					[ '<paragraph>[d]</paragraph>', '<paragraph>e</paragraph>', '<paragraph>f</paragraph>' ]
-				], { headingRows: 1 } ) );
-
-				const selection = editor.model.document.selection;
-				const table = getSelectionAffectedTable( selection );
-
-				editor.model.change( writer => {
-					const row = table.getChild( 1 );
-
-					writer.move( writer.createRangeOn( row ), writer.createPositionAt( table, 0 ) );
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '<paragraph>d</paragraph>', '<paragraph>e</paragraph>', '<paragraph>f</paragraph>' ],
-					[ '<paragraph>a</paragraph>', '<paragraph>b</paragraph>', '<paragraph>c</paragraph>' ]
-				], { headingRows: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ 'd', 'e', 'f' ],
-					[ 'a', 'b', 'c' ]
-				], { headingRows: 1, asWidget: true } ) );
-
-				assertEqualMarkup( editor.getData(), viewTable( [
-					[ 'd', 'e', 'f' ],
-					[ 'a', 'b', 'c' ]
-				], { headingRows: 1 } ) );
-			} );
-
-			it( 'should reorder rows with header correctly - down direction', () => {
-				setModelData( model, modelTable( [
-					[ '<paragraph>a</paragraph>', '<paragraph>b</paragraph>', '<paragraph>c</paragraph>' ],
-					[ '<paragraph>[d]</paragraph>', '<paragraph>e</paragraph>', '<paragraph>f</paragraph>' ]
-				], { headingRows: 1 } ) );
-
-				const selection = editor.model.document.selection;
-				const table = getSelectionAffectedTable( selection );
-
-				editor.model.change( writer => {
-					const row = table.getChild( 0 );
-
-					writer.move( writer.createRangeOn( row ), writer.createPositionAt( table, 2 ) );
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '<paragraph>d</paragraph>', '<paragraph>e</paragraph>', '<paragraph>f</paragraph>' ],
-					[ '<paragraph>a</paragraph>', '<paragraph>b</paragraph>', '<paragraph>c</paragraph>' ]
-				], { headingRows: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ 'd', 'e', 'f' ],
-					[ 'a', 'b', 'c' ]
-				], { headingRows: 1, asWidget: true } ) );
-
-				assertEqualMarkup( editor.getData(), viewTable( [
-					[ 'd', 'e', 'f' ],
-					[ 'a', 'b', 'c' ]
-				], { headingRows: 1 } ) );
-			} );
-
-			it( 'should reorder columns with header correctly - left direction', () => {
-				setModelData( model, modelTable( [
-					[ '<paragraph>a</paragraph>', '<paragraph>b</paragraph>', '<paragraph>c</paragraph>' ],
-					[ '<paragraph>[d]</paragraph>', '<paragraph>e</paragraph>', '<paragraph>f</paragraph>' ]
-				], { headingColumns: 1 } ) );
-
-				const selection = editor.model.document.selection;
-				const table = getSelectionAffectedTable( selection );
-
-				editor.model.change( writer => {
-					for ( const row of table.getChildren() ) {
-						const cellToMove = row.getChild( 1 );
-
-						writer.move( writer.createRangeOn( cellToMove ), writer.createPositionAt( row, cellToMove.startOffset - 1 ) );
-					}
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '<paragraph>b</paragraph>', '<paragraph>a</paragraph>', '<paragraph>c</paragraph>' ],
-					[ '<paragraph>e</paragraph>', '<paragraph>d</paragraph>', '<paragraph>f</paragraph>' ]
-				], { headingColumns: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
-					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
-				], { asWidget: true } ) );
-
-				assertEqualMarkup( editor.getData(), viewTable( [
-					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
-					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
-				] ) );
-			} );
-
-			it( 'should reorder columns with header correctly - right direction', () => {
-				setModelData( model, modelTable( [
-					[ '<paragraph>a</paragraph>', '<paragraph>b</paragraph>', '<paragraph>c</paragraph>' ],
-					[ '<paragraph>[d]</paragraph>', '<paragraph>e</paragraph>', '<paragraph>f</paragraph>' ]
-				], { headingColumns: 1 } ) );
-
-				const selection = editor.model.document.selection;
-				const table = getSelectionAffectedTable( selection );
-
-				editor.model.change( writer => {
-					for ( const row of table.getChildren() ) {
-						const cellToMove = row.getChild( 0 );
-
-						writer.move( writer.createRangeOn( cellToMove ), writer.createPositionAt( row, cellToMove.startOffset + 2 ) );
-					}
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '<paragraph>b</paragraph>', '<paragraph>a</paragraph>', '<paragraph>c</paragraph>' ],
-					[ '<paragraph>e</paragraph>', '<paragraph>d</paragraph>', '<paragraph>f</paragraph>' ]
-				], { headingColumns: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
-					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
-				], { asWidget: true } ) );
-
-				assertEqualMarkup( editor.getData(), viewTable( [
-					[ { isHeading: true, contents: 'b' }, 'a', 'c' ],
-					[ { isHeading: true, contents: 'e' }, 'd', 'f' ]
-				] ) );
 			} );
 		} );
 
