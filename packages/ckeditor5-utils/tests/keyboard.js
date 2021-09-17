@@ -38,7 +38,8 @@ describe( 'Keyboard', () => {
 				'ctrl', 'cmd', 'shift', 'alt',
 				'arrowleft', 'arrowup', 'arrowright', 'arrowdown',
 				'backspace', 'delete', 'enter', 'space', 'esc', 'tab',
-				'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12'
+				'f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12',
+				'`', '-', '=', '[', ']', ';', '\'', ',', '.', '/', '\\'
 			);
 		} );
 	} );
@@ -54,6 +55,10 @@ describe( 'Keyboard', () => {
 
 		it( 'gets code of a function key', () => {
 			expect( getCode( 'f6' ) ).to.equal( 117 );
+		} );
+
+		it( 'gets code of a punctuation character', () => {
+			expect( getCode( ']' ) ).to.equal( 93 );
 		} );
 
 		it( 'is case insensitive', () => {
@@ -94,6 +99,10 @@ describe( 'Keyboard', () => {
 				expect( parseKeystroke( 'ctrl+a' ) ).to.equal( 0x880000 + 65 );
 			} );
 
+			it( 'parses string without modifier', () => {
+				expect( parseKeystroke( '[' ) ).to.equal( 91 );
+			} );
+
 			it( 'allows spacing', () => {
 				expect( parseKeystroke( 'ctrl +   a' ) ).to.equal( 0x880000 + 65 );
 			} );
@@ -132,6 +141,10 @@ describe( 'Keyboard', () => {
 
 			it( 'parses string', () => {
 				expect( parseKeystroke( 'ctrl+a' ) ).to.equal( 0x110000 + 65 );
+			} );
+
+			it( 'parses string without modifier', () => {
+				expect( parseKeystroke( '[' ) ).to.equal( 91 );
 			} );
 
 			it( 'allows spacing', () => {
