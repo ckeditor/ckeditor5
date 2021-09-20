@@ -105,9 +105,9 @@ export default class SelectionObserver extends Observer {
 				return;
 			}
 
-			// @if CK_DEBUG // console.group( '[SelectionObserver] Selection inactivity timeout ⌛️.' );
+			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] Selection inactivity timeout ⌛️.' );
 			this.document.isSelecting = false;
-			// @if CK_DEBUG // console.groupEnd();
+			// @if CK_DEBUG_ENGINE // console.groupEnd();
 		}, 10000 );
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
@@ -116,19 +116,19 @@ export default class SelectionObserver extends Observer {
 		} );
 
 		this.listenTo( domDocument, 'mousedown', () => {
-			// @if CK_DEBUG // console.clear();
-			// @if CK_DEBUG // console.group( '[SelectionObserver] 🖱 Mousedown ⬇️.' );
+			// @if CK_DEBUG_ENGINE // console.clear();
+			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] 🖱 Mousedown ⬇️.' );
 			this.document.isSelecting = true;
-			// @if CK_DEBUG // console.groupEnd();
+			// @if CK_DEBUG_ENGINE // console.groupEnd();
 
 			debouncedSelectionInactivityTimeout();
 		}, { priority: 'highest' } );
 
 		this.listenTo( domDocument, 'mouseup', () => {
-			// @if CK_DEBUG // console.group( '[SelectionObserver] 🖱 Mouseup ⬆️.' );
+			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] 🖱 Mouseup ⬆️.' );
 			this.document.isSelecting = false;
 			debouncedSelectionInactivityTimeout.cancel();
-			// @if CK_DEBUG // console.groupEnd();
+			// @if CK_DEBUG_ENGINE // console.groupEnd();
 		}, { priority: 'highest' } );
 
 		// TODO: Probably selectstart instead of mousedown.

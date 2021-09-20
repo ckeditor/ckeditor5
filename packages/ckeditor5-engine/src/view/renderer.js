@@ -114,7 +114,7 @@ export default class Renderer {
 			if ( !this.isSelecting && this._isSelectionRenderPending ) {
 				this._isSelectionRenderPending = false;
 
-				// @if CK_DEBUG // console.log( '[Renderer] Unblocked selection rendering -> rendering pending updates.' );
+				// @if CK_DEBUG_ENGINE // console.log( '[Renderer] Unblocked selection rendering -> rendering pending updates.' );
 
 				this._updateSelection();
 			}
@@ -711,11 +711,11 @@ export default class Renderer {
 		if ( this.isSelecting ) {
 			this._isSelectionRenderPending = true;
 
-			// @if CK_DEBUG // console.warn( '[Renderer] Selection update blocked.' );
+			// @if CK_DEBUG_ENGINE // console.warn( '[Renderer] Selection update blocked.' );
 			return;
 		}
 
-		// @if CK_DEBUG // console.log( '[Renderer] DOM selection gets updated.' );
+		// @if CK_DEBUG_ENGINE // console.log( '[Renderer] DOM selection gets updated.' );
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
