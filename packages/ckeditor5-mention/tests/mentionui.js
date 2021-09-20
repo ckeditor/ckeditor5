@@ -2188,20 +2188,20 @@ describe( 'MentionUI', () => {
 				}
 			};
 
-			it( 'works with specific number in case of custom function feed', async () => {
+			it( 'works with specific number in case of custom function feed', () => {
 				const mentionsLimit = 3;
 
-				await createClassicTestEditor( {
+				return createClassicTestEditor( {
 					dropdownLimit: mentionsLimit,
-					feeds: [ customFunctionFeed ] } );
+					feeds: [ customFunctionFeed ] } )
+					.then( () => {
+						setData( editor.model, '<paragraph>foo []</paragraph>' );
 
-				setData( editor.model, '<paragraph>foo []</paragraph>' );
-
-				model.change( writer => {
-					writer.insertText( '@', doc.selection.getFirstPosition() );
-				} );
-
-				return waitForDebounce()
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( mentionsView.items ).to.have.length( mentionsLimit );

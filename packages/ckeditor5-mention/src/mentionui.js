@@ -220,7 +220,7 @@ export default class MentionUI extends Plugin {
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
 
-			// See: #10479
+			// Set to 10 by default for backwards compatibility. See: #10479
 			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
 
 			if ( mentionsView.items.length >= dropdownLimit ) {
