@@ -198,6 +198,14 @@ htmlSupport: {
 
 The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 
+### Security
+
+The editor is set in a safely manner by default - to remove as much dangerous content as reasonably possible. When you set up the GHS to allow all elements and attributes, you expose the editor to a possibly malicious markup - whether it is a mistakenly copied code from risky website or purposely provided by a bad actor. It can affect the viewing and editing experience when rendered back to the user.
+
+As a general rule, not exclusive to GHS, there should always be a sanitization process present on the backend side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated thus bypassing front-end filtering. This can quickly become a security risk.
+
+To further prevent malicious code from being run it is highly recommended to set strict {@link builds/guides/integration/csp Content Security Policy} rules.
+
 ## Known issues
 
 It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.).
