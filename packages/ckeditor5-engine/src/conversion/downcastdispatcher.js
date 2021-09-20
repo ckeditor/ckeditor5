@@ -523,11 +523,14 @@ export default class DowncastDispatcher {
 		};
 
 		for ( const key of data.item.getAttributeKeys() ) {
-			data.attributeKey = key;
-			data.attributeOldValue = null;
-			data.attributeNewValue = data.item.getAttribute( key );
+			// Do not fire attribute events for just added nodes that consumed attributes.
+			if ( conversionApi.consumable.test( data.item, `attribute:${ key }` ) ) {
+				data.attributeKey = key;
+				data.attributeOldValue = null;
+				data.attributeNewValue = data.item.getAttribute( key );
 
-			this.fire( getEventName( `attribute:${ key }`, data ), data, conversionApi );
+				this.fire( getEventName( `attribute:${ key }`, data ), data, conversionApi );
+			}
 		}
 	}
 
