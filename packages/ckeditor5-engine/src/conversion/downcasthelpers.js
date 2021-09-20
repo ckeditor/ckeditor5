@@ -53,23 +53,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		} );
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
-	 *			model: {
-	 *	 			name: 'paragraph',
-	 *				attributes: [ 'foo' ]
-	 * 			},
+	 *			model: 'heading',
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer } = conversionApi;
 	 *
 	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 	 *			}
 	 *		} );
-
-	 <parahraph foo="test2">Children</paragraph>
-
-		->
-
-	 <div class="fancy"><img></div>
-	 <p class="fancy">Children</p>
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: 'heading',
@@ -77,6 +67,19 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *				const { writer } = conversionApi;
 	 *
 	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
+	 *			}
+	 *		} );
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: {
+	 *	 			name: 'simpleBox',
+	 *	 			attributes: [ 'foo' ],
+	 *	 			children: true
+	 *			},
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createContainerElement( 'div' );
 	 *			}
 	 *		} );
 	 *
