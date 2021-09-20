@@ -904,4 +904,137 @@ describe( 'DataController', () => {
 			sinon.assert.calledWithExactly( spyHtmlProcessor, 'div' );
 		} );
 	} );
+
+	describe( 'nested conversion', () => {
+		beforeEach( () => {
+			model.schema.register( 'container', {
+				inheritAllFrom: '$block'
+			} );
+			model.schema.register( 'caption', {
+				allowIn: 'container',
+				inheritAllFrom: '$block'
+			} );
+			model.schema.extend( '$text', {
+				allowAttributes: [ 'bold' ]
+			} );
+		} );
+
+		it( 'should allow nesting upcast conversion', () => {
+			const dataProcessor = data.processor;
+
+			upcastHelpers.elementToAttribute( { view: 'strong', model: 'bold' } );
+
+			data.upcastDispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
+				const viewItem = data.viewItem;
+
+				// Check if the view element has still unconsumed `data-caption` attribute.
+				if ( !conversionApi.consumable.test( viewItem, { name: true, attributes: 'data-caption' } ) ) {
+					return;
+				}
+
+				const container = conversionApi.writer.createElement( 'container' );
+
+				// Create `caption` model element. Thanks to that element the rest of the `ckeditor5-plugin` converters can
+				// recognize this image as a block image with a caption.
+				const caption = conversionApi.writer.createElement( 'caption' );
+
+				// Parse HTML from data-caption attribute and upcast it to model fragment.
+				const viewFragment = dataProcessor.toView( viewItem.getAttribute( 'data-caption' ) );
+				const modelFragment = conversionApi.writer.createDocumentFragment();
+
+				// Consumable must know about those newly parsed view elements.
+				conversionApi.consumable.constructor.createFrom( viewFragment, conversionApi.consumable );
+				conversionApi.convertChildren( viewFragment, modelFragment );
+
+				// Insert caption model nodes into the caption.
+				for ( const child of Array.from( modelFragment.getChildren() ) ) {
+					conversionApi.writer.append( child, caption );
+				}
+
+				// Insert the caption element into image, as a last child.
+				conversionApi.writer.append( caption, container );
+
+				// Try to place the image in the allowed position.
+				if ( !conversionApi.safeInsert( container, data.modelCursor ) ) {
+					return;
+				}
+
+				// Mark given element as consumed. Now other converters will not process it anymore.
+				conversionApi.consumable.consume( viewItem, { name: true, attributes: [ 'data-caption' ] } );
+
+				// Make sure `modelRange` and `modelCursor` is up to date after inserting new nodes into the model.
+				conversionApi.updateConversionResult( container, data );
+			} );
+
+			data.set( '<div data-caption="foo<strong>baz</strong>">&nbsp;</div>' );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				'<container><caption>foo<$text bold="true">baz</$text></caption></container>'
+			);
+		} );
+
+		it( 'should allow nesting downcast conversion', () => {
+			const downcastDispatcher = data.downcastDispatcher;
+			const dataProcessor = data.processor;
+
+			downcastHelpers.elementToElement( { model: 'container', view: 'div' } );
+			downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
+
+			data.downcastDispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+					return;
+				}
+
+				const range = model.createRangeIn( data.item );
+				const viewDocumentFragment = conversionApi.writer.createDocumentFragment();
+
+				// Bind caption model element to the detached view document fragment so all content of the caption
+				// will be downcasted into that document fragment.
+				conversionApi.mapper.bindElements( data.item, viewDocumentFragment );
+
+				for ( const { item } of range ) {
+					const data = {
+						item,
+						range: model.createRangeOn( item )
+					};
+
+					// The following lines are extracted from DowncastDispatcher#_convertInsertWithAttributes().
+
+					const eventName = `insert:${ item.is( '$textProxy' ) ? '$text' : item.name }`;
+
+					downcastDispatcher.fire( eventName, data, conversionApi );
+
+					for ( const key of item.getAttributeKeys() ) {
+						Object.assign( data, {
+							attributeKey: key,
+							attributeOldValue: null,
+							attributeNewValue: data.item.getAttribute( key )
+						} );
+
+						downcastDispatcher.fire( `attribute:${ key }`, data, conversionApi );
+					}
+				}
+
+				// Unbind all the view elements that were downcasted to the document fragment.
+				for ( const child of conversionApi.writer.createRangeIn( viewDocumentFragment ).getItems() ) {
+					conversionApi.mapper.unbindViewElement( child );
+				}
+
+				conversionApi.mapper.unbindViewElement( viewDocumentFragment );
+
+				// Stringify view document fragment to HTML string.
+				const captionText = dataProcessor.toData( viewDocumentFragment );
+
+				if ( captionText ) {
+					const imageViewElement = conversionApi.mapper.toViewElement( data.item.parent );
+
+					conversionApi.writer.setAttribute( 'data-caption', captionText, imageViewElement );
+				}
+			} );
+
+			setData( model, '<container><caption>foo<$text bold="true">baz</$text></caption></container>' );
+
+			expect( data.get() ).to.equal( '<div data-caption="foo<strong>baz</strong>">&nbsp;</div>' );
+		} );
+	} );
 } );

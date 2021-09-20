@@ -22,7 +22,8 @@ describe( 'Utils', () => {
 		defaultPositions.northArrowSouthEast,
 		defaultPositions.southArrowNorth,
 		defaultPositions.southArrowNorthWest,
-		defaultPositions.southArrowNorthEast
+		defaultPositions.southArrowNorthEast,
+		defaultPositions.viewportStickyNorth
 	];
 
 	let editor, converter, selection, balloon, editorElement;

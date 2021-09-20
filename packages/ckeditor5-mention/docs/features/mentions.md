@@ -9,6 +9,8 @@ menu-title: Mentions
 
 The {@link module:mention/mention~Mention} feature brings support for smart autocompletion based on user input. When a user types a pre-configured marker, such as `@` or `#`, they get autocomplete suggestions in a panel displayed next to the caret. The selected suggestion is then inserted into the content.
 
+You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
+
 ## Demo
 
 You can type the "@" character to invoke the mention autocomplete UI. The demo below is configured to suggest a static list of names ("Barney", "Lily", "Marshall", "Robin", and "Ted").

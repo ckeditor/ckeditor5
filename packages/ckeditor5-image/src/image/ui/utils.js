@@ -47,7 +47,8 @@ export function getBalloonPositionData( editor ) {
 			defaultPositions.northArrowSouthEast,
 			defaultPositions.southArrowNorth,
 			defaultPositions.southArrowNorthWest,
-			defaultPositions.southArrowNorthEast
+			defaultPositions.southArrowNorthEast,
+			defaultPositions.viewportStickyNorth
 		]
 	};
 }

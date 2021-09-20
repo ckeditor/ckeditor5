@@ -319,8 +319,6 @@
  *			viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
  *		}
  *
- * 	**Note:** At the moment, only `top` property is supported. Support for other directions will be added in the future.
- *
  * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
  *
  * @member {Object} module:core/editor/editorconfig~EditorConfig#ui

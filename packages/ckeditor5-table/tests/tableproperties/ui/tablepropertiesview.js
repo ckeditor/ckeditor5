@@ -527,6 +527,7 @@ describe( 'table properties', () => {
 						expect( view.cancelButtonView.label ).to.equal( 'Cancel' );
 						expect( view.cancelButtonView.withText ).to.be.true;
 						expect( view.cancelButtonView.class ).to.equal( 'ck-button-cancel' );
+						expect( view.cancelButtonView.type ).to.equal( 'button' );
 					} );
 
 					it( 'should make the cancel button fire the #cancel event when executed', () => {

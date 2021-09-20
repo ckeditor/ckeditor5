@@ -22,7 +22,7 @@ DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plu
 
 Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this integration method requires creating it on your own, based on the tools available in the {@link framework/guides/contributing/development-environment CKEditor 5 development environment}.
 
-Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍 if you are interested in this functionality).
+Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp; if you are interested in this functionality).
 
 ## Anatomy of a DLL build
 
@@ -150,6 +150,12 @@ For example:
 		} );
 </script>
 ```
+
+## Live implementation sample
+
+Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor 5 instance.
+
+<iframe width="100%" height="680" src="//jsfiddle.net/ckeditor/mv05bweu/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 ## Localization
 
