@@ -250,7 +250,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
 		return new ViewContainerElement( viewDocument, modelItem.name, attributes );
-	} ) );
+	}, ( node, consumable ) => consumable.consume( node, 'insert' ) ) );
 
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );

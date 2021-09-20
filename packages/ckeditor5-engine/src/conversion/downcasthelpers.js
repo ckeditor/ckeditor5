@@ -53,24 +53,30 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		} );
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
-	 *			model: 'heading',
+	 *			model: {
+	 *	 			name: 'paragraph',
+	 *				attributes: [ 'foo' ]
+	 * 			},
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer } = conversionApi;
 	 *
 	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 	 *			}
 	 *		} );
-	 *
-	 * The element-to-element conversion supports the reconversion mechanism. This is helpful in the conversion to complex view structures
-	 * where multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying
-	 * `triggerBy()` events you can trigger reconverting the model to full view tree structures at once.
+
+	 <parahraph foo="test2">Children</paragraph>
+
+		->
+
+	 <div class="fancy"><img></div>
+	 <p class="fancy">Children</p>
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
-	 *			model: 'complex',
-	 *			view: ( modelElement, conversionApi ) => createComplexViewFromModel( modelElement, conversionApi ),
-	 *			triggerBy: {
-	 *				attributes: [ 'foo', 'bar' ],
-	 *				children: [ 'slot' ]
+	 *			model: 'heading',
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 	 *			}
 	 *		} );
 	 *
@@ -86,11 +92,6 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
-	 * @param {Object} [config.triggerBy] Reconversion triggers. At least one trigger must be defined.
-	 * @param {Array.<String>} config.triggerBy.attributes The name of the element's attributes whose change will trigger element
-	 * reconversion.
-	 * @param {Array.<String>} config.triggerBy.children The name of direct children whose adding or removing will trigger element
-	 * reconversion.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
@@ -950,7 +951,7 @@ export function wrap( elementCreator ) {
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
  * @returns {Function} Insert element event converter.
  */
-export function insertElement( elementCreator ) {
+export function insertElement( elementCreator, consumer ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = elementCreator( data.item, conversionApi );
 
@@ -958,7 +959,8 @@ export function insertElement( elementCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
+		if ( !consumer( data.item, conversionApi.consumable ) ) {
 			return;
 		}
 
@@ -966,6 +968,8 @@ export function insertElement( elementCreator ) {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
+
+		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -1554,17 +1558,23 @@ function removeHighlight( highlightDescriptor ) {
 // @param {Object} config Conversion configuration.
 // @param {String} config.model
 // @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
-// @param {Object} [config.triggerBy]
-// @param {Array.<String>} [config.triggerBy.attributes]
-// @param {Array.<String>} [config.triggerBy.children]
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
+	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on(
+			'insert:' + config.model.name,
+			insertElement( config.view, createConsumer( config.model ) ),
+			{ priority: config.converterPriority || 'normal' }
+		);
+
+		if ( config.model.children || config.model.attributes.length ) {
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
+		}
 	};
 }
 
