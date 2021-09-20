@@ -22,6 +22,7 @@ ClassicEditor
 			}
 		},
 		mention: {
+			dropdownLimit: 4,
 			feeds: [
 				{
 					marker: '@',
