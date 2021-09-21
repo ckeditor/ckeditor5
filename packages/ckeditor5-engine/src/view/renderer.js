@@ -111,19 +111,12 @@ export default class Renderer {
 		this.set( 'isSelecting', false );
 
 		this.on( 'change:isSelecting', () => {
-			if ( !this.isSelecting && this._isSelectionRenderPending ) {
-				this._isSelectionRenderPending = false;
+			if ( !this.isSelecting ) {
+				// @if CK_DEBUG_ENGINE // console.log( '[Renderer] Unblocked selection rendering -> render().' );
 
-				// @if CK_DEBUG_ENGINE // console.log( '[Renderer] Unblocked selection rendering -> rendering pending updates.' );
-
-				this._updateSelection();
+				this.render();
 			}
 		} );
-
-		/**
-		 * TODO
-		 */
-		this._isSelectionRenderPending = false;
 
 		/**
 		 * The text node in which the inline filler was rendered.
@@ -200,23 +193,25 @@ export default class Renderer {
 			this._updateChildrenMappings( element );
 		}
 
-		// There was inline filler rendered in the DOM but it's not
-		// at the selection position any more, so we can remove it
-		// (cause even if it's needed, it must be placed in another location).
-		if ( this._inlineFiller && !this._isSelectionInInlineFiller() ) {
-			this._removeInlineFiller();
-		}
+		if ( !this.isSelecting ) {
+			// There was inline filler rendered in the DOM but it's not
+			// at the selection position any more, so we can remove it
+			// (cause even if it's needed, it must be placed in another location).
+			if ( this._inlineFiller && !this._isSelectionInInlineFiller() ) {
+				this._removeInlineFiller();
+			}
 
-		// If we've got the filler, let's try to guess its position in the view.
-		if ( this._inlineFiller ) {
-			inlineFillerPosition = this._getInlineFillerPosition();
-		}
-		// Otherwise, if it's needed, create it at the selection position.
-		else if ( this._needsInlineFillerAtSelection() ) {
-			inlineFillerPosition = this.selection.getFirstPosition();
+			// If we've got the filler, let's try to guess its position in the view.
+			if ( this._inlineFiller ) {
+				inlineFillerPosition = this._getInlineFillerPosition();
+			}
+			// Otherwise, if it's needed, create it at the selection position.
+			else if ( this._needsInlineFillerAtSelection() ) {
+				inlineFillerPosition = this.selection.getFirstPosition();
 
-			// Do not use `markToSync` so it will be added even if the parent is already added.
-			this.markedChildren.add( inlineFillerPosition.parent );
+				// Do not use `markToSync` so it will be added even if the parent is already added.
+				this.markedChildren.add( inlineFillerPosition.parent );
+			}
 		}
 
 		for ( const element of this.markedAttributes ) {
@@ -239,20 +234,22 @@ export default class Renderer {
 		// Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
 		// it will not be present.
 		// Fix those and similar scenarios.
-		if ( inlineFillerPosition ) {
-			const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
-			const domDocument = fillerDomPosition.parent.ownerDocument;
+		if ( !this.isSelecting ) {
+			if ( inlineFillerPosition ) {
+				const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
+				const domDocument = fillerDomPosition.parent.ownerDocument;
 
-			if ( !startsWithFiller( fillerDomPosition.parent ) ) {
-				// Filler has not been created at filler position. Create it now.
-				this._inlineFiller = addInlineFiller( domDocument, fillerDomPosition.parent, fillerDomPosition.offset );
+				if ( !startsWithFiller( fillerDomPosition.parent ) ) {
+					// Filler has not been created at filler position. Create it now.
+					this._inlineFiller = addInlineFiller( domDocument, fillerDomPosition.parent, fillerDomPosition.offset );
+				} else {
+					// Filler has been found, save it.
+					this._inlineFiller = fillerDomPosition.parent;
+				}
 			} else {
-				// Filler has been found, save it.
-				this._inlineFiller = fillerDomPosition.parent;
+				// There is no filler needed.
+				this._inlineFiller = null;
 			}
-		} else {
-			// There is no filler needed.
-			this._inlineFiller = null;
 		}
 
 		// First focus the new editing host, then update the selection.
@@ -425,7 +422,7 @@ export default class Renderer {
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {
-			domFillerNode.parentNode.removeChild( domFillerNode );
+			domFillerNode.remove();
 		} else {
 			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_LENGTH );
 		}
@@ -709,8 +706,6 @@ export default class Renderer {
 	 */
 	_updateSelection() {
 		if ( this.isSelecting ) {
-			this._isSelectionRenderPending = true;
-
 			// @if CK_DEBUG_ENGINE // console.warn( '[Renderer] Selection update blocked.' );
 			return;
 		}

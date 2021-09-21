@@ -110,29 +110,30 @@ export default class SelectionObserver extends Observer {
 			// @if CK_DEBUG_ENGINE // console.groupEnd();
 		}, 10000 );
 
+		const endSelecting = () => {
+			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] End selecting.' );
+			this.document.isSelecting = false;
+			debouncedSelectionInactivityTimeout.cancel();
+			// @if CK_DEBUG_ENGINE // console.groupEnd();
+		};
+
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 			debouncedSelectionInactivityTimeout();
 		} );
 
-		this.listenTo( domDocument, 'mousedown', () => {
+		this.listenTo( domDocument, 'selectstart', () => {
 			// @if CK_DEBUG_ENGINE // console.clear();
-			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] 🖱 Mousedown ⬇️.' );
+			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] 🖱 Selectstart.' );
 			this.document.isSelecting = true;
 			// @if CK_DEBUG_ENGINE // console.groupEnd();
 
 			debouncedSelectionInactivityTimeout();
 		}, { priority: 'highest' } );
 
-		this.listenTo( domDocument, 'mouseup', () => {
-			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] 🖱 Mouseup ⬆️.' );
-			this.document.isSelecting = false;
-			debouncedSelectionInactivityTimeout.cancel();
-			// @if CK_DEBUG_ENGINE // console.groupEnd();
-		}, { priority: 'highest' } );
-
-		// TODO: Probably selectstart instead of mousedown.
-		// TODO: TableMouse integration (???).
+		this.listenTo( domDocument, 'mouseup', endSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'keydown', endSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'keyup', endSelecting, { priority: 'highest' } );
 
 		this._documents.add( domDocument );
 	}
