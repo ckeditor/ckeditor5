@@ -834,11 +834,11 @@ describe( 'HtmlEmbedEditing', () => {
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 
 				sinon.stub( editor.commands.get( 'updateHtmlEmbed' ), 'isEnabled' ).value( false );
-				const makeEditableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'makeEditable' );
+				const editableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'makeEditable' );
 
 				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
 
-				expect( makeEditableStub.callCount ).to.equal( 0 );
+				expect( editableStub.callCount ).to.equal( 0 );
 			} );
 
 			it( 'does not allow saving the source after clicking the "save" button', () => {
