@@ -124,6 +124,12 @@ export default class DowncastDispatcher {
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastConversionApi}
 		 */
 		this._conversionApi = { dispatcher: this, ...conversionApi };
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._firedEventsMap = new WeakMap();
 	}
 
 	/**
@@ -282,7 +288,7 @@ export default class DowncastDispatcher {
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const data of Array.from( range.getWalker( { shallow: true } ) ).map( walkerValueToEventData ) ) {
-			this.fire( getEventName( 'insert', data ), data, conversionApi );
+			this._testAndFire( 'insert', data, conversionApi );
 		}
 	}
 
@@ -326,7 +332,7 @@ export default class DowncastDispatcher {
 				attributeNewValue: newValue
 			};
 
-			this.fire( getEventName( `attribute:${ key }`, data ), data, conversionApi );
+			this._testAndFire( `attribute:${ key }`, data, conversionApi );
 		}
 	}
 
@@ -352,7 +358,7 @@ export default class DowncastDispatcher {
 
 		// Fire a separate insert event for each node and text fragment contained shallowly in the range.
 		for ( const data of walkerValues.map( walkerValueToEventData ) ) {
-			this.fire( getEventName( 'insert', data ), { ...data, reconversion: true }, conversionApi );
+			this._testAndFire( 'insert', { ...data, reconversion: true }, conversionApi );
 		}
 	}
 
@@ -512,6 +518,36 @@ export default class DowncastDispatcher {
 	}
 
 	/**
+	 * TODO Tests passed `consumable` to check whether given event can be fired and if so, fires it.
+	 *
+	 * @private
+	 * @fires insert
+	 * @fires attribute
+	 * @param {String} type Event type.
+	 * @param {Object} data Event data.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+	 */
+	_testAndFire( type, data, conversionApi ) {
+		const conversionFiredEvents = this._firedEventsMap.get( conversionApi );
+		// TODO should not use private method of ModelConsumable
+		const key = data.item.is( '$textProxy' ) ? conversionApi.consumable._getSymbolForTextProxy( data.item ) : data.item;
+		const itemFiredEvents = conversionFiredEvents.get( key );
+		const eventName = getEventName( type, data );
+
+		if ( !itemFiredEvents ) {
+			conversionFiredEvents.set( data.item, new Set( [ eventName ] ) );
+		} else {
+			if ( !itemFiredEvents.has( eventName ) ) {
+				itemFiredEvents.add( eventName );
+			} else {
+				return;
+			}
+		}
+
+		this.fire( eventName, data, conversionApi );
+	}
+
+	/**
 	 * TODO
 	 *
 	 * @private
@@ -523,14 +559,11 @@ export default class DowncastDispatcher {
 		};
 
 		for ( const key of data.item.getAttributeKeys() ) {
-			// Do not fire attribute events for just added nodes that consumed attributes.
-			if ( conversionApi.consumable.test( data.item, `attribute:${ key }` ) ) {
-				data.attributeKey = key;
-				data.attributeOldValue = null;
-				data.attributeNewValue = data.item.getAttribute( key );
+			data.attributeKey = key;
+			data.attributeOldValue = null;
+			data.attributeNewValue = data.item.getAttribute( key );
 
-				this.fire( getEventName( `attribute:${ key }`, data ), data, conversionApi );
-			}
+			this._testAndFire( `attribute:${ key }`, data, conversionApi );
 		}
 	}
 
@@ -554,6 +587,8 @@ export default class DowncastDispatcher {
 			convertChildren: modelItem => this._convertInsert( Range._createIn( modelItem ), conversionApi, { doNotAddConsumables: true } ),
 			convertAttributes: modelItem => this._fireAddAttributes( modelItem, conversionApi )
 		};
+
+		this._firedEventsMap.set( conversionApi, new WeakMap() );
 
 		return conversionApi;
 	}

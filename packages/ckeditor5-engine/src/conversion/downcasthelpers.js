@@ -690,10 +690,6 @@ export function insertText() {
  */
 export function insertAttributesAndChildren() {
 	return ( evt, data, conversionApi ) => {
-		if ( data.reconversion ) {
-			return;
-		}
-
 		conversionApi.convertAttributes( data.item );
 
 		if ( data.item.is( 'element' ) && !data.item.isEmpty ) {
