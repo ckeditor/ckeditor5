@@ -26,6 +26,7 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@qbranch/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -36,6 +37,7 @@ import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperti
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
+import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 
 import '../theme/theme.css';
@@ -63,6 +65,7 @@ BalloonEditor.builtinPlugins = [
 	Indent,
 	Italic,
 	Link,
+	LinkImage,
 	List,
 	MediaEmbed,
 	Paragraph,
@@ -73,6 +76,7 @@ BalloonEditor.builtinPlugins = [
 	TableProperties,
 	TableToolbar,
 	TextTransformation,
+	TodoList,
 	Underline
 ];
 
@@ -121,9 +125,11 @@ BalloonEditor.defaultConfig = {
 		'|',
 		'bulletedList',
 		'numberedList',
+		'todoList',
 		'|',
 		'imageUpload',
 		'mediaEmbed',
+		'|',
 		'insertTable',
 		'|',
 		'undo',
@@ -228,6 +234,7 @@ BalloonEditor.defaultConfig = {
 	},
 	image: {
 		toolbar: [
+			'linkImage',
 			'imageTextAlternative',
 			'|',
 			'imageStyle:alignLeft',
