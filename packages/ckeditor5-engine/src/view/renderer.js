@@ -705,7 +705,8 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		if ( this.isSelecting ) {
+		// Block updating DOM selection unless there are some structural changes in DOM to render.
+		if ( this.isSelecting && !this.markedChildren.size ) {
 			// @if CK_DEBUG_ENGINE // console.warn( '[Renderer] Selection update blocked.' );
 			return;
 		}
