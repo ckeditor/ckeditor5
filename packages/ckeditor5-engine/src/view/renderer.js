@@ -522,9 +522,13 @@ export default class Renderer {
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
-			if ( !viewElement.hasAttribute( key ) &&
-				( viewElement.name !== 'script' || key !== 'data-ck-hidden' ) )
-			{
+			// Do not remove attributes on `script` elements, as well as special data attributes `data-ck-hidden`.
+			if ( viewElement.name === 'script' || key === 'data-ck-hidden' ) {
+				continue;
+			}
+
+			// All other attributes not present in the DOM should be removed.
+			if ( !viewElement.hasAttribute( key ) ) {
 				domElement.removeAttribute( key );
 			}
 		}
