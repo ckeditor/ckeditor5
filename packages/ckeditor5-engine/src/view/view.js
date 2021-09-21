@@ -83,7 +83,7 @@ export default class View {
 		 * @readonly
 		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
-		this.domConverter = new DomConverter( this.document);
+		this.domConverter = new DomConverter( this.document );
 
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
