@@ -33,6 +33,7 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
@@ -69,6 +70,7 @@ BalloonEditor.builtinPlugins = [
 	RemoveFormat,
 	Table,
 	TableCellProperties,
+	TableProperties,
 	TableToolbar,
 	TextTransformation,
 	Underline
@@ -229,12 +231,12 @@ BalloonEditor.defaultConfig = {
 			'imageTextAlternative',
 			'|',
 			'imageStyle:alignLeft',
-			'imageStyle:full',
+			'imageStyle:alignCenter',
 			'imageStyle:alignRight'
 		],
 		styles: [
-			'full',
 			'alignLeft',
+			'alignCenter',
 			'alignRight'
 		]
 	},

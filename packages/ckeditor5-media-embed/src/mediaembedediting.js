@@ -45,7 +45,7 @@ export default class MediaEmbedEditing extends Plugin {
 						const id = match[1];
 
 						return (
-							'<div style="position: relative; padding-bottom: 100%; height: 0; ">' +
+							'<div class="vidyard_iframe_container">' +
 								`<iframe class="vidyard_iframe" src="//play.vidyard.com/${id}.html?v=3.1.1" width="640" height="360" scrolling="no" frameborder="0" allowtransparency="true" allowfullscreen></iframe>` +
 							'</div>'
 						);

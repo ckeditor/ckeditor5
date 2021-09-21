@@ -1,6 +1,6 @@
 {
   "name": "@qbranch/ckeditor5-media-embed",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Media embed feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
