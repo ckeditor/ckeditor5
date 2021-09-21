@@ -850,11 +850,11 @@ describe( 'HtmlEmbedEditing', () => {
 				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
 
 				sinon.stub( editor.commands.get( 'updateHtmlEmbed' ), 'isEnabled' ).value( false );
-				const makeEditableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'save' );
+				const saveStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'save' );
 
 				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
 
-				expect( makeEditableStub.callCount ).to.equal( 0 );
+				expect( saveStub.callCount ).to.equal( 0 );
 			} );
 		} );
 	} );
