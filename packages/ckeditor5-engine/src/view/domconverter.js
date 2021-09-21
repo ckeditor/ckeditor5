@@ -56,7 +56,7 @@ export default class DomConverter {
 	 *  'nbsp' when options.renderingMode == 'data',
 	 *  'br' when options.renderingMode == 'editing'.
 	 * @param {'data'|'editing'} [options.renderingMode='data'] Whether to leave the View-to-DOM conversion result unchanged
-	 * or improve editing experience by filtering out conflicting data.
+	 * or improve editing experience by filtering out interactive data.
 	 */
 	constructor( document, options = {} ) {
 		/**
@@ -66,7 +66,7 @@ export default class DomConverter {
 		this.document = document;
 
 		/**
-		 * Whether to leave the View-to-DOM conversion result unchanged or improve editing experience by filtering out conflicting data.
+		 * Whether to leave the View-to-DOM conversion result unchanged or improve editing experience by filtering out interactive data.
 		 *
 		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderingMode
 		 */
