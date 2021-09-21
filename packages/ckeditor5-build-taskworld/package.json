@@ -1,0 +1,57 @@
+{
+  "name": "@ckeditor/ckeditor5-build-taskworld",
+  "version": "29.2.0",
+  "description": "CKEditor custom build for Taskworld",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://ckeditor.com/ckeditor-5",
+  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5.git",
+    "directory": "packages/ckeditor5-build-classic"
+  },
+  "main": "./build/ckeditor.js",
+  "files": [
+    "build",
+    "ckeditor5-metadata.json"
+  ],
+  "scripts": {
+    "build": "webpack --mode production",
+    "preversion": "npm run build"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-autoformat": "^29.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
+    "@ckeditor/ckeditor5-block-quote": "^29.2.0",
+    "@ckeditor/ckeditor5-code-block": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^29.2.0",
+    "@ckeditor/ckeditor5-dev-utils": "^25.4.0",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
+    "@ckeditor/ckeditor5-engine": "^29.2.0",
+    "@ckeditor/ckeditor5-essentials": "^29.2.0",
+    "@ckeditor/ckeditor5-heading": "^29.2.0",
+    "@ckeditor/ckeditor5-indent": "^29.2.0",
+    "@ckeditor/ckeditor5-link": "^29.2.0",
+    "@ckeditor/ckeditor5-list": "^29.2.0",
+    "@ckeditor/ckeditor5-markdown-gfm": "^29.2.0",
+    "@ckeditor/ckeditor5-mention": "^29.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
+    "@ckeditor/ckeditor5-table": "^29.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^29.2.0",
+    "@ckeditor/ckeditor5-widget": "^29.2.0",
+    "postcss-loader": "^3.0.0",
+    "raw-loader": "^4.0.1",
+    "style-loader": "^1.2.1",
+    "terser-webpack-plugin": "^3.0.2",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-react": "^3.0.2"
+  }
+}
