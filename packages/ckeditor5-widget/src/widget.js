@@ -126,32 +126,18 @@ export default class Widget extends Plugin {
 
 			let lastMarked = null;
 
-			let rangeCounter = 0;
-			const widgetsToSelect = [];
-
 			for ( const range of viewSelection.getRanges() ) {
-				// if there is more than 1 range it means that we are inside table and we don't want to select nested widgets.
-				// See #9491.
-				if ( rangeCounter > 0 ) {
-					return;
-				}
-				rangeCounter++;
 				// Note: There could be multiple selected widgets in a range but no fake selection.
 				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
 					// Do not mark nested widgets in selected one. See: #4594
 					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
-						widgetsToSelect.push( node );
-
+						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
 						this._previouslySelected.add( node );
 						lastMarked = node;
 					}
 				}
-			}
-
-			for ( const node of widgetsToSelect ) {
-				viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
 			}
 		}, { priority: 'low' } );
 
