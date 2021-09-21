@@ -323,6 +323,13 @@ export default class DomConverter {
 		}
 	}
 
+	/**
+	 * Decide whether given pair of attribute key and value should be passed further down the pipeline.
+	 *
+	 * @param {String} attributeKey
+	 * @param {String} attributeValue
+	 * @returns {Boolean}
+	 */
 	shouldRenderAttribute( attributeKey, attributeValue ) {
 		if ( this.renderMode === 'data' ) {
 			return true;
