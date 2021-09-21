@@ -825,6 +825,38 @@ describe( 'HtmlEmbedEditing', () => {
 				}
 			} );
 		} );
+
+		describe( 'with updateHtmlEmbed command disabled', () => {
+			it( 'does not allow editing the source after clicking the "edit" button', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				sinon.stub( editor.commands.get( 'updateHtmlEmbed' ), 'isEnabled' ).value( false );
+				const makeEditableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'makeEditable' );
+
+				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
+
+				expect( makeEditableStub.callCount ).to.equal( 0 );
+			} );
+
+			it( 'does not allow saving the source after clicking the "save" button', () => {
+				setModelData( model, '<rawHtml value="foo"></rawHtml>' );
+				const widget = viewDocument.getRoot().getChild( 0 );
+				const contentWrapper = widget.getChild( 1 );
+				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
+
+				domContentWrapper.querySelector( '.raw-html-embed__edit-button' ).click();
+
+				sinon.stub( editor.commands.get( 'updateHtmlEmbed' ), 'isEnabled' ).value( false );
+				const makeEditableStub = sinon.stub( widget.getCustomProperty( 'rawHtmlApi' ), 'save' );
+
+				domContentWrapper.querySelector( '.raw-html-embed__save-button' ).click();
+
+				expect( makeEditableStub.callCount ).to.equal( 0 );
+			} );
+		} );
 	} );
 } );
 

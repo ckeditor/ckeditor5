@@ -126,6 +126,8 @@ export default class HtmlEmbedEditing extends Plugin {
 			view: ( modelElement, { writer } ) => {
 				let domContentWrapper, state, props;
 
+				const command = editor.commands.get( 'updateHtmlEmbed' );
+
 				const viewContainer = writer.createContainerElement( 'div', {
 					class: 'raw-html-embed',
 					'data-html-embed-label': t( 'HTML snippet' ),
@@ -207,10 +209,14 @@ export default class HtmlEmbedEditing extends Plugin {
 					textareaPlaceholder: t( 'Paste raw HTML here...' ),
 
 					onEditClick() {
-						rawHtmlApi.makeEditable();
+						if ( command.isEnabled ) {
+							rawHtmlApi.makeEditable();
+						}
 					},
 					onSaveClick( newValue ) {
-						rawHtmlApi.save( newValue );
+						if ( command.isEnabled ) {
+							rawHtmlApi.save( newValue );
+						}
 					},
 					onCancelClick() {
 						rawHtmlApi.cancel();
@@ -286,12 +292,12 @@ export default class HtmlEmbedEditing extends Plugin {
 
 				clonedDomSaveButton.addEventListener( 'click', evt => {
 					evt.preventDefault();
-					props.onSaveClick( );
+					props.onSaveClick();
 				} );
 
 				clonedDomCancelButton.addEventListener( 'click', evt => {
 					evt.preventDefault();
-					props.onCancelClick( );
+					props.onCancelClick();
 				} );
 
 				domButtonsWrapper.appendChild( clonedDomSaveButton );
@@ -379,6 +385,7 @@ function createDomButton( editor, type ) {
 			label: t( 'Edit source' ),
 			class: 'raw-html-embed__edit-button'
 		} );
+		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
 			icon: icons.check,
