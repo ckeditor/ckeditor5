@@ -164,6 +164,11 @@ export default class AutoMediaEmbed extends Plugin {
 
 				let insertionPosition;
 
+				// If position is not available, terminate the process. See #2765.
+				if ( !this._positionToInsert ) {
+					return;
+				}
+
 				// Check if position where the media element should be inserted is still valid.
 				// Otherwise leave it as undefined to use document.selection - default behavior of model.insertContent().
 				if ( this._positionToInsert.root.rootName !== '$graveyard' ) {
