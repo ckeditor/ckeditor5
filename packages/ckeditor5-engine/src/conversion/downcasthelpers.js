@@ -152,8 +152,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.model The description or a name of the model element to convert.
 	 * @param {Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
-	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
- 	 * @param {Boolean} [config.model.children] Specifies whether the view structure requires reconversion if the list
+	 * the view element. Note that the view will be reconverted if any of the listed attributes will change.
+ 	 * @param {Boolean} [config.model.children] Specifies whether the view element requires reconversion if the list
 	 * of model child nodes changed.
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
@@ -294,8 +294,8 @@ export default class DowncastHelpers extends ConversionHelpers {
  	 * @param {String|Object} config.model The description or a name of the model element to convert.
 	 * @param {String} [config.model.name] The name of the model element to convert.
  	 * @param {Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
-	 * the view element. Note that the view will be reconverted if any of the listed attributes will change.
- 	 * @param {Boolean} [config.model.children] Specifies whether the view element requires reconversion if the list
+	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
+ 	 * @param {Boolean} [config.model.children] Specifies whether the view structure requires reconversion if the list
 	 * of model child nodes changed.
 	 * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view A function
 	 * that takes the model element and {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi downcast
