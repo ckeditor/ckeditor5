@@ -24,6 +24,8 @@ import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import '../../theme/renderer.css';
+
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
  * the {@link module:engine/view/renderer~Renderer#markToSync information about updated view nodes}.

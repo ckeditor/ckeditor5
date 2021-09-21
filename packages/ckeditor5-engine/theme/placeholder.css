@@ -25,7 +25,3 @@
 		display: none;
 	}
 }
-
-.ck.ck-editor__editable span[data-ck-hidden=script] {
-	display: none;
-}
