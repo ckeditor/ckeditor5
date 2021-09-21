@@ -66,18 +66,18 @@ export default class DomConverter {
 		this.document = document;
 
 		/**
-		 * The mode of a block filler used by the DOM converter.
-		 *
-		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
-		 */
-		this.blockFillerMode = options.blockFillerMode || ( options.renderingMode === 'data' ? 'nbsp' : 'br' );
-
-		/**
 		 * Whether to leave the View-to-DOM conversion result unchanged or improve editing experience by filtering out conflicting data.
 		 *
 		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderingMode
 		 */
-		this.renderingMode = options.renderingMode || 'data';
+		this.renderingMode = options.renderingMode || 'editing';
+
+		/**
+		 * The mode of a block filler used by the DOM converter.
+		 *
+		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
+		 */
+		this.blockFillerMode = options.blockFillerMode || ( this.renderingMode === 'editing' ? 'br' : 'nbsp' );
 
 		/**
 		 * Elements which are considered pre-formatted elements.
