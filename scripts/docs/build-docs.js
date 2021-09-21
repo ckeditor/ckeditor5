@@ -156,9 +156,9 @@ function splitOptionsToArray( options, keys ) {
  *
  * @param {Boolean} [verbose=false] Whether to print additional logs.
  *
- * @param {Array.<String>} [snippets=[]] An array containing name of snippets that the snippet adapter should process.
+ * @param {Array.<String>} [snippets=[]] An array containing the names of snippets that the snippet adapter should process.
  * An empty array means that the filtering mechanism is disabled.
  *
- * @param {Array.<String>} [guides=[]] An array containing name of guides that should be processed by Umberto.
+ * @param {Array.<String>} [guides=[]] An array containing the names of guides that should be processed by Umberto.
  * An empty array means that the filtering mechanism is disabled.
  */
