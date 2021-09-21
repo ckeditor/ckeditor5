@@ -51,8 +51,11 @@ export default class DomConverter {
 	 *
 	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options An object with configuration options.
-	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode='br'] The type of the block filler to use.
-	 * @param {'data'|'editing'} [options.renderMode='data'] Whether to leave the View-to-DOM conversion result unchanged
+	 * @param {module:engine/view/filler~BlockFillerMode} [options.blockFillerMode] The type of the block filler to use.
+	 * Default value depends on the options.renderingMode:
+	 *  'nbsp' when options.renderingMode == 'data',
+	 *  'br' when options.renderingMode == 'editing'.
+	 * @param {'data'|'editing'} [options.renderingMode='data'] Whether to leave the View-to-DOM conversion result unchanged
 	 * or improve editing experience by filtering out conflicting data.
 	 */
 	constructor( document, options = {} ) {
@@ -67,14 +70,14 @@ export default class DomConverter {
 		 *
 		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
 		 */
-		this.blockFillerMode = options.blockFillerMode || 'br';
+		this.blockFillerMode = options.blockFillerMode || ( options.renderingMode === 'data' ? 'nbsp' : 'br' );
 
 		/**
 		 * Whether to leave the View-to-DOM conversion result unchanged or improve editing experience by filtering out conflicting data.
 		 *
-		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderModel
+		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderingMode
 		 */
-		this.renderMode = options.renderMode || 'data';
+		this.renderingMode = options.renderingMode || 'data';
 
 		/**
 		 * Elements which are considered pre-formatted elements.
@@ -275,7 +278,7 @@ export default class DomConverter {
 
 				return domElement;
 			} else {
-				const shouldFilter = this.renderMode === 'editing';
+				const shouldFilter = this.renderingMode === 'editing';
 
 				// Create DOM element.
 				if ( viewNode.hasAttribute( 'xmlns' ) ) {
@@ -331,7 +334,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( this.renderMode === 'data' ) {
+		if ( this.renderingMode === 'data' ) {
 			return true;
 		}
 

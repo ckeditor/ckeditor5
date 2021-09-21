@@ -84,7 +84,7 @@ export default class View {
 		 * @type {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter( this.document, {
-			renderMode: 'editing'
+			renderingMode: 'editing'
 		} );
 
 		/**

@@ -3953,7 +3953,7 @@ describe( 'Renderer', () => {
 				viewDocument = new ViewDocument( new StylesProcessor() );
 				selection = new DocumentSelection();
 				// Enable editing render mode.
-				domConverter = new DomConverter( viewDocument, { renderMode: 'editing' } );
+				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
 				renderer = new Renderer( domConverter, selection );
 				renderer.domDocuments.add( document );
 			} );

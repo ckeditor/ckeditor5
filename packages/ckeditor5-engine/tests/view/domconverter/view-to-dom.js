@@ -215,7 +215,7 @@ describe( 'DomConverter', () => {
 			expect( converter.mapDomToView( domComment ) ).to.equal( viewComment );
 		} );
 
-		describe( 'options.renderMode = editing', () => {
+		describe( 'options.renderingMode = editing', () => {
 			it( 'should filter DOM event handlers', () => {
 				const viewImg = new ViewElement( viewDocument, 'img' );
 				const viewText = new ViewText( viewDocument, 'foo' );
@@ -227,7 +227,7 @@ describe( 'DomConverter', () => {
 				const domImg = document.createElement( 'img' );
 
 				converter = new DomConverter( viewDocument, {
-					renderMode: 'editing'
+					renderingMode: 'editing'
 				} );
 
 				converter.bindElements( domImg, viewImg );
@@ -255,7 +255,7 @@ describe( 'DomConverter', () => {
 				viewP._appendChild( viewText );
 
 				converter = new DomConverter( viewDocument, {
-					renderMode: 'editing'
+					renderingMode: 'editing'
 				} );
 
 				const domP = converter.viewToDom( viewP, document );
