@@ -94,7 +94,6 @@ function AddRenderCount( editor ) {
 
 		if ( view ) {
 			const insertCount = nextInsert();
-			console.log( data, insertCount );
 
 			conversionApi.writer.setAttribute( 'data-insert-count', `${ insertCount }`, view );
 			conversionApi.writer.setAttribute( 'title', `Insertion counter: ${ insertCount }`, view );
