@@ -4027,7 +4027,7 @@ describe( 'Renderer', () => {
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
 			} );
 
-			it( 'should keep attributes not present in the DOM if the view node is a script element', () => {
+			it( 'should remove attributes not present in the DOM if the view node is just a script element', () => {
 				setViewData( view,
 					'<container:script data-attribute-to-remove-from-dom="foo">' +
 						'bar' +
@@ -4044,11 +4044,11 @@ describe( 'Renderer', () => {
 
 				expect( getViewData( view ) ).to.equal( '<script>bar</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
-					'<span data-attribute-to-remove-from-dom="foo" data-ck-hidden="script">bar</span>'
+					'<span data-ck-hidden="script">bar</span>'
 				);
 			} );
 
-			it( 'should keep attributes not present in the DOM if the view node has data-ck-hidden attribute', () => {
+			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-hidden attribute', () => {
 				setViewData( view,
 					'<container:p data-ck-hidden="foo">' +
 						'bar' +
@@ -4064,7 +4064,7 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-hidden="foo">bar</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
 			} );
 		} );
 	} );
