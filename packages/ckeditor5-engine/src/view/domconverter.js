@@ -299,7 +299,7 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					const value = viewNode.getAttribute( key ) || '';
+					const value = viewNode.getAttribute( key );
 
 					if ( !this.shouldRenderAttribute( key, value ) ) {
 						continue;
