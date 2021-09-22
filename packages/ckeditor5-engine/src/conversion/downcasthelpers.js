@@ -977,9 +977,7 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( data.item, evt.name );
 
 		const viewWriter = conversionApi.writer;
 		const viewSelection = viewWriter.document.selection;
@@ -1026,12 +1024,13 @@ export function wrap( elementCreator ) {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
- * @param {Function} [consumer] Function defining element consumption process. By default this function just consume passed item insertion.
+ * @param {module:engine/conversion/downcasthelpers~ConsumerFunction} [consumer] Function defining element consumption process.
+ * By default this function just consume passed item insertion.
  * @returns {Function} Insert element event converter.
  */
-export function insertElement( elementCreator, consumer = ( node, consumable ) => consumable.consume( node, 'insert' ) ) {
+export function insertElement( elementCreator, consumer = defaultConsumer ) {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+		if ( !consumer( data.item, conversionApi.consumable, { preflight: true } ) ) {
 			return;
 		}
 
@@ -1042,9 +1041,7 @@ export function insertElement( elementCreator, consumer = ( node, consumable ) =
 		}
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
-		if ( !consumer( data.item, conversionApi.consumable ) ) {
-			return;
-		}
+		consumer( data.item, conversionApi.consumable );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -1092,9 +1089,7 @@ export function insertStructure( elementCreator, consumer ) {
 		validateSlotsChildren( data.item, slotsMap, conversionApi );
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
-		if ( !consumer( data.item, conversionApi.consumable ) ) {
-			return;
-		}
+		consumer( data.item, conversionApi.consumable );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -1377,9 +1372,7 @@ function changeAttribute( attributeCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( data.item, evt.name );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -2240,6 +2233,20 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 	}
 }
 
+// The default consumer for insert events.
+// @param {module:engine/model/item~Item} item Model item.
+// @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The model consumable.
+// @param {Object} [options]
+// @param {Boolean} [options.preflight=false] Whether should consume or just check if can be consumed.
+// @returns {Boolean}
+function defaultConsumer( item, consumable, { preflight } = {} ) {
+	if ( preflight ) {
+		return consumable.test( item, 'insert' );
+	} else {
+		return consumable.consume( item, 'insert' );
+	}
+}
+
 /**
  * An object describing how the marker highlight should be represented in the view.
  *
@@ -2349,6 +2356,8 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
  * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The `ModelConsumable` same as in
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.
+ * @param {Object} [options]
+ * @param {Boolean} [options.preflight=false] Whether should consume or just check if can be consumed.
  * @returns {Boolean} `true` if all consumable values were available and were consumed, `false` otherwise.
  *
  * @see module:engine/conversion/downcasthelpers~insertStructure

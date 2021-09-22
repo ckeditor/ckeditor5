@@ -552,7 +552,7 @@ export default class DowncastDispatcher {
 	 *
 	 * @private
 	 */
-	_fireAddAttributes( item, conversionApi ) {
+	_testAndFireAddAttributes( item, conversionApi ) {
 		const data = {
 			item,
 			range: Range._createOn( item )
@@ -585,7 +585,7 @@ export default class DowncastDispatcher {
 			// TODO docs for those methods in DowncastConversionApi
 			convertItem: modelItem => this._convertInsert( Range._createOn( modelItem ), conversionApi ),
 			convertChildren: modelItem => this._convertInsert( Range._createIn( modelItem ), conversionApi, { doNotAddConsumables: true } ),
-			convertAttributes: modelItem => this._fireAddAttributes( modelItem, conversionApi )
+			convertAttributes: modelItem => this._testAndFireAddAttributes( modelItem, conversionApi )
 		};
 
 		this._firedEventsMap.set( conversionApi, new WeakMap() );
