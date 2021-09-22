@@ -61,19 +61,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 *		editor.conversion.for( 'downcast' ).elementToElement( {
-	 *			model: 'heading',
-	 *			view: ( modelElement, conversionApi ) => {
-	 *				const { writer } = conversionApi;
+	 * The element-to-element conversion supports the reconversion mechanism. It can be enabled by using either `attributes` or `children`
+	 * props on a model description. Couple examples below.
 	 *
-	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
-	 *			}
-	 *		} );
-	 *
-	 * In order to reconvert parent element if any of its direct children have been added or removed use `children` property on a `model`
+	 * In order to reconvert element if any of its direct children have been added or removed use `children` property on a `model`
 	 * description. For example, model:
 	 *
-	 *		<items><paragraph>Some text.</paragraph></item>
+	 *		<box><paragraph>Some text.</paragraph></box>
 	 *
 	 * will be converted into this sturcture in the view:
 	 *
@@ -83,20 +77,23 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * But if more items inserted in the model:
 	 *
-	 *		<items><paragraph>Some text.</paragraph><paragraph>Other item.</paragraph></item>
+	 *		<box>
+	 *			<paragraph>Some text.</paragraph>
+	 *			<paragraph>Other item.</paragraph>
+	 *		</box>
 	 *
-	 * it will be converted into this sturcture in the view (note the parent element `data-type` change):
+	 * it will be converted into this sturcture in the view (note the element `data-type` change):
 	 *
 	 *		<div class="items" data-type="multiple">
 	 *			<p>Some text.</p>
 	 *			<p>Other item.</p>
 	 *		</div>
 	 *
-	 * Such a converter would look like this:
+	 * Such a converter would look like this (note that `paragraph` elements are converted separately):
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: {
-	 *	 			name: 'items',
+	 *	 			name: 'box',
 	 *	 			children: true
 	 *			},
 	 *			view: ( modelElement, conversionApi ) => {
@@ -110,35 +107,31 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 * In order to reconvert parent element if any of its attributes have been updated use `attributes` property on a `model`
+	 * In order to reconvert element if any of its attributes have been updated use `attributes` property on a `model`
 	 * description. For example, model:
 	 *
-	 *		<items type="basic"><paragraph>Some text.</paragraph></item>
+	 *		<heading level="2">Some text.</heading>
 	 *
 	 * will be converted into this sturcture in the view:
 	 *
-	 *		<div class="items" data-type="basic">
-	 *			<p>Some text.</p>
-	 *		</div>
+	 *		<h2>Some text.</h2>
 	 *
-	 * But if `items` element type attribute has been updated to `advanced` for example, then
-	 * it will be converted into this sturcture in the view (note the parent element `data-type` change):
+	 * But if `heading` element `level`` attribute has been updated to `3` for example, then
+	 * it will be converted into this sturcture in the view:
 	 *
-	 *		<div class="items" data-type="advanced">
-	 *			<p>Some text.</p>
-	 *		</div>
+	 *		<h3>Some text.</h3>
 	 *
 	 * Such a converter would look like this:
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: {
-	 *	 			name: 'items',
-	 *	 			attributes: [ 'type' ]
+	 *	 			name: 'heading',
+	 *	 			attributes: [ 'level' ]
 	 *			},
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer } = conversionApi;
 	 *
-	 *				return writer.createContainerElement( 'div', { class: 'items', 'data-type': modelElement.getAttribute( 'type' ) } );
+	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 	 *			}
 	 *		} );
 	 *
@@ -151,7 +144,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.model The description or a name of the model element to convert.
-	 * @param {Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
+	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
 	 * the view element. Note that the view will be reconverted if any of the listed attributes will change.
  	 * @param {Boolean} [config.model.children] Specifies whether the view element requires reconversion if the list
 	 * of model child nodes changed.
@@ -293,7 +286,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {Object} config Conversion configuration.
  	 * @param {String|Object} config.model The description or a name of the model element to convert.
 	 * @param {String} [config.model.name] The name of the model element to convert.
- 	 * @param {Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
+ 	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
 	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
  	 * @param {Boolean} [config.model.children] Specifies whether the view structure requires reconversion if the list
 	 * of model child nodes changed.
