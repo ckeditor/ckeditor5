@@ -34,6 +34,14 @@ describe( 'DomConverter', () => {
 			converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
 		} );
+
+		it( 'should create converter with proper default block mode filler - depending on the rendering mode', () => {
+			converter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
+
+			converter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+			expect( converter.blockFillerMode ).to.equal( 'br' );
+		} );
 	} );
 
 	describe( 'focus()', () => {
