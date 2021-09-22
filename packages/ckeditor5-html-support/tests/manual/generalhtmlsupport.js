@@ -39,8 +39,18 @@ class ExtendHTMLSupport extends Plugin {
 			}
 		} );
 
+		// Extend schema with custom `video-js` element.
+		dataSchema.registerBlockElement( {
+			view: 'video-js',
+			model: 'htmlVideo-js',
+			modelSchema: {
+				inheritAllFrom: '$htmlSection'
+			}
+		} );
+
 		// Custom elements need to be filtered using direct API instead of config.
 		dataFilter.allowElement( 'xyz' );
+		dataFilter.allowElement( 'video-js' );
 	}
 }
 
