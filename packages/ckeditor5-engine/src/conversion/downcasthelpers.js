@@ -177,7 +177,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		<wrappedParagraph>Some text.</wrappedParagraph>
 	 *
-	 * into this sturcture in the view:
+	 * into this structure in the view:
 	 *
 	 *		<div class="wrapper">
 	 *			<p>Some text.</p>
