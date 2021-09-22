@@ -126,8 +126,10 @@ export default class DowncastDispatcher {
 		this._conversionApi = { dispatcher: this, ...conversionApi };
 
 		/**
-		 * TODO
+		 * A map of already fired events for a given `ModelConsumable`.
+		 *
 		 * @private
+		 * @member {WeakMap.<module:engine/conversion/modelconsumable~ModelConsumable,Map>}
 		 */
 		this._firedEventsMap = new WeakMap();
 	}
@@ -278,7 +280,9 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range The inserted range.
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
-	 * @param {Object} [options] TODO
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.doNotAddConsumables=false] Whether the ModelConsumable should not get populated
+	 * for items in the provided range.
 	 */
 	_convertInsert( range, conversionApi, options = {} ) {
 		if ( !options.doNotAddConsumables ) {
@@ -518,7 +522,7 @@ export default class DowncastDispatcher {
 	}
 
 	/**
-	 * TODO Tests passed `consumable` to check whether given event can be fired and if so, fires it.
+	 * Tests whether given event wasn't already fired and if so, fires it.
 	 *
 	 * @private
 	 * @fires insert
@@ -528,29 +532,29 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_testAndFire( type, data, conversionApi ) {
-		const conversionFiredEvents = this._firedEventsMap.get( conversionApi );
-		// TODO should not use private method of ModelConsumable
-		const key = data.item.is( '$textProxy' ) ? conversionApi.consumable._getSymbolForTextProxy( data.item ) : data.item;
-		const itemFiredEvents = conversionFiredEvents.get( key );
 		const eventName = getEventName( type, data );
+		const itemKey = data.item.is( '$textProxy' ) ? conversionApi.consumable._getSymbolForTextProxy( data.item ) : data.item;
+
+		const conversionFiredEvents = this._firedEventsMap.get( conversionApi );
+		const itemFiredEvents = conversionFiredEvents.get( itemKey );
 
 		if ( !itemFiredEvents ) {
-			conversionFiredEvents.set( data.item, new Set( [ eventName ] ) );
+			conversionFiredEvents.set( itemKey, new Set( [ eventName ] ) );
+		} else if ( !itemFiredEvents.has( eventName ) ) {
+			itemFiredEvents.add( eventName );
 		} else {
-			if ( !itemFiredEvents.has( eventName ) ) {
-				itemFiredEvents.add( eventName );
-			} else {
-				return;
-			}
+			return;
 		}
 
 		this.fire( eventName, data, conversionApi );
 	}
 
 	/**
-	 * TODO
+	 * Fires not already fired events for setting attributes on just inserted item.
 	 *
 	 * @private
+	 * @param {module:engine/model/item~Item} item The model item to convert attributes for.
+	 * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 	 */
 	_testAndFireAddAttributes( item, conversionApi ) {
 		const data = {
@@ -582,13 +586,12 @@ export default class DowncastDispatcher {
 			consumable: new Consumable(),
 			writer,
 			options,
-			// TODO docs for those methods in DowncastConversionApi
-			convertItem: modelItem => this._convertInsert( Range._createOn( modelItem ), conversionApi ),
-			convertChildren: modelItem => this._convertInsert( Range._createIn( modelItem ), conversionApi, { doNotAddConsumables: true } ),
-			convertAttributes: modelItem => this._testAndFireAddAttributes( modelItem, conversionApi )
+			convertItem: item => this._convertInsert( Range._createOn( item ), conversionApi ),
+			convertChildren: element => this._convertInsert( Range._createIn( element ), conversionApi, { doNotAddConsumables: true } ),
+			convertAttributes: item => this._testAndFireAddAttributes( item, conversionApi )
 		};
 
-		this._firedEventsMap.set( conversionApi, new WeakMap() );
+		this._firedEventsMap.set( conversionApi, new Map() );
 
 		return conversionApi;
 	}
@@ -811,11 +814,25 @@ function walkerValueToEventData( value ) {
  */
 
 /**
- * Triggers conversion of a specified range.
+ * Triggers conversion of a specified item.
  * This conversion is triggered within (as a separate process of) the parent conversion.
  *
- * @method #convertInsert
- * @param {module:engine/model/range~Range} range The range to trigger nested insert conversion on.
+ * @method #convertItem
+ * @param {module:engine/model/item~Item} item The model item to trigger nested insert conversion on.
+ */
+
+/**
+ * Triggers conversion of children of a specified element.
+ *
+ * @method #convertChildren
+ * @param {module:engine/model/element~Element} element The model element to trigger children insert conversion on.
+ */
+
+/**
+ * Triggers conversion of attributes of a specified item.
+ *
+ * @method #convertChildren
+ * @param {module:engine/model/item~Item} item The model item to trigger attribute conversion on.
  */
 
 /**

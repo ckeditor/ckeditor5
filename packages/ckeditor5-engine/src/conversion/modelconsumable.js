@@ -252,7 +252,7 @@ export default class ModelConsumable {
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/model/textproxy~TextProxy} textProxy `TextProxy` instance to get a symbol for.
 	 * @returns {Symbol} Symbol representing all equal instances of `TextProxy`.
 	 */

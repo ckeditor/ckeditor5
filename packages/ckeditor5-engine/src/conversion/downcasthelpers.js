@@ -2042,8 +2042,6 @@ function createChangeReducer( model ) {
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			// TODO Node might not be here if it's change of an attribute in the middle of some text.
-			//  undoediting-integration.js line 323 fails without this check
 			if ( !node || !shouldReplace( node, change ) ) {
 				reducedChanges.push( change );
 

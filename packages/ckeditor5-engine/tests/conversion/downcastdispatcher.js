@@ -532,6 +532,73 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
+		it( 'should fire events only for shallow range', () => {
+			// Set new dispatcher without convert attributes and children handler.
+			dispatcher = new DowncastDispatcher( { mapper, apiObj } );
+
+			root._appendChild( [
+				new ModelText( 'foo', { bold: true } ),
+				new ModelElement( 'imageBlock', null, new ModelElement( 'caption' ) ),
+				new ModelText( 'bar' ),
+				new ModelElement( 'paragraph', { class: 'nice' }, new ModelText( 'xx', { italic: true } ) )
+			] );
+
+			const range = model.createRangeIn( root );
+			const loggedEvents = [];
+			let consumable;
+
+			// We will check everything connected with insert event:
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
+				// Check if the item is correct.
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				// Check if the range is correct.
+				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				// Check if the event name is correct.
+				expect( evt.name ).to.equal( 'insert:' + ( data.item.name || '$text' ) );
+				// Check if model consumable is correct.
+				expect( conversionApi.consumable.consume( data.item, 'insert' ) ).to.be.true;
+				expect( data ).to.not.have.property( 'reconversion' );
+
+				consumable = conversionApi.consumable;
+			} );
+
+			// Same here.
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const key = data.attributeKey;
+				const value = data.attributeNewValue;
+				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+
+				expect( evt.name ).to.equal( 'attribute:' + key + ':' + ( data.item.name || '$text' ) );
+				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
+			} );
+
+			view.change( writer => {
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
+			} );
+
+			// Check the data passed to called events and the order of them.
+			expect( loggedEvents ).to.deep.equal( [
+				'insert:$text:foo:0:3',
+				'insert:imageBlock:3:4',
+				'insert:$text:bar:4:7',
+				'insert:paragraph:7:8'
+			] );
+
+			// Consumable should be populated with all the events (even those nested).
+			expect( consumable.test( root.getChild( 1 ).getChild( 0 ), 'insert' ) ).to.be.true;
+			expect( consumable.test( root.getChild( 3 ), 'attribute:class:paragraph' ) ).to.be.true;
+			expect( consumable.test( root.getChild( 1 ), 'insert' ) ).to.be.false;
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
 		it( 'should not fire same events multiple times', () => {
 			root._appendChild( [
 				new ModelElement( 'imageBlock', { src: 'foo.jpg', title: 'bar', bold: true }, [
@@ -558,6 +625,11 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				conversionApi.convertAttributes( data.item );
+				conversionApi.convertChildren( data.item );
+			} );
+
+			dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
 				conversionApi.convertAttributes( data.item );
 				conversionApi.convertChildren( data.item );
 			} );
