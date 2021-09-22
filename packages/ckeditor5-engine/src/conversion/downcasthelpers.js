@@ -1008,9 +1008,10 @@ export function wrap( elementCreator ) {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
+ * @param {Function} consumer Function defining element consumption proccess. By default this function just consume passed item insertion.
  * @returns {Function} Insert element event converter.
  */
-export function insertElement( elementCreator, consumer ) {
+export function insertElement( elementCreator, consumer = ( node, consumable ) => consumable.consume( node, 'insert' ) ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = elementCreator( data.item, conversionApi );
 
@@ -1616,6 +1617,9 @@ function removeHighlight( highlightDescriptor ) {
 //
 // @param {Object} config Conversion configuration.
 // @param {String} config.model
+// @param {String|Object} config.model The description or a name of the model element to convert.
+// @param {String|Array.<String>} [config.model.attributes] List of attributes triggering element reconversion.
+// @param {Boolean} [config.model.children] Should reconvert element if the list of model child nodes changed.
 // @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
