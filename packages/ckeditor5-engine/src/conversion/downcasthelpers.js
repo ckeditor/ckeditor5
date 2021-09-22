@@ -747,7 +747,9 @@ export function insertText() {
 }
 
 /**
- * TODO
+ * Function factory that creates a default downcast converter for triggering attributes and children conversion.
+ *
+ * @returns {Function} The converter.
  */
 export function insertAttributesAndChildren() {
 	return ( evt, data, conversionApi ) => {
