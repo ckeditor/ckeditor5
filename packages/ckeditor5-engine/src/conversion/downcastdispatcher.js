@@ -135,7 +135,7 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @fires addMarker
  	 * @fires removeMarker
-	 * @fires reducedChanges
+	 * @fires reduceChanges
 	 * @param {module:engine/model/differ~Differ} differ The differ object with buffered changes.
 	 * @param {module:engine/model/markercollection~MarkerCollection} markers Markers related to the model fragment to convert.
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
