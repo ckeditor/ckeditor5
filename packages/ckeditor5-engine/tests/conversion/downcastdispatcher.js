@@ -356,31 +356,48 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should not fire events for already consumed parts of model', () => {
+		it( 'should not fire same events multiple times', () => {
 			root._appendChild( [
 				new ModelElement( 'imageBlock', { src: 'foo.jpg', title: 'bar', bold: true }, [
 					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
 				] )
 			] );
 
-			sinon.spy( dispatcher, 'fire' );
+			const loggedEvents = [];
+
+			dispatcher.on( 'insert', ( evt, data ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+			} );
+
+			dispatcher.on( 'attribute', ( evt, data ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const key = data.attributeKey;
+				const value = data.attributeNewValue;
+				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+			} );
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item.getChild( 0 ), 'insert' );
-				conversionApi.consumable.consume( data.item, 'attribute:bold' );
+				conversionApi.convertAttributes( data.item );
+				conversionApi.convertChildren( data.item );
 			} );
 
 			const range = model.createRangeIn( root );
 
 			dispatcher.convert( range, [] );
 
-			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'attribute:title:imageBlock' ) ).to.be.true;
-
-			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
-			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
-			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.false;
+			expect( loggedEvents ).to.deep.equal( [
+				'insert:imageBlock:0:1',
+				'attribute:src:foo.jpg:imageBlock:0:1',
+				'attribute:title:bar:imageBlock:0:1',
+				'attribute:bold:true:imageBlock:0:1',
+				'insert:caption:0,0:0,1',
+				'insert:$text:title:0,0,0:0,0,5'
+			] );
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
@@ -515,18 +532,34 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 
-		it( 'should not fire events for already consumed parts of model', () => {
+		it( 'should not fire same events multiple times', () => {
 			root._appendChild( [
 				new ModelElement( 'imageBlock', { src: 'foo.jpg', title: 'bar', bold: true }, [
 					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
 				] )
 			] );
 
-			sinon.spy( dispatcher, 'fire' );
+			const loggedEvents = [];
+
+			dispatcher.on( 'insert', ( evt, data ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+			} );
+
+			dispatcher.on( 'attribute', ( evt, data ) => {
+				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+				const key = data.attributeKey;
+				const value = data.attributeNewValue;
+				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+				loggedEvents.push( log );
+			} );
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item.getChild( 0 ), 'insert' );
-				conversionApi.consumable.consume( data.item, 'attribute:bold' );
+				conversionApi.convertAttributes( data.item );
+				conversionApi.convertChildren( data.item );
 			} );
 
 			const range = model.createRangeIn( root );
@@ -535,13 +568,14 @@ describe( 'DowncastDispatcher', () => {
 				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
 			} );
 
-			expect( dispatcher.fire.calledWith( 'insert:imageBlock' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'attribute:src:imageBlock' ) ).to.be.true;
-			expect( dispatcher.fire.calledWith( 'attribute:title:imageBlock' ) ).to.be.true;
-
-			expect( dispatcher.fire.calledWith( 'attribute:bold:imageBlock' ) ).to.be.false;
-			expect( dispatcher.fire.calledWith( 'insert:caption' ) ).to.be.false;
-			expect( dispatcher.fire.calledWith( 'insert:$text' ) ).to.be.false;
+			expect( loggedEvents ).to.deep.equal( [
+				'insert:imageBlock:0:1',
+				'attribute:src:foo.jpg:imageBlock:0:1',
+				'attribute:title:bar:imageBlock:0:1',
+				'attribute:bold:true:imageBlock:0:1',
+				'insert:caption:0,0:0,1',
+				'insert:$text:title:0,0,0:0,0,5'
+			] );
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;

@@ -753,7 +753,9 @@ export function insertAttributesAndChildren() {
 	return ( evt, data, conversionApi ) => {
 		conversionApi.convertAttributes( data.item );
 
-		if ( data.item.is( 'element' ) && !data.item.isEmpty ) {
+		// Start converting children of the current item.
+		// In case of reconversion children were already re-inserted or converted separately.
+		if ( !data.reconversion && data.item.is( 'element' ) && !data.item.isEmpty ) {
 			conversionApi.convertChildren( data.item );
 		}
 	};
