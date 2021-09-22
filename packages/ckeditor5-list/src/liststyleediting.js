@@ -234,6 +234,10 @@ function upcastListItemStyle() {
 function downcastListStyleAttribute() {
 	return dispatcher => {
 		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
+			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				return;
+			}
+
 			const viewWriter = conversionApi.writer;
 			const currentElement = data.item;
 
