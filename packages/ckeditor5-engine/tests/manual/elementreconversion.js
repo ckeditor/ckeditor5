@@ -64,11 +64,6 @@ function Items( editor ) {
 		}
 	} );
 
-	editor.conversion.for( 'downcast' ).elementToElement( {
-		model: 'item',
-		view: { name: 'div', classes: 'item' }
-	} );
-
 	editor.conversion.for( 'upcast' ).elementToElement( {
 		view: { name: 'div', classes: 'items' },
 		model: ( viewElement, { writer } ) => {
@@ -78,7 +73,7 @@ function Items( editor ) {
 		}
 	} );
 
-	editor.conversion.for( 'upcast' ).elementToElement( {
+	editor.conversion.elementToElement( {
 		view: { name: 'div', classes: 'item' },
 		model: 'item'
 	} );

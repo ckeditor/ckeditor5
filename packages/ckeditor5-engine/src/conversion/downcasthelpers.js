@@ -67,11 +67,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * In order to reconvert element if any of its direct children have been added or removed use `children` property on a `model`
 	 * description. For example, model:
 	 *
-	 *		<box><paragraph>Some text.</paragraph></box>
+	 *		<box>
+	 *			<paragraph>Some text.</paragraph>
+	 *		</box>
 	 *
-	 * will be converted into this sturcture in the view:
+	 * will be converted into this structure in the view:
 	 *
-	 *		<div class="items" data-type="single">
+	 *		<div class="box" data-type="single">
 	 *			<p>Some text.</p>
 	 *		</div>
 	 *
@@ -82,9 +84,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			<paragraph>Other item.</paragraph>
 	 *		</box>
 	 *
-	 * it will be converted into this sturcture in the view (note the element `data-type` change):
+	 * it will be converted into this structure in the view (note the element `data-type` change):
 	 *
-	 *		<div class="items" data-type="multiple">
+	 *		<div class="box" data-type="multiple">
 	 *			<p>Some text.</p>
 	 *			<p>Other item.</p>
 	 *		</div>
@@ -99,11 +101,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer } = conversionApi;
 	 *
-	 *				if ( modelElement.childCount === 1 ) {}
-	 *					return writer.createContainerElement( 'div', { class: 'items', 'data-type': 'single' } );
-	 *				}
-	 *
-	 *				return writer.createContainerElement( 'div', { class: 'items', 'data-type': 'multiple' } );
+	 *				return writer.createContainerElement( 'div', {
+	 *					class: 'box',
+	 *					'data-type': modelElement.childCount == 1 ? 'single' : 'multiple'
+	 *				} );
 	 *			}
 	 *		} );
 	 *
@@ -112,12 +113,12 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		<heading level="2">Some text.</heading>
 	 *
-	 * will be converted into this sturcture in the view:
+	 * will be converted into this structure in the view:
 	 *
 	 *		<h2>Some text.</h2>
 	 *
-	 * But if `heading` element `level`` attribute has been updated to `3` for example, then
-	 * it will be converted into this sturcture in the view:
+	 * But if `heading` element `level` attribute has been updated to `3` for example, then
+	 * it will be converted into this structure in the view:
 	 *
 	 *		<h3>Some text.</h3>
 	 *
@@ -126,7 +127,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: {
 	 *	 			name: 'heading',
-	 *	 			attributes: [ 'level' ]
+	 *	 			attributes: 'level'
 	 *			},
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer } = conversionApi;
@@ -1008,7 +1009,7 @@ export function wrap( elementCreator ) {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
- * @param {Function} consumer Function defining element consumption proccess. By default this function just consume passed item insertion.
+ * @param {Function} [consumer] Function defining element consumption process. By default this function just consume passed item insertion.
  * @returns {Function} Insert element event converter.
  */
 export function insertElement( elementCreator, consumer = ( node, consumable ) => consumable.consume( node, 'insert' ) ) {
@@ -1616,7 +1617,6 @@ function removeHighlight( highlightDescriptor ) {
 // See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples and config params description.
 //
 // @param {Object} config Conversion configuration.
-// @param {String} config.model
 // @param {String|Object} config.model The description or a name of the model element to convert.
 // @param {String|Array.<String>} [config.model.attributes] List of attributes triggering element reconversion.
 // @param {Boolean} [config.model.children] Should reconvert element if the list of model child nodes changed.

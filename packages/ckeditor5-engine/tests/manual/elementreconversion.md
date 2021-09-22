@@ -1,4 +1,4 @@
-# Parent element reconversion
+# Element to element reconversion
 
 The editor should be loaded with `items` element that contains one `item` element in which user can edit content.
 
@@ -6,9 +6,9 @@ Adding new items (by pressing Enter key) or removing (by pressing backspace) sho
 
 ### In threshold mode
 
-Update parent `items` view element's `data-amount` attribute and change the list background color accordingly.
+Update `items` view element's `data-amount` attribute and change the list background color accordingly.
 
-List of threesholds:
+List of thresholds:
 
 ```
 | Items    | Amount     | Color           |
@@ -23,13 +23,13 @@ List of threesholds:
 
 ### In HSL mode
 
-Update parent `items` view element's inline style background color to hsl value with hue shifted by 5 every time an `item` is addded or removed.
+Update `items` view element's inline style background color to hsl value with hue shifted by 5 every time an `item` is added or removed.
 
 ### In none mode
 
 Remove background color and update nothing.
 
-## Reconversion couter
+## Reconversion counter
 
 In every mode you should be able to inspect number of times each item has been inserted.
 
