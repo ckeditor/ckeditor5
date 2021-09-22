@@ -36,6 +36,6 @@ msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
 msgstr "Show more items"
 
-msgctxt "Label for a ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or Search result '5 of 20'."
+msgctxt "Label for an ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or 'Search result 5 of 20'."
 msgid "%0 of %1"
 msgstr "%0 of %1"
