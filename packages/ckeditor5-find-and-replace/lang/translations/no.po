@@ -12,58 +12,58 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
-"Language: de\n"
+"Language-Team: Norwegian (https://www.transifex.com/ckeditor/teams/11143/no/)\n"
+"Language: no\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
 msgid "Find and replace"
-msgstr "Suchen und ersetzen"
+msgstr "Søk og erstatt"
 
 msgctxt "The label for the searched text in the find and replace dropdown."
 msgid "Find in text…"
-msgstr "In Text suchen…"
+msgstr "Søk i tekst"
 
 msgctxt "The label for the find action button in the find and replace dropdown."
 msgid "Find"
-msgstr "Suchen"
+msgstr "Søk"
 
 msgctxt "The label for the previous result button in the find and replace dropdown."
 msgid "Previous result"
-msgstr "Vorheriges Ergebnis"
+msgstr "Forrige resultat"
 
 msgctxt "The label for the previous result button in the find and replace dropdown."
 msgid "Next result"
-msgstr "Nächstes Ergebnis"
+msgstr "Neste resultat"
 
 msgctxt "The label for the (single) replace action button in the find and replace dropdown."
 msgid "Replace"
-msgstr "Ersetzen"
+msgstr "Erstatt"
 
 msgctxt "The label for the replace all action button in the find and replace dropdown."
 msgid "Replace all"
-msgstr "Alle ersetzen"
+msgstr "Erstatt alt"
 
 msgctxt "The label for the match case checkbox in the find and replace dropdown."
 msgid "Match case"
-msgstr "Groß-/Kleinschreibung beachten"
+msgstr ""
 
 msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
 msgid "Whole words only"
-msgstr "Nur ganze Wörter"
+msgstr ""
 
 msgctxt "The label for the text replacement in the find and replace dropdown."
 msgid "Replace with…"
-msgstr "Ersetzen durch…"
+msgstr ""
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
-msgstr "Der Suchtext darf nicht leer sein."
+msgstr ""
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr "Tipp: Zuerst nach Text suchen um diesen zu ersetzen."
+msgstr ""
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"
-msgstr "Optionen anzeigen"
+msgstr ""
