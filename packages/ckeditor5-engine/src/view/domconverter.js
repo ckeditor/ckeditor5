@@ -55,7 +55,7 @@ export default class DomConverter {
 	 * Default value depends on the options.renderingMode:
 	 *  'nbsp' when options.renderingMode == 'data',
 	 *  'br' when options.renderingMode == 'editing'.
-	 * @param {'data'|'editing'} [options.renderingMode='data'] Whether to leave the View-to-DOM conversion result unchanged
+	 * @param {'data'|'editing'} [options.renderingMode='editing'] Whether to leave the View-to-DOM conversion result unchanged
 	 * or improve editing experience by filtering out interactive data.
 	 */
 	constructor( document, options = {} ) {
