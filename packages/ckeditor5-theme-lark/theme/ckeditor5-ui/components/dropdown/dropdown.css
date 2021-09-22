@@ -62,6 +62,9 @@
 			width: 7em;
 			overflow: hidden;
 			text-overflow: ellipsis;
+
+			/* Fix broken paragraph dropdown */
+			line-height: initial;
 		}
 
 		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */

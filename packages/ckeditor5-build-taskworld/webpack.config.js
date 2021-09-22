@@ -17,16 +17,13 @@ module.exports = {
 	devtool: 'source-map',
 	performance: { hints: false },
 
-	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
+	// Expose Editor class and its React wrapper component
+	entry: path.resolve( __dirname, 'src', 'index.js' ),
 
 	output: {
-		// The name under which the editor will be exported.
-		library: 'ClassicEditor',
-
 		path: path.resolve( __dirname, 'build' ),
-		filename: 'ckeditor.js',
-		libraryTarget: 'umd',
-		libraryExport: 'default'
+		filename: 'index.js',
+		libraryTarget: 'commonjs2'
 	},
 
 	optimization: {
@@ -44,12 +41,16 @@ module.exports = {
 		]
 	},
 
+	// Exclude React from the output bundle
+	externals: /^react(-|$)/,
+
 	plugins: [
 		new CKEditorWebpackPlugin( {
 			// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 			// When changing the built-in language, remember to also change it in the editor's configuration (src/ckeditor.js).
 			language: 'en',
-			additionalLanguages: 'all'
+			// Define Taskworld supported languages only
+			additionalLanguages: [ 'en', 'fr', 'de', 'es', 'pt', 'it', 'th', 'id', 'zh-cn', 'ko', 'ja' ]
 		} ),
 		new webpack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
@@ -59,6 +60,18 @@ module.exports = {
 
 	module: {
 		rules: [
+			// Fix runtime errors caused by transpilation flaws
+			{
+				test: /(ckeditor5(?:-[^/\\]+)?)[/\\].+\.js$/,
+				use: [
+					{
+						loader: 'babel-loader',
+						options: {
+							presets: [ require( '@babel/preset-env' ) ]
+						}
+					}
+				]
+			},
 			{
 				test: /\.svg$/,
 				use: [ 'raw-loader' ]
@@ -79,7 +92,8 @@ module.exports = {
 						loader: 'postcss-loader',
 						options: styles.getPostCssConfig( {
 							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								// Use Taskworld theme
+								themePath: require.resolve( '../ckeditor5-theme-lark/theme/theme.css' )
 							},
 							minify: true
 						} )

@@ -4,6 +4,7 @@
 		"stylelint-plugin-ckeditor5-rules/lib/license-header"
 	],
 	"rules": {
+		"declaration-property-value-disallowed-list": null,
 		"ckeditor5-rules/license-header": [
 			true,
 			{

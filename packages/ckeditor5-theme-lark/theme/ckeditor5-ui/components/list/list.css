@@ -16,20 +16,13 @@
 
 .ck.ck-list__item {
 	cursor: default;
-	min-width: 12em;
+	min-width: 15em;
 
 	& .ck-button {
 		min-height: unset;
 		width: 100%;
 		text-align: left;
 		border-radius: 0;
-
-		/* List items should have the same height. Use absolute units to make sure it is so
-		   because e.g. different heading styles may have different height
-		   https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-		padding:
-			calc(.2 * var(--ck-line-height-base) * var(--ck-font-size-base))
-			calc(.4 * var(--ck-line-height-base) * var(--ck-font-size-base));
 
 		& .ck-button__label {
 			/* https://github.com/ckeditor/ckeditor5-heading/issues/63 */

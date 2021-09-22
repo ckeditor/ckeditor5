@@ -10,8 +10,8 @@
 	--ck-color-base-action: 									hsl(104, 44%, 48%);
 	--ck-color-base-focus: 										hsl(209, 92%, 70%);
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
-	--ck-color-base-active: 									hsl(208, 88%, 52%);
-	--ck-color-base-active-focus:								hsl(208, 88%, 47%);
+	--ck-color-base-active: 									#e6e8ec;
+	--ck-color-base-active-focus:								#e6e8ec;
 	--ck-color-base-error:										hsl(15, 100%, 43%);
 
 	/* -- Generic colors ------------------------------------------------------------------------ */
@@ -29,7 +29,7 @@
 	/* -- Buttons ------------------------------------------------------------------------------- */
 
 	--ck-color-button-default-background: 						transparent;
-	--ck-color-button-default-hover-background: 				hsl(0, 0%, 90%);
+	--ck-color-button-default-hover-background: 				#e6e8ec;
 	--ck-color-button-default-active-background: 				hsl(0, 0%, 85%);
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
 	--ck-color-button-default-disabled-background: 				transparent;
