@@ -1410,6 +1410,14 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
+			it( 'should fix #4 (selection inside limit element that doesn\'t allow text)', () => {
+				setModelData( model, '<imageBlock>[]</imageBlock>' );
+
+				assertEqualMarkup( getModelData( model ),
+					'[<imageBlock></imageBlock>]'
+				);
+			} );
+
 			it( 'should fix multiple ranges outside block element (but not merge them)', () => {
 				setModelData( model,
 					'[]<paragraph>foo</paragraph>[]' +
