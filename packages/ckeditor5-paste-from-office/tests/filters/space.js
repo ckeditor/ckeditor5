@@ -138,7 +138,9 @@ describe( 'PasteFromOffice - filters', () => {
 			} );
 
 			it( 'should not normalize spaces inside special "span.spacerun" elements pasted from WPS', () => {
-				const input = '演出单位：   成都市木偶皮影剧团';
+				const input = '<p class=MsoNormal ><span style="mso-spacerun:\'yes\';font-family:等线;' +
+					'mso-bidi-font-family:\'Times New Roman\';font-size:10.5000pt;mso-font-kerning:1.0000pt;" >' +
+					'<font face="等线" >感受非遗魅力，弘扬传统文化，</font></span></p>';
 
 				const expected = input;
 
