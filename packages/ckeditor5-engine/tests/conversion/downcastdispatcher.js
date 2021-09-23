@@ -468,6 +468,58 @@ describe( 'DowncastDispatcher', () => {
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
+
+		it( 'should be possible to listen for the insert event with the lowest priority to get subtree converted', () => {
+			root._appendChild( [
+				new ModelElement( 'imageBlock', { src: 'foo.jpg' }, [
+					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
+				] )
+			] );
+
+			const range = model.createRangeIn( root );
+			const spyBefore = sinon.spy();
+			const spyAfter = sinon.spy();
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'insert:$text', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'attribute:src:imageBlock', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				spyBefore();
+
+				expect( conversionApi.consumable.test( data.item, 'insert' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.item, 'attribute:src' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.item.getChild( 0 ), 'insert' ) ).to.be.true;
+			}, { priority: 'highest' } );
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				spyAfter();
+
+				expect( conversionApi.consumable.test( data.item, 'insert' ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.item, 'attribute:src' ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.item.getChild( 0 ), 'insert' ) ).to.be.false;
+			}, { priority: 'lowest' } );
+
+			dispatcher.convert( range, [] );
+
+			expect( spyBefore.calledOnce ).to.be.true;
+			expect( spyAfter.calledOnce ).to.be.true;
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
 	} );
 
 	describe( '_convertInsert', () => {
@@ -703,6 +755,60 @@ describe( 'DowncastDispatcher', () => {
 				'insert:caption:0,0:0,1',
 				'insert:$text:title:0,0,0:0,0,5'
 			] );
+		} );
+
+		it( 'should be possible to listen for the insert event with the lowest priority to get subtree converted', () => {
+			root._appendChild( [
+				new ModelElement( 'imageBlock', { src: 'foo.jpg' }, [
+					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
+				] )
+			] );
+
+			const range = model.createRangeIn( root );
+			const spyBefore = sinon.spy();
+			const spyAfter = sinon.spy();
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'insert:$text', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'attribute:src:imageBlock', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			} );
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				spyBefore();
+
+				expect( conversionApi.consumable.test( data.item, 'insert' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.item, 'attribute:src' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.item.getChild( 0 ), 'insert' ) ).to.be.true;
+			}, { priority: 'highest' } );
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				spyAfter();
+
+				expect( conversionApi.consumable.test( data.item, 'insert' ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.item, 'attribute:src' ) ).to.be.false;
+				expect( conversionApi.consumable.test( data.item.getChild( 0 ), 'insert' ) ).to.be.false;
+			}, { priority: 'lowest' } );
+
+			view.change( writer => {
+				dispatcher._convertInsert( range, dispatcher._createConversionApi( writer ) );
+			} );
+
+			expect( spyBefore.calledOnce ).to.be.true;
+			expect( spyAfter.calledOnce ).to.be.true;
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
 	} );
 
