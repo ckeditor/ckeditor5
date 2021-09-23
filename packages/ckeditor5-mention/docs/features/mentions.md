@@ -183,7 +183,7 @@ function customItemRenderer( item ) {
 
 A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
 
-#### Length
+#### List length
 
 The number of items displayed in the autocomplete list can be customized by defining the {@link module:mention/mention~MentionConfig#dropdownLimit `dropdownLimit`} option.
 
