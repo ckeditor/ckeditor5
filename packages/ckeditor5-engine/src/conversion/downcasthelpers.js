@@ -2001,7 +2001,7 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @returns {Boolean}
+// @returns {Function}
 function createChangeReducerCallback( model ) {
 	return ( node, change ) => {
 		if ( !node.is( 'element', model.name ) ) {
