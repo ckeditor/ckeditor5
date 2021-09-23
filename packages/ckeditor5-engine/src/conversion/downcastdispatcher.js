@@ -831,7 +831,7 @@ function walkerValueToEventData( value ) {
 /**
  * Triggers conversion of attributes of a specified item.
  *
- * @method #convertChildren
+ * @method #convertAttributes
  * @param {module:engine/model/item~Item} item The model item to trigger attribute conversion on.
  */
 
