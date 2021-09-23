@@ -187,6 +187,9 @@ export default class DowncastDispatcher {
 
 		// Remove mappings for all removed view elements.
 		conversionApi.mapper.flushDeferredBindings();
+
+		// Verify if all insert consumables were consumed.
+		conversionApi.consumable.verifyAllConsumed( [ 'insert' ] );
 	}
 
 	/**
@@ -208,6 +211,9 @@ export default class DowncastDispatcher {
 		for ( const [ name, range ] of markers ) {
 			this._convertMarkerAdd( name, range, conversionApi );
 		}
+
+		// Verify if all insert consumables were consumed.
+		conversionApi.consumable.verifyAllConsumed( [ 'insert' ] );
 	}
 
 	/**

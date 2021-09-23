@@ -540,13 +540,13 @@ export default class Differ {
 		this._changeCount = 0;
 
 		// Cache changes.
-		this._cachedChangesWithGraveyard = diffSet.slice();
+		this._cachedChangesWithGraveyard = diffSet;
 		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
-			return this._cachedChangesWithGraveyard;
+			return this._cachedChangesWithGraveyard.slice();
 		} else {
-			return this._cachedChanges;
+			return this._cachedChanges.slice();
 		}
 	}
 

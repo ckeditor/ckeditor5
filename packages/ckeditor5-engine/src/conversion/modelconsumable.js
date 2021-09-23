@@ -8,6 +8,7 @@
  */
 
 import TextProxy from '../model/textproxy';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.
@@ -247,6 +248,37 @@ export default class ModelConsumable {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @param {Array.<String>} events The events group to verify.
+	 */
+	verifyAllConsumed( events ) {
+		const items = [];
+
+		for ( const [ item, consumables ] of this._consumable ) {
+			for ( const [ event, canConsume ] of consumables ) {
+				const eventPrefix = event.split( ':' )[ 0 ];
+
+				if ( canConsume && events.includes( eventPrefix ) ) {
+					items.push( {
+						event,
+						item: item.name || item.description
+					} );
+				}
+			}
+		}
+
+		if ( items.length ) {
+			/**
+			 * TODO
+			 *
+			 * @error conversion-model-consumable-not-consumed
+			 */
+			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
+		}
+	}
+
+	/**
 	 * Gets a unique symbol for passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
 	 * have same parent, same start index and same end index will get the same symbol.
 	 *
@@ -290,7 +322,7 @@ export default class ModelConsumable {
 		const end = textProxy.endOffset;
 		const parent = textProxy.parent;
 
-		const symbol = Symbol( 'textProxySymbol' );
+		const symbol = Symbol( '$textProxy:' + textProxy.data );
 		let startMap, endMap;
 
 		startMap = this._textProxyRegistry.get( start );

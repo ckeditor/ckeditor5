@@ -43,7 +43,7 @@ describe( 'PastePlainText', () => {
 					isInline: true
 				} );
 
-				editor.conversion.for( 'upcast' ).elementToElement( {
+				editor.conversion.elementToElement( {
 					model: 'softBreak',
 					view: 'br'
 				} );

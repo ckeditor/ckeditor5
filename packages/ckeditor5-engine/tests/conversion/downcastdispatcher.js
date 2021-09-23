@@ -365,20 +365,24 @@ describe( 'DowncastDispatcher', () => {
 
 			const loggedEvents = [];
 
-			dispatcher.on( 'insert', ( evt, data ) => {
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
 
 				loggedEvents.push( log );
+
+				conversionApi.consumable.consume( data.item, evt.name );
 			} );
 
-			dispatcher.on( 'attribute', ( evt, data ) => {
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const key = data.attributeKey;
 				const value = data.attributeNewValue;
 				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
 
 				loggedEvents.push( log );
+
+				conversionApi.consumable.consume( data.item, evt.name );
 			} );
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
