@@ -89,7 +89,7 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  * @param {Object.<String,*>} translations An object with translations which will be added to the dictionary.
  * For each message ID the value should be either a translation or an array of translations if the message
  * should support plural forms.
- * @param {Function} getPluralForm A function that returns the plural form index (a number).
+ * @param {Function} [getPluralForm] A function that returns the plural form index (a number).
  */
 export function add( language, translations, getPluralForm ) {
 	if ( !window.CKEDITOR_TRANSLATIONS[ language ] ) {
