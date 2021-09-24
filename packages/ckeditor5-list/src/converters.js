@@ -109,7 +109,7 @@ export function modelViewRemove( model ) {
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
 export function modelViewChangeType( evt, data, conversionApi ) {
-	if ( !conversionApi.consumable.consume( data.item, 'attribute:listType' ) ) {
+	if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 		return;
 	}
 
@@ -138,6 +138,8 @@ export function modelViewChangeType( evt, data, conversionApi ) {
  * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi Conversion interface.
  */
 export function modelViewMergeAfterChangeType( evt, data, conversionApi ) {
+	conversionApi.consumable.consume( data.item, evt.name );
+
 	const viewItem = conversionApi.mapper.toViewElement( data.item );
 	const viewList = viewItem.parent;
 	const viewWriter = conversionApi.writer;
@@ -145,11 +147,6 @@ export function modelViewMergeAfterChangeType( evt, data, conversionApi ) {
 	// Merge the changed view list with other lists, if possible.
 	mergeViewLists( viewWriter, viewList, viewList.nextSibling );
 	mergeViewLists( viewWriter, viewList.previousSibling, viewList );
-
-	// Consumable insertion of children inside the item. They are already handled by re-building the item in view.
-	for ( const child of data.item.getChildren() ) {
-		conversionApi.consumable.consume( child, 'insert' );
-	}
 }
 
 /**

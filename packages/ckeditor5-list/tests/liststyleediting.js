@@ -259,6 +259,22 @@ describe( 'ListStyleEditing', () => {
 
 				expect( listItem.hasAttribute( 'listItem' ) ).to.be.false;
 			} );
+
+			it( 'should be overridable', () => {
+				editor.conversion.for( 'dataDowncast' ).attributeToAttribute( { model: 'listStyle', view: 'data-style' } );
+
+				setModelData( model,
+					'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
+					'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<ul>' +
+						'<li data-style="default">Foo</li>' +
+						'<li data-style="default">Bar</li>' +
+					'</ul>'
+				);
+			} );
 		} );
 
 		describe( 'view to model', () => {
@@ -458,6 +474,22 @@ describe( 'ListStyleEditing', () => {
 								'</li>' +
 							'</ul>' +
 						'</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should be overridable', () => {
+				editor.conversion.for( 'editingDowncast' ).attributeToAttribute( { model: 'listStyle', view: 'data-style' } );
+
+				setModelData( model,
+					'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
+					'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
+				);
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+					'<ul>' +
+						'<li data-style="default">Foo</li>' +
+						'<li data-style="default">Bar</li>' +
 					'</ul>'
 				);
 			} );

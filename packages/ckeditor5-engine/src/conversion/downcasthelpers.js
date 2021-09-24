@@ -177,7 +177,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		<wrappedParagraph>Some text.</wrappedParagraph>
 	 *
-	 * into this sturcture in the view:
+	 * into this structure in the view:
 	 *
 	 *		<div class="wrapper">
 	 *			<p>Some text.</p>
@@ -734,7 +734,7 @@ export default class DowncastHelpers extends ConversionHelpers {
  */
 export function insertText() {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -743,6 +743,23 @@ export function insertText() {
 		const viewText = viewWriter.createText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
+	};
+}
+
+/**
+ * Function factory that creates a default downcast converter for triggering attributes and children conversion.
+ *
+ * @returns {Function} The converter.
+ */
+export function insertAttributesAndChildren() {
+	return ( evt, data, conversionApi ) => {
+		conversionApi.convertAttributes( data.item );
+
+		// Start converting children of the current item.
+		// In case of reconversion children were already re-inserted or converted separately.
+		if ( !data.reconversion && data.item.is( 'element' ) && !data.item.isEmpty ) {
+			conversionApi.convertChildren( data.item );
+		}
 	};
 }
 
@@ -949,6 +966,10 @@ export function clearAttributes() {
  */
 export function wrap( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
 		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi );
@@ -960,9 +981,7 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( data.item, evt.name );
 
 		const viewWriter = conversionApi.writer;
 		const viewSelection = viewWriter.document.selection;
@@ -1009,11 +1028,16 @@ export function wrap( elementCreator ) {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
- * @param {Function} [consumer] Function defining element consumption process. By default this function just consume passed item insertion.
+ * @param {module:engine/conversion/downcasthelpers~ConsumerFunction} [consumer] Function defining element consumption process.
+ * By default this function just consume passed item insertion.
  * @returns {Function} Insert element event converter.
  */
-export function insertElement( elementCreator, consumer = ( node, consumable ) => consumable.consume( node, 'insert' ) ) {
+export function insertElement( elementCreator, consumer = defaultConsumer ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !consumer( data.item, conversionApi.consumable, { preflight: true } ) ) {
+			return;
+		}
+
 		const viewElement = elementCreator( data.item, conversionApi );
 
 		if ( !viewElement ) {
@@ -1021,9 +1045,7 @@ export function insertElement( elementCreator, consumer = ( node, consumable ) =
 		}
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
-		if ( !consumer( data.item, conversionApi.consumable ) ) {
-			return;
-		}
+		consumer( data.item, conversionApi.consumable );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -1051,6 +1073,10 @@ export function insertElement( elementCreator, consumer = ( node, consumable ) =
 */
 export function insertStructure( elementCreator, consumer ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !consumer( data.item, conversionApi.consumable, { preflight: true } ) ) {
+			return;
+		}
+
 		const slotsMap = new Map();
 
 		// View creation.
@@ -1067,9 +1093,7 @@ export function insertStructure( elementCreator, consumer ) {
 		validateSlotsChildren( data.item, slotsMap, conversionApi );
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
-		if ( !consumer( data.item, conversionApi.consumable ) ) {
-			return;
-		}
+		consumer( data.item, conversionApi.consumable );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -1341,6 +1365,10 @@ function removeMarkerData( viewCreator ) {
 // @returns {Function} Set/change attribute converter.
 function changeAttribute( attributeCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
 		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
 
@@ -1348,9 +1376,7 @@ function changeAttribute( attributeCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( data.item, evt.name );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -1979,20 +2005,20 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 function createChangeReducerCallback( model ) {
 	return ( node, change ) => {
 		if ( !node.is( 'element', model.name ) ) {
-			return null;
+			return false;
 		}
 
 		if ( change.type == 'attribute' ) {
-			if ( !model.attributes.includes( change.attributeKey ) ) {
-				return null;
+			if ( model.attributes.includes( change.attributeKey ) ) {
+				return true;
 			}
 		} else {
-			if ( !model.children ) {
-				return null;
+			if ( model.children ) {
+				return true;
 			}
 		}
 
-		return [ node ];
+		return false;
 	};
 }
 
@@ -2002,9 +2028,10 @@ function createChangeReducerCallback( model ) {
 // @param {String} model.name The name of element.
 // @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
-// @param {Function} The callback for checking a single diff item whether it should trigger reconversion.
 // @returns {Function}
-function createChangeReducer( model, callback = createChangeReducerCallback( model ) ) {
+function createChangeReducer( model ) {
+	const shouldReplace = createChangeReducerCallback( model );
+
 	return ( evt, data ) => {
 		const reducedChanges = [];
 
@@ -2017,32 +2044,26 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 			// For insert or remove use parent element because we need to check if it's added/removed child.
 			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
 
-			const elements = callback( node, change );
-
-			if ( !elements ) {
+			if ( !node || !shouldReplace( node, change ) ) {
 				reducedChanges.push( change );
 
 				continue;
 			}
 
-			for ( const element of elements ) {
-				// If it's already marked for reconversion, so skip this change.
-				if ( data.reconvertedElements.has( element ) ) {
-					continue;
-				}
+			// If it's already marked for reconversion, so skip this change, otherwise add the diff items.
+			if ( !data.reconvertedElements.has( node ) ) {
+				data.reconvertedElements.add( node );
 
-				data.reconvertedElements.add( element );
-
-				const position = ModelPosition._createBefore( element );
+				const position = ModelPosition._createBefore( node );
 
 				reducedChanges.push( {
 					type: 'remove',
-					name: element.name,
+					name: node.name,
 					position,
 					length: 1
 				}, {
 					type: 'reinsert',
-					name: element.name,
+					name: node.name,
 					position,
 					length: 1
 				} );
@@ -2053,7 +2074,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 	};
 }
 
-// Creates a function that checks if an element and it's watched attributes can be consumed and consumes them.
+// Creates a function that checks if an element and its watched attributes can be consumed and consumes them.
 //
 // @param {Object} model A normalized `config.model` converter configuration.
 // @param {String} model.name The name of element.
@@ -2061,7 +2082,7 @@ function createChangeReducer( model, callback = createChangeReducerCallback( mod
 // @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
 // @returns {module:engine/conversion/downcasthelpers~ConsumerFunction}
 function createConsumer( model ) {
-	return ( node, consumable ) => {
+	return ( node, consumable, options = {} ) => {
 		const events = [ 'insert' ];
 
 		// Collect all set attributes that are triggering conversion.
@@ -2075,7 +2096,11 @@ function createConsumer( model ) {
 			return false;
 		}
 
-		return events.every( event => consumable.consume( node, event ) );
+		if ( !options.preflight ) {
+			events.forEach( event => consumable.consume( node, event ) );
+		}
+
+		return true;
 	};
 }
 
@@ -2084,7 +2109,7 @@ function createConsumer( model ) {
 // @param {module:engine/model/element~Element} element
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @returns {Function}
+// @returns {Function} Exposed by conversionApi as {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor}.
 function createSlotFactory( element, slotsMap, conversionApi ) {
 	return modeOrFilter => {
 		const slot = conversionApi.writer.createContainerElement( '$slot' );
@@ -2205,8 +2230,22 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
 				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
 			);
 		} else {
-			conversionApi.convertInsert( ModelRange._createOn( modelChildNode ) );
+			conversionApi.convertItem( modelChildNode );
 		}
+	}
+}
+
+// The default consumer for insert events.
+// @param {module:engine/model/item~Item} item Model item.
+// @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The model consumable.
+// @param {Object} [options]
+// @param {Boolean} [options.preflight=false] Whether should consume or just check if can be consumed.
+// @returns {Boolean}
+function defaultConsumer( item, consumable, { preflight } = {} ) {
+	if ( preflight ) {
+		return consumable.test( item, 'insert' );
+	} else {
+		return consumable.consume( item, 'insert' );
 	}
 }
 
@@ -2319,6 +2358,8 @@ function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
  * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The `ModelConsumable` same as in
  * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.
+ * @param {Object} [options]
+ * @param {Boolean} [options.preflight=false] Whether should consume or just check if can be consumed.
  * @returns {Boolean} `true` if all consumable values were available and were consumed, `false` otherwise.
  *
  * @see module:engine/conversion/downcasthelpers~insertStructure

@@ -11,7 +11,14 @@ import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { clearAttributes, convertCollapsedSelection, convertRangeSelection, insertText, remove } from '../conversion/downcasthelpers';
+import {
+	clearAttributes,
+	convertCollapsedSelection,
+	convertRangeSelection,
+	insertAttributesAndChildren,
+	insertText,
+	remove
+} from '../conversion/downcasthelpers';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -101,6 +108,7 @@ export default class EditingController {
 
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 		this.downcastDispatcher.on( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.

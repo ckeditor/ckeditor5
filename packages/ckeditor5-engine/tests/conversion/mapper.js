@@ -20,6 +20,8 @@ import ViewRange from '../../src/view/range';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import { StylesProcessor } from '../../src/view/stylesmap';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 describe( 'Mapper', () => {
 	let viewDocument;
 
@@ -431,6 +433,19 @@ describe( 'Mapper', () => {
 				const result = mapper.toViewPosition( modelPosition );
 
 				expect( result ).to.equal( stub );
+			} );
+
+			it( 'should throw an error on missing position parent view element', () => {
+				// The foo element was not downcasted to view.
+				const modelElement = new ModelElement( 'foo' );
+
+				modelDiv._appendChild( modelElement );
+
+				const modelPosition = new ModelPosition( modelElement, [ 0 ] );
+
+				expect( () => {
+					mapper.toViewPosition( modelPosition );
+				} ).to.throw( CKEditorError, 'mapping-view-position-parent-not-found' );
 			} );
 
 			// Default algorithm tests.

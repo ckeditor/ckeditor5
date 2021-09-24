@@ -183,6 +183,10 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  */
 export function modelViewChangeType( onCheckedChange, view ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
 		const viewItem = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
 

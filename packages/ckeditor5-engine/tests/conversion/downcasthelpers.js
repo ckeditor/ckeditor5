@@ -26,6 +26,7 @@ import DowncastHelpers, {
 	convertCollapsedSelection,
 	convertRangeSelection,
 	createViewElementFromHighlightDescriptor,
+	insertAttributesAndChildren,
 	insertText
 } from '../../src/conversion/downcasthelpers';
 
@@ -704,6 +705,10 @@ describe( 'DowncastHelpers', () => {
 				model: 'heading',
 				view: () => null
 			} );
+
+			controller.downcastDispatcher.on( 'insert:heading', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			}, { priority: 'lowest' } );
 
 			model.change( writer => {
 				writer.insertElement( 'heading', {}, modelRoot, 0 );
@@ -2216,6 +2221,10 @@ describe( 'DowncastHelpers', () => {
 		it( 'should not convert if creator returned null', () => {
 			downcastHelpers.elementToElement( { model: 'div', view: () => null } );
 
+			controller.downcastDispatcher.on( 'insert:div', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			}, { priority: 'lowest' } );
+
 			const modelElement = new ModelElement( 'div' );
 
 			model.change( writer => {
@@ -3379,6 +3388,7 @@ describe( 'DowncastHelpers', () => {
 				const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 				conversionApi.writer.insert( viewPosition, viewText );
+				conversionApi.consumable.consume( data.item, evt.name );
 			} );
 
 			// <paragraph> added so it can store selection, otherwise it throws.
@@ -4327,6 +4337,7 @@ describe( 'downcast selection converters', () => {
 		dispatcher = new DowncastDispatcher( { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
+		dispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
 		downcastHelpers = new DowncastHelpers( [ dispatcher ] );
 		downcastHelpers.attributeToElement( { model: 'bold', view: 'strong' } );
