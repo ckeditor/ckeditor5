@@ -34,7 +34,7 @@
 
 		/*
 		 * To reduce the amount of noise, all widgets in the table selection have no outline and no selection handle.
-		 *See https://github.com/ckeditor/ckeditor5/issues/9491.
+		 * See https://github.com/ckeditor/ckeditor5/issues/9491.
 		 */
 		& .ck-widget {
 			outline: unset;
