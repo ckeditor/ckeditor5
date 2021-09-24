@@ -129,7 +129,7 @@ export default class DowncastDispatcher {
 		 * A map of already fired events for a given `ModelConsumable`.
 		 *
 		 * @private
-		 * @member {WeakMap.<module:engine/conversion/modelconsumable~ModelConsumable,Map>}
+		 * @member {WeakMap.<module:engine/conversion/downcastdispatcher~DowncastConversionApi,Map>}
 		 */
 		this._firedEventsMap = new WeakMap();
 	}
@@ -541,13 +541,13 @@ export default class DowncastDispatcher {
 		const eventName = getEventName( type, data );
 		const itemKey = data.item.is( '$textProxy' ) ? conversionApi.consumable._getSymbolForTextProxy( data.item ) : data.item;
 
-		const conversionFiredEvents = this._firedEventsMap.get( conversionApi );
-		const itemFiredEvents = conversionFiredEvents.get( itemKey );
+		const eventsFiredForConversion = this._firedEventsMap.get( conversionApi );
+		const eventsFiredForItem = eventsFiredForConversion.get( itemKey );
 
-		if ( !itemFiredEvents ) {
-			conversionFiredEvents.set( itemKey, new Set( [ eventName ] ) );
-		} else if ( !itemFiredEvents.has( eventName ) ) {
-			itemFiredEvents.add( eventName );
+		if ( !eventsFiredForItem ) {
+			eventsFiredForConversion.set( itemKey, new Set( [ eventName ] ) );
+		} else if ( !eventsFiredForItem.has( eventName ) ) {
+			eventsFiredForItem.add( eventName );
 		} else {
 			return;
 		}

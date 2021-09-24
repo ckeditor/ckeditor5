@@ -2074,7 +2074,7 @@ function createChangeReducer( model ) {
 	};
 }
 
-// Creates a function that checks if an element and it's watched attributes can be consumed and consumes them.
+// Creates a function that checks if an element and its watched attributes can be consumed and consumes them.
 //
 // @param {Object} model A normalized `config.model` converter configuration.
 // @param {String} model.name The name of element.

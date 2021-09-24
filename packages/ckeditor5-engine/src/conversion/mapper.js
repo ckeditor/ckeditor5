@@ -116,8 +116,10 @@ export default class Mapper {
 
 			if ( !viewContainer ) {
 				/**
-				 * Can not map given model position to the view position because position parent view element is not present
-				 * in the document tree. Make sure that parent element is converted to the view.
+				 * A model position could not be mapped to the view because the parent of the model position
+				 * does not have a mapped view element (might have not been converted yet or it has no converter).
+				 *
+				 * Make sure that the model element is correctly converted to the view.
 				 *
 				 * @error mapping-view-position-parent-not-found
 				 */
