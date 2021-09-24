@@ -248,7 +248,7 @@ export default class ModelConsumable {
 	}
 
 	/**
-	 * TODO
+	 * Verifies if all events from specified group were consumed.
 	 *
 	 * @param {Array.<String>} events The events group to verify.
 	 */
