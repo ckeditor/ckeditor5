@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { modelTable, viewTable } from '../_utils/utils';
 
@@ -479,8 +479,6 @@ describe( 'downcast converters', () => {
 
 					writer.insertElement( 'tableCell', row, 'end' );
 					writer.insertElement( 'tableCell', row, 'end' );
-
-					writer.setAttribute( 'headingRows', 3, table );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
@@ -812,10 +810,17 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should work with adding table cells', () => {
+				// +----+----+----+----+
+				// | 00 | 01 | 02 | 03 |
+				// +    +----+----+----+
+				// |    | 11 | 12 | 13 |
+				// +----+----+----+----+
+				// | 20      | 22 | 23 |
+				// +----+----+----+----+
 				setModelData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '13', '14' ],
+					[ { contents: '00', rowspan: 2 }, '01', '02', '03' ],
 					[ '11', '12', '13' ],
-					[ { colspan: 2, contents: '20' }, '22', '23' ]
+					[ { contents: '20', colspan: 2 }, '22', '23' ]
 				], { headingColumns: 2 } ) );
 
 				const table = root.getChild( 0 );
@@ -829,13 +834,19 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
 				} );
 
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01', '', '02', '03' ],
+					[ '11', '', '12', '13' ],
+					[ { contents: '20', colspan: 2 }, '', '22', '23' ]
+				], { headingColumns: 3 } ) );
+
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 					[
 						{ isHeading: true, rowspan: 2, contents: '00' },
 						{ isHeading: true, contents: '01' },
 						{ isHeading: true, contents: '' },
-						'13',
-						'14'
+						'02',
+						'03'
 					],
 					[
 						{ isHeading: true, contents: '11' },
