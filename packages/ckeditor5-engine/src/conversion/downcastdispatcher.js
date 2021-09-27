@@ -70,11 +70,10 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * When providing custom listeners for a downcast dispatcher, remember to check whether a given change has not been
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
  *
- * When providing custom listeners for downcast dispatcher, keep in mind that any callback that has
- * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} a value from a consumable and
- * converted the change should also stop the event (for efficiency purposes).
+ * When providing custom listeners for a downcast dispatcher, keep in mind that you should not stop the event. If you stop it
+ * then the default converter at the `lowest` priority will not trigger conversion of attributes and child nodes.
  *
- * When providing custom listeners for downcast dispatcher, remember to use the provided
+ * When providing custom listeners for a downcast dispatcher, remember to use the provided
  * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
  *
  * You can read more about conversion in the following guides:
@@ -103,9 +102,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  *			// Add the newly created view element to the view.
  *			conversionApi.writer.insert( viewPosition, viewElement );
- *
- *			// Remember to stop the event propagation.
- *			evt.stop();
  *		} );
  */
 export default class DowncastDispatcher {
@@ -189,7 +185,7 @@ export default class DowncastDispatcher {
 		conversionApi.mapper.flushDeferredBindings();
 
 		// Verify if all insert consumables were consumed.
-		conversionApi.consumable.verifyAllConsumed( [ 'insert' ] );
+		conversionApi.consumable.verifyAllConsumed( 'insert' );
 	}
 
 	/**
@@ -213,7 +209,7 @@ export default class DowncastDispatcher {
 		}
 
 		// Verify if all insert consumables were consumed.
-		conversionApi.consumable.verifyAllConsumed( [ 'insert' ] );
+		conversionApi.consumable.verifyAllConsumed( 'insert' );
 	}
 
 	/**

@@ -250,16 +250,16 @@ export default class ModelConsumable {
 	/**
 	 * Verifies if all events from specified group were consumed.
 	 *
-	 * @param {Array.<String>} events The events group to verify.
+	 * @param {String} eventGroup The events group to verify.
 	 */
-	verifyAllConsumed( events ) {
+	verifyAllConsumed( eventGroup ) {
 		const items = [];
 
 		for ( const [ item, consumables ] of this._consumable ) {
 			for ( const [ event, canConsume ] of consumables ) {
 				const eventPrefix = event.split( ':' )[ 0 ];
 
-				if ( canConsume && events.includes( eventPrefix ) ) {
+				if ( canConsume && eventGroup == eventPrefix ) {
 					items.push( {
 						event,
 						item: item.name || item.description
@@ -270,7 +270,16 @@ export default class ModelConsumable {
 
 		if ( items.length ) {
 			/**
-			 * TODO
+			 * Some of the {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 *
+			 * This might be an effect of:
+			 * * Missing converter for some model elements. Make sure that you registered downcast converters for all model elements.
+			 * * Custom converter that do not consume converted items. Make sure that you
+			 * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} all model elements that you converted
+			 * from the model to the view.
+			 * * Custom converter that called `event.stop()`. When providing custom converter, keep in mind that you should not stop
+			 * the event. If you stop it then the default converter at the `lowest` priority will not trigger conversion of attributes
+			 * and child nodes.
 			 *
 			 * @error conversion-model-consumable-not-consumed
 			 */
