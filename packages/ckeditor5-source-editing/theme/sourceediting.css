@@ -30,11 +30,12 @@
 
 .ck-source-editing-area textarea {
 	position: absolute;
-	width: calc(100% - calc(var(--ck-spacing-large) * 2) - 2px);
+	width: 100%;
 	height: 100%;
 	resize: none;
 	outline: none;
 	overflow: hidden;
+	box-sizing: border-box;
 
 	border-color: var(--ck-color-base-border);
 
