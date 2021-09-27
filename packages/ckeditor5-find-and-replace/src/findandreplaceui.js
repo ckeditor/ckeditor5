@@ -29,6 +29,9 @@ export default class FindAndReplaceUI extends Plugin {
 		return 'FindAndReplaceUI';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -87,8 +90,10 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
+	 * Sets up the find and replace button.
+	 *
 	 * @private
-	 * @param {module:ui/dropdown/dropdownview~DropdownView} buttonView
+	 * @param {module:ui/dropdown/dropdownview~DropdownView} dropdown
 	 */
 	_setupDropdownButton( dropdown ) {
 		const editor = this.editor;
@@ -108,6 +113,8 @@ export default class FindAndReplaceUI extends Plugin {
 	}
 
 	/**
+	 * Sets up the form view for the find and replace.
+	 *
 	 * @private
 	 * @param {module:find-and-replace/ui/findandreplaceformview~FindAndReplaceFormView} formView A related form view.
 	 */

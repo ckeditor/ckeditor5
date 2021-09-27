@@ -24,6 +24,8 @@ import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import '../../theme/renderer.css';
+
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
  * the {@link module:engine/view/renderer~Renderer#markToSync information about updated view nodes}.
@@ -532,11 +534,23 @@ export default class Renderer {
 
 		// Add or overwrite attributes.
 		for ( const key of viewAttrKeys ) {
-			domElement.setAttribute( key, viewElement.getAttribute( key ) );
+			const value = viewElement.getAttribute( key );
+
+			if ( !this.domConverter.shouldRenderAttribute( key, value ) ) {
+				domElement.removeAttribute( key );
+			} else {
+				domElement.setAttribute( key, value );
+			}
 		}
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
+			// Do not remove attributes on `script` elements with special data attributes `data-ck-hidden`.
+			if ( viewElement.name === 'script' && key === 'data-ck-hidden' ) {
+				continue;
+			}
+
+			// All other attributes not present in the DOM should be removed.
 			if ( !viewElement.hasAttribute( key ) ) {
 				domElement.removeAttribute( key );
 			}

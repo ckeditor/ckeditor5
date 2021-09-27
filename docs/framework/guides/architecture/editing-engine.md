@@ -330,7 +330,7 @@ By default, the view adds the following observers:
 Additionally, some features add their own observers. For instance, the {@link module:clipboard/clipboard~Clipboard clipboard feature} adds {@link module:clipboard/clipboardobserver~ClipboardObserver}.
 
 <info-box>
-	For a complete list of events fired by observes check the {@link module:engine/view/document~Document}'s list of events.
+	For a complete list of events fired by observers check the {@link module:engine/view/document~Document}'s list of events.
 </info-box>
 
 You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~View#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer.
