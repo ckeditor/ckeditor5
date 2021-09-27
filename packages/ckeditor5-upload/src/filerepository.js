@@ -26,7 +26,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
- * the {@glink framework/guides/deep-dive/upload-adapter "Custom image upload adapter" deep dive guide}.
+ * the {@glink framework/guides/deep-dive/upload-adapter Custom image upload adapter deep dive guide}.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.
@@ -157,14 +157,14 @@ export default class FileRepository extends Plugin {
 			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
 			 *
-			 * See the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload
+			 * See the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn which upload
 			 * adapters are available in the builds and how to configure them.
 			 *
 			 * **If you see this warning when using a custom build** there is a chance that you enabled
 			 * a feature like {@link module:image/imageupload~ImageUpload},
 			 * or {@link module:image/imageupload/imageuploadui~ImageUploadUI} but you did not enable any upload adapter.
 			 * You can choose one of the existing upload adapters listed in the
-			 * {@glink features/image-upload/image-upload "Image upload overview"}.
+			 * {@glink features/images/image-upload/image-upload "Image upload overview"}.
 			 *
 			 * You can also implement your {@glink framework/guides/deep-dive/upload-adapter own image upload adapter}.
 			 *

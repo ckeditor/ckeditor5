@@ -124,8 +124,21 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'codeBlock' ) ).to.be.true;
 	} );
 
-	it( 'disallows for codeBlock in the other codeBlock', () => {
+	it( 'disallows codeBlock in the other codeBlock', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
+	} );
+
+	it( 'disallows object elements in codeBlock', () => {
+		// Fake "inline-widget".
+		model.schema.register( 'inline-widget', {
+			inheritAllFrom: '$block',
+			// Allow to be a child of the `codeBlock` element.
+			allowIn: 'codeBlock',
+			// And mark as an object.
+			isObject: true
+		} );
+
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inline-widget' ) ).to.be.false;
 	} );
 
 	it( 'allows only for $text in codeBlock', () => {
@@ -246,8 +259,11 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should execute enter command when pressing enter in an element nested inside a codeBlock', () => {
-			model.schema.register( 'codeBlockSub', { allowIn: 'codeBlock', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'codeBlockSub' } );
+			model.schema.register( 'codeBlockSub', {
+				allowIn: 'codeBlock',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'codeBlockSub', view: 'codeBlockSub' } );
 
 			const enterCommand = editor.commands.get( 'enter' );
@@ -1119,10 +1135,8 @@ describe( 'CodeBlockEditing', () => {
 			editor.setData( `<pre><code>foo</code></pre>
 				<pre><code>bar</code></pre>` );
 
-			// Note: The empty <paragraph> in between should not be here. It's a conversion/auto–paragraphing bug.
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]foo</codeBlock>' +
-				'<paragraph> </paragraph>' +
 				'<codeBlock language="plaintext">bar</codeBlock>' );
 		} );
 

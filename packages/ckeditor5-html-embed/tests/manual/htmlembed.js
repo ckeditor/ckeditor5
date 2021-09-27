@@ -82,7 +82,7 @@ async function reloadEditor( config = {} ) {
 			'undo', 'redo', '|', 'htmlEmbed', 'mediaEmbed'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
 	};
 
@@ -101,10 +101,15 @@ function getSanitizeHtmlConfig( defaultConfig ) {
 		'video',
 		'picture',
 		'source',
-		'img'
+		'img',
+
+		// Allows embedding scripts.
+		'script'
 	);
 
 	config.selfClosing.push( 'source' );
+
+	config.allowVulnerableTags = true;
 
 	// Remove duplicates.
 	config.allowedTags = [ ...new Set( config.allowedTags ) ];

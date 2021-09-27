@@ -1,0 +1,248 @@
+<style>
+	pre {
+		max-height: 70vh;
+		overflow-y: auto !important;
+	}
+</style>
+
+<style>
+	/* Custom images styling */
+	:root {
+		--icon-size: 30px;
+	}
+	.semantical-custom .ck-content .image > figcaption {
+		z-index: 1;
+		position: absolute;
+		bottom: 20px;
+		left: -20px;
+		font-style: italic;
+		border-radius: 41px;
+		background-color: #ffffffe8;
+		color: #1138b0;
+		padding: 5px 12px;
+		font-size: 13px;
+		box-shadow: 0 0 18px #1a1a1a26
+	}
+	.semantical-custom .ck-content .image {
+		margin-top: 50px;
+		margin-bottom: 50px;
+	}
+	.semantical-custom .ck-content .image::before {
+		content: '';
+		width: 100%;
+		height: 100%;
+		background-color: #1138b0;
+		top: 5%;
+		left: 5%;
+		position: absolute;
+		border-radius: 50%;
+	}
+	.semantical-custom .ck-content .image::after {
+		content: '';
+		width: 200%;
+		height: 200%;
+		background-image: url(../../assets/img/image-context.svg);
+		background-size: contain;
+		background-repeat: no-repeat;
+		position: absolute;
+		top: -60%;
+		pointer-events: none;
+		left: -60%;
+	}
+	.semantical-custom .ck-content .image img {
+		border-radius: 50%;
+		width: 180px;
+		height: 180px;
+		object-fit: cover;
+		filter: grayscale(100%) brightness(70%);
+		box-shadow: 10px 10px 30px #00000078;
+	}
+
+	.semantical-custom .ck-content .image-inline {
+		margin: 0 4px;
+		vertical-align: middle;
+		border-radius: 12px;
+	}
+	.semantical-custom .ck-content .image-inline img {
+		width: 24px;
+		max-height: 24px;
+		min-height: 24px;
+		filter: grayscale(100%);
+	}
+
+	.semantical-custom .ck-content .image-inline.image-margin-left,
+	.semantical-custom .ck-content .image-inline.image-margin-right {
+		position: absolute;
+		margin: 0;
+		top: auto;
+	}
+
+	.semantical-custom .ck-content .image-inline.image-margin-left {
+		left: calc( -12.5% - var(--icon-size) / 2 );
+	}
+
+	.semantical-custom .ck-content .image-inline.image-margin-right {
+		right: calc( -12.5% - var(--icon-size) / 2 );
+	}
+
+	.semantical-custom .ck-content .image-inline.image-margin-left img,
+	.semantical-custom .ck-content .image-inline.image-margin-right img {
+		filter: none;
+	}
+</style>
+
+<style>
+	/* Custom content styling */
+	.semantical-custom .ck.ck-content {
+		padding: 12% 17%;
+		font-family: 'Helvetica';
+		overflow-x: hidden;
+		max-height: 700px;
+	}
+
+	.semantical-custom .ck-content h2 {
+		font-size: 1.5em;
+		line-height: 1.2em;
+		font-weight: 800;
+		text-transform: uppercase;
+		border: none;
+		margin-bottom: 120px;
+		position: relative;
+		text-align: center;
+	}
+	.semantical-custom .ck-content h2::after {
+		content: '';
+		display: block;
+		margin-top: 20px;
+		width: 80px;
+		height: 4px;
+		border-radius: 2px;
+		left: calc(50% - 40px);
+		position: relative;
+		background-color: #1138b0;
+		text-align: center;
+	}
+	.semantical-custom .ck-content h2::before {
+		content: '';
+		display: block;
+		position: absolute;
+		border-radius: 50%;
+		width: 50px;
+		height: 50px;
+		left: calc( -12.5% - 25px );
+		top: auto;
+		background-color: #1138b0;
+		display: none;
+	}
+
+	.semantical-custom .ck-content h3 {
+		font-size: 1.3em;
+		font-weight: 800;
+		text-transform: uppercase;
+
+	}
+	.semantical-custom .ck-content h4 {
+		font-size: 1.1em;
+		font-weight: 800;
+		text-transform: uppercase;
+
+	}
+
+	.semantical-custom .ck-content p {
+		font-size: 0.95em;
+		color: #888888;
+		text-align: justify;
+		position: relative
+	}
+
+	.semantical-custom .ck-content .ck-horizontal-line {
+		margin: 40px 0;
+	}
+
+	.semantical-custom .ck-content .ck-horizontal-line hr {
+		margin: 10px 0;
+		height: 1px;
+	}
+
+	.semantical-custom .ck-content p a {
+		font-weight: 800;
+	}
+
+	.semantical-custom .ck-content a {
+		color: #1138B0;
+	}
+</style>
+
+<style>
+	/* Responsiveness */
+	@media ( max-width: 400px ) {
+		.semantical-custom .ck.ck-content {
+			padding: 1em;
+		}
+		.semantical-custom .ck-content .image-inline.image-margin-right,
+		.semantical-custom .ck-content .image-inline.image-margin-left {
+			display: none;
+		}
+	}
+	@media (min-width: 750px) {
+		.semantical-custom .ck-content .image.image-side {
+			float: right;
+			margin-right: -200px;
+			margin-left: 50px;
+			margin-top: -50px;
+		}
+		.semantical-custom .ck-content .image.image-side img {
+			width: 360px;
+			height: 360px;
+		}
+		.semantical-custom .ck-content .image.image-side > figcaption {
+			top: 50px;
+			left: 0;
+			bottom: auto;
+		}
+		.semantical-custom .ck-content h2 + figure.image.image-side {
+			margin-top: -150px;
+		}
+		.semantical-custom .ck-content h2 {
+			text-align: left;
+		}
+		.semantical-custom .ck-content h2::after {
+			left: 0;
+		}
+		.semantical-custom .ck-content h2::before {
+			display: block;
+		}
+	}
+</style>
+
+<div id="snippet-image-semantical-style-custom">
+	<h1>Handshake over the clouds</h1>
+	<figure class="image image-side">
+		<img src="%BASE_PATH%/assets/img/nasa-7Cz6bWjdlDs-unsplash.jpg" alt="Space shuttle">
+		<figcaption>High over the world</figcaption>
+	</figure>
+	<p>
+		Rivalry is what drove early space exploration. After WW2, the two superpowers on opposite sides of the world set off on a race from the planet’s surface into the cosmic void. For most of the time, they would compete and race each other. But after the Soviets set up permanent space stations on Low Earth Orbit and the Americans put a man on the Moon, the time came to hold back the competition and cooperate.
+	</p>
+	<hr/>
+	<figure class="image">
+		<img src="%BASE_PATH%/assets/img/Astronaut_Donald_K._Slayton_and_cosmonaut_Aleksey_A._Leonov_in_the_Soyuz_Orbital_Module.jpg" alt="Leonov and Slayton in orbit">
+		<figcaption>Friends not foes</figcaption>
+	</figure>
+	<p>
+		The first step on the eventual road to building International Space Station was the <a href="https://en.wikipedia.org/wiki/Apollo%E2%80%93Soyuz">Apollo Soyuz<img class="image-margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg"> Test Project</a>. A specially redesigned pair of the Apollo and Soyuz spacecraft met in orbit and docked together in 1975. Their respective commanders, <a href="https://www.nasa.gov/image-feature/thomas-stafford-and-alexey-leonov">Thomas Stafford and Alexei Leonov</a> shook hands inside the airlock brought to orbit by Apollo. They remained docked for two days.
+
+	</p>
+	<figure class="image">
+		<img src="%BASE_PATH%/assets/img/Thagard-ne.jpg" alt="Norman Thagard">
+		<figcaption>Norman Thagard</figcaption>
+	</figure>
+	<p>
+		The ASTP mission was a great step forward, but for a long time and only one. It also marked the end of an era, as the Apollo flown then was the last of its kind. Six years later an era of space shuttles came. These new cosmic planes also marked the return to cooperation. In 1994 Russia and the USA started the <a href="https://en.wikipedia.org/wiki/Shuttle%E2%80%93Mir_program"><img class="image-margin-left" src="%BASE_PATH%/assets/img/icons/globe.svg">Shuttle-<i>Mir</i> program</a>, which saw Russians riding shuttles and Americans visiting Mir space station, with <a href="https://en.wikipedia.org/wiki/Norman_Thagard">Norman<img class="image-margin-right" src="%BASE_PATH%/assets/img/icons/comment.svg"> Thagard</a> to be the first US citizen to ever fly a Soyuz. This was the preliminary phase and a technology testbed before launching the first module of the International Space Station in 1998.
+	</p>
+	<p></p>
+	<p></p>
+	<p style="text-align: center">
+		<i>The next step in collaboration:</i><br/><a href="https://en.wikipedia.org/wiki/International_Space_Station"><i>International Space</i></a>
+	</p>
+</div>

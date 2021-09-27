@@ -131,7 +131,10 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should have the remove color button', () => {
-				expect( view._dropdownView.panelView.children.first ).to.be.instanceOf( ButtonView );
+				const removeColorButton = view._dropdownView.panelView.children.first;
+
+				expect( removeColorButton ).to.be.instanceOf( ButtonView );
+				expect( removeColorButton.label ).to.equal( 'Remove color' );
 			} );
 
 			describe( 'position', () => {
@@ -437,6 +440,47 @@ describe( 'ColorInputView', () => {
 
 				view.ariaDescribedById = 'foo';
 				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( 'foo' );
+			} );
+		} );
+
+		describe( 'defaultColorValue option', () => {
+			let view, locale;
+
+			beforeEach( () => {
+				locale = { t: val => val };
+				view = new ColorInputView( locale, {
+					colorDefinitions: DEFAULT_COLORS,
+					columns: 5,
+					defaultColorValue: 'rgb(255,0,0)'
+				} );
+				view.render();
+			} );
+
+			afterEach( () => {
+				view.destroy();
+			} );
+
+			describe( 'dropdown', () => {
+				describe( 'Remove color / Restore default', () => {
+					let removeColorButton;
+
+					beforeEach( () => {
+						removeColorButton = view._dropdownView.panelView.children.first;
+					} );
+
+					it( 'should replace "Remove color" with "Restore default"', () => {
+						expect( removeColorButton ).to.be.instanceOf( ButtonView );
+						expect( removeColorButton.label ).to.equal( 'Restore default' );
+					} );
+
+					it( 'should set the empty #value upon #execute', () => {
+						view.value = 'foo';
+
+						removeColorButton.fire( 'execute' );
+
+						expect( view.value ).to.equal( 'rgb(255,0,0)' );
+					} );
+				} );
 			} );
 		} );
 	} );

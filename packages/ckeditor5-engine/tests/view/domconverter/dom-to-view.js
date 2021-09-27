@@ -6,6 +6,7 @@
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
+import ViewUIElement from '../../../src/view/uielement';
 import ViewDocument from '../../../src/view/document';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
@@ -171,10 +172,38 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( textNode ) ).to.be.null;
 		} );
 
-		it( 'should return null for a comment', () => {
-			const comment = document.createComment( 'abc' );
+		it( 'should create UIElement for comment', () => {
+			const domComment = document.createComment( 'abc' );
 
-			expect( converter.domToView( comment ) ).to.be.null;
+			const viewComment = converter.domToView( domComment );
+
+			expect( viewComment ).to.be.an.instanceof( ViewUIElement );
+			expect( viewComment.name ).to.equal( '$comment' );
+
+			expect( viewComment.getCustomProperty( '$rawContent' ) ).to.equal( 'abc' );
+
+			expect( converter.mapViewToDom( viewComment ) ).to.not.equal( domComment );
+		} );
+
+		it( 'should create UIElement for comment and bind elements', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { bind: true } );
+
+			expect( viewComment ).to.be.an.instanceof( ViewUIElement );
+			expect( viewComment.name ).to.equal( '$comment' );
+
+			expect( viewComment.getCustomProperty( '$rawContent' ) ).to.equal( 'abc' );
+
+			expect( converter.mapViewToDom( viewComment ) ).to.equal( domComment );
+		} );
+
+		it( 'should return `null` for a comment when the `skipComments` option is set to `true`', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { skipComments: true } );
+
+			expect( viewComment ).to.be.null;
 		} );
 
 		describe( 'it should clear whitespaces', () => {
@@ -202,7 +231,7 @@ describe( 'DomConverter', () => {
 						document.createTextNode( 'foo ' )
 					] ),
 					createElement( document, 'p', {}, [
-						document.createTextNode( 'foo ' )
+						document.createTextNode( 'bar ' )
 					] ),
 					document.createTextNode( ' ' )
 				] );
@@ -211,7 +240,7 @@ describe( 'DomConverter', () => {
 
 				expect( viewDiv.childCount ).to.equal( 2 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
-				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
 			} );
 
 			it( 'after a block element', () => {

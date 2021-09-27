@@ -24,6 +24,7 @@ import {
 } from '../utils/ui/table-properties';
 import { getTableWidgetAncestor } from '../utils/ui/widget';
 import { getBalloonTablePositionData, repositionContextualBalloon } from '../utils/ui/contextualballoon';
+import { getNormalizedDefaultProperties } from '../utils/table-properties';
 
 const ERROR_TEXT_TIMEOUT = 500;
 
@@ -80,6 +81,16 @@ export default class TablePropertiesUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
+
+		/**
+		 * The default table properties.
+		 *
+		 * @protected
+		 * @member {module:table/tableproperties~TablePropertiesOptions}
+		 */
+		this._defaultTableProperties = getNormalizedDefaultProperties( editor.config.get( 'table.tableProperties.defaultProperties' ), {
+			includeAlignmentProperty: true
+		} );
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -152,9 +163,11 @@ export default class TablePropertiesUI extends Plugin {
 		const localizedBorderColors = getLocalizedColorOptions( editor.locale, borderColorsConfig );
 		const backgroundColorsConfig = normalizeColorOptions( config.backgroundColors );
 		const localizedBackgroundColors = getLocalizedColorOptions( editor.locale, backgroundColorsConfig );
+
 		const view = new TablePropertiesView( editor.locale, {
 			borderColors: localizedBorderColors,
-			backgroundColors: localizedBackgroundColors
+			backgroundColors: localizedBackgroundColors,
+			defaultTableProperties: this._defaultTableProperties
 		} );
 		const t = editor.t;
 
@@ -196,44 +209,55 @@ export default class TablePropertiesUI extends Plugin {
 		// property of the view has changed. They also validate the value and display errors in the UI
 		// when necessary. This makes the view live, which means the changes are
 		// visible in the editing as soon as the user types or changes fields' values.
-		view.on( 'change:borderStyle', this._getPropertyChangeCallback( 'tableBorderStyle' ) );
+		view.on(
+			'change:borderStyle',
+			this._getPropertyChangeCallback( 'tableBorderStyle', this._defaultTableProperties.borderStyle )
+		);
 
 		view.on( 'change:borderColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.borderColorInput,
 			commandName: 'tableBorderColor',
 			errorText: colorErrorText,
-			validator: colorFieldValidator
+			validator: colorFieldValidator,
+			defaultValue: this._defaultTableProperties.borderColor
 		} ) );
 
 		view.on( 'change:borderWidth', this._getValidatedPropertyChangeCallback( {
 			viewField: view.borderWidthInput,
 			commandName: 'tableBorderWidth',
 			errorText: lengthErrorText,
-			validator: lineWidthFieldValidator
+			validator: lineWidthFieldValidator,
+			defaultValue: this._defaultTableProperties.borderWidth
 		} ) );
 
 		view.on( 'change:backgroundColor', this._getValidatedPropertyChangeCallback( {
 			viewField: view.backgroundInput,
 			commandName: 'tableBackgroundColor',
 			errorText: colorErrorText,
-			validator: colorFieldValidator
+			validator: colorFieldValidator,
+			defaultValue: this._defaultTableProperties.backgroundColor
 		} ) );
 
 		view.on( 'change:width', this._getValidatedPropertyChangeCallback( {
 			viewField: view.widthInput,
 			commandName: 'tableWidth',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator
+			validator: lengthFieldValidator,
+			defaultValue: this._defaultTableProperties.width
 		} ) );
 
 		view.on( 'change:height', this._getValidatedPropertyChangeCallback( {
 			viewField: view.heightInput,
 			commandName: 'tableHeight',
 			errorText: lengthErrorText,
-			validator: lengthFieldValidator
+			validator: lengthFieldValidator,
+			defaultValue: this._defaultTableProperties.height
 		} ) );
 
-		view.on( 'change:alignment', this._getPropertyChangeCallback( 'tableAlignment' ) );
+		view.on(
+			'change:alignment',
+			this._getPropertyChangeCallback( 'tableAlignment', this._defaultTableProperties.alignment )
+		);
 
 		return view;
 	}
@@ -250,10 +274,22 @@ export default class TablePropertiesUI extends Plugin {
 	 */
 	_fillViewFormFromCommandValues() {
 		const commands = this.editor.commands;
+		const borderStyleCommand = commands.get( 'tableBorderStyle' );
 
 		Object.entries( propertyToCommandMap )
-			.map( ( [ property, commandName ] ) => [ property, commands.get( commandName ).value || '' ] )
-			.forEach( ( [ property, value ] ) => this.view.set( property, value ) );
+			.map( ( [ property, commandName ] ) => {
+				const defaultValue = this._defaultTableProperties[ property ] || '';
+
+				return [ property, commands.get( commandName ).value || defaultValue ];
+			} )
+			.forEach( ( [ property, value ] ) => {
+				// Do not set the `border-color` and `border-width` fields if `border-style:none`.
+				if ( ( property === 'borderColor' || property === 'borderWidth' ) && borderStyleCommand.value === 'none' ) {
+					return;
+				}
+
+				this.view.set( property, value );
+			} );
 	}
 
 	/**
@@ -348,12 +384,21 @@ export default class TablePropertiesUI extends Plugin {
 	 * Creates a callback that when executed upon {@link #view view's} property change
 	 * executes a related editor command with the new property value.
 	 *
+	 * If new value will be set to the default value, the command will not be executed.
+	 *
 	 * @private
-	 * @param {String} commandName
+	 * @param {String} commandName The command that will be executed.
+	 * @param {String} defaultValue The default value of the command.
 	 * @returns {Function}
 	 */
-	_getPropertyChangeCallback( commandName ) {
-		return ( evt, propertyName, newValue ) => {
+	_getPropertyChangeCallback( commandName, defaultValue ) {
+		return ( evt, propertyName, newValue, oldValue ) => {
+			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
+			// It is an initial call (when opening the table properties view).
+			if ( !oldValue && defaultValue === newValue ) {
+				return;
+			}
+
 			this.editor.execute( commandName, {
 				value: newValue,
 				batch: this._undoStepBatch
@@ -372,15 +417,23 @@ export default class TablePropertiesUI extends Plugin {
 	 * @param {module:ui/view~View} options.viewField
 	 * @param {Function} options.validator
 	 * @param {String} options.errorText
+	 * @param {String} options.defaultValue
 	 * @returns {Function}
 	 */
-	_getValidatedPropertyChangeCallback( { commandName, viewField, validator, errorText } ) {
+	_getValidatedPropertyChangeCallback( options ) {
+		const { commandName, viewField, validator, errorText, defaultValue } = options;
 		const setErrorTextDebounced = debounce( () => {
 			viewField.errorText = errorText;
 		}, ERROR_TEXT_TIMEOUT );
 
-		return ( evt, propertyName, newValue ) => {
+		return ( evt, propertyName, newValue, oldValue ) => {
 			setErrorTextDebounced.cancel();
+
+			// If the "oldValue" is missing and "newValue" is set to the default value, do not execute the command.
+			// It is an initial call (when opening the table properties view).
+			if ( !oldValue && defaultValue === newValue ) {
+				return;
+			}
 
 			if ( validator( newValue ) ) {
 				this.editor.execute( commandName, {

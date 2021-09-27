@@ -5,7 +5,7 @@ menu-title: Text part language
 
 # Text part language
 
-The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to mark the language of selected text fragments as well as automatically set the text direction based on the language choice. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
+The {@link module:language/textpartlanguage~TextPartLanguage} feature provides the ability to mark the language of selected text fragments. It makes working with multilingual content convenient and ensures that user agents can correctly present the content written in multiple languages, so graphical browsers and screen readers are able to identify how to pronounce text and display characters.
 
 This feature is especially useful when your content includes text sections written in different text directions, e.g. when the whole content is written in English but includes some citations in Arabic.
 
@@ -13,7 +13,7 @@ The text part language feature implements the [WCAG 3.1.2 Language of Parts](htt
 
 ## Demo
 
-Use the editor below to see the text part language plugin in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
+Use the language toolbar dropdown in the editor below to see the feature in action. Select a text fragment and use the toolbar dropdown to choose from predefined available languages that can be applied to the content.
 
 {@snippet features/textpartlanguage}
 
@@ -26,16 +26,16 @@ There are other language-related CKEditor 5 features you may want to check:
 
 ## Installation
 
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-langauge`](https://www.npmjs.com/package/@ckeditor/ckeditor5-langauge) package:
+To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-language`](https://www.npmjs.com/package/@ckeditor/ckeditor5-language) package:
 
 ```plaintext
-npm install --save @ckeditor/ckeditor5-langauge
+npm install --save @ckeditor/ckeditor5-language
 ```
 
 And add it to your plugin list configuration:
 
 ```js
-import TextPartLanguage from '@ckeditor/ckeditor5-langauge/src/textpartlanguage';
+import TextPartLanguage from '@ckeditor/ckeditor5-language/src/textpartlanguage';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {

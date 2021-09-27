@@ -247,14 +247,17 @@ export default class DataController {
 		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
 		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
-		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
-			// Then, if a document element is converted, convert markers.
-			// From all document markers, get those, which "intersect" with the converter element.
-			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
+		// Convert markers.
+		// For document fragment, simply take the markers assigned to this document fragment.
+		// For model root, all markers in that root will be taken.
+		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
+		// Collapsed markers at element boundary, although considered as not intersecting with the element, will also be returned.
+		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
+			Array.from( modelElementOrFragment.markers ) :
+			_getMarkersRelativeToElement( modelElementOrFragment );
 
-			for ( const [ name, range ] of markers ) {
-				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
-			}
+		for ( const [ name, range ] of markers ) {
+			this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 		}
 
 		// Clean `conversionApi`.
@@ -345,11 +348,19 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
+	 * To set the data with preserved undo stacks and set the current change to this stack, use the `{ batchType: 'default' }` option.
+	 *
+	 *		dataController.set( '<p>Foo</p>', { batchType: 'default' } ); // Sets data as a new change.
+	 *
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
+	 * @param {Object} [options={}] Options for setting data.
+	 * @param {'default'|'transparent'} [options.batchType='default'] The batch type that will be used to create a batch for the changes.
+	 * When set to `default`, the undo and redo stacks will be preserved. Note that when not set, the undo feature (when present) will
+	 * override it to `transparent` and all undo steps will be lost.
 	 */
-	set( data ) {
+	set( data, options = {} ) {
 		let newData = {};
 
 		if ( typeof data === 'string' ) {
@@ -373,7 +384,9 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
-		this.model.enqueueChange( 'transparent', writer => {
+		const batchType = options.batchType || 'default';
+
+		this.model.enqueueChange( batchType, writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
@@ -516,8 +529,9 @@ mix( DataController, ObservableMixin );
 
 // Helper function for downcast conversion.
 //
-// Takes a document element (element that is added to a model document) and checks which markers are inside it
-// and which markers are containing it. If the marker is intersecting with element, the intersection is returned.
+// Takes a document element (element that is added to a model document) and checks which markers are inside it. If the marker is collapsed
+// at element boundary, it is considered as contained inside the element and marker range is returned. Otherwise, if the marker is
+// intersecting with the element, the intersection is returned.
 function _getMarkersRelativeToElement( element ) {
 	const result = [];
 	const doc = element.root.document;
@@ -529,10 +543,19 @@ function _getMarkersRelativeToElement( element ) {
 	const elementRange = ModelRange._createIn( element );
 
 	for ( const marker of doc.model.markers ) {
-		const intersection = elementRange.getIntersection( marker.getRange() );
+		const markerRange = marker.getRange();
 
-		if ( intersection ) {
-			result.push( [ marker.name, intersection ] );
+		const isMarkerCollapsed = markerRange.isCollapsed;
+		const isMarkerAtElementBoundary = markerRange.start.isEqual( elementRange.start ) || markerRange.end.isEqual( elementRange.end );
+
+		if ( isMarkerCollapsed && isMarkerAtElementBoundary ) {
+			result.push( [ marker.name, markerRange ] );
+		} else {
+			const updatedMarkerRange = elementRange.getIntersection( markerRange );
+
+			if ( updatedMarkerRange ) {
+				result.push( [ marker.name, updatedMarkerRange ] );
+			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
-  "version": "27.0.0",
+  "version": "29.2.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -23,28 +23,28 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^27.0.0",
+    "@ckeditor/ckeditor5-utils": "^29.2.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^27.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^27.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^27.0.0",
-    "@ckeditor/ckeditor5-core": "^27.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^27.0.0",
-    "@ckeditor/ckeditor5-enter": "^27.0.0",
-    "@ckeditor/ckeditor5-essentials": "^27.0.0",
-    "@ckeditor/ckeditor5-heading": "^27.0.0",
-    "@ckeditor/ckeditor5-image": "^27.0.0",
-    "@ckeditor/ckeditor5-link": "^27.0.0",
-    "@ckeditor/ckeditor5-list": "^27.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^27.0.0",
-    "@ckeditor/ckeditor5-table": "^27.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^27.0.0",
-    "@ckeditor/ckeditor5-typing": "^27.0.0",
-    "@ckeditor/ckeditor5-ui": "^27.0.0",
-    "@ckeditor/ckeditor5-undo": "^27.0.0",
-    "@ckeditor/ckeditor5-widget": "^27.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
+    "@ckeditor/ckeditor5-block-quote": "^29.2.0",
+    "@ckeditor/ckeditor5-clipboard": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^29.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
+    "@ckeditor/ckeditor5-enter": "^29.2.0",
+    "@ckeditor/ckeditor5-essentials": "^29.2.0",
+    "@ckeditor/ckeditor5-heading": "^29.2.0",
+    "@ckeditor/ckeditor5-image": "^29.2.0",
+    "@ckeditor/ckeditor5-link": "^29.2.0",
+    "@ckeditor/ckeditor5-list": "^29.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
+    "@ckeditor/ckeditor5-table": "^29.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^29.2.0",
+    "@ckeditor/ckeditor5-typing": "^29.2.0",
+    "@ckeditor/ckeditor5-ui": "^29.2.0",
+    "@ckeditor/ckeditor5-undo": "^29.2.0",
+    "@ckeditor/ckeditor5-widget": "^29.2.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
@@ -64,6 +64,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json"
   ]
 }

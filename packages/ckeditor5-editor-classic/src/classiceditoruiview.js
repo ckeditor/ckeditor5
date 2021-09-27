@@ -23,7 +23,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {Object} [options={}] Configuration options fo the view instance.
+	 * @param {Object} [options={}] Configuration options for the view instance.
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.

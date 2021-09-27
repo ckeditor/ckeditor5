@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-theme-lark",
-  "version": "27.0.0",
+  "version": "29.2.0",
   "description": "A bright theme for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,31 +9,35 @@
     "ckeditor5-theme"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^27.0.0",
-    "@ckeditor/ckeditor5-ckfinder": "^27.0.0",
-    "@ckeditor/ckeditor5-code-block": "^27.0.0",
-    "@ckeditor/ckeditor5-core": "^27.0.0",
-    "@ckeditor/ckeditor5-editor-balloon": "^27.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^27.0.0",
-    "@ckeditor/ckeditor5-font": "^27.0.0",
-    "@ckeditor/ckeditor5-heading": "^27.0.0",
-    "@ckeditor/ckeditor5-highlight": "^27.0.0",
-    "@ckeditor/ckeditor5-html-embed": "^27.0.0",
-    "@ckeditor/ckeditor5-indent": "^27.0.0",
-    "@ckeditor/ckeditor5-link": "^27.0.0",
-    "@ckeditor/ckeditor5-list": "^27.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^27.0.0",
-    "@ckeditor/ckeditor5-page-break": "^27.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^27.0.0",
-    "@ckeditor/ckeditor5-remove-format": "^27.0.0",
-    "@ckeditor/ckeditor5-restricted-editing": "^27.0.0",
-    "@ckeditor/ckeditor5-select-all": "^27.0.0",
-    "@ckeditor/ckeditor5-special-characters": "^27.0.0",
-    "@ckeditor/ckeditor5-ui": "^27.0.0",
-    "@ckeditor/ckeditor5-undo": "^27.0.0",
-    "@ckeditor/ckeditor5-utils": "^27.0.0",
-    "@ckeditor/ckeditor5-table": "^27.0.0",
-    "ckeditor5": "^27.0.0"
+    "@ckeditor/ckeditor5-ui": "^29.2.0"
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
+    "@ckeditor/ckeditor5-ckfinder": "^29.2.0",
+    "@ckeditor/ckeditor5-code-block": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^29.2.0",
+    "@ckeditor/ckeditor5-editor-balloon": "^29.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
+    "@ckeditor/ckeditor5-find-and-replace": "^29.2.0",
+    "@ckeditor/ckeditor5-font": "^29.2.0",
+    "@ckeditor/ckeditor5-heading": "^29.2.0",
+    "@ckeditor/ckeditor5-highlight": "^29.2.0",
+    "@ckeditor/ckeditor5-html-embed": "^29.2.0",
+    "@ckeditor/ckeditor5-indent": "^29.2.0",
+    "@ckeditor/ckeditor5-link": "^29.2.0",
+    "@ckeditor/ckeditor5-list": "^29.2.0",
+    "@ckeditor/ckeditor5-media-embed": "^29.2.0",
+    "@ckeditor/ckeditor5-page-break": "^29.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
+    "@ckeditor/ckeditor5-remove-format": "^29.2.0",
+    "@ckeditor/ckeditor5-restricted-editing": "^29.2.0",
+    "@ckeditor/ckeditor5-select-all": "^29.2.0",
+    "@ckeditor/ckeditor5-source-editing": "^29.2.0",
+    "@ckeditor/ckeditor5-special-characters": "^29.2.0",
+    "@ckeditor/ckeditor5-undo": "^29.2.0",
+    "@ckeditor/ckeditor5-utils": "^29.2.0",
+    "@ckeditor/ckeditor5-table": "^29.2.0",
+    "ckeditor5": "^29.2.0"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -51,7 +55,8 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json"
   ],
   "main": "./theme/theme.css"
 }

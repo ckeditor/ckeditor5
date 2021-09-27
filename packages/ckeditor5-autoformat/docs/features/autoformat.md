@@ -7,6 +7,8 @@ The {@link module:autoformat/autoformat~Autoformat} feature allows you to quickl
 
 Employ Markdown-like inline codes as you type for a faster and more efficient editing workflow. Speed up and simplify the process by skipping the need to use toolbar buttons and dropdowns for the most common formatting features with these easy to memorize options listed below.
 
+Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post.
+
 <info-box info>
 	This feature is enabled by default in all builds.
 </info-box>
@@ -32,24 +34,25 @@ The following {@link features/basic-styles basic styles} inline formatting optio
 * Code &ndash; Type ``` `text` ```,
 * Strikethrough &ndash; Type `~~text~~`.
 
-## Autoformatting sample
+## Demo
 
-Example:
+Use the editor provided below to test the autoformatting feature. Try using Markdown shortcodes while typing, for example:
 
 1. Delete all editor content.
 2. Press <kbd>#</kbd> and then <kbd>Space</kbd>.
-3. The current line will be turned into a heading.
+3. The current line will be instantly turned into a heading and you can keep on typing without interruption.
 
 {@snippet features/autoformat}
 
-## Related productivity features
+## Related features
 
 In addition to enabling automatic text formatting, you may want to check the following productivity features:
 
-* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/text-transformation Automatic text transformation} &ndash; Enables automatic turning of snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
 * {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
 * {@link features/mentions Mentions} &ndash; Brings support for smart autocompletion.
-* {@link features/markdown Markdown output} &ndash; Output your content as Markdown instead of HTML and use CKEditor 5 as a WYSIWYG Markdown editor.
+* {@link features/markdown Markdown output} &ndash; Lets the user output the content as Markdown instead of HTML and [use CKEditor 5 as a WYSIWYG Markdown editor](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/).
+* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 
 ## Installation
 

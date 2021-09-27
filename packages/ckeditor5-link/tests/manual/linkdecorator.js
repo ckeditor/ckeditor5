@@ -45,7 +45,7 @@ ClassicEditor
 			}
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
 		}
 	} )
 	.then( editor => {
@@ -80,7 +80,7 @@ ClassicEditor
 			addTargetToExternalLinks: true
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative', '|', 'linkImage' ]
 		}
 	} )
 	.then( editor => {

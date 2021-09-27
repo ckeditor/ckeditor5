@@ -37,7 +37,18 @@ const VIEW_OPTIONS = {
 			label: 'Green',
 			hasBorder: false
 		}
-	]
+	],
+	defaultTableCellProperties: {
+		borderColor: '',
+		borderStyle: 'none',
+		borderWidth: '',
+		horizontalAlignment: 'left',
+		verticalAlignment: 'middle',
+		width: '',
+		height: '',
+		padding: '',
+		backgroundColor: ''
+	}
 };
 
 describe( 'table cell properties', () => {
@@ -159,7 +170,7 @@ describe( 'table cell properties', () => {
 
 						it( 'should change #borderStyle when executed', () => {
 							labeledDropdown.fieldView.listView.items.first.children.first.fire( 'execute' );
-							expect( view.borderStyle ).to.equal( '' );
+							expect( view.borderStyle ).to.equal( 'none' );
 
 							labeledDropdown.fieldView.listView.items.last.children.first.fire( 'execute' );
 							expect( view.borderStyle ).to.equal( 'outset' );
@@ -178,7 +189,7 @@ describe( 'table cell properties', () => {
 							view.borderWidth = '1px';
 							view.borderColor = 'red';
 
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 
 							expect( view.borderColor ).to.equal( '' );
 							expect( view.borderWidth ).to.equal( '' );
@@ -207,7 +218,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -265,7 +276,7 @@ describe( 'table cell properties', () => {
 						} );
 
 						it( 'should be enabled only when #borderStyle is different than "none"', () => {
-							view.borderStyle = '';
+							view.borderStyle = 'none';
 							expect( labeledInput.isEnabled ).to.be.false;
 
 							view.borderStyle = 'dotted';
@@ -529,7 +540,7 @@ describe( 'table cell properties', () => {
 							expect( toolbar.items.last.isOn ).to.be.true;
 
 							toolbar.items.first.fire( 'execute' );
-							expect( view.horizontalAlignment ).to.equal( '' );
+							expect( view.horizontalAlignment ).to.equal( 'left' );
 							expect( toolbar.items.last.isOn ).to.be.false;
 							expect( toolbar.items.first.isOn ).to.be.true;
 						} );

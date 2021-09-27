@@ -1549,7 +1549,7 @@ describe( 'MentionUI', () => {
 					};
 
 					const keyUpEvtData = {
-						keyCode: keyCodes.arrowdown,
+						keyCode: keyCodes.arrowup,
 						preventDefault: sinon.spy(),
 						stopPropagation: sinon.spy()
 					};
@@ -2099,6 +2099,75 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		}
+
+		describe( 'overriding commit keys using config.mention.commitKeys', () => {
+			const issues = [
+				{ id: '@Ted' },
+				{ id: '@Barney' },
+				{ id: '@Robin' },
+				{ id: '@Lily' },
+				{ id: '@Marshal' }
+			];
+
+			beforeEach( () => {
+				return createClassicTestEditor( {
+					commitKeys: [ keyCodes.a ],
+					feeds: [
+						{
+							marker: '@',
+							feed: feedText => issues.filter( issue => issue.id.includes( feedText ) )
+						}
+					]
+				} );
+			} );
+
+			// Testing if custom key configuration will execute the mention command.
+			testExecuteKey( 'a', keyCodes.a, issues );
+
+			it( 'should no longer commit on enter (default)', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const command = editor.commands.get( 'mention' );
+						const executeSpy = testUtils.sinon.spy( command, 'execute' );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.enter,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						sinon.assert.notCalled( executeSpy );
+					} );
+			} );
+
+			it( 'should no longer commit on tab (default)', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						const command = editor.commands.get( 'mention' );
+						const executeSpy = testUtils.sinon.spy( command, 'execute' );
+
+						fireKeyDownEvent( {
+							keyCode: keyCodes.tab,
+							preventDefault: sinon.spy(),
+							stopPropagation: sinon.spy()
+						} );
+
+						sinon.assert.notCalled( executeSpy );
+					} );
+			} );
+		} );
 	} );
 
 	describe( 'execute', () => {

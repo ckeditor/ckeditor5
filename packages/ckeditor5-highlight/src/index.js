@@ -7,12 +7,6 @@
  * @module highlight
  */
 
-import Highlight from './highlight';
-import HighlightEditing from './highlightediting';
-import HighlightUI from './highlightui';
-
-export default {
-	Highlight,
-	HighlightEditing,
-	HighlightUI
-};
+export { default as Highlight } from './highlight';
+export { default as HighlightEditing } from './highlightediting';
+export { default as HighlightUI } from './highlightui';

@@ -7,50 +7,25 @@
  * @module image
  */
 
-import AutoImage from './autoimage';
-import Image from './image';
-import ImageEditing from './image/imageediting';
-import ImageCaption from './imagecaption';
-import ImageCaptionEditing from './imagecaption/imagecaptionediting';
-import ImageInsert from './imageinsert';
-import ImageInsertUI from './imageinsert/imageinsertui';
-import ImageResize from './imageresize';
-import ImageResizeButtons from './imageresize/imageresizebuttons';
-import ImageResizeEditing from './imageresize/imageresizeediting';
-import ImageResizeHandles from './imageresize/imageresizehandles';
-import ImageStyle from './imagestyle';
-import ImageStyleEditing from './imagestyle/imagestyleediting';
-import ImageStyleUI from './imagestyle/imagestyleui';
-import ImageTextAlternative from './imagetextalternative';
-import ImageTextAlternativeEditing from './imagetextalternative/imagetextalternativeediting';
-import ImageTextAlternativeUI from './imagetextalternative/imagetextalternativeui';
-import ImageToolbar from './imagetoolbar';
-import ImageUpload from './imageupload';
-import ImageUploadEditing from './imageupload/imageuploadediting';
-import ImageUploadProgress from './imageupload/imageuploadprogress';
-import ImageUploadUI from './imageupload/imageuploadui';
-
-export default {
-	AutoImage,
-	Image,
-	ImageEditing,
-	ImageCaption,
-	ImageCaptionEditing,
-	ImageInsert,
-	ImageInsertUI,
-	ImageResize,
-	ImageResizeButtons,
-	ImageResizeEditing,
-	ImageResizeHandles,
-	ImageStyle,
-	ImageStyleEditing,
-	ImageStyleUI,
-	ImageTextAlternative,
-	ImageTextAlternativeEditing,
-	ImageTextAlternativeUI,
-	ImageToolbar,
-	ImageUpload,
-	ImageUploadEditing,
-	ImageUploadProgress,
-	ImageUploadUI
-};
+export { default as AutoImage } from './autoimage';
+export { default as Image } from './image';
+export { default as ImageEditing } from './image/imageediting';
+export { default as ImageCaption } from './imagecaption';
+export { default as ImageCaptionEditing } from './imagecaption/imagecaptionediting';
+export { default as ImageInsert } from './imageinsert';
+export { default as ImageInsertUI } from './imageinsert/imageinsertui';
+export { default as ImageResize } from './imageresize';
+export { default as ImageResizeButtons } from './imageresize/imageresizebuttons';
+export { default as ImageResizeEditing } from './imageresize/imageresizeediting';
+export { default as ImageResizeHandles } from './imageresize/imageresizehandles';
+export { default as ImageStyle } from './imagestyle';
+export { default as ImageStyleEditing } from './imagestyle/imagestyleediting';
+export { default as ImageStyleUI } from './imagestyle/imagestyleui';
+export { default as ImageTextAlternative } from './imagetextalternative';
+export { default as ImageTextAlternativeEditing } from './imagetextalternative/imagetextalternativeediting';
+export { default as ImageTextAlternativeUI } from './imagetextalternative/imagetextalternativeui';
+export { default as ImageToolbar } from './imagetoolbar';
+export { default as ImageUpload } from './imageupload';
+export { default as ImageUploadEditing } from './imageupload/imageuploadediting';
+export { default as ImageUploadProgress } from './imageupload/imageuploadprogress';
+export { default as ImageUploadUI } from './imageupload/imageuploadui';

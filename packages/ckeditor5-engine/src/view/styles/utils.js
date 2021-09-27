@@ -220,7 +220,7 @@ export function getBoxSidesValueReducer( styleShorthand ) {
  *		// will return '1px 1px 2px'
  *
  * @param {module:engine/view/stylesmap~BoxSides} styleShorthand
- * @returns {Function}
+ * @returns {String}
  */
 export function getBoxSidesShorthandValue( { top, right, bottom, left } ) {
 	const out = [];

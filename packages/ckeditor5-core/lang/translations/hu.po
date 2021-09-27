@@ -16,10 +16,6 @@ msgstr ""
 "Language: hu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "Mentés"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Mégsem"
@@ -27,3 +23,19 @@ msgstr "Mégsem"
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
 msgstr "Szín eltávolítása"
+
+msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
+msgid "Restore default"
+msgstr "Alapértelmezés visszaállítása"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Mentés"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "További elemek"
+
+msgctxt "Label for a ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or Search result '5 of 20'."
+msgid "%0 of %1"
+msgstr "%0 / %1"

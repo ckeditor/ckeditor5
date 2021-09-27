@@ -17,6 +17,7 @@ const requestOutput = document.getElementById( 'request' );
 
 ClassicEditor
 	.create( document.getElementById( 'editor' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		cloudServices: {
 			tokenUrl: getToken,
 			uploadUrl: UPLOAD_URL

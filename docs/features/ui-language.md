@@ -13,6 +13,8 @@ The UI of the editor can be localized. CKEditor 5 currently supports around 90 l
 	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
 </info-box>
 
+## Demo
+
 See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
@@ -24,6 +26,8 @@ See the demo of the editor in Spanish:
 ## Right–to–left (RTL) languages support
 
 CKEditor 5 supports right–to–left languages out–of–the–box. When one of <abbr title="right–to–left">RTL</abbr> languages is used, the WYSIWYG editor adapts its UI for the best editing experience, for instance, mirroring various elements like toolbars, dropdowns, buttons, etc.
+
+### Demo
 
 See the demo of the editor in Arabic:
 

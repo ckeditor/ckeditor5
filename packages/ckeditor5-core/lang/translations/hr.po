@@ -16,10 +16,6 @@ msgstr ""
 "Language: hr\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "Snimi"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Poništi"
@@ -27,3 +23,19 @@ msgstr "Poništi"
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
 msgstr "Ukloni boju"
+
+msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
+msgid "Restore default"
+msgstr ""
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Snimi"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "Prikaži više stavaka"
+
+msgctxt "Label for a ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or Search result '5 of 20'."
+msgid "%0 of %1"
+msgstr "%0 od %1"

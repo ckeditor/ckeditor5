@@ -1,31 +1,32 @@
 {
   "name": "@ckeditor/ckeditor5-html-embed",
-  "version": "27.0.0",
+  "version": "29.2.0",
   "description": "HTML embed feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
     "ckeditor 5",
     "ckeditor5-feature",
-    "ckeditor5-plugin"
+    "ckeditor5-plugin",
+    "ckeditor5-dll"
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^27.0.0"
+    "ckeditor5": "^29.2.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^27.0.0",
-    "@ckeditor/ckeditor5-core": "^27.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^24.0.0",
-    "@ckeditor/ckeditor5-clipboard": "^27.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^27.0.0",
-    "@ckeditor/ckeditor5-engine": "^27.0.0",
-    "@ckeditor/ckeditor5-media-embed": "^27.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^27.0.0",
-    "@ckeditor/ckeditor5-table": "^27.0.0",
-    "@ckeditor/ckeditor5-ui": "^27.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^27.0.0",
-    "@ckeditor/ckeditor5-widget": "^27.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^29.2.0",
+    "@ckeditor/ckeditor5-dev-utils": "^25.4.0",
+    "@ckeditor/ckeditor5-clipboard": "^29.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
+    "@ckeditor/ckeditor5-engine": "^29.2.0",
+    "@ckeditor/ckeditor5-media-embed": "^29.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
+    "@ckeditor/ckeditor5-table": "^29.2.0",
+    "@ckeditor/ckeditor5-ui": "^29.2.0",
+    "@ckeditor/ckeditor5-theme-lark": "^29.2.0",
+    "@ckeditor/ckeditor5-widget": "^29.2.0",
     "lodash-es": "^4.17.15",
     "sanitize-html": "^2.1.0",
     "webpack": "^4.43.0",
@@ -48,7 +49,8 @@
     "lang",
     "src",
     "theme",
-    "build"
+    "build",
+    "ckeditor5-metadata.json"
   ],
   "scripts": {
     "dll:build": "webpack"

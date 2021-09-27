@@ -38,7 +38,7 @@ msgstr "Odstrániť stĺpec"
 
 msgctxt "Label for the select the entire table column button."
 msgid "Select column"
-msgstr ""
+msgstr "Vybrať stĺpec"
 
 msgctxt "Label for the table column dropdown button."
 msgid "Column"
@@ -62,7 +62,7 @@ msgstr "Odstrániť riadok"
 
 msgctxt "Label for the select the entire table row button."
 msgid "Select row"
-msgstr ""
+msgstr "Vybrať riadok"
 
 msgctxt "Label for the table row dropdown button."
 msgid "Row"
@@ -102,148 +102,160 @@ msgstr "Panel nástrojov tabuľky"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table."
 msgid "Table properties"
-msgstr ""
+msgstr "Vlastnosti tabuľky"
 
 msgctxt "The label describing the form allowing to specify the properties of a selected table cell."
 msgid "Cell properties"
-msgstr ""
+msgstr "Vlastnosti bunky"
 
 msgctxt "The label describing a group of border–related form fields (border style, color, etc.)."
 msgid "Border"
-msgstr ""
+msgstr "Orámovanie"
 
 msgctxt "The label for the dropdown that allows configuring the border style of a table or a table cell."
 msgid "Style"
-msgstr ""
+msgstr "Štýl"
 
 msgctxt "The label for the input that allows configuring the width of a table or a table cell or the width of a border."
 msgid "Width"
-msgstr ""
+msgstr "Šírka"
 
 msgctxt "The label for the input that allows configuring the height of a table or a table cell."
 msgid "Height"
-msgstr ""
+msgstr "Výška"
 
 msgctxt "The label for the input that allows configuring the border color of a table or a table cell."
 msgid "Color"
-msgstr ""
+msgstr "Farba"
 
 msgctxt "The label for the input that allows configuring the background color of a table or a table cell."
 msgid "Background"
-msgstr ""
+msgstr "Pozadie"
 
 msgctxt "The label for the input that allows configuring the padding of a table cell."
 msgid "Padding"
-msgstr ""
+msgstr "Vnútorný okraj"
 
 msgctxt "The label describing a group of form fields that allows setting dimensions of a table or a table cell."
 msgid "Dimensions"
-msgstr ""
+msgstr "Rozmery"
 
 msgctxt "The label for the group of toolbars that allows configuring the text alignment in a table cell."
 msgid "Table cell text alignment"
-msgstr ""
+msgstr "Zarovnanie textu v bunke"
 
 msgctxt "The label for the toolbar that allows configuring the alignment of a table."
 msgid "Alignment"
-msgstr ""
+msgstr "Zarovnanie"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the horizontal text alignment in a table cell."
 msgid "Horizontal text alignment toolbar"
-msgstr ""
+msgstr "Horizontálne zarovnanie textu v panely"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the vertical text alignment in a table cell."
 msgid "Vertical text alignment toolbar"
-msgstr ""
+msgstr "Vertikálne zarovnanie textu v panely"
 
 msgctxt "The label used by assistive technologies describing a toolbar that allows configuring the alignment of a table."
 msgid "Table alignment toolbar"
-msgstr ""
+msgstr "Panel zarovnania tabuľky"
 
 msgctxt "The label for the border style dropdown when no style is applied to a table or a table cell."
 msgid "None"
-msgstr ""
+msgstr "Žiadna"
 
 msgctxt "The label for the border style dropdown when the solid border is applied to a table or a table cell."
 msgid "Solid"
-msgstr ""
+msgstr "Plná"
 
 msgctxt "The label for the border style dropdown when the dotted border is applied to a table or a table cell."
 msgid "Dotted"
-msgstr ""
+msgstr "Bodkovaná"
 
 msgctxt "The label for the border style dropdown when the dashed border is applied to a table or a table cell."
 msgid "Dashed"
-msgstr ""
+msgstr "Čiarkovaná"
 
 msgctxt "The label for the border style dropdown when the double border is applied to a table or a table cell."
 msgid "Double"
-msgstr ""
+msgstr "Dvojitá"
 
 msgctxt "The label for the border style dropdown when the groove border is applied to a table or a table cell."
 msgid "Groove"
-msgstr ""
+msgstr "Drážkovaná"
 
 msgctxt "The label for the border style dropdown when the ridge border is applied to a table or a table cell."
 msgid "Ridge"
-msgstr ""
+msgstr "Rámovaná"
 
 msgctxt "The label for the border style dropdown when the inset border is applied to a table or a table cell."
 msgid "Inset"
-msgstr ""
+msgstr "Vložená z vnútra"
 
 msgctxt "The label for the border style dropdown when the outset border is applied to a table or a table cell."
 msgid "Outset"
-msgstr ""
+msgstr "Vložená zvonku"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the left."
 msgid "Align cell text to the left"
-msgstr ""
+msgstr "Zarovnať text bunky doľava"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the center."
 msgid "Align cell text to the center"
-msgstr ""
+msgstr "Zarovnať text bunky na stred"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the right."
 msgid "Align cell text to the right"
-msgstr ""
+msgstr "Zarovnať text bunky doprava"
 
 msgctxt "The label used by assistive technologies describing a button that justifies the table cell text."
 msgid "Justify cell text"
-msgstr ""
+msgstr "Zarovnať text bunky z oboch strán"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the top."
 msgid "Align cell text to the top"
-msgstr ""
+msgstr "Zarovnať text bunky nahor"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the middle."
 msgid "Align cell text to the middle"
-msgstr ""
+msgstr "Zarovnať text bunky na stred"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table cell text to the bottom."
 msgid "Align cell text to the bottom"
-msgstr ""
+msgstr "Zarovnať text bunky nadol"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the left."
 msgid "Align table to the left"
-msgstr ""
+msgstr "Zarovnať tabuľku doľava"
 
 msgctxt "The label used by assistive technologies describing a button that centers the table."
 msgid "Center table"
-msgstr ""
+msgstr "Centrovať tabuľku"
 
 msgctxt "The label used by assistive technologies describing a button that aligns the table to the right."
 msgid "Align table to the right"
-msgstr ""
+msgstr "Zarovnať tabuľku doprava"
 
 msgctxt "The localized error string that can be displayed next to color (background, border) fields that have an invalid value"
 msgid "The color is invalid. Try \"#FF0000\" or \"rgb(255,0,0)\" or \"red\"."
-msgstr ""
+msgstr "Farba má nesprávny formát. Skúste \"#FF0000\", \"rgb(255,0,0)\" alebo \"red\"."
 
 msgctxt "The localized error string that can be displayed next to length (padding, border width) fields that have an invalid value."
 msgid "The value is invalid. Try \"10px\" or \"2em\" or simply \"2\"."
-msgstr ""
+msgstr "Hodnota je nesprávna. Skúste \"10px\", \"2em\" alebo jednoducho \"2\"."
 
 msgctxt "The label used by assistive technologies describing a button that opens a color picker, where user can choose a configured color for a certain properties (eg.: background color, color, border-color etc.)."
 msgid "Color picker"
+msgstr "Vybrať farbu"
+
+msgctxt "The button label for the table toolbar hiding caption attached to the table."
+msgid "Toggle caption off"
+msgstr ""
+
+msgctxt "The button label for the table toolbar showing caption attached to the table."
+msgid "Toggle caption on"
+msgstr ""
+
+msgctxt "The placeholder text for the table caption displayed when the caption is empty."
+msgid "Enter table caption"
 msgstr ""

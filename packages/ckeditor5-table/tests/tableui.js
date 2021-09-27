@@ -386,11 +386,28 @@ describe( 'TableUI', () => {
 			expect( dropdown.buttonView ).to.be.instanceOf( SplitButtonView );
 		} );
 
-		it( 'should have #isEnabled always true regardless of the "mergeTableCells" command state', () => {
-			command.isEnabled = false;
+		it( 'should be disabled if all of the merge commands are disabled, along with the main merge command', () => {
+			[
+				'mergeTableCells',
+				'mergeTableCellUp',
+				'mergeTableCellRight',
+				'mergeTableCellDown',
+				'mergeTableCellLeft',
+				'splitTableCellVertically',
+				'splitTableCellHorizontally'
+			].forEach( command => {
+				editor.commands.get( command ).isEnabled = false;
+			} );
+
+			expect( dropdown.isEnabled ).to.be.false;
+
+			editor.commands.get( 'mergeTableCellLeft' ).isEnabled = true;
+
 			expect( dropdown.isEnabled ).to.be.true;
 
+			editor.commands.get( 'mergeTableCellLeft' ).isEnabled = false;
 			command.isEnabled = true;
+
 			expect( dropdown.isEnabled ).to.be.true;
 		} );
 
@@ -401,14 +418,6 @@ describe( 'TableUI', () => {
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, 'mergeTableCells' );
-		} );
-
-		it( 'should have the dropdown part of the split button always enabled no matter the "mergeTableCells" command state', () => {
-			command.isEnabled = true;
-			expect( dropdown.buttonView.arrowView.isEnabled ).to.be.true;
-
-			command.isEnabled = false;
-			expect( dropdown.buttonView.arrowView.isEnabled ).to.be.true;
 		} );
 
 		it( 'should have proper items in panel', () => {

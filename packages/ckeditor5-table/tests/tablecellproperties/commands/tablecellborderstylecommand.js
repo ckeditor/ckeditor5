@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellBorderStyleCommand', () => {
+		describe( 'TableCellBorderStyleCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -24,7 +24,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableCellBorderStyleCommand( editor );
+				command = new TableCellBorderStyleCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -201,7 +201,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table cell borderStyle to a passed value', () => {
@@ -209,7 +209,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table cell if no value is passed', () => {
@@ -227,7 +227,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should change selected table cell borderStyle to a passed value', () => {
@@ -235,7 +235,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'solid' } );
 
-						assertTableCellStyle( editor, 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' );
+						assertTableCellStyle( editor, 'border-style:solid;' );
 					} );
 
 					it( 'should remove borderStyle from a selected table cell if no value is passed', () => {
@@ -260,12 +260,12 @@ describe( 'table cell properties', () => {
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[
-								{ contents: '00', style: 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' },
+								{ contents: '00', style: 'border-style:solid;' },
 								'01'
 							],
 							[
 								'10',
-								{ contents: '11', style: 'border-bottom:solid;border-left:solid;border-right:solid;border-top:solid;' }
+								{ contents: '11', style: 'border-style:solid;' }
 							]
 						] ) );
 					} );
@@ -277,6 +277,111 @@ describe( 'table cell properties', () => {
 						] ) );
 
 						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellBorderStyleCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellBorderStyleCommand( editor, 'solid' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default borderStyle property (single string)', () => {
+						setData( model, modelTable( [ [ { borderStyle: 'solid', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+
+					it( 'should be undefined if selected table cell has the default borderStyle property object with same values', () => {
+						setTableCellWithObjectAttributes( model, {
+							borderStyle: {
+								top: 'solid',
+								right: 'solid',
+								bottom: 'solid',
+								left: 'solid'
+							}
+						}, '[]foo' );
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined is selection contains the default value', () => {
+						setData( model, modelTable( [ [ { borderStyle: 'solid', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it(
+						'should be undefined if all table cells have the same "borderStyle" property value which is the default value',
+						() => {
+							setData( model, modelTable( [
+								[
+									{ contents: '00', isSelected: true, borderStyle: 'solid' },
+									{ contents: '01', isSelected: true, borderStyle: 'solid' }
+								],
+								[
+									'10',
+									{ contents: '11', isSelected: true, borderStyle: 'solid' }
+								]
+							] ) );
+
+							expect( command.value ).to.be.undefined;
+						}
+					);
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove borderStyle from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { borderStyle: 'ridge', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: 'solid' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove borderStyle from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { borderStyle: 'ridge', contents: '[foo]' } ] ] ) );
+
+						command.execute( { value: 'solid' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should remove "borderStyle" from selected table cells if the default value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, borderStyle: 'solid' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, borderStyle: 'solid' } ]
+						] ) );
+
+						command.execute( { value: 'solid' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[ '00', '01' ],

@@ -732,11 +732,9 @@ class FakeWidget extends Plugin {
 		schema.register( 'fake-widget', {
 			isObject: true,
 			isBlock: true,
-			allowWhere: '$block'
+			allowWhere: '$block',
+			allowChildren: [ '$text', 'paragraph' ]
 		} );
-
-		schema.extend( '$text', { allowIn: 'fake-widget' } );
-		schema.extend( 'paragraph', { allowIn: 'fake-widget' } );
 
 		const conversion = editor.conversion;
 

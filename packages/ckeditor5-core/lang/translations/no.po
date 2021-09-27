@@ -16,10 +16,6 @@ msgstr ""
 "Language: no\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Label for the Save button."
-msgid "Save"
-msgstr "Lagre"
-
 msgctxt "Label for the Cancel button."
 msgid "Cancel"
 msgstr "Avbryt"
@@ -27,3 +23,19 @@ msgstr "Avbryt"
 msgctxt "The label used by a button next to the color palette in the color picker that removes the color (resets it to an empty value, example usages in font color or table properties)."
 msgid "Remove color"
 msgstr "Fjern farge"
+
+msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
+msgid "Restore default"
+msgstr ""
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Lagre"
+
+msgctxt "Label of a toolbar button which reveals more toolbar items."
+msgid "Show more items"
+msgstr "Vis flere elementer"
+
+msgctxt "Label for a ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or Search result '5 of 20'."
+msgid "%0 of %1"
+msgstr "%0 av %1"

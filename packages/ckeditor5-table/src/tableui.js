@@ -278,13 +278,22 @@ export default class TableUI extends Plugin {
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const mergeCommandName = 'mergeTableCells';
 
-		this._fillDropdownWithListOptions( dropdownView, options );
+		// Main command.
+		const mergeCommand = editor.commands.get( mergeCommandName );
+
+		// Subcommands in the dropdown.
+		const commands = this._fillDropdownWithListOptions( dropdownView, options );
 
 		dropdownView.buttonView.set( {
 			label,
 			icon,
 			tooltip: true,
 			isEnabled: true
+		} );
+
+		// Make dropdown button disabled when all options are disabled together with the main command.
+		dropdownView.bind( 'isEnabled' ).toMany( [ mergeCommand, ...commands ], 'isEnabled', ( ...areEnabled ) => {
+			return areEnabled.some( isEnabled => isEnabled );
 		} );
 
 		// Merge selected table cells when the main part of the split button is clicked.

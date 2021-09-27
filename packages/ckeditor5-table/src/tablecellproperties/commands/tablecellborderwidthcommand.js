@@ -37,9 +37,10 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 	 * Creates a new `TableCellBorderWidthCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'borderWidth' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'borderWidth', defaultValue );
 	}
 
 	/**
@@ -50,13 +51,25 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 			return;
 		}
 
-		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	_getValueToSet( value ) {
-		return addDefaultUnitToNumericValue( value, 'px' );
+		value = addDefaultUnitToNumericValue( value, 'px' );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 }

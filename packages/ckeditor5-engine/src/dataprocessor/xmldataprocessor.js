@@ -111,6 +111,21 @@ export default class XmlDataProcessor {
 	}
 
 	/**
+	 * If the processor is set to use marked fillers, it will insert `&nbsp;` fillers wrapped in `<span>` elements
+	 * (`<span data-cke-filler="true">&nbsp;</span>`) instead of regular `&nbsp;` characters.
+	 *
+	 * This mode allows for a more precise handling of block fillers (so they do not leak into editor content) but
+	 * bloats the editor data with additional markup.
+	 *
+	 * This mode may be required by some features and will be turned on by them automatically.
+	 *
+	 * @param {'default'|'marked'} type Whether to use the default or the marked `&nbsp;` block fillers.
+	 */
+	useFillerType( type ) {
+		this._domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
+	}
+
+	/**
 	 * Converts an XML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
 	 *

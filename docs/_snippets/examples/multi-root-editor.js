@@ -24,6 +24,7 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Link from '@ckeditor/ckeditor5-link/src/link';
@@ -391,15 +392,15 @@ MultirootEditor
 	}, {
 		plugins: [
 			Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
-			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage, CloudServices
+			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage, CloudServices, FindAndReplace
 		],
 		toolbar: [
 			'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
-			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
+			'insertTable', 'mediaEmbed', 'findAndReplace', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full',
-				'imageStyle:side' ],
-			styles: [ 'full', 'side' ]
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative'
+			]
 		},
 		table: {
 			contentToolbar: [

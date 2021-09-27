@@ -7,7 +7,7 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
-/* globals document, DOMParser */
+/* globals document, DOMParser, Node */
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
@@ -94,6 +94,21 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
+	 * If the processor is set to use marked fillers, it will insert `&nbsp;` fillers wrapped in `<span>` elements
+	 * (`<span data-cke-filler="true">&nbsp;</span>`) instead of regular `&nbsp;` characters.
+	 *
+	 * This mode allows for a more precise handling of the block fillers (so they do not leak into the editor content) but
+	 * bloats the editor data with additional markup.
+	 *
+	 * This mode may be required by some features and will be turned on by them automatically.
+	 *
+	 * @param {'default'|'marked'} type Whether to use the default or the marked `&nbsp;` block fillers.
+	 */
+	useFillerType( type ) {
+		this._domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
+	}
+
+	/**
 	 * Converts an HTML string to its DOM representation. Returns a document fragment containing nodes parsed from
 	 * the provided data.
 	 *
@@ -104,10 +119,39 @@ export default class HtmlDataProcessor {
 	_toDom( data ) {
 		const document = this._domParser.parseFromString( data, 'text/html' );
 		const fragment = document.createDocumentFragment();
-		const nodes = document.body.childNodes;
 
-		while ( nodes.length > 0 ) {
-			fragment.appendChild( nodes[ 0 ] );
+		// The rules for parsing an HTML string can be read on https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inhtml.
+		//
+		// In short, parsing tokens in an HTML string starts with the so-called "initial" insertion mode. When a DOM parser is in this
+		// state and encounters a comment node, it inserts this comment node as the last child of the newly-created `HTMLDocument` object.
+		// The parser then proceeds to successive insertion modes during parsing subsequent tokens and appends in the `HTMLDocument` object
+		// other nodes (like <html>, <head>, <body>). This causes that the first leading comments from HTML string become the first nodes
+		// in the `HTMLDocument` object, but not in the <body> collection, because they are ultimately located before the <html> element.
+		//
+		// Therefore, so that such leading comments do not disappear, they all are moved from the `HTMLDocument` object to the document
+		// fragment, until the <html> element is encountered.
+		//
+		// See: https://github.com/ckeditor/ckeditor5/issues/9861.
+		let documentChildNode = document.firstChild;
+
+		while ( !documentChildNode.isSameNode( document.documentElement ) ) {
+			const node = documentChildNode;
+
+			documentChildNode = documentChildNode.nextSibling;
+
+			// It seems that `DOMParser#parseFromString()` adds only comment nodes directly to the `HTMLDocument` object, before the <html>
+			// node. The condition below is just to be sure we are moving only comment nodes.
+
+			/* istanbul ignore else */
+			if ( node.nodeType == Node.COMMENT_NODE ) {
+				fragment.appendChild( node );
+			}
+		}
+
+		const bodyChildNodes = document.body.childNodes;
+
+		while ( bodyChildNodes.length > 0 ) {
+			fragment.appendChild( bodyChildNodes[ 0 ] );
 		}
 
 		return fragment;

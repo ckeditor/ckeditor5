@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, window */
+/* globals setTimeout, window, Node */
 
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
@@ -94,6 +94,154 @@ describe( 'HtmlDataProcessor', () => {
 		} );
 	} );
 
+	describe( '_toDom()', () => {
+		it( 'should insert nested comment nodes into <body> collection', () => {
+			const bodyDocumentFragment = dataProcessor._toDom(
+				'<div>' +
+					'<!-- Comment 1 -->' +
+					'<p>' +
+						'<!-- Comment 2 -->' +
+						'Paragraph' +
+						'<!-- Comment 3 -->' +
+					'</p>' +
+					'<!-- Comment 4 -->' +
+				'</div>'
+			);
+
+			const [ div ] = bodyDocumentFragment.childNodes;
+			const [ comment1, paragraph, comment4 ] = div.childNodes;
+			const [ comment2, text, comment3 ] = paragraph.childNodes;
+
+			expect( bodyDocumentFragment.childNodes.length ).to.equal( 1 );
+			expect( div.childNodes.length ).to.equal( 3 );
+			expect( paragraph.childNodes.length ).to.equal( 3 );
+
+			expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+			expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment2.data ).to.equal( ' Comment 2 ' );
+
+			expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment3.data ).to.equal( ' Comment 3 ' );
+
+			expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment4.data ).to.equal( ' Comment 4 ' );
+
+			expect( text.nodeType ).to.equal( Node.TEXT_NODE );
+			expect( text.data ).to.equal( 'Paragraph' );
+
+			expect( div.nodeType ).to.equal( Node.ELEMENT_NODE );
+			expect( div.outerHTML ).to.equal(
+				'<div>' +
+					'<!-- Comment 1 -->' +
+					'<p>' +
+						'<!-- Comment 2 -->' +
+						'Paragraph' +
+						'<!-- Comment 3 -->' +
+					'</p>' +
+					'<!-- Comment 4 -->' +
+				'</div>'
+			);
+
+			expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+			expect( paragraph.outerHTML ).to.equal(
+				'<p>' +
+					'<!-- Comment 2 -->' +
+					'Paragraph' +
+					'<!-- Comment 3 -->' +
+				'</p>'
+			);
+		} );
+
+		it( 'should insert leading comment nodes from HTML string into <body> collection #1', () => {
+			const bodyDocumentFragment = dataProcessor._toDom(
+				'<!-- Comment 1 -->' +
+				'<!-- Comment 2 -->' +
+				'<h2>Heading</h2>' +
+				'<p>Paragraph</p>' +
+				'<!-- Comment 3 -->' +
+				'<!-- Comment 4 -->'
+			);
+
+			const [
+				comment1,
+				comment2,
+				heading,
+				paragraph,
+				comment3,
+				comment4
+			] = bodyDocumentFragment.childNodes;
+
+			expect( bodyDocumentFragment.childNodes.length ).to.equal( 6 );
+
+			expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+			expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment2.data ).to.equal( ' Comment 2 ' );
+
+			expect( comment3.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment3.data ).to.equal( ' Comment 3 ' );
+
+			expect( comment4.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment4.data ).to.equal( ' Comment 4 ' );
+
+			expect( heading.nodeType ).to.equal( Node.ELEMENT_NODE );
+			expect( heading.outerHTML ).to.equal( '<h2>Heading</h2>' );
+
+			expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+			expect( paragraph.outerHTML ).to.equal( '<p>Paragraph</p>' );
+		} );
+
+		it( 'should insert leading comment nodes from HTML string into <body> collection #2', () => {
+			// The existence of the <meta> tag causes that DOMParser inserts this element into the <head>. Moreover, all subsequent comment
+			// nodes (up until the node, that is not valid inside the <head>, which is the <h2> in our case) are also inserted into the
+			// <head>. So both <!-- Comment 3 --> and <!-- Comment 4 --> nodes, that are located between the <meta> and <h2> in the HTML
+			// string, are insterted into the <head>.
+			const bodyDocumentFragment = dataProcessor._toDom(
+				'<!-- Comment 1 -->' +
+				'<!-- Comment 2 -->' +
+				'<meta>' + // inserted into the <head> by DOMParser#parseFromString()
+				'<!-- Comment 3 -->' + // inserted into the <head> by DOMParser#parseFromString()
+				'<!-- Comment 4 -->' + // inserted into the <head> by DOMParser#parseFromString()
+				'<h2>Heading</h2>' +
+				'<p>Paragraph</p>' +
+				'<!-- Comment 5 -->' +
+				'<!-- Comment 6 -->'
+			);
+
+			const [
+				comment1,
+				comment2,
+				heading,
+				paragraph,
+				comment5,
+				comment6
+			] = bodyDocumentFragment.childNodes;
+
+			expect( bodyDocumentFragment.childNodes.length ).to.equal( 6 );
+
+			expect( comment1.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment1.data ).to.equal( ' Comment 1 ' );
+
+			expect( comment2.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment2.data ).to.equal( ' Comment 2 ' );
+
+			expect( comment5.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment5.data ).to.equal( ' Comment 5 ' );
+
+			expect( comment6.nodeType ).to.equal( Node.COMMENT_NODE );
+			expect( comment6.data ).to.equal( ' Comment 6 ' );
+
+			expect( heading.nodeType ).to.equal( Node.ELEMENT_NODE );
+			expect( heading.outerHTML ).to.equal( '<h2>Heading</h2>' );
+
+			expect( paragraph.nodeType ).to.equal( Node.ELEMENT_NODE );
+			expect( paragraph.outerHTML ).to.equal( '<p>Paragraph</p>' );
+		} );
+	} );
+
 	describe( 'toData()', () => {
 		it( 'should return empty string when empty DocumentFragment is passed', () => {
 			const fragment = new ViewDocumentFragment( viewDocument );
@@ -131,6 +279,22 @@ describe( 'HtmlDataProcessor', () => {
 
 			expect( stringify( fragment ) ).to.equal( '<p>foo</p><div class="raw"></div><p>bar</p>' );
 			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
+		} );
+	} );
+
+	describe( 'useFillerType()', () => {
+		it( 'should turn on and off using marked block fillers', () => {
+			const fragment = parse( '<container:p></container:p>' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+
+			dataProcessor.useFillerType( 'marked' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
+
+			dataProcessor.useFillerType( 'default' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
 		} );
 	} );
 } );

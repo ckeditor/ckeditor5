@@ -94,7 +94,7 @@ Then, you can add missing dependencies (i.e. packages you want to add to your bu
 npm install --save-dev <package-name>
 ```
 
-This will install the package and add it to `package.json`. You can also edit `package.json` manually.
+This will install the package and add it to `package.json`. You can also edit `package.json` manually. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
 
 <info-box hint>
 	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).

@@ -11,6 +11,7 @@ Tests for manual image resizing using the UI in the image toolbar.
 	- Each option should have a label text corresponding to an option value defined in the configuration.
 	- The selected option should be "on" when the dropdown is open.
 	- The editor is using the combination of `ImageResizeEditing` and `ImageResizeButtons`.
+	- The dropdown should be enabled if the selection in inside the image caption.
 
 ## Buttons
 
@@ -21,3 +22,4 @@ Tests for manual image resizing using the UI in the image toolbar.
 	- The tooltip text and the `aria-label` attribute should be the same (and more verbose).
 	- The selected option button should be "on".
 	- The editor is using the combination of `ImageResizeEditing` and `ImageResizeButtons`.
+	- The  buttons should be enabled if the selection in inside the image caption.

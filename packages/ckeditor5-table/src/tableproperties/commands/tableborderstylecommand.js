@@ -29,9 +29,10 @@ export default class TableBorderStyleCommand extends TablePropertyCommand {
 	 * Creates a new `TableBorderStyleCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'borderStyle' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'borderStyle', defaultValue );
 	}
 
 	/**
@@ -42,6 +43,12 @@ export default class TableBorderStyleCommand extends TablePropertyCommand {
 			return;
 		}
 
-		return getSingleValue( table.getAttribute( this.attributeName ) );
+		const value = getSingleValue( table.getAttribute( this.attributeName ) );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 }

@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-upload",
-  "version": "27.0.0",
-  "description": "Upload Feature for CKEditor 5.",
+  "version": "29.2.0",
+  "description": "Upload feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
     "ckeditor5",
@@ -11,9 +11,9 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^27.0.0",
-    "@ckeditor/ckeditor5-utils": "^27.0.0",
-    "@ckeditor/ckeditor5-ui": "^27.0.0"
+    "@ckeditor/ckeditor5-core": "^29.2.0",
+    "@ckeditor/ckeditor5-utils": "^29.2.0",
+    "@ckeditor/ckeditor5-ui": "^29.2.0"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -31,6 +31,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json"
   ]
 }

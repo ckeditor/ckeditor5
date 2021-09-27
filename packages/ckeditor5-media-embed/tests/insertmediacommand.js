@@ -73,8 +73,7 @@ describe( 'MediaEmbedCommand', () => {
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 
 			setData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
@@ -96,11 +95,11 @@ describe( 'MediaEmbedCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false if a non-media object is selected', () => {
-			model.schema.register( 'image', { isObject: true, isBlock: true, allowWhere: '$block' } );
+		it( 'should be true if a non-media object is selected', () => {
+			model.schema.register( 'imageBlock', { isObject: true, isBlock: true, allowWhere: '$block' } );
 
-			setData( model, '[<image src="http://ckeditor.com"></image>]' );
-			expect( command.isEnabled ).to.be.false;
+			setData( model, '[<imageBlock src="http://ckeditor.com"></imageBlock>]' );
+			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
 
@@ -143,6 +142,19 @@ describe( 'MediaEmbedCommand', () => {
 			command.execute( 'http://cksource.com' );
 
 			expect( getData( model ) ).to.equal( '[<media url="http://cksource.com"></media>]' );
+		} );
+
+		it( 'should replace an existing selected object with a media', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setData( model, '<p>foo</p>[<object></object>]<p>bar</p>' );
+
+			command.execute( 'http://ckeditor.com' );
+
+			expect( getData( model ) ).to.equal(
+				'<p>foo</p>[<media url="http://ckeditor.com"></media>]<p>bar</p>'
+			);
 		} );
 	} );
 } );

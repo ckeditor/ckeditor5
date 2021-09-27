@@ -56,12 +56,7 @@ const imageConfig1 = {
 			value: '75'
 		}
 	],
-	toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
-	styles: [
-		'alignLeft',
-		'alignCenter',
-		'alignRight'
-	]
+	toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
 };
 
 const config1 = {
@@ -100,17 +95,14 @@ const imageConfig2 = {
 		}
 	],
 	toolbar: [
-		'imageStyle:alignLeft',
-		'imageStyle:full',
-		'imageStyle:side', '|',
+		'imageStyle:inline',
+		'imageStyle:wrapText',
+		'imageStyle:breakText',
+		'imageStyle:side', '|', // Purposely using side image to make sure it works well with both style types.
+		'toggleImageCaption', '|',
 		'resizeImage:50',
 		'resizeImage:75',
 		'resizeImage:original'
-	],
-	styles: [
-		'full',
-		'alignLeft',
-		'side' // Purposely using side image instead right aligned image to make sure it works well with both style types.
 	]
 };
 

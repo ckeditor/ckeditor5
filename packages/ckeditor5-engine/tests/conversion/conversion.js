@@ -531,31 +531,31 @@ describe( 'Conversion', () => {
 
 		describe( 'attributeToAttribute', () => {
 			beforeEach( () => {
-				conversion.elementToElement( { model: 'image', view: 'img' } );
+				conversion.elementToElement( { model: 'imageBlock', view: 'img' } );
 
-				schema.register( 'image', {
+				schema.register( 'imageBlock', {
 					inheritAllFrom: '$block'
 				} );
 			} );
 
 			it( 'config.view and config.model are strings', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'source' ]
 				} );
 
 				conversion.attributeToAttribute( { model: 'source', view: 'src' } );
 
-				testConversion( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
+				testConversion( '<img src="foo.jpg"></img>', '<imageBlock source="foo.jpg"></imageBlock>' );
 			} );
 
 			it( 'config.view and config.model are objects', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'aside' ]
 				} );
 
 				conversion.attributeToAttribute( {
 					model: {
-						name: 'image',
+						name: 'imageBlock',
 						key: 'aside',
 						values: [ 'aside' ]
 					},
@@ -570,18 +570,18 @@ describe( 'Conversion', () => {
 
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				testConversion( '<img class="aside half-size"></img>', '<image aside="aside"></image>' );
+				testConversion( '<img class="aside half-size"></img>', '<imageBlock aside="aside"></imageBlock>' );
 				testConversion( '<p class="aside half-size"></p>', '<paragraph></paragraph>', '<p></p>' );
 			} );
 
 			it( 'config.view and config.model are objects - convert to style attribute', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'aside' ]
 				} );
 
 				conversion.attributeToAttribute( {
 					model: {
-						name: 'image',
+						name: 'imageBlock',
 						key: 'aside',
 						values: [ 'aside' ]
 					},
@@ -600,7 +600,7 @@ describe( 'Conversion', () => {
 
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				testConversion( '<img style="float:right;margin:5px;width:50%"></img>', '<image aside="aside"></image>' );
+				testConversion( '<img style="float:right;margin:5px;width:50%"></img>', '<imageBlock aside="aside"></imageBlock>' );
 				testConversion( '<p style="float:right;margin:5px;width:50%"></p>', '<paragraph></paragraph>', '<p></p>' );
 			} );
 
@@ -664,13 +664,13 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view and config.model have name and key set', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'source' ]
 				} );
 
 				conversion.attributeToAttribute( {
 					model: {
-						name: 'image',
+						name: 'imageBlock',
 						key: 'source'
 					},
 					view: {
@@ -679,7 +679,7 @@ describe( 'Conversion', () => {
 					}
 				} );
 
-				testConversion( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
+				testConversion( '<img src="foo.jpg"></img>', '<imageBlock source="foo.jpg"></imageBlock>' );
 			} );
 
 			// #1443.
@@ -705,14 +705,14 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.converterPriority is defined (override downcast)', () => {
-				schema.extend( 'image', {
+				schema.extend( 'imageBlock', {
 					allowAttributes: [ 'foo' ]
 				} );
 
 				conversion.attributeToAttribute( { model: 'foo', view: 'foo' } );
 				conversion.attributeToAttribute( { model: 'foo', view: 'foofoo', converterPriority: 'high' } );
 
-				testConversion( '<img foo="foo"></img>', '<image foo="foo"></image>', '<img foofoo="foo"></img>' );
+				testConversion( '<img foo="foo"></img>', '<imageBlock foo="foo"></imageBlock>', '<img foofoo="foo"></img>' );
 			} );
 		} );
 

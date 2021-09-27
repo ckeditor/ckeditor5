@@ -17,7 +17,7 @@ See the [Server–side configuration](#server-side-configuration) section to lea
 ## Installation
 
 <info-box info>
-	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link builds/guides/overview#available-builds official editor builds}. Check out the {@link builds/guides/integration/installing-plugins "Installing plugins"} guide to learn more.
+	The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple upload adapter} plugin is not available out–of–the–box in any of {@link builds/guides/overview#available-builds official editor builds}. Check out the {@link builds/guides/integration/installing-plugins "Installing plugins" guide} to learn more.
 </info-box>
 
 First, install the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package:
@@ -163,7 +163,7 @@ This upload adapter will notify users about the [file upload progress](https://d
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
-See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5 WYSIWYG editor.
+See the {@link features/images-overview Image feature guide} to find out more about handling images in CKEditor 5 WYSIWYG editor.
 
 ## Contribute
 

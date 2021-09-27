@@ -122,4 +122,20 @@ describe( 'XmlDataProcessor', () => {
 			expect( fragment.getChild( 1 ).getCustomProperty( '$rawContent' ) ).to.equal( '<!-- 123 --> abc <!-- 456 -->' );
 		} );
 	} );
+
+	describe( 'useFillerType()', () => {
+		it( 'should turn on and off using marked block fillers', () => {
+			const fragment = parse( '<container:p></container:p>' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+
+			dataProcessor.useFillerType( 'marked' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p><span data-cke-filler="true">&nbsp;</span></p>' );
+
+			dataProcessor.useFillerType( 'default' );
+
+			expect( dataProcessor.toData( fragment ) ).to.equal( '<p>&nbsp;</p>' );
+		} );
+	} );
 } );

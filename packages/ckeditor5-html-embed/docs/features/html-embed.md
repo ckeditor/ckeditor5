@@ -28,7 +28,7 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 
 ## Demo
 
-Use the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
+Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
 
 {@snippet features/html-embed}
 

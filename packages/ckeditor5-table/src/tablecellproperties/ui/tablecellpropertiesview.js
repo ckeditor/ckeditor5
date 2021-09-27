@@ -62,6 +62,8 @@ export default class TableCellPropertiesView extends View {
 	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
 	 * color palette used by the
 	 * {@link module:table/tablecellproperties/ui/tablecellpropertiesview~TableCellPropertiesView#backgroundInput}.
+	 * @param {module:table/tablecellproperties~TableCellPropertiesOptions} options.defaultTableCellProperties The default
+	 * table cell properties.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -446,9 +448,17 @@ export default class TableCellPropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const defaultTableCellProperties = this.options.defaultTableCellProperties;
+		const defaultBorder = {
+			style: defaultTableCellProperties.borderStyle,
+			width: defaultTableCellProperties.borderWidth,
+			color: defaultTableCellProperties.borderColor
+		};
+
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: defaultBorder.color
 		} );
 		const locale = this.locale;
 		const t = this.t;
@@ -483,7 +493,7 @@ export default class TableCellPropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -516,12 +526,19 @@ export default class TableCellPropertiesView extends View {
 			this.borderColor = borderColorInput.fieldView.value;
 		} );
 
-		// Reset the border color and width fields when style is "none".
-		// https://github.com/ckeditor/ckeditor5/issues/6227
-		this.on( 'change:borderStyle', ( evt, name, value ) => {
-			if ( !isBorderStyleSet( value ) ) {
+		// Reset the border color and width fields depending on the `border-style` value.
+		this.on( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
+			// When removing the border (`border-style:none`), clear the remaining `border-*` properties.
+			// See: https://github.com/ckeditor/ckeditor5/issues/6227.
+			if ( !isBorderStyleSet( newValue ) ) {
 				this.borderColor = '';
 				this.borderWidth = '';
+			}
+
+			// When setting the `border-style` from `none`, set the default `border-color` and `border-width` properties.
+			if ( !isBorderStyleSet( oldValue ) ) {
+				this.borderColor = defaultBorder.color;
+				this.borderWidth = defaultBorder.width;
 			}
 		} );
 
@@ -554,7 +571,8 @@ export default class TableCellPropertiesView extends View {
 
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: this.options.defaultTableCellProperties.backgroundColor
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, colorInputCreator );
@@ -705,8 +723,18 @@ export default class TableCellPropertiesView extends View {
 			labels: this._horizontalAlignmentLabels,
 			propertyName: 'horizontalAlignment',
 			nameToValue: name => {
-				return name === ( isContentRTL ? 'right' : 'left' ) ? '' : name;
-			}
+				// For the RTL content, we want to swap the buttons "align to the left" and "align to the right".
+				if ( isContentRTL ) {
+					if ( name === 'left' ) {
+						return 'right';
+					} else if ( name === 'right' ) {
+						return 'left';
+					}
+				}
+
+				return name;
+			},
+			defaultValue: this.options.defaultTableCellProperties.horizontalAlignment
 		} );
 
 		// -- Vertical -----------------------------------------------------
@@ -724,9 +752,7 @@ export default class TableCellPropertiesView extends View {
 			toolbar: verticalAlignmentToolbar,
 			labels: this._verticalAlignmentLabels,
 			propertyName: 'verticalAlignment',
-			nameToValue: name => {
-				return name === 'middle' ? '' : name;
-			}
+			defaultValue: this.options.defaultTableCellProperties.verticalAlignment
 		} );
 
 		return {
@@ -825,5 +851,5 @@ export default class TableCellPropertiesView extends View {
 }
 
 function isBorderStyleSet( value ) {
-	return !!value;
+	return value !== 'none';
 }

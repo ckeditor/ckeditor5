@@ -7,12 +7,6 @@
  * @module html-embed
  */
 
-import HtmlEmbed from './htmlembed';
-import HtmlEmbedEditing from './htmlembedediting';
-import HtmlEmbedUI from './htmlembedui';
-
-export default {
-	HtmlEmbed,
-	HtmlEmbedEditing,
-	HtmlEmbedUI
-};
+export { default as HtmlEmbed } from './htmlembed';
+export { default as HtmlEmbedEditing } from './htmlembedediting';
+export { default as HtmlEmbedUI } from './htmlembedui';

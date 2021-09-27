@@ -15,7 +15,15 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, Autosave ],
 		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		autosave: {
+			save( editor ) {
+				const data = editor.getData();
+
+				return wait( 1000 )
+					.then( () => console.log( `${ getTime() } Saved content: ${ data }` ) );
+			}
 		}
 	} )
 	.then( editor => {
@@ -25,14 +33,6 @@ ClassicEditor
 		destroyButton.addEventListener( 'click', () => editor.destroy() );
 
 		const autosave = editor.plugins.get( Autosave );
-		autosave.adapter = {
-			save() {
-				const data = editor.getData();
-
-				return wait( 1000 )
-					.then( () => console.log( `${ getTime() } Saved content: ${ data }` ) );
-			}
-		};
 
 		autosave.listenTo( autosave, 'change:state',
 			( evt, propName, newValue, oldValue ) => console.log( `${ getTime() } Changed state: ${ oldValue } -> ${ newValue }` ) );

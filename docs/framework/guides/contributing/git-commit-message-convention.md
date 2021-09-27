@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
-order: 40
+order: 50
+modified_at: 2021-09-07
 ---
 
 # Git commit message convention
@@ -70,6 +71,22 @@ If your change is related to the main package only, use `ckeditor5` as the packa
 	If the commit introduces a breaking change across the entire project (a generic change), the package name does not have to be specified.
 </info-box>
 
+### Referencing issues
+
+When creating PRs that address specific issues, use the following messages to indicate it. Add these in the same line with the merge message:
+* `Closes #123` &ndash; when the PR closes an issue.
+* `Closes #123` (outside the merge message) &ndash; when a PR in a public repo closes an issue from a private repository.
+* `See #123` &ndash; when the PR only references an issue, but does not close it yet.
+* _No reference_ &ndash; when the PR does not reference any issue.
+
+### Methods name syntax
+
+All methods mentioned in the git commit message should use the **#** sign inbetween the class name and the method name. And example of a properly named method:
+
+```
+MarkerCollection#has()
+```
+
 ### Order of entries
 
 The proper order of sections for a commit message is as follows:
@@ -81,12 +98,12 @@ All entries must be separated with a blank line, otherwise the lines will not be
 
 ### Examples of correct and incorrect message formatting
 
-Example of a proper commit message:
+An example of a proper commit message:
 
 ```
-Feature (package-name-1): Message 1.
+Feature (package-name-1): Message 1. Closes: #123
 
-Fix (package-name-2): Message 2.
+Fix (package-name-2): Message 2. Closes: #456
 
 Tests: A change across the entire project.
 ```
@@ -140,11 +157,11 @@ Tests (widget): Introduced missing tests. Closes #5.
 An improvement that is not backward compatible and sent by a non-core contributor. Public API was changed:
 
 ```
-Other (utils): Extracted the `utils.foo()` to a separate package. Closes #9.
+Other (utils): Extracted the `utils#foo()` to a separate package. Closes #9.
 
-Feature (engine): Introduced the `engine.foo()` method. Closes #9.
+Feature (engine): Introduced the `engine#foo()` method. Closes #9.
 
-MAJOR BREAKING CHANGE (utils): The `utils.foo()` method was moved to the `engine` package. See #9.
+MAJOR BREAKING CHANGE (utils): The `utils#foo()` method was moved to the `engine` package. See #9.
 ```
 
 For the commits shown above the changelog will look like this:
@@ -157,11 +174,11 @@ Changelog
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils.foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils#foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 
 ### Features
 
-* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine.foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine#foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 * **[ui](http://npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5/issue/1). ([adc59ed](https://github.com/ckeditor/ckeditor5/commit/adc59ed))
 
    RTL content will now be rendered correctly.
@@ -172,7 +189,7 @@ Changelog
 
 ### Other changes
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils.foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils#foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 ```
 
 ## Handling pull requests

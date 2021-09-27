@@ -4,6 +4,9 @@
  */
 
 /* globals document */
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import View from '../../../src/view/view';
 import createViewRoot from '../_utils/createroot';
@@ -12,6 +15,8 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'FocusObserver', () => {
 	let view, viewDocument, observer;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new View( new StylesProcessor() );
@@ -58,11 +63,24 @@ describe( 'FocusObserver', () => {
 			expect( data.domTarget ).to.equal( document.body );
 		} );
 
-		it( 'should render document after blurring', () => {
+		it( 'should render document after focus (after the next view change block)', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
+			viewDocument.isFocused = false;
+
+			observer.onDomEvent( { type: 'focus', target: document.body } );
+			view.change( () => {} );
+
+			sinon.assert.calledOnce( renderSpy );
+		} );
+
+		it( 'should render document after blurring (after the next view change block)', () => {
+			const renderSpy = sinon.spy();
+			view.on( 'render', renderSpy );
+			viewDocument.isFocused = true;
 
 			observer.onDomEvent( { type: 'blur', target: document.body } );
+			view.change( () => {} );
 
 			sinon.assert.calledOnce( renderSpy );
 		} );
@@ -123,7 +141,7 @@ describe( 'FocusObserver', () => {
 			expect( viewDocument.isFocused ).to.be.true;
 		} );
 
-		it( 'should delay rendering by 50ms', () => {
+		it( 'should trigger fallback rendering after 50ms', () => {
 			const renderSpy = sinon.spy();
 			view.on( 'render', renderSpy );
 			const clock = sinon.useFakeTimers();
@@ -190,6 +208,7 @@ describe( 'FocusObserver', () => {
 			// async selection change.
 			viewDocument.fire( 'focus' );
 			viewDocument.fire( 'selectionChange' );
+			view.change( () => {} );
 		} );
 
 		it( 'should render without selectionChange event', done => {
@@ -211,6 +230,7 @@ describe( 'FocusObserver', () => {
 			} );
 
 			observer.onDomEvent( { type: 'focus', target: domEditable } );
+			view.change( () => {} );
 		} );
 	} );
 } );

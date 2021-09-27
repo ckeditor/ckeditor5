@@ -6,7 +6,7 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 import { modelTable } from '../_utils/utils';
@@ -19,7 +19,7 @@ describe( 'upcastTable()', () => {
 	beforeEach( () => {
 		return ClassicTestEditor
 			.create( '', {
-				plugins: [ TableEditing, Paragraph, ImageEditing, Widget ]
+				plugins: [ TableEditing, Paragraph, ImageBlockEditing, Widget ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -70,9 +70,24 @@ describe( 'upcastTable()', () => {
 	} );
 
 	it( 'should not convert empty figure', () => {
-		'<figure class="table"></figure>';
+		editor.setData( '<figure class="table"></figure>' );
 
 		expectModel( '<paragraph></paragraph>' );
+	} );
+
+	it( 'should not convert if table was not converted', () => {
+		// Test a case when a conversion of a table inside a figure is not returning anything.
+		// Either because of a failed conversion or if the table was already consumed.
+		editor.conversion.for( 'upcast' ).add( dispatcher => {
+			dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'highest' } );
+		} );
+		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
+
+		expectModel( '<paragraph>xyz</paragraph>' );
 	} );
 
 	it( 'should convert if figure do not have class="table" attribute', () => {
@@ -563,15 +578,18 @@ describe( 'upcastTable()', () => {
 			);
 
 			expectModel( modelTable( [
-				[ '<image src="sample.png"></image>' ]
+				[ '<imageBlock src="sample.png"></imageBlock>' ]
 			] ) );
 		} );
 	} );
 
 	describe( 'inline contents', () => {
 		it( 'should upcast inline element inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(
@@ -590,8 +608,12 @@ describe( 'upcastTable()', () => {
 		} );
 
 		it( 'should upcast inline object inside a table cell', () => {
-			model.schema.register( 'inline', { allowWhere: '$text', isInline: true, isObject: true } );
-			model.schema.extend( '$text', { allowIn: 'inline' } );
+			model.schema.register( 'inline', {
+				allowWhere: '$text',
+				allowChildren: '$text',
+				isInline: true,
+				isObject: true
+			} );
 			editor.conversion.elementToElement( { model: 'inline', view: 'span' } );
 
 			editor.setData(

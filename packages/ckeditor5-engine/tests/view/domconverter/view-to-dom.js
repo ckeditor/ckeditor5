@@ -3,10 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Range, DocumentFragment, HTMLElement, document, Text */
+/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text */
 
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
+import ViewUIElement from '../../../src/view/uielement';
 import ViewPosition from '../../../src/view/position';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttributeElement from '../../../src/view/attributeelement';
@@ -14,7 +15,7 @@ import ViewEmptyElement from '../../../src/view/emptyelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import ViewDocument from '../../../src/view/document';
-import { INLINE_FILLER, INLINE_FILLER_LENGTH } from '../../../src/view/filler';
+import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 
 import { parse } from '../../../src/dev-utils/view';
 
@@ -184,6 +185,34 @@ describe( 'DomConverter', () => {
 			const domSvg = converter.viewToDom( viewSvg, document );
 
 			expect( domSvg.createSVGRect ).to.be.a( 'function' );
+		} );
+
+		it( 'should create a DOM comment node from a view `$comment` UIElement', () => {
+			const viewComment = new ViewUIElement( viewDocument, '$comment' );
+
+			viewComment._setCustomProperty( '$rawContent', 'foo' );
+
+			const domComment = converter.viewToDom( viewComment, document );
+
+			expect( domComment ).to.be.an.instanceof( Comment );
+			expect( domComment.nodeName ).to.equal( '#comment' );
+			expect( domComment.data ).to.equal( 'foo' );
+
+			expect( converter.mapDomToView( domComment ) ).to.not.equal( viewComment );
+		} );
+
+		it( 'should create a DOM comment node from a view `$comment` UIElement and bind them', () => {
+			const viewComment = new ViewUIElement( viewDocument, '$comment' );
+
+			viewComment._setCustomProperty( '$rawContent', 'foo' );
+
+			const domComment = converter.viewToDom( viewComment, document, { bind: true } );
+
+			expect( domComment ).to.be.an.instanceof( Comment );
+			expect( domComment.nodeName ).to.equal( '#comment' );
+			expect( domComment.data ).to.equal( 'foo' );
+
+			expect( converter.mapDomToView( domComment ) ).to.equal( viewComment );
 		} );
 
 		describe( 'it should convert spaces to &nbsp;', () => {
@@ -661,6 +690,39 @@ describe( 'DomConverter', () => {
 			expect( domChildren.length ).to.equal( 2 );
 			expect( converter.isBlockFiller( domChildren[ 0 ] ) ).to.be.true;
 			expect( domChildren[ 1 ].data ).to.equal( 'foo' );
+		} );
+
+		it( 'should add proper filler type - br', () => {
+			converter.blockFillerMode = 'br';
+
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+			const filler = domChildren[ 0 ];
+
+			expect( filler.isEqualNode( BR_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+		} );
+
+		it( 'should add proper filler type - nbsp', () => {
+			converter.blockFillerMode = 'nbsp';
+
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+			const filler = domChildren[ 0 ];
+
+			expect( filler.isEqualNode( NBSP_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
+		} );
+
+		it( 'should add proper filler type - markedNbsp', () => {
+			converter.blockFillerMode = 'markedNbsp';
+
+			const viewP = parse( '<container:p></container:p>' );
+
+			const domChildren = Array.from( converter.viewChildrenToDom( viewP, document ) );
+			const filler = domChildren[ 0 ];
+
+			expect( filler.isEqualNode( MARKED_NBSP_FILLER( document ) ) ).to.be.true; // eslint-disable-line new-cap
 		} );
 
 		it( 'should pass options', () => {

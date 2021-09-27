@@ -58,6 +58,7 @@ export default class TablePropertiesView extends View {
 	 * @param {module:table/table~TableColorConfig} options.backgroundColors A configuration of the background
 	 * color palette used by the
 	 * {@link module:table/tableproperties/ui/tablepropertiesview~TablePropertiesView#backgroundInput}.
+	 * @param {module:table/tableproperties~TablePropertiesOptions} options.defaultTableProperties The default table properties.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -396,9 +397,17 @@ export default class TablePropertiesView extends View {
 	 * @returns {Object.<String,module:ui/view~View>}
 	 */
 	_createBorderFields() {
+		const defaultTableProperties = this.options.defaultTableProperties;
+		const defaultBorder = {
+			style: defaultTableProperties.borderStyle,
+			width: defaultTableProperties.borderWidth,
+			color: defaultTableProperties.borderColor
+		};
+
 		const colorInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.borderColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: defaultBorder.color
 		} );
 		const locale = this.locale;
 		const t = this.t;
@@ -433,7 +442,7 @@ export default class TablePropertiesView extends View {
 
 		borderStyleDropdown.bind( 'isEmpty' ).to( this, 'borderStyle', value => !value );
 
-		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this ) );
+		addListToDropdown( borderStyleDropdown.fieldView, getBorderStyleDefinitions( this, defaultBorder.style ) );
 
 		// -- Width ---------------------------------------------------
 
@@ -466,12 +475,19 @@ export default class TablePropertiesView extends View {
 			this.borderColor = borderColorInput.fieldView.value;
 		} );
 
-		// Reset the border color and width fields when style is "none".
-		// https://github.com/ckeditor/ckeditor5/issues/6227
-		this.on( 'change:borderStyle', ( evt, name, value ) => {
-			if ( !isBorderStyleSet( value ) ) {
+		// Reset the border color and width fields depending on the `border-style` value.
+		this.on( 'change:borderStyle', ( evt, name, newValue, oldValue ) => {
+			// When removing the border (`border-style:none`), clear the remaining `border-*` properties.
+			// See: https://github.com/ckeditor/ckeditor5/issues/6227.
+			if ( !isBorderStyleSet( newValue ) ) {
 				this.borderColor = '';
 				this.borderWidth = '';
+			}
+
+			// When setting the `border-style` from `none`, set the default `border-color` and `border-width` properties.
+			if ( !isBorderStyleSet( oldValue ) ) {
+				this.borderColor = defaultBorder.color;
+				this.borderWidth = defaultBorder.width;
 			}
 		} );
 
@@ -504,7 +520,8 @@ export default class TablePropertiesView extends View {
 
 		const backgroundInputCreator = getLabeledColorInputCreator( {
 			colorConfig: this.options.backgroundColors,
-			columns: 5
+			columns: 5,
+			defaultColorValue: this.options.defaultTableProperties.backgroundColor
 		} );
 
 		const backgroundInput = new LabeledFieldView( locale, backgroundInputCreator );
@@ -625,9 +642,7 @@ export default class TablePropertiesView extends View {
 			toolbar: alignmentToolbar,
 			labels: this._alignmentLabels,
 			propertyName: 'alignment',
-			nameToValue: name => {
-				return name === 'center' ? '' : name;
-			}
+			defaultValue: this.options.defaultTableProperties.alignment
 		} );
 
 		return {
@@ -710,5 +725,5 @@ export default class TablePropertiesView extends View {
 }
 
 function isBorderStyleSet( value ) {
-	return !!value;
+	return value !== 'none';
 }

@@ -7,48 +7,24 @@
  * @module basic-styles
  */
 
-import Bold from './bold';
-import BoldEditing from './bold/boldediting';
-import BoldUI from './bold/boldui';
-import Code from './code';
-import CodeEditing from './code/codeediting';
-import CodeUI from './code/codeui';
-import Italic from './italic';
-import ItalicEditing from './italic/italicediting';
-import ItalicUI from './italic/italicui';
-import Strikethrough from './strikethrough';
-import StrikethroughEditing from './strikethrough/strikethroughediting';
-import StrikethroughUI from './strikethrough/strikethroughui';
-import Subscript from './subscript';
-import SubscriptEditing from './subscript/subscriptediting';
-import SubscriptUI from './subscript/subscriptui';
-import Superscript from './superscript';
-import SuperscriptEditing from './superscript/superscriptediting';
-import SuperscriptUI from './superscript/superscriptui';
-import Underline from './underline';
-import UnderlineEditing from './underline/underlineediting';
-import UnderlineUI from './underline/underlineui';
-
-export default {
-	Bold,
-	BoldEditing,
-	BoldUI,
-	Code,
-	CodeEditing,
-	CodeUI,
-	Italic,
-	ItalicEditing,
-	ItalicUI,
-	Strikethrough,
-	StrikethroughEditing,
-	StrikethroughUI,
-	Subscript,
-	SubscriptEditing,
-	SubscriptUI,
-	Superscript,
-	SuperscriptEditing,
-	SuperscriptUI,
-	Underline,
-	UnderlineEditing,
-	UnderlineUI
-};
+export { default as Bold } from './bold';
+export { default as BoldEditing } from './bold/boldediting';
+export { default as BoldUI } from './bold/boldui';
+export { default as Code } from './code';
+export { default as CodeEditing } from './code/codeediting';
+export { default as CodeUI } from './code/codeui';
+export { default as Italic } from './italic';
+export { default as ItalicEditing } from './italic/italicediting';
+export { default as ItalicUI } from './italic/italicui';
+export { default as Strikethrough } from './strikethrough';
+export { default as StrikethroughEditing } from './strikethrough/strikethroughediting';
+export { default as StrikethroughUI } from './strikethrough/strikethroughui';
+export { default as Subscript } from './subscript';
+export { default as SubscriptEditing } from './subscript/subscriptediting';
+export { default as SubscriptUI } from './subscript/subscriptui';
+export { default as Superscript } from './superscript';
+export { default as SuperscriptEditing } from './superscript/superscriptediting';
+export { default as SuperscriptUI } from './superscript/superscriptui';
+export { default as Underline } from './underline';
+export { default as UnderlineEditing } from './underline/underlineediting';
+export { default as UnderlineUI } from './underline/underlineui';

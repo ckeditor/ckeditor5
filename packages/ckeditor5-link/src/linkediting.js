@@ -184,14 +184,24 @@ export default class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decorator.id } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			manualDecorators.add( new ManualDecorator( decorator ) );
+			decorator = new ManualDecorator( decorator );
+
+			manualDecorators.add( decorator );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decorator.id,
 				view: ( manualDecoratorName, { writer } ) => {
 					if ( manualDecoratorName ) {
-						const attributes = manualDecorators.get( decorator.id ).attributes;
-						const element = writer.createAttributeElement( 'a', attributes, { priority: 5 } );
+						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
+
+						if ( decorator.classes ) {
+							writer.addClass( decorator.classes, element );
+						}
+
+						for ( const key in decorator.styles ) {
+							writer.setStyle( key, decorator.styles[ key ], element );
+						}
+
 						writer.setCustomProperty( 'link', true, element );
 
 						return element;
@@ -201,7 +211,7 @@ export default class LinkEditing extends Plugin {
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
 				view: {
 					name: 'a',
-					attributes: manualDecorators.get( decorator.id ).attributes
+					...decorator._createPattern()
 				},
 				model: {
 					key: decorator.id
@@ -225,7 +235,6 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const selection = model.document.selection;
-		const linkCommand = editor.commands.get( 'link' );
 
 		this.listenTo( model, 'insertContent', () => {
 			const nodeBefore = selection.anchor.nodeBefore;
@@ -295,7 +304,7 @@ export default class LinkEditing extends Plugin {
 			}
 
 			model.change( writer => {
-				removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
+				removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -313,7 +322,7 @@ export default class LinkEditing extends Plugin {
 	 */
 	_enableClickingAfterLink() {
 		const editor = this.editor;
-		const linkCommand = editor.commands.get( 'link' );
+		const model = editor.model;
 
 		editor.editing.view.addObserver( MouseObserver );
 
@@ -333,7 +342,7 @@ export default class LinkEditing extends Plugin {
 			// ...and it was caused by the click...
 			clicked = false;
 
-			const selection = editor.model.document.selection;
+			const selection = model.document.selection;
 
 			// ...and no text is selected...
 			if ( !selection.isCollapsed ) {
@@ -346,13 +355,13 @@ export default class LinkEditing extends Plugin {
 			}
 
 			const position = selection.getFirstPosition();
-			const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), editor.model );
+			const linkRange = findAttributeRange( position, 'linkHref', selection.getAttribute( 'linkHref' ), model );
 
 			// ...check whether clicked start/end boundary of the link.
 			// If so, remove the `linkHref` attribute.
 			if ( position.isTouching( linkRange.start ) || position.isTouching( linkRange.end ) ) {
-				editor.model.change( writer => {
-					removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
+				model.change( writer => {
+					removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
 				} );
 			}
 		} );
@@ -453,7 +462,6 @@ export default class LinkEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const view = editor.editing.view;
-		const linkCommand = editor.commands.get( 'link' );
 
 		// A flag whether attributes `linkHref` attribute should be preserved.
 		let shouldPreserveAttributes = false;
@@ -502,7 +510,7 @@ export default class LinkEditing extends Plugin {
 
 			// Use `model.enqueueChange()` in order to execute the callback at the end of the changes process.
 			editor.model.enqueueChange( writer => {
-				removeLinkAttributesFromSelection( writer, linkCommand.manualDecorators );
+				removeLinkAttributesFromSelection( writer, getLinkAttributesAllowedOnText( model.schema ) );
 			} );
 		}, { priority: 'low' } );
 	}
@@ -510,15 +518,15 @@ export default class LinkEditing extends Plugin {
 
 // Make the selection free of link-related model attributes.
 // All link-related model attributes start with "link". That includes not only "linkHref"
-// but also all decorator attributes (they have dynamic names).
+// but also all decorator attributes (they have dynamic names), or even custom plugins.
 //
 // @param {module:engine/model/writer~Writer} writer
-// @param {module:utils/collection~Collection} manualDecorators
-function removeLinkAttributesFromSelection( writer, manualDecorators ) {
+// @param {Array.<String>} linkAttributes
+function removeLinkAttributesFromSelection( writer, linkAttributes ) {
 	writer.removeSelectionAttribute( 'linkHref' );
 
-	for ( const decorator of manualDecorators ) {
-		writer.removeSelectionAttribute( decorator.id );
+	for ( const attribute of linkAttributes ) {
+		writer.removeSelectionAttribute( attribute );
 	}
 }
 
@@ -572,4 +580,14 @@ function isTyping( editor ) {
 	const input = editor.plugins.get( 'Input' );
 
 	return input.isInput( editor.model.change( writer => writer.batch ) );
+}
+
+// Returns an array containing names of the attributes allowed on `$text` that describes the link item.
+//
+// @param {module:engine/model/schema~Schema} schema
+// @returns {Array.<String>}
+function getLinkAttributesAllowedOnText( schema ) {
+	const textAttributes = schema.getDefinition( '$text' ).allowAttributes;
+
+	return textAttributes.filter( attribute => attribute.startsWith( 'link' ) );
 }

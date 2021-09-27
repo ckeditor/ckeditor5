@@ -20,13 +20,17 @@ import MentionListItemView from './ui/mentionlistitemview';
 
 const VERTICAL_SPACING = 3;
 
-// The key codes that mention UI handles when it is open.
-const handledKeyCodes = [
+// The key codes that mention UI handles when it is open (without commit keys).
+const defaultHandledKeyCodes = [
 	keyCodes.arrowup,
 	keyCodes.arrowdown,
-	keyCodes.enter,
-	keyCodes.tab,
 	keyCodes.esc
+];
+
+// Dropdown commit key codes.
+const defaultCommitKeyCodes = [
+	keyCodes.enter,
+	keyCodes.tab
 ];
 
 /**
@@ -90,6 +94,9 @@ export default class MentionUI extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		const commitKeys = editor.config.get( 'mention.commitKeys' ) || defaultCommitKeyCodes;
+		const handledKeyCodes = defaultHandledKeyCodes.concat( commitKeys );
+
 		/**
 		 * The contextual balloon plugin instance.
 		 *
@@ -112,7 +119,7 @@ export default class MentionUI extends Plugin {
 					this._mentionsView.selectPrevious();
 				}
 
-				if ( data.keyCode == keyCodes.enter || data.keyCode == keyCodes.tab ) {
+				if ( commitKeys.includes( data.keyCode ) ) {
 					this._mentionsView.executeSelected();
 				}
 
@@ -165,6 +172,14 @@ export default class MentionUI extends Plugin {
 
 		this.on( 'requestFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
 		this.on( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
+
+		// Checks if a given key code is handled by the mention UI.
+		//
+		// @param {Number}
+		// @returns {Boolean}
+		function isHandledKey( keyCode ) {
+			return handledKeyCodes.includes( keyCode );
+		}
 	}
 
 	/**
@@ -684,14 +699,6 @@ function createFeedCallback( feedItems ) {
 
 		return filteredItems;
 	};
-}
-
-// Checks if a given key code is handled by the mention UI.
-//
-// @param {Number}
-// @returns {Boolean}
-function isHandledKey( keyCode ) {
-	return handledKeyCodes.includes( keyCode );
 }
 
 // Checks if position in inside or right after a text with a mention.

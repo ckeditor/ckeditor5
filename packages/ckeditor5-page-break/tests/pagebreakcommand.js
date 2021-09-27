@@ -60,25 +60,26 @@ describe( 'PageBreakCommand', () => {
 		} );
 
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'block', view: 'block' } );
 
 			setModelData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other page break element', () => {
+		it( 'should be true when the selection is on another page break element', () => {
 			setModelData( model, '[<pageBreak></pageBreak>]' );
-			expect( command.isEnabled ).to.be.false;
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on another object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows page break', () => {
@@ -94,8 +95,7 @@ describe( 'PageBreakCommand', () => {
 		} );
 
 		it( 'should be false when schema disallows page break', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( 'paragraph', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: 'paragraph' } );
 			// Block page break in block.
 			model.schema.addChildCheck( ( context, childDefinition ) => {
 				if ( childDefinition.name === 'pageBreak' && context.last.name === 'block' ) {
@@ -273,6 +273,29 @@ describe( 'PageBreakCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>foo</heading1><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing selected object with a page break', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing page break with another page break', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<pageBreak></pageBreak>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><pageBreak></pageBreak><paragraph>[]bar</paragraph>'
 			);
 		} );
 	} );

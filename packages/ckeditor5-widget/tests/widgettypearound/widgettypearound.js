@@ -33,7 +33,7 @@ describe( 'WidgetTypeAround', () => {
 				blockWidgetPlugin, inlineWidgetPlugin
 			],
 			image: {
-				toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+				toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 			}
 		} );
 
@@ -1567,6 +1567,26 @@ describe( 'WidgetTypeAround', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
 		} );
 
+		it( 'should handle pasted content (with formatting)', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer: {
+					getData() {
+						return 'foo<b>bar</b>';
+					}
+				}
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo<$text bold="true">bar[]</$text></paragraph><blockWidget></blockWidget>'
+			);
+		} );
+
 		function createParagraph( text ) {
 			return model.change( writer => {
 				const paragraph = writer.createElement( 'paragraph' );
@@ -1576,6 +1596,152 @@ describe( 'WidgetTypeAround', () => {
 				return paragraph;
 			} );
 		}
+
+		function setupBatchWatch() {
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, [ operation ] ) => {
+				if ( operation.isDocumentOperation ) {
+					createdBatches.add( operation.batch );
+				}
+			} );
+
+			return createdBatches;
+		}
+	} );
+
+	describe( 'Model#deleteContent() integration', () => {
+		let model, modelSelection;
+
+		beforeEach( () => {
+			model = editor.model;
+			modelSelection = model.document.selection;
+		} );
+
+		it( 'should not alter deleteContent for the selection other than the document selection', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+			const selection = model.createSelection( modelSelection );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+				model.deleteContent( selection );
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><paragraph></paragraph><paragraph>baz</paragraph>' );
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should not alter deleteContent when the "fake caret" is not active', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]<paragraph>baz</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+
+			model.deleteContent( modelSelection );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph><paragraph>[]</paragraph><paragraph>baz</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+			expect( batchSet.size ).to.be.equal( 1 );
+		} );
+
+		it( 'should disable deleteContent before a widget when it\'s the first element of the root', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			model.deleteContent( modelSelection );
+
+			expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+			expect( batchSet.size ).to.be.equal( 0 );
+		} );
+
+		it( 'should disable insertContent after a widget when it\'s the last element of the root', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+			} );
+
+			model.deleteContent( modelSelection );
+
+			expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
+			expect( batchSet.size ).to.be.equal( 0 );
+		} );
+
+		it( 'should disable insertContent before a widget when it\'s not the first element of the root', () => {
+			setModelData( editor.model, '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			model.deleteContent( modelSelection );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo</paragraph>[<blockWidget></blockWidget>]' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'before' );
+			expect( batchSet.size ).to.be.equal( 0 );
+		} );
+
+		it( 'should disable insertContent after a widget when it\'s not the last element of the root', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+
+			const batchSet = setupBatchWatch();
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'after' );
+			} );
+
+			model.deleteContent( modelSelection );
+
+			expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+			expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.equal( 'after' );
+			expect( batchSet.size ).to.be.equal( 0 );
+		} );
+
+		it( 'should not block when the plugin is disabled', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			editor.plugins.get( WidgetTypeAround ).isEnabled = false;
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			model.deleteContent( modelSelection );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+		} );
+
+		it( 'should not remove widget while pasting a plain text', () => {
+			setModelData( editor.model, '[<blockWidget></blockWidget>]' );
+
+			model.change( writer => {
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, 'before' );
+			} );
+
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer: {
+					getData() {
+						return 'bar';
+					}
+				}
+			} );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>bar[]</paragraph><blockWidget></blockWidget>' );
+		} );
 
 		function setupBatchWatch() {
 			const createdBatches = new Set();

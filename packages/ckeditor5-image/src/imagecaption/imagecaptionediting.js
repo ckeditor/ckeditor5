@@ -8,18 +8,32 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { isImage } from '../image/utils';
-import { captionElementCreator, getCaptionFromImage, matchImageCaption } from './utils';
+import { Element, enablePlaceholder } from 'ckeditor5/src/engine';
+import { setHighlightHandling, toWidgetEditable } from 'ckeditor5/src/widget';
+import { toArray } from 'ckeditor5/src/utils';
+
+import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
+
+import ImageUtils from '../imageutils';
+import { getCaptionFromImageModelElement, matchImageCaptionViewElement } from './utils';
 
 /**
- * The image caption engine plugin.
+ * The image caption engine plugin. It is responsible for:
  *
- * It registers proper converters. It takes care of adding a caption element if the image without it is inserted
- * to the model document.
+ * * registering converters for the caption element,
+ * * registering converters for the caption model attribute,
+ * * registering the {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand `toggleImageCaption`} command.
  *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageCaptionEditing extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ImageUtils ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -30,280 +44,238 @@ export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
-		const view = editor.editing.view;
-		const schema = editor.model.schema;
-		const data = editor.data;
-		const editing = editor.editing;
-		const t = editor.t;
+	constructor( editor ) {
+		super( editor );
 
 		/**
-		 * The last selected caption editable.
-		 * It is used for hiding the editable when it is empty and the image widget is no longer selected.
+		 * A map that keeps saved JSONified image captions and image model elements they are
+		 * associated with.
 		 *
-		 * @private
-		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
+		 * To learn more about this system, see {@link #_saveCaption}.
+		 *
+		 * @member {WeakMap.<module:engine/model/element~Element,Object>}
 		 */
+		this._savedCaptionsMap = new WeakMap();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const schema = editor.model.schema;
 
 		// Schema configuration.
-		schema.register( 'caption', {
-			allowIn: 'image',
-			allowContentOf: '$block',
-			isLimit: true
-		} );
+		if ( !schema.isRegistered( 'caption' ) ) {
+			schema.register( 'caption', {
+				allowIn: 'imageBlock',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+		} else {
+			schema.extend( 'caption', {
+				allowIn: 'imageBlock'
+			} );
+		}
 
-		// Add caption element to each image inserted without it.
-		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );
+		editor.commands.add( 'toggleImageCaption', new ToggleImageCaptionCommand( this.editor ) );
 
-		// View to model converter for the data pipeline.
+		this._setupConversion();
+		this._setupImageTypeCommandsIntegration();
+	}
+
+	/**
+	 * Configures conversion pipelines to support upcasting and downcasting
+	 * image captions.
+	 *
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const t = editor.t;
+
+		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
-			view: matchImageCaption,
+			view: element => matchImageCaptionViewElement( imageUtils, element ),
 			model: 'caption'
 		} );
 
-		// Model to view converter for the data pipeline.
-		const createCaptionForData = writer => writer.createContainerElement( 'figcaption' );
-		data.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForData, false ) );
+		// Model -> view converter for the data pipeline.
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'caption',
+			view: ( modelElement, { writer } ) => {
+				if ( !imageUtils.isBlockImage( modelElement.parent ) ) {
+					return null;
+				}
 
-		// Model to view converter for the editing pipeline.
-		const createCaptionForEditing = captionElementCreator( view, t( 'Enter image caption' ) );
-		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForEditing ) );
+				return writer.createContainerElement( 'figcaption' );
+			}
+		} );
 
-		// Always show caption in view when something is inserted in model.
-		editing.downcastDispatcher.on(
-			'insert',
-			this._fixCaptionVisibility( data => data.item ),
-			{ priority: 'high' }
-		);
+		// Model -> view converter for the editing pipeline.
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'caption',
+			view: ( modelElement, { writer } ) => {
+				if ( !imageUtils.isBlockImage( modelElement.parent ) ) {
+					return null;
+				}
 
-		// Hide caption when everything is removed from it.
-		editing.downcastDispatcher.on( 'remove', this._fixCaptionVisibility( data => data.position.parent ), { priority: 'high' } );
+				const figcaptionElement = writer.createEditableElement( 'figcaption' );
+				writer.setCustomProperty( 'imageCaption', true, figcaptionElement );
 
-		// Update caption visibility on view in post fixer.
-		view.document.registerPostFixer( writer => this._updateCaptionVisibility( writer ) );
+				enablePlaceholder( {
+					view,
+					element: figcaptionElement,
+					text: t( 'Enter image caption' ),
+					keepOnFocus: true
+				} );
+
+				const widgetEditable = toWidgetEditable( figcaptionElement, writer );
+
+				setHighlightHandling(
+					widgetEditable,
+					writer,
+					( element, descriptor, writer ) => writer.addClass( toArray( descriptor.classes ), element ),
+					( element, descriptor, writer ) => writer.removeClass( toArray( descriptor.classes ), element )
+				);
+
+				return widgetEditable;
+			}
+		} );
+
+		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
+		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
 	}
 
 	/**
-	 * Updates the view before each rendering, making sure that empty captions (so unnecessary ones) are hidden
-	 * and then visible when the image is selected.
+	 * Integrates with {@link module:image/image/imagetypecommand~ImageTypeCommand image type commands}
+	 * to make sure the caption is preserved when the type of an image changes so it can be restored
+	 * in the future if the user decides they want their caption back.
 	 *
 	 * @private
-	 * @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-	 * @returns {Boolean} Returns `true` when the view is updated.
 	 */
-	_updateCaptionVisibility( viewWriter ) {
-		const mapper = this.editor.editing.mapper;
-		const lastCaption = this._lastSelectedCaption;
-		let viewCaption;
+	_setupImageTypeCommandsIntegration() {
+		const editor = this.editor;
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
+		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
-		// If whole image is selected.
-		const modelSelection = this.editor.model.document.selection;
-		const selectedElement = modelSelection.getSelectedElement();
-
-		if ( selectedElement && selectedElement.is( 'element', 'image' ) ) {
-			const modelCaption = getCaptionFromImage( selectedElement );
-			viewCaption = mapper.toViewElement( modelCaption );
-		}
-
-		// If selection is placed inside caption.
-		const position = modelSelection.getFirstPosition();
-		const modelCaption = getParentCaption( position.parent );
-
-		if ( modelCaption ) {
-			viewCaption = mapper.toViewElement( modelCaption );
-		}
-
-		// Is currently any caption selected?
-		if ( viewCaption && !this.editor.isReadOnly ) {
-			// Was any caption selected before?
-			if ( lastCaption ) {
-				// Same caption as before?
-				if ( lastCaption === viewCaption ) {
-					return showCaption( viewCaption, viewWriter );
-				} else {
-					hideCaptionIfEmpty( lastCaption, viewWriter );
-					this._lastSelectedCaption = viewCaption;
-
-					return showCaption( viewCaption, viewWriter );
-				}
-			} else {
-				this._lastSelectedCaption = viewCaption;
-				return showCaption( viewCaption, viewWriter );
-			}
-		} else {
-			// Was any caption selected before?
-			if ( lastCaption ) {
-				const viewModified = hideCaptionIfEmpty( lastCaption, viewWriter );
-				this._lastSelectedCaption = null;
-
-				return viewModified;
-			} else {
-				return false;
-			}
-		}
-	}
-
-	/**
-	 * Returns a converter that fixes caption visibility during the model-to-view conversion.
-	 * Checks if the changed node is placed inside the caption element and fixes its visibility in the view.
-	 *
-	 * @private
-	 * @param {Function} nodeFinder
-	 * @returns {Function}
-	 */
-	_fixCaptionVisibility( nodeFinder ) {
-		return ( evt, data, conversionApi ) => {
-			const node = nodeFinder( data );
-			const modelCaption = getParentCaption( node );
-			const mapper = this.editor.editing.mapper;
-			const viewWriter = conversionApi.writer;
-
-			if ( modelCaption ) {
-				const viewCaption = mapper.toViewElement( modelCaption );
-
-				if ( viewCaption ) {
-					if ( modelCaption.childCount ) {
-						viewWriter.removeClass( 'ck-hidden', viewCaption );
-					} else {
-						viewWriter.addClass( 'ck-hidden', viewCaption );
-					}
-				}
-			}
-		};
-	}
-
-	/**
-	 * Checks whether the data inserted to the model document have an image element that has no caption element inside it.
-	 * If there is none, it adds it to the image element.
-	 *
-	 * @private
-	 * @param {module:engine/model/writer~Writer} writer The writer to make changes with.
-	 * @returns {Boolean} `true` if any change was applied, `false` otherwise.
-	 */
-	_insertMissingModelCaptionElement( writer ) {
-		const model = this.editor.model;
-		const changes = model.document.differ.getChanges();
-
-		const imagesWithoutCaption = [];
-
-		for ( const entry of changes ) {
-			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				const item = entry.position.nodeAfter;
-
-				if ( item.is( 'element', 'image' ) && !getCaptionFromImage( item ) ) {
-					imagesWithoutCaption.push( item );
-				}
-
-				// Check elements with children for nested images.
-				if ( !item.is( 'element', 'image' ) && item.childCount ) {
-					for ( const nestedItem of model.createRangeIn( item ).getItems() ) {
-						if ( nestedItem.is( 'element', 'image' ) && !getCaptionFromImage( nestedItem ) ) {
-							imagesWithoutCaption.push( nestedItem );
-						}
-					}
-				}
-			}
-		}
-
-		for ( const image of imagesWithoutCaption ) {
-			writer.appendElement( 'caption', image );
-		}
-
-		return !!imagesWithoutCaption.length;
-	}
-}
-
-// Creates a converter that converts image caption model element to view element.
-//
-// @private
-// @param {Function} elementCreator
-// @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
-// @returns {Function}
-function captionModelToView( elementCreator, hide = true ) {
-	return ( evt, data, conversionApi ) => {
-		const captionElement = data.item;
-
-		// Return if element shouldn't be present when empty.
-		if ( !captionElement.childCount && !hide ) {
-			return;
-		}
-
-		if ( isImage( captionElement.parent ) ) {
-			if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		const handleImageTypeChange = evt => {
+			// The image type command execution can be unsuccessful.
+			if ( !evt.return ) {
 				return;
 			}
 
-			const viewImage = conversionApi.mapper.toViewElement( data.range.start.parent );
-			const viewCaption = elementCreator( conversionApi.writer );
-			const viewWriter = conversionApi.writer;
+			const { oldElement, newElement } = evt.return;
 
-			// Hide if empty.
-			if ( !captionElement.childCount ) {
-				viewWriter.addClass( 'ck-hidden', viewCaption );
+			/* istanbul ignore if: paranoid check */
+			if ( !oldElement ) {
+				return;
 			}
 
-			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi );
+			if ( imageUtils.isBlockImage( oldElement ) ) {
+				const oldCaptionElement = getCaptionFromImageModelElement( oldElement );
+
+				// If the old element was a captioned block image (the caption was visible),
+				// simply save it so it can be restored.
+				if ( oldCaptionElement ) {
+					this._saveCaption( newElement, oldCaptionElement );
+
+					return;
+				}
+			}
+
+			const savedOldElementCaption = this._getSavedCaption( oldElement );
+
+			// If either:
+			//
+			// * the block image didn't have a visible caption,
+			// * the block image caption was hidden (and already saved),
+			// * the inline image was passed
+			//
+			// just try to "pass" the saved caption from the old image to the new image
+			// so it can be retrieved in the future if the user wants it back.
+			if ( savedOldElementCaption ) {
+				// Note: Since we're writing to a WeakMap, we don't bother with removing the
+				// [ oldElement, savedOldElementCaption ] pair from it.
+				this._saveCaption( newElement, savedOldElementCaption );
+			}
+		};
+
+		// Presence of the commands depends on the Image(Inline|Block)Editing plugins loaded in the editor.
+		if ( imageTypeInlineCommand ) {
+			this.listenTo( imageTypeInlineCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
 		}
+
+		if ( imageTypeBlockCommand ) {
+			this.listenTo( imageTypeBlockCommand, 'execute', handleImageTypeChange, { priority: 'low' } );
+		}
+	}
+
+	/**
+	 * Returns the saved {@link module:engine/model/element~Element#toJSON JSONified} caption
+	 * of an image model element.
+	 *
+	 * See {@link #_saveCaption}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} imageModelElement The model element the
+	 * caption should be returned for.
+	 * @returns {module:engine/model/element~Element|null} The model caption element or `null` if there is none.
+	 */
+	_getSavedCaption( imageModelElement ) {
+		const jsonObject = this._savedCaptionsMap.get( imageModelElement );
+
+		return jsonObject ? Element.fromJSON( jsonObject ) : null;
+	}
+
+	/**
+	 * Saves a {@link module:engine/model/element~Element#toJSON JSONified} caption for
+	 * an image element to allow restoring it in the future.
+	 *
+	 * A caption is saved every time it gets hidden and/or the type of an image changes. The
+	 * user should be able to restore it on demand.
+	 *
+	 * **Note**: The caption cannot be stored in the image model element attribute because,
+	 * for instance, when the model state propagates to collaborators, the attribute would get
+	 * lost (mainly because it does not convert to anything when the caption is hidden) and
+	 * the states of collaborators' models would de-synchronize causing numerous issues.
+	 *
+	 * See {@link #_getSavedCaption}.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} imageModelElement The model element the
+	 * caption is saved for.
+	 * @param {module:engine/model/element~Element} caption The caption model element to be saved.
+	 */
+	_saveCaption( imageModelElement, caption ) {
+		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
+	}
+}
+
+// Creates a mapper callback that reverses the order of `<img>` and `<figcaption>` in the image.
+// Without it, `<figcaption>` would precede the `<img>` in the conversion.
+//
+// <imageBlock>^</imageBlock> -> <figure><img>^<caption></caption></figure>
+//
+// @private
+// @param {module:engine/view/view~View} editingView
+// @returns {Function}
+function mapModelPositionToView( editingView ) {
+	return ( evt, data ) => {
+		const modelPosition = data.modelPosition;
+		const parent = modelPosition.parent;
+
+		if ( !parent.is( 'element', 'imageBlock' ) ) {
+			return;
+		}
+
+		const viewElement = data.mapper.toViewElement( parent );
+
+		// The "img" element is inserted by ImageBlockEditing during the downcast conversion via
+		// an explicit view position so the "0" position does not need any mapping.
+		data.viewPosition = editingView.createPositionAt( viewElement, modelPosition.offset + 1 );
 	};
-}
-
-// Inserts `viewCaption` at the end of `viewImage` and binds it to `modelCaption`.
-//
-// @private
-// @param {module:engine/view/containerelement~ContainerElement} viewCaption
-// @param {module:engine/model/element~Element} modelCaption
-// @param {module:engine/view/containerelement~ContainerElement} viewImage
-// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, conversionApi ) {
-	const viewPosition = conversionApi.writer.createPositionAt( viewImage, 'end' );
-
-	conversionApi.writer.insert( viewPosition, viewCaption );
-	conversionApi.mapper.bindElements( modelCaption, viewCaption );
-}
-
-// Checks if the provided node or one of its ancestors is a caption element, and returns it.
-//
-// @private
-// @param {module:engine/model/node~Node} node
-// @returns {module:engine/model/element~Element|null}
-function getParentCaption( node ) {
-	const ancestors = node.getAncestors( { includeSelf: true } );
-	const caption = ancestors.find( ancestor => ancestor.name == 'caption' );
-
-	if ( caption && caption.parent && caption.parent.name == 'image' ) {
-		return caption;
-	}
-
-	return null;
-}
-
-// Hides a given caption in the view if it is empty.
-//
-// @private
-// @param {module:engine/view/containerelement~ContainerElement} caption
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-// @returns {Boolean} Returns `true` if the view was modified.
-function hideCaptionIfEmpty( caption, viewWriter ) {
-	if ( !caption.childCount && !caption.hasClass( 'ck-hidden' ) ) {
-		viewWriter.addClass( 'ck-hidden', caption );
-		return true;
-	}
-
-	return false;
-}
-
-// Shows the caption.
-//
-// @private
-// @param {module:engine/view/containerelement~ContainerElement} caption
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
-// @returns {Boolean} Returns `true` if the view was modified.
-function showCaption( caption, viewWriter ) {
-	if ( caption.hasClass( 'ck-hidden' ) ) {
-		viewWriter.removeClass( 'ck-hidden', caption );
-		return true;
-	}
-
-	return false;
 }

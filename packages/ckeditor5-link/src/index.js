@@ -7,20 +7,10 @@
  * @module link
  */
 
-import Link from './link';
-import LinkEditing from './linkediting';
-import LinkUI from './linkui';
-import LinkImage from './linkimage';
-import LinkImageEditing from './linkimageediting';
-import LinkImageUI from './linkimageui';
-import AutoLink from './autolink';
-
-export default {
-	Link,
-	LinkEditing,
-	LinkUI,
-	LinkImage,
-	LinkImageEditing,
-	LinkImageUI,
-	AutoLink
-};
+export { default as Link } from './link';
+export { default as LinkEditing } from './linkediting';
+export { default as LinkUI } from './linkui';
+export { default as LinkImage } from './linkimage';
+export { default as LinkImageEditing } from './linkimageediting';
+export { default as LinkImageUI } from './linkimageui';
+export { default as AutoLink } from './autolink';

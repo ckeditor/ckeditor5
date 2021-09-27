@@ -7,13 +7,13 @@
 	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
 	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
 
-	--ck-image-upload-icon-size: 20px;
+	/* Match the icon size with the linked image indicator brought by the link image feature. */
+	--ck-image-upload-icon-size: 20;
 	--ck-image-upload-icon-width: 2px;
+	--ck-image-upload-icon-is-visible: clamp(0px, 100% - 50px, 1px);
 }
 
 .ck-image-upload-complete-icon {
-	width: var(--ck-image-upload-icon-size);
-	height: var(--ck-image-upload-icon-size);
 	opacity: 0;
 	background: var(--ck-color-image-upload-icon-background);
 	animation-name: ck-upload-complete-icon-show, ck-upload-complete-icon-hide;
@@ -21,10 +21,18 @@
 	animation-duration: 500ms, 500ms;
 
 	/* To make animation scalable. */
-	font-size: var(--ck-image-upload-icon-size);
+	font-size: calc(1px * var(--ck-image-upload-icon-size));
 
 	/* Hide completed upload icon after 3 seconds. */
 	animation-delay: 0ms, 3000ms;
+
+	/*
+	 * Use CSS math to simulate container queries.
+	 * https://css-tricks.com/the-raven-technique-one-step-closer-to-container-queries/#what-about-showing-and-hiding-things
+	 */
+	overflow: hidden;
+	width: calc(var(--ck-image-upload-icon-is-visible) * var(--ck-image-upload-icon-size));
+	height: calc(var(--ck-image-upload-icon-is-visible) * var(--ck-image-upload-icon-size));
 
 	/* This is check icon element made from border-width mixed with animations. */
 	&::after {

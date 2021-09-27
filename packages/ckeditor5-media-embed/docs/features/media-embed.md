@@ -10,7 +10,7 @@ The {@link module:media-embed/mediaembed~MediaEmbed} feature brings support for 
 
 ## Demo
 
-You can use the "Insert media" button in the toolbar to embed media like in the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
+You can use the Insert media button in the toolbar {@icon @ckeditor/ckeditor5-media-embed/theme/icons/media.svg Insert media} to embed media like in the following examples. You can also paste the media URL directly into the editor content and it will be [automatically embedded](#automatic-media-embed-on-paste).
 
 * <input class="example-input" type="text" value="https://www.youtube.com/watch?v=H08tGjXNHO4">
 * <input class="example-input" type="text" value="https://open.spotify.com/album/2IXlgvecaDqOeF3viUZnPI?si=ogVw7KlcQAGZKK4Jz9QzvA">
@@ -101,7 +101,7 @@ By default, the media embed feature outputs semantic `<oembed url="...">` tags f
 </figure>
 ```
 
-Further customization of semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#elementName `config.mediaEmbed.elementName`}. As an example, if `elementName` is set to `o-embed`:
+Further customization of the semantic data output can be done through the {@link module:media-embed/mediaembed~MediaEmbedConfig#elementName `config.mediaEmbed.elementName`} configuration. As an example, if `elementName` is set to `o-embed`:
 
 ```html
 <figure class="media">
@@ -109,7 +109,7 @@ Further customization of semantic data output can be done through the {@link mod
 </figure>
 ```
 
-If `elementName` is overridden to something beside the default value, existing `<oembed>` elements will still be shown when for backward compatibility purposes.
+If `elementName` is overridden to something other than the default value, the existing `<oembed>` elements will still be shown for backwards compatibility purposes.
 
 #### Including previews in data
 
@@ -358,7 +358,7 @@ The {@link module:media-embed/automediaembed~AutoMediaEmbed} plugin recognizes m
 	The media URL must be the only content pasted to be properly embedded. Multiple links (`"http://media.url http://another.media.url"`) as well as bigger chunks of content (`"This link http://media.url will not be auto–embedded when pasted."`) are ignored.
 </info-box>
 
-If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl/⌘</kbd>+<kbd>Z</kbd> keystrokes).
+If the automatic embedding was unexpected, for instance when the link was meant to remain in the content as text, simply undo the action (by clicking the "Undo" button in the toolbar or using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>Z</kbd> keystrokes).
 
 ## Styling media in the editor content
 

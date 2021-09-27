@@ -28,8 +28,9 @@ export default class TableAlignmentCommand extends TablePropertyCommand {
 	 * Creates a new `TableAlignmentCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'alignment' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'alignment', defaultValue );
 	}
 }

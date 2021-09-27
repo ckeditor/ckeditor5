@@ -7,155 +7,104 @@
  * @module image/image/utils
  */
 
-import { findOptimalInsertionPosition, checkSelectionOnObject, isWidget, toWidget } from 'ckeditor5/src/widget';
+import { first } from 'ckeditor5/src/utils';
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to an image widget:
- * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element.
- * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
+ * Creates a view element representing the image of provided image type.
  *
- * @param {module:engine/view/element~Element} viewElement
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer An instance of the view writer.
- * @param {String} label The element's label. It will be concatenated with the image `alt` attribute if one is present.
- * @returns {module:engine/view/element~Element}
+ * An 'imageBlock' type (block image):
+ *
+ *		<figure class="image"><img></img></figure>
+ *
+ * An 'imageInline' type (inline image):
+ *
+ *		<span class="image-inline"><img></img></span>
+ *
+ * Note that `alt` and `src` attributes are converted separately, so they are not included.
+ *
+ * @protected
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {'imageBlock'|'imageInline'} imageType The type of created image.
+ * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function toImageWidget( viewElement, writer, label ) {
-	writer.setCustomProperty( 'image', true, viewElement );
+export function createImageViewElement( writer, imageType ) {
+	const emptyElement = writer.createEmptyElement( 'img' );
 
-	return toWidget( viewElement, writer, { label: labelCreator } );
+	const container = imageType === 'imageBlock' ?
+		writer.createContainerElement( 'figure', { class: 'image' } ) :
+		writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
 
-	function labelCreator() {
-		const imgElement = getViewImgFromWidget( viewElement );
-		const altText = imgElement.getAttribute( 'alt' );
+	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
 
-		return altText ? `${ altText } ${ label }` : label;
+	return container;
+}
+
+/**
+ * A function returning a `MatcherPattern` for a particular type of View images.
+ *
+ * @protected
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {'imageBlock'|'imageInline'} matchImageType The type of created image.
+ * @returns {module:engine/view/matcher~MatcherPattern}
+ */
+export function getImgViewElementMatcher( editor, matchImageType ) {
+	if ( editor.plugins.has( 'ImageInlineEditing' ) !== editor.plugins.has( 'ImageBlockEditing' ) ) {
+		return {
+			name: 'img',
+			attributes: {
+				src: true
+			}
+		};
 	}
-}
 
-/**
- * Checks if a given view element is an image widget.
- *
- * @param {module:engine/view/element~Element} viewElement
- * @returns {Boolean}
- */
-export function isImageWidget( viewElement ) {
-	return !!viewElement.getCustomProperty( 'image' ) && isWidget( viewElement );
-}
+	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
-/**
- * Returns an image widget editing view element if one is selected.
- *
- * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
- * @returns {module:engine/view/element~Element|null}
- */
-export function getSelectedImageWidget( selection ) {
-	const viewElement = selection.getSelectedElement();
-
-	if ( viewElement && isImageWidget( viewElement ) ) {
-		return viewElement;
-	}
-
-	return null;
-}
-
-/**
- * Checks if the provided model element is an `image`.
- *
- * @param {module:engine/model/element~Element} modelElement
- * @returns {Boolean}
- */
-export function isImage( modelElement ) {
-	return !!modelElement && modelElement.is( 'element', 'image' );
-}
-
-/**
- * Handles inserting single file. This method unifies image insertion using {@link module:widget/utils~findOptimalInsertionPosition} method.
- *
- *		insertImage( model, { src: 'path/to/image.jpg' } );
- *
- * @param {module:engine/model/model~Model} model
- * @param {Object} [attributes={}] Attributes of inserted image
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert the image. If not specified,
- * the {@link module:widget/utils~findOptimalInsertionPosition} logic will be applied.
- */
-export function insertImage( model, attributes = {}, insertPosition = null ) {
-	model.change( writer => {
-		const imageElement = writer.createElement( 'image', attributes );
-
-		const insertAtSelection = insertPosition || findOptimalInsertionPosition( model.document.selection, model );
-
-		model.insertContent( imageElement, insertAtSelection );
-
-		// Inserting an image might've failed due to schema regulations.
-		if ( imageElement.parent ) {
-			writer.setSelection( imageElement, 'on' );
+	return element => {
+		// Convert only images with src attribute.
+		if ( !imageUtils.isInlineImageView( element ) || !element.hasAttribute( 'src' ) ) {
+			return null;
 		}
-	} );
-}
 
-/**
- * Checks if image can be inserted at current model selection.
- *
- * @param {module:engine/model/model~Model} model
- * @returns {Boolean}
- */
-export function isImageAllowed( model ) {
-	const schema = model.schema;
-	const selection = model.document.selection;
+		// The <img> can be standalone, wrapped in <figure>...</figure> (ImageBlock plugin) or
+		// wrapped in <figure><a>...</a></figure> (LinkImage plugin).
+		const imageType = element.findAncestor( imageUtils.isBlockImageView ) ? 'imageBlock' : 'imageInline';
 
-	return isImageAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema ) &&
-		isInOtherImage( selection );
-}
-
-/**
- * Get view `<img>` element from the view widget (`<figure>`).
- *
- * Assuming that image is always a first child of a widget (ie. `figureView.getChild( 0 )`) is unsafe as other features might
- * inject their own elements to the widget.
- *
- * The `<img>` can be wrapped to other elements, e.g. `<a>`. Nested check required.
- *
- * @param {module:engine/view/element~Element} figureView
- * @returns {module:engine/view/element~Element}
- */
-export function getViewImgFromWidget( figureView ) {
-	const figureChildren = [];
-
-	for ( const figureChild of figureView.getChildren() ) {
-		figureChildren.push( figureChild );
-
-		if ( figureChild.is( 'element' ) ) {
-			figureChildren.push( ...figureChild.getChildren() );
+		if ( imageType !== matchImageType ) {
+			return null;
 		}
+
+		return { name: true, attributes: [ 'src' ] };
+	};
+}
+
+/**
+ * Considering the current model selection, it returns the name of the model image element
+ * (`'imageBlock'` or `'imageInline'`) that will make most sense from the UX perspective if a new
+ * image was inserted (also: uploaded, dropped, pasted) at that selection.
+ *
+ * The assumption is that inserting images into empty blocks or on other block widgets should
+ * produce block images. Inline images should be inserted in other cases, e.g. in paragraphs
+ * that already contain some text.
+ *
+ * @protected
+ * @param {module:engine/model/schema~Schema} schema
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * @returns {'imageBlock'|'imageInline'}
+ */
+export function determineImageTypeForInsertionAtSelection( schema, selection ) {
+	const firstBlock = first( selection.getSelectedBlocks() );
+
+	// Insert a block image if the selection is not in/on block elements or it's on a block widget.
+	if ( !firstBlock || schema.isObject( firstBlock ) ) {
+		return 'imageBlock';
 	}
 
-	return figureChildren.find( viewChild => viewChild.is( 'element', 'img' ) );
-}
-
-// Checks if image is allowed by schema in optimal insertion parent.
-//
-// @returns {Boolean}
-function isImageAllowedInParent( selection, schema, model ) {
-	const parent = getInsertImageParent( selection, model );
-
-	return schema.checkChild( parent, 'image' );
-}
-
-// Checks if selection is placed in other image (ie. in caption).
-function isInOtherImage( selection ) {
-	return [ ...selection.focus.getAncestors() ].every( ancestor => !ancestor.is( 'element', 'image' ) );
-}
-
-// Returns a node that will be used to insert image with `model.insertContent` to check if image can be placed there.
-function getInsertImageParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
-
-	const parent = insertAt.parent;
-
-	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
-		return parent.parent;
+	// A block image should also be inserted into an empty block element
+	// (that is not an empty list item so the list won't get split).
+	if ( firstBlock.isEmpty && firstBlock.name != 'listItem' ) {
+		return 'imageBlock';
 	}
 
-	return parent;
+	// Otherwise insert an inline image.
+	return 'imageInline';
 }
