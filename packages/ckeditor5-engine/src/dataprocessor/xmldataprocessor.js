@@ -54,7 +54,7 @@ export default class XmlDataProcessor {
 		 * @private
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( document, { blockFillerMode: 'nbsp' } );
+		this._domConverter = new DomConverter( document, { renderingMode: 'data' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an XML string.

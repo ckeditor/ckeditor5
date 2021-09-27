@@ -90,7 +90,7 @@ msgstr ""
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "Origineel"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -98,7 +98,7 @@ msgstr ""
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Invoegen"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"

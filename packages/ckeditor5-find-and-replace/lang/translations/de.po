@@ -58,12 +58,12 @@ msgstr "Ersetzen durch…"
 
 msgctxt "An error text displayed when user attempted to find an empty text."
 msgid "Text to find must not be empty."
-msgstr ""
+msgstr "Der Suchtext darf nicht leer sein."
 
 msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
 msgid "Tip: Find some text first in order to replace it."
-msgstr ""
+msgstr "Tipp: Zuerst nach Text suchen um diesen zu ersetzen."
 
 msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
 msgid "Show options"
-msgstr ""
+msgstr "Optionen anzeigen"

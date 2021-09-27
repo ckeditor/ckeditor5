@@ -9,7 +9,6 @@
 
 .ck-source-editing-area {
 	position: relative;
-	font-family: monospace;
 }
 
 .ck-source-editing-area::after,
@@ -19,6 +18,7 @@
 	border: 1px solid transparent;
 	line-height: var(--ck-line-height-base);
 	font-size: var(--ck-font-size-normal);
+	font-family: monospace;
 	white-space: pre-wrap;
 }
 
