@@ -14,7 +14,7 @@ modified_at: 2021-09-16
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-<!-- For the entire list of changes introduced in version 30.0.0, see the [changelog for CKEditor 5 v30.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3000-2021-09-26).-->
+For the entire list of changes introduced in version 30.0.0, see the [changelog for CKEditor 5 v30.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3000-2021-09-27).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v30.0.0.
 
