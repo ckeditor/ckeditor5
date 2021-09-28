@@ -21,6 +21,7 @@
 	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
 	& .ck-button.ck-dropdown__button {
 		width: 100%;
+		display: -webkit-flex;
 
 		/* Disable main button's tooltip when the dropdown is open. Otherwise the panel may
 		partially cover the tooltip */
