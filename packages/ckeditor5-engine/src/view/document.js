@@ -81,7 +81,10 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
-		 * TODO
+		 * `true` while the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
+		 * When they stop selecting, the property goes back to `false`.
+		 *
+		 * This property is updated by the {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
 		 *
 		 * @readonly
 		 * @observable

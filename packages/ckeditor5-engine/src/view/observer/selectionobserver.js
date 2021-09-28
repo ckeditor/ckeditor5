@@ -20,6 +20,8 @@ import { debounce } from 'lodash-es';
  * {@link module:engine/view/document~Document#event:selectionChange} event only if a selection change was the only change in the document
  * and the DOM selection is different then the view selection.
  *
+ * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
+ *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
@@ -100,40 +102,42 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		const debouncedSelectionInactivityTimeout = debounce( () => {
-			if ( !this.document.isSelecting ) {
-				return;
-			}
-
-			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] Selection inactivity timeout ⌛️.' );
+		// This timeout is a sort of (paranoid) check so if anything happens in DOM that should end
+		// the "is selecting" state of the document but it wasn't handled here for any reason, the editor
+		// will not stay stuck in this state and it will get back to normal after a couple of seconds.
+		const debouncedDocumentIsSelectingInactivityTimeout = debounce( () => {
 			this.document.isSelecting = false;
-			// @if CK_DEBUG_ENGINE // console.groupEnd();
-		}, 10000 );
+		}, 5000 );
 
-		const endSelecting = () => {
-			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] End selecting.' );
+		const startDocumentIsSelecting = () => {
+			this.document.isSelecting = true;
+
+			// Let's activate the safety timeout each time the document enters the "is selecting" state.
+			debouncedDocumentIsSelectingInactivityTimeout();
+		};
+
+		const endDocumentIsSelecting = () => {
 			this.document.isSelecting = false;
-			debouncedSelectionInactivityTimeout.cancel();
-			// @if CK_DEBUG_ENGINE // console.groupEnd();
+
+			// The safety timeout can be canceled when the document leaves the "is selecting" state.
+			debouncedDocumentIsSelectingInactivityTimeout.cancel();
 		};
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
-			debouncedSelectionInactivityTimeout();
+
+			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
+			// using their mouse).
+			debouncedDocumentIsSelectingInactivityTimeout();
 		} );
 
-		this.listenTo( domDocument, 'selectstart', () => {
-			// @if CK_DEBUG_ENGINE // console.clear();
-			// @if CK_DEBUG_ENGINE // console.group( '[SelectionObserver] 🖱 Selectstart.' );
-			this.document.isSelecting = true;
-			// @if CK_DEBUG_ENGINE // console.groupEnd();
-
-			debouncedSelectionInactivityTimeout();
-		}, { priority: 'highest' } );
-
-		this.listenTo( domDocument, 'mouseup', endSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'keydown', endSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'keyup', endSelecting, { priority: 'highest' } );
+		// The document has the "is selecting" state while the user keeps making (extending) the selection
+		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
+		// the mouse button or interrupted the process by pressing or releasing any key.
+		this.listenTo( domDocument, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
 
 		this._documents.add( domDocument );
 	}

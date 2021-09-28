@@ -105,20 +105,27 @@ export default class Renderer {
 		this.set( 'isFocused', false );
 
 		/**
-		 * TODO
+		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
+		 * When they stop selecting, the property goes back to `false`.
+		 *
+		 * Note: In some browsers, the renderer will stop rendering the selection and inline fillers while the user is making
+		 * a selection to avoid glitches in DOM selection (https://github.com/ckeditor/ckeditor5/issues/10562).
 		 *
 		 * @member {Boolean}
 		 * @observable
 		 */
 		this.set( 'isSelecting', false );
 
-		this.on( 'change:isSelecting', () => {
-			if ( !this.isSelecting ) {
-				// @if CK_DEBUG_ENGINE // console.log( '[Renderer] Unblocked selection rendering -> render().' );
-
-				this.render();
-			}
-		} );
+		// Rendering the selection and inline filler manipulation should be postponed in Blink until the user finishes creating
+		// the selection in DOM to avoid accidental selection collapsing (https://github.com/ckeditor/ckeditor5/issues/10562).
+		// When the user stops, selecting, all pending changes should be rendered ASAP, though.
+		if ( env.isBlink ) {
+			this.on( 'change:isSelecting', () => {
+				if ( !this.isSelecting ) {
+					this.render();
+				}
+			} );
+		}
 
 		/**
 		 * The text node in which the inline filler was rendered.
@@ -189,13 +196,16 @@ export default class Renderer {
 	 */
 	render() {
 		let inlineFillerPosition;
+		const isInlineFillerRenderingPossible = env.isBlink ? !this.isSelecting : true;
 
 		// Refresh mappings.
 		for ( const element of this.markedChildren ) {
 			this._updateChildrenMappings( element );
 		}
 
-		if ( !this.isSelecting ) {
+		// Don't manipulate inline fillers while the selection is being made in Blink to prevent accidental
+		// DOM selection collapsing (https://github.com/ckeditor/ckeditor5/issues/10562).
+		if ( isInlineFillerRenderingPossible ) {
 			// There was inline filler rendered in the DOM but it's not
 			// at the selection position any more, so we can remove it
 			// (cause even if it's needed, it must be placed in another location).
@@ -230,13 +240,14 @@ export default class Renderer {
 			}
 		}
 
-		// Check whether the inline filler is required and where it really is in the DOM.
-		// At this point in most cases it will be in the DOM, but there are exceptions.
-		// For example, if the inline filler was deep in the created DOM structure, it will not be created.
-		// Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
-		// it will not be present.
-		// Fix those and similar scenarios.
-		if ( !this.isSelecting ) {
+		// * Check whether the inline filler is required and where it really is in the DOM.
+		//   At this point in most cases it will be in the DOM, but there are exceptions.
+		//   For example, if the inline filler was deep in the created DOM structure, it will not be created.
+		//   Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
+		//   it will not be present. Fix those and similar scenarios.
+		// * Don't manipulate inline fillers while the selection is being made in Blink to prevent accidental
+		//   DOM selection collapsing (https://github.com/ckeditor/ckeditor5/issues/10562).
+		if ( isInlineFillerRenderingPossible ) {
 			if ( inlineFillerPosition ) {
 				const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
 				const domDocument = fillerDomPosition.parent.ownerDocument;
@@ -719,13 +730,13 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		// Block updating DOM selection unless there are some structural changes in DOM to render.
-		if ( this.isSelecting && !this.markedChildren.size ) {
-			// @if CK_DEBUG_ENGINE // console.warn( '[Renderer] Selection update blocked.' );
+		// Block updating DOM selection in Blink while the user is selecting to prevent accidental selection collapsing.
+		// Note: Structural changes in DOM must trigger selection rendering, though. Nodes the selection was anchored
+		// to may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
+		// https://github.com/ckeditor/ckeditor5/issues/10562
+		if ( env.isBlink && this.isSelecting && !this.markedChildren.size ) {
 			return;
 		}
-
-		// @if CK_DEBUG_ENGINE // console.log( '[Renderer] DOM selection gets updated.' );
 
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
