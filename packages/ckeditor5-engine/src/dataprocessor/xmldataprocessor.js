@@ -36,34 +36,34 @@ export default class XmlDataProcessor {
 		 * and `<container:tagName></container:tagName>` input. It is mainly for debugging.
 		 *
 		 * @public
-		 * @member {DOMParser}
+		 * @member {Array.<String>}
 		 */
 		this.namespaces = options.namespaces || [];
 
 		/**
 		 * DOM parser instance used to parse an XML string to an XML document.
 		 *
-		 * @private
+		 * @public
 		 * @member {DOMParser}
 		 */
-		this._domParser = new DOMParser();
+		this.domParser = new DOMParser();
 
 		/**
 		 * DOM converter used to convert DOM elements to view elements.
 		 *
-		 * @private
+		 * @public
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this._domConverter = new DomConverter( document, { renderingMode: 'data' } );
+		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
 
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an XML string.
 		 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
 		 *
-		 * @private
-		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
+		 * @public
+		 * @member {module:engine/dataprocessor/htmlwriter~HtmlWriter}
 		 */
-		this._htmlWriter = new BasicHtmlWriter();
+		this.htmlWriter = new BasicHtmlWriter();
 	}
 
 	/**
@@ -75,11 +75,11 @@ export default class XmlDataProcessor {
 	 */
 	toData( viewFragment ) {
 		// Convert view DocumentFragment to DOM DocumentFragment.
-		const domFragment = this._domConverter.viewToDom( viewFragment, document );
+		const domFragment = this.domConverter.viewToDom( viewFragment, document );
 
 		// Convert DOM DocumentFragment to XML output.
 		// There is no need to use dedicated for XML serializing method because BasicHtmlWriter works well in this case.
-		return this._htmlWriter.getHtml( domFragment );
+		return this.htmlWriter.getHtml( domFragment );
 	}
 
 	/**
@@ -93,7 +93,7 @@ export default class XmlDataProcessor {
 		const domFragment = this._toDom( data );
 
 		// Convert DOM DocumentFragment to view DocumentFragment.
-		return this._domConverter.domToView( domFragment, { keepOriginalCase: true } );
+		return this.domConverter.domToView( domFragment, { keepOriginalCase: true } );
 	}
 
 	/**
@@ -107,7 +107,7 @@ export default class XmlDataProcessor {
 	 * be treated as raw data.
 	 */
 	registerRawContentMatcher( pattern ) {
-		this._domConverter.registerRawContentMatcher( pattern );
+		this.domConverter.registerRawContentMatcher( pattern );
 	}
 
 	/**
@@ -122,7 +122,7 @@ export default class XmlDataProcessor {
 	 * @param {'default'|'marked'} type Whether to use the default or the marked `&nbsp;` block fillers.
 	 */
 	useFillerType( type ) {
-		this._domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
+		this.domConverter.blockFillerMode = type == 'marked' ? 'markedNbsp' : 'nbsp';
 	}
 
 	/**
@@ -140,7 +140,7 @@ export default class XmlDataProcessor {
 		// Wrap data into root element with optional namespace definitions.
 		data = `<xml ${ namespaces }>${ data }</xml>`;
 
-		const parsedDocument = this._domParser.parseFromString( data, 'text/xml' );
+		const parsedDocument = this.domParser.parseFromString( data, 'text/xml' );
 
 		// Parse validation.
 		const parserError = parsedDocument.querySelector( 'parsererror' );
