@@ -26,7 +26,10 @@ export default class FindCommand extends Command {
 		super( editor );
 
 		// The find command is always enabled.
-		this.isEnabled = true;
+		// this.isEnabled = true;
+
+		// TODO: affectsContent
+		this.set( 'affectsContent', false );
 
 		/**
 		 * The find and replace state object used for command operations.
@@ -37,9 +40,9 @@ export default class FindCommand extends Command {
 		this._state = state;
 
 		// Do not block the command if the editor goes into the read-only mode as it does not impact the data. See #9975.
-		this.listenTo( editor, 'change:isReadOnly', () => {
-			this.clearForceDisabled( 'readOnlyMode' );
-		} );
+		// this.listenTo( editor, 'change:isReadOnly', () => {
+		// 	this.clearForceDisabled( 'readOnlyMode' );
+		// } );
 	}
 
 	/**

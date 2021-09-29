@@ -23,6 +23,14 @@ import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selectio
  * @extends module:core/command~Command
  */
 export default class SelectRowCommand extends Command {
+	// TODO: affectsContent
+	constructor( editor ) {
+		super( editor );
+
+		// TODO: affectsContent
+		this.set( 'affectsContent', false );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

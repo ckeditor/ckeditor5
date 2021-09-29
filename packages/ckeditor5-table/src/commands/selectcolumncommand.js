@@ -24,6 +24,14 @@ import { getSelectionAffectedTableCells } from '../utils/selection';
  * @extends module:core/command~Command
  */
 export default class SelectColumnCommand extends Command {
+	// TODO: affectsContent
+	constructor( editor ) {
+		super( editor );
+
+		// TODO: affectsContent
+		this.set( 'affectsContent', false );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

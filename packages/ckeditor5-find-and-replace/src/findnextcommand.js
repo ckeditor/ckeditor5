@@ -26,6 +26,9 @@ export default class FindNextCommand extends Command {
 	constructor( editor, state ) {
 		super( editor );
 
+		// TODO: affectsContent
+		this.set( 'affectsContent', false );
+
 		/**
 		 * The find and replace state object used for command operations.
 		 *
@@ -34,16 +37,16 @@ export default class FindNextCommand extends Command {
 		 */
 		this._state = state;
 
-		this.isEnabled = false;
+		// this.isEnabled = false;
 
 		this.listenTo( this._state.results, 'change', () => {
 			this.isEnabled = this._state.results.length > 1;
 		} );
 
 		// Do not block the command if the editor goes into the read-only mode as it does not impact the data. See #9975.
-		this.listenTo( editor, 'change:isReadOnly', () => {
-			this.clearForceDisabled( 'readOnlyMode' );
-		} );
+		// this.listenTo( editor, 'change:isReadOnly', () => {
+		// 	this.clearForceDisabled( 'readOnlyMode' );
+		// } );
 	}
 
 	/**

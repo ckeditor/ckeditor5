@@ -241,7 +241,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const doc = model.document;
 
-		this._disableCommands( editor );
+		this._disableCommands();
 
 		this.listenTo( doc.selection, 'change', this._checkCommands.bind( this ) );
 		this.listenTo( doc, 'change:data', this._checkCommands.bind( this ) );
@@ -257,7 +257,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const selection = editor.model.document.selection;
 
 		if ( selection.rangeCount > 1 ) {
-			this._disableCommands( editor );
+			this._disableCommands();
 
 			return;
 		}
@@ -298,7 +298,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	_disableCommands() {
 		const editor = this.editor;
 		const commands = this._getCommandNamesToToggle( editor )
-			.map( name => editor.commands.get( name ) );
+			.map( name => editor.commands.get( name ) )
+			.filter( command => command.affectsContent );
 
 		for ( const command of commands ) {
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );

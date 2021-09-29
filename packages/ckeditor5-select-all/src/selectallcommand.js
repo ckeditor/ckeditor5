@@ -26,6 +26,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * @extends module:core/command~Command
  */
 export default class SelectAllCommand extends Command {
+	// TODO: affectsContent
+	constructor( editor ) {
+		super( editor );
+
+		// TODO: affectsContent
+		this.set( 'affectsContent', false );
+	}
+
 	/**
 	 * @inheritDoc
 	 */

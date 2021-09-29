@@ -12,6 +12,9 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import StandardEditingMode from '../../src/standardeditingmode';
 import RestrictedEditingMode from '../../src/restrictededitingmode';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import ExportPdf from '@ckeditor/ckeditor5-export-pdf/src/exportpdf';
+import ExportWord from '@ckeditor/ckeditor5-export-word/src/exportword';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -35,8 +38,9 @@ async function startMode( selectedMode ) {
 
 async function startStandardEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, StandardEditingMode ],
+		plugins: [ ArticlePluginSet, Table, StandardEditingMode, ExportPdf, ExportWord, CloudServices ],
 		toolbar: [
+			'exportPdf', 'exportWord', '|',
 			'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'restrictedEditingException', '|', 'undo', 'redo'
@@ -73,8 +77,8 @@ function MyPlugin( editor ) {
 
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
-		plugins: [ ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin ],
-		toolbar: [ 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
+		plugins: [ ArticlePluginSet, Table, TableToolbar, RestrictedEditingMode, MyPlugin, ExportPdf, ExportWord, CloudServices ],
+		toolbar: [ 'exportPdf', 'exportWord', '|', 'bold', 'italic', 'link', '|', 'restrictedEditing', '|', 'undo', 'redo' ],
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],
 			tableToolbar: [ 'bold', 'italic' ]
