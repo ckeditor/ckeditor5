@@ -35,7 +35,6 @@
     "@ckeditor/ckeditor5-indent": "^29.2.0",
     "@ckeditor/ckeditor5-link": "^29.2.0",
     "@ckeditor/ckeditor5-list": "^29.2.0",
-    "@ckeditor/ckeditor5-markdown-gfm": "^29.2.0",
     "@ckeditor/ckeditor5-mention": "^29.2.0",
     "@ckeditor/ckeditor5-paragraph": "^29.2.0",
     "@ckeditor/ckeditor5-table": "^29.2.0",

@@ -22,7 +22,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
-import Markdown from '@ckeditor/ckeditor5-markdown-gfm/src/markdown';
+import Markdown from '../../ckeditor5-markdown-gfm/src/markdown';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 
 export default class ClassicEditor extends ClassicEditorBase { }
