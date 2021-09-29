@@ -38,33 +38,28 @@ export default function tableHeadingsRefreshHandler( model, mapper ) {
 			} else if ( change.attributeKey == 'headingColumns' ) {
 				reconvertOnAttributeChange( differ, change, element, 'startColumn', 'endColumn' );
 			}
-		} else if ( change.type == 'insert' ) {
-			// TODO this does not work
-			if ( change.name == 'tableRow' ) {
+		} else {
+			/* istanbul ignore else */
+			if ( change.type == 'insert' || change.type == 'remove' ) {
+				if ( change.name != 'tableRow' && change.name != 'tableCell' ) {
+					continue;
+				}
+
 				const table = change.position.findAncestor( 'table' );
 				const headingRows = table.getAttribute( 'headingRows' ) || 0;
-				const rowIndex = change.position.offset;
-				const isHeading = rowIndex < headingRows;
-
-				const tableRowElement = change.position.nodeAfter;
-				const viewElement = mapper.toViewElement( tableRowElement.getChild( tableRowElement.childCount - 1 ) );
-
-				if ( viewElement && viewElement.is( 'element', isHeading ? 'td' : 'th' ) ) {
-					reconvertCells( differ, table, {
-						startRow: rowIndex,
-						endRow: rowIndex + 1
-					} );
-				}
-			} else if ( change.name == 'tableCell' ) {
-				const table = change.position.findAncestor( 'table' );
 				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
-				const columnIndex = change.position.offset;
 
-				if ( columnIndex < headingColumns ) {
-					reconvertCells( differ, table, {
-						startColumn: columnIndex,
-						endColumn: columnIndex + 1
-					} );
+				const tableWalker = new TableWalker( table );
+
+				for ( const tableSlot of tableWalker ) {
+					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+					const expectedElementName = isHeading ? 'th' : 'td';
+
+					const viewElement = mapper.toViewElement( tableSlot.cell );
+
+					if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
+						differ.refreshItem( change.name == 'tableRow' ? tableSlot.cell.parent : tableSlot.cell );
+					}
 				}
 			}
 		}
@@ -76,15 +71,10 @@ function reconvertOnAttributeChange( differ, change, table, startOption, endOpti
 	const oldHeadings = change.attributeOldValue || 0;
 	const newHeadings = change.attributeNewValue || 0;
 
-	reconvertCells( differ, table, {
+	const tableWalker = new TableWalker( table, {
 		[ startOption ]: Math.min( oldHeadings, newHeadings ),
 		[ endOption ]: Math.max( oldHeadings, newHeadings ) - 1
 	} );
-}
-
-// TODO
-function reconvertCells( differ, table, options ) {
-	const tableWalker = new TableWalker( table, options );
 
 	for ( const tableSlot of tableWalker ) {
 		differ.refreshItem( tableSlot.cell );

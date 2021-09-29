@@ -98,6 +98,13 @@ export default class Differ {
 		 * @type {Array.<Object>|null}
 		 */
 		this._cachedChangesWithGraveyard = null;
+
+		/**
+		 * TODO
+		 *
+		 * @private
+		 */
+		this._invalidatedMappings = new Set();
 	}
 
 	/**
@@ -123,6 +130,8 @@ export default class Differ {
 
 		this._markRemove( item.parent, item.startOffset, item.offsetSize );
 		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		this._invalidatedMappings.add( item );
 
 		const range = Range._createOn( item );
 
@@ -557,6 +566,7 @@ export default class Differ {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._invalidatedMappings = new Set();
 		this._cachedChanges = null;
 	}
 

@@ -289,6 +289,29 @@ export default class Mapper {
 	}
 
 	/**
+	 * TODO
+	 */
+	flushDeferredBindingsForElements( modelElements ) {
+		for ( const modelElement of modelElements ) {
+			const viewElement = this._modelToViewMapping.get( modelElement );
+
+			if ( !viewElement ) {
+				continue;
+			}
+
+			const root = this._deferredBindingRemovals.get( viewElement );
+
+			// Unbind it only if it wasn't re-attached to some root or document fragment.
+			if ( !root || viewElement.root != root ) {
+				continue;
+			}
+
+			this.unbindViewElement( viewElement );
+			this._deferredBindingRemovals.delete( viewElement );
+		}
+	}
+
+	/**
 	 * Removes all model to view and view to model bindings.
 	 */
 	clearBindings() {
