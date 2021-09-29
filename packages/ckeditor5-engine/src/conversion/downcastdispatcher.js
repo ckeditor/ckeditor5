@@ -171,6 +171,9 @@ export default class DowncastDispatcher {
 				// Defaults to 'attribute' change.
 				this._convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, conversionApi );
 			}
+
+			// TODO access _invalidatedMappings with some public method
+			conversionApi.mapper.flushDeferredBindingsForElements( differ._invalidatedMappings );
 		}
 
 		for ( const markerName of conversionApi.mapper.flushUnboundMarkerNames() ) {
