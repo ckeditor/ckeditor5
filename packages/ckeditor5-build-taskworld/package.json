@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "webpack --mode production",
-    "test": "yarn build && rm -rf ../../../tw-frontend/node_modules/@taskworld/ckeditor5/* && cp -R ./* ../../../tw-frontend/node_modules/@taskworld/ckeditor5"
+    "test": "yarn build && cp -R ./* ../../../tw-frontend/node_modules/@taskworld/ckeditor5"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
