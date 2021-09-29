@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, window, Node */
+/* globals setTimeout, window, Node, DOMParser */
 
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import BasicHtmlWriter from '../../src/dataprocessor/basichtmlwriter';
+import DomConverter from '../../src//view/domconverter';
 import xssTemplates from '../../tests/dataprocessor/_utils/xsstemplates';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import { stringify, parse } from '../../src/dev-utils/view';
@@ -18,6 +20,18 @@ describe( 'HtmlDataProcessor', () => {
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
 		dataProcessor = new HtmlDataProcessor( viewDocument );
+	} );
+
+	describe( 'constructor', () => {
+		it( 'should set public properties', () => {
+			expect( dataProcessor ).to.have.property( 'domParser' );
+			expect( dataProcessor ).to.have.property( 'domConverter' );
+			expect( dataProcessor ).to.have.property( 'htmlWriter' );
+
+			expect( dataProcessor.domParser ).to.be.an.instanceOf( DOMParser );
+			expect( dataProcessor.domConverter ).to.be.an.instanceOf( DomConverter );
+			expect( dataProcessor.htmlWriter ).to.be.an.instanceOf( BasicHtmlWriter );
+		} );
 	} );
 
 	describe( 'toView()', () => {
