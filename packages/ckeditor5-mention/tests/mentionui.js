@@ -121,6 +121,14 @@ describe( 'MentionUI', () => {
 		it( 'should add MentionView to a panel', () => {
 			expect( editor.plugins.get( ContextualBalloon ).visibleView ).to.be.instanceof( MentionsView );
 		} );
+
+		it( 'should hide contextual balloon when editor is in readonly mode', () => {
+			expect( panelView.isVisible ).to.be.true;
+
+			editor.isReadOnly = true;
+
+			expect( panelView.isVisible ).to.be.false;
+		} );
 	} );
 
 	describe( 'position', () => {
