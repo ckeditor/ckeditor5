@@ -109,6 +109,10 @@ export default class MentionUI extends Plugin {
 		editor.editing.view.document.on( 'keydown', ( evt, data ) => {
 			if ( isHandledKey( data.keyCode ) && this._isUIVisible ) {
 				data.preventDefault();
+				// Stop propagating `Enter` key because of "Enter-to-send" feature in Taskworld app
+				if ( typeof data.stopPropagation === 'function' ) {
+					data.stopPropagation();
+				}
 				evt.stop(); // Required for Enter key overriding.
 
 				if ( data.keyCode == keyCodes.arrowdown ) {
@@ -794,7 +798,7 @@ function requestFeedText( markerDefinition, text ) {
 function createFeedCallback( feedItems ) {
 	return feedText => {
 		const filteredItems = feedItems
-		// Make the default mention feed case-insensitive.
+			// Make the default mention feed case-insensitive.
 			.filter( item => {
 				// Item might be defined as object.
 				const itemId = typeof item == 'string' ? item : String( item.id );
