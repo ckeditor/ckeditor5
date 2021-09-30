@@ -28,7 +28,6 @@ export default class HtmlDataProcessor {
 		/**
 		 * A DOM parser instance used to parse an HTML string to an HTML document.
 		 *
-		 * @public
 		 * @member {DOMParser}
 		 */
 		this.domParser = new DOMParser();
@@ -36,7 +35,6 @@ export default class HtmlDataProcessor {
 		/**
 		 * A DOM converter used to convert DOM elements to view elements.
 		 *
-		 * @public
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
@@ -44,7 +42,6 @@ export default class HtmlDataProcessor {
 		/**
 		 * A basic HTML writer instance used to convert DOM elements to an HTML string.
 		 *
-		 * @public
 		 * @member {module:engine/dataprocessor/htmlwriter~HtmlWriter}
 		 */
 		this.htmlWriter = new BasicHtmlWriter();

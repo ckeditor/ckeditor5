@@ -26,7 +26,7 @@ export default class XmlDataProcessor {
 	 *
 	 * @param {module:engine/view/document~Document} document The view document instance.
 	 * @param {Object} options Configuration options.
-	 * @param {Array<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
+	 * @param {Array.<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */
 	constructor( document, options = {} ) {
 		/**
@@ -35,7 +35,6 @@ export default class XmlDataProcessor {
 		 * For example, registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>`
 		 * and `<container:tagName></container:tagName>` input. It is mainly for debugging.
 		 *
-		 * @public
 		 * @member {Array.<String>}
 		 */
 		this.namespaces = options.namespaces || [];
@@ -43,7 +42,6 @@ export default class XmlDataProcessor {
 		/**
 		 * DOM parser instance used to parse an XML string to an XML document.
 		 *
-		 * @public
 		 * @member {DOMParser}
 		 */
 		this.domParser = new DOMParser();
@@ -51,7 +49,6 @@ export default class XmlDataProcessor {
 		/**
 		 * DOM converter used to convert DOM elements to view elements.
 		 *
-		 * @public
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = new DomConverter( document, { renderingMode: 'data' } );
@@ -60,7 +57,6 @@ export default class XmlDataProcessor {
 		 * A basic HTML writer instance used to convert DOM elements to an XML string.
 		 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
 		 *
-		 * @public
 		 * @member {module:engine/dataprocessor/htmlwriter~HtmlWriter}
 		 */
 		this.htmlWriter = new BasicHtmlWriter();
