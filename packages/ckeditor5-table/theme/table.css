@@ -7,7 +7,7 @@
 	/* Give the table widget some air and center it horizontally */
 	/* The first value should be equal to --ck-spacing-large variable if used in the editor context
 	to avoid the content jumping (See https://github.com/ckeditor/ckeditor5/issues/9825). */
-	margin: 0.9em auto;
+	margin: var(--ck-spacing-large) 0;
 	display: table;
 
 	& table {

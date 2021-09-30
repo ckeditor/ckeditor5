@@ -20,7 +20,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Table from '@ckeditor/ckeditor5-table/src/table';
+import Table from '../../ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import Markdown from '../../ckeditor5-markdown-gfm/src/markdown';
 import Mention from '@ckeditor/ckeditor5-mention/src/mention';
@@ -66,6 +66,12 @@ ClassicEditor.defaultConfig = {
 		]
 	},
 	table: {
+		// See https://ckeditor.com/docs/ckeditor5/latest/features/table.html#configuring-styling-tools
+		tableProperties: {
+			defaultProperties: {
+				alignment: 'left'
+			}
+		},
 		contentToolbar: [
 			'tableColumn',
 			'tableRow',

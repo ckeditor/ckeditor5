@@ -38,7 +38,6 @@
     "@ckeditor/ckeditor5-list": "^29.2.0",
     "@ckeditor/ckeditor5-mention": "^29.2.0",
     "@ckeditor/ckeditor5-paragraph": "^29.2.0",
-    "@ckeditor/ckeditor5-table": "^29.2.0",
     "babel-loader": "^8.2.2",
     "postcss-loader": "^3.0.0",
     "raw-loader": "^4.0.1",
