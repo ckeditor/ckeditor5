@@ -14,7 +14,8 @@
   },
   "main": "./build/index.js",
   "files": [
-    "build"
+    "build",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "webpack --mode production",
