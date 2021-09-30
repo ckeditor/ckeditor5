@@ -24,7 +24,10 @@ export default class Markdown extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.data.processor = new GFMDataProcessor( editor.data.viewDocument );
+		// Do not write `get('mention.idToText')` as it does NOT return a resolver function
+		const mentionIdToText = editor.config.get( 'mention' ).idToText;
+
+		editor.data.processor = new GFMDataProcessor( editor.data.viewDocument, { mentionIdToText } );
 	}
 
 	/**

@@ -70,31 +70,7 @@ turndownService.use( [
  * @returns {String}
  */
 export default function html2markdown( html ) {
-	// Converts `<span class="mention" data-mention="@5f7e99c932cb8c00061b87d9">@Patrick Star</span>` to `@:5f7e99c932cb8c00061b87d9:`
-	// See https://github.com/taskworld/ckeditor5/blob/84700cd93725130eb28abc1657b058a62b1d662d/packages/ckeditor5-mention/src/mentionediting.js#L140-L141
-	const parser = new window.DOMParser();
-	const holder = parser.parseFromString( html, 'text/html' );
-	const walker = holder.createTreeWalker(
-		holder.body,
-		window.NodeFilter.SHOW_ELEMENT,
-		{
-			acceptNode: node =>
-				( node.classList.contains( 'mention' ) && node.getAttribute( 'data-mention' ) ) ?
-					window.NodeFilter.FILTER_ACCEPT : window.NodeFilter.FILTER_SKIP
-		}
-	);
-	let node;
-	while ( true ) {
-		node = walker.nextNode();
-		if ( node === null ) {
-			break;
-		}
-
-		// See https://github.com/taskworld/tw-backend/blob/2c30299fe57fd41a43ca4990377b8503a23266c8/app/legacy/api/message-service/MentionExtractor.ts#L9
-		node.innerText = '@:' + node.getAttribute( 'data-mention' ).replace( /^@/, '' ) + ':';
-	}
-
-	return turndownService.turndown( holder.body.innerHTML );
+	return turndownService.turndown( html );
 }
 
 export { turndownService };

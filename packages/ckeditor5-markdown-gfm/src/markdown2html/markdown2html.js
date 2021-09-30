@@ -40,8 +40,6 @@ marked.use( {
  * @returns {String}
  */
 export default function markdown2html( markdown ) {
-	// TODO: Converts `@:5f7e99c932cb8c00061b87d9:` to `<span class="mention" data-mention="@5f7e99c932cb8c00061b87d9">@Patrick Star</span>`
-
 	return marked.parse( markdown, {
 		gfm: true,
 		breaks: true,
