@@ -80,7 +80,25 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 
+		/**
+		 * When called, starts clearing the {@link #_loopbackCounter} counter in intervals of time. When the number of selection
+		 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
+		 * possible infinite selection loop.
+		 *
+		 * @private
+		 * @method #_clearInfiniteLoopInterval
+		 */
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
+
+		/**
+		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not not record this fact
+		 * correctly (for whatever the reason). It is a safeguard (paranoid check) that returns document to the normal state
+		 * after a certain period of time (debounced, postponed by each selectionchange event).
+		 *
+		 * @private
+		 * @method #_documentIsSelectingInactivityTimeoutDebounced
+		 */
+		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
 		/**
 		 * Private property to check if the code does not enter infinite loop.
@@ -102,25 +120,18 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// This timeout is a sort of (paranoid) check so if anything happens in DOM that should end
-		// the "is selecting" state of the document but it wasn't handled here for any reason, the editor
-		// will not stay stuck in this state and it will get back to normal after a couple of seconds.
-		const debouncedDocumentIsSelectingInactivityTimeout = debounce( () => {
-			this.document.isSelecting = false;
-		}, 5000 );
-
 		const startDocumentIsSelecting = () => {
 			this.document.isSelecting = true;
 
 			// Let's activate the safety timeout each time the document enters the "is selecting" state.
-			debouncedDocumentIsSelectingInactivityTimeout();
+			this._documentIsSelectingInactivityTimeoutDebounced();
 		};
 
 		const endDocumentIsSelecting = () => {
 			this.document.isSelecting = false;
 
 			// The safety timeout can be canceled when the document leaves the "is selecting" state.
-			debouncedDocumentIsSelectingInactivityTimeout.cancel();
+			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 		};
 
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
@@ -128,7 +139,7 @@ export default class SelectionObserver extends Observer {
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
-			debouncedDocumentIsSelectingInactivityTimeout();
+			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
 
 		// The document has the "is selecting" state while the user keeps making (extending) the selection
@@ -150,6 +161,7 @@ export default class SelectionObserver extends Observer {
 
 		clearInterval( this._clearInfiniteLoopInterval );
 		this._fireSelectionChangeDoneDebounced.cancel();
+		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
 	/**
