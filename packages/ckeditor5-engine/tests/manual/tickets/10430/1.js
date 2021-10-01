@@ -40,15 +40,15 @@ const config = {
 	]
 };
 
-const selectionStatusBanner = document.createElement( 'div' );
-selectionStatusBanner.classList.add( 'status-banner' );
-selectionStatusBanner.innerHTML = 'Selection rendering is ';
-document.body.appendChild( selectionStatusBanner );
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), config )
 	.then( editor => {
 		window.editor = editor;
+
+		const selectionStatusBanner = document.createElement( 'div' );
+		selectionStatusBanner.classList.add( 'status-banner' );
+		selectionStatusBanner.innerHTML = 'Selection&inline filler rendering is ';
+		document.body.appendChild( selectionStatusBanner );
 
 		editor.conversion.for( 'editingDowncast' ).markerToHighlight( {
 			model: 'highlight',
