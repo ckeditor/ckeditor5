@@ -87,7 +87,7 @@ describe( 'TableToolbar', () => {
 
 				editor.ui.focusTracker.isFocused = true;
 
-				setData( model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+				setData( model, '<table><tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow></table>' );
 
 				sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
 					return view === toolbar && balloonClassName === 'ck-toolbar-container';
@@ -107,7 +107,7 @@ describe( 'TableToolbar', () => {
 			it( 'should show the toolbar when the editor gains focus and the table is selected', () => {
 				editor.ui.focusTracker.isFocused = true;
 
-				setData( model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+				setData( model, '<table><tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow></table>' );
 
 				editor.ui.focusTracker.isFocused = false;
 				expect( balloon.visibleView ).to.be.null;
@@ -119,7 +119,7 @@ describe( 'TableToolbar', () => {
 			it( 'should hide the toolbar when the editor loses focus and the table is selected', () => {
 				editor.ui.focusTracker.isFocused = false;
 
-				setData( model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+				setData( model, '<table><tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow></table>' );
 
 				editor.ui.focusTracker.isFocused = true;
 				expect( balloon.visibleView ).to.equal( toolbar );
@@ -360,7 +360,7 @@ describe( 'TableToolbar', () => {
 			} );
 
 			it( 'should not show the toolbar on ui#update when the selection is inside a table cell', () => {
-				setData( editor.model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+				setData( editor.model, '<table><tableRow><tableCell><paragraph>[]</paragraph></tableCell></tableRow></table>' );
 
 				expect( balloon.visibleView ).to.be.null;
 

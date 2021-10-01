@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-typing",
-  "version": "29.2.0",
+  "version": "30.0.0",
   "description": "Typing feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,24 +12,24 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^29.2.0",
-    "@ckeditor/ckeditor5-engine": "^29.2.0",
-    "@ckeditor/ckeditor5-utils": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^30.0.0",
+    "@ckeditor/ckeditor5-engine": "^30.0.0",
+    "@ckeditor/ckeditor5-utils": "^30.0.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
-    "@ckeditor/ckeditor5-block-quote": "^29.2.0",
-    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
-    "@ckeditor/ckeditor5-enter": "^29.2.0",
-    "@ckeditor/ckeditor5-essentials": "^29.2.0",
-    "@ckeditor/ckeditor5-heading": "^29.2.0",
-    "@ckeditor/ckeditor5-image": "^29.2.0",
-    "@ckeditor/ckeditor5-link": "^29.2.0",
-    "@ckeditor/ckeditor5-list": "^29.2.0",
-    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
-    "@ckeditor/ckeditor5-undo": "^29.2.0",
-    "@ckeditor/ckeditor5-code-block": "^29.2.0"
+    "@ckeditor/ckeditor5-basic-styles": "^30.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^30.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^30.0.0",
+    "@ckeditor/ckeditor5-enter": "^30.0.0",
+    "@ckeditor/ckeditor5-essentials": "^30.0.0",
+    "@ckeditor/ckeditor5-heading": "^30.0.0",
+    "@ckeditor/ckeditor5-image": "^30.0.0",
+    "@ckeditor/ckeditor5-link": "^30.0.0",
+    "@ckeditor/ckeditor5-list": "^30.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^30.0.0",
+    "@ckeditor/ckeditor5-undo": "^30.0.0",
+    "@ckeditor/ckeditor5-code-block": "^30.0.0"
   },
   "engines": {
     "node": ">=12.0.0",
