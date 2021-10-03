@@ -287,8 +287,8 @@ describe( 'table clipboard', () => {
 			assertClipboardContentOnMethod( 'copy', viewTable( [
 				[ '11', '12', '13' ],
 				[ '21', '22', '23' ],
-				[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
-			], { headingRows: 2, headingColumns: 1 } ) );
+				[ { contents: '31', isHeading: true }, '32', '33' ]
+			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should update table heading attributes (selection without headings)', () => {

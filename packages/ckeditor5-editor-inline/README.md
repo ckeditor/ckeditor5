@@ -1,4 +1,4 @@
-CKEditor 5 inline editor creator
+CKEditor 5 inline editor implementation
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-editor-inline.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline)

@@ -43,9 +43,7 @@ ClassicEditor
 			decorators: {
 				addGreenLink: {
 					mode: 'automatic',
-					attributes: {
-						class: 'my-green-link'
-					}
+					classes: 'my-green-link'
 				}
 			}
 		}

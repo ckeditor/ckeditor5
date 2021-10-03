@@ -11,8 +11,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-text-transformation' ), {
 		cloudServices: CS_CONFIG,
 		placeholder: 'Type here...',
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

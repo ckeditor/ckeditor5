@@ -14,6 +14,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import Image from '../src/image';
@@ -96,6 +97,30 @@ describe( 'AutoImage - integration', () => {
 			clock.tick( 100 );
 
 			editor.commands.execute( 'undo' );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>http://example.com/image.png[]</paragraph>'
+			);
+		} );
+
+		it( 'can undo auto-embeding by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			setData( editor.model, '<paragraph>[]</paragraph>' );
+			pasteHtml( editor, 'http://example.com/image.png' );
+
+			expect( getData( editor.model ) ).to.equal(
+				'<paragraph>http://example.com/image.png[]</paragraph>'
+			);
+
+			clock.tick( 100 );
+
+			viewDocument.fire( 'delete', deleteEvent );
 
 			expect( getData( editor.model ) ).to.equal(
 				'<paragraph>http://example.com/image.png[]</paragraph>'

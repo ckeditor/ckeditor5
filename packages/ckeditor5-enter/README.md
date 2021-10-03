@@ -1,4 +1,4 @@
-CKEditor 5 Enter feature
+CKEditor 5 enter feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-enter.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-enter)

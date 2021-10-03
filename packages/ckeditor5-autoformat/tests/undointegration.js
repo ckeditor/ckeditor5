@@ -14,11 +14,14 @@ import StrikethroughEditing from '@ckeditor/ckeditor5-basic-styles/src/strikethr
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Undo from '@ckeditor/ckeditor5-undo/src/undoediting';
 
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { DomEventData } from '@ckeditor/ckeditor5-engine';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'Autoformat undo integration', () => {
@@ -26,35 +29,13 @@ describe( 'Autoformat undo integration', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		return VirtualTestEditor
-			.create( {
-				plugins: [
-					Enter,
-					Undo,
-					Paragraph,
-					Autoformat,
-					ListEditing,
-					HeadingEditing,
-					BoldEditing,
-					ItalicEditing,
-					CodeEditing,
-					StrikethroughEditing,
-					BlockQuoteEditing
-				]
-			} )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				doc = model.document;
-			} );
-	} );
-
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
 	describe( 'inline', () => {
+		beforeEach( createVirtualEditorInstance );
+
 		it( 'should undo replacing "**" with bold', () => {
 			setData( model, '<paragraph>**foobar*[]</paragraph>' );
 			model.change( writer => {
@@ -123,6 +104,8 @@ describe( 'Autoformat undo integration', () => {
 	} );
 
 	describe( 'block', () => {
+		beforeEach( createVirtualEditorInstance );
+
 		it( 'should work when replacing asterisk', () => {
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -203,4 +186,100 @@ describe( 'Autoformat undo integration', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>> []</paragraph>' );
 		} );
 	} );
+
+	describe( 'by pressing backspace', () => {
+		let viewDocument, deleteEvent;
+
+		beforeEach( async () => {
+			const newEditor = await ModelTestEditor
+				.create( {
+					plugins: [
+						Autoformat,
+						Paragraph,
+						BoldEditing,
+						ListEditing,
+						Delete,
+						Undo
+					]
+				} );
+
+			editor = newEditor;
+			model = editor.model;
+			doc = model.document;
+			viewDocument = editor.editing.view.document;
+			deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+		} );
+
+		it( 'should undo after inline autoformat', () => {
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model ) ).to.equal( '<paragraph>**foobar**[]</paragraph>' );
+		} );
+
+		it( 'should undo after block autoformat', () => {
+			setData( model, '<paragraph>-[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( ' ', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
+		} );
+
+		it( 'should not undo after selection has changed', () => {
+			setData( model, '<paragraph>**foobar*[]</paragraph>' );
+			model.change( writer => {
+				writer.insertText( '*', doc.selection.getFirstPosition() );
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph><$text bold="true">foobar</$text>[]</paragraph>' );
+
+			model.change( writer => {
+				const selection = model.createSelection();
+				writer.setSelection( selection );
+			} );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text bold="true">foobar</$text></paragraph>' );
+		} );
+	} );
+
+	async function createVirtualEditorInstance() {
+		const newEditor = await VirtualTestEditor
+			.create( {
+				plugins: [
+					Enter,
+					Undo,
+					Paragraph,
+					Autoformat,
+					ListEditing,
+					HeadingEditing,
+					BoldEditing,
+					ItalicEditing,
+					CodeEditing,
+					StrikethroughEditing,
+					BlockQuoteEditing
+				]
+			} );
+
+		editor = newEditor;
+		model = editor.model;
+		doc = model.document;
+	}
 } );

@@ -1,0 +1,47 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-eval' https://unpkg.com https://cksource.com;">
+</head>
+
+<p>
+	<button id="long">Load long data</button>
+	<button id="medium">Load medium data</button>
+	<button id="short">Load short data</button>
+</p>
+
+<div id="toolbar-container" class="toolbar-container"></div>
+<div id="editor-content" class="test-editor"></div>
+<div class="minimap-container"></div>
+
+<style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		padding-right: 200px;
+	}
+
+
+	.minimap-container {
+		width: 150px;
+		border-left: 1px solid var(--ck-color-toolbar-border);
+		overflow: hidden;
+		position: fixed;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+
+	.toolbar-container {
+		width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
+		margin-bottom: 30px;
+	}
+
+	.ck.ck-editor__editable_inline {
+		/* A4 size */
+		width: calc( 210mm + 2px ); /* Those 2px are from border (box-sizing: border-box) */
+		height: auto;
+		padding: 20mm 12mm;
+		box-sizing: border-box;
+		background: hsl( 0, 0%, 100% );
+		border: 1px solid hsl( 0, 0%, 88% );
+		overflow: hidden;
+	}
+</style>

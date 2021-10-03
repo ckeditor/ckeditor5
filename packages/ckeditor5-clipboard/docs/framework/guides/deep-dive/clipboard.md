@@ -117,7 +117,7 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data
 ```
 
 <info-box>
-	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive guide} to learn more about event listener priorities.
+	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive} guide to learn more about event listener priorities.
 </info-box>
 
 ### Paste as plain text plugin example

@@ -8,7 +8,7 @@ modified_at: 2021-06-07
 
 The {@link module:table/table~Table} feature offers table creation and editing tools that help content authors bring tabular data into their documents. Tables help organize the content in a distinct, visual way that stands out from the text and is more easily readable for certain types of information. They are perfect for listing, grouping, and otherwise organizing data sets or for providing information in a clear, efficient way.
 
-Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and and provide relief from large body texts. CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
+Tables are great for schedules, timetables, price lists or menus; for listing terms and conditions or providing troubleshooting solutions. They also visually break and provide relief from large body texts. CKEditor 5 offers all necessary functionality to produce advanced, visually appealing and highly efficient tables.
 
 You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
@@ -103,6 +103,29 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+### Default table headers
+
+In order to make every inserted table to have `n` number of rows and columns as table headers by default, set an optional table config property `defaultHeadings` as follows:
+
+```js
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Table, TableToolbar, Bold, ... ],
+		toolbar: [ 'insertTable', ... ],
+		table: {
+			defaultHeadings: { rows: 1, columns: 1 }
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+Check the table with default headers applied to both the first row and the first column in the demo below. Click on the table and use the column properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-column.svg Table column} or the row properties {@icon @ckeditor/ckeditor5-table/theme/icons/table-row.svg Table row} UI button to toggle the respective headers.
+
+{@snippet features/table-default-headings}
 
 ### Table and cell styling tools
 

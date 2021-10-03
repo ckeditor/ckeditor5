@@ -10,11 +10,11 @@ This package implements the special characters feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/special-characters#demo demo in the Special characters feature} guide.
+Check out the {@link features/special-characters#demo demo in the special characters feature guide}.
 
 ## Documentation
 
-See the {@link features/special-characters Special characters feature} guide and the {@link module:special-characters/specialcharacters~SpecialCharacters} plugin documentation.
+See the {@link features/special-characters special characters feature guide} and the {@link module:special-characters/specialcharacters~SpecialCharacters} plugin documentation.
 
 ## Installation
 

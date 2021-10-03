@@ -9,7 +9,7 @@ This package implements mention support for CKEditor 5 and brings smart autocomp
 
 ## Demo
 
-Check out the demo in the [Mentions (autocomplete) feature](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html) guide.
+Check out the demo in the [mentions (autocomplete) feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html#demo).
 
 ## Documentation
 

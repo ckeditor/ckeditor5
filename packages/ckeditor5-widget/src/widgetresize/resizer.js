@@ -53,17 +53,6 @@ export default class Resizer {
 		this._options = options;
 
 		/**
-		 * Container of the entire resize UI.
-		 *
-		 * Note that this property is initialized only after the element bound with the resizer is drawn
-		 * so it will be a `null` when uninitialized.
-		 *
-		 * @private
-		 * @type {HTMLElement|null}
-		 */
-		this._domResizerWrapper = null;
-
-		/**
 		 * A wrapper that is controlled by the resizer. This is usually a widget element.
 		 *
 		 * @private
@@ -122,8 +111,6 @@ export default class Resizer {
 
 				that._appendHandles( domElement );
 				that._appendSizeUI( domElement );
-
-				that._domResizerWrapper = domElement;
 
 				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
 					domElement.style.display = newValue ? '' : 'none';
@@ -417,6 +404,19 @@ export default class Resizer {
 		const widgetWrapper = this._domResizerWrapper.parentElement;
 
 		return this._options.getHandleHost( widgetWrapper );
+	}
+
+	/**
+	 * DOM container of the entire resize UI.
+	 *
+	 * Note that this property will have a value only after the element bound with the resizer is rendered
+	 * (otherwise `null`).
+	 *
+	 * @private
+	 * @member {HTMLElement|null}
+	 */
+	get _domResizerWrapper() {
+		return this._options.editor.editing.view.domConverter.mapViewToDom( this._viewResizerWrapper );
 	}
 
 	/**

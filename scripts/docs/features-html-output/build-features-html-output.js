@@ -9,31 +9,14 @@ const fs = require( 'fs' );
 const path = require( 'path' );
 const glob = require( 'glob' );
 const chalk = require( 'chalk' );
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
-const DESTINATION_DOCS_PATH = 'docs/builds/guides/integration/features-html-output-overview.md';
+// When executing the script from the `{@exec...}` expression, relative paths used in the script will not work as this script can be
+// executed in the documentation builder context. Let current work directory point to CKEditor 5 repository.
+// After building the HTML output, CWD will be restored.
+const CURRENT_WORK_DIRECTORY = process.cwd();
+const CKEDITOR5_ROOT = path.join( __dirname, '..', '..', '..' );
+
 const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-party-packages';
-
-try {
-	const { output, numberOfPackages } = createHtmlOutputMarkup();
-
-	saveGeneratedOutput( output );
-
-	console.log(
-		`✨ ${ chalk.green( `The features HTML output page has been generated successfully for ${ numberOfPackages } packages.` ) }`
-	);
-
-	const shouldCommitChanges = process.argv.includes( '--commit' );
-
-	if ( shouldCommitChanges ) {
-		commitChanges();
-	}
-} catch ( error ) {
-	console.log( `❌ ${ chalk.red( 'An error occurred during parsing a package metadata file.' ) }` );
-	console.log( error );
-
-	process.exit( 1 );
-}
 
 /**
  * Main parser function. Its purpose is to:
@@ -41,40 +24,38 @@ try {
  * - parse and prepare the data for generating the features HTML output overview,
  * - use the parsed data to create tables for each package, that contains all plugins and their possible HTML output.
  *
- * Returns total number of parsed files.
- *
  * Each generated table contains 2 columns: "Plugin" and "HTML output". Each table cell in the "Plugin" column has a human-readable name of
- * the plugin (which is a link to the feature documentation) and the name of the class used to create the plugin (which is a link to the API
- * documentation). For each row in the "Plugin" column there is at least one row in the "HTML output" column. If given plugin does not
- * generate any output, the one and only row in the "HTML output" column contains the word "None". Each item from the `htmlOutput` property
- * from the package metadata file corresponds to a separate row in the "HTML output" column. It contains one or more preformatted paragraphs
- * describing the possible HTML output: HTML elements, their CSS classes, inline styles, other attributes and comments.
+ * the plugin, a link to the feature documentation, and a link to the API documentation. For each row in the "Plugin" column there is at
+ * least one row in the "HTML output" column. If given plugin does not generate any output, the one and only row in the "HTML output"
+ * column contains the word "None". Each item from the `htmlOutput` property from the package metadata file corresponds to a separate row
+ * in the "HTML output" column. It contains one or more preformatted paragraphs describing the possible HTML output: HTML elements, their
+ * CSS classes, inline styles, other attributes and comments.
  *
- * ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
- * ┃    Plugin    ┃           HTML output          ┃
- * ┣━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
- * ┃ first plugin │ output #1 for the first plugin ┃
- * ┃              ├────────────────────────────────┨
- * ┃              ┄                                ┄
- * ┃              ├────────────────────────────────┨
- * ┃              │ output #N for the first plugin ┃
- * ┃──────────────┼────────────────────────────────┨
- * ┄              ┄                                ┄
- * ┃──────────────┼────────────────────────────────┨
- * ┃ last plugin  │ output #1 for the last plugin  ┃
- * ┃              ├────────────────────────────────┨
- * ┃              ┄                                ┄
- * ┃              ├────────────────────────────────┨
- * ┃              │ output #N for the last plugin  ┃
- * ┗━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ * ┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃         Plugin         ┃         HTML output         ┃
+ * ┣━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+ * ┃ #1 plugin name         │ output #1 for the #1 plugin ┃
+ * ┃ Feature guide link     ├─────────────────────────────┨
+ * ┃ API documentation link ┄                             ┄
+ * ┃                        ├─────────────────────────────┨
+ * ┃                        │ output #N for the #1 plugin ┃
+ * ┃────────────────────────┼─────────────────────────────┨
+ * ┄                        ┄                             ┄
+ * ┃────────────────────────┼─────────────────────────────┨
+ * ┃ #N plugin name         │ output #1 for the #N plugin ┃
+ * ┃ Feature guide link     ├─────────────────────────────┨
+ * ┃ API documentation link ┄                             ┄
+ * ┃                        ├─────────────────────────────┨
+ * ┃                        │ output #N for the #N plugin ┃
+ * ┗━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
  *
  * Generated table is preceded by the package name as a heading and the link to a source package metadata file on GitHub.
  *
- * @returns {Object} result
- * @returns {String} result.output Generated HTML markup.
- * @returns {Number} result.numberOfPackages Total number of package metadata files, that have been parsed.
+ * @returns {String} Generated HTML markup.
  */
-function createHtmlOutputMarkup() {
+module.exports = function createHtmlOutputMarkup() {
+	process.chdir( CKEDITOR5_ROOT );
+
 	const parsedFiles = parseFiles()
 		.map( packageMetadata => {
 			const outputRows = packageMetadata.plugins
@@ -132,11 +113,10 @@ function createHtmlOutputMarkup() {
 			);
 		} );
 
-	return {
-		output: parsedFiles.join( '' ),
-		numberOfPackages: parsedFiles.length
-	};
-}
+	process.chdir( CURRENT_WORK_DIRECTORY );
+
+	return parsedFiles.join( '' );
+};
 
 /**
  * Reads and parses all package metadata files, that match the glob pattern. The returned array is sorted alphabetically by package name.
@@ -255,23 +235,32 @@ function createSourceFileMarkupForThirdPartyPackage( filePath ) {
 function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const pluginNameLink = createFeatureLink( packageData, plugin );
+			const links = [
+				createFeatureLink( packageData, plugin ),
+				createApiLink( packageData, plugin )
+			];
 
-			const pluginClassNameLink = createApiLink( packageData, plugin );
+			let pluginNameMarkup = `<p><b>${ plugin.name }</b></p>`;
+
+			for ( const link of links ) {
+				if ( link ) {
+					pluginNameMarkup += `<p>${ link }</p>`;
+				}
+			}
 
 			const htmlOutputMarkup = plugin.htmlOutput ?
 				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
 				[ '<p>None.</p>' ];
 
 			return {
-				pluginNameMarkup: `<p>${ pluginNameLink }</p><p>${ pluginClassNameLink }</p>`,
+				pluginNameMarkup,
 				htmlOutputMarkup
 			};
 		} );
 }
 
 /**
- * Creates link to the plugin's feature documentation. If the feature documentation is missing, just the plugin name is returned.
+ * Creates link to the plugin's feature documentation. If the feature documentation is missing, it returns undefined.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
@@ -279,7 +268,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
  */
 function createFeatureLink( packageData, plugin ) {
 	if ( !plugin.docs ) {
-		return plugin.name;
+		return;
 	}
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
@@ -288,21 +277,21 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
+	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="output-overview-table-icon">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ docImg } Feature guide</a>`;
 }
 
 /**
- * Creates link to the plugin's API documentation. If given package is a third-party one, just the plugin class name is returned.
+ * Creates link to the plugin's API documentation. If given package is a third-party one, it returns undefined.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
 function createApiLink( packageData, plugin ) {
-	const pluginClassName = `<code>${ plugin.className }</code>`;
-
 	if ( packageData.isThirdPartyPackage ) {
-		return pluginClassName;
+		return;
 	}
 
 	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
@@ -315,7 +304,9 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
+	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="output-overview-table-icon">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">${ cogImg } API documentation</a>`;
 }
 
 /**
@@ -420,129 +411,6 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 				.filter( item => !!item )
 				.join( '' );
 		} );
-}
-
-/**
- * Saves generated output in the destination file.
- *
- * @param {String} output Generated output to be saved in the destination file.
- */
-function saveGeneratedOutput( output ) {
-	output = beautify( output );
-
-	output = fs
-		.readFileSync( DESTINATION_DOCS_PATH, 'utf-8' )
-		.replace( /(<!-- features-html-output-marker -->)[\s\S]*/, `$1\n${ output }` );
-
-	fs.writeFileSync( DESTINATION_DOCS_PATH, output );
-}
-
-/**
- * Beautifies the input HTML string by adding new lines and then indenting some HTML elements. It does not validate the input HTML string,
- * so if it is invalid (i.e. has missing closing tags) then probably this function will fail.
- *
- * @param {String} input String containing HTML elements to beutify.
- * @returns {String}
- */
-function beautify( input ) {
-	const lines = input
-		// Add new line before `<tag>` or `</tag>`, but only if it is not already preceded by a new line (negative lookbehind).
-		.replace( /(?<!\n)<(\/)?(table|thead|tbody|tr|th|td|p)( .*?)?>/g, '\n<$1$2$3>' )
-		// Add new line after `<tag>` or `</tag>`, but only if it is not already followed by a new line (negative lookahead).
-		.replace( /<(\/)?(table|thead|tbody|tr|th|td|p)( .*?)?>(?!\n)/g, '<$1$2$3>\n' )
-		// Remove whitespace before `>`, that may appear there after adding an empty attribute.
-		.replace( /\s+>/g, '>' )
-		// Divide input string into lines, which start with either an opening tag, a closing tag, or just a text.
-		.split( '\n' );
-
-	let indentCount = 0;
-
-	return lines
-		.map( ( line, index ) => {
-			if ( isOpeningTag( line ) && hasClosingTagFor( line, lines.slice( index ) ) ) {
-				return indentLine( line, indentCount++ );
-			}
-
-			if ( isClosingTag( line ) ) {
-				return indentLine( line, --indentCount );
-			}
-
-			return indentLine( line, indentCount );
-		} )
-		.join( '\n' );
-}
-
-/**
- * Commits generated changes. If output file has not been changed, nothing is commited.
- */
-function commitChanges() {
-	const exec = command => tools.shExec( command, { verbosity: 'error' } );
-
-	const hasChanges = exec( `git diff --name-only ${ DESTINATION_DOCS_PATH }` ).trim().length;
-
-	if ( !hasChanges ) {
-		console.log( 'ℹ️ Nothing to commit. The features HTML output overview guide is up to date.' );
-
-		return;
-	}
-
-	const hasStagedChanges = exec( 'git diff --cached --name-only' ).trim().length;
-
-	if ( hasStagedChanges ) {
-		console.log( 'ℹ️ There are changes, that have been already staged for next commit. Commit or stash them first.' );
-
-		return;
-	}
-
-	exec( `git add ${ DESTINATION_DOCS_PATH }` );
-	exec( 'git commit -m "Docs (ckeditor5): Updated the features HTML output overview guide."' );
-
-	console.log( 'ℹ️ Successfully commited generated changes.' );
-}
-
-/**
- * Checks, if an argument is an opening tag.
- *
- * @param {String} line String to check.
- * @returns {Boolean}
- */
-function isOpeningTag( line ) {
-	return line.startsWith( '<' ) && !isClosingTag( line );
-}
-
-/**
- * Checks, if an argument is a closing tag.
- *
- * @param {String} line String to check.
- * @returns {Boolean}
- */
-function isClosingTag( line ) {
-	return line.startsWith( '</' );
-}
-
-/**
- * Checks, if there is a closing tag for currently examined opening tag.
- *
- * @param {String} tag Currently examined opening tag.
- * @param {Array.<String>} lines Next lines to search for a closing tag.
- * @returns {Boolean}
- */
-function hasClosingTagFor( tag, lines ) {
-	const closingTag = tag.replace( /<([a-z]+).*>/, '</$1>' );
-
-	return lines.some( line => line === closingTag );
-}
-
-/**
- * Indents a line by a specified number of characters.
- *
- * @param {String} line Line to indent.
- * @param {Number} indentCount Number of characters to use for indentation.
- * @param {String} [indentChar] Indentation character.
- * @returns {String}
- */
-function indentLine( line, indentCount, indentChar = '\t' ) {
-	return `${ indentChar.repeat( indentCount ) }${ line }`;
 }
 
 /**

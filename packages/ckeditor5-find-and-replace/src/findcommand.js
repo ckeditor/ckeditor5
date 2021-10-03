@@ -20,6 +20,7 @@ export default class FindCommand extends Command {
 	 * Creates a new `FindCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state.
 	 */
 	constructor( editor, state ) {
 		super( editor );
@@ -27,13 +28,17 @@ export default class FindCommand extends Command {
 		// The find command is always enabled.
 		this.isEnabled = true;
 
-		this.state = state;
+		/**
+		 * The find and replace state object used for command operations.
+		 *
+		 * @private
+		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
+		 */
+		this._state = state;
 
 		// Do not block the command if the editor goes into the read-only mode as it does not impact the data. See #9975.
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value ) {
-				this.clearForceDisabled( 'readOnlyMode' );
-			}
+		this.listenTo( editor, 'change:isReadOnly', () => {
+			this.clearForceDisabled( 'readOnlyMode' );
 		} );
 	}
 
@@ -42,8 +47,9 @@ export default class FindCommand extends Command {
 	 *
 	 * @param {Function|String} callbackOrText
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be ignored.
+	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be matched.
 	 * @param {Boolean} [options.wholeWords=false] If set to `true`, only whole words that match `callbackOrText` will be matched.
+	 *
 	 * @fires execute
 	 */
 	execute( callbackOrText, { matchCase, wholeWords } = {} ) {
@@ -56,35 +62,34 @@ export default class FindCommand extends Command {
 		if ( typeof callbackOrText === 'string' ) {
 			findCallback = findByTextCallback( callbackOrText, { matchCase, wholeWords } );
 
-			this.state.searchText = callbackOrText;
+			this._state.searchText = callbackOrText;
 		} else {
-			// @todo: disable callback version
 			findCallback = callbackOrText;
 		}
 
-		// Initial search is done on all nodes inside the content.
-		const range = model.createRangeIn( model.document.getRoot() );
+		// Initial search is done on all nodes in all roots inside the content.
+		const results = model.document.getRootNames()
+			.reduce( ( ( currentResults, rootName ) => updateFindResultFromRange(
+				model.createRangeIn( model.document.getRoot( rootName ) ),
+				model,
+				findCallback,
+				currentResults
+			) ), null );
 
-		// @todo: fix me
-		// this.listenTo( model.document, 'change:data', () => onDocumentChange( results, model, findCallback ) );
-
-		const ret = {
-			results: updateFindResultFromRange( range, model, findCallback ),
-			findCallback
-		};
-
-		this.state.clear( model );
-		this.state.results.addMany( Array.from( ret.results ) );
-		this.state.highlightedResult = ret.results.get( 0 );
+		this._state.clear( model );
+		this._state.results.addMany( Array.from( results ) );
+		this._state.highlightedResult = results.get( 0 );
 
 		if ( typeof callbackOrText === 'string' ) {
-			// @todo: eliminate this code repetition. Done to fix unit tests.
-			this.state.searchText = callbackOrText;
+			this._state.searchText = callbackOrText;
 		}
 
-		this.state.matchCase = !!matchCase;
-		this.state.matchWholeWords = !!wholeWords;
+		this._state.matchCase = !!matchCase;
+		this._state.matchWholeWords = !!wholeWords;
 
-		return ret;
+		return {
+			results,
+			findCallback
+		};
 	}
 }

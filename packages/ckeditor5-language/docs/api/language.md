@@ -10,11 +10,11 @@ This package implements text part language support for CKEditor 5 that allows yo
 
 ## Demo
 
-Check out the {@link features/language#demo demo in the Text part language feature} guide.
+Check out the {@link features/language#demo demo in the text part language feature guide}.
 
 ## Documentation
 
-See the {@link features/language Text part language feature} guide.
+See the {@link features/language text part language feature guide}.
 
 You can also check out the following plugins:
 

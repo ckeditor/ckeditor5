@@ -3,35 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, window, document */
+/* globals console, window, document, ClassicEditor, GeneralHtmlSupport, ArticlePluginSet */
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
-
-import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+import './general-html-support.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-general-html-support' ), {
-		plugins: [
+		extraPlugins: [
 			ArticlePluginSet,
-			Code,
-			EasyImage,
-			ImageUpload,
-			CloudServices,
-			SourceEditing,
 			GeneralHtmlSupport
 		],
 		toolbar: {
 			items: [
-				'sourceEditing',
-				'|',
 				'heading',
 				'|',
 				'bold',
@@ -49,9 +34,15 @@ ClassicEditor
 				'insertTable',
 				'|',
 				'undo',
-				'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+				'redo',
+				'|',
+				'sourceEditing'
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
 			toolbar: [
@@ -67,36 +58,25 @@ ClassicEditor
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
 		cloudServices: CS_CONFIG,
-
 		htmlSupport: {
 			allow: [
-				// Enables <div>, <details>, and <summary> elements with all kind of attributes.
+				// Enables all HTML features.
 				{
-					name: /^(div|details|summary)$/,
-					styles: true,
+					name: /.*/,
+					attributes: true,
 					classes: true,
-					attributes: true
-				},
-
-				// Extends the existing Paragraph and Heading features
-				// with classes and data-* attributes.
-				{
-					name: /^(p|h[2-4])$/,
-					classes: true,
-					attributes: /^data-/
-				},
-
-				// Enables <span>s with any inline styles.
-				{
-					name: 'span',
 					styles: true
-				},
-
-				// Enables <abbr>s with the title attribute.
-				{
-					name: 'abbr',
-					attributes: [ 'title' ]
 				}
+			],
+			disallow: [
+				{
+					attributes: [
+						{ key: /^on(.*)/i, value: true },
+						{ key: /.*/, value: /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i },
+						{ key: /.*/, value: /data:(?!image\/(png|jpeg|gif|webp))/i }
+					]
+				},
+				{ name: 'script' }
 			]
 		}
 	} )
@@ -107,7 +87,10 @@ ClassicEditor
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Source' ),
 			text: 'Switch to the source mode to check out the source of the content and play with it.',
-			editor
+			editor,
+			tippyOptions: {
+				placement: 'bottom-end'
+			}
 		} );
 	} )
 	.catch( err => {

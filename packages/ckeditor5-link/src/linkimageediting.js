@@ -49,7 +49,7 @@ export default class LinkImageEditing extends Plugin {
 		}
 
 		editor.conversion.for( 'upcast' ).add( upcastLink( editor ) );
-		editor.conversion.for( 'downcast' ).add( downcastImageLink );
+		editor.conversion.for( 'downcast' ).add( downcastImageLink( editor ) );
 
 		// Definitions for decorators are provided by the `link` command and the `LinkEditing` plugin.
 		this._enableAutomaticDecorators();
@@ -81,7 +81,6 @@ export default class LinkImageEditing extends Plugin {
 	_enableManualDecorators() {
 		const editor = this.editor;
 		const command = editor.commands.get( 'link' );
-		const manualDecorators = command.manualDecorators;
 
 		for ( const decorator of command.manualDecorators ) {
 			if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
@@ -92,8 +91,8 @@ export default class LinkImageEditing extends Plugin {
 				editor.model.schema.extend( 'imageInline', { allowAttributes: decorator.id } );
 			}
 
-			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( manualDecorators, decorator ) );
-			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( manualDecorators, decorator ) );
+			editor.conversion.for( 'downcast' ).add( downcastImageLinkManualDecorator( decorator ) );
+			editor.conversion.for( 'upcast' ).add( upcastImageLinkManualDecorator( editor, decorator ) );
 		}
 	}
 }
@@ -106,25 +105,27 @@ export default class LinkImageEditing extends Plugin {
 // @returns {Function}
 function upcastLink( editor ) {
 	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
-	const linkUtils = editor.plugins.get( 'ImageUtils' );
+	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
-			const imageInLink = getFirstImage( viewLink );
+			const imageInLink = imageUtils.findViewImgElement( viewLink );
 
 			if ( !imageInLink ) {
 				return;
 			}
 
-			const blockImageView = imageInLink.findAncestor( element => linkUtils.isBlockImageView( element ) );
+			const blockImageView = imageInLink.findAncestor( element => imageUtils.isBlockImageView( element ) );
 
-			// There are two possible cases to consider here
+			// There are four possible cases to consider here
 			//
 			// 1. A "root > ... > figure.image > a > img" structure.
-			// 2. A "root > ... > block > a > img" structure.
+			// 2. A "root > ... > figure.image > a > picture > img" structure.
+			// 3. A "root > ... > block > a > img" structure.
+			// 4. A "root > ... > block > a > picture > img" structure.
 			//
-			// but the latter should only be considered by this converter when the inline image plugin
+			// but the last 2 cases should only be considered by this converter when the inline image plugin
 			// is NOT loaded in the editor (because otherwise, that would be a plain, linked inline image).
 			if ( isImageInlinePluginLoaded && !blockImageView ) {
 				return;
@@ -176,47 +177,55 @@ function upcastLink( editor ) {
 // Creates a converter that adds `<a>` to linked block image view elements.
 //
 // @private
-function downcastImageLink( dispatcher ) {
-	dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
-		// The image will be already converted - so it will be present in the view.
-		const viewFigure = conversionApi.mapper.toViewElement( data.item );
-		const writer = conversionApi.writer;
+function downcastImageLink( editor ) {
+	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
-		// But we need to check whether the link element exists.
-		const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
-
-		// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
-		if ( linkInImage ) {
-			if ( data.attributeNewValue ) {
-				writer.setAttribute( 'href', data.attributeNewValue, linkInImage );
-			} else {
-				const viewImage = Array.from( linkInImage.getChildren() ).find( child => child.name === 'img' );
-
-				writer.move( writer.createRangeOn( viewImage ), writer.createPositionAt( viewFigure, 0 ) );
-				writer.remove( linkInImage );
+	return dispatcher => {
+		dispatcher.on( 'attribute:linkHref:imageBlock', ( evt, data, conversionApi ) => {
+			if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+				return;
 			}
-		} else {
-			// But if it does not exist. Let's wrap already converted image by newly created link element.
-			// 1. Create an empty link element.
-			const linkElement = writer.createContainerElement( 'a', { href: data.attributeNewValue } );
 
-			// 2. Insert link inside the associated image.
-			writer.insert( writer.createPositionAt( viewFigure, 0 ), linkElement );
+			// The image will be already converted - so it will be present in the view.
+			const viewFigure = conversionApi.mapper.toViewElement( data.item );
+			const writer = conversionApi.writer;
 
-			// 3. Move the image to the link.
-			writer.move( writer.createRangeOn( viewFigure.getChild( 1 ) ), writer.createPositionAt( linkElement, 0 ) );
-		}
-	} );
+			// But we need to check whether the link element exists.
+			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
+			const viewImage = imageUtils.findViewImgElement( viewFigure );
+			// <picture>...<img/></picture> or <img/>
+			const viewImgOrPicture = viewImage.parent.is( 'element', 'picture' ) ? viewImage.parent : viewImage;
+
+			// If so, update the attribute if it's defined or remove the entire link if the attribute is empty.
+			if ( linkInImage ) {
+				if ( data.attributeNewValue ) {
+					writer.setAttribute( 'href', data.attributeNewValue, linkInImage );
+				} else {
+					writer.move( writer.createRangeOn( viewImgOrPicture ), writer.createPositionAt( viewFigure, 0 ) );
+					writer.remove( linkInImage );
+				}
+			} else {
+				// But if it does not exist. Let's wrap already converted image by newly created link element.
+				// 1. Create an empty link element.
+				const linkElement = writer.createContainerElement( 'a', { href: data.attributeNewValue } );
+
+				// 2. Insert link inside the associated image.
+				writer.insert( writer.createPositionAt( viewFigure, 0 ), linkElement );
+
+				// 3. Move the image to the link.
+				writer.move( writer.createRangeOn( viewImgOrPicture ), writer.createPositionAt( linkElement, 0 ) );
+			}
+		}, { priority: 'high' } );
+	};
 }
 
 // Returns a converter that decorates the `<a>` element when the image is the link label.
 //
 // @private
 // @returns {Function}
-function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
+function downcastImageLinkManualDecorator( decorator ) {
 	return dispatcher => {
 		dispatcher.on( `attribute:${ decorator.id }:imageBlock`, ( evt, data, conversionApi ) => {
-			const attributes = manualDecorators.get( decorator.id ).attributes;
 			const viewFigure = conversionApi.mapper.toViewElement( data.item );
 			const linkInImage = Array.from( viewFigure.getChildren() ).find( child => child.name === 'a' );
 
@@ -227,8 +236,16 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 				return;
 			}
 
-			for ( const [ key, val ] of toMap( attributes ) ) {
+			for ( const [ key, val ] of toMap( decorator.attributes ) ) {
 				conversionApi.writer.setAttribute( key, val, linkInImage );
+			}
+
+			if ( decorator.classes ) {
+				conversionApi.writer.addClass( decorator.classes, linkInImage );
+			}
+
+			for ( const key in decorator.styles ) {
+				conversionApi.writer.setStyle( key, decorator.styles[ key ], linkInImage );
 			}
 		} );
 	};
@@ -238,11 +255,13 @@ function downcastImageLinkManualDecorator( manualDecorators, decorator ) {
 //
 // @private
 // @returns {Function}
-function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
+function upcastImageLinkManualDecorator( editor, decorator ) {
+	const imageUtils = editor.plugins.get( 'ImageUtils' );
+
 	return dispatcher => {
 		dispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
 			const viewLink = data.viewItem;
-			const imageInLink = getFirstImage( viewLink );
+			const imageInLink = imageUtils.findViewImgElement( viewLink );
 
 			// We need to check whether an image is inside a link because the converter handles
 			// only manual decorators for linked images. See #7975.
@@ -250,11 +269,7 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 				return;
 			}
 
-			const consumableAttributes = {
-				attributes: manualDecorators.get( decorator.id ).attributes
-			};
-
-			const matcher = new Matcher( consumableAttributes );
+			const matcher = new Matcher( decorator._createPattern() );
 			const result = matcher.match( viewLink );
 
 			// The link element does not have required attributes or/and proper values.
@@ -277,13 +292,4 @@ function upcastImageLinkManualDecorator( manualDecorators, decorator ) {
 		}, { priority: 'high' } );
 		// Using the same priority that `upcastLink()` converter guarantees that the linked image was properly converted.
 	};
-}
-
-// Returns the first image in a given view element.
-//
-// @private
-// @param {module:engine/view/element~Element}
-// @returns {module:engine/view/element~Element|undefined}
-function getFirstImage( viewElement ) {
-	return Array.from( viewElement.getChildren() ).find( child => child.name === 'img' );
 }

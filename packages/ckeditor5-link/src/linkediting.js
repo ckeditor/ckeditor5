@@ -184,14 +184,24 @@ export default class LinkEditing extends Plugin {
 			editor.model.schema.extend( '$text', { allowAttributes: decorator.id } );
 
 			// Keeps reference to manual decorator to decode its name to attributes during downcast.
-			manualDecorators.add( new ManualDecorator( decorator ) );
+			decorator = new ManualDecorator( decorator );
+
+			manualDecorators.add( decorator );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decorator.id,
 				view: ( manualDecoratorName, { writer } ) => {
 					if ( manualDecoratorName ) {
-						const attributes = manualDecorators.get( decorator.id ).attributes;
-						const element = writer.createAttributeElement( 'a', attributes, { priority: 5 } );
+						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
+
+						if ( decorator.classes ) {
+							writer.addClass( decorator.classes, element );
+						}
+
+						for ( const key in decorator.styles ) {
+							writer.setStyle( key, decorator.styles[ key ], element );
+						}
+
 						writer.setCustomProperty( 'link', true, element );
 
 						return element;
@@ -201,7 +211,7 @@ export default class LinkEditing extends Plugin {
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
 				view: {
 					name: 'a',
-					attributes: manualDecorators.get( decorator.id ).attributes
+					...decorator._createPattern()
 				},
 				model: {
 					key: decorator.id

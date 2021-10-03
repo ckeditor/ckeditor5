@@ -40,8 +40,12 @@ ClassicEditor
 				'undo',
 				'redo'
 			],
-			shouldNotGroupWhenFull: true,
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			shouldNotGroupWhenFull: true
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
 			toolbar: [

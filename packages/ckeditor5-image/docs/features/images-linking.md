@@ -41,7 +41,7 @@ Click on the images to invoke the contextual toolbar. Use the link icon {@icon @
 
 ## Installation
 
-The image linking feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:link/linkimage~LinkImage} plugin. Read more in the {@link features/images-installation installation} guide.
+The image linking feature is not enabled by default in any of the editor builds. In order to enable it, you need to load the {@link module:link/linkimage~LinkImage} plugin. Read more in the {@link features/images-installation installation guide}.
 
 <info-box info>
 	The {@link module:link/linkimage~LinkImage} plugin is available in the {@link api/link `@ckeditor/ckeditor5-link`} package.

@@ -106,6 +106,32 @@ export default class Mention extends Plugin {
  */
 
 /**
+ * The configuration of the custom commit keys supported by the editor.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ Mention, ... ],
+ *				mention: {
+ *					// [ Enter, Space ]
+ *	 				commitKeys: [ 13, 32 ]
+ *					feeds: [
+ *						{ ... }
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * Custom commit keys configuration allows you to customize how users will confirm the selection of mentions from the dropdown list.
+ * You can add as many mention commit keys as you need. For instance, in the snippet above new mentions will be committed by pressing
+ * either <kbd>Enter</kbd> or <kbd>Space</kbd> (13 and 32 key codes respectively).
+ *
+ * @member {Array.<Number>} module:mention/mention~MentionConfig#commitKeys
+ * @default [ 13, 9 ] // [ Enter, Tab ]
+ */
+
+/**
  * The mention feed descriptor. Used in {@link module:mention/mention~MentionConfig `config.mention`}.
  *
  * See {@link module:mention/mention~MentionConfig} to learn more.

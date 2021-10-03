@@ -33,8 +33,6 @@ import Writer from '../../src/model/writer';
 
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
-/* globals console */
-
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
 
@@ -751,16 +749,6 @@ describe( 'UpcastHelpers', () => {
 	} );
 
 	describe( 'elementToMarker()', () => {
-		beforeEach( () => {
-			// Silence warning about deprecated method.
-			// This whole suite will be removed when the deprecated method is removed.
-			sinon.stub( console, 'warn' );
-		} );
-
-		afterEach( () => {
-			console.warn.restore();
-		} );
-
 		it( 'should be chainable', () => {
 			expect( upcastHelpers.elementToMarker( { view: 'marker-search', model: 'search' } ) ).to.equal( upcastHelpers );
 		} );

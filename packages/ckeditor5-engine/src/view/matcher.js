@@ -235,7 +235,7 @@ function isElementMatching( element, pattern ) {
 function matchName( pattern, name ) {
 	// If pattern is provided as RegExp - test against this regexp.
 	if ( pattern instanceof RegExp ) {
-		return pattern.test( name );
+		return !!name.match( pattern );
 	}
 
 	return pattern === name;
@@ -288,18 +288,12 @@ function matchName( pattern, name ) {
 //			]
 //
 // @param {Object} patterns Object with information about attributes to match.
-// @param {Array} items An array of key/value pairs, e.g.:
-//
-//	[
-//		[ 'src', 'https://example.com' ],
-//		[ 'rel', 'nofollow' ]
-//	]
-//
+// @param {Iterable.<String>} keys Attribute, style or class keys.
 // @param {Function} valueGetter A function providing value for a given item key.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
-function matchPatterns( patterns, items, valueGetter ) {
+function matchPatterns( patterns, keys, valueGetter ) {
 	const normalizedPatterns = normalizePatterns( patterns );
-	const normalizedItems = Array.from( items );
+	const normalizedItems = Array.from( keys );
 	const match = [];
 
 	normalizedPatterns.forEach( ( [ patternKey, patternValue ] ) => {
@@ -400,7 +394,7 @@ function normalizePatterns( patterns ) {
 function isKeyMatched( patternKey, itemKey ) {
 	return patternKey === true ||
 		patternKey === itemKey ||
-		patternKey instanceof RegExp && patternKey.test( itemKey );
+		patternKey instanceof RegExp && itemKey.match( patternKey );
 }
 
 // @param {String|RegExp} patternValue A pattern representing a value we want to match.
@@ -414,7 +408,11 @@ function isValueMatched( patternValue, itemKey, valueGetter ) {
 
 	const itemValue = valueGetter( itemKey );
 
-	return patternValue === itemValue || patternValue instanceof RegExp && patternValue.test( itemValue );
+	// For now, the reducers are not returning the full tree of properties.
+	// Casting to string preserves the old behavior until the root cause is fixed.
+	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
+	return patternValue === itemValue ||
+		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
 }
 
 // Checks if attributes of provided element can be matched against provided patterns.
@@ -424,7 +422,25 @@ function isValueMatched( patternValue, itemKey, valueGetter ) {
 // @param {module:engine/view/element~Element} element Element which attributes will be tested.
 // @returns {Array|null} Returns array with matched attribute names or `null` if no attributes were matched.
 function matchAttributes( patterns, element ) {
-	return matchPatterns( patterns, element.getAttributeKeys(), key => element.getAttribute( key ) );
+	const attributeKeys = new Set( element.getAttributeKeys() );
+
+	// `style` and `class` attribute keys are deprecated. Only allow them in object pattern
+	// for backward compatibility.
+	if ( isPlainObject( patterns ) ) {
+		if ( patterns.style !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-style-key', patterns );
+		}
+		if ( patterns.class !== undefined ) {
+			// Documented at the end of matcher.js.
+			logWarning( 'matcher-pattern-deprecated-attributes-class-key', patterns );
+		}
+	} else {
+		attributeKeys.delete( 'style' );
+		attributeKeys.delete( 'class' );
+	}
+
+	return matchPatterns( patterns, attributeKeys, key => element.getAttribute( key ) );
 }
 
 // Checks if classes of provided element can be matched against provided patterns.
@@ -697,4 +713,64 @@ function matchStyles( patterns, element ) {
  *
  * @param {Object} pattern Pattern with missing properties.
  * @error matcher-pattern-missing-key-or-value
+ */
+
+/**
+ * The key-value matcher pattern for `attributes` option is using deprecated `style` key.
+ *
+ * Use `styles` matcher pattern option instead:
+ *
+ * 		// Instead of:
+ * 		const pattern = {
+ * 			attributes: {
+ * 				key1: 'value1',
+ * 				key2: 'value2',
+ * 				style: /^border.*$/
+ * 			}
+ * 		}
+ *
+ * 		// Use:
+ * 		const pattern = {
+ * 			attributes: {
+ * 				key1: 'value1',
+ * 				key2: 'value2'
+ * 			},
+ * 			styles: /^border.*$/
+ * 		}
+ *
+ * Refer to the {@glink builds/guides/migration/migration-to-29##migration-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * and {@link module:engine/view/matcher~MatcherPattern} documentation.
+ *
+ * @param {Object} pattern Pattern with missing properties.
+ * @error matcher-pattern-deprecated-attributes-style-key
+ */
+
+/**
+ * The key-value matcher pattern for `attributes` option is using deprecated `class` key.
+ *
+ * Use `classes` matcher pattern option instead:
+ *
+ * 		// Instead of:
+ * 		const pattern = {
+ * 			attributes: {
+ * 				key1: 'value1',
+ * 				key2: 'value2',
+ * 				class: 'foobar'
+ * 			}
+ * 		}
+ *
+ * 		// Use:
+ * 		const pattern = {
+ * 			attributes: {
+ * 				key1: 'value1',
+ * 				key2: 'value2'
+ * 			},
+ * 			classes: 'foobar'
+ * 		}
+ *
+ * Refer to the {@glink builds/guides/migration/migration-to-29##migration-to-ckeditor-5-v2910 Migration to v29.1.0} guide
+ * and the {@link module:engine/view/matcher~MatcherPattern} documentation.
+ *
+ * @param {Object} pattern Pattern with missing properties.
+ * @error matcher-pattern-deprecated-attributes-class-key
  */

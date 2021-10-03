@@ -141,6 +141,10 @@ export function setTableWithObjectAttributes( model, attributes, cellContent ) {
  * @returns {String}
  */
 export function viewTable( tableData, attributes = {} ) {
+	if ( attributes.headingColumns ) {
+		throw new Error( 'The headingColumns attribute is not supported in viewTable util' );
+	}
+
 	const headingRows = attributes.headingRows || 0;
 	const asWidget = !!attributes.asWidget;
 

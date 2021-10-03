@@ -12,6 +12,8 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Text transformation feature', () => {
 	let editorElement, editor, model, doc;
@@ -103,7 +105,13 @@ describe( 'Text transformation feature', () => {
 		} );
 
 		describe( 'mathematical', () => {
-			testTransformation( '1/2', '½' );
+			testTransformation( '1/2 ', '½ ', '' );
+			testTransformation( '1/2.', '½.', 'A foo ' );
+			testTransformation( '1/2+', '½+', '+' );
+			testShouldNotTransform( 'x1/2 ', '½ ' );
+			testShouldNotTransform( '1/22', '½2' );
+			testShouldNotTransform( '11/2', '1½' );
+			testShouldNotTransform( '1/2A', '½A' );
 			testTransformation( '<=', '≤' );
 		} );
 
@@ -186,6 +194,35 @@ describe( 'Text transformation feature', () => {
 				.to.equal( '<codeBlock language="plaintext">some 1/2 code</codeBlock>' );
 		} );
 
+		it( 'can undo transformation', () => {
+			setData( model, '<paragraph>Foo[]</paragraph>' );
+
+			simulateTyping( '(c)' );
+
+			editor.commands.execute( 'undo' );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo(c)</paragraph>' );
+		} );
+
+		it( 'can undo transformation by pressing backspace', () => {
+			const viewDocument = editor.editing.view.document;
+			const deleteEvent = new DomEventData(
+				viewDocument,
+				{ preventDefault: sinon.spy() },
+				{ direction: 'backward', unit: 'codePoint', sequence: 1 }
+			);
+
+			setData( model, '<paragraph>Foo[]</paragraph>' );
+
+			simulateTyping( '(c)' );
+
+			viewDocument.fire( 'delete', deleteEvent );
+
+			expect( getData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph>Foo(c)</paragraph>' );
+		} );
+
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
 			it( `should transform "${ transformFrom }" to "${ transformTo }"`, () => {
 				setData( model, `<paragraph>${ textInParagraph }[]</paragraph>` );
@@ -211,6 +248,31 @@ describe( 'Text transformation feature', () => {
 
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
+			} );
+
+			it( `should not transform "${ transformFrom }" to "${ transformTo } if not right before selection"`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				// Insert text - should not be transformed.
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( `${ textInParagraph }${ transformFrom }`, doc.selection.focus );
+				} );
+
+				simulateTyping( ' ' );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } </paragraph>` );
+			} );
+		}
+
+		function testShouldNotTransform( transformFrom, transformTo ) {
+			it( `should not transform "${ transformFrom }" to "${ transformTo }"`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				simulateTyping( transformFrom );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ transformFrom }</paragraph>` );
 			} );
 		}
 	} );
@@ -386,7 +448,7 @@ describe( 'Text transformation feature', () => {
 	function createEditorInstance( additionalConfig = {} ) {
 		return ClassicTestEditor
 			.create( editorElement, Object.assign( {
-				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock ]
+				plugins: [ Typing, Paragraph, Bold, TextTransformation, CodeBlock, UndoEditing ]
 			}, additionalConfig ) )
 			.then( newEditor => {
 				editor = newEditor;

@@ -4,15 +4,21 @@ menu-title: Migration to v25.x
 order: 99
 ---
 
+<info-box>
+	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+
+	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
+</info-box>
+
 # Migration to CKEditor 5 v25.0.0
 
 For the entire list of changes introduced in version 25.0.0, see the [changelog for CKEditor 5 v25.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2500-2021-01-25).
 
-This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v25.0.0 due to changes introduced in the [collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) and the redesign of the annotations API.
+This migration guide enumerates the most important changes that require your attention when upgrading to CKEditor 5 v25.0.0 due to changes introduced in the {@link features/collaboration collaboration features} and the redesign of the annotations API.
 
 ## The redesign of the Annotations API
 
-The entire annotations API was redesigned in order to support multiple annotation UIs at the same time. A good example of this is an idea of displaying [comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) in the [sidebar](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-display-mode.html#wide-sidebar) while showing suggestions from [track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) in [inline balloons](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments-display-mode.html#inline-balloons) when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
+The entire annotations API was redesigned in order to support multiple annotation UIs at the same time. A good example of this is an idea of displaying {@link features/comments comments} in the {@link features/annotations-display-mode#wide-sidebar sidebar} while showing suggestions from {@link features/track-changes track changes} in {@link features/annotations-display-mode#inline-balloons inline balloons} when their corresponding suggestions are active. Due to that, some architectural changes were made and quite a lot of breaking changes were introduced with this release. See the migration guide below to check how to adapt to the changes.
 
 ## Conceptual and architectural changes
 

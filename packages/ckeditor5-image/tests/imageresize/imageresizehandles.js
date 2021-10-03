@@ -30,6 +30,7 @@ import ImageResizeEditing from '../../src/imageresize/imageresizeediting';
 import ImageResizeHandles from '../../src/imageresize/imageresizehandles';
 import ImageTextAlternative from '../../src/imagetextalternative';
 import ImageStyle from '../../src/imagestyle';
+import PictureEditing from '../../src/pictureediting';
 
 describe( 'ImageResizeHandles', () => {
 	let widget, editor, view, viewDocument, editorElement;
@@ -492,6 +493,34 @@ describe( 'ImageResizeHandles', () => {
 				attachToSpy.restore();
 			} );
 		} );
+
+		describe( 'PictureEditing integration', () => {
+			it( 'should add resize handles to a block image using <picture>', async () => {
+				const editor = await createEditor( {
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, PictureEditing, Paragraph ]
+				} );
+
+				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+
+				setData( editor.model,
+					`[<imageBlock linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageBlock>]`
+				);
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'sources', [
+						{ srcset: IMAGE_SRC_FIXTURE }
+					], editor.model.document.getRoot().getChild( 0 ) );
+				} );
+
+				await waitForAllImagesLoaded( editor );
+
+				expect( attachToSpy ).calledOnce;
+
+				attachToSpy.restore();
+
+				await editor.destroy();
+			} );
+		} );
 	} );
 
 	describe( 'for inline image', () => {
@@ -940,6 +969,36 @@ describe( 'ImageResizeHandles', () => {
 				const resizer = Array.from( editor.plugins.get( 'WidgetResize' )._resizers.values() )[ 0 ];
 
 				expect( resizer._getResizeHost().nodeName ).to.equal( 'P' );
+			} );
+		} );
+
+		describe( 'PictureEditing integration', () => {
+			it( 'should add resize handles to an inline image using <picture>', async () => {
+				const editor = await createEditor( {
+					plugins: [ Image, ImageResizeEditing, ImageResizeHandles, LinkImageEditing, PictureEditing, Paragraph ]
+				} );
+
+				const attachToSpy = sinon.spy( editor.plugins.get( 'WidgetResize' ), 'attachTo' );
+
+				setData( editor.model,
+					'<paragraph>' +
+						`[<imageInline linkHref="http://ckeditor.com" src="${ IMAGE_SRC_FIXTURE }" alt="alt text"></imageInline>]` +
+					'</paragraph>'
+				);
+
+				editor.model.change( writer => {
+					writer.setAttribute( 'sources', [
+						{ srcset: IMAGE_SRC_FIXTURE }
+					], editor.model.document.getRoot().getChild( 0 ).getChild( 0 ) );
+				} );
+
+				await waitForAllImagesLoaded( editor );
+
+				expect( attachToSpy ).calledOnce;
+
+				attachToSpy.restore();
+
+				await editor.destroy();
 			} );
 		} );
 

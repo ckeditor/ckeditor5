@@ -65,6 +65,29 @@ describe( 'FindNextCommand', () => {
 
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'should be enabled after disabling readonly mode', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command._state.results.clear();
+			command._state.results.add( {} );
+			command._state.results.add( {} );
+
+			editor.isReadOnly = true;
+			editor.isReadOnly = false;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be enabled if the next occurrence is not in the main root', async () => {
+			const multiRootEditor = await initMultiRootEditor();
+
+			multiRootEditor.execute( 'find', 'bar' );
+
+			expect( multiRootEditor.commands.get( 'findNext' ).isEnabled ).to.be.true;
+
+			await multiRootEditor.destroy();
+		} );
 	} );
 
 	describe( '_state', () => {
@@ -81,19 +104,14 @@ describe( 'FindNextCommand', () => {
 
 			command.execute();
 
-			const markers = Array.from( editor.model.markers )
-				.filter( marker => marker.name.startsWith( 'findResultHighlighted:' ) )
-				.map( marker => {
-					marker.name = 'findResultHighlighted:foo';
-					return marker;
-				} );
+			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
 			expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 				'<paragraph>' +
 					'Foo bar baz. Bam ' +
-					'<findResultHighlighted:foo:start></findResultHighlighted:foo:start>' +
+					'<highlightedResult:start></highlightedResult:start>' +
 						'bar' +
-					'<findResultHighlighted:foo:end></findResultHighlighted:foo:end>' +
+					'<highlightedResult:end></highlightedResult:end>' +
 					' bom. bar bar' +
 				'</paragraph>'
 			);
@@ -107,22 +125,71 @@ describe( 'FindNextCommand', () => {
 			command.execute();
 			command.execute();
 
-			const markers = Array.from( editor.model.markers )
-				.filter( marker => marker.name.startsWith( 'findResultHighlighted:' ) )
-				.map( marker => {
-					marker.name = 'findResultHighlighted:foo';
-					return marker;
-				} );
+			const markers = getSimplifiedHighlightedMarkers( model.markers );
 
 			expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 				'<paragraph>' +
 					'Foo bar baz. Bam bar bom. ' +
-					'<findResultHighlighted:foo:start></findResultHighlighted:foo:start>' +
+					'<highlightedResult:start></highlightedResult:start>' +
 						'bar' +
-					'<findResultHighlighted:foo:end></findResultHighlighted:foo:end>' +
+					'<highlightedResult:end></highlightedResult:end>' +
 					' bar' +
 				'</paragraph>'
 			);
 		} );
+
+		it( 'should move to the next root', async () => {
+			const multiRootEditor = await initMultiRootEditor();
+			model = multiRootEditor.model;
+
+			multiRootEditor.execute( 'find', 'bar' );
+			multiRootEditor.execute( 'findNext' );
+
+			const markers = getSimplifiedHighlightedMarkers( model.markers );
+
+			expect( stringify( model.document.getRoot( 'second' ), null, markers ) ).to.equal(
+				'<paragraph>' +
+					'Foo ' +
+					'<highlightedResult:start></highlightedResult:start>' +
+						'bar' +
+					'<highlightedResult:end></highlightedResult:end>' +
+					' baz' +
+				'</paragraph>'
+			);
+
+			await multiRootEditor.destroy();
+		} );
+
+		/**
+		 * Returns the highlighted markers from the markers map. All markers have their name simplified to "highlightedResult"
+		 * as otherwise they're random and unique.
+		 */
+		function getSimplifiedHighlightedMarkers( markers ) {
+			return Array.from( markers )
+				.filter( marker => marker.name.startsWith( 'findResultHighlighted:' ) )
+				.map( marker => {
+					// Replace markers id to a predefined value, as originally these are unique random ids.
+					marker.name = 'highlightedResult';
+
+					return marker;
+				} );
+		}
 	} );
+
+	class MultiRootEditor extends ModelTestEditor {
+		constructor( config ) {
+			super( config );
+
+			this.model.document.createRoot( '$root', 'second' );
+		}
+	}
+
+	async function initMultiRootEditor() {
+		const multiRootEditor = await MultiRootEditor.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
+
+		setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>' );
+		setData( multiRootEditor.model, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+
+		return multiRootEditor;
+	}
 } );
