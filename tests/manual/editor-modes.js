@@ -23,11 +23,17 @@ import RevisionHistory from '@ckeditor/ckeditor5-revision-history/src/revisionhi
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 const STORAGE_KEY_REVISIONS = 'ls-sample-revision-history-revisions';
+const STORAGE_KEY_SUGGESTIONS = 'ls-sample-revision-history-suggestions';
 const STORAGE_KEY_CONTENT = 'ls-sample-revision-history-content';
 
 document.querySelector( '#clear-revision-history' ).addEventListener( 'click', () => {
 	localStorage.removeItem( STORAGE_KEY_REVISIONS );
 	localStorage.removeItem( STORAGE_KEY_CONTENT );
+	window.location.reload();
+} );
+
+document.querySelector( '#clear-suggestions' ).addEventListener( 'click', () => {
+	localStorage.removeItem( STORAGE_KEY_SUGGESTIONS );
 	window.location.reload();
 } );
 
@@ -52,11 +58,7 @@ appData.users = [
 // The ID of the current user.
 appData.userId = 'user-1';
 
-class TrackChangesIntegration {
-	constructor( editor ) {
-		this.editor = editor;
-	}
-
+class TrackChangesIntegration extends Plugin {
 	init() {
 		const usersPlugin = this.editor.plugins.get( 'Users' );
 		const trackChangesPlugin = this.editor.plugins.get( 'TrackChanges' );
@@ -159,7 +161,6 @@ class TrackChangesIntegration {
 							} );
 
 							break;
-
 						case 'suggestion-10':
 							resolve( {
 								id: 'suggestion-10', type: 'insertion', authorId: 'user-2', createdAt: new Date( 2019, 1, 13, 11, 20, 48 )
@@ -172,6 +173,10 @@ class TrackChangesIntegration {
 							} );
 
 							break;
+						default: {
+							const suggestions = JSON.parse( localStorage.getItem( STORAGE_KEY_SUGGESTIONS ) ) || {};
+							resolve( suggestions[ suggestionId ] );
+						}
 					}
 				} );
 			},
@@ -179,6 +184,11 @@ class TrackChangesIntegration {
 			addSuggestion: suggestionData => {
 				suggestionData.createdAt = new Date();	// Should be set by the server.
 				suggestionData.authorId = 'user-1';		// Should be set by the server.
+
+				const suggestions = JSON.parse( localStorage.getItem( STORAGE_KEY_SUGGESTIONS ) ) || {};
+				suggestions[ suggestionData.id ] = suggestionData;
+
+				localStorage.setItem( STORAGE_KEY_SUGGESTIONS, JSON.stringify( suggestions ) );
 
 				return Promise.resolve( suggestionData );
 			}
@@ -208,28 +218,18 @@ class RevisionsAdapter extends Plugin {
 					const filtered = { ...revisionData };
 
 					delete filtered.data;
-					// delete filtered.metaData;
 
 					return filtered;
 				} );
-
-				console.log( 'adapter#getRevisions' );
-				console.log( revisionsNoData );
 
 				return Promise.resolve( revisionsNoData );
 			},
 			getRevision: ( { revisionId } ) => {
 				const revisionData = revisionsData.find( data => data.id == revisionId );
 
-				console.log( 'adapter#getRevision' );
-				console.log( revisionData );
-
 				return Promise.resolve( revisionData );
 			},
 			updateRevision: revisionData => {
-				console.log( 'adapter#updateRevision' );
-				console.log( revisionData );
-
 				const revision = revisionsData.find( data => data.id == revisionData.id );
 
 				for ( const i in revisionData ) {
@@ -245,9 +245,6 @@ class RevisionsAdapter extends Plugin {
 				return Promise.resolve();
 			},
 			addRevision: revisionData => {
-				console.log( 'adapter#addRevision' );
-				console.log( revisionData );
-
 				revisionsData.push( revisionData );
 
 				localStorage.setItem( STORAGE_KEY_REVISIONS, JSON.stringify( revisionsData ) );
@@ -411,6 +408,9 @@ function updateTrackChangesInfo( state ) {
 	};
 
 	const tcCommand = window.editor.commands.get( 'trackChanges' );
+
+	affectingContentList.innerHTML = '';
+	nonAffectingContentList.innerHTML = '';
 
 	for ( const commandName of window.editor.commands.names() ) {
 		const command = window.editor.commands.get( commandName );
