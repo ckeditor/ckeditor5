@@ -1,0 +1,10 @@
+.lightfilelink {
+    padding: 4px 2px;
+    outline-offset: -2px;
+    line-height: 1em;
+    margin: 0 1px;
+}
+
+.lightfilelink::selection {
+    display: none;
+}

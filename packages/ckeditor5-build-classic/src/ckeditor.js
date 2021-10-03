@@ -43,6 +43,8 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 
 import ColorPicker from './colorpicker/colorpicker';
+import LightFileLink from './lightfilelink/lightfilelink';
+import InlineTooltip from './inlinetooltip/inlinetooltip';
 import './fontsize.css';
 
 export default class ClassicEditor extends ClassicEditorBase { }
@@ -84,7 +86,9 @@ ClassicEditor.builtinPlugins = [
 	Subscript,
 	Superscript,
 	FileRepository,
-	ColorPicker
+	ColorPicker,
+	LightFileLink,
+	InlineTooltip
 ];
 
 // Editor configuration.
@@ -120,7 +124,9 @@ ClassicEditor.defaultConfig = {
 			'outdent',
 			'indent',
 			'|',
+			'inlinetooltip',
 			'uploadImage',
+			'lightFileLink',
 			'link',
 			'blockQuote',
 			'mediaEmbed'
