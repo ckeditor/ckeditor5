@@ -1,0 +1,252 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<!-- For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI. -->
+	<meta name="x-cke-crawler-ignore-patterns" content='{
+		"request-failure": "vimeo.com",
+		"response-failure": "vimeo.com",
+		"console-error": [ "<svg> attribute preserveAspectRatio", "vimeo.com" ]
+	}'>
+</head>
+
+<div style="margin-bottom: 10px;">
+	<button type="button" id="clear-content">Clear editor</button>
+	<button id="clear-revision-history">Clear revision history</button>
+	<button id="clear-suggestions">Clear suggestions</button>
+</div>
+
+<div style="margin-bottom: 10px;">
+	<h4>Editor modes:</h4>
+	<div class="editor-modes">
+		<fieldset>
+			<legend>Read only:</legend>
+
+			<input type="radio" id="read-only-no" name="readonly" checked>
+			<label for="read-only-no">No</label><br />
+
+			<input type="radio" id="read-only-yes" name="readonly">
+			<label for="read-only-yes">Yes</label><br />
+		</fieldset>
+		<fieldset>
+			<legend>Comments only:</legend>
+
+			<input type="radio" id="comments-only-no" name="commentsonly" checked>
+			<label for="comments-only-no">No</label><br />
+
+			<input type="radio" id="comments-only-yes" name="commentsonly">
+			<label for="comments-only-yes">Yes</label><br />
+		</fieldset>
+		<fieldset>
+			<legend>Track changes:</legend>
+
+			<input type="radio" id="track-changes-no" name="trackchanges" checked>
+			<label for="track-changes-no">No</label><br />
+
+			<input type="radio" id="track-changes-yes" name="trackchanges">
+			<label for="track-changes-yes">Yes</label><br />
+		</fieldset>
+		<fieldset>
+			<legend>Restricted editing:</legend>
+
+			<input type="radio" id="restricted-editing-no" name="restrictedediting" checked>
+			<label for="restricted-editing-no">No</label><br />
+
+			<input type="radio" id="restricted-editing-yes" name="restrictedediting">
+			<label for="restricted-editing-yes">Yes</label><br />
+		</fieldset>
+	</div>
+</div>
+
+<div class="editors-holder">
+	<div id="editor-container">
+		<div class="editor-container">
+			<div id="editor">
+				<h2>The three greatest things you learn from traveling</h2>
+				<h3>Appreciation of diversity</h3>
+				<p>
+					Getting used to a<suggestion id="suggestion-1:user-2" suggestion-type="insertion" type="start">
+					</suggestion>n entirely<suggestion id="suggestion-1:user-2" suggestion-type="insertion" type="end">
+					</suggestion> different culture can be <suggestion id="suggestion-10:user-2" suggestion-type="insertion"
+						type="start"></suggestion>challenging<suggestion id="suggestion-10:user-2" suggestion-type="insertion"
+						type="end"></suggestion>
+					<suggestion id="suggestion-11:user-2" suggestion-type="deletion" type="start"></suggestion>difficult<suggestion
+						id="suggestion-11:user-2" suggestion-type="deletion" type="end"></suggestion>. While it’s <suggestion
+						id="suggestion-4:user-2" suggestion-type="deletion" type="start"></suggestion>also<suggestion
+						id="suggestion-4:user-2" suggestion-type="deletion" type="end"></suggestion> nice to learn about cultures online
+					or from
+					books, nothing comes close to experiencing cultural diversity in person. You learn to appreciate each
+					and every single one of the differences while you become more culturally fluid.
+				</p>
+				<blockquote>
+					<p>
+						The real voyage of discovery consists not in seeking new landscapes, but having new eyes.
+					</p>
+					<p>
+						<suggestion id="suggestion-7:user-2" suggestion-type="formatInline:886cqig6g8rf" type="start">
+						</suggestion>Marcel Proust<suggestion id="suggestion-7:user-2" suggestion-type="formatInline:886cqig6g8rf"
+							type="end"></suggestion>
+					</p>
+				</blockquote>
+				<h3>Improvisation</h3>
+				<p>Life doesn't allow us to execute every single plan perfectly. This <suggestion id="suggestion-2:user-2"
+						suggestion-type="deletion" type="start"></suggestion>really<suggestion id="suggestion-2:user-2"
+						suggestion-type="deletion" type="end"></suggestion>
+					<suggestion id="suggestion-3:user-2" suggestion-type="insertion" type="start"></suggestion>especially
+					<suggestion id="suggestion-3:user-2" suggestion-type="insertion" type="end"></suggestion> seems to be
+					the case when you travel. You plan it down to every minute with a big checklist; but when it comes to
+					executing it, something always comes up and you’re left with your improvising skills. You learn to adapt
+					as you go. Here’s how my travel checklist looks now:
+				</p>
+				<ul>
+					<li>buy a ticket:
+						<ul>
+							<li>for a plane, or</li>
+							<li>for a train</li>
+						</ul>
+					</li>
+					<li>start your adventure</li>
+				</ul>
+				<suggestion id="suggestion-5:user-2" suggestion-type="insertion" type="start"></suggestion>
+				<figure class="image image-style-side">
+					<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/umbrellas.jpg"
+						alt="Three Monks walking on ancient temple.">
+					<figcaption>Leaving your comfort zone might lead you to such beautiful sceneries like this one.
+					</figcaption>
+				</figure>
+				<suggestion id="suggestion-5:user-2" suggestion-type="insertion" type="end"></suggestion>
+				<h3>Confidence</h3>
+				<suggestion id="suggestion-9:user-2" suggestion-type="formatBlock:kzv0vqgac200" type="start"></suggestion>
+				<p>
+					Going to a new place can be terrifying. While change and uncertainty makes us scared, traveling teaches
+					us how ridiculous it is to be afraid of something before it happens. The moment you face your fear and
+					see there was nothing to be afraid of, is the moment you discover bliss.
+					<suggestion id="suggestion-9:user-2" suggestion-type="formatBlock:kzv0vqgac200" type="end"></suggestion>
+				</p>
+				<suggestion id="suggestion-8:user-2" suggestion-type="formatBlock:698dn3bun9mf" type="start"></suggestion>
+				<h3>Favourite travel destinations<suggestion id="suggestion-8:user-2" suggestion-type="formatBlock:698dn3bun9mf"
+						type="end"></suggestion>
+				</h3>
+				<suggestion id="suggestion-6:user-2" suggestion-type="deletion" type="start"></suggestion>
+				<table>
+					<thead>
+						<tr>
+							<th>Europe</th>
+							<th>Africa</th>
+							<th>Asia</th>
+							<th>Australia</th>
+							<th>America</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>18%</td>
+							<td>32%</td>
+							<td>21%</td>
+							<td>15%</td>
+							<td>14%</td>
+						</tr>
+					</tbody>
+				</table>
+				<suggestion id="suggestion-6:user-2" suggestion-type="deletion" type="end"></suggestion>
+				<p>Africa seems to be the most popular traveling destination nowadays.</p>
+			</div>
+			<div class="sidebar-container" id="sidebar-container"></div>
+		</div>
+	</div>
+
+	<div id="revision-viewer-container">
+		<div class="editor-container">
+			<div id="revision-viewer-editor"></div>
+			<div class="sidebar-container" id="revision-viewer-sidebar"></div>
+		</div>
+	</div>
+</div>
+
+<!--
+	Note that both TrackChangesEditing._enabledCommands and TrackChangesCommand._enabledCommands are private
+	so we just list all unsupported commands here by hand.
+-->
+<div class="track-changes-info hidden">
+	<h3>Track changes unsupported commands:</h3>
+	<h4>Affects content <strong>false</strong></h4>
+	<ul class="affects-content-false"></ul>
+	<h4>Affects content <strong>true</strong></h4>
+	<ul class="affects-content-true"></ul>
+</div>
+
+<style>
+	.editor-modes {
+		display: flex;
+	}
+
+	.editors-holder {
+		position: relative;
+	}
+
+	.editor-container {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		position: relative;
+		width: 1260px;
+	}
+
+	.presence {
+		position: relative;
+		margin: 15px 25px;
+		height: 46px;
+	}
+
+	#revision-viewer-container {
+		display: none;
+	}
+
+	.editor-toolbar {
+		width: 1260px;
+		margin-bottom: -1px;
+	}
+
+	.editor-element {
+		width: 950px;
+		border: 1px solid var(--ck-color-toolbar-border);
+	}
+
+	.editor-container > .ck-editor {
+		position: relative;
+		width: 950px;
+	}
+
+	.editor-container .ck-editor__top .ck-toolbar {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
+	.editor-container .ck-editor__editable_inline {
+		border-top-right-radius: 0;
+		border-bottom-right-radius: 0;
+	}
+
+	.sidebar-container {
+		position: relative;
+		width: 310px;
+		overflow: hidden;
+		background: var(--ck-color-toolbar-background);
+		border: 1px solid var(--ck-color-toolbar-border);
+		margin-left: -1px;
+	}
+
+	/* Move the square with page number from the Pagination plugin to the left side,
+	so that it does not cover the sidebar. */
+	.ck.ck-pagination-view-line::after {
+		transform: translateX(-100%);
+		left: -1px;
+		right: unset;
+	}
+
+	.track-changes-info {
+		margin: 15px 0;
+	}
+
+	.track-changes-info.hidden {
+		display: none;
+	}
+</style>
