@@ -9,11 +9,11 @@ This package implements text part language support for CKEditor 5 that allows yo
 
 ## Demo
 
-Check out the [demo in the Text part language feature](https://ckeditor.com/docs/ckeditor5/latest/features/language.html#demo) guide.
+Check out the [demo in the text part language feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/language.html#demo).
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-language` package](https://ckeditor.com/docs/ckeditor5/latest/api/language.html) page as well as the [Text part language feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/language.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-language` package](https://ckeditor.com/docs/ckeditor5/latest/api/language.html) page as well as the [text part language feature](https://ckeditor.com/docs/ckeditor5/latest/features/language.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

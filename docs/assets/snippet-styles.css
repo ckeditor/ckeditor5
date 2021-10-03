@@ -4,7 +4,7 @@
 
 :root {
 	/* This custom property is read by the JS and passed to editor configurations
-	as config.toolbar.viewportTopOffset. */
+	as config.ui.viewportOffset.top. */
 	--ck-snippet-viewport-top-offset: 100
 }
 

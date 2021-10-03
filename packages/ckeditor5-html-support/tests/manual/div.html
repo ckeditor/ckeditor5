@@ -1,0 +1,43 @@
+<div id="editor">
+	<h3>DIV treated as a paragraph with some phrasing content:</h3>
+	<div>
+		<strong>Strong</strong><br><i>Italic</i><br><u>Underline</u><br><s>Strikethrough</s>
+	</div>
+
+	<h3>DIV treated as a section element with some paragraphs:</h3>
+	<div>
+		<p>Paragraph 1</p>
+		<p>Paragraph 2</p>
+		<p>Paragraph 3</p>
+	</div>
+
+	<h3>Mixed inline and block elements:</h3>
+	<div>
+		foo
+		<h2>bar</h2>
+		abc
+	</div>
+
+	<div>
+		foo
+		<div>bar</div>
+	</div>
+
+	<div>
+		foo
+		<p>paragraph</p>
+		bar
+	</div>
+
+	<h3>Content with disallowed DIV element:</h3>
+	<figure class="image">
+		<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/fields.jpg">
+		<figcaption>
+			<div>
+				foo
+				<img src="https://ckeditor.com/docs/ckeditor5/latest/assets/img/fields.jpg">
+				bar
+			</div>
+		</figcaption>
+	</figure>
+</div>

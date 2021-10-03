@@ -162,7 +162,7 @@ export default class SourceEditing extends Plugin {
 	afterInit() {
 		const editor = this.editor;
 
-		const pluginNamesToWarn = [
+		const collaborationPluginNamesToWarn = [
 			'RealTimeCollaborativeEditing',
 			'CommentsEditing',
 			'TrackChangesEditing',
@@ -170,11 +170,20 @@ export default class SourceEditing extends Plugin {
 		];
 
 		// Currently, the basic integration with Collaboration Features is to display a warning in the console.
-		if ( pluginNamesToWarn.some( pluginName => editor.plugins.has( pluginName ) ) ) {
+		if ( collaborationPluginNamesToWarn.some( pluginName => editor.plugins.has( pluginName ) ) ) {
 			console.warn(
 				'You initialized the editor with the source editing feature and at least one of the collaboration features. ' +
 				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
 				'that contains markers created by the collaboration features.'
+			);
+		}
+
+		// Restricted Editing integration can also lead to problems. Warn the user accordingly.
+		if ( editor.plugins.has( 'RestrictedEditingModeEditing' ) ) {
+			console.warn(
+				'You initialized the editor with the source editing feature and restricted editing feature. ' +
+				'Please be advised that the source editing feature may not work, and be careful when editing document source ' +
+				'that contains markers created by the restricted editing feature.'
 			);
 		}
 	}
@@ -217,6 +226,9 @@ export default class SourceEditing extends Plugin {
 			}, [ domSourceEditingElementTextarea ] );
 
 			domSourceEditingElementTextarea.value = data;
+
+			// Setting a value to textarea moves the input cursor to the end. We want the selection at the beginning.
+			domSourceEditingElementTextarea.setSelectionRange( 0, 0 );
 
 			// Bind the textarea's value to the wrapper's `data-value` property. Each change of the textarea's value updates the
 			// wrapper's `data-value` property.

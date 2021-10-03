@@ -45,8 +45,11 @@ export default class GoogleDocsNormalizer {
 	 */
 	execute( data ) {
 		const writer = new UpcastWriter( this.document );
+		const { body: documentFragment } = data._parsedData;
 
-		removeBoldWrapper( data.content, writer );
-		unwrapParagraphInListItem( data.content, writer );
+		removeBoldWrapper( documentFragment, writer );
+		unwrapParagraphInListItem( documentFragment, writer );
+
+		data.content = documentFragment;
 	}
 }

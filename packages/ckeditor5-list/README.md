@@ -7,6 +7,10 @@ CKEditor 5 list feature
 
 This package implements bulleted, numbered and to-do list feature for CKEditor 5.
 
+## Demo
+
+Check out the demos for [ordered and unordered lists](https://ckeditor.com/docs/ckeditor5/latest/features/lists/lists.html#demo) as well as [to-do list](https://ckeditor.com/docs/ckeditor5/latest/features/lists/todo-lists.html#demo) in the CKEditor 5 documentation.
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-list` package](https://ckeditor.com/docs/ckeditor5/latest/api/list.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

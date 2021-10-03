@@ -9,7 +9,7 @@ This package implements text alignment support for CKEditor 5.
 
 ## Demo
 
-Check out the [demo in the Text alignment feature](https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html#demo) guide.
+Check out the [demo in the text alignment feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/text-alignment.html#demo).
 
 ## Documentation
 

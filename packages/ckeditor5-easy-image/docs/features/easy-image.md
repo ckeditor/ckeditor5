@@ -15,7 +15,7 @@ CKEditor 5 introduces a new way of handling images, with a strong focus on the e
 Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product which:
 
 * securely uploads images,
-* takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images),
+* takes care of rescaling and [optimizing them](https://ckeditor.com/docs/cs/latest/guides/easy-image/service-details.html#image-processing) as well as providing [various image sizes](#responsive-images) (responsive images), <!-- absolute link -->
 * delivers uploaded images through a blazing-fast CDN.
 
 All that with virtually zero server setup.
@@ -36,7 +36,7 @@ The demo below uses the {@link builds/guides/overview#classic-editor Classic edi
 
 To make enabling image upload in CKEditor 5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}. It integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
-1. Follow the [Easy Image &mdash; Quick start](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) guide to set up an account.
+1. Follow the [Easy Image &mdash; Quick start guide](https://ckeditor.com/docs/cs/latest/guides/easy-image/quick-start.html) to set up an account.
 2. Configure CKEditor 5 (see {@link module:cloud-services/cloudservices~CloudServicesConfig `CloudServicesConfig`}):
 
 	```js

@@ -93,7 +93,7 @@ ClassicEditor
 ```
 
 <info-box>
-	Check the {@link framework/guides/creating-simple-plugin plugin development} guide if you need more information about the technical side of this solution.
+	Check the {@link framework/guides/creating-simple-plugin plugin development guide} if you need more information about the technical side of this solution.
 </info-box>
 
 ## Common API

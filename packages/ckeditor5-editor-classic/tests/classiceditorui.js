@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -72,12 +72,48 @@ describe( 'ClassicEditorUI', () => {
 			it( 'sets view.stickyPanel#viewportTopOffset, when specified in the config', () => {
 				return VirtualClassicTestEditor
 					.create( '', {
+						ui: {
+							viewportOffset: {
+								top: 100
+							}
+						}
+					} )
+					.then( editor => {
+						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
+						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'sets view.stickyPanel#viewportTopOffset if legacy toolbar.vierportTopOffset specified', () => {
+				sinon.stub( console, 'warn' );
+
+				return VirtualClassicTestEditor
+					.create( 'foo', {
 						toolbar: {
 							viewportTopOffset: 100
 						}
 					} )
 					.then( editor => {
+						expect( editor.ui.viewportOffset.top ).to.equal( 100 );
 						expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'warns if legacy toolbar.vierportTopOffset specified', () => {
+				const spy = sinon.stub( console, 'warn' );
+
+				return VirtualClassicTestEditor
+					.create( 'foo', {
+						toolbar: {
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
 					} );
@@ -185,8 +221,7 @@ describe( 'ClassicEditorUI', () => {
 					return VirtualClassicTestEditor
 						.create( '', {
 							toolbar: {
-								items: [ 'foo', 'bar' ],
-								viewportTopOffset: 100
+								items: [ 'foo', 'bar' ]
 							}
 						} )
 						.then( editor => {

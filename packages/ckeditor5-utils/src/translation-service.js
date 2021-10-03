@@ -131,7 +131,7 @@ export function add( language, translations, getPluralForm ) {
  *
  * @protected
  * @param {String} language Target language.
- * @param {module:utils/translation-service~Message|String} message A message that will be translated.
+ * @param {module:utils/translation-service~Message} message A message that will be translated.
  * @param {Number} [quantity] The number of elements for which a plural form should be picked from the target language dictionary.
  * @returns {String} Translated sentence.
  */

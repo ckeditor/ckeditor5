@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**Lark Theme for CKEditor 5** – https://github.com/ckeditor/ckeditor5-theme-lark <br>
+**CKEditor 5 lark theme** – https://github.com/ckeditor/ckeditor5-theme-lark <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).

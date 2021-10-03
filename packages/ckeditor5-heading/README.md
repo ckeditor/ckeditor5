@@ -7,6 +7,10 @@ CKEditor 5 headings feature
 
 This package implements the headings feature for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the heading feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/headings.html#demo).
+
 ## Documentation
 
 See the [`@ckeditor/ckeditor5-heading` package](https://ckeditor.com/docs/ckeditor5/latest/api/heading.html) page in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).

@@ -1,0 +1,9 @@
+.live-snippet .ck-editor__editable.ck-rounded-corners {
+	max-height: 700px;
+}
+
+.ck-source-editing-area {
+	overflow: scroll;
+	max-height: 700px;
+	border-bottom: 1px solid var(--ck-color-base-border);
+}

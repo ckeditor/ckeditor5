@@ -1935,6 +1935,83 @@ describe( 'TableKeyboard', () => {
 							[ '20', '[]21', '22' ]
 						] ) );
 					} );
+
+					describe( 'with shift key pressed', () => {
+						beforeEach( () => {
+							leftArrowDomEvtDataStub.shiftKey = true;
+							rightArrowDomEvtDataStub.shiftKey = true;
+							upArrowDomEvtDataStub.shiftKey = true;
+							downArrowDomEvtDataStub.shiftKey = true;
+						} );
+
+						it( 'should select multiple cells on right arrow key press if all content of a cell is selected', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on right arrow key press if all content of a cell is selected backward', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on left arrow key press if all content of a cell is selected', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on left arrow key press if all content of a cell is selected backward', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+					} );
 				} );
 
 				describe( 'multiple paragraphs in the cell content', () => {
@@ -2455,10 +2532,38 @@ describe( 'TableKeyboard', () => {
 						] ) );
 					} );
 
+					it( 'should not prevent default browser behavior for the left arrow for non-collapsed selection', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[word] word', '12' ],
+							[ '20', '21', '22' ]
+						] ), { lastRangeBackward: true } );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not prevent default browser behavior for the right arrow for non-collapsed selection', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', 'word [word]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+					} );
+
 					describe( 'when shift key is pressed', () => {
 						beforeEach( () => {
 							upArrowDomEvtDataStub.shiftKey = true;
 							downArrowDomEvtDataStub.shiftKey = true;
+							leftArrowDomEvtDataStub.shiftKey = true;
+							rightArrowDomEvtDataStub.shiftKey = true;
 						} );
 
 						it( 'should not prevent default browser behavior for the up arrow in the middle lines of the cell text', () => {
@@ -2536,6 +2641,66 @@ describe( 'TableKeyboard', () => {
 								[ '10', '[word word]' + text, '12' ],
 								[ '20', '21', '22' ]
 							] ) );
+						} );
+
+						it( 'should not prevent default browser behavior for expanding selection (left arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+						} );
+
+						it( 'should expand not collapsed selection at the beginning of a cell (left arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should not prevent default browser behavior for expanding selection (right arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+						} );
+
+						it( 'should expand not collapsed selection at the end of a cell (right arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
 						} );
 
 						it( 'should expand collapsed selection to the end of the cell content', () => {

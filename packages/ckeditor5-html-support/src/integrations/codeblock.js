@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { disallowedAttributesConverter } from '../converters';
 import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
@@ -18,11 +17,17 @@ import DataFilter from '../datafilter';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class CodeBlockHtmlSupport extends Plugin {
+export default class CodeBlockElementSupport extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ DataFilter ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		if ( !this.editor.plugins.has( 'CodeBlockEditing' ) ) {
 			return;
@@ -44,7 +49,6 @@ export default class CodeBlockHtmlSupport extends Plugin {
 				allowAttributes: [ 'htmlAttributes', 'htmlContentAttributes' ]
 			} );
 
-			conversion.for( 'upcast' ).add( disallowedAttributesConverter( definition, dataFilter ) );
 			conversion.for( 'upcast' ).add( viewToModelCodeBlockAttributeConverter( dataFilter ) );
 			conversion.for( 'downcast' ).add( modelToViewCodeBlockAttributeConverter() );
 

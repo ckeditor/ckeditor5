@@ -38,6 +38,9 @@ export default class WidgetResize extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editing = this.editor.editing;
+		const domDocument = global.window.document;
+
 		/**
 		 * The currently visible resizer.
 		 *
@@ -65,13 +68,11 @@ export default class WidgetResize extends Plugin {
 		 */
 		this._resizers = new Map();
 
-		const domDocument = global.window.document;
-
-		this.editor.editing.view.addObserver( MouseObserver );
+		editing.view.addObserver( MouseObserver );
 
 		this._observer = Object.create( DomEmitterMixin );
 
-		this.listenTo( this.editor.editing.view.document, 'mousedown', this._mouseDownListener.bind( this ), { priority: 'high' } );
+		this.listenTo( editing.view.document, 'mousedown', this._mouseDownListener.bind( this ), { priority: 'high' } );
 
 		this._observer.listenTo( domDocument, 'mousemove', this._mouseMoveListener.bind( this ) );
 		this._observer.listenTo( domDocument, 'mouseup', this._mouseUpListener.bind( this ) );
@@ -90,6 +91,18 @@ export default class WidgetResize extends Plugin {
 
 		// Redrawing on any change of the UI of the editor (including content changes).
 		this.editor.ui.on( 'update', this._redrawFocusedResizerThrottled );
+
+		// Remove view widget-resizer mappings for widgets that have been removed from the document.
+		// https://github.com/ckeditor/ckeditor5/issues/10156
+		// https://github.com/ckeditor/ckeditor5/issues/10266
+		this.editor.model.document.on( 'change', () => {
+			for ( const [ viewElement, resizer ] of this._resizers ) {
+				if ( !viewElement.isAttached() ) {
+					this._resizers.delete( viewElement );
+					resizer.destroy();
+				}
+			}
+		}, { priority: 'lowest' } );
 
 		// Resizers need to be redrawn upon window resize, because new window might shrink resize host.
 		this._observer.listenTo( global.window, 'resize', this._redrawFocusedResizerThrottled );

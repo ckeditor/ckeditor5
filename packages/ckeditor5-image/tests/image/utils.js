@@ -24,7 +24,7 @@ import ImageInlineEditing from '../../src/image/imageinlineediting';
 import ImageUtils from '../../src/imageutils';
 
 import {
-	getImageTypeMatcher,
+	getImgViewElementMatcher,
 	createImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../../src/image/utils';
@@ -126,7 +126,7 @@ describe( 'image utils', () => {
 		} );
 	} );
 
-	describe( 'getImageTypeMatcher()', () => {
+	describe( 'getImgViewElementMatcher()', () => {
 		let editor;
 
 		beforeEach( async () => {
@@ -143,24 +143,21 @@ describe( 'image utils', () => {
 
 		describe( 'when one of the image editing plugins is not loaded', () => {
 			const returnValue = {
-				name: 'img',
-				attributes: {
-					src: true
-				}
+				name: 'img'
 			};
 
 			it( 'should return a matcher pattern for an img element if ImageBlockEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageBlockEditing' );
 
-				expect( getImageTypeMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
-				expect( getImageTypeMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				expect( getImgViewElementMatcher( editor, 'imageBlock' ) ).to.eql( returnValue );
+				expect( getImgViewElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
 			} );
 
 			it( 'should return a matcher patter for an img element if ImageInlineEditing plugin is not loaded', () => {
 				sinon.stub( editor.plugins, 'has' ).callsFake( pluginName => pluginName !== 'ImageInlineEditing' );
 
-				expect( getImageTypeMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
-				expect( getImageTypeMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
+				expect( getImgViewElementMatcher( editor, 'imageBlock', editor ) ).to.eql( returnValue );
+				expect( getImgViewElementMatcher( editor, 'imageInline' ) ).to.eql( returnValue );
 			} );
 		} );
 
@@ -188,7 +185,7 @@ describe( 'image utils', () => {
 			describe( 'the returned matcherPattern function', () => {
 				describe( 'for the "image" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( editor, 'imageBlock' );
+						matcherPattern = getImgViewElementMatcher( editor, 'imageBlock' );
 					} );
 
 					it( 'should return a function', () => {
@@ -228,15 +225,14 @@ describe( 'image utils', () => {
 						writer.appendChild( element, writer.createElement( 'figure', { class: 'image' } ) );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
-							name: true,
-							attributes: [ 'src' ]
+							name: true
 						} );
 					} );
 				} );
 
 				describe( 'for the "imageInline" type requested', () => {
 					beforeEach( () => {
-						matcherPattern = getImageTypeMatcher( editor, 'imageInline' );
+						matcherPattern = getImgViewElementMatcher( editor, 'imageInline' );
 					} );
 
 					it( 'should return a function', () => {
@@ -264,8 +260,7 @@ describe( 'image utils', () => {
 						element = writer.createElement( 'img', { src: 'sample.jpg' } );
 
 						expect( matcherPattern( element ) ).to.deep.equal( {
-							name: true,
-							attributes: [ 'src' ]
+							name: true
 						} );
 					} );
 
@@ -277,8 +272,7 @@ describe( 'image utils', () => {
 						);
 
 						expect( matcherPattern( fragment.selection.getSelectedElement() ) ).to.deep.equal( {
-							name: true,
-							attributes: [ 'src' ]
+							name: true
 						} );
 					} );
 				} );

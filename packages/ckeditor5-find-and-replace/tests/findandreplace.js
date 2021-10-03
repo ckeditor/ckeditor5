@@ -1,3 +1,7 @@
+/**
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
 /* global document */
 
@@ -16,14 +20,14 @@ import FindAndReplaceEditing from '../src/findandreplaceediting';
 describe( 'FindAndReplace', () => {
 	// Data with 8 blocks that can contain $text.
 	const LONG_TEXT =
-    '<p>Cupcake ipsum dolor sit amet biscuit icing bears candy. Liquorice biscuit brownie croissant.</p>' +
-    '<p>Danish toffee chupa chups liquorice jujubes gummi bears bears candy icing chupa chups. Lemon drops tiramisu muffin.</p>' +
-    '<p>Chocolate bar ice cream topping marzipan. Powder gingerbread bear claw tootsie roll lollipop marzipan icing bonbon.</p>' +
-    '<p>Chupa chups jelly beans halvah ice cream gingerbread bears candy halvah gummi bears. Cake dragée dessert chocolate.</p>' +
-    '<p>Candy canes lemon drops wafer gummi bears biscuit tiramisu candy canes toffee powder.</p>' +
-    '<p>Dessert lemon drops lollipop caramels brownie jelly liquorice marshmallow powder. Dessert tart toffee.</p>' +
-    '<p>Dragée soufflé sesame snaps lollipop bonbon ice cream gummies jelly beans tootsie roll.</p>' +
-    '<p>Chocolate cake fruitcake lollipop. Lemon drops sweet sweet roll lollipop toffee lollipop marzipan.</p>';
+		'<p>Cupcake ipsum dolor sit amet biscuit icing bears candy. Liquorice biscuit brownie croissant.</p>' +
+		'<p>Danish toffee chupa chups liquorice jujubes gummi bears bears candy icing chupa chups. Lemon drops tiramisu muffin.</p>' +
+		'<p>Chocolate bar ice cream topping marzipan. Powder gingerbread bear claw tootsie roll lollipop marzipan icing bonbon.</p>' +
+		'<p>Chupa chups jelly beans halvah ice cream gingerbread bears candy halvah gummi bears. Cake dragée dessert chocolate.</p>' +
+		'<p>Candy canes lemon drops wafer gummi bears biscuit tiramisu candy canes toffee powder.</p>' +
+		'<p>Dessert lemon drops lollipop caramels brownie jelly liquorice marshmallow powder. Dessert tart toffee.</p>' +
+		'<p>Dragée soufflé sesame snaps lollipop bonbon ice cream gummies jelly beans tootsie roll.</p>' +
+		'<p>Chocolate cake fruitcake lollipop. Lemon drops sweet sweet roll lollipop toffee lollipop marzipan.</p>';
 
 	const FOO_BAR_PARAGRAPH = '<p>Foo bar baz</p>';
 	const TWO_FOO_BAR_PARAGRAPHS = FOO_BAR_PARAGRAPH + FOO_BAR_PARAGRAPH;
@@ -58,28 +62,45 @@ describe( 'FindAndReplace', () => {
 		editorElement.remove();
 	} );
 
-	describe( 'findAndReplaceUI listeners', () => {
-		it( 'should trigger findNext event', () => {
+	it( 'should be named', () => {
+		expect( FindAndReplace.pluginName ).to.equal( 'FindAndReplace' );
+	} );
+
+	it( 'should require other plugins', () => {
+		expect( FindAndReplace.requires ).to.deep.equal( [ FindAndReplaceEditing, FindAndReplaceUI ] );
+	} );
+
+	describe( 'UI listeners and bindings', () => {
+		it( 'should execute the findNext command on the FindAndReplaceUI#findNext event (with data)', () => {
 			const spy = sinon.spy();
 
 			findAndReplaceUI.on( 'findNext', spy );
-
 			findAndReplaceUI.fire( 'findNext', { searchText: 'bar' } );
 
 			expect( spy.calledOnce ).to.true;
+			sinon.assert.calledWithExactly( spy, sinon.match.object, { searchText: 'bar' } );
 		} );
 
-		it( 'should trigger findPrevious event', () => {
+		it( 'should execute the findNext command on the FindAndReplaceUI#findNext event (without data)', () => {
+			const spy = sinon.spy();
+
+			findAndReplaceUI.on( 'findNext', spy );
+			findAndReplaceUI.fire( 'findNext' );
+
+			expect( spy.calledOnce ).to.true;
+			sinon.assert.calledWithExactly( spy, sinon.match.object );
+		} );
+
+		it( 'should execute the findPrevious command on the FindAndReplaceUI#findPrevious event', () => {
 			const spy = sinon.spy();
 
 			findAndReplaceUI.on( 'findPrevious', spy );
-
 			findAndReplaceUI.fire( 'findPrevious', { searchText: 'test' } );
 
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		it( 'should trigger replace command', () => {
+		it( 'should execute the replace command on the FindAndReplaceUI#replace event', () => {
 			const replaceCommandSpy = sinon.spy( editor.commands.get( 'replace' ), 'execute' );
 			editor.setData( TWO_FOO_BAR_PARAGRAPHS );
 			const [ firstResult ] = findAndReplaceEditing.find( 'bar' );
@@ -92,7 +113,7 @@ describe( 'FindAndReplace', () => {
 			sinon.assert.calledWithExactly( replaceCommandSpy, 'test', firstResult );
 		} );
 
-		it( 'should trigger replaceAll event', () => {
+		it( 'should execute the replaceAll command on the FindAndReplaceUI#replaceAll event', () => {
 			const spy = sinon.spy();
 
 			findAndReplaceUI.on( 'replaceAll', spy );
@@ -102,131 +123,149 @@ describe( 'FindAndReplace', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		it( 'should react to closed ui dropdown event', () => {
-			const spy = sinon.spy( findAndReplaceEditing, 'stop' );
+		it( 'should clear the state upon FindAndReplaceUI#searchReseted event', () => {
+			const stopSpy = sinon.spy( findAndReplaceEditing, 'stop' );
+			const stateClearSpy = sinon.spy( findAndReplaceEditing.state, 'clear' );
 
-			findAndReplaceUI.fire( 'dropdown:closed' );
-			spy.restore();
+			findAndReplaceUI.fire( 'searchReseted' );
 
-			expect( spy.calledOnce ).to.true;
+			stopSpy.restore();
+			stateClearSpy.restore();
+
+			expect( stopSpy.calledOnce ).to.true;
+			expect( stateClearSpy.calledOnce ).to.true;
 		} );
 	} );
 
 	describe( 'integration', () => {
+		let toolbarDropdownView;
+
+		beforeEach( () => {
+			toolbarDropdownView = editor.ui.view.toolbar.items
+				.find( item => item.buttonView && item.buttonView.label == 'Find and replace' );
+		} );
+
 		describe( 'mocks', () => {
 			// Verifying mocks from https://github.com/ckeditor/ckeditor5/issues/9719#issuecomment-857557024.
 			it( 'has a proper initial state', () => {
 				// "Initial state" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
+				toolbarDropdownView.buttonView.fire( 'execute' );
 
-				itemView.buttonView.arrowView.fire( 'execute' );
-
-				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
 			} );
 
 			it( 'retains text from previous search', () => {
 				// "Initial state with parameters" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
-				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
-				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
+				toolbarDropdownView.buttonView.fire( 'execute' );
+				findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
+				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 				// Close the panel.
-				itemView.isOpen = false;
+				toolbarDropdownView.isOpen = false;
 
 				// Second search, should retain search text.
-				itemView.buttonView.arrowView.fire( 'execute' );
+				toolbarDropdownView.buttonView.fire( 'execute' );
 
-				expect( findAndReplaceUI.formView.findInputView.fieldView.value ).to.equal( 'cake' );
-				expect( findAndReplaceUI.formView.findButtonView.isEnabled, 'findButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._findInputView.fieldView.value ).to.equal( 'cake' );
+				expect( findAndReplaceUI.formView._findButtonView.isEnabled, 'findButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
 			} );
 
 			it( 'has a proper state when no results were found', () => {
 				// "No/one result found" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
-				findAndReplaceUI.formView.findInputView.fieldView.value = 'nothingtobefound';
-				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
+				toolbarDropdownView.buttonView.fire( 'execute' );
+				findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
+				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 
-				expect( findAndReplaceUI.formView.findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.false;
+			} );
+
+			it( 'shows counter with 0 of 0 when no results were found', () => {
+				// (#10014).
+				editor.setData( LONG_TEXT );
+
+				toolbarDropdownView.buttonView.arrowView.fire( 'execute' );
+				findAndReplaceUI.formView._findInputView.fieldView.value = 'nothingtobefound';
+				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
+
+				const domMatchCounter = findAndReplaceUI.formView.element.querySelector( '.ck-results-counter' );
+
+				expect( domMatchCounter.classList.contains( 'ck-hidden' ), 'counter visibility' ).to.be.false;
+				expect( domMatchCounter.innerText ).to.be.equal( '0 of 0' );
 			} );
 
 			it( 'has a proper state when a single result was found', () => {
 				// "No/one result found" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
-				findAndReplaceUI.formView.findInputView.fieldView.value = 'jujubes';
-				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
+				toolbarDropdownView.buttonView.fire( 'execute' );
+				findAndReplaceUI.formView._findInputView.fieldView.value = 'jujubes';
+				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 
-				expect( findAndReplaceUI.formView.findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
-				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.false;
+				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
 			} );
 
 			it( 'has a proper state when a multiple results were found', () => {
 				// "Found results" mock.
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
-
 				// First search.
-				itemView.buttonView.arrowView.fire( 'execute' );
-				findAndReplaceUI.formView.findInputView.fieldView.value = 'cake';
-				findAndReplaceUI.formView.findButtonView.fire( 'execute' );
+				toolbarDropdownView.buttonView.fire( 'execute' );
+				findAndReplaceUI.formView._findInputView.fieldView.value = 'cake';
+				findAndReplaceUI.formView._findButtonView.fire( 'execute' );
 
-				expect( findAndReplaceUI.formView.findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView.findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView.replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
-				expect( findAndReplaceUI.formView.replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._findNextButtonView.isEnabled, 'findNextButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._findPrevButtonView.isEnabled, 'findPrevButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._replaceAllButtonView.isEnabled, 'replaceAllButtonView' ).to.be.true;
+				expect( findAndReplaceUI.formView._replaceButtonView.isEnabled, 'replaceButtonView' ).to.be.true;
 			} );
 
 			it( 'panel is visible after clicking button\'s action area', () => {
 				editor.setData( LONG_TEXT );
 
-				const itemView = Array.from( editor.ui.view.toolbar.items )
-					.filter( item =>
-						item.buttonView && item.buttonView.tooltip == 'Find and replace'
-					)[ 0 ];
+				toolbarDropdownView.buttonView.fire( 'execute' );
 
-				itemView.buttonView.arrowView.fire( 'execute' );
+				expect( toolbarDropdownView.panelView.isVisible ).to.be.true;
+			} );
+		} );
 
-				expect( itemView.panelView.isVisible ).to.be.true;
+		describe( 'subsequent findNext events', () => {
+			it( 'causes just a findNext command call', () => {
+				editor.setData( LONG_TEXT );
+
+				// The first call, it will call different logic.
+				findAndReplaceUI.fire( 'findNext', { searchText: 'cake' } );
+
+				const findSpy = getCommandExecutionSpy( 'find' );
+				const findNextSpy = getCommandExecutionSpy( 'findNext' );
+
+				// Second call (only if the search text remains the same) should just move the highlight.
+				findAndReplaceUI.fire( 'findNext', { searchText: 'cake' } );
+
+				sinon.assert.callCount( findSpy, 1 );
+				sinon.assert.callCount( findNextSpy, 0 );
+
+				// Third call without passing any searchText should just move the highlight.
+				findAndReplaceUI.fire( 'findNext' );
+
+				sinon.assert.callCount( findNextSpy, 1 );
 			} );
 		} );
 

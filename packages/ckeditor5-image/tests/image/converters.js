@@ -5,8 +5,8 @@
 
 import ImageEditing from '../../src/image/imageediting';
 import {
-	viewFigureToModel,
-	modelToViewAttributeConverter
+	upcastImageFigure,
+	downcastImageAttribute
 } from '../../src/image/converters';
 import { createImageViewElement } from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -63,14 +63,14 @@ describe( 'Image converters', () => {
 			} );
 
 			editor.conversion.for( 'downcast' )
-				.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'src' ) )
-				.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'src' ) )
-				.add( modelToViewAttributeConverter( imageUtils, 'imageBlock', 'alt' ) )
-				.add( modelToViewAttributeConverter( imageUtils, 'imageInline', 'alt' ) );
+				.add( downcastImageAttribute( imageUtils, 'imageBlock', 'src' ) )
+				.add( downcastImageAttribute( imageUtils, 'imageInline', 'src' ) )
+				.add( downcastImageAttribute( imageUtils, 'imageBlock', 'alt' ) )
+				.add( downcastImageAttribute( imageUtils, 'imageInline', 'alt' ) );
 		} );
 	} );
 
-	describe( 'viewFigureToModel', () => {
+	describe( 'upcastImageFigure', () => {
 		function expectModel( data ) {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 		}
@@ -86,18 +86,16 @@ describe( 'Image converters', () => {
 			schema.extend( '$text', { allowIn: 'imageBlock' } );
 
 			editor.conversion.for( 'upcast' )
-				.add( viewFigureToModel( editor.plugins.get( 'ImageUtils' ) ) )
+				.add( upcastImageFigure( editor.plugins.get( 'ImageUtils' ) ) )
 				.elementToElement( {
-					view: {
-						name: 'img',
-						attributes: {
-							src: true
-						}
-					},
+					view: { name: 'img' },
 					model: ( viewImage, { writer } ) => {
 						imgConverterCalled = true;
 
-						return writer.createElement( 'imageBlock', { src: viewImage.getAttribute( 'src' ) } );
+						return writer.createElement(
+							'imageBlock',
+							viewImage.hasAttribute( 'src' ) ? { src: viewImage.getAttribute( 'src' ) } : null
+						);
 					}
 				} );
 		} );
@@ -207,6 +205,19 @@ describe( 'Image converters', () => {
 			expectModel( '<imageBlock src="/assets/sample.png"></imageBlock>' );
 		} );
 
+		it( 'should convert image with missing src attribute', () => {
+			editor.setData( '<figure class="image"><img alt="Empty src attribute" /></figure>' );
+
+			expectModel( '<imageBlock alt="Empty src attribute"></imageBlock>' );
+		} );
+
+		it( 'should convert if img element has no src and figure has text', () => {
+			// Image element missing src attribute.
+			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+
+			expectModel( '<imageBlock alt="abc">xyz</imageBlock>' );
+		} );
+
 		it( 'should not convert if there is no img element among children', () => {
 			editor.setData( '<figure class="image">xyz</figure>' );
 
@@ -214,16 +225,16 @@ describe( 'Image converters', () => {
 			expectModel( '' );
 		} );
 
-		it( 'should not convert if img element was not converted', () => {
-			// Image element missing src attribute.
-			editor.setData( '<figure class="image"><img alt="abc" />xyz</figure>' );
+		it( 'should not left unconverted figure media element', () => {
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
 
-			// Figure converter outputs nothing and text is disallowed in root.
-			expectModel( '' );
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 		} );
 	} );
 
-	describe( 'modelToViewAttributeConverter', () => {
+	describe( 'downcastImageAttribute', () => {
 		it( 'should convert adding attribute to image', () => {
 			setModelData( model, '<imageBlock src=""></imageBlock>' );
 			const image = document.getRoot().getChild( 0 );

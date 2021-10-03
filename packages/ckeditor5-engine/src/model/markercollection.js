@@ -52,12 +52,13 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Checks if marker with given `markerName` is in the collection.
+	 * Checks if given {@link ~Marker marker} or marker name is in the collection.
 	 *
-	 * @param {String} markerName Marker name.
-	 * @returns {Boolean} `true` if marker with given `markerName` is in the collection, `false` otherwise.
+	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker or marker instance to check.
+	 * @returns {Boolean} `true` if marker is in the collection, `false` otherwise.
 	 */
-	has( markerName ) {
+	has( markerOrName ) {
+		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		return this._markers.has( markerName );
 	}
 

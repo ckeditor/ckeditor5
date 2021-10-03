@@ -69,8 +69,8 @@ export function isMediaWidget( viewElement ) {
  * @param {String} url
  * @param {Object} options
  * @param {String} [options.elementName]
- * @param {String} [options.useSemanticWrapper]
- * @param {String} [options.renderForEditingView]
+ * @param {Boolean} [options.useSemanticWrapper]
+ * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {

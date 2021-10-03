@@ -1,8 +1,14 @@
 {
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
+	"hooks": {
+		"beforeHexo": [
+			"../scripts/docs/build-content-styles.js"
+		]
+	},
 	"hexo-config": "docs/hexo-custom-config.json",
 	"extraStyles": "assets/styles.css",
+	"extraScripts": "assets/buildwarningbanner.js",
 	"packagesDir": ["packages", "external", "external/*/packages" ],
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
@@ -36,6 +42,7 @@
 		"features/collaboration/real-time-collaboration/real-time-collaborative-comments.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/real-time-collaboration/real-time-collaborative-editing.html": "features/collaboration/real-time-collaboration/real-time-collaboration-integration.html",
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
+		"features/collaboration/comments/comments-display-mode.html": "features/collaboration/annotations/annotations-display-mode.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
 		"features/images/overview.html": "features/images/images-overview.html",
 		"features/image-upload.html": "features/image-upload/image-upload.html",
@@ -267,6 +274,11 @@
 					"name": "Lists",
 					"id": "features-lists",
 					"slug": "lists"
+				},
+				{
+					"name": "Pagination",
+					"id": "features-pagination",
+					"slug": "pagination"
 				},
 				{
 					"name": "Pasting",

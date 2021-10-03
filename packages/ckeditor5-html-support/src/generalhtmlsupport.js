@@ -8,8 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+
 import DataFilter from './datafilter';
-import CodeBlockHtmlSupport from './integrations/codeblock';
+import CodeBlockElementSupport from './integrations/codeblock';
+import DualContentModelElementSupport from './integrations/dualcontent';
+import ImageElementSupport from './integrations/image';
+import MediaEmbedElementSupport from './integrations/mediaembed';
+import TableElementSupport from './integrations/table';
 
 /**
  * The General HTML Support feature.
@@ -27,6 +32,23 @@ export default class GeneralHtmlSupport extends Plugin {
 		return 'GeneralHtmlSupport';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [
+			DataFilter,
+			CodeBlockElementSupport,
+			DualContentModelElementSupport,
+			ImageElementSupport,
+			MediaEmbedElementSupport,
+			TableElementSupport
+		];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const dataFilter = editor.plugins.get( DataFilter );
@@ -34,16 +56,6 @@ export default class GeneralHtmlSupport extends Plugin {
 		// Load the filtering configuration.
 		dataFilter.loadAllowedConfig( editor.config.get( 'htmlSupport.allow' ) || [] );
 		dataFilter.loadDisallowedConfig( editor.config.get( 'htmlSupport.disallow' ) || [] );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [
-			DataFilter,
-			CodeBlockHtmlSupport
-		];
 	}
 }
 

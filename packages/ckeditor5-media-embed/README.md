@@ -9,7 +9,7 @@ This package implements the media embed feature for CKEditor 5. You can use it t
 
 ## Demo
 
-Check out the [demo in the Media embed feature](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo) guide.
+Check out the [demo in the media embed feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo).
 
 ## Documentation
 

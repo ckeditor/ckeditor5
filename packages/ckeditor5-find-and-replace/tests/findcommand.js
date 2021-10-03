@@ -40,7 +40,17 @@ describe( 'FindCommand', () => {
 
 		it( 'should be enabled in readonly mode editor', () => {
 			setData( model, '<paragraph>foo[]</paragraph>' );
+
 			editor.isReadOnly = true;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be enabled after disabling readonly mode', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			editor.isReadOnly = true;
+			editor.isReadOnly = false;
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -48,7 +58,7 @@ describe( 'FindCommand', () => {
 
 	describe( 'state', () => {
 		it( 'is set to plugin\'s state', () => {
-			expect( command.state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
+			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
@@ -63,6 +73,17 @@ describe( 'FindCommand', () => {
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
 					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</paragraph>'
 				);
+			} );
+
+			it( 'calls model.change() only once', () => {
+				setData( model, '<paragraph>[]Foo bar baz. Bam bar bar bar bar bom.</paragraph>' );
+				const spy = sinon.spy( model, 'change' );
+
+				command.execute( 'bar' );
+
+				// It's called two additional times
+				// from 'change:highlightedResult' handler in FindAndReplaceEditing.
+				expect( spy.callCount ).to.equal( 3 );
 			} );
 
 			it( 'returns no result if nothing matched', () => {
@@ -233,6 +254,30 @@ describe( 'FindCommand', () => {
 					expect( results.length ).to.equal( 1 );
 				} );
 
+				it( 'set to true matches a text ending with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( 'bar ', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text starting with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( ' bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
+				it( 'set to true matches a text starting and ending with a space ', () => {
+					editor.setData( '<p>foo bar baz</p>' );
+
+					const { results } = command.execute( ' bar ', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 1 );
+				} );
+
 				it( 'set to true doesn\'t match a word including diacritic characters', () => {
 					editor.setData( '<p>foo łbarę and Äbarè</p>' );
 
@@ -255,6 +300,57 @@ describe( 'FindCommand', () => {
 					const { results } = command.execute( 'bar' );
 
 					expect( results.length ).to.equal( 1 );
+				} );
+			} );
+
+			describe( 'in multi-root editor', () => {
+				let multiRootEditor, multiRootModel;
+
+				class MultiRootEditor extends ModelTestEditor {
+					constructor( config ) {
+						super( config );
+
+						this.model.document.createRoot( '$root', 'second' );
+					}
+				}
+
+				beforeEach( async () => {
+					multiRootEditor = await MultiRootEditor.create( { plugins: [ FindAndReplaceEditing, Paragraph ] } );
+					multiRootModel = multiRootEditor.model;
+
+					setData( multiRootModel, '<paragraph>Foo bar baz</paragraph>' );
+					setData( multiRootModel, '<paragraph>Foo bar baz</paragraph>', { rootName: 'second' } );
+				} );
+
+				afterEach( async () => {
+					await multiRootEditor.destroy();
+				} );
+
+				it( 'should place markers correctly in the model in every root', () => {
+					const { results } = multiRootEditor.execute( 'find', 'z' );
+					const [ markerMain, markerSecond ] = getSimplifiedMarkersFromResults( results );
+
+					expect( stringify( multiRootModel.document.getRoot( 'main' ), null, [ markerMain ] ) ).to.equal(
+						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
+					);
+
+					expect( stringify( multiRootModel.document.getRoot( 'second' ), null, [ markerSecond ] ) ).to.equal(
+						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
+					);
+				} );
+
+				it( 'should properly search for occurrences in every root', () => {
+					const { results } = multiRootEditor.execute( 'find', 'z' );
+
+					expect( results ).to.be.lengthOf( 2 );
+				} );
+
+				it( 'should properly search for all occurrences if the first occurrence is not in the main root', () => {
+					setData( multiRootModel, '<paragraph>Foo bar bar</paragraph>' );
+
+					const { results } = multiRootEditor.execute( 'find', 'z' );
+
+					expect( results ).to.be.lengthOf( 1 );
 				} );
 			} );
 		} );

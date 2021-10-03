@@ -26,7 +26,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one – see
- * the {@glink framework/guides/deep-dive/upload-adapter "Custom image upload adapter" deep dive guide}.
+ * the {@glink framework/guides/deep-dive/upload-adapter Custom image upload adapter deep dive guide}.
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
  * {@link module:upload/filerepository~FileLoader} instance to load and upload files.

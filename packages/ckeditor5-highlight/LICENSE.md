@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Highlight Feature** – https://github.com/ckeditor/ckeditor5-highlight <br>
+**CKEditor 5 highlight feature** – https://github.com/ckeditor/ckeditor5-highlight <br>
 Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
