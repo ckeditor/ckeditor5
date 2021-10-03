@@ -59,6 +59,10 @@ appData.users = [
 appData.userId = 'user-1';
 
 class TrackChangesIntegration extends Plugin {
+	static get requires() {
+		return [ TrackChanges ];
+	}
+
 	init() {
 		const usersPlugin = this.editor.plugins.get( 'Users' );
 		const trackChangesPlugin = this.editor.plugins.get( 'TrackChanges' );
