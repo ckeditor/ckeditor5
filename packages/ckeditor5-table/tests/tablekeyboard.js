@@ -12,7 +12,7 @@ import { getTableCellsContainingSelection } from '../src/utils/selection';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -139,6 +139,45 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
+			it( 'should create another row and move to the first cell in a new row - ignore non-row elements', () => {
+				model.schema.register( 'foo', {
+					allowIn: 'table',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
+				editor.conversion.elementToElement( {
+					view: 'foo',
+					model: 'foo'
+				} );
+
+				setModelData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>[01]</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				assertEqualMarkup( getModelData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]</paragraph></tableCell>' +
+							'<tableCell><paragraph></paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+			} );
+
 			it( 'should select the whole table if the "insertTableRowBelow" command is disabled', () => {
 				setModelData( model, modelTable( [
 					[ '11', '12[]' ]
@@ -187,7 +226,7 @@ describe( 'TableKeyboard', () => {
 
 			it( 'should move to the next cell containing an image', () => {
 				setModelData( model, modelTable( [
-					[ '11[]', '<paragraph>foo</paragraph><image><caption></caption></image>' ]
+					[ '11[]', '<paragraph>foo</paragraph><imageBlock><caption></caption></imageBlock>' ]
 				] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -195,7 +234,7 @@ describe( 'TableKeyboard', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '11', '<paragraph>[foo</paragraph><image><caption></caption></image>]' ]
+					[ '11', '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]' ]
 				] ) );
 			} );
 
@@ -371,7 +410,7 @@ describe( 'TableKeyboard', () => {
 
 			it( 'should move to the previous cell containing an image', () => {
 				setModelData( model, modelTable( [
-					[ '<paragraph>foo</paragraph><image><caption></caption></image>', 'bar[]' ]
+					[ '<paragraph>foo</paragraph><imageBlock><caption></caption></imageBlock>', 'bar[]' ]
 				] ) );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -379,7 +418,7 @@ describe( 'TableKeyboard', () => {
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				assertEqualMarkup( getModelData( model ), modelTable( [
-					[ '<paragraph>[foo</paragraph><image><caption></caption></image>]', 'bar' ]
+					[ '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]', 'bar' ]
 				] ) );
 			} );
 		} );
@@ -1896,6 +1935,83 @@ describe( 'TableKeyboard', () => {
 							[ '20', '[]21', '22' ]
 						] ) );
 					} );
+
+					describe( 'with shift key pressed', () => {
+						beforeEach( () => {
+							leftArrowDomEvtDataStub.shiftKey = true;
+							rightArrowDomEvtDataStub.shiftKey = true;
+							upArrowDomEvtDataStub.shiftKey = true;
+							downArrowDomEvtDataStub.shiftKey = true;
+						} );
+
+						it( 'should select multiple cells on right arrow key press if all content of a cell is selected', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on right arrow key press if all content of a cell is selected backward', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on left arrow key press if all content of a cell is selected', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should select multiple cells on left arrow key press if all content of a cell is selected backward', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[11]', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+					} );
 				} );
 
 				describe( 'multiple paragraphs in the cell content', () => {
@@ -1980,7 +2096,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the cell on the left', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>[]11</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -1991,7 +2107,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10[]', `<image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
+							[ '10[]', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -1999,7 +2115,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the cell on the right', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>11[]</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2010,7 +2126,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11</caption></image>`, '[]12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '[]12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -2018,7 +2134,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the cell above', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>[]11</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2029,7 +2145,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01[]', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -2037,7 +2153,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the cell below', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>11[]</caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2048,7 +2164,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '[]21', '22' ]
 						] ) );
 					} );
@@ -2416,10 +2532,38 @@ describe( 'TableKeyboard', () => {
 						] ) );
 					} );
 
+					it( 'should not prevent default browser behavior for the left arrow for non-collapsed selection', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', '[word] word', '12' ],
+							[ '20', '21', '22' ]
+						] ), { lastRangeBackward: true } );
+
+						editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+					} );
+
+					it( 'should not prevent default browser behavior for the right arrow for non-collapsed selection', () => {
+						setModelData( model, modelTable( [
+							[ '00', '01', '02' ],
+							[ '10', 'word [word]', '12' ],
+							[ '20', '21', '22' ]
+						] ) );
+
+						editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
+						sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+					} );
+
 					describe( 'when shift key is pressed', () => {
 						beforeEach( () => {
 							upArrowDomEvtDataStub.shiftKey = true;
 							downArrowDomEvtDataStub.shiftKey = true;
+							leftArrowDomEvtDataStub.shiftKey = true;
+							rightArrowDomEvtDataStub.shiftKey = true;
 						} );
 
 						it( 'should not prevent default browser behavior for the up arrow in the middle lines of the cell text', () => {
@@ -2497,6 +2641,66 @@ describe( 'TableKeyboard', () => {
 								[ '10', '[word word]' + text, '12' ],
 								[ '20', '21', '22' ]
 							] ) );
+						} );
+
+						it( 'should not prevent default browser behavior for expanding selection (left arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
+						} );
+
+						it( 'should expand not collapsed selection at the beginning of a cell (left arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', '[word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ), { lastRangeBackward: true } );
+
+							editor.editing.view.document.fire( 'keydown', leftArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( leftArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 0 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
+						} );
+
+						it( 'should not prevent default browser behavior for expanding selection (right arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word] word', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
+						} );
+
+						it( 'should expand not collapsed selection at the end of a cell (right arrow)', () => {
+							setModelData( model, modelTable( [
+								[ '00', '01', '02' ],
+								[ '10', 'word [word]', '12' ],
+								[ '20', '21', '22' ]
+							] ) );
+
+							editor.editing.view.document.fire( 'keydown', rightArrowDomEvtDataStub );
+
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.preventDefault );
+							sinon.assert.calledOnce( rightArrowDomEvtDataStub.stopPropagation );
+
+							expect( tableSelection.getAnchorCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 1 ] ) );
+							expect( tableSelection.getFocusCell() ).to.equal( modelRoot.getNodeByPath( [ 0, 1, 2 ] ) );
+							expect( selection.rangeCount ).to.equal( 2 );
 						} );
 
 						it( 'should expand collapsed selection to the end of the cell content', () => {
@@ -2916,7 +3120,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell on the left', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
+							[
+								'10',
+								`<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>[]11</caption></imageBlock>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2929,7 +3136,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell on the right', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image><paragraph>foo</paragraph>`, '12' ],
+							[
+								'10',
+								`<imageBlock src="${ imageUrl }"><caption>11[]</caption></imageBlock><paragraph>foo</paragraph>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2942,7 +3152,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell above (only to closest limit boundary)', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>1[]1</caption></image>`, '12' ],
+							[
+								'10',
+								`<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>1[]1</caption></imageBlock>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2953,7 +3166,10 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
+							[
+								'10',
+								`<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>[]11</caption></imageBlock>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -2961,7 +3177,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell above (only to paragraph above)', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>[]11</caption></image>`, '12' ],
+							[
+								'10',
+								`<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>[]11</caption></imageBlock>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2974,7 +3193,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell above but should put caret at first position of the image caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>1[]1</caption></image><paragraph>foo</paragraph>`, '12' ],
+							[
+								'10',
+								`<imageBlock src="${ imageUrl }"><caption>1[]1</caption></imageBlock><paragraph>foo</paragraph>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -2985,7 +3207,10 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>[]11</caption></image><paragraph>foo</paragraph>`, '12' ],
+							[
+								'10',
+								`<imageBlock src="${ imageUrl }"><caption>[]11</caption></imageBlock><paragraph>foo</paragraph>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -2993,7 +3218,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell below when inside the image caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>1[]1</caption></image><paragraph>foo</paragraph>`, '12' ],
+							[
+								'10',
+								`<imageBlock src="${ imageUrl }"><caption>1[]1</caption></imageBlock><paragraph>foo</paragraph>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -3004,7 +3232,10 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image><paragraph>foo</paragraph>`, '12' ],
+							[
+								'10',
+								`<imageBlock src="${ imageUrl }"><caption>11[]</caption></imageBlock><paragraph>foo</paragraph>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -3012,7 +3243,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell below when followed by a paragraph', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption>11[]</caption></image><paragraph>foo</paragraph>`, '12' ],
+							[
+								'10',
+								`<imageBlock src="${ imageUrl }"><caption>11[]</caption></imageBlock><paragraph>foo</paragraph>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -3025,7 +3259,10 @@ describe( 'TableKeyboard', () => {
 					it( 'should navigate to the cell below if the caret on last position in the image caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>11[]</caption></image>`, '12' ],
+							[
+								'10',
+								`<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>11[]</caption></imageBlock>`, '12'
+							],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -3036,7 +3273,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph><image src="${ imageUrl }"><caption>11</caption></image>`, '12' ],
+							[ '10', `<paragraph>foo</paragraph><imageBlock src="${ imageUrl }"><caption>11</caption></imageBlock>`, '12' ],
 							[ '20', '[]21', '22' ]
 						] ) );
 					} );
@@ -3044,7 +3281,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell above but should select the image widget without caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<image src="${ imageUrl }"><caption></caption></image><paragraph>[]foo</paragraph>`, '12' ],
+							[ '10', `<imageBlock src="${ imageUrl }"><caption></caption></imageBlock><paragraph>[]foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -3054,7 +3291,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `[<image src="${ imageUrl }"><caption></caption></image>]<paragraph>foo</paragraph>`, '12' ],
+							[ '10', `[<imageBlock src="${ imageUrl }"><caption></caption></imageBlock>]<paragraph>foo</paragraph>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -3062,7 +3299,7 @@ describe( 'TableKeyboard', () => {
 					it( 'should not navigate to the cell below but should select the image widget without caption', () => {
 						setModelData( model, modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo[]</paragraph><image src="${ imageUrl }"><caption></caption></image>`, '12' ],
+							[ '10', `<paragraph>foo[]</paragraph><imageBlock src="${ imageUrl }"><caption></caption></imageBlock>`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 
@@ -3072,7 +3309,7 @@ describe( 'TableKeyboard', () => {
 
 						assertEqualMarkup( getModelData( model ), modelTable( [
 							[ '00', '01', '02' ],
-							[ '10', `<paragraph>foo</paragraph>[<image src="${ imageUrl }"><caption></caption></image>]`, '12' ],
+							[ '10', `<paragraph>foo</paragraph>[<imageBlock src="${ imageUrl }"><caption></caption></imageBlock>]`, '12' ],
 							[ '20', '21', '22' ]
 						] ) );
 					} );
@@ -3086,7 +3323,7 @@ describe( 'TableKeyboard', () => {
 			beforeEach( () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageEditing, MediaEmbedEditing ],
+						plugins: [ TableEditing, TableKeyboard, TableSelection, Paragraph, ImageBlockEditing, MediaEmbedEditing ],
 						language: 'ar'
 					} )
 					.then( newEditor => {

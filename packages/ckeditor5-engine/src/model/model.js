@@ -95,20 +95,29 @@ export default class Model {
 		this.schema.register( '$root', {
 			isLimit: true
 		} );
+
 		this.schema.register( '$block', {
 			allowIn: '$root',
 			isBlock: true
 		} );
+
 		this.schema.register( '$text', {
 			allowIn: '$block',
 			isInline: true,
 			isContent: true
 		} );
+
 		this.schema.register( '$clipboardHolder', {
 			allowContentOf: '$root',
+			allowChildren: '$text',
 			isLimit: true
 		} );
-		this.schema.extend( '$text', { allowIn: '$clipboardHolder' } );
+
+		this.schema.register( '$documentFragment', {
+			allowContentOf: '$root',
+			allowChildren: '$text',
+			isLimit: true
+		} );
 
 		// An element needed by the `upcastElementToMarker` converter.
 		// This element temporarily represents a marker boundary during the conversion process and is removed
@@ -454,14 +463,14 @@ export default class Model {
 	 * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
 	 * to a place where text cannot be inserted.
 	 *
-	 * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
+	 * For example `<paragraph>x</paragraph>[<imageBlock src="foo.jpg"></imageBlock>]` will become:
 	 *
 	 * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
 	 * * `<paragraph>x[]</paragraph>` with the option enabled (`doNotAutoparagraph == true`).
 	 *
 	 * **Note:** if there is no valid position for the selection, the paragraph will always be created:
 	 *
-	 * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
+	 * `[<imageBlock src="foo.jpg"></imageBlock>]` -> `<paragraph>[]</paragraph>`.
 	 *
 	 * @param {'forward'|'backward'} [options.direction='backward'] The direction in which the content is being consumed.
 	 * Deleting backward corresponds to using the <kbd>Backspace</kbd> key, while deleting content forward corresponds to
@@ -550,7 +559,7 @@ export default class Model {
 	 * {@link module:engine/model/markercollection~Marker#_affectsData affects data}.
 	 *
 	 * This means that a range containing an empty `<paragraph></paragraph>` is not considered to have a meaningful content.
-	 * However, a range containing an `<image></image>` (which would normally be marked in the schema as an object element)
+	 * However, a range containing an `<imageBlock></imageBlock>` (which would normally be marked in the schema as an object element)
 	 * is considered non-empty.
 	 *
 	 * @param {module:engine/model/range~Range|module:engine/model/element~Element} rangeOrElement Range or element to check.

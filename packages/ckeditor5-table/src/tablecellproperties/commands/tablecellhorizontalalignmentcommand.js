@@ -28,8 +28,9 @@ export default class TableCellHorizontalAlignmentCommand extends TableCellProper
 	 * Creates a new `TableCellHorizontalAlignmentCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'horizontalAlignment' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'horizontalAlignment', defaultValue );
 	}
 }

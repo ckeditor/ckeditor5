@@ -11,9 +11,10 @@ import { Plugin } from 'ckeditor5/src/core';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
 import { Undo } from 'ckeditor5/src/undo';
+import { Delete } from 'ckeditor5/src/typing';
 import { global } from 'ckeditor5/src/utils';
 
-import { insertImage } from './image/utils';
+import ImageUtils from './imageutils';
 
 // Implements the pattern: http(s)://(www.)example.com/path/to/resource.ext?query=params&maybe=too.
 const IMAGE_URL_REGEXP = new RegExp( String( /^(http(s)?:\/\/)?[\w-]+\.[\w.~:/[\]@!$&'()*+,;=%-]+/.source +
@@ -32,7 +33,7 @@ export default class AutoImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard, Undo ];
+		return [ Clipboard, ImageUtils, Undo, Delete ];
 	}
 
 	/**
@@ -58,7 +59,7 @@ export default class AutoImage extends Plugin {
 		this._timeoutId = null;
 
 		/**
-		 * The position where the `<image>` element will be inserted after the timeout,
+		 * The position where the `<imageBlock>` element will be inserted after the timeout,
 		 * determined each time a new content is pasted into the document.
 		 *
 		 * @private
@@ -118,6 +119,8 @@ export default class AutoImage extends Plugin {
 		// TODO: Use a marker instead of LiveRange & LivePositions.
 		const urlRange = new LiveRange( leftPosition, rightPosition );
 		const walker = urlRange.getWalker( { ignoreElementEnd: true } );
+		const selectionAttributes = Object.fromEntries( editor.model.document.selection.getAttributes() );
+		const imageUtils = this.editor.plugins.get( 'ImageUtils' );
 
 		let src = '';
 
@@ -166,11 +169,13 @@ export default class AutoImage extends Plugin {
 					insertionPosition = this._positionToInsert.toPosition();
 				}
 
-				insertImage( editor.model, { src }, insertionPosition );
+				imageUtils.insertImage( { ...selectionAttributes, src }, insertionPosition );
 
 				this._positionToInsert.detach();
 				this._positionToInsert = null;
 			} );
+
+			editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
 		}, 100 );
 	}
 }

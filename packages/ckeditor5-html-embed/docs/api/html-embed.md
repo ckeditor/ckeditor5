@@ -10,11 +10,11 @@ This package implements the HTML embed feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/html-embed#demo demo in the HTML embed feature} guide.
+Check out the {@link features/html-embed#demo demo in the HTML embed feature guide}.
 
 ## Documentation
 
-See the {@link features/html-embed HTML embed feature} guide and the {@link module:html-embed/htmlembed~HtmlEmbed} plugin documentation.
+See the {@link features/html-embed HTML embed feature guide} and the {@link module:html-embed/htmlembed~HtmlEmbed} plugin documentation.
 
 ## Installation
 

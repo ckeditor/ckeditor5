@@ -19,11 +19,15 @@ ClassicEditor
 				'outdent', 'indent', '|',
 				'uploadImage', 'blockQuote', '|',
 				'undo', 'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		codeBlock: {
 			languages: [

@@ -9,7 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow } from './converters/upcasttable';
+import upcastTable, { ensureParagraphInTableCell, skipEmptyTableRow, upcastTableFigure } from './converters/upcasttable';
 import {
 	convertParagraphInTableCell,
 	downcastInsertCell,
@@ -76,13 +76,14 @@ export default class TableEditing extends Plugin {
 
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
+			allowChildren: '$block',
 			allowAttributes: [ 'colspan', 'rowspan' ],
 			isLimit: true,
 			isSelectable: true
 		} );
 
-		// Allow all $block content inside a table cell.
-		schema.extend( '$block', { allowIn: 'tableCell' } );
+		// Figure conversion.
+		conversion.for( 'upcast' ).add( upcastTableFigure() );
 
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
@@ -106,18 +107,36 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastInsertCell() );
 
 		// Duplicates code - needed to properly refresh paragraph inside a table cell.
-		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'paragraph',
 			view: convertParagraphInTableCell,
 			converterPriority: 'high'
 		} );
 
 		// Table attributes conversion.
-		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		conversion.for( 'downcast' ).attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			model: { key: 'colspan', value: upcastCellSpan( 'colspan' ) },
+			view: 'colspan'
+		} );
+
+		conversion.for( 'downcast' ).attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		conversion.for( 'upcast' ).attributeToAttribute( {
+			model: { key: 'rowspan', value: upcastCellSpan( 'rowspan' ) },
+			view: 'rowspan'
+		} );
 
 		// Table heading columns conversion (a change of heading rows requires a reconversion of the whole table).
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange() );
+
+		// Manually adjust model position mappings in a special case, when a table cell contains a paragraph, which is bound
+		// to its parent (to the table cell). This custom model-to-view position mapping is necessary in data pipeline only,
+		// because only during this conversion a paragraph can be bound to its parent.
+		editor.data.mapper.on( 'modelToViewPosition', mapTableCellModelPositionToView() );
+
+		// Define the config.
+		editor.config.define( 'table.defaultHeadings.rows', 0 );
+		editor.config.define( 'table.defaultHeadings.columns', 0 );
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
@@ -157,4 +176,55 @@ export default class TableEditing extends Plugin {
 	static get requires() {
 		return [ TableUtils ];
 	}
+}
+
+// Creates a mapper callback to adjust model position mappings in a table cell containing a paragraph, which is bound to its parent
+// (to the table cell). Only positions after this paragraph have to be adjusted, because after binding this paragraph to the table cell,
+// elements located after this paragraph would point either to a non-existent offset inside `tableCell` (if paragraph is empty), or after
+// the first character of the paragraph's text. See https://github.com/ckeditor/ckeditor5/issues/10116.
+//
+// <tableCell><paragraph></paragraph>^</tableCell> -> <td>^&nbsp;</td>
+//
+// <tableCell><paragraph>foobar</paragraph>^</tableCell> -> <td>foobar^</td>
+//
+// @returns {Function}
+function mapTableCellModelPositionToView() {
+	return ( evt, data ) => {
+		const modelParent = data.modelPosition.parent;
+		const modelNodeBefore = data.modelPosition.nodeBefore;
+
+		if ( !modelParent.is( 'element', 'tableCell' ) ) {
+			return;
+		}
+
+		if ( !modelNodeBefore || !modelNodeBefore.is( 'element', 'paragraph' ) ) {
+			return;
+		}
+
+		const viewNodeBefore = data.mapper.toViewElement( modelNodeBefore );
+		const viewParent = data.mapper.toViewElement( modelParent );
+
+		if ( viewNodeBefore === viewParent ) {
+			// Since the paragraph has already been bound to its parent, update the current position in the model with paragraph's
+			// max offset, so it points to the place which should normally (in all other cases) be the end position of this paragraph.
+			data.viewPosition = data.mapper.findPositionIn( viewParent, modelNodeBefore.maxOffset );
+		}
+	};
+}
+
+// Returns fixed colspan and rowspan attrbutes values.
+//
+// @private
+// @param {String} type colspan or rowspan.
+// @returns {Function} conversion value function.
+function upcastCellSpan( type ) {
+	return cell => {
+		const span = parseInt( cell.getAttribute( type ) );
+
+		if ( Number.isNaN( span ) || span <= 0 ) {
+			return null;
+		}
+
+		return span;
+	};
 }

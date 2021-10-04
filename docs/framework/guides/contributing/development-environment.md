@@ -18,7 +18,7 @@ The main package's GitHub repository also [hosts all other CKEditor5 sub-package
 You can find all the official packages listed in the [CKEditor 5 repository's README](https://github.com/ckeditor/ckeditor5#packages).
 
 <info-box info>
-	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the [older Development environment guide](/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html) for multi-repository oriented instructions.
+	Prior to version **19.0.0** CKEditor 5 was developed in a multi-repository architecture. If you would like to work with an older multi-repository release, please refer to the <a href="/docs/ckeditor5/19.0.0/framework/guides/contributing/development-environment.html" data-cke-crawler-skip>older Development environment guide</a> for multi-repository oriented instructions.
 </info-box>
 
 ## Requirements
@@ -105,6 +105,15 @@ This task accepts the following arguments:
 
 	Note: If a snippet that you want to build uses another snippet as a source that provides an editor instance, you need to specify both snippets (e.g. `--files=features/default-headings,build-classic-source`).
 * `--skip-validation` &ndash; Skips the final link validation.
+* `--skip-guides` &ndash; Skips building all guides except the `index.md` files which allowa navigating over the partially built documentation.
+* `--guides=guide-name` &ndash; Guides to build. Accepts glob patterns that are matched against guide names. Examples:
+
+	```
+	--guides=image         // matches roughly "*image*"
+	--guides="features/*"  // matches roughly "*features/*"
+	--guides=features/image
+	```
+
 * `--watch` &ndash; Runs the documentation generator in a watch mode. It covers guides but it does not cover API docs.
 * `--production` &ndash; Minifies the assets and performs other actions which are unnecessary during CKEditor 5 development.
 * `--verbose` &ndash; Prints out more information.

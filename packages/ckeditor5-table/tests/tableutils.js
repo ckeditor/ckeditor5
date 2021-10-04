@@ -8,11 +8,11 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import TableEditing from '../src/tableediting';
-import { modelTable } from './_utils/utils';
-
 import TableUtils from '../src/tableutils';
+import { modelTable } from './_utils/utils';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
@@ -27,6 +27,16 @@ describe( 'TableUtils', () => {
 			model = editor.model;
 			root = model.document.getRoot( 'main' );
 			tableUtils = editor.plugins.get( TableUtils );
+
+			model.schema.register( 'foo', {
+				allowIn: 'table',
+				allowContentOf: '$block',
+				isLimit: true
+			} );
+			editor.conversion.elementToElement( {
+				view: 'foo',
+				model: 'foo'
+			} );
 		} );
 	} );
 
@@ -273,6 +283,81 @@ describe( 'TableUtils', () => {
 				[ '', '' ],
 				[ '', '' ]
 			] ) );
+		} );
+
+		it( 'should throw error when options.at is larger than the amount of rows in the table', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			expect(
+				() => tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 3, rows: 3 } )
+			).to.throw(
+				CKEditorError,
+				'tableutils-insertrows-insert-out-of-range'
+			);
+
+			assertEqualMarkup( getData( model ), modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should insert rows into a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
 		} );
 
 		describe( 'with copyStructureFrom enabled', () => {
@@ -597,6 +682,90 @@ describe( 'TableUtils', () => {
 				[ '', '32' ]
 			], { headingColumns: 3 } ) );
 		} );
+
+		it( 'should ignore table element that is not a row', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>11[]</paragraph></tableCell>' +
+						'<tableCell><paragraph>12</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>21</paragraph></tableCell>' +
+						'<tableCell><paragraph>22</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>Bar</foo>' +
+				'</table>'
+			);
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0 } );
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>11[]</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>12</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>21</paragraph>' +
+						'</tableCell>' +
+						'<tableCell>' +
+							'<paragraph>22</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<foo>Bar</foo>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should insert columns into a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 3 } );
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+		} );
 	} );
 
 	describe( 'splitCellVertically()', () => {
@@ -740,6 +909,40 @@ describe( 'TableUtils', () => {
 				[ { colspan: 3, contents: '00' }, '01' ],
 				[ '10[]', '', '', '11' ]
 			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should split cells in a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
+
+			assertEqualMarkup( getData( model ),
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell colspan="3"><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph></paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
 		} );
 	} );
 
@@ -916,6 +1119,44 @@ describe( 'TableUtils', () => {
 				[ '20', '21', '22' ]
 			], { headingRows: 3 } ) );
 		} );
+
+		it( 'should split cells in a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
+
+			assertEqualMarkup( getData( model ),
+				'[<table>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>00</paragraph>' +
+						'</tableCell>' +
+						'<tableCell rowspan="3">' +
+							'<paragraph>01</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph></paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>]'
+			);
+		} );
 	} );
 
 	describe( 'getColumns()', () => {
@@ -955,6 +1196,24 @@ describe( 'TableUtils', () => {
 			] ) );
 
 			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 3 );
+		} );
+
+		it( 'should return proper number of rows for a table with a non-row element', () => {
+			setData( model,
+				'<table>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'<tableCell><paragraph>01</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+						'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'<tableCell><paragraph>11</paragraph></tableCell>' +
+					'</tableRow>' +
+					'<foo>An extra element</foo>' +
+				'</table>'
+			);
+
+			expect( tableUtils.getRows( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 2 );
 		} );
 	} );
 
@@ -1111,6 +1370,34 @@ describe( 'TableUtils', () => {
 					[ '00', { rowspan: 2, contents: '01' }, '02', '03', '04' ],
 					[ '20', '12', '23', '24' ]
 				] ) );
+			} );
+
+			it( 'should remove row in a table with a non-row element', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				tableUtils.removeRows( root.getChild( 0 ), { at: 1 } );
+
+				assertEqualMarkup( getData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>[]An extra element</foo>' +
+					'</table>'
+				);
 			} );
 		} );
 
@@ -1310,6 +1597,29 @@ describe( 'TableUtils', () => {
 
 				expect( createdBatches.size ).to.equal( 1 );
 			} );
+
+			it( 'should throw the error when provided options point to a non-existent rows', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+					'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				expect(
+					() => tableUtils.removeRows( root.getChild( 0 ), { at: 1, rows: 2 } )
+				).to.throw(
+					CKEditorError,
+					'tableutils-removerows-row-index-out-of-range'
+				);
+			} );
 		} );
 	} );
 
@@ -1482,6 +1792,36 @@ describe( 'TableUtils', () => {
 					[ '01', '02' ]
 				] ) );
 			} );
+
+			it( 'should remove column in a table with a non-row element', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+					'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				tableUtils.removeColumns( root.getChild( 0 ), { at: 0 } );
+
+				assertEqualMarkup( getData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]11</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+			} );
 		} );
 
 		describe( 'multiple columns', () => {
@@ -1568,6 +1908,36 @@ describe( 'TableUtils', () => {
 					[ '22' ]
 				] ) );
 			} );
+
+			it( 'should remove column in a table with a non-row element', () => {
+				setData( model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+							'<tableCell><paragraph>01</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+							'<tableCell><paragraph>11</paragraph></tableCell>' +
+						'</tableRow>' +
+					'<foo>An extra element</foo>' +
+					'</table>'
+				);
+
+				tableUtils.removeColumns( root.getChild( 0 ), { at: 1, columns: 1 } );
+
+				assertEqualMarkup( getData( model ),
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>00</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<tableRow>' +
+							'<tableCell><paragraph>[]10</paragraph></tableCell>' +
+						'</tableRow>' +
+						'<foo>An extra element</foo>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 
@@ -1634,6 +2004,21 @@ describe( 'TableUtils', () => {
 				[ '', '' ],
 				[ '', '' ]
 			], { headingRows: 2, headingColumns: 1 } ) );
+		} );
+
+		it( 'should clamp table heading rows and columns to the rows and columns number', () => {
+			setData( model, '[]' );
+
+			model.change( writer => {
+				const table = tableUtils.createTable( writer, { rows: 2, columns: 2, headingRows: 3, headingColumns: 3 } );
+
+				model.insertContent( table, model.document.selection.focus );
+			} );
+
+			assertEqualMarkup( getData( model, { withoutSelection: true } ), modelTable( [
+				[ '', '' ],
+				[ '', '' ]
+			], { headingRows: 2, headingColumns: 2 } ) );
 		} );
 	} );
 } );

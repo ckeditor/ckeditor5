@@ -44,20 +44,20 @@ ClassicEditor
 				'|',
 				'undo',
 				'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
-			styles: [
-				'full',
-				'alignLeft',
-				'alignRight'
-			],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:full',
-				'imageStyle:alignRight',
+				'imageStyle:inline',
+				'imageStyle:wrapText',
+				'imageStyle:breakText',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		},
@@ -68,6 +68,8 @@ ClassicEditor
 	} )
 
 	.then( editor => {
+		window.editor = editor;
+
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.label && item.label === 'Insert a math equation - MathType' ),

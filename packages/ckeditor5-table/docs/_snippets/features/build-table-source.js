@@ -13,6 +13,8 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
+import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
+import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
@@ -36,8 +38,12 @@ ClassicEditor.defaultConfig = {
 			'link', 'blockQuote',
 			'|',
 			'undo', 'redo'
-		],
-		viewportTopOffset: window.getViewportTopOffsetConfig()
+		]
+	},
+	ui: {
+		viewportOffset: {
+			top: window.getViewportTopOffsetConfig()
+		}
 	},
 	indentBlock: { offset: 30, unit: 'px' }
 };
@@ -45,5 +51,7 @@ ClassicEditor.defaultConfig = {
 window.ClassicEditor = ClassicEditor;
 window.CKEditorPlugins = {
 	TableProperties,
-	TableCellProperties
+	TableCellProperties,
+	TableCaption,
+	Superscript
 };

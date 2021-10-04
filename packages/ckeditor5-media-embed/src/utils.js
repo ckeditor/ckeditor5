@@ -69,8 +69,8 @@ export function isMediaWidget( viewElement ) {
  * @param {String} url
  * @param {Object} options
  * @param {String} [options.elementName]
- * @param {String} [options.useSemanticWrapper]
- * @param {String} [options.renderForEditingView]
+ * @param {Boolean} [options.useSemanticWrapper]
+ * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {
@@ -105,15 +105,15 @@ export function getSelectedMediaModelWidget( selection ) {
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} url An URL of an embeddable media.
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert the media. If not specified,
+ * @param {module:engine/model/range~Range} [insertRange] The range to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
  */
-export function insertMedia( model, url, insertPosition ) {
+export function insertMedia( model, url, insertRange ) {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
-		model.insertContent( mediaElement, insertPosition );
+		model.insertContent( mediaElement, insertRange );
 
 		writer.setSelection( mediaElement, 'on' );
 	} );

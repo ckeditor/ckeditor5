@@ -37,15 +37,22 @@ export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	 * Creates a new `TableCellHeightCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'height' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'height', defaultValue );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	_getValueToSet( value ) {
-		return addDefaultUnitToNumericValue( value, 'px' );
+		value = addDefaultUnitToNumericValue( value, 'px' );
+
+		if ( value === this._defaultValue ) {
+			return null;
+		}
+
+		return value;
 	}
 }

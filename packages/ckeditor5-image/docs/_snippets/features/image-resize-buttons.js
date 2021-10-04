@@ -10,8 +10,10 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-resize-buttons' ), {
 		removePlugins: [ 'LinkImage', 'AutoImage' ],
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
 			resizeOptions: [
@@ -22,30 +24,21 @@ ClassicEditor
 					icon: 'original'
 				},
 				{
-					name: 'resizeImage:50',
-					label: '50%',
-					value: '50',
+					name: 'resizeImage:20',
+					label: '20%',
+					value: '20',
 					icon: 'medium'
 				},
 				{
-					name: 'resizeImage:75',
-					label: '75%',
-					value: '75',
+					name: 'resizeImage:40',
+					label: '40%',
+					value: '40',
 					icon: 'large'
 				}
 			],
-			styles: [
-				'alignLeft',
-				'alignCenter',
-				'alignRight'
-			],
 			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:alignCenter',
-				'imageStyle:alignRight',
-				'|',
-				'resizeImage:50',
-				'resizeImage:75',
+				'resizeImage:20',
+				'resizeImage:40',
 				'resizeImage:original'
 			]
 		},

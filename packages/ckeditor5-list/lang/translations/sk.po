@@ -30,80 +30,80 @@ msgstr "To-do zoznam"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the bulleted list style."
 msgid "Bulleted list styles toolbar"
-msgstr ""
+msgstr "Panel zoznamu s odrážkami"
 
 msgctxt "The ARIA label of the toolbar displaying buttons allowing users to change the numbered list style."
 msgid "Numbered list styles toolbar"
-msgstr ""
+msgstr "Panel so štýlmi číslovaného zoznamu"
 
 msgctxt "The ARIA label of the button that toggles the \"disc\" list style."
 msgid "Toggle the disc list style"
-msgstr ""
+msgstr "Prepnúť na zoznam s označením plného kruhu"
 
 msgctxt "The ARIA label of the button that toggles the \"circle\" list style."
 msgid "Toggle the circle list style"
-msgstr ""
+msgstr "Prepnúť na zoznam s kruhovým označením"
 
 msgctxt "The ARIA label of the button that toggles the \"square\" list style."
 msgid "Toggle the square list style"
-msgstr ""
+msgstr "Prepnúť na zoznam so štvorcovým označením"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal\" list style."
 msgid "Toggle the decimal list style"
-msgstr ""
+msgstr "Prepnúť na číselný zoznam"
 
 msgctxt "The ARIA label of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Toggle the decimal with leading zero list style"
-msgstr ""
+msgstr "Prepnúť na číselný zoznam s nulou na začiatku"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–roman\" list style."
 msgid "Toggle the lower–roman list style"
-msgstr ""
+msgstr "Prepnúť na zoznam s malými rímskymi číslami"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–roman\" list style."
 msgid "Toggle the upper–roman list style"
-msgstr ""
+msgstr "Prepnúť na zoznam s veľkými rímskymi číslami"
 
 msgctxt "The ARIA label of the button that toggles the \"lower–latin\" list style."
 msgid "Toggle the lower–latin list style"
-msgstr ""
+msgstr "Prepnúť na zoznam s malými písmenami"
 
 msgctxt "The ARIA label of the button that toggles the \"upper–latin\" list style."
 msgid "Toggle the upper–latin list style"
-msgstr ""
+msgstr "Prepnúť na zoznam s veľkými písmenami"
 
 msgctxt "The tooltip text of the button that toggles the \"disc\" list style."
 msgid "Disc"
-msgstr ""
+msgstr "Plný kruh"
 
 msgctxt "The tooltip text of the button that toggles the \"circle\" list style."
 msgid "Circle"
-msgstr ""
+msgstr "Kruh"
 
 msgctxt "The tooltip text of the button that toggles the \"square\" list style."
 msgid "Square"
-msgstr ""
+msgstr "Štvorec"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal\" list style."
 msgid "Decimal"
-msgstr ""
+msgstr "Čísla"
 
 msgctxt "The tooltip text of the button that toggles the \"decimal with leading zero\" list style."
 msgid "Decimal with leading zero"
-msgstr ""
+msgstr "Čísla s nulou na začiatku"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–roman\" list style."
 msgid "Lower–roman"
-msgstr ""
+msgstr "Malé rímske čísla"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–roman\" list style."
 msgid "Upper-roman"
-msgstr ""
+msgstr "Veľké rímske čísla"
 
 msgctxt "The tooltip text of the button that toggles the \"lower–latin\" list style."
 msgid "Lower-latin"
-msgstr ""
+msgstr "Malé písmená"
 
 msgctxt "The tooltip text of the button that toggles the \"upper–latin\" list style."
 msgid "Upper-latin"
-msgstr ""
+msgstr "Veľké písmená"

@@ -7,10 +7,9 @@
 
 import Resizer from '../../src/widgetresize/resizer';
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 describe( 'Resizer', () => {
@@ -26,11 +25,24 @@ describe( 'Resizer', () => {
 					ArticlePluginSet
 				],
 				image: {
-					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+
+				editor.model.schema.register( 'resizable', {
+					isBlock: true,
+					allowWhere: '$block'
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'resizable',
+					view: {
+						name: 'div',
+						classes: 'resizable'
+					}
+				} );
 			} );
 	} );
 
@@ -91,28 +103,30 @@ describe( 'Resizer', () => {
 			resizerInstance.isEnabled = false;
 			resizerInstance.attach();
 
-			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
-			expect( domResizeeWrapper.style.display ).to.equal( 'none' );
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
+			expect( domResizerWrapper.style.display ).to.equal( 'none' );
 		} );
 
 		it( 'hides the resizer if it gets disabled at a runtime', () => {
 			const resizerInstance = createResizer();
 			resizerInstance.isEnabled = true;
 			resizerInstance.attach();
-			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = false;
-			expect( domResizeeWrapper.style.display ).to.equal( 'none' );
+			expect( domResizerWrapper.style.display ).to.equal( 'none' );
 		} );
 
 		it( 'restores the resizer if it gets enabled at a runtime', () => {
-			const resizerInstance = createResizer();
+			const resizerInstance = createResizer( {
+				getHandleHost: widgetWrapper => widgetWrapper
+			} );
 			resizerInstance.isEnabled = false;
 			resizerInstance.attach();
-			const domResizeeWrapper = resizerInstance._viewResizerWrapper.render( document );
+			const domResizerWrapper = resizerInstance._viewResizerWrapper.render( document );
 
 			resizerInstance.isEnabled = true;
-			expect( domResizeeWrapper.style.display ).to.equal( '' );
+			expect( domResizerWrapper.style.display ).to.equal( '' );
 		} );
 	} );
 
@@ -220,13 +234,34 @@ describe( 'Resizer', () => {
 		} );
 	} );
 
+	describe( '_domResizerWrapper', () => {
+		it( 'should refer to a DOM element in the editing root despite being rendered multiple times (also in different documents)', () => {
+			const resizerInstance = createResizer();
+			const anotherDocument = document.implementation.createDocument( 'http://www.w3.org/1999/xhtml', 'html', null );
+
+			resizerInstance.isEnabled = true;
+			resizerInstance.attach();
+
+			// Render in the same DOM document as the editor editing DOM root.
+			resizerInstance._viewResizerWrapper.render( document );
+
+			// Again, render in the same DOM document as editor editing DOM root.
+			resizerInstance._viewResizerWrapper.render( document );
+
+			// Render in some other document. This could be a document in an <iframe>.
+			resizerInstance._viewResizerWrapper.render( anotherDocument );
+
+			expect( resizerInstance._domResizerWrapper.ownerDocument ).to.equal( document );
+			expect( editor.editing.view.getDomRoot().contains( resizerInstance._domResizerWrapper ) ).to.be.true;
+		} );
+	} );
+
 	function createResizer( customOptions ) {
-		const model = new Element( 'resizable' );
-		const viewElement = new ContainerElement( 'div' );
+		setModelData( editor.model, '<resizable></resizable>' );
 
 		return new Resizer( Object.assign( {
-			modelElement: model,
-			viewElement,
+			modelElement: editor.model.document.getRoot().getChild( 0 ),
+			viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
 			editor
 		}, customOptions ) );
 	}

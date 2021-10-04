@@ -7,10 +7,6 @@
  * @module widget/utils
  */
 
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
@@ -124,7 +120,7 @@ export function toWidget( element, writer, options = {} ) {
 		addSelectionHandle( element, writer );
 	}
 
-	setHighlightHandling( element, writer, addHighlight, removeHighlight );
+	setHighlightHandling( element, writer );
 
 	return element;
 }
@@ -171,10 +167,10 @@ function removeHighlight( element, descriptor, writer ) {
  *
  * @param {module:engine/view/element~Element} element
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {Function} add
- * @param {Function} remove
+ * @param {Function} [add]
+ * @param {Function} [remove]
  */
-export function setHighlightHandling( element, writer, add, remove ) {
+export function setHighlightHandling( element, writer, add = addHighlight, remove = removeHighlight ) {
 	const stack = new HighlightStack();
 
 	stack.on( 'change:top', ( evt, data ) => {
@@ -227,6 +223,7 @@ export function getLabel( element ) {
  * otherwise sets it to `false`,
  * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
+ * * implements the {@link ~setHighlightHandling view highlight on widget's editable}.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `editingDowncast` only and it is usually
  * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
@@ -278,26 +275,28 @@ export function toWidgetEditable( editable, writer ) {
 		}
 	} );
 
+	setHighlightHandling( editable, writer );
+
 	return editable;
 }
 
 /**
- * Returns a model position which is optimal (in terms of UX) for inserting a widget block.
+ * Returns a model range which is optimal (in terms of UX) for inserting a widget block.
  *
- * For instance, if a selection is in the middle of a paragraph, the position before this paragraph
+ * For instance, if a selection is in the middle of a paragraph, the collapsed range before this paragraph
  * will be returned so that it is not split. If the selection is at the end of a paragraph,
- * the position after this paragraph will be returned.
+ * the collapsed range after this paragraph will be returned.
  *
- * Note: If the selection is placed in an empty block, that block will be returned. If that position
- * is then passed to {@link module:engine/model/model~Model#insertContent},
- * the block will be fully replaced by the image.
+ * Note: If the selection is placed in an empty block, the range in that block will be returned. If that range
+ * is then passed to {@link module:engine/model/model~Model#insertContent}, the block will be fully replaced
+ * by the inserted widget block.
  *
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * The selection based on which the insertion position should be calculated.
  * @param {module:engine/model/model~Model} model Model instance.
- * @returns {module:engine/model/position~Position} The optimal position.
+ * @returns {module:engine/model/range~Range} The optimal range.
  */
-export function findOptimalInsertionPosition( selection, model ) {
+export function findOptimalInsertionRange( selection, model ) {
 	const selectedElement = selection.getSelectedElement();
 
 	if ( selectedElement ) {
@@ -306,11 +305,11 @@ export function findOptimalInsertionPosition( selection, model ) {
 		// If the WidgetTypeAround "fake caret" is displayed, use its position for the insertion
 		// to provide the most predictable UX (https://github.com/ckeditor/ckeditor5/issues/7438).
 		if ( typeAroundFakeCaretPosition ) {
-			return model.createPositionAt( selectedElement, typeAroundFakeCaretPosition );
+			return model.createRange( model.createPositionAt( selectedElement, typeAroundFakeCaretPosition ) );
 		}
 
-		if ( model.schema.isBlock( selectedElement ) ) {
-			return model.createPositionAfter( selectedElement );
+		if ( model.schema.isObject( selectedElement ) && !model.schema.isInline( selectedElement ) ) {
+			return model.createRangeOn( selectedElement );
 		}
 	}
 
@@ -320,34 +319,21 @@ export function findOptimalInsertionPosition( selection, model ) {
 		// If inserting into an empty block – return position in that block. It will get
 		// replaced with the image by insertContent(). #42.
 		if ( firstBlock.isEmpty ) {
-			return model.createPositionAt( firstBlock, 0 );
+			return model.createRange( model.createPositionAt( firstBlock, 0 ) );
 		}
 
 		const positionAfter = model.createPositionAfter( firstBlock );
 
 		// If selection is at the end of the block - return position after the block.
 		if ( selection.focus.isTouching( positionAfter ) ) {
-			return positionAfter;
+			return model.createRange( positionAfter );
 		}
 
 		// Otherwise return position before the block.
-		return model.createPositionBefore( firstBlock );
+		return model.createRange( model.createPositionBefore( firstBlock ) );
 	}
 
-	return selection.focus;
-}
-
-/**
- * Checks if the selection is on an object.
- *
- * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * @param {module:engine/model/schema~Schema} schema
- * @returns {Boolean}
-*/
-export function checkSelectionOnObject( selection, schema ) {
-	const selectedElement = selection.getSelectedElement();
-
-	return !!selectedElement && schema.isObject( selectedElement );
+	return model.createRange( selection.focus );
 }
 
 /**
@@ -406,65 +392,6 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 		const modelParent = mapper.toModelElement( viewParent );
 
 		data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
-	};
-}
-
-/**
- * A positioning function passed to the {@link module:utils/dom/position~getOptimalPosition} helper as a last resort
- * when attaching {@link  module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon UI} to widgets.
- * It comes in handy when a widget is longer than the visual viewport of the web browser and/or upper/lower boundaries
- * of a widget are off screen because of the web page scroll.
- *
- *	                                       ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐
- *	                                       ┊                         ┊
- *	┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐
- *	│  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │
- *	│  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │
- *	│  ┃   ╭───────/ \───────╮   ┃  │   │  ┃   │     Balloon     │   ┃  │
- *	│  ┃   │     Balloon     │   ┃  │   │  ┃   ╰─────────────────╯   ┃  │
- *	│  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	└──╀─────────────────────────╀──┘   └──╀─────────────────────────╀──┘
- *	   ┊                         ┊         ┊                         ┊
- *	   ┊                         ┊         └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
- *	   ┊                         ┊
- *	   └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
- *
- * **Note**: Works best if used together with
- * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions default `BalloonPanelView` positions}
- * like `northArrowSouth` and `southArrowNorth`; the transition between these two and this position is smooth.
- *
- * @param {module:utils/dom/rect~Rect} widgetRect A rect of the widget.
- * @param {module:utils/dom/rect~Rect} balloonRect A rect of the balloon.
- * @returns {module:utils/dom/position~Position|null}
- */
-export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
-	const viewportRect = new Rect( global.window );
-	const viewportWidgetInsersectionRect = viewportRect.getIntersection( widgetRect );
-
-	const balloonTotalHeight = balloonRect.height + BalloonPanelView.arrowVerticalOffset;
-
-	// If there is enough space above or below the widget then this position should not be used.
-	if ( widgetRect.top - balloonTotalHeight > viewportRect.top || widgetRect.bottom + balloonTotalHeight < viewportRect.bottom ) {
-		return null;
-	}
-
-	// Because this is a last resort positioning, to keep things simple we're not playing with positions of the arrow
-	// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
-	// the widget for as long as it is possible. If the widgets becomes invisible (because cropped by the viewport),
-	// just... place the balloon in the middle of it (because why not?).
-	const targetRect = viewportWidgetInsersectionRect || widgetRect;
-	const left = targetRect.left + targetRect.width / 2 - balloonRect.width / 2;
-
-	return {
-		top: Math.max( widgetRect.top, 0 ) + BalloonPanelView.arrowVerticalOffset,
-		left,
-		name: 'arrow_n'
 	};
 }
 

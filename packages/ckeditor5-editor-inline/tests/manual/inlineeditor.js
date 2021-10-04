@@ -20,6 +20,7 @@ function initEditors() {
 	function init( selector ) {
 		InlineEditor
 			.create( document.querySelector( selector ), {
+				image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 				plugins: [ ArticlePluginSet ],
 				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 			} )

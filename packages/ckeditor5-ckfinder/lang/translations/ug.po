@@ -18,20 +18,20 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
 msgid "Insert image or file"
-msgstr "رەسىم ياكى ھۆججەت قىستۇرۇش"
+msgstr "رەسىم ياكى ھۆججەت قىستۇر"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr ""
+msgstr "چوڭلۇقى تەڭشەلگەن سۈرەتنىڭ تور ئادرېسىغا ئېرىشەلمىدى"
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr ""
+msgstr "چوڭلۇقى تەڭشەلگن سۈرەتنى تاللىيالمىدى"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
-msgstr ""
+msgstr "نۆۋەتتە ئورۇنغا سۈرەتنى قىستۇرالمايدۇ."
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr ""
+msgstr "سۈرەت قىستۇرالمىدى"

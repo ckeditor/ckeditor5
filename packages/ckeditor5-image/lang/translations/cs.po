@@ -20,6 +20,18 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "ovládací prvek obrázku"
 
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr ""
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr ""
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr ""
+
 msgctxt "The label for the Side image option."
 msgid "Side image"
 msgstr "Postranní obrázek"
@@ -66,36 +78,36 @@ msgstr "Panel nástrojů obrázku"
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
-msgstr ""
+msgstr "Změnit velikost"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr ""
+msgstr "Změnit velikost na %0"
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
-msgstr ""
+msgstr "Změnit velikost na původní velikost"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "Originální"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr ""
+msgstr "Seznam možností změny velikosti"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Vložit"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
-msgstr ""
+msgstr "Aktualizovat"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "Vložit obrázek pomocí URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Aktualizovat URL obrázku"

@@ -141,6 +141,10 @@ export function setTableWithObjectAttributes( model, attributes, cellContent ) {
  * @returns {String}
  */
 export function viewTable( tableData, attributes = {} ) {
+	if ( attributes.headingColumns ) {
+		throw new Error( 'The headingColumns attribute is not supported in viewTable util' );
+	}
+
 	const headingRows = attributes.headingRows || 0;
 	const asWidget = !!attributes.asWidget;
 
@@ -382,8 +386,11 @@ function makeRows( tableData, options ) {
 				}
 
 				if ( !( contents.replace( '[', '' ).replace( ']', '' ).startsWith( '<' ) ) && enforceWrapping ) {
+					const wrappingElementStart = wrappingElement == 'span' ?
+						'span class="ck-table-bogus-paragraph"' : wrappingElement;
+
 					contents =
-						`<${ wrappingElement == 'span' ? 'span style="display:inline-block"' : wrappingElement }>` +
+						`<${ wrappingElementStart }>` +
 						contents +
 						`</${ wrappingElement }>`;
 				}

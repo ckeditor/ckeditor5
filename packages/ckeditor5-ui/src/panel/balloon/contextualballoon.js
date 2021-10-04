@@ -7,7 +7,7 @@
  * @module ui/panel/balloon/contextualballoon
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './balloonpanelview';
 import View from '../../view';
 import ButtonView from '../../button/buttonview';
@@ -498,11 +498,18 @@ export default class ContextualBalloon extends Plugin {
 	_getBalloonPosition() {
 		let position = Array.from( this._visibleStack.values() ).pop().position;
 
-		// Use the default limiter if none has been specified.
-		if ( position && !position.limiter ) {
+		if ( position ) {
+			// Use the default limiter if none has been specified.
+			if ( !position.limiter ) {
+				// Don't modify the original options object.
+				position = Object.assign( {}, position, {
+					limiter: this.positionLimiter
+				} );
+			}
+
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				limiter: this.positionLimiter
+				viewportOffsetConfig: this.editor.config.get( 'ui.viewportOffset' )
 			} );
 		}
 

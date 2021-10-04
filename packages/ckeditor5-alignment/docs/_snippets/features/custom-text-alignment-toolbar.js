@@ -12,8 +12,12 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		cloudServices: CS_CONFIG
 	} )

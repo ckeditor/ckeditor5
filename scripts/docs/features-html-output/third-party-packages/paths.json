@@ -1,0 +1,10 @@
+[
+    {
+        "path": "node_modules/@webspellchecker/wproofreader-ckeditor5",
+        "fallbackPath": "scripts/docs/features-html-output/third-party-packages/wproofreader-ckeditor5"
+    },
+    {
+        "path": "node_modules/@wiris/mathtype-ckeditor5",
+        "fallbackPath": "scripts/docs/features-html-output/third-party-packages/mathtype-ckeditor5"
+    }
+]

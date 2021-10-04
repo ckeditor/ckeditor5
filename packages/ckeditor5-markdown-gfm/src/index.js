@@ -7,8 +7,5 @@
  * @module markdown-gfm
  */
 
-import Markdown from './markdown';
+export { default as Markdown } from './markdown';
 
-export default {
-	Markdown
-};

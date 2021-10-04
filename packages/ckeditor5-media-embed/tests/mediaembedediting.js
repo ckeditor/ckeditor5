@@ -303,6 +303,22 @@ describe( 'MediaEmbedEditing', () => {
 							] );
 						} );
 
+						it( 'upcasts the URL (google maps short URL)', () => {
+							testMediaUpcast( [
+								'https://goo.gl/maps/foo',
+								'goo.gl/maps/foo'
+							] );
+						} );
+
+						it( 'upcasts the URL (google maps for Android)', () => {
+							testMediaUpcast( [
+								'https://maps.google.com',
+								'https://maps.app.goo.gl',
+								'maps.google.com',
+								'maps.app.goo.gl'
+							] );
+						} );
+
 						it( 'upcasts the URL (flickr)', () => {
 							testMediaUpcast( [
 								'https://www.flickr.com/foo/bar',
@@ -472,7 +488,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					expect( model.schema.checkChild( [ '$root', 'media' ], 'media' ) ).to.be.false;
 					expect( model.schema.checkChild( [ '$root', 'media' ], '$text' ) ).to.be.false;
-					expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+					expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 				} );
 		} );
 
@@ -587,13 +603,21 @@ describe( 'MediaEmbedEditing', () => {
 
 					it( 'should not convert if the figure is already consumed', () => {
 						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'media' } );
 						}, { priority: 'high' } );
 
 						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
 
 						expect( getModelData( model, { withoutSelection: true } ) )
 							.to.equal( '' );
+					} );
+
+					it( 'should not left unconverted figure media element', () => {
+						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'media' } ) ).to.be.false;
+						}, { priority: 'low' } );
+
+						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com">foo bar</o-embed></figure>' );
 					} );
 
 					it( 'should discard the contents of the media', () => {
@@ -623,6 +647,27 @@ describe( 'MediaEmbedEditing', () => {
 
 								return newEditor.destroy();
 							} );
+					} );
+
+					it( 'should not consume media figure if media url is not matched with any provider url', () => {
+						return createTestEditor( {
+							providers: [
+								testProviders.A
+							]
+						} ).then( newEditor => {
+							let wasConsumed = false;
+
+							newEditor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+								wasConsumed = !conversionApi.consumable.test( data.viewItem, { name: true } );
+							}, { priority: 'lowest' } );
+
+							newEditor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
+
+							expect( getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal( '' );
+							expect( wasConsumed ).to.be.false;
+
+							return newEditor.destroy();
+						} );
 					} );
 				} );
 			} );
@@ -736,7 +781,7 @@ describe( 'MediaEmbedEditing', () => {
 
 					it( 'should not convert if the figure is already consumed', () => {
 						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'media' } );
 						}, { priority: 'high' } );
 
 						editor.setData( '<figure class="media"><oembed url="https://ckeditor.com"></oembed></figure>' );
@@ -897,7 +942,7 @@ describe( 'MediaEmbedEditing', () => {
 
 						it( 'should not convert if the figure is already consumed', () => {
 							editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
-								conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+								conversionApi.consumable.consume( data.viewItem, { name: true, class: 'media' } );
 							}, { priority: 'high' } );
 
 							editor.setData( '<figure class="media"><div data-oembed-url="https://ckeditor.com"></div></figure>' );

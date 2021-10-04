@@ -83,4 +83,10 @@ export default class GFMDataProcessor {
 	registerRawContentMatcher( pattern ) {
 		this._htmlDP.registerRawContentMatcher( pattern );
 	}
+
+	/**
+	 * This method does not have any effect on the data processor result. It exists for compatibility with the
+	 * {@link module:engine/dataprocessor/dataprocessor~DataProcessor `DataProcessor` interface}.
+	 */
+	useFillerType() {}
 }

@@ -13,7 +13,7 @@ Learn how to {@link features/mentions#configuration configure mention feeds} in 
 
 ## Source code
 
-The following code will let you run the editor inside a chat application like in the example above. See the {@link builds/guides/integration/installing-plugins installing plugins} guide to learn more.
+The following code will let you run the editor inside a chat application like in the example above. See the {@link builds/guides/integration/installing-plugins installing plugins guide} to learn more.
 
 **Note**: You may need to change the path to the `assets/img` both in the HTML and JavaScript code to load user avatars properly.
 

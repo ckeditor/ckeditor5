@@ -13,6 +13,8 @@ It is a feature crucial for writing professionals but also for students and mark
 
 ## Demo
 
+Type some more or edit the content and observe the counter below the main editor window react in real-time.
+
 {@snippet features/word-count}
 
 The example above was created by using the following HTML page structure:

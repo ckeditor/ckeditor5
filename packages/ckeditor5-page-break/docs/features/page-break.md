@@ -11,7 +11,7 @@ The page break feature is further complemented by the [pagination feature](https
 
 ## Demo
 
-Use the editor to see the {@link module:page-break/pagebreak~PageBreak} plugin in action. Click the button below in order to open the print preview window.
+Use the Insert page break toolbar button {@icon @ckeditor/ckeditor5-page-break/theme/icons/pagebreak.svg Insert page break} to see the feature in action. Use the **Open print preview** the button below the editor in order to preview the content.
 
 {@snippet features/page-break}
 

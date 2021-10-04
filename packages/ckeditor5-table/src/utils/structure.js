@@ -17,8 +17,8 @@ import { createEmptyTableCell, updateNumericAttribute } from './common';
  *
  *		const croppedTable = cropTableToDimensions( table, {
  *			startRow: 1,
- *			endRow: 1,
- *			startColumn: 3,
+ *			endRow: 3,
+ *			startColumn: 1,
  *			endColumn: 3
  *		}, writer );
  *
@@ -396,8 +396,9 @@ export function removeEmptyColumns( table, tableUtils ) {
  */
 export function removeEmptyRows( table, tableUtils ) {
 	const emptyRows = [];
+	const tableRowCount = tableUtils.getRows( table );
 
-	for ( let rowIndex = 0; rowIndex < table.childCount; rowIndex++ ) {
+	for ( let rowIndex = 0; rowIndex < tableRowCount; rowIndex++ ) {
 		const tableRow = table.getChild( rowIndex );
 
 		if ( tableRow.isEmpty ) {

@@ -191,7 +191,7 @@ export default class DowncastWriter {
 	createAttributeElement( name, attributes, options = {} ) {
 		const attributeElement = new AttributeElement( this.document, name, attributes );
 
-		if ( options.priority ) {
+		if ( typeof options.priority === 'number' ) {
 			attributeElement._priority = options.priority;
 		}
 
@@ -1075,6 +1075,7 @@ export default class DowncastWriter {
 	 * @param {module:engine/view/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 * @returns {module:engine/view/position~Position}
 	 */
 	createPositionAt( itemOrPosition, offset ) {
 		return Position._createAt( itemOrPosition, offset );

@@ -17,7 +17,7 @@ Elements and attributes are checked by features separately by using the {@link m
 
 ## Defining allowed structures
 
-When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed:
+When a feature introduces a model element, it should register it in the schema. Besides defining that such an element may exist in the model, the feature also needs to define where this element can be placed. This information is provided by the {@link module:engine/model/schema~SchemaItemDefinition#allowIn} property of the {@link module:engine/model/schema~SchemaItemDefinition}:
 
 ```js
 schema.register( 'myElement', {
@@ -37,13 +37,38 @@ In other words, this would be correct:
 
 While this would be incorrect:
 
-```js
+```xml
 <$root>
 	<foo>
 		<myElement></myElement>
 	</foo>
 </$root>
 ```
+
+To declare which nodes are allowed inside the registered element, the {@link module:engine/model/schema~SchemaItemDefinition#allowChildren} property could be used:
+
+```js
+schema.register( 'myElement', {
+	allowIn: '$root',
+	allowChildren: '$text'
+} );
+```
+
+To allow the following structure:
+
+```xml
+<$root>
+	<myElement>
+		foobar
+	</myElement>
+</$root>
+```
+
+Both the `{@link module:engine/model/schema~SchemaItemDefinition#allowIn}` and `{@link module:engine/model/schema~SchemaItemDefinition#allowChildren}` properties can also be inherited from other `SchemaItemDefinition` items.
+
+<info-box>
+	You can read more about the format of the item definition in the {@link module:engine/model/schema~SchemaItemDefinition} API guide.
+</info-box>
 
 ## Defining additional semantics
 
@@ -78,6 +103,15 @@ Here is a table listing various model elements and their properties registered i
 		</tr>
 		<tr>
 			<td><code>$clipboardHolder</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_negative"><code>false</code></td>
+		</tr>
+		<tr>
+			<td><code>$documentFragment</code></td>
 			<td class="value_negative"><code>false</code></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_negative"><code>false</code></td>
@@ -176,11 +210,20 @@ Here is a table listing various model elements and their properties registered i
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
 		<tr>
-			<td><code>image</code></td>
+			<td><code>imageBlock</code></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
 			<td class="value_positive"><code>true</code></td>
 			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
+		</tr>
+		<tr>
+			<td><code>imageInline</code></td>
+			<td class="value_negative"><code>false</code></td>
+			<td class="value_positive_inherited"><code>true</code><a href="#inherited1"><sup>[1]</sup></a></td>
+			<td class="value_positive"><code>true</code></td>
+			<td class="value_positive"><code>true</code></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited2"><sup>[2]</sup></a></td>
 			<td class="value_positive_inherited"><code>true</code><a href="#inherited3"><sup>[3]</sup></a></td>
 		</tr>
@@ -418,8 +461,6 @@ schema.register( 'blockQuote', {
 ```
 
 Thanks to that, despite the fact that block quote and paragraph features know nothing about themselves, paragraphs will be allowed in block quotes and block quotes will be allowed in all places where blocks are allowed. So if anyone registers a `<section>` element (with the `allowContentOf: '$root'` rule), that `<section>` elements will allow block quotes, too.
-
-The side effect of such a definition inheritance is that now `<blockQuote>` is allowed in `<blockQuote>` which needs to be resolved by a callback which will disallow this specific structure.
 
 <info-box>
 	You can read more about the format of the item definition in {@link module:engine/model/schema~SchemaItemDefinition}.

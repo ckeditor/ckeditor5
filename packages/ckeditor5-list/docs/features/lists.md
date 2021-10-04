@@ -8,6 +8,10 @@ order: 10
 
 The {@link module:list/list~List list} feature allows creating ordered (numbered) and unordered (bulleted) lists. This allows for better structuring and presenting specific content such as enumerating elements, creating tables of content or {@link features/todo-lists to-do lists}.
 
+Lists are useful when you want to emphasize selected information, highlight a series of steps, enumerate items of a collection. They draw the reader's attention and, just like {@link features/block-quote block quotes} or {@link features/indent indentation}, give the text a structure and breathing room. They help visually separate passages for a better reading experience and make skimming for information easier.
+
+You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
+
 <info-box info>
 	The feature is enabled by default in all CKEditor 5 WYSIWYG editor builds.
 </info-box>
@@ -20,12 +24,14 @@ An unordered (bulleted) list can represent items where the order is not importan
 
 An ordered (numbered) list can be used if the order of the items matters, for example, when creating an instruction. Here, the sequence of steps that must be done is important.
 
-Use the editor below to see the list feature plugin in action. Lists can be introduced using toolbar buttons, or with Markdown code provided by the {@link features/autoformat autoformatting feature}:
+### Demo
+
+Use the editor below to see the list feature plugin in action. Toolbar buttons can be used to insert both ordered {@icon @ckeditor/ckeditor5-list/theme/icons/numberedlist.svg Insert ordered list} and unordered lists {@icon @ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg Insert unordered list}.
+
+A Markdown code provided by the {@link features/autoformat autoformatting feature} can also be utilized:
 
 * Start a line with `*` or `-` followed by a space for a bulleted list.
 * Start a line with `1.` or `1)` followed by a space for a numbered list.
-
-### Demo
 
 {@snippet features/lists-basic}
 

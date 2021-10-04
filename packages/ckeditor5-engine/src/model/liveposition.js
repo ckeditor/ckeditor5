@@ -96,7 +96,7 @@ export default class LivePosition extends Position {
 	 *
 	 * @param {module:engine/model/position~Position} position
 	 * @param {module:engine/model/position~PositionStickiness} [stickiness]
-	 * @returns {module:engine/model/position~Position}
+	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 	static fromPosition( position, stickiness ) {
 		return new this( position.root, position.path.slice(), stickiness ? stickiness : position.stickiness );

@@ -16,6 +16,7 @@ import getSubNodes from './getsubnodes';
  *
  * @param {Object|Array} target1
  * @param {Object|Array} target2
+ * @returns {Boolean}
  */
 export default function areConnectedThroughProperties( target1, target2, excludedNodes = new Set() ) {
 	if ( target1 === target2 && isObject( target1 ) ) {

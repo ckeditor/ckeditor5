@@ -10,7 +10,7 @@ This package implements bulleted, numbered and to-do list features for CKEditor 
 
 ## Documentation
 
-See the {@link module:list/list~List} plugin documentation as well as the {@link features/lists lists} and {@link features/todo-lists to-do list} feature guides.
+See the {@link module:list/list~List} plugin documentation as well as the {@link features/lists lists} and {@link features/todo-lists to-do list feature guides}.
 
 ## Installation
 

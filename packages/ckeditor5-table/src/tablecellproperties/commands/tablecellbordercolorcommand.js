@@ -29,9 +29,10 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 	 * Creates a new `TableCellBorderColorCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor An editor in which this command will be used.
+	 * @param {String} defaultValue The default value of the attribute.
 	 */
-	constructor( editor ) {
-		super( editor, 'borderColor' );
+	constructor( editor, defaultValue ) {
+		super( editor, 'borderColor', defaultValue );
 	}
 
 	/**
@@ -42,6 +43,12 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 			return;
 		}
 
-		return getSingleValue( tableCell.getAttribute( this.attributeName ) );
+		const value = getSingleValue( tableCell.getAttribute( this.attributeName ) );
+
+		if ( value === this._defaultValue ) {
+			return;
+		}
+
+		return value;
 	}
 }

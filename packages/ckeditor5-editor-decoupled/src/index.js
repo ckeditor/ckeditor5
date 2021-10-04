@@ -7,9 +7,4 @@
  * @module editor-decoupled
  */
 
-import DecoupledEditor from './decouplededitor';
-
-export default {
-	DecoupledEditor
-};
-
+export { default as DecoupledEditor } from './decouplededitor';

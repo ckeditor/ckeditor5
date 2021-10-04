@@ -7,8 +7,4 @@
  * @module autoformat
  */
 
-import Autoformat from './autoformat';
-
-export default {
-	Autoformat
-};
+export { default as Autoformat } from './autoformat';

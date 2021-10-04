@@ -224,7 +224,7 @@ Additionally, in the "image upload only" integration, you can use the following 
 
 Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5.
 
-See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+See the {@link features/images-overview image feature guide} to find out more about handling images in CKEditor 5.
 
 ## Contribute
 

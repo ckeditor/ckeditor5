@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellHeightCommand', () => {
+		describe( 'TableCellHeightCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -24,7 +24,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableCellHeightCommand( editor );
+				command = new TableCellHeightCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -302,6 +302,96 @@ describe( 'table cell properties', () => {
 						] ) );
 
 						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellHeightCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellHeightCommand( editor, '30px' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default value property', () => {
+						setData( model, modelTable( [ [ { height: '30px', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default value', () => {
+						setData( model, modelTable( [ [ { height: '30px', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should be undefined if all table cell have the same "height" property value which is the default value', () => {
+						setData( model, modelTable( [
+							[
+								{ contents: '00', isSelected: true, height: '30px' },
+								{ contents: '01', isSelected: true, height: '30px' }
+							],
+							[
+								'10',
+								{ contents: '11', isSelected: true, height: '30px' }
+							]
+						] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove height from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { height: '100px', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: '30px' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove height from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute( { value: '30px' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should remove "height" from selected table cells if the default value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, height: '100px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, height: '100px' } ]
+						] ) );
+
+						command.execute( { value: '30px' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[ '00', '01' ],

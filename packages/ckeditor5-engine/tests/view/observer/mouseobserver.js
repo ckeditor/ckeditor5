@@ -23,7 +23,7 @@ describe( 'MouseObserver', () => {
 	} );
 
 	it( 'should define domEventType', () => {
-		expect( observer.domEventType ).to.deep.equal( [ 'mousedown', 'mouseup' ] );
+		expect( observer.domEventType ).to.deep.equal( [ 'mousedown', 'mouseup', 'mouseover', 'mouseout' ] );
 	} );
 
 	describe( 'onDomEvent', () => {
@@ -46,6 +46,32 @@ describe( 'MouseObserver', () => {
 			viewDocument.on( 'mouseup', spy );
 
 			observer.onDomEvent( { type: 'mouseup', target: document.body } );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+		} );
+
+		it( 'should fire mouseover with the right event data', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'mouseover', spy );
+
+			observer.onDomEvent( { type: 'mouseover', target: document.body } );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data.domTarget ).to.equal( document.body );
+		} );
+
+		it( 'should fire mouseout with the right event data', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'mouseout', spy );
+
+			observer.onDomEvent( { type: 'mouseout', target: document.body } );
 
 			expect( spy.calledOnce ).to.be.true;
 

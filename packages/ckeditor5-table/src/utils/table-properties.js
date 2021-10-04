@@ -64,3 +64,44 @@ export function addDefaultUnitToNumericValue( value, defaultUnit ) {
 
 	return `${ numericValue }${ defaultUnit }`;
 }
+
+/**
+ * Returns the normalized configuration.
+ *
+ * @param {Object} config
+ * @param {Object} [options={}]
+ * @param {Boolean} [options.includeAlignmentProperty=false] Whether the "alignment" property should be added.
+ * @param {Boolean} [options.includePaddingProperty=false] Whether the "padding" property should be added.
+ * @param {Boolean} [options.includeVerticalAlignmentProperty=false] Whether the "verticalAlignment" property should be added.
+ * @param {Boolean} [options.includeHorizontalAlignmentProperty=false] Whether the "horizontalAlignment" property should be added.
+ * @param {Boolean} [options.isRightToLeftContent=false] Whether the content is right-to-left.
+ * @returns {Object}
+ */
+export function getNormalizedDefaultProperties( config, options = {} ) {
+	const normalizedConfig = Object.assign( {
+		borderStyle: 'none',
+		borderWidth: '',
+		borderColor: '',
+		backgroundColor: '',
+		width: '',
+		height: ''
+	}, config );
+
+	if ( options.includeAlignmentProperty && !normalizedConfig.alignment ) {
+		normalizedConfig.alignment = 'center';
+	}
+
+	if ( options.includePaddingProperty && !normalizedConfig.padding ) {
+		normalizedConfig.padding = '';
+	}
+
+	if ( options.includeVerticalAlignmentProperty && !normalizedConfig.verticalAlignment ) {
+		normalizedConfig.verticalAlignment = 'middle';
+	}
+
+	if ( options.includeHorizontalAlignmentProperty && !normalizedConfig.horizontalAlignment ) {
+		normalizedConfig.horizontalAlignment = options.isRightToLeftContent ? 'right' : 'left';
+	}
+
+	return normalizedConfig;
+}

@@ -20,6 +20,18 @@ msgctxt "The label for the image widget."
 msgid "image widget"
 msgstr "afbeeldingswidget"
 
+msgctxt "The label for the image style button that wraps text around the image."
+msgid "Wrap text"
+msgstr ""
+
+msgctxt "The label for the image style button that breaks the text around the image."
+msgid "Break text"
+msgstr ""
+
+msgctxt "The label for the image style button that places the image inside the line of text."
+msgid "In line"
+msgstr ""
+
 msgctxt "The label for the Side image option."
 msgid "Side image"
 msgstr "Afbeelding naast tekst"
@@ -78,7 +90,7 @@ msgstr ""
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr ""
+msgstr "Origineel"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
@@ -86,7 +98,7 @@ msgstr ""
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "Invoegen"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"

@@ -24,7 +24,7 @@ import Position from '../position';
  * boundary (a range must be rooted within one limit element).
  * * Only {@link module:engine/model/schema~Schema#isSelectable selectable elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
- * selection is correct: `<paragraph>f[oo</paragraph><image></image>]`.
+ * selection is correct: `<paragraph>f[oo</paragraph><imageBlock></imageBlock>]`.
  *
  * If the position is not correct, the post-fixer will automatically correct it.
  *
@@ -128,9 +128,17 @@ function tryFixingCollapsedRange( range, schema ) {
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
 
-	// This might be null ie when editor data is empty.
-	// In such cases there is no need to fix the selection range.
+	// This might be null ie when editor data is empty or the selection is inside limit element
+	// that doesn't allow text inside.
+	// In the first case there is no need to fix the selection range.
+	// In the second let's go up to the outer selectable element
 	if ( !nearestSelectionRange ) {
+		const ancestorObject = originalPosition.getAncestors().reverse().find( item => schema.isObject( item ) );
+
+		if ( ancestorObject ) {
+			return Range._createOn( ancestorObject );
+		}
+
 		return null;
 	}
 

@@ -13,7 +13,7 @@ In order to do that, this feature introduces two editing modes:
 
 You can imagine a workflow in which a certain group of users is responsible for creating templates of documents while a second group of users can only fill the gaps (for example, fill the missing data, like names, dates, product names, etc.).
 
-By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities.
+By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor 5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
 
 <info-box>
 	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode.
@@ -21,7 +21,7 @@ By using this feature, the users of your application will be able to create temp
 
 ## Demo
 
-The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode. Use the toolbar button to turn selected area into an editable region or to remove an existing one.
+The demo below allows you to emulate both modes. You can start from creating a template of the document in the standard editing mode. Select a section of text and use the toolbar button {@icon @ckeditor/ckeditor5-restricted-editing/theme/icons/contentunlock.svg Enable editing} to turn selected area into an editable region or to remove an existing one.
 
 Then you can switch to the restricted editing mode to see how the editable and non-editable regions behave.
 
@@ -36,8 +36,8 @@ Then you can switch to the restricted editing mode to see how the editable and n
 There are more features that help control user permissions in the WYSIWYG editor:
 
 * {@link features/read-only Read-only} &ndash; Turn the entire content of the editor read-only.
-* [Track changes](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/track-changes/track-changes.html) &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
-* [Comments](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/comments/comments.html) &ndash; Users can add comments to any part of the content instead of editing it directly.
+* {@link features/track-changes Track changes} &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
+* {@link features/comments Comments} &ndash; Users can add comments to any part of the content instead of editing it directly.
 
 <info-box>
 	Read this [CKEditor Ecosystem blog post](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) on how to couple restricted editing with other features to create editable document templates.

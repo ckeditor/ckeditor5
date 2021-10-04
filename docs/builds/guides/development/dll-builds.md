@@ -2,6 +2,7 @@
 menu-title: DLL builds
 category: builds-development
 order: 30
+modified_at: 2021-08-31
 ---
 
 # CKEditor 5 DLL builds
@@ -21,7 +22,7 @@ DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plu
 
 Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this integration method requires creating it on your own, based on the tools available in the {@link framework/guides/contributing/development-environment CKEditor 5 development environment}.
 
-Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍 if you are interested in this functionality).
+Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp; if you are interested in this functionality).
 
 ## Anatomy of a DLL build
 
@@ -125,9 +126,11 @@ For example:
 		},
 		image: {
 			toolbar: [
-				'imageStyle:full',
+				'imageStyle:inline',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		},
@@ -145,6 +148,75 @@ For example:
 		.then( editor => {
 			window.editor = editor;
 		} );
+</script>
+```
+
+## Live implementation sample
+
+Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor 5 instance.
+
+<iframe width="100%" height="680" src="//jsfiddle.net/ckeditor/mv05bweu/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+
+## Localization
+
+All DLL builds use the default (English) translation files. However, a localized version of the the editor can be easily configured.
+
+The base DLL build produces translation files for several core packages. The DLL-compatible package builds contain their own translations files per package.
+
+<info-box info>
+	Some of the CKEditor 5 features do not provide translation files as they do not offer UI elements or toolbar items.
+</info-box>
+
+To create an editor with a localized UI, you need to load the necessary translation files (similar to loading DLL builds).
+
+For example:
+
+```html
+<!-- Base DLL build. -->
+<script src="path/to/ckeditor5/build/ckeditor5-dll.js"></script>
+
+<!-- DLL-compatible build of ckeditor5-editor-classic. -->
+<script src="path/to/ckeditor5/packages/ckeditor5-editor-classic/build/editor-classic.js"></script>
+
+<!-- DLL-compatible builds of editor features. -->
+<script src="path/to/ckeditor5/packages/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-essentials/build/essentials.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/heading.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-image/build/image.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/indent.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-link/build/link.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-list/build/list.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-table/build/table.js"></script>
+
+<!-- Spanish translation files. -->
+<script src="path/to/ckeditor5/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-image/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-link/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-list/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/translations/es.js"></script>
+<script src="path/to/ckeditor5/packages/ckeditor5-table/build/translations/es.js"></script>
+
+<script>
+	const config = {
+		// Use the Spanish language.
+		language: 'es',
+		// ...the rest of configuration object.
+	};
+
+	CKEditor5.editorClassic.ClassicEditor
+		.create( document.querySelector( '#editor' ), config )
+		.then( editor => {
+			window.editor = editor;
+		} );
+</script>
 ```
 
 <!--

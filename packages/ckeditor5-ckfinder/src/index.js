@@ -7,12 +7,6 @@
  * @module ckfinder
  */
 
-import CKFinder from './ckfinder';
-import CKFinderEditing from './ckfinderediting';
-import CKFinderUI from './ckfinderui';
-
-export default {
-	CKFinder,
-	CKFinderEditing,
-	CKFinderUI
-};
+export { default as CKFinder } from './ckfinder';
+export { default as CKFinderEditing } from './ckfinderediting';
+export { default as CKFinderUI } from './ckfinderui';

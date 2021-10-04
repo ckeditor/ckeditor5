@@ -115,15 +115,16 @@ export default class TableKeyboard extends Plugin {
 				return;
 			}
 
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			const isLastRow = currentRowIndex === table.childCount - 1;
+			const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
 
 			if ( isForward && isLastRow && isLastCellInRow ) {
 				editor.execute( 'insertTableRowBelow' );
 
 				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
 				// or it got overwritten) set the selection over the whole table to mirror the first cell case.
-				if ( currentRowIndex === table.childCount - 1 ) {
+				if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
 					editor.model.change( writer => {
 						writer.setSelection( writer.createRangeOn( table ) );
 					} );
@@ -217,10 +218,25 @@ export default class TableKeyboard extends Plugin {
 			return false;
 		}
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach cell edge.
-		if ( expandSelection && !selection.isCollapsed && selection.isBackward == isForward ) {
-			return false;
+		// When the selection is not collapsed.
+		if ( !selection.isCollapsed ) {
+			if ( expandSelection ) {
+				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+				// Selection for sure will not approach cell edge.
+				//
+				// With a special case when all cell content is selected - then selection should expand to the other cell.
+				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.
+				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
+					return false;
+				}
+			} else {
+				const selectedElement = selection.getSelectedElement();
+
+				// It will collapse for non-object selected so it's not going to move to other cell.
+				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+					return false;
+				}
+			}
 		}
 
 		// Let's check if the selection is at the beginning/end of the cell.

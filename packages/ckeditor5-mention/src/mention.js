@@ -106,6 +106,71 @@ export default class Mention extends Plugin {
  */
 
 /**
+ * The configuration of the custom commit keys supported by the editor.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ Mention, ... ],
+ *				mention: {
+ *					// [ Enter, Space ]
+ *	 				commitKeys: [ 13, 32 ]
+ *					feeds: [
+ *						{ ... }
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * Custom commit keys configuration allows you to customize how users will confirm the selection of mentions from the dropdown list.
+ * You can add as many mention commit keys as you need. For instance, in the snippet above new mentions will be committed by pressing
+ * either <kbd>Enter</kbd> or <kbd>Space</kbd> (13 and 32 key codes respectively).
+ *
+ * @member {Array.<Number>} module:mention/mention~MentionConfig#commitKeys
+ * @default [ 13, 9 ] // [ Enter, Tab ]
+ */
+
+/**
+ * The configuration of the custom number of visible mentions.
+ *
+ * Customizing the number of visible mentions allows you to specify how many available elements will the users be able to see
+ * in the dropdown list. You can specify any number you see fit. For example, in the snippets below you will find the
+ * dropdownLimit set to `20` and `Infinity` (this will result in showing all available mentions).
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ Mention, ... ],
+ *				mention: {
+ *	 				dropdownLimit: 20,
+ *					feeds: [
+ *						{ ... }
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				plugins: [ Mention, ... ],
+ *				mention: {
+ *	 				dropdownLimit: Infinity,
+ *					feeds: [
+ *						{ ... }
+ *						...
+ * 					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @member {Number} module:mention/mention~MentionConfig#dropdownLimit
+ * @default 10
+ */
+
+/**
  * The mention feed descriptor. Used in {@link module:mention/mention~MentionConfig `config.mention`}.
  *
  * See {@link module:mention/mention~MentionConfig} to learn more.
@@ -126,8 +191,6 @@ export default class Mention extends Plugin {
  *					.filter( tag => {
  *						return tag.toLowerCase().includes( queryText.toLowerCase() );
  *					} )
- *					// Return 10 items max - needed for generic queries when the list may contain hundreds of elements.
- *					.slice( 0, 10 );
  *			}
  * 		};
  *

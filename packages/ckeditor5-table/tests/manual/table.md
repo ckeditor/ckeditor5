@@ -75,3 +75,5 @@ Nested tables:
 4. Verify that it is possible to copy & paste nested table inside other table cell.
   * Copying & pasting a table only (in the clipboard there is only a table with no siblings) should merge content of this table with the nearest ancestor table. In other words: pasted table is not inserted as a table (as a widget) in table cell, but it is merged with the first found table ancestor.
   * Copying & pasting a table with any sibling (e.g. a paragraph) should paste exactly what has been copied.
+5. Hover the outer table with the mouse cursor. Verify that the yellow border and selection handle on the inner table is not visible (they should be visible only for the hovered table).
+6. Select the outer table. Verify that the blue selection handle on the inner table is not visible (it should be visible only for the selected table).

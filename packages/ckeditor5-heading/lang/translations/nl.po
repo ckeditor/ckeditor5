@@ -58,4 +58,4 @@ msgstr "Voor uw titel in"
 
 msgctxt "A default value of the placeholder for the content body."
 msgid "Type or paste your content here."
-msgstr "Voer or plak uw inhoud in"
+msgstr "Voer of plak uw inhoud in."

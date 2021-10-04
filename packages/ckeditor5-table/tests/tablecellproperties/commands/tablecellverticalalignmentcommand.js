@@ -15,7 +15,7 @@ import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils'
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
-		describe( 'TableCellVerticalAlignmentCommand', () => {
+		describe( 'TableCellVerticalAlignmentCommand: empty default value', () => {
 			let editor, model, command;
 
 			beforeEach( async () => {
@@ -24,7 +24,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				model = editor.model;
-				command = new TableCellVerticalAlignmentCommand( editor );
+				command = new TableCellVerticalAlignmentCommand( editor, '' );
 			} );
 
 			afterEach( () => {
@@ -246,6 +246,100 @@ describe( 'table cell properties', () => {
 						] ) );
 
 						command.execute();
+
+						assertEqualMarkup( editor.getData(), viewTable( [
+							[ '00', '01' ],
+							[ '10', '11' ]
+						] ) );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'TableCellVerticalAlignmentCommand: non-empty default value', () => {
+			let editor, model, command;
+
+			beforeEach( async () => {
+				editor = await ModelTestEditor.create( {
+					plugins: [ Paragraph, TableCellPropertiesEditing ]
+				} );
+
+				model = editor.model;
+				command = new TableCellVerticalAlignmentCommand( editor, 'bottom' );
+			} );
+
+			afterEach( () => {
+				return editor.destroy();
+			} );
+
+			describe( 'value', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should be undefined if selected table cell has the default verticalAlignment property', () => {
+						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should be undefined is selection contains the default value', () => {
+						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
+
+						expect( command.value ).to.be.undefined;
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it(
+						'should be undefined if all table cells have the same "verticalAlignment" property ' +
+						'value which is the default value',
+						() => {
+							setData( model, modelTable( [
+								[
+									{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
+									{ contents: '01', isSelected: true, verticalAlignment: 'bottom' }
+								],
+								[
+									'10',
+									{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+								]
+							] ) );
+
+							expect( command.value ).to.be.undefined;
+						}
+					);
+				} );
+			} );
+
+			describe( 'execute()', () => {
+				describe( 'collapsed selection', () => {
+					it( 'should remove verticalAlignment from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+
+						command.execute( { value: 'bottom' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should remove verticalAlignment from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ '[foo]' ] ] ) );
+
+						command.execute( { value: 'bottom' } );
+
+						assertTableCellStyle( editor, '' );
+					} );
+				} );
+
+				describe( 'multi-cell selection', () => {
+					it( 'should remove "verticalAlignment" from selected table cells if the default value is passed', () => {
+						setData( model, modelTable( [
+							[ { contents: '00', isSelected: true, verticalAlignment: 'top' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, verticalAlignment: 'top' } ]
+						] ) );
+
+						command.execute( { value: 'bottom' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
 							[ '00', '01' ],

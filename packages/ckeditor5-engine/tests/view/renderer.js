@@ -3435,6 +3435,27 @@ describe( 'Renderer', () => {
 
 				expect( domRoot.innerHTML ).to.equal( '<span>2</span><strong>6</strong><span>5</span>1<span>3</span><strong>7</strong>4' );
 			} );
+
+			it( 'should correctly handle multiple changes when using fastDiff', () => {
+				let str = '';
+
+				for ( let i = 0; i < 100; i++ ) {
+					str += `${ i }<attribute:span>${ i }</attribute:span>`;
+				}
+
+				viewRoot._insertChild( 0, parse( str ) );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				viewRoot._removeChildren( 0, 1 );
+				viewRoot._removeChildren( 4, 1 );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal(
+					str.slice( 1 ).replaceAll( 'attribute:span', 'span' ).replace( '<span>2</span>', '' )
+				);
+			} );
 		} );
 
 		describe( 'optimal (minimal) rendering – minimal children changes', () => {
@@ -3925,6 +3946,126 @@ describe( 'Renderer', () => {
 
 				return viewData.repeat( repeat );
 			}
+		} );
+
+		describe( 'script tag should not be executed', () => {
+			let view, viewDoc, viewRoot, domRoot;
+
+			beforeEach( () => {
+				view = new View( new StylesProcessor() );
+				viewDoc = view.document;
+				domRoot = document.createElement( 'div' );
+				document.body.appendChild( domRoot );
+				viewRoot = createViewRoot( viewDoc );
+				view.attachDomRoot( domRoot );
+
+				viewDocument = new ViewDocument( new StylesProcessor() );
+				selection = new DocumentSelection();
+				// Enable editing render mode.
+				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+				renderer = new Renderer( domConverter, selection );
+				renderer.domDocuments.add( document );
+			} );
+
+			afterEach( () => {
+				view.destroy();
+				domRoot.remove();
+			} );
+
+			it( 'should handle script tag rendering', () => {
+				window.spy = sinon.spy();
+				viewRoot._appendChild( parse( '<container:script>spy()</container:script>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( window.spy.calledOnce ).to.be.false;
+
+				delete window.spy;
+			} );
+
+			it( 'should replace script element with span and custom data attribute', () => {
+				setViewData( view,
+					'<container:script>spy()</container:script>'
+				);
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-hidden="script">spy()</span>' );
+			} );
+
+			it( 'should remove attributes that can affect editing pipeline', () => {
+				setViewData( view,
+					'<container:p onclick="test">' +
+						'foo' +
+					'</container:p>'
+				);
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<p onclick="test">foo</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foo</p>' );
+			} );
+
+			it( 'should remove attributes from the View that can are not present in the DOM', () => {
+				setViewData( view,
+					'<container:p>' +
+						'bar' +
+					'</container:p>'
+				);
+
+				view.forceRender();
+
+				view.change( writer => {
+					writer.setAttribute( 'onclick', 'foo', viewRoot.getChild( 0 ) );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<p onclick="foo">bar</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
+			} );
+
+			it( 'should remove attributes not present in the DOM if the view node is just a script element', () => {
+				setViewData( view,
+					'<container:script data-attribute-to-remove-from-dom="foo">' +
+						'bar' +
+					'</container:script>'
+				);
+
+				view.forceRender();
+
+				view.change( writer => {
+					writer.removeAttribute( 'data-attribute-to-remove-from-dom', viewRoot.getChild( 0 ) );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<script>bar</script>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+					'<span data-ck-hidden="script">bar</span>'
+				);
+			} );
+
+			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-hidden attribute', () => {
+				setViewData( view,
+					'<container:p data-ck-hidden="foo">' +
+						'bar' +
+					'</container:p>'
+				);
+
+				view.forceRender();
+
+				view.change( writer => {
+					writer.removeAttribute( 'data-ck-hidden', viewRoot.getChild( 0 ) );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
+			} );
 		} );
 	} );
 

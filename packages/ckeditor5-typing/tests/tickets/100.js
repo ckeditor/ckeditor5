@@ -45,16 +45,16 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				domRoot = view.getDomRoot();
 
 				// Mock image feature.
-				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
+				newEditor.model.schema.register( 'imageBlock', { allowWhere: '$text' } );
 
 				editor.conversion.for( 'downcast' ).elementToElement( {
-					model: 'image',
+					model: 'imageBlock',
 					view: 'img'
 				} );
 
 				editor.conversion.for( 'upcast' ).elementToElement( {
 					view: 'img',
-					model: 'image'
+					model: 'imageBlock'
 				} );
 
 				// Disable MO completely and in a way it won't be reenabled on some Document#render() call.

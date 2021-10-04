@@ -20,10 +20,10 @@ import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
+import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 
 import PasteFromOffice from '../../src/pastefromoffice';
 import { generateTests } from '../_utils/utils';
-import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 
 const browsers = [ 'chrome', 'firefox', 'safari', 'edge' ];
 

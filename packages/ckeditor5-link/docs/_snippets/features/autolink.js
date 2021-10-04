@@ -11,8 +11,10 @@ ClassicEditor
 		extraPlugins: [
 			CKEditorPlugins.AutoLink
 		],
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

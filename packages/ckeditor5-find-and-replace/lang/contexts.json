@@ -1,0 +1,15 @@
+{
+	"Find and replace": "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form.",
+	"Find in text…": "The label for the searched text in the find and replace dropdown.",
+	"Find": "The label for the find action button in the find and replace dropdown.",
+	"Previous result": "The label for the previous result button in the find and replace dropdown.",
+	"Next result": "The label for the previous result button in the find and replace dropdown.",
+	"Replace": "The label for the (single) replace action button in the find and replace dropdown.",
+	"Replace all": "The label for the replace all action button in the find and replace dropdown.",
+	"Match case": "The label for the match case checkbox in the find and replace dropdown.",
+	"Whole words only": "The label for the whole words only checkbox in the find and replace dropdown.",
+	"Replace with…": "The label for the text replacement in the find and replace dropdown.",
+	"Text to find must not be empty.": "An error text displayed when user attempted to find an empty text.",
+	"Tip: Find some text first in order to replace it.": "A message displayed next to the replace field when disabled but user tries to use it.",
+	"Show options": "The label and a tooltip of the options dropdown button in the find and replace form."
+}

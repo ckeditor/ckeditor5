@@ -23,9 +23,9 @@ const _decoratedOriginal = Symbol( 'decoratedOriginal' );
  * {@link ~Observable} interface.
  *
  * Read more about the concept of observables in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
- * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
- * * {@glink framework/guides/deep-dive/observables "Observables" deep dive} guide.
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
+ * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
  *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -701,9 +701,9 @@ function attachBindToListeners( observable, toBindings ) {
  * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
  *
  * Read more about the usage of this interface in the:
- * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables "Event system and observables"}
- * section of the {@glink framework/guides/architecture/core-editor-architecture "Core editor architecture"} guide,
- * * {@glink framework/guides/deep-dive/observables "Observables" deep dive} guide.
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide,
+ * * {@glink framework/guides/deep-dive/observables Observables deep dive} guide.
  *
  * @interface Observable
  * @extends module:utils/emittermixin~Emitter

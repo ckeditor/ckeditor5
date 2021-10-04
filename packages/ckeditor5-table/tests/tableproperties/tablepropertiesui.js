@@ -71,16 +71,22 @@ describe( 'table properties', () => {
 
 		describe( 'constructor()', () => {
 			it( 'should define table.tableProperties config', () => {
-				expect( editor.config.get( 'table.tableProperties' ) ).to.deep.equal( {
-					borderColors: defaultColors,
-					backgroundColors: defaultColors
-				} );
+				expect( editor.config.get( 'table.tableProperties' ) ).to.be.an( 'object' );
+
+				expect( editor.config.get( 'table.tableProperties' ) ).to.have.property( 'borderColors' );
+				expect( editor.config.get( 'table.tableProperties.borderColors' ) ).to.deep.equal( defaultColors );
+				expect( editor.config.get( 'table.tableProperties' ) ).to.have.property( 'backgroundColors' );
+				expect( editor.config.get( 'table.tableProperties.backgroundColors' ) ).to.deep.equal( defaultColors );
 			} );
 		} );
 
 		describe( 'init()', () => {
 			it( 'should set a batch', () => {
 				expect( tablePropertiesUI._undoStepBatch ).to.be.null;
+			} );
+
+			it( 'should set normalized default table properties', () => {
+				expect( tablePropertiesUI._defaultTableProperties ).to.be.an( 'object' );
 			} );
 
 			describe( '#view', () => {
@@ -568,13 +574,13 @@ describe( 'table properties', () => {
 
 					expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
 					expect( tablePropertiesView ).to.include( {
-						borderStyle: '',
+						borderStyle: 'none',
 						borderColor: '',
 						borderWidth: '',
 						backgroundColor: '',
 						width: '',
 						height: '',
-						alignment: ''
+						alignment: 'center'
 					} );
 				} );
 			} );
@@ -647,6 +653,121 @@ describe( 'table properties', () => {
 
 				sinon.assert.calledOnce( hideSpy );
 				sinon.assert.notCalled( positionSpy );
+			} );
+		} );
+
+		describe( 'default table properties', () => {
+			let editor, editorElement, contextualBalloon,
+				tablePropertiesUI, tablePropertiesView, tablePropertiesButton;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				editorElement = document.createElement( 'div' );
+				document.body.appendChild( editorElement );
+
+				return ClassicTestEditor
+					.create( editorElement, {
+						plugins: [ Table, TablePropertiesEditing, TablePropertiesUI, Paragraph, Undo ],
+						initialData: '<table><tr><td>foo</td></tr></table><p>bar</p>',
+						table: {
+							tableProperties: {
+								defaultProperties: {
+									alignment: 'left',
+									borderStyle: 'dashed',
+									borderColor: '#ff0',
+									borderWidth: '2px',
+									backgroundColor: '#00f',
+									width: '250px',
+									height: '150px'
+								}
+							}
+						}
+					} )
+					.then( newEditor => {
+						editor = newEditor;
+
+						tablePropertiesUI = editor.plugins.get( TablePropertiesUI );
+						tablePropertiesButton = editor.ui.componentFactory.create( 'tableProperties' );
+						contextualBalloon = editor.plugins.get( ContextualBalloon );
+						tablePropertiesView = tablePropertiesUI.view;
+
+						// There is no point to execute BalloonPanelView attachTo and pin methods so lets override it.
+						testUtils.sinon.stub( contextualBalloon.view, 'attachTo' ).returns( {} );
+						testUtils.sinon.stub( contextualBalloon.view, 'pin' ).returns( {} );
+					} );
+			} );
+
+			afterEach( () => {
+				editorElement.remove();
+
+				return editor.destroy();
+			} );
+
+			describe( 'init()', () => {
+				describe( '#view', () => {
+					it( 'should get the default table properties configurations', () => {
+						expect( tablePropertiesView.options.defaultTableProperties ).to.deep.equal( {
+							alignment: 'left',
+							borderStyle: 'dashed',
+							borderColor: '#ff0',
+							borderWidth: '2px',
+							backgroundColor: '#00f',
+							width: '250px',
+							height: '150px'
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'Showing the #view', () => {
+				beforeEach( () => {
+					editor.model.change( writer => {
+						writer.setSelection( editor.model.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 ), 0 );
+					} );
+				} );
+
+				describe( 'initial data', () => {
+					it( 'should use default values when command has no value', () => {
+						editor.commands.get( 'tableBorderStyle' ).value = null;
+						editor.commands.get( 'tableBorderColor' ).value = null;
+						editor.commands.get( 'tableBorderWidth' ).value = null;
+						editor.commands.get( 'tableBackgroundColor' ).value = null;
+						editor.commands.get( 'tableWidth' ).value = null;
+						editor.commands.get( 'tableHeight' ).value = null;
+						editor.commands.get( 'tableAlignment' ).value = null;
+
+						tablePropertiesButton.fire( 'execute' );
+
+						expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+						expect( tablePropertiesView ).to.include( {
+							borderStyle: 'dashed',
+							borderColor: '#ff0',
+							borderWidth: '2px',
+							backgroundColor: '#00f',
+							width: '250px',
+							height: '150px',
+							alignment: 'left'
+						} );
+					} );
+
+					it( 'should not set `borderColor` and `borderWidth` attributes if borderStyle="none"', () => {
+						editor.commands.get( 'tableBorderStyle' ).value = 'none';
+
+						tablePropertiesButton.fire( 'execute' );
+
+						expect( contextualBalloon.visibleView ).to.equal( tablePropertiesView );
+						expect( tablePropertiesView ).to.include( {
+							borderStyle: 'none',
+							borderColor: '',
+							borderWidth: '',
+							backgroundColor: '#00f',
+							width: '250px',
+							height: '150px',
+							alignment: 'left'
+						} );
+					} );
+				} );
 			} );
 		} );
 	} );

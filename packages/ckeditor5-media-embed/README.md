@@ -2,14 +2,14 @@ CKEditor 5 media embed feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-media-embed.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-media-embed/status.svg)](https://david-dm.org/ckeditor/ckeditor5-media-embed)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-media-embed/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-media-embed?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the media embed feature for CKEditor 5. You can use it to insert embeddable media such as YouTube or Vimeo videos and tweets into your rich text content.
 
 ## Demo
 
-Check out the [demo in the Media embed feature](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo) guide.
+Check out the [demo in the media embed feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/media-embed.html#demo).
 
 ## Documentation
 

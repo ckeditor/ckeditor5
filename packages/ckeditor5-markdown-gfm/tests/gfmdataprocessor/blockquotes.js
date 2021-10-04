@@ -115,8 +115,7 @@ describe( 'GFMDataProcessor', () => {
 						'<code>' +
 							'code 2' +
 						'</code>' +
-					// Space after `</pre>` might be due to bug in engine. See: https://github.com/ckeditor/ckeditor5/issues/7863.
-					'</pre> ' +
+					'</pre>' +
 				'</blockquote>',
 
 				'> Example 1:\n' +
@@ -129,9 +128,7 @@ describe( 'GFMDataProcessor', () => {
 				'>\n' +
 				'> ```\n' +
 				'> code 2\n' +
-				'> ```' +
-				// The below is an artefact of space after `</pre>`. See comment above & https://github.com/ckeditor/ckeditor5/issues/7863.
-				'\n>\n>'
+				'> ```'
 			);
 		} );
 
@@ -169,8 +166,7 @@ describe( 'GFMDataProcessor', () => {
 						'<code>' +
 							'code 2' +
 						'</code>' +
-					// Space after `</pre>` might be due to bug in engine. See: https://github.com/ckeditor/ckeditor5/issues/7863.
-					'</pre> ' +
+					'</pre>' +
 				'</blockquote>',
 
 				// When converting back to data, DataProcessor will normalize tabs to ```.
@@ -184,9 +180,7 @@ describe( 'GFMDataProcessor', () => {
 				'>\n' +
 				'> ```\n' +
 				'> code 2\n' +
-				'> ```' +
-				// The below is an artefact of space after `</pre>`. See comment above & https://github.com/ckeditor/ckeditor5/issues/7863.
-				'\n>\n>'
+				'> ```'
 			);
 		} );
 	} );
