@@ -82,6 +82,10 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 			<td colspan="2"><kbd>←</kbd> <kbd>←</kbd> / <kbd>→</kbd> <kbd>→</kbd></td>
 		</tr>
 		<tr>
+			<td>Revert autoformatting action</td>
+			<td colspan="2"><kbd>Backspace</kbd></td>
+		</tr>
+		<tr>
 			<th colspan="3">When a widget is selected (for example: image, table, horizontal line, etc.)</th>
 		</tr>
 		<tr>
