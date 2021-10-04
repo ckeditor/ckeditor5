@@ -1052,7 +1052,7 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
-		reinsertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
+		reinsertOrConvertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -2184,7 +2184,7 @@ function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 
 	// Fill slots with nested view nodes.
 	for ( [ currentSlot, currentSlotNodes ] of slotsMap ) {
-		reinsertNodes( viewElement, currentSlotNodes, conversionApi, options );
+		reinsertOrConvertNodes( viewElement, currentSlotNodes, conversionApi, options );
 
 		conversionApi.writer.move(
 			conversionApi.writer.createRangeIn( currentSlot ),
@@ -2217,22 +2217,52 @@ function fillSlots( viewElement, slotsMap, conversionApi, options ) {
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @param {Object} options
 // @param {Boolean} [options.reconversion]
-function reinsertNodes( viewElement, modelNodes, conversionApi, options ) {
-	const { writer, mapper } = conversionApi;
-
+function reinsertOrConvertNodes( viewElement, modelNodes, conversionApi, options ) {
 	// Fill with nested view nodes.
 	for ( const modelChildNode of modelNodes ) {
-		const viewChildNode = mapper.toViewElement( modelChildNode );
-
-		if ( options.reconversion && viewChildNode && viewChildNode.root != viewElement.root ) {
-			writer.move(
-				writer.createRangeOn( viewChildNode ),
-				mapper.toViewPosition( ModelPosition._createBefore( modelChildNode ) )
-			);
-		} else {
+		// Try reinserting the view node for the specified model node...
+		if ( !reinsertNode( viewElement.root, modelChildNode, conversionApi, options ) ) {
+			// ...or else convert the model element to the view.
 			conversionApi.convertItem( modelChildNode );
 		}
 	}
+}
+
+// Checks if the view for the given model element could be reused and reinserts it to the view.
+//
+// @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewRoot
+// @param {module:engine/model/element~Element} modelElement
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Object} options
+// @param {Boolean} [options.reconversion]
+// @returns {Boolean} `false` if view element can't be reused.
+function reinsertNode( viewRoot, modelElement, conversionApi, options ) {
+	const { writer, mapper } = conversionApi;
+
+	// Don't reinsert if this is not a reconversion...
+	if ( !options.reconversion ) {
+		return false;
+	}
+
+	const viewChildNode = mapper.toViewElement( modelElement );
+
+	// ...or there is no view to reinsert or it was already inserted to the view structure...
+	if ( !viewChildNode || viewChildNode.root == viewRoot ) {
+		return false;
+	}
+
+	// ...or it was strictly marked as not to be reused.
+	if ( !conversionApi.canReuseView( viewChildNode ) ) {
+		return false;
+	}
+
+	// Otherwise reinsert the view node.
+	writer.move(
+		writer.createRangeOn( viewChildNode ),
+		mapper.toViewPosition( ModelPosition._createBefore( modelElement ) )
+	);
+
+	return true;
 }
 
 // The default consumer for insert events.
