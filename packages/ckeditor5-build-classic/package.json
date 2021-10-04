@@ -1,6 +1,6 @@
 {
   "name": "@qbranch/ckeditor5-build-classic",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "The classic editor build of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "ckeditor5-build",
@@ -49,7 +49,7 @@
     "@ckeditor/ckeditor5-remove-format": "^29.2.0",
     "@ckeditor/ckeditor5-table": "^29.2.0",
     "@ckeditor/ckeditor5-typing": "^29.2.0",
-    "@qbranch/ckeditor5-media-embed": "^0.0.1"
+    "@qbranch/ckeditor5-media-embed": "0.0.2"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-core": "^29.2.0",
