@@ -270,18 +270,20 @@ export default class ModelConsumable {
 
 		if ( items.length ) {
 			/**
-			 * Some of the {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 * Some of {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
 			 *
 			 * This might be an effect of:
+			 *
 			 * * Missing converter for some model elements. Make sure that you registered downcast converters for all model elements.
-			 * * Custom converter that do not consume converted items. Make sure that you
+			 * * Custom converter that does not consume converted items. Make sure that you
 			 * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} all model elements that you converted
 			 * from the model to the view.
-			 * * Custom converter that called `event.stop()`. When providing custom converter, keep in mind that you should not stop
-			 * the event. If you stop it then the default converter at the `lowest` priority will not trigger conversion of attributes
-			 * and child nodes.
+			 * * Custom converter that called `event.stop()`. When providing a custom converter, keep in mind that you should not stop
+			 * the event. If you stop it then the default converter at the `lowest` priority will not trigger the conversion of this node's
+			 * attributes and child nodes.
 			 *
 			 * @error conversion-model-consumable-not-consumed
+			 * @param {Array.<module:engine/model/item~Item>} items Items that were not consumed.
 			 */
 			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
 		}

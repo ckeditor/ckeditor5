@@ -70,8 +70,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * When providing custom listeners for a downcast dispatcher, remember to check whether a given change has not been
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
  *
- * When providing custom listeners for a downcast dispatcher, keep in mind that you should not stop the event. If you stop it
- * then the default converter at the `lowest` priority will not trigger conversion of attributes and child nodes.
+ * When providing custom listeners for a downcast dispatcher, keep in mind that you **should not** stop the event. If you stop it,
+ * then the default converter at the `lowest` priority will not trigger the conversion of this node's attributes and child nodes.
  *
  * When providing custom listeners for a downcast dispatcher, remember to use the provided
  * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
