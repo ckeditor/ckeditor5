@@ -25,7 +25,7 @@ export default class RestrictedEditingModeNavigationCommand extends Command {
 		super( editor );
 
 		// TODO: affectsContent
-		this.set( 'affectsContent', false );
+		this.affectsContent = false;
 
 		/**
 		 * The direction of the command. Can be `'forward'` or `'backward'`.

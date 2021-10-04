@@ -27,7 +27,7 @@ export default class FindNextCommand extends Command {
 		super( editor );
 
 		// TODO: affectsContent
-		this.set( 'affectsContent', false );
+		this.affectsContent = false;
 
 		/**
 		 * The find and replace state object used for command operations.

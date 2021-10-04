@@ -29,7 +29,7 @@ export default class SelectColumnCommand extends Command {
 		super( editor );
 
 		// TODO: affectsContent
-		this.set( 'affectsContent', false );
+		this.affectsContent = false;
 	}
 
 	/**

@@ -31,7 +31,7 @@ export default class SelectAllCommand extends Command {
 		super( editor );
 
 		// TODO: affectsContent
-		this.set( 'affectsContent', false );
+		this.affectsContent = false;
 	}
 
 	/**
