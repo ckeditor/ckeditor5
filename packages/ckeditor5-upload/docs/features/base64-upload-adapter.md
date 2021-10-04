@@ -65,7 +65,7 @@ The allowed file types that can be uploaded should actually be configured in two
 
 Use the {@link module:image/imageupload~ImageUploadConfig#types `image.upload.types`} configuration option to define the allowed image MIME types that can be uploaded to CKEditor 5.
 
-By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files, but you can customize this behavior to accept, for example, SVG files.
+By default, users are allowed to upload `jpeg`, `png`, `gif`, `bmp`, `webp` and `tiff` files. You can customize this behavior to accept, for example, SVG files (in this case use `svg+xml` type).
 
 #### Server-side configuration
 
