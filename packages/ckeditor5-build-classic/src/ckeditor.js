@@ -122,10 +122,6 @@ ClassicEditor.defaultConfig = {
 			'fontColor',
 			'fontBackgroundColor',
 			'|',
-			'link',
-			'codeBlock',
-			'horizontalLine',
-			'|',
 			'bulletedList',
 			'numberedList',
 			'todoList',
@@ -133,15 +129,19 @@ ClassicEditor.defaultConfig = {
 			'imageUpload',
 			'mediaEmbed',
 			'|',
+			'insertTable',
+			'|',
+			'link',
+			'codeBlock',
+			'horizontalLine',
+			'|',
 			'alignment:left',
 			'alignment:center',
 			'alignment:right',
 			'alignment:justify',
 			'|',
 			'indent',
-			'outdent',
-			'|',
-			'insertTable'
+			'outdent'
 		]
 	},
 	codeBlock: {
