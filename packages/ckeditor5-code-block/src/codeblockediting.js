@@ -219,7 +219,7 @@ export default class CodeBlockEditing extends Plugin {
 
 		// Customize the response to the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd>
 		// key press when the selection is in the code block. Upon enter key press we can either
-		// leave the block if it's "three enters" in a row or create a new code block line, preserving
+		// leave the block if it's "two or three enters" in a row or create a new code block line, preserving
 		// previous line's indentation.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getLastPosition().parent;
