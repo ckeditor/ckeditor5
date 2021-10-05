@@ -126,6 +126,10 @@ describe( 'DowncastHelpers', () => {
 				view: () => null
 			} );
 
+			controller.downcastDispatcher.on( 'insert:heading', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, evt.name );
+			}, { priority: 'lowest' } );
+
 			model.change( writer => {
 				writer.insertElement( 'heading', {}, modelRoot, 0 );
 			} );

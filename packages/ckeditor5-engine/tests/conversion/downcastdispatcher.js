@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 import Mapper from '../../src/conversion/mapper';
 
@@ -52,7 +54,11 @@ describe( 'DowncastDispatcher', () => {
 
 	describe( 'convertChanges', () => {
 		it( 'should call _convertInsert for insert change', () => {
-			sinon.stub( dispatcher, '_convertInsert' );
+			let spyConsumableVerify;
+
+			sinon.stub( dispatcher, '_convertInsert' ).callsFake( ( range, conversionApi ) => {
+				spyConsumableVerify = spyConsumableVerify || sinon.spy( conversionApi.consumable, 'verifyAllConsumed' );
+			} );
 			sinon.stub( mapper, 'flushDeferredBindings' );
 
 			const position = model.createPositionFromPath( root, [ 0 ] );
@@ -70,6 +76,8 @@ describe( 'DowncastDispatcher', () => {
 			assertConversionApi( dispatcher._convertInsert.firstCall.args[ 1 ] );
 
 			expect( mapper.flushDeferredBindings.calledOnce ).to.be.true;
+			expect( spyConsumableVerify.calledOnce ).to.be.true;
+
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
 		} );
@@ -366,20 +374,24 @@ describe( 'DowncastDispatcher', () => {
 
 			const loggedEvents = [];
 
-			dispatcher.on( 'insert', ( evt, data ) => {
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
 
 				loggedEvents.push( log );
+
+				conversionApi.consumable.consume( data.item, evt.name );
 			} );
 
-			dispatcher.on( 'attribute', ( evt, data ) => {
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const key = data.attributeKey;
 				const value = data.attributeNewValue;
 				const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
 
 				loggedEvents.push( log );
+
+				conversionApi.consumable.consume( data.item, evt.name );
 			} );
 
 			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
@@ -517,6 +529,30 @@ describe( 'DowncastDispatcher', () => {
 
 			expect( spyBefore.calledOnce ).to.be.true;
 			expect( spyAfter.calledOnce ).to.be.true;
+
+			expect( dispatcher._conversionApi.writer ).to.be.undefined;
+			expect( dispatcher._conversionApi.consumable ).to.be.undefined;
+		} );
+
+		it( 'should throw if not all insert events were consumed', () => {
+			root._appendChild( [
+				new ModelElement( 'imageBlock', { src: 'foo.jpg' }, [
+					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
+				] )
+			] );
+
+			const range = model.createRangeIn( root );
+			let spy;
+
+			dispatcher.on( 'insert:imageBlock', ( evt, data, conversionApi ) => {
+				spy = sinon.spy( conversionApi.consumable, 'verifyAllConsumed' );
+			} );
+
+			expect( () => {
+				dispatcher.convert( range, [] );
+			} ).to.throw( CKEditorError, 'conversion-model-consumable-not-consumed' );
+
+			expect( spy.calledOnce ).to.be.true;
 
 			expect( dispatcher._conversionApi.writer ).to.be.undefined;
 			expect( dispatcher._conversionApi.consumable ).to.be.undefined;

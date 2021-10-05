@@ -8,6 +8,7 @@
  */
 
 import TextProxy from '../model/textproxy';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.
@@ -247,6 +248,48 @@ export default class ModelConsumable {
 	}
 
 	/**
+	 * Verifies if all events from specified group were consumed.
+	 *
+	 * @param {String} eventGroup The events group to verify.
+	 */
+	verifyAllConsumed( eventGroup ) {
+		const items = [];
+
+		for ( const [ item, consumables ] of this._consumable ) {
+			for ( const [ event, canConsume ] of consumables ) {
+				const eventPrefix = event.split( ':' )[ 0 ];
+
+				if ( canConsume && eventGroup == eventPrefix ) {
+					items.push( {
+						event,
+						item: item.name || item.description
+					} );
+				}
+			}
+		}
+
+		if ( items.length ) {
+			/**
+			 * Some of {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 *
+			 * This might be an effect of:
+			 *
+			 * * Missing converter for some model elements. Make sure that you registered downcast converters for all model elements.
+			 * * Custom converter that does not consume converted items. Make sure that you
+			 * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} all model elements that you converted
+			 * from the model to the view.
+			 * * Custom converter that called `event.stop()`. When providing a custom converter, keep in mind that you should not stop
+			 * the event. If you stop it then the default converter at the `lowest` priority will not trigger the conversion of this node's
+			 * attributes and child nodes.
+			 *
+			 * @error conversion-model-consumable-not-consumed
+			 * @param {Array.<module:engine/model/item~Item>} items Items that were not consumed.
+			 */
+			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
+		}
+	}
+
+	/**
 	 * Gets a unique symbol for passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
 	 * have same parent, same start index and same end index will get the same symbol.
 	 *
@@ -290,7 +333,7 @@ export default class ModelConsumable {
 		const end = textProxy.endOffset;
 		const parent = textProxy.parent;
 
-		const symbol = Symbol( 'textProxySymbol' );
+		const symbol = Symbol( '$textProxy:' + textProxy.data );
 		let startMap, endMap;
 
 		startMap = this._textProxyRegistry.get( start );

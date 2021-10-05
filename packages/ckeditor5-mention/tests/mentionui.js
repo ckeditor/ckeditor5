@@ -2182,6 +2182,82 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		} );
+
+		describe( 'overriding the number of visible mentions using config.mention.dropdownLimit', () => {
+			const longFeed = [
+				'@01', '@02', '@03', '@04', '@05', '@06', '@07', '@08', '@09', '@10',
+				'@11', '@12', '@13', '@16', '@17', '@18', '@17', '@18', '@19', '@20',
+				'@21', '@22', '@23', '@24', '@25', '@26', '@27', '@28', '@29', '@30'
+			];
+
+			const simpleArrayFeed = {
+				marker: '@',
+				feed: longFeed
+			};
+
+			const customFunctionFeed = {
+				marker: '@',
+				feed: () => {
+					return longFeed;
+				}
+			};
+
+			it( 'works with specific number in case of custom function feed', () => {
+				const mentionsLimit = 3;
+
+				return createClassicTestEditor( {
+					dropdownLimit: mentionsLimit,
+					feeds: [ customFunctionFeed ] } )
+					.then( () => {
+						setData( editor.model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( mentionsLimit );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the dropdownLimit value', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: 25,
+					feeds: [ simpleArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 25 );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the length of the feed provided', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: Infinity,
+					feeds: [ simpleArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( simpleArrayFeed.feed.length );
+					} );
+			} );
+		} );
 	} );
 
 	describe( 'execute', () => {
