@@ -170,7 +170,9 @@ export default class MentionUI extends Plugin {
 			this._mentionsConfigurations.set( marker, definition );
 		}
 
-		editor.on( 'change:isReadOnly', () => this._hideUIAndRemoveMarker() );
+		this.listenTo( editor, 'change:isReadOnly', () => {
+			this._hideUIAndRemoveMarker();
+		} );
 		this.on( 'requestFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
 		this.on( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
 
