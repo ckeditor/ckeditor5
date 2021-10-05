@@ -22,17 +22,6 @@ import { Command } from 'ckeditor5/src/core';
  */
 export default class UpdateHtmlEmbedCommand extends Command {
 	/**
-	 * @inheritDoc
-	 */
-	refresh() {
-		const model = this.editor.model;
-		const selection = model.document.selection;
-		const rawHtmlElement = getSelectedRawHtmlModelWidget( selection );
-
-		this.isEnabled = !!rawHtmlElement;
-	}
-
-	/**
 	 * Executes the command, which updates the `value` attribute of the embedded HTML element:
 	 *
 	 * @fires execute
@@ -42,6 +31,12 @@ export default class UpdateHtmlEmbedCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const selectedRawHtmlElement = getSelectedRawHtmlModelWidget( selection );
+
+		// This command is stateless so the edit UI button can bind to it and stay enabled for all selections,
+		// unless the command was force-disabled (e.g. via editor read-only state).
+		if ( !selectedRawHtmlElement ) {
+			return;
+		}
 
 		model.change( writer => {
 			writer.setAttribute( 'value', value, selectedRawHtmlElement );
