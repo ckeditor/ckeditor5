@@ -22,15 +22,15 @@ msgstr "модул са сликом"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Преломити текст"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Прелом текста"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "У реду"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"

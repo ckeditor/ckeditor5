@@ -105,7 +105,13 @@ describe( 'Text transformation feature', () => {
 		} );
 
 		describe( 'mathematical', () => {
-			testTransformation( '1/2', '½' );
+			testTransformation( '1/2 ', '½ ', '' );
+			testTransformation( '1/2.', '½.', 'A foo ' );
+			testTransformation( '1/2+', '½+', '+' );
+			testShouldNotTransform( 'x1/2 ', '½ ' );
+			testShouldNotTransform( '1/22', '½2' );
+			testShouldNotTransform( '11/2', '1½' );
+			testShouldNotTransform( '1/2A', '½A' );
 			testTransformation( '<=', '≤' );
 		} );
 
@@ -191,12 +197,12 @@ describe( 'Text transformation feature', () => {
 		it( 'can undo transformation', () => {
 			setData( model, '<paragraph>Foo[]</paragraph>' );
 
-			simulateTyping( '1/2' );
+			simulateTyping( '(c)' );
 
 			editor.commands.execute( 'undo' );
 
 			expect( getData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo1/2</paragraph>' );
+				.to.equal( '<paragraph>Foo(c)</paragraph>' );
 		} );
 
 		it( 'can undo transformation by pressing backspace', () => {
@@ -209,12 +215,12 @@ describe( 'Text transformation feature', () => {
 
 			setData( model, '<paragraph>Foo[]</paragraph>' );
 
-			simulateTyping( '1/2' );
+			simulateTyping( '(c)' );
 
 			viewDocument.fire( 'delete', deleteEvent );
 
 			expect( getData( model, { withoutSelection: true } ) )
-				.to.equal( '<paragraph>Foo1/2</paragraph>' );
+				.to.equal( '<paragraph>Foo(c)</paragraph>' );
 		} );
 
 		function testTransformation( transformFrom, transformTo, textInParagraph = 'A foo' ) {
@@ -242,6 +248,31 @@ describe( 'Text transformation feature', () => {
 
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } bar </paragraph>` );
+			} );
+
+			it( `should not transform "${ transformFrom }" to "${ transformTo } if not right before selection"`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				// Insert text - should not be transformed.
+				model.enqueueChange( model.createBatch(), writer => {
+					writer.insertText( `${ textInParagraph }${ transformFrom }`, doc.selection.focus );
+				} );
+
+				simulateTyping( ' ' );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ textInParagraph }${ transformFrom } </paragraph>` );
+			} );
+		}
+
+		function testShouldNotTransform( transformFrom, transformTo ) {
+			it( `should not transform "${ transformFrom }" to "${ transformTo }"`, () => {
+				setData( model, '<paragraph>[]</paragraph>' );
+
+				simulateTyping( transformFrom );
+
+				expect( getData( model, { withoutSelection: true } ) )
+					.to.equal( `<paragraph>${ transformFrom }</paragraph>` );
 			} );
 		}
 	} );

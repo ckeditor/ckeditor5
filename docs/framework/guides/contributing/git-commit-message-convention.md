@@ -192,6 +192,20 @@ Changelog
 * **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils#foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 ```
 
+### Fixing errors
+
+If the commit message was wrong but it was already too late to fix (e.g. already merged into `master`), you can push an empty commit with the correct message straight to `master`:
+
+```
+git checkout master
+git commit --allow-empty # Fix the message in the commit
+git push origin master
+```
+
+<info-box>
+	Two commits for the same pull request will require **manual deduplication** during the changelog generation process. To reduce the noise, **avoid this technique for minor errors** like spelling or grammar: changelog entries will be checked and corrected anyway. Use it to add missing `BREAKING CHANGE` entries or fix wrong ticket numbers in `Closes #123` (critical information for integrators). You can also notify the team about the fix.
+</info-box>
+
 ## Handling pull requests
 
 When creating a pull request, its author may (it is recommended in the pull request template) propose a merge commit message.

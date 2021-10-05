@@ -94,7 +94,13 @@ export default class FindAndReplaceEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this.activeResults = null;
+		/**
+		 * The collection of currently highlighted search results.
+		 *
+		 * @private
+		 * @member {module:utils/collection~Collection} #_activeResults
+		 */
+		this._activeResults = null;
 
 		/**
 		 * An object storing the find and replace state within a given editor instance.
@@ -164,19 +170,19 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		const { findCallback, results } = editor.execute( 'find', callbackOrText );
 
-		this.activeResults = results;
+		this._activeResults = results;
 
 		// @todo: handle this listener, another copy is in findcommand.js file.
-		this.listenTo( model.document, 'change:data', () => onDocumentChange( this.activeResults, model, findCallback ) );
+		this.listenTo( model.document, 'change:data', () => onDocumentChange( this._activeResults, model, findCallback ) );
 
-		return this.activeResults;
+		return this._activeResults;
 	}
 
 	/**
 	 * Stops active results from updating, and clears out the results.
 	 */
 	stop() {
-		if ( !this.activeResults ) {
+		if ( !this._activeResults ) {
 			return;
 		}
 
@@ -184,10 +190,12 @@ export default class FindAndReplaceEditing extends Plugin {
 
 		this.state.clear( this.editor.model );
 
-		this.activeResults = null;
+		this._activeResults = null;
 	}
 
 	/**
+	 * Sets up the commands.
+	 *
 	 * @private
 	 */
 	_defineCommands() {
@@ -199,6 +207,8 @@ export default class FindAndReplaceEditing extends Plugin {
 	}
 
 	/**
+	 * Sets up the marker downcast converters for search results highlighting.
+	 *
 	 * @private
 	 */
 	_defineConverters() {
