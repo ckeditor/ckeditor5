@@ -524,10 +524,10 @@ describe( 'CodeBlockEditing', () => {
 			} );
 
 			describe( 'leaving the block at the beginning', () => {
-				it( 'should leave the block when pressed at the beginning in a new line followed by a new line', () => {
+				it( 'should leave the block when pressed at the beginning in a new line', () => {
 					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
 
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak><softBreak></softBreak>foo</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
@@ -540,29 +540,20 @@ describe( 'CodeBlockEditing', () => {
 
 					editor.execute( 'undo' );
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css">[]<softBreak></softBreak><softBreak></softBreak>foo</codeBlock>' );
-				} );
-
-				it( 'should not leave the block when pressed at the beginning in a new line not followed by a new line', () => {
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
-
-					viewDoc.fire( 'enter', getEvent() );
-
-					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>foo</codeBlock>' );
+						'<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when the selection is not collapsed (#1)', () => {
-					setModelData( model, '<codeBlock language="css">[f]<softBreak></softBreak><softBreak></softBreak>oo</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">[f]<softBreak></softBreak>oo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak><softBreak></softBreak>oo</codeBlock>' );
+						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>oo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when the selection is not collapsed (#2)', () => {
-					setModelData( model, '<codeBlock language="css">[<softBreak></softBreak><softBreak></softBreak>oo]</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">[<softBreak></softBreak>oo]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
@@ -571,29 +562,25 @@ describe( 'CodeBlockEditing', () => {
 				} );
 
 				it( 'should not leave the block when pressed shift+enter at the beginning of the code', () => {
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak><softBreak></softBreak>foo</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
 
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css">' +
-						'<softBreak></softBreak>[]<softBreak></softBreak><softBreak></softBreak>foo' +
-						'</codeBlock>' );
+						'<codeBlock language="css"><softBreak></softBreak>[]<softBreak></softBreak>foo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when there is some text after the selection', () => {
-					setModelData( model, '<codeBlock language="css">[]foo<softBreak></softBreak><softBreak></softBreak>foo</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">[]foo<softBreak></softBreak>foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css">' +
-						'<softBreak></softBreak>[]foo<softBreak></softBreak><softBreak></softBreak>foo' +
-						'</codeBlock>' );
+						'<codeBlock language="css"><softBreak></softBreak>[]foo<softBreak></softBreak>foo</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when there is some text before the selection', () => {
-					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak><softBreak></softBreak>foo</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">[]<softBreak></softBreak>foo</codeBlock>' );
 
 					// <codeBlock language="css">    []<softBreak></softBreak>foo</codeBlock>
 					model.change( writer => {
@@ -604,9 +591,7 @@ describe( 'CodeBlockEditing', () => {
 
 					// Extra spaces before "[]" come from the indentation retention mechanism.
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css">' +
-						'    <softBreak></softBreak>    []<softBreak></softBreak><softBreak></softBreak>foo' +
-						'</codeBlock>' );
+						'<codeBlock language="css">    <softBreak></softBreak>    []<softBreak></softBreak>foo</codeBlock>' );
 				} );
 			} );
 		} );

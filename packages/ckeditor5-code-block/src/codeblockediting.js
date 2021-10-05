@@ -301,7 +301,7 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 		return false;
 	}
 
-	if ( !isSoftBreakNode( nodeAfter ) || !isSoftBreakNode( nodeAfter.nextSibling ) ) {
+	if ( !isSoftBreakNode( nodeAfter ) ) {
 		return false;
 	}
 
@@ -318,8 +318,7 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 		writer.setSelection( newBlock, 'in' );
 		editor.model.schema.removeDisallowedAttributes( [ newBlock ], writer );
 
-		// Remove the <softBreak>s that originally followed the selection position.
-		writer.remove( nodeAfter.nextSibling );
+		// Remove the <softBreak> that originally followed the selection position.
 		writer.remove( nodeAfter );
 	} );
 
