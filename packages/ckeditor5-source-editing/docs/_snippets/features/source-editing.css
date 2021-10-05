@@ -3,7 +3,11 @@
 }
 
 .ck-source-editing-area {
-	overflow: scroll;
 	max-height: 700px;
 	border-bottom: 1px solid var(--ck-color-base-border);
+}
+
+.live-snippet .ck-source-editing-area textarea {
+	width: 100%;
+	overflow: auto;
 }

@@ -9,6 +9,8 @@ Employ Markdown-like inline codes as you type for a faster and more efficient ed
 
 Coupled with the {@link features/markdown Markdown output} feature, the autoformatting feature allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post.
 
+If needed, the automattic change can be reverted simply by pressing <kbd>Backspace</kbd>.
+
 <info-box info>
 	This feature is enabled by default in all builds.
 </info-box>
