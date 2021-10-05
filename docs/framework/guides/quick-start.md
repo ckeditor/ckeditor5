@@ -14,7 +14,7 @@ This guide will show you how to initialize CKEditor 5 rich-text editor from sour
 
 	Use the following command to create a new package:
 	```bash
-	npx ckeditor5-generate-package <packageName>
+	npx ckeditor5-package-generator <packageName>
 	```
 </info-box>
 
