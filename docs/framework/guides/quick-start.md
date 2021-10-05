@@ -18,7 +18,7 @@ This guide will show you how to initialize CKEditor 5 rich-text editor from sour
 	```
 </info-box>
 
-The CKEditor 5 Framework is made of several [npm packages](https://npmjs.com). To install it you need:
+The CKEditor 5 Framework consist of several [npm packages](https://npmjs.com). To install it you need:
 
 * [Node.js](https://nodejs.org/en/) 12.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
