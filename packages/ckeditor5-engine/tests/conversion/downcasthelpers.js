@@ -293,6 +293,53 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div class="is-classy"></div>' );
 			} );
 
+			it( 'should reuse child view element', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+				} );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.equal( paraBefore );
+				expect( textAfter ).to.equal( textBefore );
+			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
+			} );
+
 			it( 'should properly re-bind mapper mappings and retain markers', () => {
 				downcastHelpers.elementToElement( {
 					model: 'simpleBlock',
@@ -394,7 +441,8 @@ describe( 'DowncastHelpers', () => {
 		describe( 'with simple block view structure (with reconvertion on child add)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
-					allowIn: '$root'
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
 				} );
 
 				downcastHelpers.elementToElement( {
@@ -403,7 +451,7 @@ describe( 'DowncastHelpers', () => {
 						children: true
 					},
 					view: ( modelElement, { writer } ) => {
-						return writer.createContainerElement( 'div' );
+						return writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 					}
 				} );
 
@@ -641,6 +689,25 @@ describe( 'DowncastHelpers', () => {
 				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
 				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
 			} );
 		} );
 	} );
@@ -1138,12 +1205,32 @@ describe( 'DowncastHelpers', () => {
 
 				expect( viewAfter ).to.equal( viewBefore );
 			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
+			} );
 		} );
 
 		describe( 'with simple block view structure (reconvert on child add)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
-					allowIn: '$root'
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
 				} );
 
 				downcastHelpers.elementToStructure( {
@@ -1152,7 +1239,7 @@ describe( 'DowncastHelpers', () => {
 						children: true
 					},
 					view: ( modelElement, { writer, slotFor } ) => {
-						const viewElement = writer.createContainerElement( 'div' );
+						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
 						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
 
@@ -1398,6 +1485,25 @@ describe( 'DowncastHelpers', () => {
 				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
 				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
 			} );
 		} );
 
