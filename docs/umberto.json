@@ -100,7 +100,7 @@
 	},
 	"groups": [
 		{
-			"name": "Builds",
+			"name": "Installation",
 			"id": "builds",
 			"slug": "builds",
 			"categories": [
@@ -110,10 +110,16 @@
 					"slug": "guides",
 					"categories": [
 						{
+							"name": "Predefined builds",
+							"id": "builds-predefined",
+							"slug": "predefined",
+							"order": 100
+						},
+						{
 							"name": "Integration",
 							"id": "builds-integration",
 							"slug": "integration",
-							"order": 100,
+							"order": 200,
 							"categories": [
 								{
 									"name": "Frameworks",
@@ -127,19 +133,19 @@
 							"name": "Development",
 							"id": "builds-development",
 							"slug": "development",
-							"order": 200
+							"order": 300
 						},
 						{
-							"name": "Migration",
+							"name": "Migration / update",
 							"id": "builds-migration",
 							"slug": "migration",
-							"order": 300
+							"order": 400
 						},
 						{
 							"name": "Support",
 							"id": "builds-support",
 							"slug": "support",
-							"order": 400
+							"order": 500
 						}
 					]
 				}
@@ -201,23 +207,6 @@
 							"order": 500
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Examples",
-			"id": "examples",
-			"slug": "examples",
-			"categories": [
-				{
-					"name": "Builds",
-					"id": "examples-builds",
-					"slug": "builds"
-				},
-				{
-					"name": "Framework",
-					"id": "examples-framework",
-					"slug": "framework"
 				}
 			]
 		},
@@ -294,6 +283,23 @@
 					"name": "Toolbar",
 					"id": "features-toolbar",
 					"slug": "toolbar"
+				}
+			]
+		},
+		{
+			"name": "Examples",
+			"id": "examples",
+			"slug": "examples",
+			"categories": [
+				{
+					"name": "Builds",
+					"id": "examples-builds",
+					"slug": "builds"
+				},
+				{
+					"name": "Framework",
+					"id": "examples-framework",
+					"slug": "framework"
 				}
 			]
 		},
