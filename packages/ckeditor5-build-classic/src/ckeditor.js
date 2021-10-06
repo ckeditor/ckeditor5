@@ -15,10 +15,9 @@ import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list';
+import List from '@ckeditor/ckeditor5-list/src/list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
@@ -39,7 +38,6 @@ ClassicEditor.builtinPlugins = [
 	Heading,
 	Image,
 	ImageInsert,
-	Indent,
 	Link,
 	List,
 	Paragraph,
@@ -56,15 +54,18 @@ ClassicEditor.defaultConfig = {
 			'bold',
 			'italic',
 			'link',
-			'numberedList',
 			'bulletedList',
+			'numberedList',
 			'|',
-			'imageInsert',
+			'outdent',
+			'indent',
+			'|',
+			'ImageInsert',
 			'|',
 			'undo',
-			'redo'
-		]
+			'redo',
+		],
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'fr'
+	language: 'fr',
 };
