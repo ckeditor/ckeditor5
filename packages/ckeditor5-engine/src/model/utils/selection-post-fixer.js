@@ -263,34 +263,42 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 	return startIsOnBlock || endIsOnBlock;
 }
 
-// Returns a minimal non-intersecting array of ranges.
-//
-// @param {Array.<module:engine/model/range~Range>} ranges
-// @returns {Array.<module:engine/model/range~Range>}
-function mergeIntersectingRanges( ranges ) {
-	const nonIntersectingRanges = [];
+/**
+ * Returns a minimal non-intersecting array of ranges.
+ * Remove duplicated ranges, merge intersecting ranges into one.
+ *
+ * @param {Array.<module:engine/model/range~Range>} ranges
+ * @returns {Array.<module:engine/model/range~Range>}
+ */
+export function mergeIntersectingRanges( ranges ) {
+	const rangesToMerge = [ ...ranges ];
+	const rangeIndexesToRemove = new Set();
+	let currentRangeIndex = 1;
 
-	// First range will always be fine.
-	nonIntersectingRanges.push( ranges.shift() );
+	while ( currentRangeIndex < rangesToMerge.length ) {
+		const currentRange = rangesToMerge[ currentRangeIndex ];
+		const previousRanges = rangesToMerge.slice( 0, currentRangeIndex );
 
-	for ( const range of ranges ) {
-		const previousRange = nonIntersectingRanges.pop();
+		for ( const [ previousRangeIndex, previousRange ] of previousRanges.entries() ) {
+			if ( rangeIndexesToRemove.has( previousRangeIndex ) ) {
+				continue;
+			}
 
-		if ( range.isEqual( previousRange ) ) {
-			// Use only one of two identical ranges.
-			nonIntersectingRanges.push( previousRange );
-		} else if ( range.isIntersecting( previousRange ) ) {
-			// Get the sum of two ranges.
-			const start = previousRange.start.isAfter( range.start ) ? range.start : previousRange.start;
-			const end = previousRange.end.isAfter( range.end ) ? previousRange.end : range.end;
+			if ( currentRange.isEqual( previousRange ) ) {
+				rangeIndexesToRemove.add( previousRangeIndex );
+			} else if ( currentRange.isIntersecting( previousRange ) ) {
+				rangeIndexesToRemove.add( previousRangeIndex );
+				rangeIndexesToRemove.add( currentRangeIndex );
 
-			const merged = new Range( start, end );
-			nonIntersectingRanges.push( merged );
-		} else {
-			nonIntersectingRanges.push( previousRange );
-			nonIntersectingRanges.push( range );
+				const mergedRange = createMergedRange( previousRange, currentRange );
+				rangesToMerge.push( mergedRange );
+			}
 		}
+
+		currentRangeIndex++;
 	}
+
+	const nonIntersectingRanges = rangesToMerge.filter( ( _, index ) => !rangeIndexesToRemove.has( index ) );
 
 	return nonIntersectingRanges;
 }
@@ -302,4 +310,16 @@ function mergeIntersectingRanges( ranges ) {
 // @returns {Boolean}
 function isSelectable( node, schema ) {
 	return node && schema.isSelectable( node );
+}
+
+// Create sum of two ranges
+//
+// @param {module:engine/model/range~Range} range1
+// @param {module:engine/model/range~Range} range2
+// @returns {module:engine/model/range~Range} mergedRange
+function createMergedRange( range1, range2 ) {
+	const start = range1.start.isAfter( range2.start ) ? range2.start : range1.start;
+	const end = range1.end.isAfter( range2.end ) ? range1.end : range2.end;
+
+	return new Range( start, end );
 }
