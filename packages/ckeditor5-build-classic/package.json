@@ -1,6 +1,6 @@
 {
   "name": "@a-sauvaget/ckeditor5-custom-build",
-  "version": "30.0.0",
+  "version": "31.0.0",
   "description": "The classic editor build of CKEditor 5 – With custom plugins",
   "keywords": [
     "ckeditor5-build",
