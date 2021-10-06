@@ -110,24 +110,24 @@
 					"slug": "guides",
 					"categories": [
 						{
+							"name": "Predefined builds",
+							"id": "builds-predefined",
+							"slug": "predefined-builds",
+							"order": 100
+						},
+						{
 							"name": "Integration",
 							"id": "builds-integration",
 							"slug": "integration",
-							"order": 100,
+							"order": 200,
 							"categories": [
 								{
 									"name": "Frameworks",
 									"id": "builds-integration-frameworks",
 									"slug": "frameworks",
-									"order": 100
+									"order": 200
 								}
 							]
-						},
-						{
-							"name": "Predefined builds",
-							"id": "builds-predefined",
-							"slug": "predefined",
-							"order": 200
 						},
 						{
 							"name": "Development",
