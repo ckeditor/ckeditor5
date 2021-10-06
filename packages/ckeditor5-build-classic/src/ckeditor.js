@@ -13,10 +13,12 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert.js';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import List from '@ckeditor/ckeditor5-list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
@@ -34,10 +36,12 @@ ClassicEditor.builtinPlugins = [
 	CKFinder,
 	CloudServices,
 	EasyImage,
+	Heading,
 	Image,
 	ImageInsert,
 	Indent,
 	Link,
+	List,
 	Paragraph,
 	PasteFromOffice,
 	TextTransformation,
@@ -47,9 +51,13 @@ ClassicEditor.builtinPlugins = [
 ClassicEditor.defaultConfig = {
 	toolbar: {
 		items: [
+			'heading',
+			'|',
 			'bold',
 			'italic',
 			'link',
+			'numberedList',
+			'bulletedList',
 			'|',
 			'imageInsert',
 			'|',
