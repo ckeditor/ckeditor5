@@ -1,6 +1,6 @@
 {
   "name": "@a-sauvaget/ckeditor5-custom-build",
-  "version": "31.0.1",
+  "version": "31.0.2",
   "description": "A custom version of the CKEditor classic version.",
   "keywords": [
     "ckeditor5-build",
