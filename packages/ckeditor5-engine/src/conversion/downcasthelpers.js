@@ -1052,6 +1052,9 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
 
+		// Convert attributes before converting children.
+		conversionApi.convertAttributes( data.item );
+
 		reinsertOrConvertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
@@ -1099,6 +1102,9 @@ export function insertStructure( elementCreator, consumer ) {
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
+
+		// Convert attributes before converting children.
+		conversionApi.convertAttributes( data.item );
 
 		// Fill view slots with previous view elements or create new ones.
 		fillSlots( viewElement, slotsMap, conversionApi, { reconversion: data.reconversion } );
@@ -1654,6 +1660,12 @@ function downcastElementToElement( config ) {
 	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
+	// Trigger reconversion on children list change if element is a subject to any reconversion.
+	// This is required to be able to trigger Differ#refreshItem() on a direct child of the reconverted element.
+	if ( config.model.attributes.length ) {
+		config.model.children = true;
+	}
+
 	return dispatcher => {
 		dispatcher.on(
 			'insert:' + config.model.name,
@@ -1684,6 +1696,10 @@ function downcastElementToStructure( config ) {
 	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
+	// Trigger reconversion on children list change because it always needs to use slots to put children in proper places.
+	// This is required to be able to trigger Differ#refreshItem() on a direct child of the reconverted element.
+	config.model.children = true;
+
 	return dispatcher => {
 		dispatcher.on(
 			'insert:' + config.model.name,
@@ -1691,9 +1707,7 @@ function downcastElementToStructure( config ) {
 			{ priority: config.converterPriority || 'normal' }
 		);
 
-		if ( config.model.children || config.model.attributes.length ) {
-			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
-		}
+		dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
 	};
 }
 
@@ -2013,6 +2027,7 @@ function createChangeReducerCallback( model ) {
 				return true;
 			}
 		} else {
+			/* istanbul ignore else: This is always true because otherwise it would not register a reducer callback. */
 			if ( model.children ) {
 				return true;
 			}
