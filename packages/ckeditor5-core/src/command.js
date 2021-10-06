@@ -97,7 +97,7 @@ export default class Command {
 		this.set( 'isEnabled', false );
 
 		// TODO: affectsContent
-		this.set( 'affectsContent', true );
+		this.affectsContent = true;
 
 		/**
 		 * Holds identifiers for {@link #forceDisabled} mechanism.
