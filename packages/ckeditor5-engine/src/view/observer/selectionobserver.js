@@ -91,7 +91,7 @@ export default class SelectionObserver extends Observer {
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
 
 		/**
-		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not not record this fact
+		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
 		 * correctly (for whatever the reason). It is a safeguard (paranoid check) that returns document to the normal state
 		 * after a certain period of time (debounced, postponed by each selectionchange event).
 		 *
