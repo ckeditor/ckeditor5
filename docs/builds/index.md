@@ -9,10 +9,10 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # Installing CKEditor 5
 
-CKEditor 5 Builds are the fastest and easiest way to use CKEditor 5 in your application.
+Learn how to install CKEditor 5 from scratch or using predefined builds. Integrate CKEditor 5 with your software, keep it updated and find out hot you can help developing it.
 
 <info-box>
-	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor 5 Builds documentation.
+	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through the documentation.
 </info-box>
 
 ## Predefined CKEditor 5 builds
