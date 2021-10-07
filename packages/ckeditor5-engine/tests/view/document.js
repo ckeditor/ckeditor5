@@ -32,7 +32,7 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create Document with all properties', () => {
+		it( 'should create the #roots collection', () => {
 			expect( count( viewDocument.roots ) ).to.equal( 0 );
 		} );
 

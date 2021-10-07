@@ -86,7 +86,7 @@ export default class SelectionObserver extends Observer {
 		 * possible infinite selection loop.
 		 *
 		 * @private
-		 * @method #_clearInfiniteLoopInterval
+		 * @member {Number} #_clearInfiniteLoopInterval
 		 */
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
 
