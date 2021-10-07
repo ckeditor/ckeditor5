@@ -224,6 +224,9 @@ export default class Renderer {
 				// Do not use `markToSync` so it will be added even if the parent is already added.
 				this.markedChildren.add( inlineFillerPosition.parent );
 			}
+		} else if ( this._inlineFiller ) {
+			// While the user is making selection, preserve the inline filler at its original position.
+			inlineFillerPosition = this.domConverter.domPositionToView( this._inlineFiller );
 		}
 
 		for ( const element of this.markedAttributes ) {
@@ -589,7 +592,7 @@ export default class Renderer {
 		const inlineFillerPosition = options.inlineFillerPosition;
 		const actualDomChildren = this.domConverter.mapViewToDom( viewElement ).childNodes;
 		const expectedDomChildren = Array.from(
-			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { bind: true, inlineFillerPosition } )
+			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { bind: true } )
 		);
 
 		// Inline filler element has to be created as it is present in the DOM, but not in the view. It is required

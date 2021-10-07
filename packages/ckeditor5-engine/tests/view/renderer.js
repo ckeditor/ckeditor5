@@ -4370,7 +4370,8 @@ describe( 'Renderer', () => {
 					// STEP #2: Now we're moving the selection somewhere else while isSelecting = true.
 					// Then comes the second render().
 					// * The filler would normally disappear:                 <p><b>foo</b></p>
-					// * But since we're rendering in Blink, this should be:  <p>"FILLER{}"<b>foo</b></p>
+					// * But since we're rendering in Blink, this should be:  <p>"FILLER"{}<b>foo</b></p>
+					//   (see the note next to the selection assertions to learn more)
 					renderer.isSelecting = true;
 
 					// <p><b>f{o}o</b></p>.
@@ -4389,10 +4390,71 @@ describe( 'Renderer', () => {
 					expect( domParagraph.childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
 					expect( domParagraph.childNodes[ 1 ].outerHTML ).to.equal( '<b>foo</b>' );
 
-					// The selection remains after the filler.
+					// The selection remains after the filler. Note: We're not refreshing the DOM selection when
+					// the user is selecting in Blink (see #_updateSelection() tests), that's why it's
+					// <p>"FILLER"{}<b>foo</b></p> and not <p>"FILLER"<b>f{o}o</b></p>.
 					expect( domSelection.rangeCount ).to.equal( 1 );
 					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ] );
 					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+				} );
+
+				it( 'should not remove the inline filler while the user is making selection and re-collapsing it', () => {
+					const domSelection = document.getSelection();
+
+					const {
+						view: viewParagraph,
+						selection: viewSelection
+					} = parse( '<container:p>[]<attribute:b>foo</attribute:b></container:p>' );
+
+					viewRoot._appendChild( viewParagraph );
+					selection._setTo( viewSelection );
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #1: The first render() is to set the initial state of the editor.
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					let domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler was inserted <p>"FILLER{}"<b>foo</b></p>.
+					expect( domParagraph.childNodes.length ).to.equal( 2 );
+					expect( domParagraph.childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+					expect( domParagraph.childNodes[ 1 ].outerHTML ).to.equal( '<b>foo</b>' );
+
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ] );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #2: Now we're moving the selection somewhere else while isSelecting = true.
+					// Then comes the second render().
+					// * The filler would normally disappear:                 <p><b>foo</b></p>
+					// * But since we're rendering in Blink, this should be:  <p>"FILLER{}"<b>foo</b></p>
+					renderer.isSelecting = true;
+
+					// <p><b>[]foo</b></p>.
+					selection._setTo(
+						ViewRange._createFromParentsAndOffsets(
+							viewParagraph.getChild( 0 ), 0,
+							viewParagraph.getChild( 0 ), 0
+						)
+					);
+					renderer.markToSync( 'children', viewParagraph );
+					renderer.render();
+
+					domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler is still there <p>"FILLER"<b>[]foo</b></p>.
+					expect( domParagraph.childNodes.length ).to.equal( 2 );
+					expect( domParagraph.childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+					expect( domParagraph.childNodes[ 1 ].outerHTML ).to.equal( '<b>foo</b>' );
+
+					// The selection remains after the filler.
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 1 ] );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
 					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 				} );
 
