@@ -93,16 +93,14 @@ export default class TableEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: [ 'headingRows' ],
-				children: true
+				attributes: [ 'headingRows' ]
 			},
 			view: downcastTable( tableUtils, { asWidget: true } )
 		} );
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
-				attributes: [ 'headingRows' ],
-				children: true
+				attributes: [ 'headingRows' ]
 			},
 			view: downcastTable( tableUtils )
 		} );
