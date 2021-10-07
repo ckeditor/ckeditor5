@@ -1098,7 +1098,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 		} );
 
-		describe( 'intersecting selection', () => {
+		describe( 'intersecting selection - merge ranges', () => {
 			it( 'should return one merged range: A+B+C - #1', () => {
 				setModelData( model,
 					'<paragraph>fo[o b][ar b]az</paragraph>'
@@ -1155,6 +1155,26 @@ describe( 'Selection post-fixer', () => {
 				expect( mergedRanges.length ).to.equal( 2 );
 				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
 				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo [bar ba]z</paragraph>' );
+			} );
+
+			it( 'should return two ranges: A+B,C', () => {
+				setModelData( model,
+					'<paragraph>f[oo][ bar] baz</paragraph>'	// foo bar baz
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 8 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 3 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo[ bar] baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 2 ] ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 			} );
 		} );
 

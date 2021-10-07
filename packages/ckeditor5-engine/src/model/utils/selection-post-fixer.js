@@ -264,11 +264,10 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 }
 
 /**
- * Returns a minimal non-intersecting array of ranges.
- * Remove duplicated ranges, merge intersecting ranges into one.
+ * Returns a minimal non-intersecting array of ranges without duplicates.
  *
- * @param {Array.<module:engine/model/range~Range>} ranges
- * @returns {Array.<module:engine/model/range~Range>}
+ * @param {Array.<module:engine/model/range~Range>} Ranges to merge.
+ * @returns {Array.<module:engine/model/range~Range>} Array of unique and nonIntersecting ranges.
  */
 export function mergeIntersectingRanges( ranges ) {
 	const rangesToMerge = [ ...ranges ];
@@ -290,7 +289,7 @@ export function mergeIntersectingRanges( ranges ) {
 				rangeIndexesToRemove.add( previousRangeIndex );
 				rangeIndexesToRemove.add( currentRangeIndex );
 
-				const mergedRange = createMergedRange( previousRange, currentRange );
+				const mergedRange = currentRange.getJoined( previousRange );
 				rangesToMerge.push( mergedRange );
 			}
 		}
@@ -310,16 +309,4 @@ export function mergeIntersectingRanges( ranges ) {
 // @returns {Boolean}
 function isSelectable( node, schema ) {
 	return node && schema.isSelectable( node );
-}
-
-// Create sum of two ranges
-//
-// @param {module:engine/model/range~Range} range1
-// @param {module:engine/model/range~Range} range2
-// @returns {module:engine/model/range~Range} mergedRange
-function createMergedRange( range1, range2 ) {
-	const start = range1.start.isAfter( range2.start ) ? range2.start : range1.start;
-	const end = range1.end.isAfter( range2.end ) ? range1.end : range2.end;
-
-	return new Range( start, end );
 }
