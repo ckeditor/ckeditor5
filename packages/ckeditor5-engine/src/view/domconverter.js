@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, Text */
+/* globals document, Node, NodeFilter, DOMParser, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -269,7 +269,7 @@ export default class DomConverter {
 					domElement = domDocument.createComment( viewNode.getCustomProperty( '$rawContent' ) );
 				} else {
 					// UIElement has its own render() method (see #799).
-					domElement = viewNode.render( domDocument );
+					domElement = viewNode.render( domDocument, this );
 				}
 
 				if ( options.bind ) {
@@ -293,7 +293,7 @@ export default class DomConverter {
 				// RawElement take care of their children in RawElement#render() method which can be customized
 				// (see https://github.com/ckeditor/ckeditor5/issues/4469).
 				if ( viewNode.is( 'rawElement' ) ) {
-					viewNode.render( domElement );
+					viewNode.render( domElement, this );
 				}
 
 				if ( options.bind ) {
@@ -342,6 +342,66 @@ export default class DomConverter {
 			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
 			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
 		);
+	}
+
+	setContentOf( domNode, html ) {
+		// For data pipeline we pass the HTML as-is.
+		if ( this.renderingMode !== 'editing' ) {
+			domNode.innerHTML = html;
+
+			return;
+		}
+
+		const document = new DOMParser().parseFromString( html, 'text/html' );
+		const fragment = document.createDocumentFragment();
+		const bodyChildNodes = document.body.childNodes;
+
+		while ( bodyChildNodes.length > 0 ) {
+			fragment.appendChild( bodyChildNodes[ 0 ] );
+		}
+
+		const treeWalker = document.createTreeWalker( fragment, NodeFilter.SHOW_ELEMENT );
+
+		const scriptNodes = [];
+		let currentNode;
+
+		// eslint-disable-next-line no-cond-assign
+		while ( currentNode = treeWalker.nextNode() ) {
+			if ( currentNode.nodeType == Node.ELEMENT_NODE && currentNode.tagName.toLowerCase() == 'script' ) {
+				// Collect all the <script> nodes to replace them with <span> later.
+				scriptNodes.push( currentNode );
+			}
+
+			const attributeNames = currentNode.getAttributeNames();
+
+			attributeNames.forEach( attributeName => {
+				const attributeValue = currentNode.getAttribute( attributeName );
+
+				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
+					currentNode.removeAttribute( attributeName );
+				}
+			} );
+		}
+
+		// Replace each <script> tag with <span>.
+		scriptNodes.forEach( node => {
+			const span = document.createElement( 'span' );
+
+			// Mark the span replacing a script as hidden.
+			span.setAttribute( 'data-ck-hidden', 'script' );
+			span.innerHTML = node.innerHTML;
+
+			// Copy all the attributes to the element being replaced with.
+			node.getAttributeNames().forEach( attributeName => {
+				const attributeValue = node.getAttribute( attributeName );
+
+				span.setAttribute( attributeName, attributeValue );
+			} );
+			node.replaceWith( span );
+		} );
+
+		domNode.innerHTML = '';
+		domNode.append( fragment );
 	}
 
 	/**
