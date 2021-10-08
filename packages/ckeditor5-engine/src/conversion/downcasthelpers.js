@@ -238,8 +238,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
 	 *			model: {
 	 *				name: 'table',
-	 *				attributes: [ 'headingRows' ],
-	 *				children: true
+	 *				attributes: [ 'headingRows' ]
 	 *			},
 	 *			view: ( modelElement, conversionApi ) => {
 	 *				const { writer, slotFor } = conversionApi;
@@ -289,8 +288,6 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {String} [config.model.name] The name of the model element to convert.
  	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
 	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
- 	 * @param {Boolean} [config.model.children] Specifies whether the view structure requires reconversion if the list
-	 * of model child nodes changed.
 	 * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view A function
 	 * that takes the model element and {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi downcast
 	 * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
@@ -1055,6 +1052,7 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 		// Convert attributes before converting children.
 		conversionApi.convertAttributes( data.item );
 
+		// Convert children or reinsert previous view elements.
 		reinsertOrConvertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
 	};
 }
@@ -1687,7 +1685,6 @@ function downcastElementToElement( config ) {
 // @param {String|Object} config.model
 // @param {String} [config.model.name]
 // @param {Array.<String>} [config.model.attributes]
-// @param {Boolean} [config.model.children]
 // @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view
 // @returns {Function} Conversion helper.
 function downcastElementToStructure( config ) {

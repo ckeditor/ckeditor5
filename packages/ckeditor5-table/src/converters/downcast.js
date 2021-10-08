@@ -11,7 +11,12 @@ import TableWalker from './../tablewalker';
 import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
 
 /**
- * TODO
+ * Model table element to view table element conversion helper.
+ *
+ * @param {module:table/tableutils~TableUtils} tableUtils The `TableUtils` plugin instance.
+ * @param {Object} options
+ * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @returns {Function} Element creator.
  */
 export function downcastTable( tableUtils, options = {} ) {
 	return ( table, { writer, slotFor } ) => {
@@ -54,7 +59,9 @@ export function downcastTable( tableUtils, options = {} ) {
 }
 
 /**
- * TODO
+ * Model table row element to view `<tr>` element conversion helper.
+ *
+ * @returns {Function} Element creator.
  */
 export function downcastRow() {
 	return ( tableRow, { writer } ) => {
@@ -65,7 +72,14 @@ export function downcastRow() {
 }
 
 /**
- * TODO
+ * Model table cell element to view `<td>` or `<th>` element conversion helper.
+ *
+ * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
+ * and `<td>` otherwise.
+ *
+ * @param {Object} options
+ * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @returns {Function} Element creator.
  */
 export function downcastCell( options = {} ) {
 	return ( tableCell, { writer } ) => {
@@ -74,16 +88,14 @@ export function downcastCell( options = {} ) {
 		const rowIndex = table.getChildIndex( tableRow );
 
 		const tableWalker = new TableWalker( table, { row: rowIndex } );
-
-		const tableAttributes = {
-			headingRows: table.getAttribute( 'headingRows' ) || 0,
-			headingColumns: table.getAttribute( 'headingColumns' ) || 0
-		};
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
 		// We need to iterate over a table in order to get proper row & column values from a walker.
 		for ( const tableSlot of tableWalker ) {
-			if ( tableSlot.cell === tableCell ) {
-				const cellElementName = getCellElementName( tableSlot, tableAttributes );
+			if ( tableSlot.cell == tableCell ) {
+				const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+				const cellElementName = isHeading ? 'th' : 'td';
 
 				return options.asWidget ?
 					toWidgetEditable( writer.createEditableElement( cellElementName ), writer ) :
@@ -97,12 +109,14 @@ export function downcastCell( options = {} ) {
  * Overrides paragraph inside table cell conversion.
  *
  * This converter:
- * * should be used to override default paragraph conversion in the editing view.
- * * It will only convert <paragraph> placed directly inside <tableCell>.
+ * * should be used to override default paragraph conversion.
+ * * It will only convert `<paragraph>` placed directly inside `<tableCell>`.
  * * For a single paragraph without attributes it returns `<span>` to simulate data table.
  * * For all other cases it returns `<p>` element.
  *
- * TODO
+ * @param {Object} options
+ * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @returns {Function} Element creator.
  */
 export function convertParagraphInTableCell( options = {} ) {
 	return ( modelElement, { writer, consumable, mapper } ) => {
@@ -138,7 +152,7 @@ export function convertParagraphInTableCell( options = {} ) {
 export function isSingleParagraphWithoutAttributes( modelElement ) {
 	const tableCell = modelElement.parent;
 
-	const isSingleParagraph = tableCell.childCount === 1;
+	const isSingleParagraph = tableCell.childCount == 1;
 
 	return isSingleParagraph && !hasAnyAttribute( modelElement );
 }
@@ -155,18 +169,6 @@ function toTableWidget( viewElement, writer ) {
 	writer.setCustomProperty( 'table', true, viewElement );
 
 	return toWidget( viewElement, writer, { hasSelectionHandle: true } );
-}
-
-// Returns `th` for heading cells and `td` for other cells for the current table walker value.
-//
-// @param {module:table/tablewalker~TableSlot} tableSlot
-// @param {{headingColumns, headingRows}} tableAttributes
-// @returns {String}
-function getCellElementName( { row, column }, { headingColumns, headingRows } ) {
-	const isColumnHeading = headingRows && row < headingRows;
-	const isRowHeading = headingColumns && column < headingColumns;
-
-	return isColumnHeading || isRowHeading ? 'th' : 'td';
 }
 
 // Checks if an element has any attributes set.

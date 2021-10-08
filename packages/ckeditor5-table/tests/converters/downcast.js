@@ -122,7 +122,7 @@ describe( 'downcast converters', () => {
 
 				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
 				expect( viewTableAfter ).to.not.equal( viewTableBefore );
-				expect( viewTableRow0After ).to.equal( viewTableRow0Before );
+				expect( viewTableRow0After ).to.not.equal( viewTableRow0Before );
 				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
 				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
 				expect( viewTableCell1After ).to.equal( viewTableCell1Before );

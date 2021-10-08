@@ -10,9 +10,7 @@
 import { isSingleParagraphWithoutAttributes } from './downcast';
 
 /**
- * TODO
- *
- * Injects a table cell post-fixer into the model which marks the table cell in the differ to have it re-rendered.
+ * A table cell refresh handler which marks the table cell in the differ to have it re-rendered.
  *
  * Model `paragraph` inside a table cell can be rendered as `<span>` or `<p>`. It is rendered as `<span>` if this is the only block
  * element in that table cell and it does not have any attributes. It is rendered as `<p>` otherwise.
@@ -38,7 +36,7 @@ export default function tableCellRefreshHandler( model, mapper ) {
 	}
 
 	for ( const tableCell of cellsToCheck.values() ) {
-		for ( const paragraph of [ ...tableCell.getChildren() ].filter( child => shouldRefresh( child, mapper ) ) ) {
+		for ( const paragraph of Array.from( tableCell.getChildren() ).filter( child => shouldRefresh( child, mapper ) ) ) {
 			differ.refreshItem( paragraph );
 		}
 	}

@@ -10,22 +10,23 @@
 import TableWalker from '../tablewalker';
 
 /**
- * TODO
+ * A table headings refresh handler which marks the table cells or rows in the differ to have it re-rendered
+ * if the headings attribute changed.
  *
- * Injects a table post-fixer into the model which marks the table in the differ to have it re-rendered.
+ * Table heading rows and heading columns are represented in the model by a `headingRows` and `headingColumns` attributes.
  *
- * Table heading rows are represented in the model by a `headingRows` attribute. However, in the view, it's represented as separate
- * sections of the table (`<thead>` or `<tbody>`) and changing `headingRows` attribute requires moving table rows between two sections.
- * This causes problems with structural changes in a table (like adding and removing rows) thus atomic converters cannot be used.
- *
- * When table `headingRows` attribute changes, the entire table is re-rendered.
+ * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
  *
  * @param {module:engine/model/model~Model} model
+ * @param {module:engine/conversion/mapper~Mapper} mapper
  */
 export default function tableHeadingsRefreshHandler( model, mapper ) {
 	const differ = model.document.differ;
 
 	for ( const change of differ.getChanges() ) {
+		let table;
+		let isRowChange = false;
+
 		if ( change.type == 'attribute' ) {
 			const element = change.range.start.nodeAfter;
 
@@ -33,50 +34,35 @@ export default function tableHeadingsRefreshHandler( model, mapper ) {
 				continue;
 			}
 
-			if ( change.attributeKey == 'headingRows' ) {
-				reconvertOnAttributeChange( differ, change, element, 'startRow', 'endRow' );
-			} else if ( change.attributeKey == 'headingColumns' ) {
-				reconvertOnAttributeChange( differ, change, element, 'startColumn', 'endColumn' );
+			if ( change.attributeKey != 'headingRows' && change.attributeKey != 'headingColumns' ) {
+				continue;
 			}
-		} else {
-			/* istanbul ignore else */
-			if ( change.type == 'insert' || change.type == 'remove' ) {
-				if ( change.name != 'tableRow' && change.name != 'tableCell' ) {
-					continue;
-				}
 
-				const table = change.position.findAncestor( 'table' );
-				const headingRows = table.getAttribute( 'headingRows' ) || 0;
-				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+			table = element;
+			isRowChange = change.attributeKey == 'headingRows';
+		} else if ( change.name == 'tableRow' || change.name == 'tableCell' ) {
+			table = change.position.findAncestor( 'table' );
+			isRowChange = change.name == 'tableRow';
+		}
 
-				const tableWalker = new TableWalker( table );
+		if ( !table ) {
+			continue;
+		}
 
-				for ( const tableSlot of tableWalker ) {
-					const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
-					const expectedElementName = isHeading ? 'th' : 'td';
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
-					const viewElement = mapper.toViewElement( tableSlot.cell );
+		const tableWalker = new TableWalker( table );
 
-					if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
-						differ.refreshItem( change.name == 'tableRow' ? tableSlot.cell.parent : tableSlot.cell );
-					}
-				}
+		for ( const tableSlot of tableWalker ) {
+			const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
+			const expectedElementName = isHeading ? 'th' : 'td';
+
+			const viewElement = mapper.toViewElement( tableSlot.cell );
+
+			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
+				differ.refreshItem( isRowChange ? tableSlot.cell.parent : tableSlot.cell );
 			}
 		}
-	}
-}
-
-// TODO
-function reconvertOnAttributeChange( differ, change, table, startOption, endOption ) {
-	const oldHeadings = change.attributeOldValue || 0;
-	const newHeadings = change.attributeNewValue || 0;
-
-	const tableWalker = new TableWalker( table, {
-		[ startOption ]: Math.min( oldHeadings, newHeadings ),
-		[ endOption ]: Math.max( oldHeadings, newHeadings ) - 1
-	} );
-
-	for ( const tableSlot of tableWalker ) {
-		differ.refreshItem( tableSlot.cell );
 	}
 }
