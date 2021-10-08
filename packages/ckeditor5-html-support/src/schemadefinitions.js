@@ -52,18 +52,6 @@ export default {
 	block: [
 		// Existing features
 		{
-			model: 'heading1',
-			view: 'h2'
-		},
-		{
-			model: 'heading2',
-			view: 'h3'
-		},
-		{
-			model: 'heading3',
-			view: 'h4'
-		},
-		{
 			model: 'codeBlock',
 			view: 'pre'
 		},
@@ -319,24 +307,6 @@ export default {
 			view: 'form',
 			modelSchema: {
 				inheritAllFrom: '$htmlSection'
-			}
-		},
-		{
-			model: 'htmlHgroup',
-			view: 'hgroup',
-			modelSchema: {
-				allowChildren: [
-					'htmlHeading1',
-					'htmlHeading2',
-					'htmlHeading3',
-					'htmlHeading4',
-					'htmlHeading5',
-					'htmlHeading6',
-					'heading1',
-					'heading2',
-					'heading3'
-				],
-				isBlock: true
 			}
 		},
 		{
