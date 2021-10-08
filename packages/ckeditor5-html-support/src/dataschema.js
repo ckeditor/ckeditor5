@@ -107,7 +107,7 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
-	 * Updates schema definition descibing block element with new properties.
+	 * Updates schema definition descibing inline element with new properties.
 	 *
 	 * Creates new scheme if it doesn't exist.
 	 * Array properties are concatenated with original values.
