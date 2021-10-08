@@ -216,11 +216,10 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-
-import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 
 /**
- * Client custom plugin extending HTML support for compatibility.
+ * A plugin extending General HTML Support for example custom HTML elements.
  */
 class ExtendHTMLSupport extends Plugin {
 	static get requires() {
@@ -228,10 +227,9 @@ class ExtendHTMLSupport extends Plugin {
 	}
 
 	init() {
+		// Extend schema with custom HTML elements.
 		const dataFilter = this.editor.plugins.get( 'DataFilter' );
 		const dataSchema = this.editor.plugins.get( 'DataSchema' );
-
-		// Extend schema with custom HTML elements.
 
 		// Inline element
 		dataSchema.registerInlineElement( {
@@ -239,7 +237,7 @@ class ExtendHTMLSupport extends Plugin {
 			model: 'myElementInline'
 		} );
 
-		// Custom elements need to be filtered using direct API instead of config.
+		// Custom elements need to be registered using direct API instead of config.
 		dataFilter.allowElement( 'element-inline' );
 		dataFilter.allowAttributes( { name: 'element-inline', attributes: { 'data-foo': false }, classes: [ 'foo' ] } );
 
@@ -276,7 +274,7 @@ ClassicEditor
 	} )
 ```
 
-Both inline and block elements can be treated as object elements. To make it possible, it is necessary to set {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject:true}.
+Both inline and block elements can be treated as object elements. To make it possible, it is necessary to set {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.
 
 ```js
 // Inline object element
