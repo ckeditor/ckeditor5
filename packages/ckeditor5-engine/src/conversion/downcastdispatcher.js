@@ -579,12 +579,12 @@ export default class DowncastDispatcher {
 	 *
 	 * @private
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
-	 * @param {Set.<module:engine/model/element~Element>} [invalidatedMappings] A set of model elements that should not reuse their
+	 * @param {Set.<module:engine/model/element~Element>} [refreshedItems] A set of model elements that should not reuse their
 	 * previous view representations.
 	 * @param {Object} [options] Optional options passed to `convertionApi.options`.
 	 * @return {module:engine/conversion/downcastdispatcher~DowncastConversionApi} The conversion API object.
 	 */
-	_createConversionApi( writer, invalidatedMappings = new Set(), options = {} ) {
+	_createConversionApi( writer, refreshedItems = new Set(), options = {} ) {
 		const conversionApi = {
 			...this._conversionApi,
 			consumable: new Consumable(),
@@ -593,7 +593,7 @@ export default class DowncastDispatcher {
 			convertItem: item => this._convertInsert( Range._createOn( item ), conversionApi ),
 			convertChildren: element => this._convertInsert( Range._createIn( element ), conversionApi, { doNotAddConsumables: true } ),
 			convertAttributes: item => this._testAndFireAddAttributes( item, conversionApi ),
-			canReuseView: viewElement => !invalidatedMappings.has( conversionApi.mapper.toModelElement( viewElement ) )
+			canReuseView: viewElement => !refreshedItems.has( conversionApi.mapper.toModelElement( viewElement ) )
 		};
 
 		this._firedEventsMap.set( conversionApi, new Map() );

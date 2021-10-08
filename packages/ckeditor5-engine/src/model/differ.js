@@ -100,7 +100,7 @@ export default class Differ {
 		this._cachedChangesWithGraveyard = null;
 
 		/**
-		 * Set of model items that were marked to get refreshed.
+		 * Set of model items that were marked to get refreshed in {@link #refreshItem}.
 		 *
 		 * @private
 		 * @type {Set.<module:engine/model/item~Item>}

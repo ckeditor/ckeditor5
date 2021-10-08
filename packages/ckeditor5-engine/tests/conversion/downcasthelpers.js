@@ -137,7 +137,7 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '' );
 		} );
 
-		describe( 'converting element itself', () => {
+		describe( 'converting element', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
 					allowIn: '$root',

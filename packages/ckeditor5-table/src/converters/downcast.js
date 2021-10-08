@@ -14,8 +14,8 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  * Model table element to view table element conversion helper.
  *
  * @param {module:table/tableutils~TableUtils} tableUtils The `TableUtils` plugin instance.
- * @param {Object} options
- * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @param {Object} [options]
+ * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Element creator.
  */
 export function downcastTable( tableUtils, options = {} ) {
@@ -77,8 +77,8 @@ export function downcastRow() {
  * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
  * and `<td>` otherwise.
  *
- * @param {Object} options
- * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @param {Object} [options]
+ * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Element creator.
  */
 export function downcastCell( options = {} ) {
@@ -114,8 +114,8 @@ export function downcastCell( options = {} ) {
  * * For a single paragraph without attributes it returns `<span>` to simulate data table.
  * * For all other cases it returns `<p>` element.
  *
- * @param {Object} options
- * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
+ * @param {Object} [options]
+ * @param {Boolean} [options.asWidget] If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Element creator.
  */
 export function convertParagraphInTableCell( options = {} ) {

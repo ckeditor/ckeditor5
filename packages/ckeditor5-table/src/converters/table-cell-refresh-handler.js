@@ -36,7 +36,9 @@ export default function tableCellRefreshHandler( model, mapper ) {
 	}
 
 	for ( const tableCell of cellsToCheck.values() ) {
-		for ( const paragraph of Array.from( tableCell.getChildren() ).filter( child => shouldRefresh( child, mapper ) ) ) {
+		const paragraphsToRefresh = Array.from( tableCell.getChildren() ).filter( child => shouldRefresh( child, mapper ) );
+
+		for ( const paragraph of paragraphsToRefresh ) {
 			differ.refreshItem( paragraph );
 		}
 	}
