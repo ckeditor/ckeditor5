@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 import defaultConfig from './schemadefinitions';
+import { mergeWith } from 'lodash-es';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -94,15 +95,27 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
-	 * Gets previously added schema definition.
+	 * Updates schema definition descibing block element with new properties.
 	 *
-	 * Returns undefined if no schema for given model has been added.
+	 * Creates new scheme if it doesn't exist.
+	 * Array properties are concatenated with original values.
 	 *
-	 * @param {String} modelName
-	 * @returns {module:html-support/dataschema~DataSchemaDefinition|undefined}
+	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition Definition update
 	 */
-	getDefinition( modelName ) {
-		return this._definitions.get( modelName );
+	extendBlockElement( definition ) {
+		this._extendDefinition( { ...definition, isBlock: true } );
+	}
+
+	/**
+	 * Updates schema definition descibing block element with new properties.
+	 *
+	 * Creates new scheme if it doesn't exist.
+	 * Array properties are concatenated with original values.
+	 *
+	 * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition Definition update
+	 */
+	extendInlineElement( definition ) {
+		this._extendDefinition( { ...definition, isInline: true } );
 	}
 
 	/**
@@ -166,6 +179,25 @@ export default class DataSchema extends Plugin {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Updates schema definition with new properties.
+	 *
+	 * Creates new scheme if it doesn't exist.
+	 * Array properties are concatenated with original values.
+	 *
+	 * @private
+	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition Definition update
+	 */
+	_extendDefinition( definition ) {
+		const currentDefinition = this._definitions.get( definition.model );
+
+		const mergedDefinition = mergeWith( {}, currentDefinition, definition, ( target, source ) => {
+			return Array.isArray( target ) ? target.concat( source ) : undefined;
+		} );
+
+		this._definitions.set( definition.model, mergedDefinition );
 	}
 }
 

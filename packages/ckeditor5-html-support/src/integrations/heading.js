@@ -30,7 +30,7 @@ export default class HeadingElementSupport extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		if ( !editor.plugins.has( 'Heading' ) ) {
+		if ( !editor.plugins.has( 'HeadingEditing' ) ) {
 			return;
 		}
 
@@ -49,22 +49,11 @@ export default class HeadingElementSupport extends Plugin {
 			}
 		}
 
-		const htmlGroupSchema = dataSchema.get( 'htmlHgroup' );
-
-		if ( htmlGroupSchema ) {
-			const modelSchema = htmlGroupSchema.modelSchema || {};
-			const allowChildren = modelSchema.allowChildren || [];
-
-			dataSchema.registerBlockElement( {
-				...htmlGroupSchema,
-				modelSchema: {
-					...modelSchema,
-					allowChildren: [
-						...allowChildren,
-						...headerModels
-					]
-				}
-			} );
-		}
+		dataSchema.extendBlockElement( {
+			model: 'htmlHgroup',
+			modelSchema: {
+				allowChildren: headerModels
+			}
+		} );
 	}
 }
