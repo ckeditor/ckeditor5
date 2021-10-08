@@ -220,10 +220,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin: 0 auto;
 }
 
-.live-snippet blockquote p:first-of-type {
-	margin-bottom: 1.5rem;
-}
-
 /* https://github.com/ckeditor/ckeditor5/issues/899 */
 .live-snippet .ck-dropdown .ck.ck-list {
 	margin: 0;
