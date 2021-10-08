@@ -29,18 +29,14 @@ export default class HeadingElementSupport extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+
+		if ( !editor.plugins.has( 'Heading' ) ) {
+			return;
+		}
+
 		const dataSchema = editor.plugins.get( DataSchema );
-
-		const options = editor.plugins.has( 'Heading' ) ? editor.config.get( 'heading.options' ) : [];
-
-		const htmlGroupChildren = [
-			'htmlH1',
-			'htmlH2',
-			'htmlH3',
-			'htmlH4',
-			'htmlH5',
-			'htmlH6'
-		];
+		const options = editor.config.get( 'heading.options' );
+		const headerModels = [];
 
 		for ( const option of options ) {
 			if ( 'model' in option && 'view' in option ) {
@@ -49,17 +45,26 @@ export default class HeadingElementSupport extends Plugin {
 					model: option.model
 				} );
 
-				htmlGroupChildren.push( option.model );
+				headerModels.push( option.model );
 			}
 		}
 
-		// I'm not sure if it should be defined here. Mayby only amended somehow.
-		dataSchema.registerBlockElement( {
-			model: 'htmlHgroup',
-			view: 'hgroup',
-			modelSchema: {
-				allowChildren: htmlGroupChildren
-			}
-		} );
+		const htmlGroupSchema = dataSchema.get( 'htmlHgroup' );
+
+		if ( htmlGroupSchema ) {
+			const modelSchema = htmlGroupSchema.modelSchema || {};
+			const allowChildren = modelSchema.allowChildren || [];
+
+			dataSchema.registerBlockElement( {
+				...htmlGroupSchema,
+				modelSchema: {
+					...modelSchema,
+					allowChildren: [
+						...allowChildren,
+						...headerModels
+					]
+				}
+			} );
+		}
 	}
 }

@@ -310,6 +310,21 @@ export default {
 			}
 		},
 		{
+			model: 'htmlHgroup',
+			view: 'hgroup',
+			modelSchema: {
+				allowChildren: [
+					'htmlH1',
+					'htmlH2',
+					'htmlH3',
+					'htmlH4',
+					'htmlH5',
+					'htmlH6'
+				],
+				isBlock: true
+			}
+		},
+		{
 			model: 'htmlH1',
 			view: 'h1',
 			modelSchema: {

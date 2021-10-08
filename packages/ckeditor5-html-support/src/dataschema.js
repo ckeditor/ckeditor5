@@ -94,6 +94,18 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
+	 * Gets previously added schema definition.
+	 *
+	 * Returns undefined if no schema for given model has been added.
+	 *
+	 * @param {String} modelName
+	 * @returns {module:html-support/dataschema~DataSchemaDefinition|undefined}
+	 */
+	getDefinition( modelName ) {
+		return this._definitions.get( modelName );
+	}
+
+	/**
 	 * Returns all definitions matching the given view name.
 	 *
 	 * @param {String|RegExp} viewName
