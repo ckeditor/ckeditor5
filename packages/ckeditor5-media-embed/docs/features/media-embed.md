@@ -1,5 +1,7 @@
 ---
 category: features
+menu-title: Media embed
+modified_at: 2021-10-08
 ---
 
 {@snippet features/build-media-source}
