@@ -234,6 +234,90 @@ export default class DomConverter {
 	}
 
 	/**
+	 * Decide whether given pair of attribute key and value should be passed further down the pipeline.
+	 *
+	 * @param {String} attributeKey
+	 * @param {String} attributeValue
+	 * @returns {Boolean}
+	 */
+	shouldRenderAttribute( attributeKey, attributeValue ) {
+		if ( this.renderingMode === 'data' ) {
+			return true;
+		}
+
+		return !( attributeKey.toLowerCase().startsWith( 'on' ) ||
+			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
+			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
+		);
+	}
+
+	/**
+	 * Set `domElement`'s content using provided `html` argument. Apply necessary filtering for the editing pipeline.
+	 *
+	 * @param {Element} domElement DOM element that should have `html` set as its content.
+	 * @param {String} html Textual representation of the HTML that will be set on `domElement`.
+	 */
+	setContentOf( domElement, html ) {
+		// For data pipeline we pass the HTML as-is.
+		if ( this.renderingMode !== 'editing' ) {
+			domElement.innerHTML = html;
+
+			return;
+		}
+
+		const document = new DOMParser().parseFromString( html, 'text/html' );
+		const fragment = document.createDocumentFragment();
+		const bodyChildNodes = document.body.childNodes;
+
+		while ( bodyChildNodes.length > 0 ) {
+			fragment.appendChild( bodyChildNodes[ 0 ] );
+		}
+
+		const treeWalker = document.createTreeWalker( fragment, NodeFilter.SHOW_ELEMENT );
+
+		const scriptNodes = [];
+		let currentNode;
+
+		// eslint-disable-next-line no-cond-assign
+		while ( currentNode = treeWalker.nextNode() ) {
+			if ( currentNode.nodeType == Node.ELEMENT_NODE && currentNode.tagName.toLowerCase() == 'script' ) {
+				// Collect all the <script> nodes to replace them with <span> later.
+				scriptNodes.push( currentNode );
+			}
+
+			const attributeNames = currentNode.getAttributeNames();
+
+			attributeNames.forEach( attributeName => {
+				const attributeValue = currentNode.getAttribute( attributeName );
+
+				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
+					currentNode.removeAttribute( attributeName );
+				}
+			} );
+		}
+
+		// Replace each <script> tag with <span>.
+		scriptNodes.forEach( node => {
+			const span = document.createElement( 'span' );
+
+			// Mark the span replacing a script as hidden.
+			span.setAttribute( 'data-ck-hidden', 'script' );
+			span.innerHTML = node.innerHTML;
+
+			// Copy all the attributes to the element being replaced with.
+			node.getAttributeNames().forEach( attributeName => {
+				const attributeValue = node.getAttribute( attributeName );
+
+				span.setAttribute( attributeName, attributeValue );
+			} );
+			node.replaceWith( span );
+		} );
+
+		domElement.innerHTML = '';
+		domElement.append( fragment );
+	}
+
+	/**
 	 * Converts the view to the DOM. For all text nodes, not bound elements and document fragments new items will
 	 * be created. For bound elements and document fragments the method will return corresponding items.
 	 *
@@ -324,84 +408,6 @@ export default class DomConverter {
 
 			return domElement;
 		}
-	}
-
-	/**
-	 * Decide whether given pair of attribute key and value should be passed further down the pipeline.
-	 *
-	 * @param {String} attributeKey
-	 * @param {String} attributeValue
-	 * @returns {Boolean}
-	 */
-	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( this.renderingMode === 'data' ) {
-			return true;
-		}
-
-		return !( attributeKey.toLowerCase().startsWith( 'on' ) ||
-			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
-			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
-		);
-	}
-
-	setContentOf( domNode, html ) {
-		// For data pipeline we pass the HTML as-is.
-		if ( this.renderingMode !== 'editing' ) {
-			domNode.innerHTML = html;
-
-			return;
-		}
-
-		const document = new DOMParser().parseFromString( html, 'text/html' );
-		const fragment = document.createDocumentFragment();
-		const bodyChildNodes = document.body.childNodes;
-
-		while ( bodyChildNodes.length > 0 ) {
-			fragment.appendChild( bodyChildNodes[ 0 ] );
-		}
-
-		const treeWalker = document.createTreeWalker( fragment, NodeFilter.SHOW_ELEMENT );
-
-		const scriptNodes = [];
-		let currentNode;
-
-		// eslint-disable-next-line no-cond-assign
-		while ( currentNode = treeWalker.nextNode() ) {
-			if ( currentNode.nodeType == Node.ELEMENT_NODE && currentNode.tagName.toLowerCase() == 'script' ) {
-				// Collect all the <script> nodes to replace them with <span> later.
-				scriptNodes.push( currentNode );
-			}
-
-			const attributeNames = currentNode.getAttributeNames();
-
-			attributeNames.forEach( attributeName => {
-				const attributeValue = currentNode.getAttribute( attributeName );
-
-				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
-					currentNode.removeAttribute( attributeName );
-				}
-			} );
-		}
-
-		// Replace each <script> tag with <span>.
-		scriptNodes.forEach( node => {
-			const span = document.createElement( 'span' );
-
-			// Mark the span replacing a script as hidden.
-			span.setAttribute( 'data-ck-hidden', 'script' );
-			span.innerHTML = node.innerHTML;
-
-			// Copy all the attributes to the element being replaced with.
-			node.getAttributeNames().forEach( attributeName => {
-				const attributeValue = node.getAttribute( attributeName );
-
-				span.setAttribute( attributeName, attributeValue );
-			} );
-			node.replaceWith( span );
-		} );
-
-		domNode.innerHTML = '';
-		domNode.append( fragment );
 	}
 
 	/**
