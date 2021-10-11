@@ -95,24 +95,24 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
-	 * Updates schema definition descibing block element with new properties.
+	 * Updates schema definition describing block element with new properties.
 	 *
 	 * Creates new scheme if it doesn't exist.
 	 * Array properties are concatenated with original values.
 	 *
-	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition Definition update
+	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition Definition update.
 	 */
 	extendBlockElement( definition ) {
 		this._extendDefinition( { ...definition, isBlock: true } );
 	}
 
 	/**
-	 * Updates schema definition descibing inline element with new properties.
+	 * Updates schema definition describing inline element with new properties.
 	 *
 	 * Creates new scheme if it doesn't exist.
 	 * Array properties are concatenated with original values.
 	 *
-	 * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition Definition update
+	 * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition Definition update.
 	 */
 	extendInlineElement( definition ) {
 		this._extendDefinition( { ...definition, isInline: true } );
@@ -188,7 +188,7 @@ export default class DataSchema extends Plugin {
 	 * Array properties are concatenated with original values.
 	 *
 	 * @private
-	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition Definition update
+	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition Definition update.
 	 */
 	_extendDefinition( definition ) {
 		const currentDefinition = this._definitions.get( definition.model );
@@ -247,7 +247,7 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:html-support/dataschema~DataSchemaInlineElementDefinition
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
- * @property {Boolean} isInline Indicates that the definition descibes inline element.
+ * @property {Boolean} isInline Indicates that the definition describes inline element.
  * @property {Number} [priority] Element priority. Decides in what order elements are wrapped by
  * {@link module:engine/view/downcastwriter~DowncastWriter}.
  * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.
