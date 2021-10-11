@@ -29,15 +29,3 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-// For a totally unknown reason, Travis and Vimeo do not like each other and the test fail on CI.
-const metaElement = document.createElement( 'meta' );
-
-metaElement.name = 'x-cke-crawler-ignore-patterns';
-metaElement.content = JSON.stringify( {
-	'request-failure': 'vimeo.com',
-	'response-failure': 'vimeo.com',
-	'console-error': [ '<svg> attribute preserveAspectRatio', 'vimeo.com' ]
-} );
-
-document.head.appendChild( metaElement );
