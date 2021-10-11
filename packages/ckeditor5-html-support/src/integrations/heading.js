@@ -38,6 +38,8 @@ export default class HeadingElementSupport extends Plugin {
 		const options = editor.config.get( 'heading.options' );
 		const headerModels = [];
 
+		// We are registering all elements supported by HeadingEditing
+		// to enable custom attributes for those elements.
 		for ( const option of options ) {
 			if ( 'model' in option && 'view' in option ) {
 				dataSchema.registerBlockElement( {

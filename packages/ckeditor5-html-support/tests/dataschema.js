@@ -224,7 +224,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( dataSchema._definitions.get( 'modelName' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
 				model: 'modelName',
 				view: 'viewName',
 				paragraphLikeModel: 'htmlDivParagraph',
@@ -232,7 +232,7 @@ describe( 'DataSchema', () => {
 					isSelectable: true
 				},
 				isBlock: true
-			} );
+			} ] );
 		} );
 
 		it( 'should append items to array', () => {
@@ -252,7 +252,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( dataSchema._definitions.get( 'modelName' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
 				model: 'modelName',
 				view: 'viewName',
 				modelSchema: {
@@ -260,26 +260,28 @@ describe( 'DataSchema', () => {
 					allowIn: [ 'htmlDiv' ]
 				},
 				isBlock: true
-			} );
+			} ] );
 		} );
 
 		it( 'should register new schema if not registered already', () => {
 			dataSchema.extendBlockElement( {
 				model: 'modelName',
+				view: 'viewName',
 				paragraphLikeModel: 'htmlDivParagraph',
 				modelSchema: {
 					isSelectable: true
 				}
 			} );
 
-			expect( dataSchema._definitions.get( 'modelName' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
 				model: 'modelName',
+				view: 'viewName',
 				paragraphLikeModel: 'htmlDivParagraph',
 				modelSchema: {
 					isSelectable: true
 				},
 				isBlock: true
-			} );
+			} ] );
 		} );
 
 		it( 'should not modify existing schema in-place', () => {
@@ -288,7 +290,7 @@ describe( 'DataSchema', () => {
 				model: 'modelName'
 			} );
 
-			const originalSchema = dataSchema._definitions.get( 'modelName' );
+			const originalSchema = Array.from( dataSchema.getDefinitionsForView( 'viewName' ) )[ 0 ];
 
 			dataSchema.extendBlockElement( {
 				model: 'modelName',
@@ -321,7 +323,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( dataSchema._definitions.get( 'modelName' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
 				model: 'modelName',
 				view: 'viewName',
 				priority: 1,
@@ -329,7 +331,7 @@ describe( 'DataSchema', () => {
 					isSelectable: true
 				},
 				isInline: true
-			} );
+			} ] );
 		} );
 
 		it( 'should append items to array', () => {
@@ -349,7 +351,7 @@ describe( 'DataSchema', () => {
 				}
 			} );
 
-			expect( dataSchema._definitions.get( 'modelName' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
 				model: 'modelName',
 				view: 'viewName',
 				modelSchema: {
@@ -357,26 +359,28 @@ describe( 'DataSchema', () => {
 					allowIn: [ 'htmlDiv' ]
 				},
 				isInline: true
-			} );
+			} ] );
 		} );
 
 		it( 'should register new schema if not registered already', () => {
 			dataSchema.extendInlineElement( {
 				model: 'modelName',
+				view: 'viewName',
 				priority: 1,
 				modelSchema: {
 					isSelectable: true
 				}
 			} );
 
-			expect( dataSchema._definitions.get( 'modelName' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'viewName' ) ) ).to.deep.equal( [ {
 				model: 'modelName',
+				view: 'viewName',
 				priority: 1,
 				modelSchema: {
 					isSelectable: true
 				},
 				isInline: true
-			} );
+			} ] );
 		} );
 
 		it( 'should not modify existing schema in-place', () => {
@@ -385,7 +389,7 @@ describe( 'DataSchema', () => {
 				model: 'modelName'
 			} );
 
-			const originalSchema = dataSchema._definitions.get( 'modelName' );
+			const originalSchema = Array.from( dataSchema.getDefinitionsForView( 'viewName' ) )[ 0 ];
 
 			dataSchema.extendInlineElement( {
 				model: 'modelName',
