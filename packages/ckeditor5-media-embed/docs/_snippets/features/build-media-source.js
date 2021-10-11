@@ -7,8 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
-import AutoImage from '@ckeditor/ckeditor5-image/src/autoimage';
 
-ClassicEditor.builtinPlugins.push( MediaEmbed, AutoImage );
+ClassicEditor.builtinPlugins.push( MediaEmbed );
 
 window.ClassicEditor = ClassicEditor;
