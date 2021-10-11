@@ -83,7 +83,7 @@ Unfortunately, to show previews of media such as tweets, Instagram photos or Fac
 1. Show a placeholder of the embedded media in the editor (see e.g. how a tweet is presented in the [demo](#demo) above).
 2. Produce a [semantic `<oembed url="...">` tag](#semantic-data-output-default) in the data output from the editor. This output makes it possible to later use proxy services to [display the content of these media on your website](#displaying-embedded-media-on-your-website).
 
-The above limitations can be overcome with the help of proxy services like Iframely or Embedly, which is explained in the [configuration guide below](#using-external-services-for-preview).
+The above limitations can be overcome with the help of proxy services like Iframely or Embedly. If you are interested in this solution, see the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) documentation page for the details.
 
 ## Configuration
 
@@ -212,14 +212,6 @@ ClassicEditor
 ```
 
 You can take inspiration from the default configuration of this feature which you can find in: https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-media-embed/src/mediaembedediting.js
-
-## Using external services for preview
-
-To get around the limitations of showing media embed previews, you can use services like [Iframely](https://iframely.com/) - this will allow having a rich preview of the content inside CKEditor 5. By inserting an Iframely-hosted `<iframe>`, you are able to preview the content from hundreds of media providers.
-
-Follow the [Iframely integration with CKEditor 5](https://iframely.com/docs/ckeditor) page for a detailed explanation. You can also check the final result in the demo below:
-
-{@snippet features/media-embed-preview}
 
 ## Displaying embedded media on your website
 
