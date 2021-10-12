@@ -251,6 +251,31 @@ export default class DomConverter {
 		);
 	}
 
+	replaceNonViewElement( element ) {
+		if ( element.nodeType != Node.ELEMENT_NODE || element.tagName.toLowerCase() != 'script' ) {
+			return;
+		}
+
+		const node = document.createElement( 'span' );
+
+		// Mark the span replacing a script as hidden.
+		node.setAttribute( 'data-ck-hidden', 'script' );
+
+		while ( element.firstChild ) {
+			node.appendChild( element.firstChild );
+		}
+
+		element.getAttributeNames().forEach( attributeName => {
+			const attributeValue = element.getAttribute( attributeName );
+
+			if ( this.shouldRenderAttribute( attributeName, attributeValue ) ) {
+				node.setAttribute( attributeName, attributeValue );
+			}
+		} );
+
+		return node;
+	}
+
 	/**
 	 * Set `domElement`'s content using provided `html` argument. Apply necessary filtering for the editing pipeline.
 	 *
@@ -259,7 +284,7 @@ export default class DomConverter {
 	 */
 	setContentOf( domElement, html ) {
 		// For data pipeline we pass the HTML as-is.
-		if ( this.renderingMode !== 'editing' ) {
+		if ( this.renderingMode === 'data' ) {
 			domElement.innerHTML = html;
 
 			return;
@@ -274,43 +299,29 @@ export default class DomConverter {
 		}
 
 		const treeWalker = document.createTreeWalker( fragment, NodeFilter.SHOW_ELEMENT );
+		const allNodes = [];
 
-		const scriptNodes = [];
 		let currentNode;
 
 		// eslint-disable-next-line no-cond-assign
 		while ( currentNode = treeWalker.nextNode() ) {
-			if ( currentNode.nodeType == Node.ELEMENT_NODE && currentNode.tagName.toLowerCase() == 'script' ) {
-				// Collect all the <script> nodes to replace them with <span> later.
-				scriptNodes.push( currentNode );
-			}
+			allNodes.push( currentNode );
+		}
 
-			const attributeNames = currentNode.getAttributeNames();
-
-			attributeNames.forEach( attributeName => {
+		allNodes.forEach( currentNode => {
+			currentNode.getAttributeNames().forEach( attributeName => {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
 				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
 					currentNode.removeAttribute( attributeName );
 				}
 			} );
-		}
 
-		// Replace each <script> tag with <span>.
-		scriptNodes.forEach( node => {
-			const span = document.createElement( 'span' );
+			const replacement = this.replaceNonViewElement( currentNode );
 
-			// Mark the span replacing a script as hidden.
-			span.setAttribute( 'data-ck-hidden', 'script' );
-			span.innerHTML = node.innerHTML;
-
-			// Copy all the attributes to the element being replaced with.
-			node.getAttributeNames().forEach( attributeName => {
-				const attributeValue = node.getAttribute( attributeName );
-
-				span.setAttribute( attributeName, attributeValue );
-			} );
-			node.replaceWith( span );
+			if ( replacement ) {
+				currentNode.replaceWith( replacement );
+			}
 		} );
 
 		domElement.innerHTML = '';
@@ -367,9 +378,6 @@ export default class DomConverter {
 				// Create DOM element.
 				if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
-				} else if ( shouldFilter && viewNode.name === 'script' ) {
-					// Prevent script from being added and evaluated by inserting its content into a span.
-					domElement = domDocument.createElement( 'span' );
 				} else {
 					domElement = domDocument.createElement( viewNode.name );
 				}
@@ -388,15 +396,17 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
 
-					if ( !this.shouldRenderAttribute( key, value ) ) {
+					if ( shouldFilter && !this.shouldRenderAttribute( key, value ) ) {
 						continue;
 					}
 
 					domElement.setAttribute( key, value );
 				}
 
-				if ( shouldFilter && viewNode.name === 'script' ) {
-					domElement.setAttribute( 'data-ck-hidden', 'script' );
+				const replacement = this.replaceNonViewElement( domElement );
+
+				if ( shouldFilter && replacement ) {
+					domElement = replacement;
 				}
 			}
 

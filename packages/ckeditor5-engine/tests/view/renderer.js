@@ -4049,7 +4049,7 @@ describe( 'Renderer', () => {
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
 			} );
 
-			it( 'should remove attributes not present in the DOM if the view node is just a script element', () => {
+			it.only( 'should remove attributes not present in the DOM if the view node is just a script element', () => {
 				setViewData( view,
 					'<container:script data-attribute-to-remove-from-dom="foo">' +
 						'bar' +

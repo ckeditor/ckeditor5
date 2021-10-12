@@ -686,7 +686,9 @@ class ViewStringify {
 				// There's no DOM element for "root" to pass to render(). Creating
 				// a surrogate container to render the children instead.
 				const rawContentContainer = document.createElement( 'div' );
-				root.render( rawContentContainer );
+				root.render( rawContentContainer, {
+					setContentOf: ( node, html ) => { node.innerHTML = html; } }
+				);
 
 				callback( rawContentContainer.innerHTML );
 			} else {
