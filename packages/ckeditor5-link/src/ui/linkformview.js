@@ -19,7 +19,6 @@ import {
 	submitHandler
 } from 'ckeditor5/src/ui';
 import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
-import { icons } from 'ckeditor5/src/core';
 
 // See: #8833.
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
@@ -76,7 +75,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ), icons.check, 'ck-button-save' );
+		this.saveButtonView = this._createButton( t( 'Add' ), undefined, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 
 		/**
@@ -84,7 +83,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), icons.cancel, 'ck-button-cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), undefined, 'ck-button-cancel', 'cancel' );
 
 		/**
 		 * A collection of {@link module:ui/button/switchbuttonview~SwitchButtonView},
@@ -225,9 +224,10 @@ export default class LinkFormView extends View {
 	 */
 	_createUrlInput() {
 		const t = this.locale.t;
+
 		const labeledInput = new LabeledFieldView( this.locale, createLabeledInputText );
 
-		labeledInput.label = t( 'Link URL' );
+		labeledInput.fieldView.placeholder = t( 'Link URL' );
 
 		return labeledInput;
 	}
@@ -248,7 +248,7 @@ export default class LinkFormView extends View {
 		button.set( {
 			label,
 			icon,
-			tooltip: true
+			withText: true
 		} );
 
 		button.extendTemplate( {

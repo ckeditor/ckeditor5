@@ -217,8 +217,7 @@ export default class LabeledFieldView extends View {
 						]
 					},
 					children: [
-						this.fieldView,
-						this.labelView
+						this.fieldView
 					]
 				},
 				this.statusView
