@@ -96,8 +96,16 @@ export default class Command {
 		 */
 		this.set( 'isEnabled', false );
 
-		// TODO: affectsContent
-		this.affectsContent = true;
+		/**
+		 * Flag indicating whether a command execution changes editor data or not. `true` by default.
+		 *
+		 * Commands with `affectsData` set to `false` will not be automatically disabled in
+		 * {@link module:core/editor/editor~Editor#isReadOnly read-only mode}.
+		 *
+		 * @readonly
+		 * @member {Boolean} #affectsData
+		 */
+		this.affectsData = true;
 
 		/**
 		 * Holds identifiers for {@link #forceDisabled} mechanism.
@@ -121,9 +129,8 @@ export default class Command {
 		}, { priority: 'high' } );
 
 		// By default commands are disabled when the editor is in read-only mode.
-		// TODO: affectsContent
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value && this.affectsContent ) {
+			if ( value && this.affectsData ) {
 				this.forceDisabled( 'readOnlyMode' );
 			} else {
 				this.clearForceDisabled( 'readOnlyMode' );

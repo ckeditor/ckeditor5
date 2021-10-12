@@ -26,12 +26,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * @extends module:core/command~Command
  */
 export default class SelectAllCommand extends Command {
-	// TODO: affectsContent
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
-		// TODO: affectsContent
-		this.affectsContent = false;
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
 	}
 
 	/**

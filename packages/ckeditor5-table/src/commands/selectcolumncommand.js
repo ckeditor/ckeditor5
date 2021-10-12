@@ -24,12 +24,14 @@ import { getSelectionAffectedTableCells } from '../utils/selection';
  * @extends module:core/command~Command
  */
 export default class SelectColumnCommand extends Command {
-	// TODO: affectsContent
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
-		// TODO: affectsContent
-		this.affectsContent = false;
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
 	}
 
 	/**
