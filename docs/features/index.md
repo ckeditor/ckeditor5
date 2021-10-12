@@ -80,7 +80,7 @@ Use {@link features/autoformat Markdown syntax} to format content on the go to s
 
 ### Customizable user experience
 
-Work as you like it - choose user interface approach from {@link examples/index several preconfigured builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
+Work as you like it - choose user interface approach from {@link builds/guides/overview several predefined builds}, add or remove features easily to your build with the [online builder](https://ckeditor.com/ckeditor-5/online-builder/) or utilize the {@link builds/guides/development/dll-builds DLL builds}. Then taylor the user interface to your needs with our customizable {@link features/toolbar editor toolbar} arranging features buttons, dropdowns and other items whatever way you need them.
 
 {@img assets/img/toolbar.png 800 CKEditor 5 customizable UI.}
 
@@ -96,7 +96,7 @@ If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link bu
 
 ## Feature availability
 
-Plenty of these features are included by default in the preconfigured {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the predefined {@link builds/guides/overview CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
 However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
