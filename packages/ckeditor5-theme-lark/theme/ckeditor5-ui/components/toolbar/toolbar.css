@@ -7,12 +7,6 @@
 @import "@ckeditor/ckeditor5-ui/theme/mixins/_dir.css";
 
 .ck.ck-toolbar {
-	@mixin ck-rounded-corners;
-
-	background: var(--ck-color-toolbar-background);
-	padding: 0 var(--ck-spacing-small);
-	border: 1px solid var(--ck-color-toolbar-border);
-
 	& .ck.ck-toolbar__separator {
 		align-self: stretch;
 		width: 1px;
@@ -32,23 +26,11 @@
 	}
 
 	& > .ck-toolbar__items {
-		& > *:not(.ck-toolbar__line-break) {
-			/* (#11) Separate toolbar items. */
-			margin-right: var(--ck-spacing-small);
-		}
-
 		/* Don't display a separator after an empty items container, for instance,
 		when all items were grouped */
 		&:empty + .ck.ck-toolbar__separator {
 			display: none;
 		}
-	}
-
-	& > .ck-toolbar__items > *:not(.ck-toolbar__line-break),
-	& > .ck.ck-toolbar__grouped-dropdown {
-		/* Make sure items wrapped to the next line have v-spacing */
-		margin-top: var(--ck-spacing-small);
-		margin-bottom: var(--ck-spacing-small);
 	}
 
 	&.ck-toolbar_vertical {

@@ -12,7 +12,6 @@
 
 .ck.ck-button,
 a.ck.ck-button {
-	@mixin ck-button-colors --ck-color-button-default;
 	@mixin ck-rounded-corners;
 
 	white-space: nowrap;
@@ -40,12 +39,6 @@ a.ck.ck-button {
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/189 */
 	-webkit-appearance: none;
-
-	&:active,
-	&:focus {
-		@mixin ck-focus-ring;
-		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
-	}
 
 	/* Allow icon coloring using the text "color" property. */
 	& .ck-button__icon {
@@ -92,12 +85,6 @@ a.ck.ck-button {
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
 	&.ck-disabled {
-		&:active,
-		&:focus {
-			/* The disabled button should have a slightly less visible shadow when focused. */
-			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);
-		}
-
 		& .ck-button__icon {
 			@mixin ck-disabled;
 		}
@@ -134,19 +121,6 @@ a.ck.ck-button {
 		& .ck-button__label {
 			flex-grow: 1;
 		}
-	}
-
-	/* A style of the button which is currently on, e.g. its feature is active. */
-	&.ck-on {
-		@mixin ck-button-colors --ck-color-button-on;
-	}
-
-	&.ck-button-save {
-		color: var(--ck-color-button-save);
-	}
-
-	&.ck-button-cancel {
-		color: var(--ck-color-button-cancel);
 	}
 }
 

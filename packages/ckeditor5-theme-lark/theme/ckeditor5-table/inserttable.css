@@ -24,12 +24,5 @@
 	width: var(--ck-insert-table-dropdown-box-width);
 	height: var(--ck-insert-table-dropdown-box-height);
 	margin: var(--ck-insert-table-dropdown-box-margin);
-	border: 1px solid var(--ck-color-base-border);
-	border-radius: 1px;
-
-	&.ck-on {
-		border-color: var(--ck-color-focus-border);
-		background: var(--ck-color-focus-outer-shadow);
-	}
 }
 

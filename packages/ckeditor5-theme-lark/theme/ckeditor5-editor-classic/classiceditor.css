@@ -30,13 +30,4 @@
 .ck.ck-editor__main > .ck-editor__editable {
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/113 */
 	background: var(--ck-color-base-background);
-
-	@mixin ck-rounded-corners {
-		border-top-left-radius: 0;
-		border-top-right-radius: 0;
-	}
-
-	&:not(.ck-focused) {
-		border-color: var(--ck-color-base-border);
-	}
 }

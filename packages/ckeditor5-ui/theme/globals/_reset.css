@@ -7,7 +7,5 @@
 .ck.ck-reset_all,
 .ck-reset_all *:not(.ck-reset_all-excluded *) {
 	box-sizing: border-box;
-	width: auto;
-	height: auto;
 	position: static;
 }
