@@ -251,31 +251,6 @@ export default class DomConverter {
 		);
 	}
 
-	replaceNonViewElement( element ) {
-		if ( element.nodeType != Node.ELEMENT_NODE || element.tagName.toLowerCase() != 'script' ) {
-			return;
-		}
-
-		const node = document.createElement( 'span' );
-
-		// Mark the span replacing a script as hidden.
-		node.setAttribute( 'data-ck-hidden', 'script' );
-
-		while ( element.firstChild ) {
-			node.appendChild( element.firstChild );
-		}
-
-		element.getAttributeNames().forEach( attributeName => {
-			const attributeValue = element.getAttribute( attributeName );
-
-			if ( this.shouldRenderAttribute( attributeName, attributeValue ) ) {
-				node.setAttribute( attributeName, attributeValue );
-			}
-		} );
-
-		return node;
-	}
-
 	/**
 	 * Set `domElement`'s content using provided `html` argument. Apply necessary filtering for the editing pipeline.
 	 *
@@ -308,23 +283,28 @@ export default class DomConverter {
 			allNodes.push( currentNode );
 		}
 
-		allNodes.forEach( currentNode => {
-			currentNode.getAttributeNames().forEach( attributeName => {
+		for ( const currentNode of allNodes ) {
+			for ( const attributeName of currentNode.getAttributeNames() ) {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
 				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
 					currentNode.removeAttribute( attributeName );
 				}
-			} );
-
-			const replacement = this.replaceNonViewElement( currentNode );
-
-			if ( replacement ) {
-				currentNode.replaceWith( replacement );
 			}
-		} );
 
-		domElement.innerHTML = '';
+			if ( currentNode.nodeType == Node.ELEMENT_NODE ) {
+				const elementName = currentNode.tagName.toLowerCase();
+
+				if ( this._shouldRenameElement( elementName ) ) {
+					currentNode.replaceWith( this._createReplacementDomElement( elementName, currentNode ) );
+				}
+			}
+		}
+
+		while ( domElement.firstChild ) {
+			domElement.firstChild.remove();
+		}
+
 		domElement.append( fragment );
 	}
 
@@ -373,10 +353,10 @@ export default class DomConverter {
 
 				return domElement;
 			} else {
-				const shouldFilter = this.renderingMode === 'editing';
-
 				// Create DOM element.
-				if ( viewNode.hasAttribute( 'xmlns' ) ) {
+				if ( this._shouldRenameElement( viewNode.name ) ) {
+					domElement = this._createReplacementDomElement( viewNode.name );
+				} else if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
 				} else {
 					domElement = domDocument.createElement( viewNode.name );
@@ -396,17 +376,11 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
 
-					if ( shouldFilter && !this.shouldRenderAttribute( key, value ) ) {
+					if ( !this.shouldRenderAttribute( key, value ) ) {
 						continue;
 					}
 
 					domElement.setAttribute( key, value );
-				}
-
-				const replacement = this.replaceNonViewElement( domElement );
-
-				if ( shouldFilter && replacement ) {
-					domElement = replacement;
 				}
 			}
 
@@ -1493,6 +1467,44 @@ export default class DomConverter {
 	 */
 	_isViewElementWithRawContent( viewElement, options ) {
 		return options.withChildren !== false && this._rawContentElementMatcher.match( viewElement );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {String} elementName The name of view element.
+	 * @returns {Boolean}
+	 */
+	_shouldRenameElement( elementName ) {
+		return this.renderingMode == 'editing' && elementName == 'script';
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {String} elementName The name of view element.
+	 * @param {Element} [originalDomElement] The original DOM element to copy attributes and content from.
+	 * @returns {Element}
+	 */
+	_createReplacementDomElement( elementName, originalDomElement = null ) {
+		const newDomElement = document.createElement( 'span' );
+
+		// Mark the span replacing a script as hidden.
+		newDomElement.setAttribute( 'data-ck-hidden', elementName );
+
+		if ( originalDomElement ) {
+			while ( originalDomElement.firstChild ) {
+				newDomElement.appendChild( originalDomElement.firstChild );
+			}
+
+			for ( const attributeName of originalDomElement.getAttributeNames() ) {
+				newDomElement.setAttribute( attributeName, originalDomElement.getAttribute( attributeName ) );
+			}
+		}
+
+		return newDomElement;
 	}
 }
 

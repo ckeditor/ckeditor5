@@ -3,6 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-editor__editable span[data-ck-hidden=script] {
+.ck.ck-editor__editable span[data-ck-hidden] {
 	display: none;
 }
