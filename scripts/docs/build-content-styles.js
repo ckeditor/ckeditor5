@@ -189,7 +189,9 @@ function getWebpackConfig() {
 						'style-loader',
 						{
 							loader: 'postcss-loader',
-							options: postCssConfig
+							options: {
+								postcssOptions: postCssConfig
+							}
 						}
 					]
 				}
