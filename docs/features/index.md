@@ -96,7 +96,7 @@ If you want to migrate from CKEditor 4 to CKEditor 5, please check the {@link bu
 
 ## Feature availability
 
-Plenty of these features are included by default in the predefined {@link builds/guides/overview CKEditor 5 Builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
+Plenty of these features are included by default in the predefined {@link builds/guides/overview CKEditor 5 builds} and are available out-of-the-box, like {@link features/autoformat autoformatting} or {@link features/keyboard-support keyboard support}.
 
 However, some of the presented features need to be manually included in a customized CKEditor 5 build, for example the {@link features/markdown Markdown processor} which outputs Markdown instead of HTML. These plugins can also be easily and conveniently added to a custom build with the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 

@@ -14,7 +14,7 @@ The CKEditor 5 Framework is made of several [npm packages](https://npmjs.com). T
 * [Node.js](https://nodejs.org/en/) 12.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
-Besides Node.js and npm you also need [webpack@4](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
+Besides Node.js and npm you also need [webpack@4](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 builds Advanced setup} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -172,8 +172,8 @@ npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you
 	Use `webpack --mode production` if you want to build a minified and optimized application. See more in the [webpack documentation](https://webpack.js.org/concepts/mode/).
 
 	**Note:** Prior to version 1.2.7, `uglifyjs-webpack-plugin` (the default minifier used by webpack) had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
-	
-	**Note:** CKEditor 5 Builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353). 
+
+	**Note:** CKEditor 5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
 If everything worked correctly, you should see:

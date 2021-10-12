@@ -17,7 +17,7 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 ## Table of contents
 
 * [Quick start](#quick-start)
-   * [CKEditor 5 Builds](#ckeditor-5-builds)
+   * [CKEditor 5 builds](#ckeditor-5-builds)
    * [CKEditor 5 Framework](#ckeditor-5-framework)
 * [Documentation and FAQ](#documentation-and-faq)
 * [Contributing and project organization](#contributing-and-project-organization)
@@ -35,11 +35,11 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 
 ## Quick start
 
-### CKEditor 5 Builds
+### CKEditor 5 builds
 
-CKEditor 5 Builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration.
+CKEditor 5 builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration.
 
-The following CKEditor 5 Builds are currently available:
+The following CKEditor 5 builds are currently available:
 
 * [Classic editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#classic-editor)
 * [Inline editor](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/overview.html#inline-editor)
@@ -84,7 +84,7 @@ To find out how to start with other builds check the [Quick start guide in the C
 
 ### CKEditor 5 Framework
 
-CKEditor 5 Builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor 5 is also a framework for creating custom-made rich text editing solutions.
+CKEditor 5 builds allow you to quickly and easily initialize one of the many types of editors in your application. At the same time, CKEditor 5 is also a framework for creating custom-made rich text editing solutions.
 
 To find out how to start building your own editor from scratch go to [CKEditor 5 Framework overview section of CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/overview.html).
 
@@ -94,7 +94,7 @@ To find out more see the following [CKEditor 5 documentation](https://ckeditor.c
 
 * [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
 * [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 Builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
+* [CKEditor 5 builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
 * [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
 * [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 

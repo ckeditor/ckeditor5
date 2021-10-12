@@ -3,8 +3,8 @@ category: builds
 order: 10
 toc: false
 feedback-widget: false
-meta-title: CKEditor 5 Builds documentation
-meta-description: Learn how to install, integrate, configure and develop CKEditor 5 Builds. Browse through API documentation and online samples.
+meta-title: CKEditor 5 builds documentation
+meta-description: Learn how to install, integrate, configure and develop CKEditor 5 builds. Browse through API documentation and online samples.
 ---
 
 # Installing CKEditor 5
@@ -40,4 +40,4 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 ## Related links
 
  * {@link examples/index Examples} &ndash; Try live demos of all available builds.
- * {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 Builds.
+ * {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 builds.
