@@ -15,13 +15,17 @@ import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
  *
  * The command is registered by {@link module:html-embed/htmlembedediting~HtmlEmbedEditing} as `'htmlEmbed'`.
  *
- * To insert the HTML embed element at the current selection, execute the command:
+ * To insert an empty HTML embed element at the current selection, execute the command:
  *
  *		editor.execute( 'htmlEmbed' );
  *
- * To update the content of the HTML embed, select it in the content and specify the value:
+ * You can specify the initial content of a new HTML embed in the argument:
  *
- *		editor.execute( 'htmlEmbed', '<b>HTML.</b>' );
+ *		editor.execute( 'htmlEmbed', '<b>Initial content.</b>' );
+ *
+ * To update the content of the HTML embed, select it in the model and pass the content in the argument:
+ *
+ *		editor.execute( 'htmlEmbed', '<b>New content of an existing embed.</b>' );
  *
  * @extends module:core/command~Command
  */
@@ -36,7 +40,7 @@ export default class HtmlEmbedCommand extends Command {
 		const selectedRawHtmlElement = getSelectedRawHtmlModelWidget( selection );
 
 		this.isEnabled = isHtmlEmbedAllowedInParent( selection, schema, model );
-		this.value = selectedRawHtmlElement ? selectedRawHtmlElement.getAttribute( 'value' ) : null;
+		this.value = selectedRawHtmlElement ? selectedRawHtmlElement.getAttribute( 'value' ) || '' : null;
 	}
 
 	/**
@@ -46,21 +50,26 @@ export default class HtmlEmbedCommand extends Command {
 	 * * updates the content of the HTML embed if one was selected.
 	 *
 	 * @fires execute
-	 * @param {String} [value] The new content (value) of the embed (used only if selected in the model).
+	 * @param {String} [value] When passed, the value (content) will be set on a new embed or a selected one.
 	 */
 	execute( value ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
 		model.change( writer => {
-			if ( this.value !== null ) {
-				writer.setAttribute( 'value', value, getSelectedRawHtmlModelWidget( selection ) );
-			} else {
-				const rawHtmlElement = writer.createElement( 'rawHtml' );
+			let htmlEmbedElement;
 
-				model.insertContent( rawHtmlElement );
-				writer.setSelection( rawHtmlElement, 'on' );
+			// If the command has a non-null value, there must be some HTML embed selected in the model.
+			if ( this.value !== null ) {
+				htmlEmbedElement = getSelectedRawHtmlModelWidget( selection );
+			} else {
+				htmlEmbedElement = writer.createElement( 'rawHtml' );
+
+				model.insertContent( htmlEmbedElement );
+				writer.setSelection( htmlEmbedElement, 'on' );
 			}
+
+			writer.setAttribute( 'value', value, htmlEmbedElement );
 		} );
 	}
 }
