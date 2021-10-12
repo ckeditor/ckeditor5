@@ -4,26 +4,26 @@
  */
 
 // The editor creator to use.
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditorBase from '../../ckeditor5-editor-classic/src/classiceditor';
 
-import AutoLink from '@ckeditor/ckeditor5-link/src/autolink';
-import AutoFormat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
-import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import Link from '@ckeditor/ckeditor5-link/src/link';
-import List from '@ckeditor/ckeditor5-list/src/list';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import AutoLink from '../../ckeditor5-link/src/autolink';
+import AutoFormat from '../../ckeditor5-autoformat/src/autoformat';
+import Bold from '../../ckeditor5-basic-styles/src/bold';
+import BlockQuote from '../../ckeditor5-block-quote/src/blockquote';
+import Code from '../../ckeditor5-basic-styles/src/code';
+import CodeBlock from '../../ckeditor5-code-block/src/codeblock';
+import Essentials from '../../ckeditor5-essentials/src/essentials';
+import Heading from '../../ckeditor5-heading/src/heading';
+import Italic from '../../ckeditor5-basic-styles/src/italic';
+import Indent from '../../ckeditor5-indent/src/indent';
+import Link from '../../ckeditor5-link/src/link';
+import List from '../../ckeditor5-list/src/list';
+import Paragraph from '../../ckeditor5-paragraph/src/paragraph';
+import Strikethrough from '../../ckeditor5-basic-styles/src/strikethrough';
 import Table from '../../ckeditor5-table/src/table';
-import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import TableToolbar from '../../ckeditor5-table/src/tabletoolbar';
 import Markdown from '../../ckeditor5-markdown-gfm/src/markdown';
-import Mention from '@ckeditor/ckeditor5-mention/src/mention';
+import Mention from '../../ckeditor5-mention/src/mention';
 
 export default class ClassicEditor extends ClassicEditorBase { }
 
