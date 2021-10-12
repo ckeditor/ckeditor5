@@ -6,11 +6,12 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from '../_utils/utils';
 
 /* global document */
 
 describe( 'HeadingElementSupport', () => {
-	let editor, editorElement, dataSchema;
+	let editor, editorElement, model, dataSchema, dataFilter;
 
 	afterEach( () => {
 		editorElement.remove();
@@ -37,7 +38,9 @@ describe( 'HeadingElementSupport', () => {
 				} );
 
 			editor = newEditor;
+			model = editor.model;
 			dataSchema = editor.plugins.get( 'DataSchema' );
+			dataFilter = editor.plugins.get( 'DataFilter' );
 		} );
 
 		it( 'should register heading schemas', () => {
@@ -81,6 +84,61 @@ describe( 'HeadingElementSupport', () => {
 				isBlock: true
 			} ] );
 		} );
+
+		it( 'should preserve attributes on headings', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(h1|h2|h3|h4|h5)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml =
+				'<h1 data-foo="bar-1">one</h1>' +
+				'<h2 data-foo="bar-2">two</h2>' +
+				'<h3 data-foo="bar-3">three</h3>' +
+				'<h4 data-foo="bar-4">four</h4>' +
+				'<h5 data-foo="bar-5">five</h5>'
+			;
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<heading1 htmlAttributes="(1)">one</heading1>' +
+					'<heading2 htmlAttributes="(2)">two</heading2>' +
+					'<htmlH3 htmlAttributes="(3)">three</htmlH3>' +
+					'<htmlH4 htmlAttributes="(4)">four</htmlH4>' +
+					'<otherHeading htmlAttributes="(5)">five</otherHeading>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar-1'
+						}
+					},
+					2: {
+						attributes: {
+							'data-foo': 'bar-2'
+						}
+					},
+					3: {
+						attributes: {
+							'data-foo': 'bar-3'
+						}
+					},
+					4: {
+						attributes: {
+							'data-foo': 'bar-4'
+						}
+					},
+					5: {
+						attributes: {
+							'data-foo': 'bar-5'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
 	} );
 
 	describe( 'HeadingEditing plugin is not available', () => {
@@ -103,7 +161,9 @@ describe( 'HeadingElementSupport', () => {
 				} );
 
 			editor = newEditor;
+			model = editor.model;
 			dataSchema = editor.plugins.get( 'DataSchema' );
+			dataFilter = editor.plugins.get( 'DataFilter' );
 		} );
 
 		it( 'should not register heading schemas', () => {
@@ -143,6 +203,61 @@ describe( 'HeadingElementSupport', () => {
 				},
 				isBlock: true
 			} ] );
+		} );
+
+		it( 'should preserve attributes on headings', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^(h1|h2|h3|h4|h5)$/,
+				attributes: /^data-.*$/
+			} ] );
+
+			const expectedHtml =
+				'<h1 data-foo="bar-1">one</h1>' +
+				'<h2 data-foo="bar-2">two</h2>' +
+				'<h3 data-foo="bar-3">three</h3>' +
+				'<h4 data-foo="bar-4">four</h4>' +
+				'<h5 data-foo="bar-5">five</h5>'
+			;
+
+			editor.setData( expectedHtml );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data:
+					'<htmlH1 htmlAttributes="(1)">one</htmlH1>' +
+					'<htmlH2 htmlAttributes="(2)">two</htmlH2>' +
+					'<htmlH3 htmlAttributes="(3)">three</htmlH3>' +
+					'<htmlH4 htmlAttributes="(4)">four</htmlH4>' +
+					'<htmlH5 htmlAttributes="(5)">five</htmlH5>',
+				attributes: {
+					1: {
+						attributes: {
+							'data-foo': 'bar-1'
+						}
+					},
+					2: {
+						attributes: {
+							'data-foo': 'bar-2'
+						}
+					},
+					3: {
+						attributes: {
+							'data-foo': 'bar-3'
+						}
+					},
+					4: {
+						attributes: {
+							'data-foo': 'bar-4'
+						}
+					},
+					5: {
+						attributes: {
+							'data-foo': 'bar-5'
+						}
+					}
+				}
+			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 	} );
 } );
