@@ -12,8 +12,7 @@ import { ButtonView } from 'ckeditor5/src/ui';
 import { toWidget } from 'ckeditor5/src/widget';
 import { logWarning, createElement } from 'ckeditor5/src/utils';
 
-import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
-import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
+import HtmlEmbedCommand from './htmlembedcommand';
 
 import '../theme/htmlembed.css';
 
@@ -75,8 +74,7 @@ export default class HtmlEmbedEditing extends Plugin {
 			allowAttributes: [ 'value' ]
 		} );
 
-		editor.commands.add( 'updateHtmlEmbed', new UpdateHtmlEmbedCommand( editor ) );
-		editor.commands.add( 'insertHtmlEmbed', new InsertHtmlEmbedCommand( editor ) );
+		editor.commands.add( 'htmlEmbed', new HtmlEmbedCommand( editor ) );
 
 		this._setupConversion();
 	}
@@ -195,7 +193,7 @@ export default class HtmlEmbedEditing extends Plugin {
 						// If the value didn't change, we just cancel. If it changed,
 						// it's enough to update the model – the entire widget will be reconverted.
 						if ( newValue !== state.getRawHtmlValue() ) {
-							editor.execute( 'updateHtmlEmbed', newValue );
+							editor.execute( 'htmlEmbed', newValue );
 							editor.editing.view.focus();
 						} else {
 							this.cancel();
@@ -365,7 +363,7 @@ export default class HtmlEmbedEditing extends Plugin {
 function createUIButton( editor, type, onClick ) {
 	const t = editor.locale.t;
 	const buttonView = new ButtonView( editor.locale );
-	const command = editor.commands.get( 'updateHtmlEmbed' );
+	const command = editor.commands.get( 'htmlEmbed' );
 
 	buttonView.set( {
 		class: `raw-html-embed__${ type }-button`,
