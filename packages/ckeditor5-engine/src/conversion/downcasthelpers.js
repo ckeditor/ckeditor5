@@ -21,6 +21,7 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Downcast conversion helper functions.
@@ -1042,6 +1043,25 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 
 		if ( !viewElement ) {
 			return;
+		}
+
+		const hasContent = Array.from( viewElement.getChildren() )
+			.some( element => !element.is( 'uiElement' ) );
+
+		if ( hasContent ) {
+			/**
+			 * The Easy Image feature requires one of the following plugins to be loaded to work correctly:
+			 *
+			 * * {@link module:image/imageblock~ImageBlock},
+			 * * {@link module:image/imageinline~ImageInline},
+			 * * {@link module:image/image~Image} (loads both `ImageBlock` and `ImageInline`)
+			 *
+			 * Please make sure your editor configuration is correct.
+			 *
+			 * @error easy-image-image-feature-missing
+			 * @param {module:core/editor/editor~Editor} editor
+			 */
+			logWarning( 'element-to-element-used-with-multiple-elements', viewElement );
 		}
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.

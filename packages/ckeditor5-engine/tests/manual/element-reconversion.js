@@ -47,6 +47,11 @@ function Items( editor ) {
 			const attributes = { class: 'items ' };
 
 			if ( mode === 'threshold' ) {
+				writer.createEmptyElement( 'div', {
+					'data-amount': getThreshold( modelElement.childCount ),
+					...attributes
+				} );
+
 				return writer.createContainerElement( 'div', {
 					'data-amount': getThreshold( modelElement.childCount ),
 					...attributes

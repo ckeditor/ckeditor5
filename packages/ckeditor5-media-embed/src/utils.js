@@ -73,10 +73,11 @@ export function isMediaWidget( viewElement ) {
  * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createMediaFigureElement( writer, registry, url, options ) {
+export function createMediaFigureElement( { writer, slotFor }, registry, url, options ) {
 	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
 
 	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
+	writer.insert( writer.createPositionAt( figure, 1 ), slotFor( 'children' ) );
 
 	return figure;
 }

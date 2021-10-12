@@ -27,14 +27,24 @@ import { first } from 'ckeditor5/src/utils';
  * @param {'imageBlock'|'imageInline'} imageType The type of created image.
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createImageViewElement( writer, imageType ) {
+export function createInlineImageViewElement( writer ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
-
-	const container = imageType === 'imageBlock' ?
-		writer.createContainerElement( 'figure', { class: 'image' } ) :
-		writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
+	const container = writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
 
 	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+
+	return container;
+}
+
+export function createBlockImageViewElement( writer, slotFor = false ) {
+	const emptyElement = writer.createEmptyElement( 'img' );
+	const container = writer.createContainerElement( 'figure', { class: 'image' } );
+
+	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
+
+	if ( slotFor ) {
+		writer.insert( writer.createPositionAt( container, 1 ), slotFor( 'children' ) );
+	}
 
 	return container;
 }

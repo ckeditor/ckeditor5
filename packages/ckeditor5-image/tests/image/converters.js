@@ -8,7 +8,10 @@ import {
 	upcastImageFigure,
 	downcastImageAttribute
 } from '../../src/image/converters';
-import { createImageViewElement } from '../../src/image/utils';
+import {
+	createBlockImageViewElement,
+	createInlineImageViewElement
+} from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -46,18 +49,18 @@ describe( 'Image converters', () => {
 				isInline: true
 			} );
 
-			const imageEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'imageBlock' ), writer, '' );
+			const imageEditingElementCreator = ( modelElement, { writer, slotFor } ) =>
+				imageUtils.toImageWidget( createBlockImageViewElement( writer, slotFor ), writer, '' );
 
 			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
+				imageUtils.toImageWidget( createInlineImageViewElement( writer ), writer, '' );
 
-			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
 				model: 'imageBlock',
 				view: imageEditingElementCreator
 			} );
 
-			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
 				model: 'imageInline',
 				view: imageInlineEditingElementCreator
 			} );
@@ -237,6 +240,7 @@ describe( 'Image converters', () => {
 	describe( 'downcastImageAttribute', () => {
 		it( 'should convert adding attribute to image', () => {
 			setModelData( model, '<imageBlock src=""></imageBlock>' );
+
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -313,7 +317,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><foo></foo><img alt="foo bar" src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img><foo></foo></figure>'
 			);
 		} );
 	} );

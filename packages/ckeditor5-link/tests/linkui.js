@@ -1115,7 +1115,7 @@ describe( 'LinkUI', () => {
 					allowAttributesOf: '$text'
 				} );
 
-				editor.conversion.for( 'downcast' ).elementToElement( {
+				editor.conversion.for( 'downcast' ).elementToStructure( {
 					model: 'inlineWidget',
 					view: ( modelItem, { writer } ) => {
 						const spanView = writer.createContainerElement( 'span', {}, {

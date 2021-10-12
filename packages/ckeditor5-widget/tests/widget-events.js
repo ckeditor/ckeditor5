@@ -79,7 +79,7 @@ describe( 'Widget - Events', () => {
 
 		function defineConverters( editor ) {
 			editor.conversion.for( 'editingDowncast' )
-				.elementToElement( {
+				.elementToStructure( {
 					model: 'simpleWidgetElement',
 					view: ( modelElement, { writer } ) => {
 						const widgetElement = createWidgetView( modelElement, { writer } );
@@ -89,7 +89,7 @@ describe( 'Widget - Events', () => {
 				} );
 
 			editor.conversion.for( 'dataDowncast' )
-				.elementToElement( {
+				.elementToStructure( {
 					model: 'simpleWidgetElement',
 					view: createWidgetView
 				} );

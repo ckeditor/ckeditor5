@@ -331,7 +331,7 @@ export default class DataFilter extends Plugin {
 		} );
 		conversion.for( 'upcast' ).add( viewToModelBlockAttributeConverter( definition, this ) );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: modelName,
 			view: toObjectWidgetConverter( editor, definition )
 		} );

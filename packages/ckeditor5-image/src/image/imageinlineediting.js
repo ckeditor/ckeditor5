@@ -21,7 +21,7 @@ import ImageTypeCommand from './imagetypecommand';
 import ImageUtils from '../imageutils';
 import {
 	getImgViewElementMatcher,
-	createImageViewElement,
+	createInlineImageViewElement,
 	determineImageTypeForInsertionAtSelection
 } from '../image/utils';
 
@@ -104,10 +104,10 @@ export default class ImageInlineEditing extends Plugin {
 			} );
 
 		conversion.for( 'editingDowncast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'imageInline',
 				view: ( modelElement, { writer } ) => imageUtils.toImageWidget(
-					createImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
+					createInlineImageViewElement( writer, 'imageInline' ), writer, t( 'image widget' )
 				)
 			} );
 
