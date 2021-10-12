@@ -16,7 +16,7 @@ import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
 
 /**
- * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
+ * The {@glink builds/guides/predefined-builds/overview#document-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
  *
@@ -33,9 +33,9 @@ import DecoupledEditorUIView from './decouplededitoruiview';
  *
  * The decoupled editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
- * but it is also available in the {@glink builds/guides/overview#document-editor document editor build}.
+ * but it is also available in the {@glink builds/guides/predefined-builds/overview#document-editor document editor build}.
  *
- * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * {@glink builds/guides/predefined-builds/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
  * Using the editor from source gives much better flexibility and allows for easier customization.
@@ -193,7 +193,7 @@ export default class DecoupledEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-decoupled`).
+	 * {@glink builds/guides/predefined-builds/overview editor build} (for example – `@ckeditor/ckeditor5-build-decoupled`).
 	 *
 	 * If you want to use the decoupled editor from source (`@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor`),
 	 * you need to define the list of
