@@ -41,19 +41,19 @@ describe( 'HeadingElementSupport', () => {
 		} );
 
 		it( 'should register heading schemas', () => {
-			expect( dataSchema._definitions.get( 'heading1' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'h1' ) ) ).to.deep.include( {
 				model: 'heading1',
 				view: 'h1',
 				isBlock: true
 			} );
 
-			expect( dataSchema._definitions.get( 'heading2' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'h2' ) ) ).to.deep.include( {
 				model: 'heading2',
 				view: 'h2',
 				isBlock: true
 			} );
 
-			expect( dataSchema._definitions.get( 'otherHeading' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'h5' ) ) ).to.deep.include( {
 				model: 'otherHeading',
 				view: 'h5',
 				isBlock: true
@@ -61,7 +61,7 @@ describe( 'HeadingElementSupport', () => {
 		} );
 
 		it( 'should add heading models as allowed children of htmlHgroup', () => {
-			expect( dataSchema._definitions.get( 'htmlHgroup' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'hgroup' ) ) ).to.deep.equal( [ {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
@@ -79,7 +79,7 @@ describe( 'HeadingElementSupport', () => {
 					isBlock: true
 				},
 				isBlock: true
-			} );
+			} ] );
 		} );
 	} );
 
@@ -107,13 +107,27 @@ describe( 'HeadingElementSupport', () => {
 		} );
 
 		it( 'should not register heading schemas', () => {
-			expect( dataSchema._definitions.has( 'heading1' ) ).to.be.false;
-			expect( dataSchema._definitions.has( 'heading2' ) ).to.be.false;
-			expect( dataSchema._definitions.has( 'otherHeading' ) ).to.be.false;
+			expect( Array.from( dataSchema.getDefinitionsForView( 'h1' ) ) ).to.not.deep.include( {
+				model: 'heading1',
+				view: 'h1',
+				isBlock: true
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'h2' ) ) ).to.not.deep.include( {
+				model: 'heading2',
+				view: 'h2',
+				isBlock: true
+			} );
+
+			expect( Array.from( dataSchema.getDefinitionsForView( 'h5' ) ) ).to.not.deep.include( {
+				model: 'otherHeading',
+				view: 'h5',
+				isBlock: true
+			} );
 		} );
 
 		it( 'should not add heading models as allowed children of htmlHgroup', () => {
-			expect( dataSchema._definitions.get( 'htmlHgroup' ) ).to.deep.equal( {
+			expect( Array.from( dataSchema.getDefinitionsForView( 'hgroup' ) ) ).to.deep.equal( [ {
 				model: 'htmlHgroup',
 				view: 'hgroup',
 				modelSchema: {
@@ -128,7 +142,7 @@ describe( 'HeadingElementSupport', () => {
 					isBlock: true
 				},
 				isBlock: true
-			} );
+			} ] );
 		} );
 	} );
 } );
