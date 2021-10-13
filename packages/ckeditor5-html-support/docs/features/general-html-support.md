@@ -207,6 +207,111 @@ The content inside the editor (what you see in the editing area) is filtered by 
 Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the back-end side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated thus bypassing front-end filtering. This can quickly become a security risk.
 
 In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link builds/guides/integration/csp Content Security Policy} rules.
+### Enabling custom elements
+
+Custom HTML elements with attributes and classes can be defined.
+
+To use a new element, it has to be registered by {@link module:html-support/dataschema~DataSchema} as one of the types below:
+
+* Inline element.
+* Block element.
+
+To enable such elements and add attributes or class to them you need to use {@link module:html-support/datafilter~DataFilter#allowElement allowElement} and {@link module:html-support/datafilter~DataFilter#allowAttributes allowAttributes} methods from {@link module:html-support/datafilter~DataFilter DataFilter} API.
+
+Base implementation example:
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+
+/**
+ * A plugin extending General HTML Support for example custom HTML elements.
+ */
+class ExtendHTMLSupport extends Plugin {
+	static get requires() {
+		return [ GeneralHtmlSupport ];
+	}
+
+	init() {
+		// Extend schema with custom HTML elements.
+		const dataFilter = this.editor.plugins.get( 'DataFilter' );
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
+
+		// Inline element
+		dataSchema.registerInlineElement( {
+			view: 'element-inline',
+			model: 'myElementInline'
+		} );
+
+		// Custom elements need to be registered using direct API instead of config.
+		dataFilter.allowElement( 'element-inline' );
+		dataFilter.allowAttributes( { name: 'element-inline', attributes: { 'data-foo': false }, classes: [ 'foo' ] } );
+
+		// Block element
+		dataSchema.registerBlockElement( {
+			view: 'element-block',
+			model: 'myElementBlock',
+			modelSchema: {
+				inheritAllFrom: '$block'
+			}
+		} );
+
+		dataFilter.allowElement( 'element-block' );
+	}
+}
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Essentials,
+			Paragraph,
+			ExtendHTMLSupport
+		],
+		htmlSupport: {
+			allow: [
+				{
+					name: /.*/,
+					attributes: true,
+					classes: true,
+					styles: true
+				}
+			]
+		}
+	} )
+```
+
+Both inline and block elements can be treated as object elements. To make it possible, it is necessary to set {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.
+
+```js
+// Inline object element
+dataSchema.registerInlineElement( {
+	view: 'object-inline',
+	model: 'myObjectInline',
+	isObject: true,
+	modelSchema: {
+		inheritAllFrom: '$htmlObjectInline'
+	}
+} );
+
+dataFilter.allowElement( 'object-inline' );
+
+// Block object element
+dataSchema.registerBlockElement( {
+	view: 'object-block',
+	model: 'myObjectBlock',
+	isObject: true,
+	modelSchema: {
+		inheritAllFrom: '$htmlObjectBlock'
+	}
+} );
+
+dataFilter.allowElement( 'object-block' );
+
+```
 
 ## Known issues
 
