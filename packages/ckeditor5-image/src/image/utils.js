@@ -10,13 +10,7 @@
 import { first } from 'ckeditor5/src/utils';
 
 /**
- * Creates a view element representing the image of provided image type.
- *
- * An 'imageBlock' type (block image):
- *
- *		<figure class="image"><img></img></figure>
- *
- * An 'imageInline' type (inline image):
+ * Creates a view element representing the inline image.
  *
  *		<span class="image-inline"><img></img></span>
  *
@@ -24,7 +18,6 @@ import { first } from 'ckeditor5/src/utils';
  *
  * @protected
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {'imageBlock'|'imageInline'} imageType The type of created image.
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createInlineImageViewElement( writer ) {
@@ -36,6 +29,20 @@ export function createInlineImageViewElement( writer ) {
 	return container;
 }
 
+/**
+ * Creates a view element representing the block image.
+ *
+ * An 'imageBlock' type (block image):
+ *
+ *		<figure class="image"><img></img></figure>
+ *
+ * Note that `alt` and `src` attributes are converted separately, so they are not included.
+ *
+ * @protected
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {module:engine/view/element~Element} slotElement
+ * @returns {module:engine/view/containerelement~ContainerElement}
+ */
 export function createBlockImageViewElement( writer, slotElement ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 	const container = writer.createContainerElement( 'figure', { class: 'image' } );
