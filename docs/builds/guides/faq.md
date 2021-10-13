@@ -1,6 +1,6 @@
 ---
 menu-title: FAQ
-category: builds-guides
+category: builds-support
 order: 600
 ---
 

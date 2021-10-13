@@ -6,10 +6,10 @@
 # * What is the difference with CKEditor 4?
 
 category: builds-predefined
-order: 10
+order: 20
 ---
 
-# Overview
+# Predefined builds
 
 Predefined CKEditor 5 builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration. They provide convenient solutions that can be installed with no effort and that satisfy the most common editing use cases.
 

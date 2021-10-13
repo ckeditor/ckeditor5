@@ -1,7 +1,7 @@
 
 menu-title: Installing plugins
-category: builds-integration
-order: 50
+category: builds-predefined
+order: 40
 ---
 
 # Installing plugins

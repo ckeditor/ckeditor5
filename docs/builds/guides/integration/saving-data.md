@@ -1,6 +1,6 @@
 ---
 category: builds-integration
-order: 40
+order: 30
 ---
 
 {@snippet builds/saving-data/build-autosave-source}

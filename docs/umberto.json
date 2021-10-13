@@ -104,30 +104,25 @@
 			"id": "builds",
 			"slug": "builds",
 			"categories": [
-				{
-					"name": "Guides",
-					"id": "builds-guides",
-					"slug": "guides",
-					"categories": [
 						{
-							"name": "Predefined builds",
+							"name": "Getting started",
 							"id": "builds-predefined",
 							"slug": "predefined-builds",
-							"order": 100
-						},
-						{
-							"name": "Integration",
-							"id": "builds-integration",
-							"slug": "integration",
-							"order": 200,
+							"order": 100,
 							"categories": [
 								{
 									"name": "Frameworks",
 									"id": "builds-integration-frameworks",
 									"slug": "frameworks",
-									"order": 200
+									"order": 60
 								}
 							]
+						},
+						{
+							"name": "Integration",
+							"id": "builds-integration",
+							"slug": "integration",
+							"order": 200
 						},
 						{
 							"name": "Development",
@@ -148,9 +143,7 @@
 							"order": 500
 						}
 					]
-				}
-			]
-		},
+				},
 		{
 			"name": "Framework",
 			"id": "framework",

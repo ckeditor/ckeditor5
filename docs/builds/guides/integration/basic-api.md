@@ -2,8 +2,8 @@
 # Scope:
 # * Guide developers through the basic API to achieve their very first results with CKEditor.
 
-category: builds-integration
-order: 20
+category: builds-predefined
+order: 50
 ---
 
 # Basic API

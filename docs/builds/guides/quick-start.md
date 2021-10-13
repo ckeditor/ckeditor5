@@ -3,7 +3,7 @@
 # * TL;DR I want to run CKEditor 5.
 
 category: builds-predefined
-order: 30
+order: 10
 ---
 
 # Quick start

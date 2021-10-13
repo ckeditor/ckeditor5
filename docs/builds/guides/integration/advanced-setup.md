@@ -1,9 +1,9 @@
 ---
 category: builds-integration
-order: 60
+order: 20
 ---
 
-# Advanced setup
+# Using two different editors
 
 The {@link builds/guides/integration/installation Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link builds/guides/development/custom-builds Custom builds} guide explains how to add or remove features from the build or change webpack configuration.
 

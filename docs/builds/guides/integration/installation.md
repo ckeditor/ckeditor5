@@ -6,7 +6,7 @@ category: builds-integration
 order: 10
 ---
 
-# Installation
+# Building from source
 
 ## Download options
 

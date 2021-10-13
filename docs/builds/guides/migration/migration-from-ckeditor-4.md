@@ -4,8 +4,8 @@
 # * Underline that migrating is a complex and important task.
 # * List and clarify the things that need attention when migrating.
 
-category: builds-migration
-order: 100
+category: builds-predefined
+order: 70
 modified_at: 2021-07-16
 ---
 

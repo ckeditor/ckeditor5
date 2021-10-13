@@ -4,7 +4,7 @@
 # * Introduction to the top and must-know configurations.
 # * Point where to find the list of configuration options.
 
-category: builds-integration
+category: builds-predefined
 order: 30
 ---
 
