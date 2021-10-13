@@ -1703,6 +1703,7 @@ function downcastElementToStructure( config ) {
 
 	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
+	config.model.children = true;
 
 	return dispatcher => {
 		dispatcher.on(
@@ -1711,9 +1712,7 @@ function downcastElementToStructure( config ) {
 			{ priority: config.converterPriority || 'normal' }
 		);
 
-		if ( config.model.children || config.model.attributes.length ) {
-			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
-		}
+		dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
 	};
 }
 

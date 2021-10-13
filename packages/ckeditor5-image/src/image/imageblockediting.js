@@ -92,14 +92,14 @@ export default class ImageBlockEditing extends Plugin {
 		conversion.for( 'dataDowncast' )
 			.elementToStructure( {
 				model: 'imageBlock',
-				view: ( modelElement, { writer, slotFor } ) => createBlockImageViewElement( writer, slotFor, 'imageBlock' )
+				view: ( modelElement, { writer, slotFor } ) => createBlockImageViewElement( writer, slotFor( 'children' ) )
 			} );
 
 		conversion.for( 'editingDowncast' )
 			.elementToStructure( {
 				model: 'imageBlock',
 				view: ( modelElement, { writer, slotFor } ) => imageUtils.toImageWidget(
-					createBlockImageViewElement( writer, slotFor, 'imageBlock' ), writer, t( 'image widget' )
+					createBlockImageViewElement( writer, slotFor( 'children' ) ), writer, t( 'image widget' )
 				)
 			} );
 

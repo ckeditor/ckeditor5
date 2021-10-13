@@ -290,12 +290,14 @@ describe( 'image utils', () => {
 		} );
 
 		it( 'should create a figure element for "image" type', () => {
-			const element = createBlockImageViewElement( writer );
+			const slotElement = writer.createEmptyElement( '$slot' );
+			const element = createBlockImageViewElement( writer, slotElement );
 
 			expect( element.is( 'element', 'figure' ) ).to.be.true;
 			expect( element.hasClass( 'image' ) ).to.be.true;
-			expect( element.childCount ).to.equal( 1 );
+			expect( element.childCount ).to.equal( 2 );
 			expect( element.getChild( 0 ).is( 'emptyElement', 'img' ) ).to.be.true;
+			expect( element.getChild( 1 ).is( 'emptyElement', '$slot' ) ).to.be.true;
 		} );
 	} );
 

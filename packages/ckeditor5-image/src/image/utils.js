@@ -36,15 +36,12 @@ export function createInlineImageViewElement( writer ) {
 	return container;
 }
 
-export function createBlockImageViewElement( writer, slotFor = false ) {
+export function createBlockImageViewElement( writer, slotElement ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 	const container = writer.createContainerElement( 'figure', { class: 'image' } );
 
 	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
-
-	if ( slotFor ) {
-		writer.insert( writer.createPositionAt( container, 1 ), slotFor( 'children' ) );
-	}
+	writer.insert( writer.createPositionAt( container, 1 ), slotElement );
 
 	return container;
 }
