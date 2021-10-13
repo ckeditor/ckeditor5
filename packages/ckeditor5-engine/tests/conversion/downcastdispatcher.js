@@ -38,7 +38,8 @@ describe( 'DowncastDispatcher', () => {
 		differStub = {
 			getMarkersToRemove: () => [],
 			getChanges: () => [],
-			getMarkersToAdd: () => []
+			getMarkersToAdd: () => [],
+			getRefreshedItems: () => []
 		};
 	} );
 

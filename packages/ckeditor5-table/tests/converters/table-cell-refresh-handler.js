@@ -15,7 +15,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import TableEditing from '../../src/tableediting';
 import { viewTable } from '../_utils/utils';
 
-describe( 'Table cell refresh post-fixer', () => {
+describe( 'Table cell refresh handler', () => {
 	let editor, model, doc, root, view, element;
 
 	testUtils.createSinonSandbox();

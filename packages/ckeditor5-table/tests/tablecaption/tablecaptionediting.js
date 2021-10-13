@@ -26,11 +26,18 @@ describe( 'TableCaptionEditing', () => {
 				isBlock: true,
 				allowWhere: '$block'
 			} );
-			schema.register( 'caption', {
-				allowIn: 'foo',
-				allowContentOf: '$block',
-				isLimit: true
-			} );
+
+			if ( schema.isRegistered( 'caption' ) ) {
+				schema.extend( 'caption', {
+					allowIn: 'foo'
+				} );
+			} else {
+				schema.register( 'caption', {
+					allowIn: 'foo',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+			}
 
 			conversion.elementToElement( {
 				view: 'foo',
@@ -87,9 +94,7 @@ describe( 'TableCaptionEditing', () => {
 			it( 'should not convert caption outside of the table', async () => {
 				const editor = await VirtualTestEditor
 					.create( {
-						plugins: [
-							FakePlugin,
-							TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing ]
+						plugins: [ TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing, FakePlugin ]
 					} );
 
 				setModelData( editor.model,

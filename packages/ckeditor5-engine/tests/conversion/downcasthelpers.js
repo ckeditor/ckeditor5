@@ -137,6 +137,67 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '' );
 		} );
 
+		describe( 'converting element', () => {
+			beforeEach( () => {
+				model.schema.register( 'simpleBlock', {
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'simpleBlock',
+					view: ( modelElement, { writer } ) => {
+						return writer.createContainerElement( 'div', { class: 'simple' } );
+					}
+				} );
+
+				model.schema.register( 'paragraph', {
+					inheritAllFrom: '$block',
+					allowIn: 'simpleBlock'
+				} );
+
+				downcastHelpers.elementToElement( {
+					model: 'paragraph',
+					view: 'p'
+				} );
+			} );
+
+			it( 'should convert element insert', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"></simpleBlock>' );
+
+				expectResult( '<div class="simple"></div>' );
+			} );
+
+			it( 'should not reconvert on adding a child', () => {
+				setModelData( model, '<simpleBlock><paragraph>foo</paragraph></simpleBlock>' );
+
+				const spy = sinon.spy();
+
+				controller.downcastDispatcher.on( 'insert:simpleBlock', () => {
+					spy();
+				} );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					const paragraph = writer.createElement( 'paragraph' );
+					const text = writer.createText( 'bar' );
+
+					writer.insert( paragraph, modelRoot.getChild( 0 ), 0 );
+					writer.insert( text, paragraph, 0 );
+				} );
+
+				const [ viewAfter, /* insertedPara */, /* insertedText */, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div class="simple"><p>bar</p><p>foo</p></div>' );
+
+				expect( viewAfter, 'simpleBlock' ).to.equal( viewBefore );
+				expect( paraAfter, 'para' ).to.equal( paraBefore );
+				expect( textAfter, 'text' ).to.equal( textBefore );
+				expect( spy.notCalled ).to.be.true;
+			} );
+		} );
+
 		describe( 'converting element together with selected attributes', () => {
 			it( 'should allow passing a list of attributes to convert and consume', () => {
 				model.schema.register( 'simpleBlock', {
@@ -199,7 +260,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 		} );
 
-		describe( 'with simple block view structure (without reconvertion on children list change)', () => {
+		describe( 'with simple block view structure (without reconversion on children list change)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
 					allowIn: '$root',
@@ -297,6 +358,53 @@ describe( 'DowncastHelpers', () => {
 				expectResult( '<div class="is-classy"></div>' );
 			} );
 
+			it( 'should reuse child view element', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
+				} );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.equal( paraBefore );
+				expect( textAfter ).to.equal( textBefore );
+			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
+				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
+			} );
+
 			it( 'should properly re-bind mapper mappings and retain markers', () => {
 				downcastHelpers.elementToElement( {
 					model: 'simpleBlock',
@@ -364,7 +472,7 @@ describe( 'DowncastHelpers', () => {
 				expect( viewAfter ).to.equal( viewBefore );
 			} );
 
-			it( 'should not reconvert on child element added', () => {
+			it( 'should reconvert on child element added (implicit reconversion because of attributes watch)', () => {
 				model.schema.register( 'paragraph', {
 					inheritAllFrom: '$block',
 					allowIn: 'simpleBlock'
@@ -377,8 +485,8 @@ describe( 'DowncastHelpers', () => {
 
 				setModelData( model, '<simpleBlock></simpleBlock>' );
 
-				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
+				controller.downcastDispatcher.on( 'insert:simpleBlock', ( evt, data ) => {
+					expect( data ).to.have.property( 'reconversion' ).to.be.true;
 				} );
 
 				const [ viewBefore ] = getNodes();
@@ -391,14 +499,15 @@ describe( 'DowncastHelpers', () => {
 
 				expectResult( '<div><p></p></div>' );
 
-				expect( viewAfter ).to.equal( viewBefore );
+				expect( viewAfter ).to.not.equal( viewBefore );
 			} );
 		} );
 
-		describe( 'with simple block view structure (with reconvertion on child add)', () => {
+		describe( 'with simple block view structure (with reconversion on child add)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
-					allowIn: '$root'
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
 				} );
 
 				downcastHelpers.elementToElement( {
@@ -407,7 +516,7 @@ describe( 'DowncastHelpers', () => {
 						children: true
 					},
 					view: ( modelElement, { writer } ) => {
-						return writer.createContainerElement( 'div' );
+						return writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 					}
 				} );
 
@@ -646,6 +755,56 @@ describe( 'DowncastHelpers', () => {
 				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
 			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
+			} );
+
+			it( 'should fire conversion events in proper order', () => {
+				const loggedEvents = [];
+
+				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
+					const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+					const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+					loggedEvents.push( log );
+				}, { priority: 'highest' } );
+
+				controller.downcastDispatcher.on( 'attribute', ( evt, data ) => {
+					const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+					const key = data.attributeKey;
+					const value = data.attributeNewValue;
+					const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+					loggedEvents.push( log );
+				}, { priority: 'highest' } );
+
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				expectResult( '<div style="display:block"><p>foo</p></div>' );
+
+				expect( loggedEvents ).to.deep.equal( [
+					'insert:simpleBlock:0:1',
+					'attribute:toStyle:display:block:simpleBlock:0:1',
+					'insert:paragraph:0,0:0,1',
+					'insert:$text:foo:0,0,0:0,0,3'
+				] );
+			} );
 		} );
 	} );
 
@@ -783,7 +942,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 		} );
 
-		describe( 'with simple block view structure (without slots, without reconvert on children list change)', () => {
+		describe( 'with simple block view structure (without slots)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
 					allowIn: '$root',
@@ -947,39 +1106,9 @@ describe( 'DowncastHelpers', () => {
 
 				expect( viewAfter ).to.equal( viewBefore );
 			} );
-
-			it( 'should not reconvert on child element added', () => {
-				model.schema.register( 'paragraph', {
-					inheritAllFrom: '$block',
-					allowIn: 'simpleBlock'
-				} );
-
-				downcastHelpers.elementToElement( {
-					model: 'paragraph',
-					view: 'p'
-				} );
-
-				setModelData( model, '<simpleBlock></simpleBlock>' );
-
-				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
-				} );
-
-				const [ viewBefore ] = getNodes();
-
-				model.change( writer => {
-					writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 0 );
-				} );
-
-				const [ viewAfter ] = getNodes();
-
-				expectResult( '<div><p></p></div>' );
-
-				expect( viewAfter ).to.equal( viewBefore );
-			} );
 		} );
 
-		describe( 'with simple block view structure (with slots, without reconvert on children list change)', () => {
+		describe( 'with simple block view structure (with slots, changing attributes)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
 					allowIn: '$root',
@@ -1123,40 +1252,37 @@ describe( 'DowncastHelpers', () => {
 				expect( textAfter, 'text' ).to.equal( textBefore );
 			} );
 
-			it( 'should not reconvert on child element added', () => {
-				setModelData( model, '<simpleBlock></simpleBlock>' );
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
-				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
-				} );
-
-				const [ viewBefore ] = getNodes();
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
 				model.change( writer => {
-					writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 0 );
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
 				} );
 
-				const [ viewAfter ] = getNodes();
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
 
-				expectResult( '<div><p></p></div>' );
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
 
-				expect( viewAfter ).to.equal( viewBefore );
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
 			} );
 		} );
 
 		describe( 'with simple block view structure (reconvert on child add)', () => {
 			beforeEach( () => {
 				model.schema.register( 'simpleBlock', {
-					allowIn: '$root'
+					allowIn: '$root',
+					allowAttributes: [ 'toStyle', 'toClass' ]
 				} );
 
 				downcastHelpers.elementToStructure( {
-					model: {
-						name: 'simpleBlock',
-						children: true
-					},
+					model: 'simpleBlock',
 					view: ( modelElement, { writer, slotFor } ) => {
-						const viewElement = writer.createContainerElement( 'div' );
+						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
 						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
 
@@ -1402,6 +1528,25 @@ describe( 'DowncastHelpers', () => {
 				expect( viewAfterAfter1, 'simpleBlock' ).to.not.equal( viewAfter1 );
 				expect( paraAfterAfter1, 'para' ).to.equal( paraAfter1 );
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
+			} );
+
+			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
+
+				const [ viewBefore, paraBefore, textBefore ] = getNodes();
+
+				model.change( writer => {
+					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
+					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+				} );
+
+				const [ viewAfter, paraAfter, textAfter ] = getNodes();
+
+				expectResult( '<div style="display:inline"><p>foo</p></div>' );
+
+				expect( viewAfter ).to.not.equal( viewBefore );
+				expect( paraAfter ).to.not.equal( paraBefore );
+				expect( textAfter ).to.not.equal( textBefore );
 			} );
 		} );
 
@@ -1686,6 +1831,39 @@ describe( 'DowncastHelpers', () => {
 				expect( outerDivAfter, 'outer div' ).to.equal( outerDivBefore );
 				expect( innerDivAfter, 'inner div' ).to.equal( innerDivBefore );
 				expect( spy.notCalled ).to.be.true;
+			} );
+
+			it( 'should fire conversion events in proper order', () => {
+				const loggedEvents = [];
+
+				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
+					const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+					const log = 'insert:' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+					loggedEvents.push( log );
+				}, { priority: 'highest' } );
+
+				controller.downcastDispatcher.on( 'attribute', ( evt, data ) => {
+					const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
+					const key = data.attributeKey;
+					const value = data.attributeNewValue;
+					const log = 'attribute:' + key + ':' + value + ':' + itemId + ':' + data.range.start.path + ':' + data.range.end.path;
+
+					loggedEvents.push( log );
+				}, { priority: 'highest' } );
+
+				setModelData( model, '<complex toClass="true"><paragraph>foo</paragraph><paragraph>bar</paragraph></complex>' );
+
+				expectResult( '<div class="complex-outer"><div class="is-classy"><p>foo</p><p>bar</p></div></div>' );
+
+				expect( loggedEvents ).to.deep.equal( [
+					'insert:complex:0:1',
+					'attribute:toClass:true:complex:0:1',
+					'insert:paragraph:0,0:0,1',
+					'insert:$text:foo:0,0,0:0,0,3',
+					'insert:paragraph:0,1:0,2',
+					'insert:$text:bar:0,1,0:0,1,3'
+				] );
 			} );
 		} );
 
