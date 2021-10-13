@@ -26,6 +26,17 @@ describe( 'FindPreviousCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		it( 'sets public properties', () => {
+			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).to.have.property( 'affectsData', false );
+		} );
+
+		it( 'sets state property', () => {
+			expect( command ).to.have.property( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
+		} );
+	} );
+
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
 			setData( model, '[]' );
@@ -86,12 +97,6 @@ describe( 'FindPreviousCommand', () => {
 			expect( multiRootEditor.commands.get( 'findPrevious' ).isEnabled ).to.be.true;
 
 			multiRootEditor.destroy();
-		} );
-	} );
-
-	describe( 'state', () => {
-		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
