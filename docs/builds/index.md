@@ -50,7 +50,7 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
 	const QUIZ_RESOLUTION_BUTTON_DEFINITIONS = [
 		{
-			classes: [ 'quiz-button' ],
+			classes: [ 'quiz-button', 'quiz-button_restart' ],
 			text: 'Restart the quiz',
 			navigateToPaneId: 'quiz-question-usingFrameworks'
 		}
@@ -264,6 +264,15 @@ div.quiz-pane button.quiz-button:focus {
 
 div.quiz-pane .quiz-buttons button.quiz-button + button {
 	margin-left: 1em;
+}
+
+div.quiz-pane button.quiz-button_restart {
+	border: 0px;
+}
+
+div.quiz-pane button.quiz-button_restart::before {
+	content: "↺";
+	margin-right: .5em;
 }
 
 div.quiz-pane[id="quiz-start"] p {
