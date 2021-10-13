@@ -1050,18 +1050,19 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 
 		if ( hasContent ) {
 			/**
-			 * The Easy Image feature requires one of the following plugins to be loaded to work correctly:
+			 * Only one container element without any children elements other than
+			 * {@link module:engine/view/uielement~UIElement `UIElement`}s should be created in
+			 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} function.
 			 *
-			 * * {@link module:image/imageblock~ImageBlock},
-			 * * {@link module:image/imageinline~ImageInline},
-			 * * {@link module:image/image~Image} (loads both `ImageBlock` and `ImageInline`)
+			 * Please make sure you don't create more than one element in
+			 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and if you need
+			 * to create multiple elements use {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure}
+			 * instead.
 			 *
-			 * Please make sure your editor configuration is correct.
-			 *
-			 * @error easy-image-image-feature-missing
-			 * @param {module:core/editor/editor~Editor} editor
+			 * @error conversion-element-to-element-created-multiple-elements
+			 * @param {module:engine/model/element~Element} viewElement
 			 */
-			logWarning( 'element-to-element-used-with-multiple-elements', viewElement );
+			logWarning( 'conversion-element-to-element-created-multiple-elements', viewElement );
 		}
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
