@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-embed/inserthtmlembedcommand
+ * @module html-embed/htmlembedcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
