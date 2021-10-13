@@ -649,7 +649,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		describe( 'with multiple child elements', () => {
-			it( 'warns if multiple child elements created', () => {
+			it( 'warns if multiple child elements are created', () => {
 				let viewElement;
 
 				testUtils.sinon.stub( console, 'warn' );
@@ -677,7 +677,7 @@ describe( 'DowncastHelpers', () => {
 				);
 			} );
 
-			it( 'does not warn if multiple child UI elements created', () => {
+			it( 'does not warn if multiple child UI elements are created', () => {
 				let viewElement;
 
 				testUtils.sinon.stub( console, 'warn' );
