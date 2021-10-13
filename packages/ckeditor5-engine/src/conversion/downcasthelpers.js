@@ -1046,7 +1046,7 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 		}
 
 		// Check if only one element has been created.
-		validateChildren( viewElement.getChildren() );
+		validateChildren( viewElement );
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		consumer( data.item, conversionApi.consumable );
@@ -2107,7 +2107,7 @@ function createConsumer( model ) {
 	};
 }
 
-// Check if given element list contains only UI elements and warns otherwise.
+// Check if given element children list contains only UI elements and warns otherwise.
 //
 // @param {module:engine/view/element~Element} viewElement.
 function validateChildren( viewElement ) {
