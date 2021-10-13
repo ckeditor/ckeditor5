@@ -1045,25 +1045,8 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 			return;
 		}
 
-		const hasContent = Array.from( viewElement.getChildren() )
-			.some( element => !element.is( 'uiElement' ) );
-
-		if ( hasContent ) {
-			/**
-			 * Only one container element without any children elements other than
-			 * {@link module:engine/view/uielement~UIElement `UIElement`}s should be created in
-			 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} function.
-			 *
-			 * Please make sure you don't create more than one element in
-			 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and if you need
-			 * to create multiple elements use {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure}
-			 * instead.
-			 *
-			 * @error conversion-element-to-element-created-multiple-elements
-			 * @param {module:engine/model/element~Element} viewElement
-			 */
-			logWarning( 'conversion-element-to-element-created-multiple-elements', viewElement );
-		}
+		// Check if only one element has been created.
+		validateChildren( viewElement.getChildren() );
 
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		consumer( data.item, conversionApi.consumable );
@@ -2122,6 +2105,31 @@ function createConsumer( model ) {
 
 		return true;
 	};
+}
+
+// Check if given element list contains only UI elements and warns otherwise.
+//
+// @param {module:engine/view/element~Element} viewElement.
+function validateChildren( viewElement ) {
+	const children = Array.from( viewElement.getChildren() );
+	const hasNonUIchildren = children.some( element => !element.is( 'uiElement' ) );
+
+	if ( hasNonUIchildren ) {
+		/**
+		 * Only one container element without any children elements other than
+		 * {@link module:engine/view/uielement~UIElement `UIElement`}s should be created in
+		 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} function.
+		 *
+		 * Please make sure you don't create more than one element in
+		 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and if you need
+		 * to create multiple elements use {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure}
+		 * instead.
+		 *
+		 * @error conversion-element-to-element-created-multiple-elements
+		 * @param {module:engine/model/element~Element} viewElement
+		 */
+		logWarning( 'conversion-element-to-element-created-multiple-elements', viewElement );
+	}
 }
 
 // Creates a function that create view slots.
