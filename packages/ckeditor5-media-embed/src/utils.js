@@ -64,7 +64,7 @@ export function isMediaWidget( viewElement ) {
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
  *		</figure>
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
