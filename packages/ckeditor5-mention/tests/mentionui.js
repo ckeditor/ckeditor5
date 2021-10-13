@@ -122,7 +122,7 @@ describe( 'MentionUI', () => {
 			expect( editor.plugins.get( ContextualBalloon ).visibleView ).to.be.instanceof( MentionsView );
 		} );
 
-		it( 'should hide contextual balloon when editor is in readonly mode', () => {
+		it( 'should hide the contextual balloon when editor turns into a readonly mode', () => {
 			expect( panelView.isVisible ).to.be.true;
 
 			editor.isReadOnly = true;
