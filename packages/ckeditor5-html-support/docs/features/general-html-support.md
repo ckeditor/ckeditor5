@@ -203,6 +203,7 @@ The above configuration will work similarly to [`allowedContent: true`](/docs/ck
 Custom HTML elements with attributes and classes can be defined.
 
 To use a new element, it has to be registered by {@link module:html-support/dataschema~DataSchema} as one of the types below:
+
 * Inline element.
 * Block element.
 
