@@ -114,6 +114,7 @@
     "mkdirp": "^1.0.4",
     "nyc": "^15.0.1",
     "popper": "^1.0.1",
+    "postcss": "^8.3.9",
     "postcss-loader": "^4.3.0",
     "progress-bar-webpack-plugin": "^2.1.0",
     "raw-loader": "^4.0.1",
