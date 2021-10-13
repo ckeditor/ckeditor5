@@ -21,17 +21,20 @@
 				{
 					"elements": "oembed",
 					"attributes": "url",
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and the media is represented using only the `<oembed>` tag (by default)."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and the media is represented using only the `<oembed>` tag (by default).",
+					"isAlternative": true
 				},
 				{
 					"elements": "div",
 					"attributes": "data-oembed-url",
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view.",
+					"isAlternative": true
 				},
 				{
 					"elements": "*",
 					"attributes": "url",
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the plugin can be configured to return any element name specified by `config.mediaEmbed.elementName`."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the plugin can be configured to return any element name specified by `config.mediaEmbed.elementName`.",
+					"isAlternative": true
 				},
 				{
 					"elements": "div",
@@ -40,7 +43,8 @@
 						"padding-bottom",
 						"position"
 					],
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view.",
+					"isAlternative": true
 				},
 				{
 					"elements": "iframe",
@@ -56,14 +60,16 @@
 						"frameborder",
 						"src"
 					],
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view.",
+					"isAlternative": true
 				},
 				{
 					"elements": "*",
 					"classes": "*",
 					"styles": "*",
 					"attributes": "*",
-					"_comment": "The plugin can be configured to return any element with any class, inline style, and attribute, via `config.mediaEmbed.providers` for previewable media."
+					"_comment": "The plugin can be configured to return any element with any class, inline style, and attribute, via `config.mediaEmbed.providers` for previewable media.",
+					"isAlternative": true
 				}
 			]
 		},
