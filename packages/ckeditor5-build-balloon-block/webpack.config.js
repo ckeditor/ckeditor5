@@ -54,7 +54,11 @@ module.exports = {
 		new webpack.BannerPlugin( {
 			banner: bundler.getLicenseBanner(),
 			raw: true
-		} )
+		} ),
+		new webpack.NormalModuleReplacementPlugin(
+			/pilcrow\.svg/,
+			path.resolve(__dirname, 'assets') + '/icons/utility/edit_form.svg'
+		),
 	],
 
 	module: {

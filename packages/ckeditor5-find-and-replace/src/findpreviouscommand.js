@@ -10,13 +10,16 @@
 import FindNextCommand from './findnextcommand';
 
 /**
- * The find next command. Moves the highlight to the next search result.
+ * The find previous command. Moves the highlight to the previous search result.
  *
  * It is used by the {@link module:find-and-replace/findandreplace~FindAndReplace find and replace feature}.
  *
  * @extends module:find-and-replace/findnextcommand~FindNextCommand
  */
 export default class FindPreviousCommand extends FindNextCommand {
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		const results = this._state.results;
 		const currentIndex = results.getIndex( this._state.highlightedResult );

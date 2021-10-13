@@ -211,6 +211,38 @@ describe( 'BalloonPanelView', () => {
 			expect( view.left ).to.equal( 10 );
 		} );
 
+		it( 'should set and override withArrow property', () => {
+			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+				top: 10.345,
+				left: 10.345,
+				name: 'position'
+			} );
+
+			view.withArrow = false;
+			view.attachTo( { target, limiter } );
+
+			expect( view.withArrow ).to.be.true;
+
+			view.set( 'withArrow', false );
+			view.attachTo( { target, limiter } );
+
+			expect( view.withArrow ).to.be.true;
+
+			BalloonPanelView._getOptimalPosition.restore();
+
+			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+				top: 10.345,
+				left: 10.345,
+				name: 'position',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			view.attachTo( { target, limiter } );
+			expect( view.withArrow ).to.be.false;
+		} );
+
 		describe( 'limited by limiter element', () => {
 			beforeEach( () => {
 				// Mock limiter element dimensions.

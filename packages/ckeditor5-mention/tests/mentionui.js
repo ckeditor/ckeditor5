@@ -23,7 +23,7 @@ import MentionsView from '../src/ui/mentionsview';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MentionUI', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, clock;
 
 	const staticConfig = {
 		feeds: [
@@ -37,12 +37,14 @@ describe( 'MentionUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		clock = sinon.useFakeTimers( { now: Date.now() } );
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 	} );
 
 	afterEach( () => {
 		sinon.restore();
+		clock.restore();
 		editorElement.remove();
 
 		if ( editor ) {
@@ -2265,14 +2267,13 @@ describe( 'MentionUI', () => {
 
 	function wait( timeout ) {
 		return () => new Promise( resolve => {
-			setTimeout( () => {
-				resolve();
-			}, timeout );
+			clock.tick( timeout );
+			resolve();
 		} );
 	}
 
-	function waitForDebounce() {
-		return wait( 180 )();
+	async function waitForDebounce() {
+		return await wait( 180 )();
 	}
 
 	function fireKeyDownEvent( options ) {
