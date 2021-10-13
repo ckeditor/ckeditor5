@@ -207,6 +207,7 @@ The content inside the editor (what you see in the editing area) is filtered by 
 Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the back-end side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated thus bypassing front-end filtering. This can quickly become a security risk.
 
 In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link builds/guides/integration/csp Content Security Policy} rules.
+
 ### Enabling custom elements
 
 Custom HTML elements with attributes and classes can be defined.
