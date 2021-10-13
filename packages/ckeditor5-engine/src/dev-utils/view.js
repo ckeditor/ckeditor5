@@ -39,6 +39,13 @@ const allowedTypes = {
 	'ui': UIElement,
 	'raw': RawElement
 };
+// Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf DomConverter.setContentOf} method.
+// Used to render UIElement and RawElement.
+const domConverterStub = {
+	setContentOf: ( node, html ) => {
+		node.innerHTML = html;
+	}
+};
 
 /**
  * Writes the content of the {@link module:engine/view/document~Document document} to an HTML-like string.
@@ -681,14 +688,12 @@ class ViewStringify {
 			}
 
 			if ( ( this.renderUIElements && root.is( 'uiElement' ) ) ) {
-				callback( root.render( document ).innerHTML );
+				callback( root.render( document, domConverterStub ).innerHTML );
 			} else if ( this.renderRawElements && root.is( 'rawElement' ) ) {
 				// There's no DOM element for "root" to pass to render(). Creating
 				// a surrogate container to render the children instead.
 				const rawContentContainer = document.createElement( 'div' );
-				root.render( rawContentContainer, {
-					setContentOf: ( node, html ) => { node.innerHTML = html; } }
-				);
+				root.render( rawContentContainer, domConverterStub );
 
 				callback( rawContentContainer.innerHTML );
 			} else {

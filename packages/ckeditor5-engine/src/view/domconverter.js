@@ -234,7 +234,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Decide whether given pair of attribute key and value should be passed further down the pipeline.
+	 * Decides whether given pair of attribute key and value should be passed further down the pipeline.
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
@@ -274,17 +274,17 @@ export default class DomConverter {
 		}
 
 		const treeWalker = document.createTreeWalker( fragment, NodeFilter.SHOW_ELEMENT );
-		const allNodes = [];
+		const nodes = [];
 
 		let currentNode;
 
 		// eslint-disable-next-line no-cond-assign
 		while ( currentNode = treeWalker.nextNode() ) {
-			allNodes.push( currentNode );
+			nodes.push( currentNode );
 		}
 
-		for ( const currentNode of allNodes ) {
-			// Go through nodes to remove those prohibited in editing pipeline.
+		for ( const currentNode of nodes ) {
+			// Go through nodes to remove those that are prohibited in editing pipeline.
 			for ( const attributeName of currentNode.getAttributeNames() ) {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
@@ -293,13 +293,11 @@ export default class DomConverter {
 				}
 			}
 
-			// Some nodes should be renamed to <span> in editing pipeline.
-			if ( currentNode.nodeType == Node.ELEMENT_NODE ) {
-				const elementName = currentNode.tagName.toLowerCase();
+			const elementName = currentNode.tagName.toLowerCase();
 
-				if ( this._shouldRenameElement( elementName ) ) {
-					currentNode.replaceWith( this._createReplacementDomElement( elementName, currentNode ) );
-				}
+			// There are certain nodes, that should be renamed to <span> in editing pipeline.
+			if ( this._shouldRenameElement( elementName ) ) {
+				currentNode.replaceWith( this._createReplacementDomElement( elementName, currentNode ) );
 			}
 		}
 
