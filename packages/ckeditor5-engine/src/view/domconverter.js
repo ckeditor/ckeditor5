@@ -284,6 +284,7 @@ export default class DomConverter {
 		}
 
 		for ( const currentNode of allNodes ) {
+			// Go through nodes to remove those prohibited in editing pipeline.
 			for ( const attributeName of currentNode.getAttributeNames() ) {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
@@ -292,6 +293,7 @@ export default class DomConverter {
 				}
 			}
 
+			// Some nodes should be renamed to <span> in editing pipeline.
 			if ( currentNode.nodeType == Node.ELEMENT_NODE ) {
 				const elementName = currentNode.tagName.toLowerCase();
 
@@ -301,6 +303,7 @@ export default class DomConverter {
 			}
 		}
 
+		// Empty the target element.
 		while ( domElement.firstChild ) {
 			domElement.firstChild.remove();
 		}
@@ -1470,7 +1473,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Checks whether given element name should be renamed in a current rendering mode.
 	 *
 	 * @private
 	 * @param {String} elementName The name of view element.
@@ -1481,7 +1484,8 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Return a <span> element with special attribute holding the name of the original element.
+	 * Optionally, copy all the attributes of the original element if that element is provided.
 	 *
 	 * @private
 	 * @param {String} elementName The name of view element.
