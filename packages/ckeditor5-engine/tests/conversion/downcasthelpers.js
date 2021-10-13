@@ -647,6 +647,60 @@ describe( 'DowncastHelpers', () => {
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
 			} );
 		} );
+
+		describe( 'with multiple child elements', () => {
+			it( 'warns if multiple child elements created', () => {
+				let viewElement;
+
+				testUtils.sinon.stub( console, 'warn' );
+
+				downcastHelpers.elementToElement( {
+					model: 'multiItemBox',
+					view: ( modelElement, { writer } ) => {
+						viewElement = writer.createContainerElement( 'div' );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createEmptyElement( 'p' ) );
+
+						return viewElement;
+					}
+				} );
+
+				model.change( writer => {
+					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
+				} );
+
+				sinon.assert.calledOnce( console.warn );
+				sinon.assert.calledWithExactly( console.warn,
+					sinon.match( /^conversion-element-to-element-created-multiple-elements/ ),
+					viewElement,
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
+			it( 'does not warn if multiple child UI elements created', () => {
+				let viewElement;
+
+				testUtils.sinon.stub( console, 'warn' );
+
+				downcastHelpers.elementToElement( {
+					model: 'multiItemBox',
+					view: ( modelElement, { writer } ) => {
+						viewElement = writer.createContainerElement( 'div' );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createUIElement( 'div' ) );
+						writer.insert( writer.createPositionAt( viewElement, 1 ), writer.createUIElement( 'span' ) );
+
+						return viewElement;
+					}
+				} );
+
+				model.change( writer => {
+					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
+				} );
+
+				sinon.assert.notCalled( console.warn );
+			} );
+		} );
 	} );
 
 	describe( 'elementToStructure()', () => {
@@ -947,36 +1001,6 @@ describe( 'DowncastHelpers', () => {
 
 				expect( viewAfter ).to.equal( viewBefore );
 			} );
-
-			it( 'should not reconvert on child element added', () => {
-				model.schema.register( 'paragraph', {
-					inheritAllFrom: '$block',
-					allowIn: 'simpleBlock'
-				} );
-
-				downcastHelpers.elementToElement( {
-					model: 'paragraph',
-					view: 'p'
-				} );
-
-				setModelData( model, '<simpleBlock></simpleBlock>' );
-
-				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
-				} );
-
-				const [ viewBefore ] = getNodes();
-
-				model.change( writer => {
-					writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 0 );
-				} );
-
-				const [ viewAfter ] = getNodes();
-
-				expectResult( '<div><p></p></div>' );
-
-				expect( viewAfter ).to.equal( viewBefore );
-			} );
 		} );
 
 		describe( 'with simple block view structure (with slots, without reconvert on children list change)', () => {
@@ -1121,26 +1145,6 @@ describe( 'DowncastHelpers', () => {
 				expect( viewAfter, 'simpleBlock' ).to.equal( viewBefore );
 				expect( paraAfter, 'para' ).to.equal( paraBefore );
 				expect( textAfter, 'text' ).to.equal( textBefore );
-			} );
-
-			it( 'should not reconvert on child element added', () => {
-				setModelData( model, '<simpleBlock></simpleBlock>' );
-
-				controller.downcastDispatcher.on( 'insert', ( evt, data ) => {
-					expect( data ).to.not.have.property( 'reconversion' );
-				} );
-
-				const [ viewBefore ] = getNodes();
-
-				model.change( writer => {
-					writer.insertElement( 'paragraph', modelRoot.getChild( 0 ), 0 );
-				} );
-
-				const [ viewAfter ] = getNodes();
-
-				expectResult( '<div><p></p></div>' );
-
-				expect( viewAfter ).to.equal( viewBefore );
 			} );
 		} );
 
