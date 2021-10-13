@@ -32,8 +32,6 @@ export function createInlineImageViewElement( writer ) {
 /**
  * Creates a view element representing the block image.
  *
- * An 'imageBlock' type (block image):
- *
  *		<figure class="image"><img></img></figure>
  *
  * Note that `alt` and `src` attributes are converted separately, so they are not included.
