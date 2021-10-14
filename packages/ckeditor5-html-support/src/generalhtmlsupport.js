@@ -12,6 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import DataFilter from './datafilter';
 import CodeBlockElementSupport from './integrations/codeblock';
 import DualContentModelElementSupport from './integrations/dualcontent';
+import HeadingElementSupport from './integrations/heading';
 import ImageElementSupport from './integrations/image';
 import MediaEmbedElementSupport from './integrations/mediaembed';
 import TableElementSupport from './integrations/table';
@@ -40,6 +41,7 @@ export default class GeneralHtmlSupport extends Plugin {
 			DataFilter,
 			CodeBlockElementSupport,
 			DualContentModelElementSupport,
+			HeadingElementSupport,
 			ImageElementSupport,
 			MediaEmbedElementSupport,
 			TableElementSupport

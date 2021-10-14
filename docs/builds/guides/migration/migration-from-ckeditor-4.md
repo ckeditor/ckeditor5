@@ -15,7 +15,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to {@link builds/guides/overview#when-not-to-use-builds When NOT to use CKEditor 5 Builds?} for more information.
+Before starting, be sure that migrating is your best choice. Refer to {@link builds/guides/overview#when-not-to-use-builds When NOT to use CKEditor 5 builds?} for more information.
 
 ## Installation and integration
 
