@@ -18,7 +18,7 @@ import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 export default function normalizeHtml( html, options = {} ) {
 	const processor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
 	const domFragment = processor._toDom( html );
-	const viewFragment = processor._domConverter.domToView( domFragment, options );
+	const viewFragment = processor.domConverter.domToView( domFragment, options );
 
 	return stringify( viewFragment );
 }

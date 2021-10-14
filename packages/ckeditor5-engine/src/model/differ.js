@@ -98,6 +98,14 @@ export default class Differ {
 		 * @type {Array.<Object>|null}
 		 */
 		this._cachedChangesWithGraveyard = null;
+
+		/**
+		 * Set of model items that were marked to get refreshed in {@link #refreshItem}.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/model/item~Item>}
+		 */
+		this._refreshedItems = new Set();
 	}
 
 	/**
@@ -123,6 +131,8 @@ export default class Differ {
 
 		this._markRemove( item.parent, item.startOffset, item.offsetSize );
 		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		this._refreshedItems.add( item );
 
 		const range = Range._createOn( item );
 
@@ -551,12 +561,22 @@ export default class Differ {
 	}
 
 	/**
+	 * Returns a set of model items that were marked to get refreshed.
+	 *
+	 * @return {Set.<module:engine/model/item~Item>}
+	 */
+	getRefreshedItems() {
+		return new Set( this._refreshedItems );
+	}
+
+	/**
 	 * Resets `Differ`. Removes all buffered changes.
 	 */
 	reset() {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._refreshedItems = new Set();
 		this._cachedChanges = null;
 	}
 

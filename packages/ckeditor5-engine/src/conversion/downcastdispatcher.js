@@ -145,7 +145,7 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer that should be used to modify the view document.
 	 */
 	convertChanges( differ, markers, writer ) {
-		const conversionApi = this._createConversionApi( writer );
+		const conversionApi = this._createConversionApi( writer, differ.getRefreshedItems() );
 
 		// Before the view is updated, remove markers which have changed.
 		for ( const change of differ.getMarkersToRemove() ) {
@@ -200,7 +200,7 @@ export default class DowncastDispatcher {
 	 * @param {Object} [options] Optional options object passed to `convertionApi.options`.
 	 */
 	convert( range, markers, writer, options = {} ) {
-		const conversionApi = this._createConversionApi( writer, options );
+		const conversionApi = this._createConversionApi( writer, undefined, options );
 
 		this._convertInsert( range, conversionApi );
 
@@ -579,10 +579,12 @@ export default class DowncastDispatcher {
 	 *
 	 * @private
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer View writer that should be used to modify the view document.
+	 * @param {Set.<module:engine/model/element~Element>} [refreshedItems] A set of model elements that should not reuse their
+	 * previous view representations.
 	 * @param {Object} [options] Optional options passed to `convertionApi.options`.
 	 * @return {module:engine/conversion/downcastdispatcher~DowncastConversionApi} The conversion API object.
 	 */
-	_createConversionApi( writer, options = {} ) {
+	_createConversionApi( writer, refreshedItems = new Set(), options = {} ) {
 		const conversionApi = {
 			...this._conversionApi,
 			consumable: new Consumable(),
@@ -590,7 +592,8 @@ export default class DowncastDispatcher {
 			options,
 			convertItem: item => this._convertInsert( Range._createOn( item ), conversionApi ),
 			convertChildren: element => this._convertInsert( Range._createIn( element ), conversionApi, { doNotAddConsumables: true } ),
-			convertAttributes: item => this._testAndFireAddAttributes( item, conversionApi )
+			convertAttributes: item => this._testAndFireAddAttributes( item, conversionApi ),
+			canReuseView: viewElement => !refreshedItems.has( conversionApi.mapper.toModelElement( viewElement ) )
 		};
 
 		this._firedEventsMap.set( conversionApi, new Map() );
