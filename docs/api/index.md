@@ -18,8 +18,8 @@ category: api-reference
 ## Documentation
 
 * {@link framework/index CKEditor 5 Framework} &ndash; Learn how to develop with CKEditor 5 Framework, customize it and create plugins.
-* {@link builds/guides/overview CKEditor 5 Builds} &ndash; Learn how to install, integrate and configure CKEditor 5 Builds. More complex aspects, like creating custom builds, are explained here, too.
-* {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 Builds.
+* {@link builds/guides/overview CKEditor 5 builds} &ndash; Learn how to install, integrate and configure CKEditor 5 builds. More complex aspects, like creating custom builds, are explained here, too.
+* {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 builds.
 
 ## Contribute
 

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals setTimeout, document, console */
+/* globals setTimeout, document, console, Event */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -355,6 +355,136 @@ describe( 'SelectionObserver', () => {
 
 		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
 		sel.collapse( domText, 3 );
+	} );
+
+	describe( 'Management of view Document#isSelecting', () => {
+		it( 'should set #isSelecting to true upon the "selectstart" event', () => {
+			expect( viewDocument.isSelecting ).to.be.false;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domDocument, 'selectstart', () => {
+				expect( viewDocument.isSelecting ).to.be.true;
+			}, { priority: 'highest' } );
+
+			domDocument.dispatchEvent( new Event( 'selectstart' ) );
+
+			expect( viewDocument.isSelecting ).to.be.true;
+		} );
+
+		it( 'should set #isSelecting to false upon the "mouseup" event', () => {
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domDocument, 'mouseup', () => {
+				expect( viewDocument.isSelecting ).to.be.false;
+			}, { priority: 'highest' } );
+
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should set #isSelecting to false upon the "keydown" event', () => {
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domDocument, 'keydown', () => {
+				expect( viewDocument.isSelecting ).to.be.false;
+			}, { priority: 'highest' } );
+
+			domDocument.dispatchEvent( new Event( 'keydown' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should set #isSelecting to false upon the "keyup" event', () => {
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domDocument, 'keyup', () => {
+				expect( viewDocument.isSelecting ).to.be.false;
+			}, { priority: 'highest' } );
+
+			domDocument.dispatchEvent( new Event( 'keyup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		describe( 'isSelecting restoring after a timeout', () => {
+			let clock;
+
+			beforeEach( () => {
+				clock = testUtils.sinon.useFakeTimers();
+
+				// We need to recreate SelectionObserver, so it will use mocked setTimeout.
+				selectionObserver.disable();
+				selectionObserver.destroy();
+				view._observers.delete( SelectionObserver );
+				view.addObserver( SelectionObserver );
+			} );
+
+			afterEach( () => {
+				clock.restore();
+			} );
+
+			it( 'should set #isSelecting to false after 5000ms since the selectstart event', done => {
+				expect( viewDocument.isSelecting ).to.be.false;
+
+				domDocument.dispatchEvent( new Event( 'selectstart' ) );
+
+				expect( viewDocument.isSelecting ).to.be.true;
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.true;
+				}, 4500 );
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.false;
+					done();
+				}, 5500 );
+
+				clock.tick( 6000 );
+			} );
+
+			it( 'should postpone setting #isSelecting to false after 5000ms if "selectionchange" fired in the meantime', done => {
+				expect( viewDocument.isSelecting ).to.be.false;
+
+				domDocument.dispatchEvent( new Event( 'selectstart' ) );
+
+				expect( viewDocument.isSelecting ).to.be.true;
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.true;
+
+					// This will postpone the timeout by another 5000ms.
+					domDocument.dispatchEvent( new Event( 'selectionchange' ) );
+				}, 2500 );
+
+				setTimeout( () => {
+					// It would normally be false by now if not for the selectionchange event that was fired.
+					expect( viewDocument.isSelecting ).to.be.true;
+				}, 5500 );
+
+				setTimeout( () => {
+					expect( viewDocument.isSelecting ).to.be.false;
+					done();
+				}, 8000 );
+
+				clock.tick( 8000 );
+			} );
+
+			it( 'should cancel the 5000s timeout if the observer is destroyed', () => {
+				const spy = sinon.spy( selectionObserver._documentIsSelectingInactivityTimeoutDebounced, 'cancel' );
+
+				selectionObserver.destroy();
+
+				sinon.assert.calledOnce( spy );
+			} );
+		} );
 	} );
 
 	function changeDomSelection() {
