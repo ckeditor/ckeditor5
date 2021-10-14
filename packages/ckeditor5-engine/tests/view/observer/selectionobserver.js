@@ -87,7 +87,7 @@ describe( 'SelectionObserver', () => {
 		changeDomSelection();
 	} );
 
-	it( 'should add only one listener to one document', done => {
+	it( 'should add only one #selectionChange listener to one document', done => {
 		// Add second roots to ensure that listener is added once.
 		createViewRoot( viewDocument, 'div', 'additional' );
 		view.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
@@ -358,16 +358,32 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	describe( 'Management of view Document#isSelecting', () => {
+		it( 'should not set #isSelecting to true upon the "selectstart" event outside the DOM root', () => {
+			const selectStartChangedSpy = sinon.spy();
+
+			expect( viewDocument.isSelecting ).to.be.false;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'selectstart', selectStartChangedSpy, { priority: 'highest' } );
+
+			// The event was fired somewhere else in DOM.
+			domDocument.dispatchEvent( new Event( 'selectstart' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.notCalled( selectStartChangedSpy );
+		} );
+
 		it( 'should set #isSelecting to true upon the "selectstart" event', () => {
 			expect( viewDocument.isSelecting ).to.be.false;
 
 			// Make sure isSelecting was already updated by the listener with the highest priority.
 			// Note: The listener in SelectionObserver has the same priority but was attached first.
-			selectionObserver.listenTo( domDocument, 'selectstart', () => {
+			selectionObserver.listenTo( domMain, 'selectstart', () => {
 				expect( viewDocument.isSelecting ).to.be.true;
 			}, { priority: 'highest' } );
 
-			domDocument.dispatchEvent( new Event( 'selectstart' ) );
+			domMain.dispatchEvent( new Event( 'selectstart' ) );
 
 			expect( viewDocument.isSelecting ).to.be.true;
 		} );
@@ -386,18 +402,63 @@ describe( 'SelectionObserver', () => {
 			expect( viewDocument.isSelecting ).to.be.false;
 		} );
 
+		it( 'should set #isSelecting to false upon the "mouseup" event only once (editor with multiple roots)', () => {
+			const isSelectingSetSpy = sinon.spy();
+
+			createViewRoot( viewDocument, 'div', 'additional' );
+			view.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
+
+			viewDocument.isSelecting = true;
+
+			viewDocument.on( 'set:isSelecting', isSelectingSetSpy );
+
+			domDocument.dispatchEvent( new Event( 'mouseup' ) );
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.calledOnce( isSelectingSetSpy );
+		} );
+
+		it( 'should not set #isSelecting to false upon the "keydown" event outside the DOM root', () => {
+			const keydownSpy = sinon.spy();
+
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'keydown', () => keydownSpy, { priority: 'highest' } );
+
+			domMain.dispatchEvent( new Event( 'keydown' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.notCalled( keydownSpy );
+		} );
+
 		it( 'should set #isSelecting to false upon the "keydown" event', () => {
 			viewDocument.isSelecting = true;
 
 			// Make sure isSelecting was already updated by the listener with the highest priority.
 			// Note: The listener in SelectionObserver has the same priority but was attached first.
-			selectionObserver.listenTo( domDocument, 'keydown', () => {
+			selectionObserver.listenTo( domMain, 'keydown', () => {
 				expect( viewDocument.isSelecting ).to.be.false;
 			}, { priority: 'highest' } );
 
-			domDocument.dispatchEvent( new Event( 'keydown' ) );
+			domMain.dispatchEvent( new Event( 'keydown' ) );
 
 			expect( viewDocument.isSelecting ).to.be.false;
+		} );
+
+		it( 'should not set #isSelecting to false upon the "keyup" event outside the DOM root', () => {
+			const keyupSpy = sinon.spy();
+
+			viewDocument.isSelecting = true;
+
+			// Make sure isSelecting was already updated by the listener with the highest priority.
+			// Note: The listener in SelectionObserver has the same priority but was attached first.
+			selectionObserver.listenTo( domMain, 'keyup', () => keyupSpy, { priority: 'highest' } );
+
+			domMain.dispatchEvent( new Event( 'keyup' ) );
+
+			expect( viewDocument.isSelecting ).to.be.false;
+			sinon.assert.notCalled( keyupSpy );
 		} );
 
 		it( 'should set #isSelecting to false upon the "keyup" event', () => {
@@ -405,11 +466,11 @@ describe( 'SelectionObserver', () => {
 
 			// Make sure isSelecting was already updated by the listener with the highest priority.
 			// Note: The listener in SelectionObserver has the same priority but was attached first.
-			selectionObserver.listenTo( domDocument, 'keyup', () => {
+			selectionObserver.listenTo( domMain, 'keyup', () => {
 				expect( viewDocument.isSelecting ).to.be.false;
 			}, { priority: 'highest' } );
 
-			domDocument.dispatchEvent( new Event( 'keyup' ) );
+			domMain.dispatchEvent( new Event( 'keyup' ) );
 
 			expect( viewDocument.isSelecting ).to.be.false;
 		} );
@@ -434,7 +495,7 @@ describe( 'SelectionObserver', () => {
 			it( 'should set #isSelecting to false after 5000ms since the selectstart event', done => {
 				expect( viewDocument.isSelecting ).to.be.false;
 
-				domDocument.dispatchEvent( new Event( 'selectstart' ) );
+				domMain.dispatchEvent( new Event( 'selectstart' ) );
 
 				expect( viewDocument.isSelecting ).to.be.true;
 
@@ -453,7 +514,7 @@ describe( 'SelectionObserver', () => {
 			it( 'should postpone setting #isSelecting to false after 5000ms if "selectionchange" fired in the meantime', done => {
 				expect( viewDocument.isSelecting ).to.be.false;
 
-				domDocument.dispatchEvent( new Event( 'selectstart' ) );
+				domMain.dispatchEvent( new Event( 'selectstart' ) );
 
 				expect( viewDocument.isSelecting ).to.be.true;
 
