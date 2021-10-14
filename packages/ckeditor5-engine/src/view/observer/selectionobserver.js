@@ -136,7 +136,7 @@ export default class SelectionObserver extends Observer {
 		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
 
-		// Add listener once per each document.
+		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
