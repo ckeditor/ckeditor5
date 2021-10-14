@@ -47,7 +47,7 @@ function runUmberto( options ) {
 		configDir: 'docs',
 		clean: true,
 		dev: !options.production,
-		skipLiveSnippets: options.skpiSnippets,
+		skipLiveSnippets: options.skipSnippets,
 		skipValidation: options.skipValidation,
 		snippetOptions: {
 			production: options.production,
