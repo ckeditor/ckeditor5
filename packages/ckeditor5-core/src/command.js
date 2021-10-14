@@ -105,7 +105,7 @@ export default class Command {
 		 * @readonly
 		 * @member {Boolean} #affectsData
 		 */
-		this.affectsData = true;
+		this._affectsData = true;
 
 		/**
 		 * Holds identifiers for {@link #forceDisabled} mechanism.
@@ -136,6 +136,20 @@ export default class Command {
 				this.clearForceDisabled( 'readOnlyMode' );
 			}
 		} );
+	}
+
+	/**
+	 * Affects data property getter.
+	 */
+	get affectsData() {
+		return this._affectsData;
+	}
+
+	/**
+	 * Affects data property setter.
+	 */
+	set affectsData( affectsData ) {
+		this._affectsData = affectsData;
 	}
 
 	/**

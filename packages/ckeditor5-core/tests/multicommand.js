@@ -136,4 +136,43 @@ describe( 'MultiCommand', () => {
 			sinon.assert.notCalled( spyC );
 		} );
 	} );
+
+	describe( 'affectsData', () => {
+		it( 'is always true when no child commands are registered', () => {
+			expect( multiCommand.affectsData ).to.true;
+
+			multiCommand.refresh();
+
+			expect( multiCommand.affectsData ).to.true;
+		} );
+
+		it( 'is set to true if any of registered child commands is content affecting', () => {
+			expect( multiCommand.affectsData ).to.true;
+
+			const commandA = new Command( editor );
+			const commandB = new Command( editor );
+
+			commandA.affectsData = false;
+
+			multiCommand.registerChildCommand( commandA );
+			multiCommand.registerChildCommand( commandB );
+
+			expect( multiCommand.affectsData ).to.true;
+		} );
+
+		it( 'is set to false if all of registered child commands are non content affecting', () => {
+			expect( multiCommand.affectsData ).to.true;
+
+			const commandA = new Command( editor );
+			const commandB = new Command( editor );
+
+			commandA.affectsData = false;
+			commandB.affectsData = false;
+
+			multiCommand.registerChildCommand( commandA );
+			multiCommand.registerChildCommand( commandB );
+
+			expect( multiCommand.affectsData ).to.false;
+		} );
+	} );
 } );
