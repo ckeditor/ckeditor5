@@ -135,7 +135,7 @@ The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
 * The UI button component (`'htmlEmbed'`).
 * The `'htmlEmbed'` command implemented by {@link module:html-embed/htmlembedcommand~HtmlEmbedCommand}.
 
-The command executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
 editor.execute( 'htmlEmbed' ); // Insert an empty embed.
