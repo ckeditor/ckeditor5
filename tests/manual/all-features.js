@@ -167,7 +167,8 @@ ClassicEditor
 			}
 		},
 		htmlEmbed: {
-			showPreviews: true
+			showPreviews: true,
+			sanitizeHtml: html => ( { html, hasChange: false } )
 		}
 	} )
 	.then( editor => {
