@@ -378,7 +378,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
-					// <paragraph>foo <marker>bar</marker> baz</paragraph>
+					// <paragraph>foo <marker>bar</marker> baz[]</paragraph>
 					model.change( writer => {
 						writer.addMarker( 'restrictedEditingException:1', {
 							range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
@@ -483,7 +483,7 @@ describe( 'RestrictedEditingModeNavigationCommand', () => {
 
 					const paragraph = model.document.getRoot().getChild( 0 );
 
-					// <paragraph>[fo]o <marker>bar</marker> b[az]</paragraph>
+					// <paragraph>foo <marker>bar</marker> b[az]</paragraph>
 					model.change( writer => {
 						writer.addMarker( 'restrictedEditingException:1', {
 							range: writer.createRange( writer.createPositionAt( paragraph, 4 ), writer.createPositionAt( paragraph, 7 ) ),
