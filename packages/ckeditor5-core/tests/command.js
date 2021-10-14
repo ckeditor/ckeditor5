@@ -98,7 +98,7 @@ describe( 'Command', () => {
 
 			editor.isReadOnly = true;
 
-			// Is false.
+			// Is true.
 			expect( command.isEnabled ).to.true;
 
 			command.refresh();
