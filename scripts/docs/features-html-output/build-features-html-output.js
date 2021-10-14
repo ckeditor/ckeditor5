@@ -72,10 +72,12 @@ module.exports = function createHtmlOutputMarkup() {
 								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
+							const defaultClass = plugin.isAlternative[ htmlOutputIndex ] ? '' : ' html-output-default';
+
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="html-output">${ htmlOutputMarkup }</td>` +
+									`<td class="html-output ${ defaultClass }">${ htmlOutputMarkup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -248,13 +250,38 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 				}
 			}
 
-			const htmlOutputMarkup = plugin.htmlOutput ?
-				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
-				[ '<p>None.</p>' ];
+			if ( !plugin.htmlOutput ) {
+				const htmlOutputMarkup = [ '<p>None.</p>' ];
+				const isAlternative = [ true ];
+
+				return {
+					pluginNameMarkup,
+					htmlOutputMarkup,
+					isAlternative
+				};
+			}
+
+			const htmlOutputMarkup = createHtmlOutputMarkupForPlugin(
+				plugin.htmlOutput
+					.sort( ( a, b ) => {
+						const shift = a.isAlternative ? 1 : -1;
+						return a.isAlternative === b.isAlternative ? 0 : shift;
+					} )
+			);
+
+			const isAlternative = [];
+			for ( const html of plugin.htmlOutput ) {
+				if ( html.isAlternative ) {
+					isAlternative.push( true );
+				} else {
+					isAlternative.push( false );
+				}
+			}
 
 			return {
 				pluginNameMarkup,
-				htmlOutputMarkup
+				htmlOutputMarkup,
+				isAlternative
 			};
 		} );
 }
