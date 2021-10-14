@@ -78,7 +78,7 @@ export default class HtmlEmbedCommand extends Command {
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/schema~Schema} schema
-// @param {module:engine/model/model~Model} model Model instance.
+// @param {module:engine/model/model~Model} model
 // @returns {Boolean}
 function isHtmlEmbedAllowedInParent( selection, schema, model ) {
 	const parent = getInsertHtmlEmbedParent( selection, model );
@@ -89,7 +89,7 @@ function isHtmlEmbedAllowedInParent( selection, schema, model ) {
 // Returns a node that will be used to insert a html embed with `model.insertContent` to check if a html embed element can be placed there.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/model~Model} model Model instance.
+// @param {module:engine/model/model~Model} model
 // @returns {module:engine/model/element~Element}
 function getInsertHtmlEmbedParent( selection, model ) {
 	const insertionRange = findOptimalInsertionRange( selection, model );

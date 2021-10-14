@@ -138,9 +138,14 @@ The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
 The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
-editor.execute( 'htmlEmbed' ); // Insert an empty embed.
-editor.execute( 'htmlEmbed', '<b>Initial content</b>.' ); // Insert an embed with some initial content.
-editor.execute( 'htmlEmbed', '<b>New content.</b>' ); // Update the content of an existing embed.
+// Inserts an empty HTML embed.
+editor.execute( 'htmlEmbed' );
+
+// Inserts an HTML embed with some initial content.
+editor.execute( 'htmlEmbed', '<b>Initial content</b>.' );
+
+// Updates the content of a selected HTML embed.
+editor.execute( 'htmlEmbed', '<b>New content.</b>' );
 ```
 
 <info-box>
