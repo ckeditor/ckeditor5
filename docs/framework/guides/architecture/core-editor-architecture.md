@@ -150,6 +150,8 @@ enableBold();
 
 The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
+By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode, but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled. Note that this property should not change over the lifetime of the editor and should be set in the constructor for commands that are not intended to modify data and should not be turned off in read-only mode.
+
 ## Event system and observables
 
 CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
