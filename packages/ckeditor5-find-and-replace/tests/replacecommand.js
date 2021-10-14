@@ -9,6 +9,7 @@ import FindAndReplaceEditing from '../src/findandreplaceediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'ReplaceCommand', () => {
 	let editor, model, command;
@@ -16,7 +17,7 @@ describe( 'ReplaceCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing ]
+				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -184,9 +185,18 @@ describe( 'ReplaceCommand', () => {
 				);
 			} );
 
-			editor.execute( 'replaceAll', 'aa', results );
+			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
+			// In real life scenario the above deletion would be a transparent batch from the remote user,
+			// and undo would also be triggered by the remote user.
+			model.enqueueChange( 'transparent', () => {
+				editor.execute( 'replaceAll', 'aa', results );
+			} );
 
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+
+			editor.execute( 'undo' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 	} );
 } );
