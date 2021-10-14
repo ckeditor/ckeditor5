@@ -59,13 +59,7 @@ export default class CKEditorError extends Error {
 	 * data object will also be later available under the {@link #data} property.
 	 */
 	constructor( errorName, context, data ) {
-		let message = errorName;
-		if ( data ) {
-			message += ' ' + stringifyForErrorMessage( data );
-		}
-		message += getLinkToDocumentationMessage( errorName );
-
-		super( message );
+		super( getErrorMessage( errorName, data ) );
 
 		/**
 		 * @type {String}
@@ -128,29 +122,6 @@ export default class CKEditorError extends Error {
 	}
 }
 
-function stringifyForErrorMessage( data ) {
-	/**
-	 * Replacing circular values is needed for avoiding errors of type:
-	 * TypeError: cyclic object value
-	 */
-	const getCircularReplacer = () => {
-		const seen = new WeakSet();
-		return ( key, value ) => {
-			if ( typeof value === 'object' && value !== null ) {
-				if ( seen.has( value ) ) {
-					return `[object ${ value.constructor.name }]`;
-				}
-
-				seen.add( value );
-			}
-
-			return value;
-		};
-	};
-
-	return JSON.stringify( data, getCircularReplacer() );
-}
-
 /**
  * Logs a warning to the console with a properly formatted message and adds a link to the documentation.
  * Use whenever you want to log a warning to the console.
@@ -200,10 +171,47 @@ export function logError( errorName, data ) {
 	console.error( ...formatConsoleArguments( errorName, data ) );
 }
 
+// Returns formatted link to documentation message.
+//
+// @private
+// @param {String} errorName
+// @returns {string}
 function getLinkToDocumentationMessage( errorName ) {
 	return `\nRead more: ${ DOCUMENTATION_URL }#error-${ errorName }`;
 }
 
+// Returns formatted error message.
+//
+// @private
+// @param {String} errorName
+// @param {Object} [data]
+// @returns {string}
+function getErrorMessage( errorName, data ) {
+	const processedObjects = new WeakSet();
+	const circularReferencesReplacer = ( key, value ) => {
+		if ( typeof value === 'object' && value !== null ) {
+			if ( processedObjects.has( value ) ) {
+				return `[object ${ value.constructor.name }]`;
+			}
+
+			processedObjects.add( value );
+		}
+
+		return value;
+	};
+
+	const stringifiedData = data ? ` ${ JSON.stringify( data, circularReferencesReplacer ) }` : '';
+	const documentationLink = getLinkToDocumentationMessage( errorName );
+
+	return errorName + stringifiedData + documentationLink;
+}
+
+// Returns formatted console error arguments.
+//
+// @private
+// @param {String} errorName
+// @param {Object} [data]
+// @returns {Array}
 function formatConsoleArguments( errorName, data ) {
 	const documentationMessage = getLinkToDocumentationMessage( errorName );
 

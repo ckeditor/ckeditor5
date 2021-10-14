@@ -72,22 +72,30 @@ describe( 'CKEditorError', () => {
 		expect( error ).to.have.property( 'data', data );
 	} );
 
-	it( 'appends correctly stringified data to the message in case of circular reference', () => {
-		class Foo {}
+	it( 'appends stringified data to the message if stringified object contains circular references', () => {
+		const data = { foo: 'bar' };
 
-		const data = {
-			bar: 'a',
-			bom: new Foo()
-		};
-		data.bom.bar = data.bom;
-		data.bim = data;
+		data.bar = data;
 
 		const error = new CKEditorError( 'foo', null, data );
 
 		expect( error ).to.have.property(
 			'message',
-			'foo {"bar":"a","bom":{"bar":"[object Foo]"},"bim":"[object Object]"}' +
-			`\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+			`foo {"foo":"bar","bar":"[object Object]"}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+		);
+		expect( error ).to.have.property( 'data', data );
+	} );
+
+	it( 'appends stringified data to the message if stringified object contains multiple exact same circular references', () => {
+		const data = { foo: 'bar' };
+
+		data.bar = [ data, data ];
+
+		const error = new CKEditorError( 'foo', null, data );
+
+		expect( error ).to.have.property(
+			'message',
+			`foo {"foo":"bar","bar":["[object Object]","[object Object]"]}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
 		);
 		expect( error ).to.have.property( 'data', data );
 	} );
