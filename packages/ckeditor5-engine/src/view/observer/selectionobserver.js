@@ -115,11 +115,6 @@ export default class SelectionObserver extends Observer {
 	observe( domElement ) {
 		const domDocument = domElement.ownerDocument;
 
-		// Add listener once per each document.
-		if ( this._documents.has( domDocument ) ) {
-			return;
-		}
-
 		const startDocumentIsSelecting = () => {
 			this.document.isSelecting = true;
 
@@ -134,6 +129,19 @@ export default class SelectionObserver extends Observer {
 			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 		};
 
+		// The document has the "is selecting" state while the user keeps making (extending) the selection
+		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
+		// the mouse button or interrupted the process by pressing or releasing any key.
+		this.listenTo( domElement, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
+
+		// Add listener once per each document.
+		if ( this._documents.has( domDocument ) ) {
+			return;
+		}
+
+		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 
@@ -141,14 +149,6 @@ export default class SelectionObserver extends Observer {
 			// using their mouse).
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
-
-		// The document has the "is selecting" state while the user keeps making (extending) the selection
-		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
-		// the mouse button or interrupted the process by pressing or releasing any key.
-		this.listenTo( domDocument, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
 
 		this._documents.add( domDocument );
 	}
