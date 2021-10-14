@@ -49,20 +49,6 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Returns the affectsData flag for multi command.
-	 * If any child command affects data then the multi command affects data as well.
-	 * If there are no child commands, default to `true`.
-	 *
-	 * @readonly
-	 * @type {Boolean}
-	 */
-	get affectsData() {
-		return this._childCommands.length === 0 || this._childCommands.some(
-			command => command.affectsData
-		);
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	refresh() {
@@ -92,6 +78,8 @@ export default class MultiCommand extends Command {
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
 
 		this._checkEnabled();
+
+		this.affectsData = this._childCommands.some( command => command.affectsData );
 	}
 
 	/**
