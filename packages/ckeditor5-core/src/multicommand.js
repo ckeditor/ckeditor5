@@ -50,7 +50,7 @@ export default class MultiCommand extends Command {
 
 	/**
 	 * Returns the affectsData flag for multi command.
-	 * If any child command affects data commands then the multi command affects data as well.
+	 * If any child command affects data then the multi command affects data as well.
 	 * If there are no child commands, default to `true`.
 	 *
 	 * @readonly
