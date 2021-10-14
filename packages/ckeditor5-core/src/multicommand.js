@@ -78,8 +78,6 @@ export default class MultiCommand extends Command {
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
 
 		this._checkEnabled();
-
-		this.affectsData = this._childCommands.some( command => command.affectsData );
 	}
 
 	/**
