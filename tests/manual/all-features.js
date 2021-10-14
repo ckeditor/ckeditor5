@@ -161,7 +161,7 @@ ClassicEditor
 					mode: 'manual',
 					label: 'Gallery link',
 					attributes: {
-						class: 'gallery'
+						classes: 'gallery'
 					}
 				}
 			}
