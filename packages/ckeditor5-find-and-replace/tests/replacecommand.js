@@ -168,5 +168,25 @@ describe( 'ReplaceCommand', () => {
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
 		} );
+
+		it( 'should not replace find results that landed in the $graveyard root (e.g. removed by collaborators)', () => {
+			setData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
+
+			const { results } = editor.execute( 'find', 'oo' );
+
+			model.change( writer => {
+				writer.remove(
+					// <paragraph>Aoo [Boo Coo] Doo</paragraph>
+					model.createRange(
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 4 ),
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 11 )
+					)
+				);
+			} );
+
+			editor.execute( 'replaceAll', 'aa', results );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+		} );
 	} );
 } );
