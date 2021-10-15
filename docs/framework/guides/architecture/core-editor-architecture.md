@@ -152,6 +152,16 @@ The command will now be disabled as long as you do not {@link module:utils/emitt
 
 By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode, but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will stay enabled. Note that this property should not change over the lifetime of the editor. It should be set in the constructor for commands that are not intended to modify editor data and should stay enabled in the read-only mode.
 
+```js
+class MyCommand extends Command {
+	constructor( editor ) {
+		super( editor );
+
+		this.affectsData = false;
+	}
+}
+```
+
 ## Event system and observables
 
 CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
