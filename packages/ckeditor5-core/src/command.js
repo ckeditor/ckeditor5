@@ -98,12 +98,15 @@ export default class Command {
 		this.set( 'isEnabled', false );
 
 		/**
-		 * A flag indicating whether a command execution changes the editor data or not. `true` by default.
+		 * A flag indicating whether a command execution changes the editor data or not.
 		 *
 		 * Commands with `affectsData` set to `false` will not be automatically disabled in
 		 * {@link module:core/editor/editor~Editor#isReadOnly read-only mode}.
 		 *
+		 * **Note:** You do not have to set it for your every command. It will be `true` by default.
+		 *
 		 * @readonly
+		 * @default true
 		 * @member {Boolean} #affectsData
 		 */
 		this.affectsData = true;
