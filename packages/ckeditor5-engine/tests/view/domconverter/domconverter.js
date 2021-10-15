@@ -545,7 +545,7 @@ describe( 'DomConverter', () => {
 			testCases.forEach( ( testCase, index ) => {
 				converter.setContentOf( element, testCase.html );
 
-				expect( element.innerHTML, `Case #${index}` ).to.equal( testCase.expected );
+				expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
 			} );
 		} );
 
@@ -616,7 +616,8 @@ describe( 'DomConverter', () => {
 			testCases.forEach( ( testCase, index ) => {
 				converter.setContentOf( element, testCase.html );
 
-				expect( element.innerHTML, `Case #${index}` ).to.equal( testCase.expected );
+				expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+			} );
 		} );
 
 		it( 'should replace a script element with a span in the editing pipeline', () => {
@@ -630,7 +631,7 @@ describe( 'DomConverter', () => {
 			);
 		} );
 
-        it( 'should keep script element in the data pipeline', () => {
+		it( 'should keep script element in the data pipeline', () => {
 			const element = document.createElement( 'p' );
 			const html = '<div>foo<script onclick="foo">bar</script></div>';
 
