@@ -1696,7 +1696,6 @@ function downcastElementToStructure( config ) {
 
 	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
-	config.model.children = true;
 
 	// Trigger reconversion on children list change because it always needs to use slots to put children in proper places.
 	// This is required to be able to trigger Differ#refreshItem() on a direct child of the reconverted element.
@@ -2126,9 +2125,9 @@ function createConsumer( model ) {
 // @param {module:engine/view/element~Element} viewElement.
 function validateChildren( viewElement ) {
 	const children = Array.from( viewElement.getChildren() );
-	const hasNonUIchildren = children.some( element => !element.is( 'uiElement' ) );
+	const hasNonUiChildren = children.some( element => !element.is( 'uiElement' ) );
 
-	if ( hasNonUIchildren ) {
+	if ( hasNonUiChildren ) {
 		/**
 		 * Only one container element without any children elements other than
 		 * {@link module:engine/view/uielement~UIElement `UIElement`}s should be created in
@@ -2142,7 +2141,7 @@ function validateChildren( viewElement ) {
 		 * @error conversion-element-to-element-created-multiple-elements
 		 * @param {module:engine/model/element~Element} viewElement
 		 */
-		logWarning( 'conversion-element-to-element-created-multiple-elements', viewElement );
+		logWarning( 'conversion-element-to-element-created-multiple-elements', { viewElement } );
 	}
 }
 
