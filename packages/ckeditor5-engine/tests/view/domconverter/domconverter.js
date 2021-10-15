@@ -480,7 +480,7 @@ describe( 'DomConverter', () => {
 			expect( element.innerHTML ).to.equal( html );
 		} );
 
-		it( 'should remove certain attributes', () => {
+		it( 'should remove certain attributes in the editing pipeline', () => {
 			const element = document.createElement( 'p' );
 
 			const testCases = [
@@ -542,14 +542,14 @@ describe( 'DomConverter', () => {
 				}
 			];
 
-			testCases.forEach( testCase => {
+			testCases.forEach( ( testCase, index ) => {
 				converter.setContentOf( element, testCase.html );
 
-				expect( element.innerHTML ).to.equal( testCase.expected );
+				expect( element.innerHTML, `Case #${index}` ).to.equal( testCase.expected );
 			} );
 		} );
 
-		it( 'should keep attributes for data pipeline', () => {
+		it( 'should keep attributes for the data pipeline', () => {
 			const element = document.createElement( 'p' );
 
 			converter.renderingMode = 'data';
@@ -613,14 +613,13 @@ describe( 'DomConverter', () => {
 				}
 			];
 
-			testCases.forEach( testCase => {
+			testCases.forEach( ( testCase, index ) => {
 				converter.setContentOf( element, testCase.html );
 
-				expect( element.innerHTML ).to.equal( testCase.expected );
-			} );
+				expect( element.innerHTML, `Case #${index}` ).to.equal( testCase.expected );
 		} );
 
-		it( 'should replace script element with span', () => {
+		it( 'should replace a script element with a span in the editing pipeline', () => {
 			const element = document.createElement( 'p' );
 			const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
 
@@ -631,7 +630,7 @@ describe( 'DomConverter', () => {
 			);
 		} );
 
-		it( 'should keep script element for data pipeline', () => {
+        it( 'should keep script element in the data pipeline', () => {
 			const element = document.createElement( 'p' );
 			const html = '<div>foo<script onclick="foo">bar</script></div>';
 
