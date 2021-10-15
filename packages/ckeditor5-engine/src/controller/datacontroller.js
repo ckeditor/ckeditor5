@@ -145,6 +145,7 @@ export default class DataController {
 
 		this.decorate( 'init' );
 		this.decorate( 'set' );
+		this.decorate( 'get' );
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener gives possibility
 		// to plug into the initialization pipeline without interrupting the initialization flow.
@@ -163,6 +164,7 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
+	 * @fires get
 	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
 	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
 	 * @param {String} [options.rootName='main'] Root name.
@@ -522,6 +524,15 @@ export default class DataController {
 	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
 	 *
 	 * @event set
+	 */
+
+	/**
+	 * Event fired after {@link #get get() method} has been run.
+	 *
+	 * The `get` event is fired by decorated {@link #get} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event get
 	 */
 }
 

@@ -453,6 +453,40 @@ describe( 'SourceEditing', () => {
 			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
 		} );
 
+		it( 'should update the editor data after calling editor.getData() in the source editing mode', () => {
+			const setDataSpy = sinon.spy();
+
+			editor.data.on( 'set', setDataSpy );
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = 'foo';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Trigger getData() while in the source editing mode.
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+			textarea.value = 'bar';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Exit source editing mode.
+			button.fire( 'execute' );
+
+			expect( setDataSpy.calledTwice ).to.be.true;
+			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'foo' },
+				{ batchType: 'default' }
+			] );
+			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'bar' },
+				{ batchType: 'default' }
+			] );
+			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
+		} );
+
 		it( 'should insert the formatted HTML source (editor output) into the textarea', () => {
 			button.fire( 'execute' );
 
