@@ -132,7 +132,6 @@ export default class RawElement extends Element {
 	 *		const myRawElement = downcastWriter.createRawElement( 'div' );
 	 *
 	 *		myRawElement.render = function( domElement, domConverter ) {
-	 *			// Allow the DomConverter to optimize the output before applying it to the domElement.
 	 *			domConverter.setContentOf( domElement, '<b>This is the raw content of myRawElement.</b>' );
 	 *		};
 	 *

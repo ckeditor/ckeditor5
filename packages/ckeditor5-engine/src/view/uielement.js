@@ -129,7 +129,6 @@ export default class UIElement extends Element {
 	 *		myUIElement.render = function( domDocument, domConverter ) {
 	 *			const domElement = this.toDomElement( domDocument );
 	 *
-	 *			// Allow the DomConverter to optimize the output before applying it to the domElement.
 	 *			domConverter.setContentOf( domElement, '<b>this is ui element</b>' );
 	 *
 	 *			return domElement;
