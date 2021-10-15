@@ -222,10 +222,17 @@ export default class DowncastWriter {
 	 * @param {Boolean} [options.isAllowedInsideAttributeElement=false] Whether an element is
 	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
 	 * with {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
+	 * A list of nodes to be inserted into created element.
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
-	createContainerElement( name, attributes, options = {} ) {
-		const containerElement = new ContainerElement( this.document, name, attributes );
+	createContainerElement( name, attributes, options = {}, children = null ) {
+		if ( !isPlainObject( options ) ) {
+			children = options;
+			options = {};
+		}
+
+		const containerElement = new ContainerElement( this.document, name, attributes, children );
 
 		if ( options.isAllowedInsideAttributeElement !== undefined ) {
 			containerElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;

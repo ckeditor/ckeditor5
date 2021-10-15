@@ -232,13 +232,11 @@ export function downcastSourcesAttribute( imageUtils ) {
 
 		if ( data.attributeNewValue && data.attributeNewValue.length ) {
 			// Make sure <picture> does not break attribute elements, for instance <a> in linked images.
-			const pictureElement = viewWriter.createContainerElement( 'picture', {}, { isAllowedInsideAttributeElement: true } );
-
-			for ( const sourceAttributes of data.attributeNewValue ) {
-				const sourceElement = viewWriter.createEmptyElement( 'source', sourceAttributes );
-
-				viewWriter.insert( viewWriter.createPositionAt( pictureElement, 'end' ), sourceElement );
-			}
+			const pictureElement = viewWriter.createContainerElement( 'picture', {}, { isAllowedInsideAttributeElement: true },
+				data.attributeNewValue.map( sourceAttributes => {
+					return viewWriter.createEmptyElement( 'source', sourceAttributes );
+				} )
+			);
 
 			// Collect all wrapping attribute elements.
 			const attributeElements = [];

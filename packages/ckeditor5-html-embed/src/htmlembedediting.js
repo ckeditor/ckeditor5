@@ -123,13 +123,6 @@ export default class HtmlEmbedEditing extends Plugin {
 			view: ( modelElement, { writer } ) => {
 				let domContentWrapper, state, props;
 
-				const viewContainer = writer.createContainerElement( 'div', {
-					class: 'raw-html-embed',
-					'data-html-embed-label': t( 'HTML snippet' ),
-					dir: editor.locale.uiLanguageDirection
-				} );
-				// Widget cannot be a raw element because the widget system would not be able
-				// to add its UI to it. Thus, we need this wrapper.
 				const viewContentWrapper = writer.createRawElement( 'div', {
 					class: 'raw-html-embed__content-wrapper'
 				}, function( domElement ) {
@@ -214,7 +207,11 @@ export default class HtmlEmbedEditing extends Plugin {
 					}
 				};
 
-				writer.insert( writer.createPositionAt( viewContainer, 0 ), viewContentWrapper );
+				const viewContainer = writer.createContainerElement( 'div', {
+					class: 'raw-html-embed',
+					'data-html-embed-label': t( 'HTML snippet' ),
+					dir: editor.locale.uiLanguageDirection
+				}, viewContentWrapper );
 
 				writer.setCustomProperty( 'rawHtmlApi', rawHtmlApi, viewContainer );
 				writer.setCustomProperty( 'rawHtml', true, viewContainer );

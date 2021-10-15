@@ -20,39 +20,34 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  */
 export function downcastTable( tableUtils, options = {} ) {
 	return ( table, { writer, slotFor } ) => {
-		const figureElement = writer.createContainerElement( 'figure', { class: 'table' } );
-		const tableElement = writer.createContainerElement( 'table' );
-
-		writer.insert( writer.createPositionAt( figureElement, 0 ), tableElement );
-
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const tableSections = [];
 
 		// Table head slot.
 		if ( headingRows > 0 ) {
-			const tableHead = writer.createContainerElement( 'thead' );
-			const headSlot = slotFor(
-				element => element.is( 'element', 'tableRow' ) && element.index < headingRows
+			tableSections.push(
+				writer.createContainerElement( 'thead', null,
+					slotFor( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
+				)
 			);
-
-			writer.insert( writer.createPositionAt( tableElement, 'end' ), tableHead );
-			writer.insert( writer.createPositionAt( tableHead, 0 ), headSlot );
 		}
 
 		// Table body slot.
 		if ( headingRows < tableUtils.getRows( table ) ) {
-			const tableBody = writer.createContainerElement( 'tbody' );
-			const bodySlot = slotFor(
-				element => element.is( 'element', 'tableRow' ) && element.index >= headingRows
+			tableSections.push(
+				writer.createContainerElement( 'tbody', null,
+					slotFor( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
+				)
 			);
-
-			writer.insert( writer.createPositionAt( tableElement, 'end' ), tableBody );
-			writer.insert( writer.createPositionAt( tableBody, 0 ), bodySlot );
 		}
 
-		// Slot for the rest (for example caption).
-		const restSlot = slotFor( element => !element.is( 'element', 'tableRow' ) );
+		const figureElement = writer.createContainerElement( 'figure', { class: 'table' }, [
+			// Table with proper sections (thead, tbody).
+			writer.createContainerElement( 'table', null, tableSections ),
 
-		writer.insert( writer.createPositionAt( figureElement, 'end' ), restSlot );
+			// Slot for the rest (for example caption).
+			slotFor( element => !element.is( 'element', 'tableRow' ) )
+		] );
 
 		return options.asWidget ? toTableWidget( figureElement, writer ) : figureElement;
 	};
