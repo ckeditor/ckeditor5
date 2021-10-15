@@ -697,7 +697,7 @@ describe( 'WidgetResize', () => {
 		} );
 
 		editor.conversion.for( 'downcast' )
-			.elementToElement( {
+			.elementToStructure( {
 				model: 'widget',
 				view: ( modelItem, { writer } ) => {
 					const parentDiv = writer.createContainerElement( 'div' );

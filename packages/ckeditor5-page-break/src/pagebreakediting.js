@@ -41,7 +41,7 @@ export default class PageBreakEditing extends Plugin {
 			allowWhere: '$block'
 		} );
 
-		conversion.for( 'dataDowncast' ).elementToElement( {
+		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'pageBreak',
 			view: ( modelElement, { writer } ) => {
 				const divElement = writer.createContainerElement( 'div', {
@@ -62,7 +62,7 @@ export default class PageBreakEditing extends Plugin {
 			}
 		} );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'pageBreak',
 			view: ( modelElement, { writer } ) => {
 				const label = t( 'Page break' );

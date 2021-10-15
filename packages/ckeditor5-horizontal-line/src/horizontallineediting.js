@@ -48,7 +48,7 @@ export default class HorizontalLineEditing extends Plugin {
 			}
 		} );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'horizontalLine',
 			view: ( modelElement, { writer } ) => {
 				const label = t( 'Horizontal line' );

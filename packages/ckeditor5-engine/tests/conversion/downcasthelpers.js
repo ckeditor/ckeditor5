@@ -806,6 +806,60 @@ describe( 'DowncastHelpers', () => {
 				] );
 			} );
 		} );
+
+		describe( 'with multiple child elements', () => {
+			it( 'warns if multiple child elements are created', () => {
+				let viewElement;
+
+				testUtils.sinon.stub( console, 'warn' );
+
+				downcastHelpers.elementToElement( {
+					model: 'multiItemBox',
+					view: ( modelElement, { writer } ) => {
+						viewElement = writer.createContainerElement( 'div' );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createEmptyElement( 'p' ) );
+
+						return viewElement;
+					}
+				} );
+
+				model.change( writer => {
+					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
+				} );
+
+				sinon.assert.calledOnce( console.warn );
+				sinon.assert.calledWithExactly( console.warn,
+					sinon.match( /^conversion-element-to-element-created-multiple-elements/ ),
+					{ viewElement },
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
+			it( 'does not warn if multiple child UI elements are created', () => {
+				let viewElement;
+
+				testUtils.sinon.stub( console, 'warn' );
+
+				downcastHelpers.elementToElement( {
+					model: 'multiItemBox',
+					view: ( modelElement, { writer } ) => {
+						viewElement = writer.createContainerElement( 'div' );
+
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createUIElement( 'div' ) );
+						writer.insert( writer.createPositionAt( viewElement, 1 ), writer.createUIElement( 'span' ) );
+
+						return viewElement;
+					}
+				} );
+
+				model.change( writer => {
+					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
+				} );
+
+				sinon.assert.notCalled( console.warn );
+			} );
+		} );
 	} );
 
 	describe( 'elementToStructure()', () => {
