@@ -150,7 +150,7 @@ enableBold();
 
 The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
-By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode, but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled. Note that this property should not change over the lifetime of the editor and should be set in the constructor for commands that are not intended to modify data and should not be turned off in read-only mode.
+By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode, but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will stay enabled. Note that this property should not change over the lifetime of the editor. It should be set in the constructor for commands that are not intended to modify editor data and should stay enabled in the read-only mode.
 
 ## Event system and observables
 
