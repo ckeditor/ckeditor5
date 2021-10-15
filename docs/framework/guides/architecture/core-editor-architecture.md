@@ -164,6 +164,7 @@ class MyAlwaysEnabledCommand extends Command {
 ```
 
 Note that `affectsData` is `true` by default for all editor commands and, unless your command should not be affected by the read-only state of the editor, you do not need to change it. Also, `affectsData` should not change over the lifetime of the editor.
+
 ## Event system and observables
 
 CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
