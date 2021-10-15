@@ -831,7 +831,7 @@ describe( 'DowncastHelpers', () => {
 				sinon.assert.calledOnce( console.warn );
 				sinon.assert.calledWithExactly( console.warn,
 					sinon.match( /^conversion-element-to-element-created-multiple-elements/ ),
-					viewElement,
+					{ viewElement },
 					sinon.match.string // Link to the documentation
 				);
 			} );
