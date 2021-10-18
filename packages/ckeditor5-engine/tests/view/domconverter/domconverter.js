@@ -469,176 +469,180 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'setContentOf()', () => {
-		it( 'should set content as-is for data pipeline', () => {
-			const element = document.createElement( 'p' );
-			const html = '<div>foo<span>bar</span></div>';
+		describe( 'data pipeline', () => {
+			it( 'should set content as-is', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<span>bar</span></div>';
 
-			converter.renderingMode = 'data';
+				converter.renderingMode = 'data';
 
-			converter.setContentOf( element, html );
+				converter.setContentOf( element, html );
 
-			expect( element.innerHTML ).to.equal( html );
-		} );
+				expect( element.innerHTML ).to.equal( html );
+			} );
 
-		it( 'should remove certain attributes in the editing pipeline', () => {
-			const element = document.createElement( 'p' );
+			it( 'should keep attributes', () => {
+				const element = document.createElement( 'p' );
 
-			const testCases = [
-				{
-					html: '<div data-foo="bar">' +
+				converter.renderingMode = 'data';
+
+				const testCases = [
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-								'bar' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				},
-				{
-					html: '<div data-foo="bar">' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-								'bar' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				},
-				{
-					html: '<div data-foo="bar">' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-								'bar' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				},
-				{
-					html: '<div data-foo="bar">' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-								'bar' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				}
-			];
+							'</div>'
+					}
+				];
 
-			testCases.forEach( ( testCase, index ) => {
-				converter.setContentOf( element, testCase.html );
+				testCases.forEach( ( testCase, index ) => {
+					converter.setContentOf( element, testCase.html );
 
-				expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+					expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+				} );
+			} );
+
+			it( 'should keep script element', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script onclick="foo">bar</script></div>';
+
+				converter.renderingMode = 'data';
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal( '<div>foo<script onclick="foo">bar</script></div>' );
 			} );
 		} );
 
-		it( 'should keep attributes for the data pipeline', () => {
-			const element = document.createElement( 'p' );
+		describe( 'editing pipeline', () => {
+			it( 'should remove certain attributes', () => {
+				const element = document.createElement( 'p' );
 
-			converter.renderingMode = 'data';
-
-			const testCases = [
-				{
-					html: '<div data-foo="bar">' +
+				const testCases = [
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
-								'bar' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				},
-				{
-					html: '<div data-foo="bar">' +
-							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
-								'bar' +
-							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				},
-				{
-					html: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
-								'bar' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				},
-				{
-					html: '<div data-foo="bar">' +
-							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
-								'bar' +
-							'</span>' +
-						'</div>',
-					expected: '<div data-foo="bar">' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
 							'foo' +
 							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
-								'bar' +
+							'bar' +
 							'</span>' +
-						'</div>'
-				}
-			];
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					}
+				];
 
-			testCases.forEach( ( testCase, index ) => {
-				converter.setContentOf( element, testCase.html );
+				testCases.forEach( ( testCase, index ) => {
+					converter.setContentOf( element, testCase.html );
 
-				expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+					expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+				} );
 			} );
-		} );
 
-		it( 'should replace a script element with a span in the editing pipeline', () => {
-			const element = document.createElement( 'p' );
-			const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
+			it( 'should replace a script element with a span', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
 
-			converter.setContentOf( element, html );
+				converter.setContentOf( element, html );
 
-			expect( element.innerHTML ).to.equal(
-				'<div>foo<span data-ck-hidden="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
-			);
-		} );
-
-		it( 'should keep script element in the data pipeline', () => {
-			const element = document.createElement( 'p' );
-			const html = '<div>foo<script onclick="foo">bar</script></div>';
-
-			converter.renderingMode = 'data';
-			converter.setContentOf( element, html );
-
-			expect( element.innerHTML ).to.equal( '<div>foo<script onclick="foo">bar</script></div>' );
+				expect( element.innerHTML ).to.equal(
+					'<div>foo<span data-ck-hidden="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+				);
+			} );
 		} );
 	} );
 } );
