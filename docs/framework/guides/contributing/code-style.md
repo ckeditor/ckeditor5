@@ -923,18 +923,18 @@ History of changes:
 
 ### Cross package imports: `ckeditor5-rules/no-cross-package-imports`
 
-Normally, it is allowed to import from other packages, like this:
+It is normally allowed to import from other packages, using this method:
 
 ```js
 import { toArray } from 'ckeditor5/src/utils';
 import { toArray } from '@ckeditor/ckeditor5-utils';
 ```
 
-However, specific packages have this kind of import disallowed.
+However, specific packages disallow this kind of import.
 
 Currently, this rule applies only to the `ckeditor5-watchdog` package.
 
-👎&nbsp; Examples of incorrect code for this rule:
+👎&nbsp; Examples of an incorrect code for this rule:
 
 ```js
 // Assume we edit a file located in the `ckeditor5-watchdog` package
@@ -943,7 +943,7 @@ import { toArray } from 'ckeditor5/src/utils';
 import { toArray } from '@ckeditor/ckeditor5-utils';
 ```
 
-👍&nbsp; Examples of correct code for this rule:
+👍&nbsp; Examples of a correct code for this rule:
 
 ```js
 // Assume we edit a file not located in the `ckeditor5-watchdog` package
