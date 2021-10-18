@@ -16,7 +16,7 @@ Learn how to install CKEditor 5 from scratch or using predefined builds. Integra
 </info-box>
 
 <info-box>
-	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz</button>
+	**Not sure which installation method is best for you?** <button type="button" class="quiz-button quiz-button_start">Take a short quiz!</button>
 </info-box>
 
 ## Predefined CKEditor 5 builds
@@ -70,7 +70,7 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 		// ------------------------------ Questions -----------------------------------------------
 
 		'quiz-question-usingFrameworks': {
-			content: 'Do you want integrate CKEditor into an existing React, Vue.js or Angular project?',
+			content: 'Do you want to integrate CKEditor into an existing React, Vue.js or Angular project?',
 			hint: 'CKEditor 5 comes with ready-to-use <a href="#frameworks-integration">adapters</a> for popular front–end frameworks. You can use them to quickly bootstrap your project.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingFrameworks' ),
@@ -89,7 +89,7 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 		// ------------------------------ Resolutions ----------------------------------------------
 
 		'quiz-resolution-usingFrameworks': {
-			content: 'Based on you previous answers, we you should check out official {@link builds/guides/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
+			content: 'Based on you previous answers, you should check out official {@link builds/guides/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
@@ -99,7 +99,7 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 		},
 
 		'quiz-resolution-endOfTheWorld': {
-			content: 'This message will be displayed when there is no easy answer.',
+			content: 'The solution you need is not clear. Please browse the documentation to look for further answers.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		}
 	};
