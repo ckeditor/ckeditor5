@@ -648,10 +648,10 @@ export default class DomConverter {
 	 * If structures are too different and it is not possible to find corresponding position then `null` will be returned.
 	 *
 	 * @param {Node} domParent DOM position parent.
-	 * @param {Number} domOffset DOM position offset.
+	 * @param {Number} [domOffset=0] DOM position offset. You can skip it when converting the inline filler node.
 	 * @returns {module:engine/view/position~Position} viewPosition View position.
 	 */
-	domPositionToView( domParent, domOffset ) {
+	domPositionToView( domParent, domOffset = 0 ) {
 		if ( this.isBlockFiller( domParent ) ) {
 			return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 		}

@@ -242,7 +242,7 @@ ClassicEditor
 
 ## Autolink feature
 
-Automatic linking of URLs typed or pasted into the editor is enabled by default in the preconfigured builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
+Automatic linking of URLs typed or pasted into the editor is enabled by default in the predefined builds. The {@link module:link/autolink~AutoLink `AutoLink`} feature will automatically turn URLs or e-mail addresses into real, working links.
 
 To use the autolink function simply press <kbd>Space</kbd>, <kbd>Enter</kbd> or <kbd>Shift</kbd>+<kbd>Enter</kbd> after a link.
 

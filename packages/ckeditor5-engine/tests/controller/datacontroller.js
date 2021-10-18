@@ -398,6 +398,16 @@ describe( 'DataController', () => {
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 		} );
 
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			data.on( 'get', spy );
+
+			data.get();
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [] );
+		} );
+
 		it( 'should get paragraph with text', () => {
 			setData( model, '<paragraph>foo</paragraph>' );
 

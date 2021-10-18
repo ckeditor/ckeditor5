@@ -1,7 +1,7 @@
 ---
 menu-title: FAQ
 category: builds-guides
-order: 40
+order: 600
 ---
 
 # Frequently asked questions
