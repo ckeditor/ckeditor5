@@ -227,7 +227,7 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			viewElement = writer.createRawElement( 'div', attributes, function( domElement, domConverter ) {
+			viewElement = writer.createRawElement( 'div', attributes, ( domElement, domConverter ) => {
 				domConverter.setContentOf( domElement, mediaHtml );
 			} );
 		} else {
