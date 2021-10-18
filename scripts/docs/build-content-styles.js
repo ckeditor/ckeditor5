@@ -7,6 +7,7 @@
 
 const path = require( 'path' );
 const mkdirp = require( 'mkdirp' );
+const postcss = require( 'postcss' );
 const webpack = require( 'webpack' );
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const { getLastFromChangelog } = require( '@ckeditor/ckeditor5-dev-env/lib/release-tools/utils/versions' );
@@ -207,15 +208,14 @@ function getWebpackConfig() {
  * @param {Array.<String>} contentRules.variables Variables defined as `:root`.
  * @param {Object} contentRules.atRules Definitions of behaves.
  * @param {Array.<String>} contentRules.selector CSS definitions for all selectors.
- * @returns {Object} A PostCSS plugin.
+ * @returns {Function}
  */
 function postCssContentStylesPlugin( contentRules ) {
-	const selectorStyles = contentRules.selector;
-	const variables = contentRules.variables;
+	return postcss.plugin( 'list-content-styles', function() {
+		const selectorStyles = contentRules.selector;
+		const variables = contentRules.variables;
 
-	return {
-		postcssPlugin: 'list-content-styles',
-		Once( root ) {
+		return root => {
 			root.walkRules( rule => {
 				for ( const selector of rule.selectors ) {
 					const data = {
@@ -238,12 +238,12 @@ function postCssContentStylesPlugin( contentRules ) {
 					}
 				}
 			} );
-		}
-	};
+		};
+	} );
 
 	/**
 	 * @param {Object} collection
-	 * @param {String} name A name of an `at-rule`.
+	 * @param {String} name Name of an `at-rule`.
 	 * @param {String} params Parameters that describes the `at-rule`.
 	 * @returns {Array}
 	 */
