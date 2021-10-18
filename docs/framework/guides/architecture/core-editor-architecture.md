@@ -154,16 +154,20 @@ By default, editor commands are disabled when the editor is in {@link module:cor
 
 ```js
 class MyAlwaysEnabledCommand extends Command {
-    constructor( editor ) {
-        super( editor );
+	constructor( editor ) {
+		super( editor );
 
-        // This command will remain enabled even when the editor is read-only.
-        this.affectsData = false;
-    }
+		// This command will remain enabled even when the editor is read-only.
+		this.affectsData = false;
+	}
 }
 ```
 
-Note that `affectsData` is `true` by default for all editor commands and, unless your command should not be affected by the read-only state of the editor, you do not need to change it. Also, `affectsData` should not change over the lifetime of the editor.
+The {@link module:core/command~Command#affectsData `affectsData`} flag will also affect the command in {@link features/read-only#related-features other editor modes} that restrict user write permissions.
+
+<info-box>
+	The `affectsData` flag is `true` by default for all editor commands and, unless your command should be enabled when the editor is read-only, you do not need to change it. Also, please keep in mind the flag is immutable during the lifetime of the editor.
+</info-box>
 
 ## Event system and observables
 
