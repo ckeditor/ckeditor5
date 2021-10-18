@@ -923,33 +923,24 @@ History of changes:
 
 ### Cross package imports: `ckeditor5-rules/no-cross-package-imports`
 
-It is normally allowed to import from other packages, using this method:
+It is allowed to import modules from other packages:
 
 ```js
 import { toArray } from 'ckeditor5/src/utils';
-import { toArray } from '@ckeditor/ckeditor5-utils';
 ```
 
-However, specific packages disallow this kind of import.
+However, some packages cannot import modules from CKEditor 5 as it could lead to code duplication and errors in runtime. Hence the rule disables this kind of import.
 
-Currently, this rule applies only to the `ckeditor5-watchdog` package.
+Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 
 👎&nbsp; Examples of an incorrect code for this rule:
 
 ```js
-// Assume we edit a file located in the `ckeditor5-watchdog` package
+// Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
 
 import { toArray } from 'ckeditor5/src/utils';
 import { toArray } from '@ckeditor/ckeditor5-utils';
-```
-
-👍&nbsp; Examples of a correct code for this rule:
-
-```js
-// Assume we edit a file not located in the `ckeditor5-watchdog` package
-
-import { toArray } from 'ckeditor5/src/utils';
-import { toArray } from '@ckeditor/ckeditor5-utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 ```
 
 [History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
