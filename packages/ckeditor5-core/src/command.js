@@ -20,7 +20,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute `editor.execute()`}.
  *
- * By default commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
+ * By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
  * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
