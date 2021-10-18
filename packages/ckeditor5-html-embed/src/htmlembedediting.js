@@ -56,11 +56,11 @@ export default class HtmlEmbedEditing extends Plugin {
 		} );
 
 		/**
-		 * Keeps references to {@link module:ui/button~ButtonView edit, save, and cancel} button instances created for
+		 * Keeps references to {@link module:ui/button/buttonview~ButtonView edit, save, and cancel} button instances created for
 		 * each widget so they can be destroyed if they are no longer in DOM after the editing view was re-rendered.
 		 *
 		 * @private
-		 * @member {Set.<module:ui/button~ButtonView>} #_widgetButtonViewReferences
+		 * @member {Set.<module:ui/button/buttonview~ButtonView>} #_widgetButtonViewReferences
 		 */
 		this._widgetButtonViewReferences = new Set();
 	}
