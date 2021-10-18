@@ -16,7 +16,7 @@ import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
 
 /**
- * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
+ * The {@glink builds/guides/predefined-builds/overview#inline-editor inline editor} implementation.
  * It uses an inline editable and a floating toolbar.
  * See the {@glink examples/builds/inline-editor demo}.
  *
@@ -27,9 +27,9 @@ import InlineEditorUIView from './inlineeditoruiview';
  *
  * The inline editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-inline`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline) package)
- * but it is also available in the {@glink builds/guides/overview#inline-editor inline build}.
+ * but it is also available in the {@glink builds/guides/predefined-builds/overview#inline-editor inline build}.
  *
- * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * {@glink builds/guides/predefined-builds/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
  * Using the editor from source gives much better flexibility and allows easier customization.
@@ -165,7 +165,7 @@ export default class InlineEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-inline`).
+	 * {@glink builds/guides/predefined-builds/overview editor build} (for example – `@ckeditor/ckeditor5-build-inline`).
 	 *
 	 * If you want to use the inline editor from source (`@ckeditor/ckeditor5-editor-inline/src/inlineeditor`),
 	 * you need to define the list of

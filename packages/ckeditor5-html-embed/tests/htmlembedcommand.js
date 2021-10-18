@@ -11,7 +11,7 @@ import HtmlEmbedEditing from '../src/htmlembedediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-describe( 'InsertHtmlEmbedCommand', () => {
+describe( 'HtmlEmbedCommand', () => {
 	let editor, model, editorElement, command;
 
 	testUtils.createSinonSandbox();
@@ -27,7 +27,7 @@ describe( 'InsertHtmlEmbedCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = editor.commands.get( 'insertHtmlEmbed' );
+				command = editor.commands.get( 'htmlEmbed' );
 			} );
 	} );
 
@@ -111,6 +111,26 @@ describe( 'InsertHtmlEmbedCommand', () => {
 		} );
 	} );
 
+	describe( 'value', () => {
+		it( 'should reflect the content of the selected embed', () => {
+			setModelData( model, '[<rawHtml value="foo"></rawHtml>]' );
+
+			expect( command.value ).to.equal( 'foo' );
+		} );
+
+		it( 'should be empty string when the selected embed has no content', () => {
+			setModelData( model, '[<rawHtml></rawHtml>]' );
+
+			expect( command.value ).to.equal( '' );
+		} );
+
+		it( 'should be null when no embed is selected', () => {
+			setModelData( model, '<paragraph>fo[o]</paragraph>' );
+
+			expect( command.value ).to.be.null;
+		} );
+	} );
+
 	describe( 'execute()', () => {
 		beforeEach( () => {
 			model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
@@ -120,74 +140,118 @@ describe( 'InsertHtmlEmbedCommand', () => {
 			editor.conversion.elementToElement( { model: 'media', view: 'div' } );
 		} );
 
-		it( 'should create a single batch', () => {
-			setModelData( model, '<paragraph>foo[]</paragraph>' );
+		describe( 'when creating a new embed', () => {
+			it( 'should create a single batch', () => {
+				setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-			const spy = sinon.spy();
+				const spy = sinon.spy();
 
-			model.document.on( 'change', spy );
+				model.document.on( 'change', spy );
 
-			command.execute();
+				command.execute();
 
-			sinon.assert.calledOnce( spy );
-		} );
-
-		it( 'should insert a raw html in an empty root and select it (a paragraph cannot be inserted)', () => {
-			// Block a paragraph in $root.
-			model.schema.addChildCheck( ( context, childDefinition ) => {
-				if ( childDefinition.name === 'paragraph' && context.last.name === '$root' ) {
-					return false;
-				}
+				sinon.assert.calledOnce( spy );
 			} );
 
-			setModelData( model, '[]' );
+			it( 'should insert a raw html in an empty root and select it (a paragraph cannot be inserted)', () => {
+				// Block a paragraph in $root.
+				model.schema.addChildCheck( ( context, childDefinition ) => {
+					if ( childDefinition.name === 'paragraph' && context.last.name === '$root' ) {
+						return false;
+					}
+				} );
 
-			command.execute();
+				setModelData( model, '[]' );
 
-			expect( getModelData( model ) ).to.equal( '[<rawHtml></rawHtml>]' );
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml></rawHtml>]' );
+			} );
+
+			it( 'should split an element where selection is placed and insert a raw html (non-collapsed selection)', () => {
+				setModelData( model, '<paragraph>f[o]o</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>f</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
+				);
+			} );
+
+			it( 'should split an element where selection is placed and insert a raw html (collapsed selection)', () => {
+				setModelData( model, '<paragraph>fo[]o</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>fo</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
+				);
+			} );
+
+			it( 'should replace an existing selected object with a raw HTML', () => {
+				model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+				setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should replace an existing raw HTML with another raw HTML', () => {
+				setModelData( model, '<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should replace an existing block with a raw HTML', () => {
+				setModelData( model, '[<paragraph></paragraph>]' );
+
+				command.execute();
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml></rawHtml>]' );
+			} );
+
+			it( 'should set the initial content of the HTML emebed', () => {
+				setModelData( model, '[<paragraph></paragraph>]' );
+
+				command.execute( 'foo' );
+
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="foo"></rawHtml>]' );
+			} );
 		} );
 
-		it( 'should split an element where selection is placed and insert a raw html (non-collapsed selection)', () => {
-			setModelData( model, '<paragraph>f[o]o</paragraph>' );
+		describe( 'when the selection is on an existing embed', () => {
+			it( 'should create a single batch', () => {
+				setModelData( model, '[<rawHtml></rawHtml>]' );
 
-			command.execute();
+				const spy = sinon.spy();
 
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>f</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
-			);
-		} );
+				model.document.on( 'change', spy );
 
-		it( 'should split an element where selection is placed and insert a raw html (collapsed selection)', () => {
-			setModelData( model, '<paragraph>fo[]o</paragraph>' );
+				command.execute( '<b>Foo.</b>' );
 
-			command.execute();
+				sinon.assert.calledOnce( spy );
+			} );
 
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>fo</paragraph>[<rawHtml></rawHtml>]<paragraph>o</paragraph>'
-			);
-		} );
+			it( 'should update the `value` attribute of selected the `rawHtml` element', () => {
+				setModelData( model, '[<rawHtml></rawHtml>]' );
 
-		it( 'should replace an existing selected object with a raw HTML', () => {
-			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
-			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+				const initialEmbedElement = model.document.getRoot().getChild( 0 );
+				command.execute( '<b>Foo.</b>' );
 
-			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+				expect( getModelData( model ) ).to.equal( '[<rawHtml value="<b>Foo.</b>"></rawHtml>]' );
 
-			command.execute();
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
-			);
-		} );
-
-		it( 'should replace an existing raw HTML with another raw HTML', () => {
-			setModelData( model, '<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>' );
-
-			command.execute();
-
-			expect( getModelData( model ) ).to.equal(
-				'<paragraph>foo</paragraph>[<rawHtml></rawHtml>]<paragraph>bar</paragraph>'
-			);
+				// It's the same element but with a new value.
+				expect( model.document.getRoot().getChild( 0 ) ).to.equal( initialEmbedElement );
+			} );
 		} );
 	} );
 } );

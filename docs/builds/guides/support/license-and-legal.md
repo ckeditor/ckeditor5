@@ -8,7 +8,7 @@ order: 20
 
 # License and legal
 
-The following legal notices apply to CKEditor 5 Builds and all software from CKEditor 5 Ecosystem included with it.
+The following legal notices apply to CKEditor 5 builds and all software from CKEditor 5 Ecosystem included with it.
 
 Copyright (c) 2003-2021, CKSource Frederico Knabben. All rights reserved.
 
@@ -20,7 +20,7 @@ If you are running a project with an OSS license incompatible with GPL, please [
 
 ## Sources of intellectual property included in CKEditor
 
-Where not otherwise indicated, all CKEditor 5 Builds content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
+Where not otherwise indicated, all CKEditor 5 builds content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
 
 ## Trademarks
 

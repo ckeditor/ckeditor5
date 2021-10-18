@@ -32,9 +32,48 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create Document with all properties', () => {
+		it( 'should create the #roots collection', () => {
 			expect( count( viewDocument.roots ) ).to.equal( 0 );
-			expect( viewDocument ).to.have.property( 'isReadOnly' ).to.false;
+		} );
+
+		it( 'should set the observable #isReadOnly property', () => {
+			const spy = sinon.spy();
+
+			expect( viewDocument.isReadOnly ).to.be.false;
+
+			viewDocument.on( 'change:isReadOnly', spy );
+			viewDocument.isReadOnly = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should set the observable #isFocused property', () => {
+			const spy = sinon.spy();
+
+			expect( viewDocument.isFocused ).to.be.false;
+
+			viewDocument.on( 'change:isFocused', spy );
+			viewDocument.isFocused = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should set the observable #isSelecting property', () => {
+			const spy = sinon.spy();
+
+			expect( viewDocument.isSelecting ).to.be.false;
+
+			viewDocument.on( 'change:isSelecting', spy );
+			viewDocument.isSelecting = true;
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should set the observable #isComposing property', () => {
+			const spy = sinon.spy();
+
+			expect( viewDocument.isComposing ).to.be.false;
+
+			viewDocument.on( 'change:isComposing', spy );
+			viewDocument.isComposing = true;
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

@@ -16,7 +16,7 @@ import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 
 /**
- * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
+ * The {@glink builds/guides/predefined-builds/overview#classic-editor classic editor} implementation.
  * It uses an inline editable and a sticky toolbar, all enclosed in a boxed UI.
  * See the {@glink examples/builds/classic-editor demo}.
  *
@@ -27,9 +27,9 @@ import ClassicEditorUIView from './classiceditoruiview';
  *
  * The classic editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic) package)
- * but it is also available in the {@glink builds/guides/overview#classic-editor classic build}.
+ * but it is also available in the {@glink builds/guides/predefined-builds/overview#classic-editor classic build}.
  *
- * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * {@glink builds/guides/predefined-builds/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
  * Using the editor from source gives much better flexibility and allows easier customization.
@@ -159,7 +159,7 @@ export default class ClassicEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-classic`).
+	 * {@glink builds/guides/predefined-builds/overview editor build} (for example – `@ckeditor/ckeditor5-build-classic`).
 	 *
 	 * If you want to use the classic editor from source (`@ckeditor/ckeditor5-editor-classic/src/classiceditor`),
 	 * you need to define the list of
