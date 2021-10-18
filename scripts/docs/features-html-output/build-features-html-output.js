@@ -60,24 +60,24 @@ module.exports = function createHtmlOutputMarkup() {
 		.map( packageMetadata => {
 			const outputRows = packageMetadata.plugins
 				.map( plugin => {
-					const numberOfRowsPerPlugin = plugin.htmlOutputMarkup.length;
+					const numberOfRowsPerPlugin = plugin.htmlOutput.length;
 
 					const pluginNameRowspan = numberOfRowsPerPlugin > 1 ?
 						`rowspan="${ numberOfRowsPerPlugin }"` :
 						'';
 
-					return plugin.htmlOutputMarkup
-						.map( ( htmlOutputMarkup, htmlOutputIndex ) => {
+					return plugin.htmlOutput
+						.map( ( htmlOutput, htmlOutputIndex ) => {
 							const pluginNameCell = htmlOutputIndex === 0 ?
 								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
-							const defaultClass = plugin.isAlternative[ htmlOutputIndex ] ? '' : ' html-output-default';
+							const defaultClass = htmlOutput.isAlternative ? '' : ' html-output-default';
 
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="html-output ${ defaultClass }">${ htmlOutputMarkup }</td>` +
+									`<td class="html-output${ defaultClass }">${ htmlOutput.markup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -251,37 +251,34 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 			}
 
 			if ( !plugin.htmlOutput ) {
-				const htmlOutputMarkup = [ '<p>None.</p>' ];
-				const isAlternative = [ true ];
+				const htmlOutput = [
+					{
+						markup: '<p>None.</p>',
+						isAlternative: true
+					}
+				];
 
 				return {
 					pluginNameMarkup,
-					htmlOutputMarkup,
-					isAlternative
+					htmlOutput
 				};
 			}
 
-			const htmlOutputMarkup = createHtmlOutputMarkupForPlugin(
-				plugin.htmlOutput
-					.sort( ( a, b ) => {
-						const shift = a.isAlternative ? 1 : -1;
-						return a.isAlternative === b.isAlternative ? 0 : shift;
-					} )
-			);
+			const htmlOutput = createHtmlOutputMarkupForPlugin( plugin.htmlOutput );
 
-			const isAlternative = [];
-			for ( const html of plugin.htmlOutput ) {
-				if ( html.isAlternative ) {
-					isAlternative.push( true );
-				} else {
-					isAlternative.push( false );
-				}
-			}
+			htmlOutput.forEach( ( markup, index, arr ) => {
+				const isAlternative = plugin.htmlOutput[ index ].isAlternative || false;
+				arr[ index ] = { markup, isAlternative };
+			} );
+
+			htmlOutput.sort( ( a, b ) => {
+				const shift = a.isAlternative ? 1 : -1;
+				return a.isAlternative === b.isAlternative ? 0 : shift;
+			} );
 
 			return {
 				pluginNameMarkup,
-				htmlOutputMarkup,
-				isAlternative
+				htmlOutput
 			};
 		} );
 }
@@ -484,9 +481,10 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 /**
  * @typedef {Object} ParsedPlugin
  * @property {String} pluginNameMarkup HTML markup containing plugin name.
- * @property {Array.<String>} htmlOutputMarkup Each item in this array contains a separate output definition. This output definition is
- * a string with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links,
- * visual emphasis, etc.) and ready to be displayed.
+ * @property {Array.<Object>} htmlOutput Each item in this array contains an object with two properties. "markup" contains a string with all
+ * elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links, visual emphasis,
+ * etc.) and ready to be displayed. "isAlternative" is a boolean containing corresponding value from the definition of an output.
+ * @property {Array.<Boolean>} isAlternative Each item in this array refers to the corresponding html output
  */
 
 /**
