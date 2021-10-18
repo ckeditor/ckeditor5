@@ -920,3 +920,36 @@ History of changes:
 * [Force importing using the `ckeditor5` package.](https://github.com/ckeditor/ckeditor5/issues/8581)
 * [Imports from the `ckeditor5` package must use the `src/` directory.](https://github.com/ckeditor/ckeditor5/issues/10030)
 * [Imports between DLL packages must use full names of packages.](https://github.com/ckeditor/ckeditor5/issues/10375)
+
+### Cross package imports: `ckeditor5-rules/no-cross-package-imports`
+
+Normally, it is allowed to import from other packages, like this:
+
+```js
+import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from '@ckeditor/ckeditor5-utils';
+```
+
+However, specific packages have this kind of import disallowed.
+
+Currently, this rule applies only to the `ckeditor5-watchdog` package.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the `ckeditor5-watchdog` package
+
+import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from '@ckeditor/ckeditor5-utils';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// Assume we edit a file not located in the `ckeditor5-watchdog` package
+
+import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from '@ckeditor/ckeditor5-utils';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)
