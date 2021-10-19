@@ -66,3 +66,5 @@ function destroyEditors() {
 
 document.getElementById( 'initEditors' ).addEventListener( 'click', initEditors );
 document.getElementById( 'destroyEditors' ).addEventListener( 'click', destroyEditors );
+
+initEditors();

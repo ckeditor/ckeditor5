@@ -10,13 +10,16 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import { env } from '@ckeditor/ckeditor5-utils';
+import { RectDrawer } from '../../../../ckeditor5-minimap/src/utils';
+import areConnectedThroughProperties from '../../../../ckeditor5-utils/src/areconnectedthroughproperties';
 
 const toPx = toUnit( 'px' );
 
@@ -249,6 +252,22 @@ export default class BalloonToolbar extends Plugin {
 			position: this._getBalloonPositionData(),
 			balloonClassName: 'ck-toolbar-container'
 		} );
+
+		const rect = new Rect( this.toolbarView.items.get( 0 ).element );
+		const lastItemRect = new Rect( this.toolbarView.items.last.element );
+
+		rect.moveBy( 0, rect.height );
+		rect.height = BalloonToolbar.arrowVerticalOffset;
+		rect.bottom = rect.top + BalloonToolbar.arrowVerticalOffset;
+		rect.right = lastItemRect.right;
+		rect.width = lastItemRect.right - rect.left;
+
+		RectDrawer.clear();
+		RectDrawer.draw( rect, {
+			zIndex: 9999999,
+			backgroundColor: 'rgba(255,0,0,.2)',
+			transform: `translate3d(${ window.visualViewport.offsetLeft }px,${ window.visualViewport.offsetTop }px,0)`
+		} );
 	}
 
 	/**
@@ -259,6 +278,8 @@ export default class BalloonToolbar extends Plugin {
 			this.stopListening( this.editor.ui, 'update' );
 			this._balloon.remove( this.toolbarView );
 		}
+
+		RectDrawer.clear();
 	}
 
 	/**
@@ -300,7 +321,7 @@ export default class BalloonToolbar extends Plugin {
 					return rangeRects[ rangeRects.length - 1 ];
 				}
 			},
-			positions: getBalloonPositions( isBackward )
+			positions: this._getBalloonPositions( isBackward )
 		};
 	}
 
@@ -345,39 +366,53 @@ export default class BalloonToolbar extends Plugin {
 	 * @protected
 	 * @event _selectionChangeDebounced
 	 */
-}
 
-// Returns toolbar positions for the given direction of the selection.
-//
-// @private
-// @param {Boolean} isBackward
-// @returns {Array.<module:utils/dom/position~Position>}
-function getBalloonPositions( isBackward ) {
-	const defaultPositions = BalloonPanelView.defaultPositions;
+	/**
+	 * TODO
+	 */
+	static get arrowVerticalOffset() {
+		return env.isSafari ? ( 35 / window.visualViewport.scale ) : BalloonPanelView.arrowVerticalOffset;
+	}
 
-	return isBackward ? [
-		defaultPositions.northWestArrowSouth,
-		defaultPositions.northWestArrowSouthWest,
-		defaultPositions.northWestArrowSouthEast,
-		defaultPositions.northWestArrowSouthMiddleEast,
-		defaultPositions.northWestArrowSouthMiddleWest,
-		defaultPositions.southWestArrowNorth,
-		defaultPositions.southWestArrowNorthWest,
-		defaultPositions.southWestArrowNorthEast,
-		defaultPositions.southWestArrowNorthMiddleWest,
-		defaultPositions.southWestArrowNorthMiddleEast
-	] : [
-		defaultPositions.southEastArrowNorth,
-		defaultPositions.southEastArrowNorthEast,
-		defaultPositions.southEastArrowNorthWest,
-		defaultPositions.southEastArrowNorthMiddleEast,
-		defaultPositions.southEastArrowNorthMiddleWest,
-		defaultPositions.northEastArrowSouth,
-		defaultPositions.northEastArrowSouthEast,
-		defaultPositions.northEastArrowSouthWest,
-		defaultPositions.northEastArrowSouthMiddleEast,
-		defaultPositions.northEastArrowSouthMiddleWest
-	];
+	// Returns toolbar positions for the given direction of the selection.
+	//
+	// @private
+	// @param {Boolean} isBackward
+	// @returns {Array.<module:utils/dom/position~Position>}
+	_getBalloonPositions( isBackward ) {
+		const generatedPositions = generatePositions( {
+			arrowHorizontalOffset: BalloonPanelView.arrowHorizontalOffset,
+			arrowVerticalOffset: BalloonToolbar.arrowVerticalOffset,
+			stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset,
+			config: {
+				withArrow: !env.isSafari
+			}
+		} );
+
+		return isBackward ? [
+			generatedPositions.northWestArrowSouth,
+			generatedPositions.northWestArrowSouthWest,
+			generatedPositions.northWestArrowSouthEast,
+			generatedPositions.northWestArrowSouthMiddleEast,
+			generatedPositions.northWestArrowSouthMiddleWest,
+			generatedPositions.southWestArrowNorth,
+			generatedPositions.southWestArrowNorthWest,
+			generatedPositions.southWestArrowNorthEast,
+			generatedPositions.southWestArrowNorthMiddleWest,
+			generatedPositions.southWestArrowNorthMiddleEast
+		] : [
+			generatedPositions.southEastArrowNorth,
+			generatedPositions.southEastArrowNorthEast,
+			generatedPositions.southEastArrowNorthWest,
+			generatedPositions.southEastArrowNorthMiddleEast,
+			generatedPositions.southEastArrowNorthMiddleWest,
+			generatedPositions.northEastArrowSouth,
+			generatedPositions.northEastArrowSouthEast,
+			generatedPositions.northEastArrowSouthWest,
+			generatedPositions.northEastArrowSouthMiddleEast,
+			generatedPositions.northEastArrowSouthMiddleWest
+		];
+	}
 }
 
 // Returns "true" when the selection has multiple ranges and each range contains a selectable element
