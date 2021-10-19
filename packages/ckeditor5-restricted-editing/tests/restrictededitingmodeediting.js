@@ -65,34 +65,113 @@ describe( 'RestrictedEditingModeEditing', () => {
 		} );
 	} );
 
-	describe( 'enableCommand()', () => {
-		let plugin, command;
+	describe( 'enabling commands', () => {
+		let plugin, firstParagraph;
 
 		class FakeCommand extends Command {
+			constructor( editor, affectsData = true ) {
+				super( editor );
+				this.affectsData = affectsData;
+			}
+
 			refresh() {
 				this.isEnabled = true;
 			}
 		}
 
 		beforeEach( async () => {
-			editor = await VirtualTestEditor.create( { plugins: [ Paragraph, RestrictedEditingModeEditing, ClipboardPipeline ] } );
+			editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, RestrictedEditingModeEditing, ClipboardPipeline ],
+				restrictedEditing: {
+					allowedCommands: [ 'allowedCommand' ]
+				}
+			} );
 			model = editor.model;
 
 			plugin = editor.plugins.get( RestrictedEditingModeEditing );
-			command = new FakeCommand( editor );
-			editor.commands.add( 'fakeCommand', command );
+
+			editor.commands.add( 'regularCommand', new FakeCommand( editor ) );
+			editor.commands.add( 'allowedCommand', new FakeCommand( editor ) );
+			editor.commands.add( 'commandNotAffectingData', new FakeCommand( editor, false ) );
 
 			setModelData( editor.model, '<paragraph>[]foo bar baz qux</paragraph>' );
-			addExceptionMarker( 4, 7, model.document.getRoot().getChild( 0 ) );
+
+			firstParagraph = model.document.getRoot().getChild( 0 );
+
+			addExceptionMarker( 4, 7, firstParagraph );
 		} );
 
-		it( 'should enable the command globally', () => {
+		it( 'command not allowed in exception marker should always be disabled', () => {
+			const command = editor.commands.get( 'regularCommand' );
+
 			expect( command.isEnabled ).to.be.false;
 
-			plugin.enableCommand( 'fakeCommand' );
+			moveIntoExceptionMarker();
+
+			expect( command.isEnabled ).to.be.false;
+
+			moveOutOfExceptionMarker();
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'command allowed in exception marker should be enabled in it', () => {
+			const command = editor.commands.get( 'allowedCommand' );
+
+			expect( command.isEnabled ).to.be.false;
+
+			moveIntoExceptionMarker();
+
+			expect( command.isEnabled ).to.be.true;
+
+			moveOutOfExceptionMarker();
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'command not affecting data should always be enabled', () => {
+			const command = editor.commands.get( 'commandNotAffectingData' );
+
+			expect( command.isEnabled ).to.be.true;
+
+			moveIntoExceptionMarker();
+
+			expect( command.isEnabled ).to.be.true;
+
+			moveOutOfExceptionMarker();
 
 			expect( command.isEnabled ).to.be.true;
 		} );
+
+		it( 'command explicitly enabled should always be enabled', () => {
+			const command = editor.commands.get( 'regularCommand' );
+
+			expect( command.isEnabled ).to.be.false;
+
+			plugin.enableCommand( 'regularCommand' );
+
+			expect( command.isEnabled ).to.be.true;
+
+			moveIntoExceptionMarker();
+
+			expect( command.isEnabled ).to.be.true;
+
+			moveOutOfExceptionMarker();
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		function moveIntoExceptionMarker() {
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 4 );
+			} );
+		}
+
+		function moveOutOfExceptionMarker() {
+			model.change( writer => {
+				writer.setSelection( firstParagraph, 1 );
+			} );
+		}
 	} );
 
 	describe( 'conversion', () => {
