@@ -17,7 +17,8 @@ module.exports = {
 			files: [ '**/tests/**/*.js' ],
 			rules: {
 				'no-unused-expressions': 'off',
-				'ckeditor5-rules/ckeditor-imports': 'off'
+				'ckeditor5-rules/ckeditor-imports': 'off',
+				'ckeditor5-rules/no-cross-package-imports': 'off'
 			}
 		},
 		{
