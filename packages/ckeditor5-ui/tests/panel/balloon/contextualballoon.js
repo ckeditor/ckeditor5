@@ -707,6 +707,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/10597
 		it( 'should respect viewportOffset#top config and allow to set it in runtime', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
