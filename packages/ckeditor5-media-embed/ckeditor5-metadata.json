@@ -21,8 +21,7 @@
 				{
 					"elements": "oembed",
 					"attributes": "url",
-					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and the media is represented using only the `<oembed>` tag (by default).",
-					"isAlternative": true
+					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the media preview is not displayed and the media is represented using only the `<oembed>` tag (by default)."
 				},
 				{
 					"elements": "div",

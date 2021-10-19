@@ -72,12 +72,15 @@ module.exports = function createHtmlOutputMarkup() {
 								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
-							const defaultClass = htmlOutput.isAlternative ? '' : ' html-output-default';
+							const classNames = [
+								'html-output',
+								htmlOutput.isAlternative ? '' : 'html-output-default'
+							].filter( className => !!className ).join( ' ' );
 
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="html-output${ defaultClass }">${ htmlOutput.markup }</td>` +
+									`<td class="${ classNames }">${ htmlOutput.markup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -253,8 +256,9 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 			if ( !plugin.htmlOutput ) {
 				const htmlOutput = [
 					{
-						markup: '<p>None.</p>',
-						isAlternative: true
+						// This value dictates whether or not the "None" output is considered to be default.
+						isAlternative: true,
+						markup: '<p>None.</p>'
 					}
 				];
 
@@ -265,16 +269,6 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 			}
 
 			const htmlOutput = createHtmlOutputMarkupForPlugin( plugin.htmlOutput );
-
-			htmlOutput.forEach( ( markup, index, arr ) => {
-				const isAlternative = plugin.htmlOutput[ index ].isAlternative || false;
-				arr[ index ] = { markup, isAlternative };
-			} );
-
-			htmlOutput.sort( ( a, b ) => {
-				const shift = a.isAlternative ? 1 : -1;
-				return a.isAlternative === b.isAlternative ? 0 : shift;
-			} );
 
 			return {
 				pluginNameMarkup,
@@ -334,11 +328,12 @@ function createApiLink( packageData, plugin ) {
 }
 
 /**
- * Prepares the HTML output to a format, that is ready to be displayed. The generated array of strings contains preformatted paragraphs with
- * applied visual formatting (i.e. <strong> or <code> tags).
+ * Prepares the HTML output to a format, that is ready to be displayed. In the generated array of objects each object contains two keys:
+ * - <String> markup: contains preformatted paragraphs with applied visual formatting (i.e. <strong> or <code> tags).
+ * - <Boolean> isAlternative: contains information whether or not the output is considered to be default.
  *
  * @param {HtmlOutput} htmlOutput
- * @returns {Array.<String>}
+ * @returns {Array.<ParsedHtmlOutput>}
  */
 function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 	const appendClasses = ( classes, separators ) => output => {
@@ -431,9 +426,17 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 				}</p>` :
 				'';
 
-			return [ elements, others, comment ]
+			const markup = [ elements, others, comment ]
 				.filter( item => !!item )
 				.join( '' );
+
+			const isAlternative = entry.isAlternative || false;
+
+			return { markup, isAlternative };
+		} )
+		.sort( ( a, b ) => {
+			const shift = a.isAlternative ? 1 : -1;
+			return a.isAlternative === b.isAlternative ? 0 : shift;
 		} );
 }
 
@@ -481,10 +484,16 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 /**
  * @typedef {Object} ParsedPlugin
  * @property {String} pluginNameMarkup HTML markup containing plugin name.
- * @property {Array.<Object>} htmlOutput Each item in this array contains an object with two properties. "markup" contains a string with all
- * elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links, visual emphasis,
- * etc.) and ready to be displayed. "isAlternative" is a boolean containing corresponding value from the definition of an output.
- * @property {Array.<Boolean>} isAlternative Each item in this array refers to the corresponding html output
+ * @property {Array.<ParsedHtmlOutput>} htmlOutput
+ */
+
+/**
+ * @typedef {Object} ParsedHtmlOutput
+ * @property {String} markup All elements, classes, styles, attributes and comment combined together with applied visual formatting
+ * (i.e. working links, visual emphasis, etc.) and ready to be displayed.
+ * @property {Boolean} isAlternative If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  */
 
 /**
