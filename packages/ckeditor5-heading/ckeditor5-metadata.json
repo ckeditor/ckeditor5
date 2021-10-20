@@ -37,8 +37,8 @@
 				},
 				{
 					"elements": "*",
-					"_comment": "The plugin can be configured to return any element name as a heading.",
-					"isAlternative": true
+					"isAlternative": true,
+					"_comment": "The plugin can be configured to return any element name as a heading."
 				}
 			]
 		}

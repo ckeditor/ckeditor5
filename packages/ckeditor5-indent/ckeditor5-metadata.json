@@ -40,8 +40,8 @@
 				{
 					"elements": "$block",
 					"classes": "*",
-					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles.",
-					"isAlternative": true
+					"isAlternative": true,
+					"_comment": "If classes are defined in `config.indentBlock.classes`, they are used instead of inline styles."
 				}
 			]
 		}
