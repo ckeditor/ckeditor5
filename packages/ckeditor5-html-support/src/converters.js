@@ -53,9 +53,11 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div', {
 			class: 'html-object-embed',
 			'data-html-object-embed-label': widgetLabel
-		}, {
+		}, [
+			viewElement
+		], {
 			isAllowedInsideAttributeElement: isInline
-		}, viewElement );
+		} );
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
 	};

@@ -188,7 +188,7 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should create element with children attributes and allow additional options', () => {
 			const child = writer.createEmptyElement( 'bar' );
-			const element = writer.createContainerElement( 'foo', attributes, { isAllowedInsideAttributeElement: true }, child );
+			const element = writer.createContainerElement( 'foo', attributes, child, { isAllowedInsideAttributeElement: true } );
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
