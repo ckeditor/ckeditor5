@@ -17,23 +17,21 @@ Learn how to install CKEditor 5 from scratch or using predefined builds. Integra
 
 ## Predefined CKEditor 5 builds
 
-Learn more about the {@link builds/guides/overview available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
+Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link builds/guides/overview available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
 
 ## Installing CKEditor 5
 
-Get to know how to {@link builds/guides/integration/installation install the editor}, {@link builds/guides/integration/configuration configure it}, and {@link builds/guides/integration/csp secure}.
-
-Find out how to {@link builds/guides/integration/saving-data handle and save the data} and what the {@link builds/guides/integration/features-html-output-overview features' HTML output} is for each plugin.
+Learn to {@link builds/guides/integration/installation install the editor} from scratch, {@link builds/guides/integration/configuration configure it}, and {@link builds/guides/integration/csp secure}. Find out how to {@link builds/guides/integration/saving-data handle and save the data} and what the {@link builds/guides/integration/features-html-output-overview features' HTML output} is for each plugin.
 
 ## Frameworks integration
 
-Get to know the and the supported {@link builds/guides/frameworks/overview integrations with popular JavaScript frameworks} and learn to utilize them.
+Get to know the supported {@link builds/guides/frameworks/overview integrations with popular JavaScript frameworks} and learn to utilize them and to integrate CKEditor 5 with you software.
 
 ## CKEditor 5 development
 
-Get to know more about the {@link builds/guides/development/plugins plugin development}. Find out how to {@link builds/guides/development/custom-builds create custom builds} and update your CKEditor 5 on the go with the {@link builds/guides/development/dll-builds DLL webpack} solution.
+Find out more about the {@link builds/guides/development/plugins plugin development}, learn to {@link builds/guides/development/custom-builds create custom builds} and keep your CKEditor 5 updated on the go with the {@link builds/guides/development/dll-builds DLL webpack} solution.
 
-## Migrating from CKEditor 4 and previous versions
+## Migrating from CKEditor 4 and updating previous versions
 
 Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4 migration guide} or other migration guides if you are updating your CKEditor 5 installation.
 
