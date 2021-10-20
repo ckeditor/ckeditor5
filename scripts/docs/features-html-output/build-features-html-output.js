@@ -329,9 +329,11 @@ function createApiLink( packageData, plugin ) {
 
 /**
  * Prepares the HTML output to a format, that is ready to be displayed. In the generated array of objects each object contains two keys:
- * - <String> markup: contains preformatted paragraphs with applied visual formatting (i.e. <strong> or <code> tags).
- * - <Boolean> isAlternative: contains information whether or not the output is considered to be default.
- *
+ * <String> markup: All elements, classes, styles, attributes and comment combined together with applied visual formatting
+ * (i.e. working links, visual emphasis, etc.) and ready to be displayed.
+ * <Boolean> isAlternative: If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  * @param {HtmlOutput} htmlOutput
  * @returns {Array.<ParsedHtmlOutput>}
  */
@@ -469,6 +471,9 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  * @property {String|Array.<String>} styles Inline CSS styles, that may be applied to the HTML elements.
  * @property {String|Array.<String>} attributes Other HTML attributes, that may be applied to the HTML elements.
  * @property {String} implements A name of an element or a pseudo-element, which classes, styles or attributes may be inherited from.
+ * @property {Boolean} isAlternative If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  * @property {String} _comment A human-readable description.
  */
 
@@ -484,7 +489,8 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 /**
  * @typedef {Object} ParsedPlugin
  * @property {String} pluginNameMarkup HTML markup containing plugin name.
- * @property {Array.<ParsedHtmlOutput>} htmlOutput
+ * @property {Array.<ParsedHtmlOutput>} htmlOutput An array of objects, each containing string with HTML markup and boolean defining
+ * whether this output is alternative or default.
  */
 
 /**
