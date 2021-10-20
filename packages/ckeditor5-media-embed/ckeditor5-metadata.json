@@ -42,6 +42,7 @@
 						"padding-bottom",
 						"position"
 					],
+					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
 				},
 				{
