@@ -50,7 +50,7 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 		{
 			classes: [ 'quiz-button', 'quiz-button_restart' ],
 			text: 'Restart the quiz',
-			navigateToPaneId: 'quiz-question-usingFrameworks'
+			navigateToPaneId: 'quiz-question-usingBuilds'
 		}
 	];
 	const QUIZ_PANE_DEFINITIONS = {
@@ -60,18 +60,45 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 				{
 					classes: [ 'quiz-button', 'quiz-button_start' ],
 					text: 'Take a short quiz',
-					navigateToPaneId: 'quiz-question-usingFrameworks',
+					navigateToPaneId: 'quiz-question-usingBuilds',
 				}
 			]
 		},
 
 		// ------------------------------ Questions -----------------------------------------------
 
+		'quiz-question-usingBuilds': {
+			content: 'Do you need a working, out of the box solution?',
+			hint: 'CKEditor 5 comes with ready-to-use <a href="#predefined-ckeditor-5-builds">predefined builds</a> that offer working solutions for different situations. This is the fastest way to start.',
+			buttons: [
+				getDecisionButtonDefinition( true, 'quiz-resolution-usingBuilds' ),
+				getDecisionButtonDefinition( false, 'quiz-question-onlineBuilder' ),
+			]
+		},
+
+		'quiz-question-onlineBuilder': {
+			content: 'Do you need a ready-to-use, custom-tailored solution?',
+			hint: 'CKEditor 5 Online Builder allows users to create a downloadable working copy with custom set of features.',
+			buttons: [
+				getDecisionButtonDefinition( true, 'quiz-resolution-onlineBuilder' ),
+				getDecisionButtonDefinition( false, 'quiz-question-usingFrameworks' ),
+			]
+		},
+
 		'quiz-question-usingFrameworks': {
 			content: 'Do you want to integrate CKEditor into an existing React, Vue.js or Angular project?',
 			hint: 'CKEditor 5 comes with ready-to-use <a href="#frameworks-integration">adapters</a> for popular front–end frameworks. You can use them to quickly bootstrap your project.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-usingFrameworks' ),
+				getDecisionButtonDefinition( false, 'quiz-question-usingDLL' ),
+			]
+		},
+
+		'quiz-question-usingDLL': {
+			content: 'Do you want to design and maintain your installation without the need to recompile each time on update?',
+			hint: 'CKEditor 5 DLL build allows adding plugins to an editor build without having to rebuild the build itself.',
+			buttons: [
+				getDecisionButtonDefinition( true, 'quiz-resolution-usingDLL' ),
 				getDecisionButtonDefinition( false, 'quiz-question-migrateFromV4' ),
 			]
 		},
@@ -86,8 +113,23 @@ Refer to the {@link builds/guides/migration/migration-from-ckeditor-4 CKEditor 4
 
 		// ------------------------------ Resolutions ----------------------------------------------
 
+		'quiz-resolution-usingBuilds': {
+			content: 'Based on you previous answers, you should check out the {@link builds/guides/overview predefined builds}. You can also browse other installation methods listed below.',
+			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
+		},
+
+		'quiz-resolution-onlineBuilder': {
+			content: 'Based on you previous answers, you should check out the <a href="https://ckeditor.com/ckeditor-5/online-builder/">Online Builder</a>. You can also browse other installation methods listed below.',
+			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
+		},
+
 		'quiz-resolution-usingFrameworks': {
 			content: 'Based on you previous answers, you should check out official {@link builds/guides/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
+			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
+		},
+
+		'quiz-resolution-usingDLL': {
+			content: 'Based on you previous answers, you should check out the {@link builds/guides/development/dll-builds DLL webpack} solution. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
