@@ -238,6 +238,7 @@ BalloonEditor.defaultConfig = {
 		toolbar: [
 			'linkImage',
 			'imageTextAlternative',
+			'toggleImageCaption',
 			'|',
 			'imageStyle:alignLeft',
 			'imageStyle:alignCenter',

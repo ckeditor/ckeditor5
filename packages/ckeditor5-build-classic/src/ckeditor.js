@@ -224,6 +224,7 @@ ClassicEditor.defaultConfig = {
 		toolbar: [
 			'linkImage',
 			'imageTextAlternative',
+			'toggleImageCaption',
 			'|',
 			'imageStyle:alignLeft',
 			'imageStyle:alignCenter',

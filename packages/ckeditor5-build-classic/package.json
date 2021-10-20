@@ -1,6 +1,6 @@
 {
   "name": "@qbranch/ckeditor5-build-classic",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "The classic editor build of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "ckeditor5-build",
