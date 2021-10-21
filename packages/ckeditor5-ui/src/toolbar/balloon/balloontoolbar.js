@@ -358,8 +358,8 @@ export default class BalloonToolbar extends Plugin {
 	 */
 	_getBalloonPositions( isBackward ) {
 		const generatedPositions = generatePositions( {
-			arrowHorizontalOffset: 0,
-			arrowVerticalOffset: env.isIOSSafari ? ( 35 / window.visualViewport.scale ) : BalloonPanelView.arrowVerticalOffset,
+			horizontalOffset: env.isIOSSafari ? 0 : BalloonPanelView.arrowHorizontalOffset,
+			verticalOffset: env.isIOSSafari ? ( 35 / window.visualViewport.scale ) : BalloonPanelView.arrowVerticalOffset,
 			stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset,
 			config: {
 				withArrow: !env.isIOSSafari

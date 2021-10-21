@@ -757,8 +757,8 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
 BalloonPanelView.defaultPositions = generatePositions( {
-	arrowHorizontalOffset: BalloonPanelView.arrowHorizontalOffset,
-	arrowVerticalOffset: BalloonPanelView.arrowVerticalOffset,
+	horizontalOffset: BalloonPanelView.arrowHorizontalOffset,
+	verticalOffset: BalloonPanelView.arrowVerticalOffset,
 	stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset
 } );
 
@@ -768,20 +768,20 @@ BalloonPanelView.defaultPositions = generatePositions( {
  * @param {*}
  * @returns
  */
-export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset, stickyVerticalOffset, config = {} } ) {
+export function generatePositions( { horizontalOffset, verticalOffset, stickyVerticalOffset, config = {} } ) {
 	return {
 		// ------- North west
 
 		northWestArrowSouthWest: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left - arrowHorizontalOffset,
+			left: targetRect.left - horizontalOffset,
 			name: 'arrow_sw',
 			config
 		} ),
 
 		northWestArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left - ( balloonRect.width * .25 ) - arrowHorizontalOffset,
+			left: targetRect.left - ( balloonRect.width * .25 ) - horizontalOffset,
 			name: 'arrow_smw',
 			config
 		} ),
@@ -795,14 +795,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		northWestArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left - ( balloonRect.width * .75 ) + arrowHorizontalOffset,
+			left: targetRect.left - ( balloonRect.width * .75 ) + horizontalOffset,
 			name: 'arrow_sme',
 			config
 		} ),
 
 		northWestArrowSouthEast: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left - balloonRect.width + arrowHorizontalOffset,
+			left: targetRect.left - balloonRect.width + horizontalOffset,
 			name: 'arrow_se',
 			config
 		} ),
@@ -811,14 +811,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		northArrowSouthWest: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - horizontalOffset,
 			name: 'arrow_sw',
 			config
 		} ),
 
 		northArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .25 ) - arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .25 ) - horizontalOffset,
 			name: 'arrow_smw',
 			config
 		} ),
@@ -832,14 +832,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		northArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .75 ) + arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .75 ) + horizontalOffset,
 			name: 'arrow_sme',
 			config
 		} ),
 
 		northArrowSouthEast: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - balloonRect.width + arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width + horizontalOffset,
 			name: 'arrow_se',
 			config
 		} ),
@@ -848,14 +848,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		northEastArrowSouthWest: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.right - arrowHorizontalOffset,
+			left: targetRect.right - horizontalOffset,
 			name: 'arrow_sw',
 			config
 		} ),
 
 		northEastArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.right - ( balloonRect.width * .25 ) - arrowHorizontalOffset,
+			left: targetRect.right - ( balloonRect.width * .25 ) - horizontalOffset,
 			name: 'arrow_smw',
 			config
 		} ),
@@ -869,14 +869,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		northEastArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.right - ( balloonRect.width * .75 ) + arrowHorizontalOffset,
+			left: targetRect.right - ( balloonRect.width * .75 ) + horizontalOffset,
 			name: 'arrow_sme',
 			config
 		} ),
 
 		northEastArrowSouthEast: ( targetRect, balloonRect ) => ( {
 			top: getNorthTop( targetRect, balloonRect ),
-			left: targetRect.right - balloonRect.width + arrowHorizontalOffset,
+			left: targetRect.right - balloonRect.width + horizontalOffset,
 			name: 'arrow_se',
 			config
 		} ),
@@ -885,14 +885,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left - arrowHorizontalOffset,
+			left: targetRect.left - horizontalOffset,
 			name: 'arrow_nw',
 			config
 		} ),
 
 		southWestArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left - ( balloonRect.width * .25 ) - arrowHorizontalOffset,
+			left: targetRect.left - ( balloonRect.width * .25 ) - horizontalOffset,
 			name: 'arrow_nmw',
 			config
 		} ),
@@ -906,14 +906,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		southWestArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left - ( balloonRect.width * .75 ) + arrowHorizontalOffset,
+			left: targetRect.left - ( balloonRect.width * .75 ) + horizontalOffset,
 			name: 'arrow_nme',
 			config
 		} ),
 
 		southWestArrowNorthEast: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left - balloonRect.width + arrowHorizontalOffset,
+			left: targetRect.left - balloonRect.width + horizontalOffset,
 			name: 'arrow_ne',
 			config
 		} ),
@@ -922,13 +922,13 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		southArrowNorthWest: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - horizontalOffset,
 			name: 'arrow_nw',
 			config
 		} ),
 		southArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.25 ) - arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.25 ) - horizontalOffset,
 			name: 'arrow_nmw',
 			config
 		} ),
@@ -942,14 +942,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		southArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.75 ) + arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.75 ) + horizontalOffset,
 			name: 'arrow_nme',
 			config
 		} ),
 
 		southArrowNorthEast: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.left + targetRect.width / 2 - balloonRect.width + arrowHorizontalOffset,
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width + horizontalOffset,
 			name: 'arrow_ne',
 			config
 		} ),
@@ -958,14 +958,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		southEastArrowNorthWest: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.right - arrowHorizontalOffset,
+			left: targetRect.right - horizontalOffset,
 			name: 'arrow_nw',
 			config
 		} ),
 
 		southEastArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.right - ( balloonRect.width * .25 ) - arrowHorizontalOffset,
+			left: targetRect.right - ( balloonRect.width * .25 ) - horizontalOffset,
 			name: 'arrow_nmw',
 			config
 		} ),
@@ -979,14 +979,14 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 
 		southEastArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.right - ( balloonRect.width * .75 ) + arrowHorizontalOffset,
+			left: targetRect.right - ( balloonRect.width * .75 ) + horizontalOffset,
 			name: 'arrow_nme',
 			config
 		} ),
 
 		southEastArrowNorthEast: ( targetRect, balloonRect ) => ( {
 			top: getSouthTop( targetRect, balloonRect ),
-			left: targetRect.right - balloonRect.width + arrowHorizontalOffset,
+			left: targetRect.right - balloonRect.width + horizontalOffset,
 			name: 'arrow_ne',
 			config
 		} ),
@@ -1016,7 +1016,7 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 	// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
 	// @returns {Number}
 	function getNorthTop( targetRect, balloonRect ) {
-		return targetRect.top - balloonRect.height - arrowVerticalOffset;
+		return targetRect.top - balloonRect.height - verticalOffset;
 	}
 
 	// Returns the top coordinate for positions starting with `south*`.
@@ -1026,6 +1026,6 @@ export function generatePositions( { arrowHorizontalOffset, arrowVerticalOffset,
 	// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
 	// @returns {Number}
 	function getSouthTop( targetRect ) {
-		return targetRect.bottom + arrowVerticalOffset;
+		return targetRect.bottom + verticalOffset;
 	}
 }
