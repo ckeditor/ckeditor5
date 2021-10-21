@@ -1056,7 +1056,7 @@ describe( 'LinkEditing', () => {
 				},
 				{
 					condition: 'the whole link is selected',
-					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">B[a]r</$text></paragraph>'
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">[Bar]</$text></paragraph>'
 				}
 			];
 
