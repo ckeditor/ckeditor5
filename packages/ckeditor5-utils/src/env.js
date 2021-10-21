@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals navigator:false */
+/* globals navigator:false, document */
 
 /**
  * @module utils/env
@@ -40,6 +40,11 @@ const env = {
 	 * @type {Boolean}
 	 */
 	isSafari: isSafari( userAgent ),
+
+	/**
+	 * TODO
+	 */
+	isIOSSafari: isIOSSafari( userAgent ),
 
 	/**
 	 * Indicates that the application is running on Android mobile device.
@@ -105,6 +110,16 @@ export function isGecko( userAgent ) {
  */
 export function isSafari( userAgent ) {
 	return userAgent.indexOf( ' applewebkit/' ) > -1 && userAgent.indexOf( 'chrome' ) === -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is running in Safari on iOS.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Safari running on iOS.
+ */
+export function isIOSSafari( userAgent ) {
+	return isSafari( userAgent ) && 'ontouchend' in document;
 }
 
 /**
