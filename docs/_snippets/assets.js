@@ -67,7 +67,15 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	window.umberto.snippetTooltips( target, content, tippyOptions, editor );
+	const tooltip = window.umberto.snippetTooltips( target, content, tippyOptions, editor );
+
+	for ( const root of editor.editing.view.document.roots ) {
+		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( isFocused ) {
+				tooltip.hide();
+			}
+		} );
+	}
 };
 
 /**
