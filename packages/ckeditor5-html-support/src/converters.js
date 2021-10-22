@@ -40,15 +40,6 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 	return ( modelElement, { writer, consumable } ) => {
 		const widgetLabel = t( 'HTML object' );
 
-		// Widget cannot be a raw element because the widget system would not be able
-		// to add its UI to it. Thus, we need separate view container.
-		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div', {
-			class: 'html-object-embed',
-			'data-html-object-embed-label': widgetLabel
-		}, {
-			isAllowedInsideAttributeElement: isInline
-		} );
-
 		const viewElement = createObjectView( viewName, modelElement, writer );
 		writer.addClass( 'html-object-embed__content', viewElement );
 
@@ -57,7 +48,18 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 			setViewAttributes( writer, viewAttributes, viewElement );
 		}
 
-		writer.insert( writer.createPositionAt( viewContainer, 0 ), viewElement );
+		// Widget cannot be a raw element because the widget system would not be able
+		// to add its UI to it. Thus, we need separate view container.
+		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div',
+			{
+				class: 'html-object-embed',
+				'data-html-object-embed-label': widgetLabel
+			},
+			viewElement,
+			{
+				isAllowedInsideAttributeElement: isInline
+			}
+		);
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
 	};

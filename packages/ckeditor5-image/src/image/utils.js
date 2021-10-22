@@ -21,12 +21,10 @@ import { first } from 'ckeditor5/src/utils';
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createInlineImageViewElement( writer ) {
-	const emptyElement = writer.createEmptyElement( 'img' );
-	const container = writer.createContainerElement( 'span', { class: 'image-inline' }, { isAllowedInsideAttributeElement: true } );
-
-	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
-
-	return container;
+	return writer.createContainerElement( 'span', { class: 'image-inline' },
+		writer.createEmptyElement( 'img' ),
+		{ isAllowedInsideAttributeElement: true }
+	);
 }
 
 /**
@@ -42,13 +40,10 @@ export function createInlineImageViewElement( writer ) {
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createBlockImageViewElement( writer, slotElement ) {
-	const emptyElement = writer.createEmptyElement( 'img' );
-	const container = writer.createContainerElement( 'figure', { class: 'image' } );
-
-	writer.insert( writer.createPositionAt( container, 0 ), emptyElement );
-	writer.insert( writer.createPositionAt( container, 1 ), slotElement );
-
-	return container;
+	return writer.createContainerElement( 'figure', { class: 'image' }, [
+		writer.createEmptyElement( 'img' ),
+		slotElement
+	] );
 }
 
 /**

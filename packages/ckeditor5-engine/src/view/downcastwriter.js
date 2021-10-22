@@ -216,16 +216,36 @@ export default class DowncastWriter {
 	 *		// Create element with custom classes.
 	 *		writer.createContainerElement( 'p', { class: 'foo bar baz' } );
 	 *
+	 *		// Create element with children.
+	 *		writer.createContainerElement( 'figure', { class: 'image' }, [
+	 *			writer.createEmptyElement( 'img' ),
+	 *			writer.createContainerElement( 'figcaption' )
+	 *		] );
+	 *
+	 *		// Create element with specific options.
+	 *		writer.createContainerElement( 'span', { class: 'placeholder' }, { isAllowedInsideAttributeElement: true } );
+	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
+	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>|Object} [childrenOrOptions]
+	 * A node or a list of nodes to be inserted into the created element. If no children were specified, element's `options`
+	 * can be passed in this argument.
 	 * @param {Object} [options] Element's options.
 	 * @param {Boolean} [options.isAllowedInsideAttributeElement=false] Whether an element is
 	 * {@link module:engine/view/element~Element#isAllowedInsideAttributeElement allowed inside an AttributeElement} and can be wrapped
 	 * with {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
 	 */
-	createContainerElement( name, attributes, options = {} ) {
-		const containerElement = new ContainerElement( this.document, name, attributes );
+	createContainerElement( name, attributes, childrenOrOptions = {}, options = {} ) {
+		let children = null;
+
+		if ( isPlainObject( childrenOrOptions ) ) {
+			options = childrenOrOptions;
+		} else {
+			children = childrenOrOptions;
+		}
+
+		const containerElement = new ContainerElement( this.document, name, attributes, children );
 
 		if ( options.isAllowedInsideAttributeElement !== undefined ) {
 			containerElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
