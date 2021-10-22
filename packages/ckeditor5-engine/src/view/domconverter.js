@@ -73,6 +73,13 @@ export default class DomConverter {
 		this.renderingMode = options.renderingMode || 'editing';
 
 		/**
+		 * Main switch for new rendering approach in the editing view.
+		 *
+		 * @member {Boolean}
+		 */
+		this.experimentalRenderingMode = false;
+
+		/**
 		 * The mode of a block filler used by the DOM converter.
 		 *
 		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
@@ -241,7 +248,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( this.renderingMode === 'data' ) {
+		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
 			return true;
 		}
 
@@ -259,7 +266,7 @@ export default class DomConverter {
 	 */
 	setContentOf( domElement, html ) {
 		// For data pipeline we pass the HTML as-is.
-		if ( this.renderingMode === 'data' ) {
+		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
 			domElement.innerHTML = html;
 
 			return;
@@ -1478,7 +1485,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.renderingMode == 'editing' && elementName == 'script';
+		return this.experimentalRenderingMode && this.renderingMode == 'editing' && elementName == 'script';
 	}
 
 	/**
