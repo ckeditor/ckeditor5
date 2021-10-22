@@ -7,8 +7,6 @@
 
 import isRelativeUrl from 'is-relative-url';
 
-import 'tippy.js/dist/tippy.css';
-import 'tippy.js/themes/light-border.css';
 import './tour-balloon.css';
 
 /**
@@ -67,7 +65,7 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	const tooltip = window.umberto.snippetTooltips( target, content, tippyOptions, editor );
+	const tooltip = window.umberto.snippetTooltips( target, content, tippyOptions );
 
 	for ( const root of editor.editing.view.document.roots ) {
 		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
