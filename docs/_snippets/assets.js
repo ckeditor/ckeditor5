@@ -5,7 +5,6 @@
 
 /* global console, window, document */
 
-import tippy from 'tippy.js';
 import isRelativeUrl from 'is-relative-url';
 
 import 'tippy.js/dist/tippy.css';
@@ -68,38 +67,7 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	const tooltip = tippy( target, {
-		content,
-		theme: 'light-border',
-		placement: 'bottom',
-		trigger: 'manual',
-		hideOnClick: false,
-		allowHTML: true,
-		maxWidth: 280,
-		showOnCreate: true,
-		interactive: true,
-		zIndex: 1,
-		appendTo: () => document.body,
-		...tippyOptions
-	} );
-
-	const closeButton = tooltip.popper.querySelector( '.tippy-content__close-button' );
-
-	closeButton.addEventListener( 'click', () => {
-		tooltip.hide();
-	} );
-
-	target.addEventListener( 'click', () => {
-		tooltip.hide();
-	} );
-
-	for ( const root of editor.editing.view.document.roots ) {
-		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
-			if ( isFocused ) {
-				tooltip.hide();
-			}
-		} );
-	}
+	window.umberto.snippetTooltips( target, content, tippyOptions, editor );
 };
 
 /**
