@@ -50,14 +50,16 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 
 		// Widget cannot be a raw element because the widget system would not be able
 		// to add its UI to it. Thus, we need separate view container.
-		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div', {
-			class: 'html-object-embed',
-			'data-html-object-embed-label': widgetLabel
-		}, [
-			viewElement
-		], {
-			isAllowedInsideAttributeElement: isInline
-		} );
+		const viewContainer = writer.createContainerElement( isInline ? 'span' : 'div',
+			{
+				class: 'html-object-embed',
+				'data-html-object-embed-label': widgetLabel
+			},
+			viewElement,
+			{
+				isAllowedInsideAttributeElement: isInline
+			}
+		);
 
 		return toWidget( viewContainer, writer, { widgetLabel } );
 	};

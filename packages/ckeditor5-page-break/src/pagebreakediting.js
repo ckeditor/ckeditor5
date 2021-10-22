@@ -44,17 +44,18 @@ export default class PageBreakEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'pageBreak',
 			view: ( modelElement, { writer } ) => {
-				const divElement = writer.createContainerElement( 'div', {
-					class: 'page-break',
-					// If user has no `.ck-content` styles, it should always break a page during print.
-					style: 'page-break-after: always'
-				}, [
+				const divElement = writer.createContainerElement( 'div',
+					{
+						class: 'page-break',
+						// If user has no `.ck-content` styles, it should always break a page during print.
+						style: 'page-break-after: always'
+					},
 					// For a rationale of using span inside a div see:
 					// https://github.com/ckeditor/ckeditor5-page-break/pull/1#discussion_r328934062.
 					writer.createContainerElement( 'span', {
 						style: 'display: none'
 					} )
-				] );
+				);
 
 				return divElement;
 			}
