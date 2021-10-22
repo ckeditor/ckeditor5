@@ -3975,18 +3975,13 @@ describe( 'Renderer', () => {
 
 			beforeEach( () => {
 				view = new View( new StylesProcessor() );
+				view.domConverter.experimentalRenderingMode = true;
+
 				viewDoc = view.document;
 				domRoot = document.createElement( 'div' );
 				document.body.appendChild( domRoot );
 				viewRoot = createViewRoot( viewDoc );
 				view.attachDomRoot( domRoot );
-
-				viewDocument = new ViewDocument( new StylesProcessor() );
-				selection = new DocumentSelection();
-				// Enable editing render mode.
-				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
-				renderer = new Renderer( domConverter, selection );
-				renderer.domDocuments.add( document );
 			} );
 
 			afterEach( () => {
@@ -3996,6 +3991,7 @@ describe( 'Renderer', () => {
 
 			it( 'should handle script tag rendering', () => {
 				window.spy = sinon.spy();
+
 				viewRoot._appendChild( parse( '<container:script>spy()</container:script>' ) );
 
 				renderer.markToSync( 'children', viewRoot );
@@ -4007,14 +4003,19 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should replace script element with span and custom data attribute', () => {
+				window.spy = sinon.spy();
+
 				setViewData( view,
 					'<container:script>spy()</container:script>'
 				);
 
 				view.forceRender();
 
+				expect( window.spy.calledOnce ).to.be.false;
 				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-hidden="script">spy()</span>' );
+
+				delete window.spy;
 			} );
 
 			it( 'should remove attributes that can affect editing pipeline', () => {
