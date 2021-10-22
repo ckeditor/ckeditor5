@@ -75,6 +75,7 @@ export default class DomConverter {
 		/**
 		 * Main switch for new rendering approach in the editing view.
 		 *
+		 * @protected
 		 * @member {Boolean}
 		 */
 		this.experimentalRenderingMode = false;
