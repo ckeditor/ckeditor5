@@ -65,7 +65,7 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	const additionalTippyOptions = {
+	const options = Object.assign( {}, tippyOptions, {
 		placement: 'bottom',
 		trigger: 'manual',
 		hideOnClick: false,
@@ -74,9 +74,9 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		showOnCreate: true,
 		interactive: true,
 		appendTo: () => document.body
-	};
+	} );
 
-	const tooltip = window.umberto.createTooltip( target, content, { ...tippyOptions, ...additionalTippyOptions } );
+	const tooltip = window.umberto.createTooltip( target, content, options );
 
 	for ( const root of editor.editing.view.document.roots ) {
 		root.once( 'change:isFocused', ( evt, name, isFocused ) => {
