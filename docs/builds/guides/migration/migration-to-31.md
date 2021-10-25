@@ -20,7 +20,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### HTML embed commands
 
-Starting from v31.0.0, the `'insertHtmlEmbed'` and `'updateHtmlEmbed'` commands are no longer available. They have been replaced with the new, unified command `'htmlEmbed'`.
+Starting from v31.0.0, the `'insertHtmlEmbed'` and `'updateHtmlEmbed'` commands are no longer available. They have been replaced with a new, unified command: `'htmlEmbed'`.
 
 ```js
 /* Before v31.0.0. */
@@ -31,7 +31,7 @@ editor.execute( 'insertHtmlEmbed' );
 // Updates the content of a selected HTML embed.
 editor.execute( 'updateHtmlEmbed', '<p>HTML string</p>' );
 
-/* After v31.0.0. */ 
+/* After v31.0.0. */
 
 // Inserts an empty HTML embed.
 editor.execute( 'htmlEmbed' );
@@ -43,4 +43,4 @@ editor.execute( 'htmlEmbed', '<b>Initial content</b>.' );
 editor.execute( 'htmlEmbed', '<b>New content.</b>' );
 ```
 
-The `InsertHtmlEmbedCommand` and `UpdateHtmlEmbedCommand` classes have been removed too. Use the `HtmlEmbedCommand` for integrating with the HTML embed feature.
+The `InsertHtmlEmbedCommand` and `UpdateHtmlEmbedCommand` classes have been removed, too. Use the `HtmlEmbedCommand` class for integration with the HTML embed feature.
