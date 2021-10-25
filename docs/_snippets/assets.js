@@ -73,6 +73,8 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		maxWidth: 280,
 		showOnCreate: true,
 		interactive: true,
+		theme: 'light-border',
+		zIndex: 1,
 		appendTo: () => document.body
 	} );
 
