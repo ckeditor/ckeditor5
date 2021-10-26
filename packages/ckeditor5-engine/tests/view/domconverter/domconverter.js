@@ -435,6 +435,14 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'shouldRenderAttribute()', () => {
+		beforeEach( () => {
+			converter.experimentalRenderingMode = true;
+		} );
+
+		afterEach( () => {
+			converter.experimentalRenderingMode = false;
+		} );
+
 		it( 'should allow all in for data pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
@@ -564,6 +572,14 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'editing pipeline', () => {
+			beforeEach( () => {
+				converter.experimentalRenderingMode = true;
+			} );
+
+			afterEach( () => {
+				converter.experimentalRenderingMode = false;
+			} );
+
 			it( 'should remove certain attributes', () => {
 				const element = document.createElement( 'p' );
 
