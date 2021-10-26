@@ -19,6 +19,7 @@ import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockedi
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -37,7 +38,7 @@ describe( 'LinkEditing', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, LinkEditing, Enter, Clipboard ],
+			plugins: [ Paragraph, LinkEditing, Enter, Clipboard, ImageInline ],
 			link: {
 				decorators: {
 					isExternal: {
@@ -942,7 +943,7 @@ describe( 'LinkEditing', () => {
 	} );
 
 	describe( 'link following', () => {
-		let stub;
+		let stub, eventPreventDefault;
 
 		beforeEach( () => {
 			stub = sinon.stub( window, 'open' );
@@ -966,7 +967,7 @@ describe( 'LinkEditing', () => {
 					env.isMac = true;
 				} );
 
-				it( 'should follow the link after CMD+click', async () => {
+				it( 'should follow the link after CMD+click', () => {
 					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 
 					fireClickEvent( { metaKey: true, ctrlKey: false } );
@@ -974,22 +975,25 @@ describe( 'LinkEditing', () => {
 					expect( stub.calledOnce ).to.be.true;
 					expect( stub.calledOn( window ) ).to.be.true;
 					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.true;
 				} );
 
-				it( 'should not follow the link after CTRL+click', async () => {
+				it( 'should not follow the link after CTRL+click', () => {
 					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 
 					fireClickEvent( { metaKey: false, ctrlKey: true } );
 
 					expect( stub.notCalled ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.false;
 				} );
 
-				it( 'should not follow the link after click with neither CMD nor CTRL pressed', async () => {
+				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
 					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 
 					fireClickEvent( { metaKey: false, ctrlKey: false } );
 
 					expect( stub.notCalled ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.false;
 				} );
 			} );
 
@@ -998,7 +1002,7 @@ describe( 'LinkEditing', () => {
 					env.isMac = false;
 				} );
 
-				it( 'should follow the link after CTRL+click', async () => {
+				it( 'should follow the link after CTRL+click', () => {
 					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 
 					fireClickEvent( { metaKey: false, ctrlKey: true } );
@@ -1008,7 +1012,7 @@ describe( 'LinkEditing', () => {
 					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
 				} );
 
-				it( 'should not follow the link after CMD+click', async () => {
+				it( 'should not follow the link after CMD+click', () => {
 					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 
 					fireClickEvent( { metaKey: true, ctrlKey: false } );
@@ -1016,7 +1020,7 @@ describe( 'LinkEditing', () => {
 					expect( stub.notCalled ).to.be.true;
 				} );
 
-				it( 'should not follow the link after click with neither CMD nor CTRL pressed', async () => {
+				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
 					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
 
 					fireClickEvent( { metaKey: false, ctrlKey: false } );
@@ -1025,13 +1029,54 @@ describe( 'LinkEditing', () => {
 				} );
 			} );
 
-			function fireClickEvent( options ) {
-				const linkElement = editor.ui.getEditableElement().getElementsByTagName( 'a' )[ 0 ];
+			it( 'should follow the inline image link', () => {
+				setModelData( model, '<paragraph>[<imageInline linkHref="http://www.ckeditor.com"></imageInline>]</paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, 'img' );
+
+				expect( stub.calledOnce ).to.be.true;
+				expect( stub.calledOn( window ) ).to.be.true;
+				expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.true;
+			} );
+
+			it( 'should now follow the link if "a" element doesn\'t have "href" attribute', () => {
+				editor.conversion.attributeToElement( {
+					model: 'customLink',
+					view: 'a'
+				} );
+
+				setModelData( model, '<paragraph><$text customLink="">Bar[]</$text></paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac } );
+
+				expect( stub.notCalled ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.false;
+			} );
+
+			it( 'should not follow the link if no link is clicked', () => {
+				editor.conversion.attributeToElement( {
+					model: 'customLink',
+					view: 'span'
+				} );
+
+				setModelData( model, '<paragraph><$text customLink="">Bar[]</$text></paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, 'span' );
+
+				expect( stub.notCalled ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.false;
+			} );
+
+			function fireClickEvent( options, tagName = 'a' ) {
+				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+				eventPreventDefault = sinon.spy();
 
 				view.document.fire( 'click', {
 					domTarget: linkElement,
 					domEvent: options,
-					preventDefault: () => {}
+					preventDefault: eventPreventDefault
 				} );
 			}
 		} );
@@ -1057,6 +1102,10 @@ describe( 'LinkEditing', () => {
 				{
 					condition: 'the whole link is selected',
 					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">[Bar]</$text></paragraph>'
+				},
+				{
+					condition: 'linked image is selected',
+					modelData: '<paragraph>[<imageInline linkHref="http://www.ckeditor.com"></imageInline>]</paragraph>'
 				}
 			];
 

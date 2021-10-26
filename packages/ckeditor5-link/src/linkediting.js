@@ -242,16 +242,37 @@ export default class LinkEditing extends Plugin {
 				return;
 			}
 
-			const clickedElement = data.domTarget;
+			let clickedElement = data.domTarget;
+
+			if ( clickedElement.tagName.toLowerCase() != 'a' ) {
+				clickedElement = clickedElement.closest( 'a' );
+			}
+
+			if ( !clickedElement ) {
+				return;
+			}
+
 			const url = clickedElement.getAttribute( 'href' );
 
+			if ( !url ) {
+				return;
+			}
+
 			evt.stop();
+			data.preventDefault();
+
 			openLink( url );
-		}, { context: 'a' } );
+		}, { context: '$capture' } );
 
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
 			const selection = modelDocument.selection;
-			const url = selection.getAttribute( 'linkHref' );
+
+			const selectedElement = selection.getSelectedElement();
+
+			const url = selectedElement ?
+				selectedElement.getAttribute( 'linkHref' ) :
+				selection.getAttribute( 'linkHref' );
+
 			const shouldOpen = url && data.domEvent.altKey;
 
 			if ( !shouldOpen ) {
@@ -259,6 +280,7 @@ export default class LinkEditing extends Plugin {
 			}
 
 			evt.stop();
+
 			openLink( url );
 		}, { context: 'a' } );
 	}
