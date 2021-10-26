@@ -72,8 +72,8 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 * @returns {module:engine/view/element~Element}
 */
 export function createObjectView( viewName, modelElement, writer ) {
-	return writer.createRawElement( viewName, null, function( domElement ) {
-		domElement.innerHTML = modelElement.getAttribute( 'htmlContent' );
+	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
+		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) );
 	} );
 }
 
