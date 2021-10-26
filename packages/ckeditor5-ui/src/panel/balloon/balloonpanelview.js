@@ -756,11 +756,7 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  * @member {Object.<String,module:utils/dom/position~positioningFunction>}
  * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
-BalloonPanelView.defaultPositions = generatePositions( {
-	horizontalOffset: BalloonPanelView.arrowHorizontalOffset,
-	verticalOffset: BalloonPanelView.arrowVerticalOffset,
-	stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset
-} );
+BalloonPanelView.defaultPositions = generatePositions();
 
 /**
  * TODO
@@ -768,7 +764,12 @@ BalloonPanelView.defaultPositions = generatePositions( {
  * @param {*}
  * @returns
  */
-export function generatePositions( { horizontalOffset, verticalOffset, stickyVerticalOffset, config = {} } ) {
+export function generatePositions( {
+	horizontalOffset = BalloonPanelView.arrowHorizontalOffset,
+	verticalOffset = BalloonPanelView.arrowVerticalOffset,
+	stickyVerticalOffset = BalloonPanelView.stickyVerticalOffset,
+	config = {}
+} = {} ) {
 	return {
 		// ------- North west
 
@@ -1002,9 +1003,9 @@ export function generatePositions( { horizontalOffset, verticalOffset, stickyVer
 				top: viewportRect.top + stickyVerticalOffset,
 				left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
 				name: 'arrowless',
-				config: {
+				config: Object.assign( {
 					withArrow: false
-				}
+				} )
 			};
 		}
 	};

@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global window */
-
 /**
  * @module ui/toolbar/balloon/balloontoolbar
  */
@@ -19,7 +17,7 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import { env } from '@ckeditor/ckeditor5-utils';
+import { env, global } from '@ckeditor/ckeditor5-utils';
 
 const toPx = toUnit( 'px' );
 
@@ -357,52 +355,43 @@ export default class BalloonToolbar extends Plugin {
 	 * @returns {Array.<module:utils/dom/position~Position>}
 	 */
 	_getBalloonPositions( isBackward ) {
-		const generatedPositions = generatePositions( {
-			horizontalOffset: env.isIOSSafari ? 0 : BalloonPanelView.arrowHorizontalOffset,
-			verticalOffset: env.isIOSSafari ? ( 35 / window.visualViewport.scale ) : BalloonPanelView.arrowVerticalOffset,
-			stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset,
-			config: {
-				withArrow: !env.isIOSSafari
-			}
-		} );
+		const isSafariIniOS = env.isSafari && env.isiOS;
+		let generatedPositions;
 
-		if ( env.isIOSSafari ) {
-			return isBackward ? [
-				generatedPositions.northArrowSouth,
-				generatedPositions.northArrowSouth,
-				generatedPositions.northEastArrowSouthEast,
-				generatedPositions.northWestArrowSouthWest
-			] : [
-				generatedPositions.southArrowNorth,
-				generatedPositions.southArrowNorth,
-				generatedPositions.southWestArrowNorthWest,
-				generatedPositions.southEastArrowNorthEast
-			];
+		if ( isSafariIniOS ) {
+			generatedPositions = generatePositions( {
+				// 20px when zoomed out.
+				// Less when zoomed in.
+				// No less than the default v-offsset, though.
+				verticalOffset: Math.max( BalloonPanelView.arrowVerticalOffset, 20 / global.window.visualViewport.scale )
+			} );
 		} else {
-			return isBackward ? [
-				generatedPositions.northWestArrowSouth,
-				generatedPositions.northWestArrowSouthWest,
-				generatedPositions.northWestArrowSouthEast,
-				generatedPositions.northWestArrowSouthMiddleEast,
-				generatedPositions.northWestArrowSouthMiddleWest,
-				generatedPositions.southWestArrowNorth,
-				generatedPositions.southWestArrowNorthWest,
-				generatedPositions.southWestArrowNorthEast,
-				generatedPositions.southWestArrowNorthMiddleWest,
-				generatedPositions.southWestArrowNorthMiddleEast
-			] : [
-				generatedPositions.southEastArrowNorth,
-				generatedPositions.southEastArrowNorthEast,
-				generatedPositions.southEastArrowNorthWest,
-				generatedPositions.southEastArrowNorthMiddleEast,
-				generatedPositions.southEastArrowNorthMiddleWest,
-				generatedPositions.northEastArrowSouth,
-				generatedPositions.northEastArrowSouthEast,
-				generatedPositions.northEastArrowSouthWest,
-				generatedPositions.northEastArrowSouthMiddleEast,
-				generatedPositions.northEastArrowSouthMiddleWest
-			];
+			generatedPositions = generatePositions();
 		}
+
+		return isBackward ? [
+			generatedPositions.northWestArrowSouth,
+			generatedPositions.northWestArrowSouthWest,
+			generatedPositions.northWestArrowSouthEast,
+			generatedPositions.northWestArrowSouthMiddleEast,
+			generatedPositions.northWestArrowSouthMiddleWest,
+			generatedPositions.southWestArrowNorth,
+			generatedPositions.southWestArrowNorthWest,
+			generatedPositions.southWestArrowNorthEast,
+			generatedPositions.southWestArrowNorthMiddleWest,
+			generatedPositions.southWestArrowNorthMiddleEast
+		] : [
+			generatedPositions.southEastArrowNorth,
+			generatedPositions.southEastArrowNorthEast,
+			generatedPositions.southEastArrowNorthWest,
+			generatedPositions.southEastArrowNorthMiddleEast,
+			generatedPositions.southEastArrowNorthMiddleWest,
+			generatedPositions.northEastArrowSouth,
+			generatedPositions.northEastArrowSouthEast,
+			generatedPositions.northEastArrowSouthWest,
+			generatedPositions.northEastArrowSouthMiddleEast,
+			generatedPositions.northEastArrowSouthMiddleWest
+		];
 	}
 }
 
