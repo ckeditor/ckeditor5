@@ -122,7 +122,7 @@ export function isSafari( userAgent ) {
  * @returns {Boolean} Whether User Agent is running in iOS or not.
  */
 export function isiOS( userAgent ) {
-	return !!userAgent.match( /iphone|ipad/i );
+	return !!userAgent.match( /iphone|ipad/i ) || ( isMac( userAgent ) && navigator.maxTouchPoints > 0 );
 }
 
 /**
