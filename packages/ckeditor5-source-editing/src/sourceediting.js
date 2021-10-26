@@ -161,6 +161,13 @@ export default class SourceEditing extends Plugin {
 				this._updateEditorData();
 			}
 		}, { priority: 'high' } );
+
+		// Update the stored root content to reflect the current model.
+		editor.data.on( 'get', evt => {
+			for ( const rootName of this._replacedRoots.keys() ) {
+				this._dataFromRoots.set( rootName, formatSource( evt.return ) );
+			}
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -295,7 +302,7 @@ export default class SourceEditing extends Plugin {
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
 			const oldData = this._dataFromRoots.get( rootName );
-			const newData = domSourceEditingElementWrapper.dataset.value;
+			const newData = domSourceEditingElementWrapper.firstChild.value;
 
 			// Do not set the data unless some changes have been made in the meantime.
 			// This prevents empty undo steps after switching to the normal editor.

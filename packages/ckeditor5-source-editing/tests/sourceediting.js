@@ -354,6 +354,70 @@ describe( 'SourceEditing', () => {
 			);
 		} );
 
+		it( 'should update document data from roots if getData() was called while in the source editing mode', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+			const originalData = textarea.value;
+
+			textarea.value = '<p>Foo</p><p>bar</p>';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><p>bar</p>' );
+
+			textarea.value = originalData;
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			expect( plugin._dataFromRoots.get( 'main' ) ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>\n' +
+				'<p>\n' +
+				'    bar\n' +
+				'</p>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+
+			expect( plugin._dataFromRoots.get( 'main' ) ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>'
+			);
+		} );
+
+		it( 'should update document data from roots if getData() was called while in the source editing mode (without input event)', () => {
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+			const originalData = textarea.value;
+
+			textarea.value = '<p>Foo</p><p>bar</p>';
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p><p>bar</p>' );
+
+			textarea.value = originalData;
+
+			expect( plugin._dataFromRoots.get( 'main' ) ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>\n' +
+				'<p>\n' +
+				'    bar\n' +
+				'</p>'
+			);
+
+			expect( editor.getData() ).to.equal( '<p>Foo</p>' );
+
+			expect( plugin._dataFromRoots.get( 'main' ) ).to.equal(
+				'<p>\n' +
+				'    Foo\n' +
+				'</p>'
+			);
+		} );
+
 		it( 'should hide the editing root after switching to the source editing mode', () => {
 			button.fire( 'execute' );
 
