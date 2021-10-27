@@ -10,6 +10,6 @@ if ( window.location.host === 'ckeditor5.github.io' ) {
 	const stableUrl = window.location.href.replace( 'https://ckeditor5.github.io/docs/nightly', 'https://ckeditor.com/docs' );
 
 	window.umberto.showWarningBanner(
-		`Nightly documentation ahead. Switch to the <a href="${ stableUrl }">stable editor documentation</a>.`
+		`Nightly documentation ahead. Switch to the <a href="${ stableUrl }?source=nightly">stable editor documentation</a>.`
 	);
 }
