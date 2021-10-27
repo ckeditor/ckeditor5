@@ -1,6 +1,6 @@
 ---
 menu-title: DLL builds
-category: builds-development
+category: builds-integration-advanced
 order: 30
 modified_at: 2021-08-31
 ---

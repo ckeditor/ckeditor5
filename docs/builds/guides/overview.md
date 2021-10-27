@@ -5,8 +5,8 @@
 # * What is the difference with CKEditor 5 Framework?
 # * What is the difference with CKEditor 4?
 
-category: builds-predefined
-order: 20
+category: builds-integration-advanced
+order: 200
 ---
 
 # Predefined builds

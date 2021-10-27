@@ -4,8 +4,9 @@
 # * Exemplify use cases.
 # * Point to resources to learn plugin development.
 
-category: builds-development
-order: 20
+menu-title: Custom plugins
+category: builds-integration
+order: 60
 ---
 
 # Plugins

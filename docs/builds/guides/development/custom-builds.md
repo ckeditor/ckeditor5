@@ -1,4 +1,4 @@
----
+<!-- ---
 # Scope:
 # * Introduction to custom builds and why one would create them.
 # * Step-by-step instructions on creating a custom build.
@@ -182,4 +182,4 @@ You should handle eventual conflicts and verify the merged changes. After that, 
 
 If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope). We also recommend using the "ckeditor5" and "ckeditor5-build" [keywords](https://docs.npmjs.com/files/package.json#keywords) to make your build [easier to find](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal).
 
-After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!
+After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)! -->

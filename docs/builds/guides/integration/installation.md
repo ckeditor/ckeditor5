@@ -2,11 +2,11 @@
 # Scope:
 # - Guidance on all possible installation options.
 
-category: builds-integration
+category: builds-integration-advanced
 order: 10
 ---
 
-# Building from source
+# Integrating from source
 
 ## Download options
 
