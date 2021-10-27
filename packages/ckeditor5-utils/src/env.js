@@ -122,6 +122,7 @@ export function isSafari( userAgent ) {
  * @returns {Boolean} Whether User Agent is running in iOS or not.
  */
 export function isiOS( userAgent ) {
+	// "Request mobile site" || "Request desktop site".
 	return !!userAgent.match( /iphone|ipad/i ) || ( isMac( userAgent ) && navigator.maxTouchPoints > 0 );
 }
 
