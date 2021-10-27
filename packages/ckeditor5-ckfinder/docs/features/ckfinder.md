@@ -29,10 +29,6 @@ This feature can be used in the rich-text editor in two different ways:
 
 	Check out the [CKFinder file manager website](https://ckeditor.com/ckfinder/) to learn more about the features you can use in your project.
 
-<info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
-</info-box>
-
 ## Demo
 
 ### Image upload only

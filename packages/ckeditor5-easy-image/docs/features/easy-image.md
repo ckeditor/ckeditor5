@@ -20,10 +20,6 @@ Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckedito
 
 All that with virtually zero server setup.
 
-<info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images in CKEditor 5.
-</info-box>
-
 ## Demo
 
 The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
