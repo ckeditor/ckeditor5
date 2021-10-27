@@ -157,6 +157,14 @@ export default class UIElement extends Element {
 	toDomElement( domDocument ) {
 		const domElement = domDocument.createElement( this.name );
 
+		for ( const key of this.getAttributeKeys() ) {
+			const value = this.getAttribute( key );
+
+			if ( this.shouldRenderAttribute( key ) || this.domConverter.shouldRenderAttribute( key, value ) ) {
+				domElement.setAttribute( key, value );
+			}
+		}
+
 		return domElement;
 	}
 }

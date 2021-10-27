@@ -326,20 +326,20 @@ describe( 'DomConverter', () => {
 					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<img onclick="foo">' );
 				} );
 
-				it( 'should not be rejected when set on UI elements', () => {
-					const viewElement = writer.createUIElement( 'p', {
-						onclick: 'foo',
-						onkeydown: 'bar'
-					}, function( domDocument ) {
-						const domElement = this.toDomElement( domDocument );
-						domElement.innerHTML = 'foo';
-						return domElement;
-					}, {
-						renderUnsafeAttributes: [ 'onclick' ]
-					} );
+				// it( 'should not be rejected when set on UI elements', () => {
+				// 	const viewElement = writer.createUIElement( 'p', {
+				// 		onclick: 'foo',
+				// 		onkeydown: 'bar'
+				// 	}, function( domDocument ) {
+				// 		const domElement = this.toDomElement( domDocument );
+				// 		domElement.innerHTML = 'foo';
+				// 		return domElement;
+				// 	}, {
+				// 		renderUnsafeAttributes: [ 'onclick' ]
+				// 	} );
 
-					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo">foo</p>' );
-				} );
+				// 	expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo">foo</p>' );
+				// } );
 
 				it( 'should not be rejected when set on raw elements', () => {
 					const viewElement = writer.createRawElement( 'p', {

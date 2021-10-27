@@ -360,15 +360,6 @@ export default class DomConverter {
 					this.bindElements( domElement, viewNode );
 				}
 
-				// Copy element's attributes.
-				for ( const key of viewNode.getAttributeKeys() ) {
-					const value = viewNode.getAttribute( key );
-
-					if ( viewNode.shouldRenderAttribute( key ) || this.shouldRenderAttribute( key, value ) ) {
-						domElement.setAttribute( key, value );
-					}
-				}
-
 				return domElement;
 			} else {
 				// Create DOM element.
