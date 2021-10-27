@@ -385,7 +385,7 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
 
-					if ( viewNode.shouldRenderAttribute( key ) || this.shouldRenderAttribute( key, value ) ) {
+					if ( this.shouldRenderAttribute( key, value ) || viewNode.shouldRenderUnsafeAttribute( key ) ) {
 						domElement.setAttribute( key, value );
 					}
 				}

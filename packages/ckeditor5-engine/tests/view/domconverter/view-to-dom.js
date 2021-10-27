@@ -274,7 +274,7 @@ describe( 'DomConverter', () => {
 				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
 			} );
 
-			describe( 'for attribute names that were declaratively permitted', () => {
+			describe( 'unsafe attribute names that were declaratively permitted', () => {
 				let writer;
 
 				beforeEach( () => {
@@ -325,21 +325,6 @@ describe( 'DomConverter', () => {
 
 					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<img onclick="foo">' );
 				} );
-
-				// it( 'should not be rejected when set on UI elements', () => {
-				// 	const viewElement = writer.createUIElement( 'p', {
-				// 		onclick: 'foo',
-				// 		onkeydown: 'bar'
-				// 	}, function( domDocument ) {
-				// 		const domElement = this.toDomElement( domDocument );
-				// 		domElement.innerHTML = 'foo';
-				// 		return domElement;
-				// 	}, {
-				// 		renderUnsafeAttributes: [ 'onclick' ]
-				// 	} );
-
-				// 	expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo">foo</p>' );
-				// } );
 
 				it( 'should not be rejected when set on raw elements', () => {
 					const viewElement = writer.createRawElement( 'p', {

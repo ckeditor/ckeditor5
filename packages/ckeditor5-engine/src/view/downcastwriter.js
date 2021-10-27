@@ -334,10 +334,6 @@ export default class DowncastWriter {
 			uiElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
 		}
 
-		if ( options.renderUnsafeAttributes ) {
-			uiElement._unsafeAttributes = options.renderUnsafeAttributes;
-		}
-
 		return uiElement;
 	}
 

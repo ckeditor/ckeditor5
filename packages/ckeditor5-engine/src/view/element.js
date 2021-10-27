@@ -579,7 +579,7 @@ export default class Element extends Node {
 	 * @param {String} attributeKey
 	 * @returns {Boolean}
 	 */
-	shouldRenderAttribute( attributeKey ) {
+	shouldRenderUnsafeAttribute( attributeKey ) {
 		return this._unsafeAttributes && this._unsafeAttributes.includes( attributeKey );
 	}
 

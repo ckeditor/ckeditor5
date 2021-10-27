@@ -557,7 +557,7 @@ export default class Renderer {
 		for ( const key of viewAttrKeys ) {
 			const value = viewElement.getAttribute( key );
 
-			if ( viewElement.shouldRenderAttribute( key ) || this.domConverter.shouldRenderAttribute( key, value ) ) {
+			if ( this.domConverter.shouldRenderAttribute( key, value ) || viewElement.shouldRenderUnsafeAttribute( key ) ) {
 				domElement.setAttribute( key, value );
 			} else {
 				domElement.removeAttribute( key );
