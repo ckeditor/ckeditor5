@@ -246,10 +246,15 @@ export default class DomConverter {
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
+	 * @param {TODO} [contextViewElement]
 	 * @returns {Boolean}
 	 */
-	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
+	shouldRenderAttribute( attributeKey, attributeValue, contextViewElement ) {
+		const isAttributePermitted = contextViewElement &&
+			contextViewElement._unsafeAttributes &&
+			contextViewElement._unsafeAttributes.includes( attributeKey );
+
+		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' || isAttributePermitted ) {
 			return true;
 		}
 
@@ -296,7 +301,7 @@ export default class DomConverter {
 			for ( const attributeName of currentNode.getAttributeNames() ) {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
-				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
+				if ( !this.shouldRenderAttribute( attributeName, attributeValue, null ) ) {
 					currentNode.removeAttribute( attributeName );
 				}
 			}
@@ -385,7 +390,7 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
 
-					if ( !this.shouldRenderAttribute( key, value ) ) {
+					if ( !this.shouldRenderAttribute( key, value, viewNode ) ) {
 						continue;
 					}
 

@@ -199,6 +199,10 @@ export default class DowncastWriter {
 			attributeElement._id = options.id;
 		}
 
+		if ( options.renderUnsafeAttributes ) {
+			attributeElement._unsafeAttributes = options.renderUnsafeAttributes;
+		}
+
 		return attributeElement;
 	}
 
@@ -231,6 +235,10 @@ export default class DowncastWriter {
 			containerElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
 		}
 
+		if ( options.renderUnsafeAttributes ) {
+			containerElement._unsafeAttributes = options.renderUnsafeAttributes;
+		}
+
 		return containerElement;
 	}
 
@@ -247,9 +255,13 @@ export default class DowncastWriter {
 	 * @param {Object} [attributes] Elements attributes.
 	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
 	 */
-	createEditableElement( name, attributes ) {
+	createEditableElement( name, attributes, options = {} ) {
 		const editableElement = new EditableElement( this.document, name, attributes );
 		editableElement._document = this.document;
+
+		if ( options.renderUnsafeAttributes ) {
+			editableElement._unsafeAttributes = options.renderUnsafeAttributes;
+		}
 
 		return editableElement;
 	}
@@ -273,6 +285,10 @@ export default class DowncastWriter {
 
 		if ( options.isAllowedInsideAttributeElement !== undefined ) {
 			emptyElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
+		}
+
+		if ( options.renderUnsafeAttributes ) {
+			emptyElement._unsafeAttributes = options.renderUnsafeAttributes;
 		}
 
 		return emptyElement;
@@ -318,6 +334,10 @@ export default class DowncastWriter {
 			uiElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
 		}
 
+		if ( options.renderUnsafeAttributes ) {
+			uiElement._unsafeAttributes = options.renderUnsafeAttributes;
+		}
+
 		return uiElement;
 	}
 
@@ -356,6 +376,10 @@ export default class DowncastWriter {
 
 		if ( options.isAllowedInsideAttributeElement !== undefined ) {
 			rawElement._isAllowedInsideAttributeElement = options.isAllowedInsideAttributeElement;
+		}
+
+		if ( options.renderUnsafeAttributes ) {
+			rawElement._unsafeAttributes = options.renderUnsafeAttributes;
 		}
 
 		return rawElement;
