@@ -436,12 +436,7 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'shouldRenderAttribute()', () => {
-		let writer, viewElement;
-
 		beforeEach( () => {
-			writer = new DowncastWriter( viewDocument );
-			viewElement = writer.createContainerElement( 'p' );
-
 			converter.experimentalRenderingMode = true;
 		} );
 
@@ -450,38 +445,44 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should allow all in for data pipeline', () => {
-			expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>', viewElement ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
 
 			converter.renderingMode = 'data';
 
-			expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>', viewElement ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
 		} );
 
 		it( 'should reject certain attributes in the editing pipeline', () => {
-			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'class', 'anything', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'style', 'anything', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'value', 'data:image/jpeg', viewElement ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'value', 'DATA:IMAGE/GIF', viewElement ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'class', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'style', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'value', 'data:image/jpeg' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'value', 'DATA:IMAGE/GIF' ) ).to.be.true;
 
-			expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'ONCLICK', 'anything', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'JAVASCRIPT:something', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', '<SCRIPT>something</SCRIPT>', viewElement ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'something</SCRIPT>', viewElement ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'ONCLICK', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'JAVASCRIPT:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<SCRIPT>something</SCRIPT>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'something</SCRIPT>' ) ).to.be.false;
 		} );
 
 		describe( 'attribute names that were declaratively permitted', () => {
+			let writer;
+
+			beforeEach( () => {
+				writer = new DowncastWriter( viewDocument );
+			} );
+
 			it( 'should not be rejected when set on attribute elements', () => {
 				const viewElement = writer.createAttributeElement( 'span', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
 
