@@ -718,11 +718,11 @@ export function modelChangePostFixer( model, writer ) {
 				}
 			}
 
-			if ( !item.hasAttribute( 'listItemId' ) ) {
-				writer.setAttribute( 'listItemId', uid(), item );
-
-				applied = true;
-			}
+			// if ( !item.hasAttribute( 'listItemId' ) ) {
+			// 	writer.setAttribute( 'listItemId', uid(), item );
+			//
+			// 	applied = true;
+			// }
 
 			prev = item;
 			item = item.nextSibling;

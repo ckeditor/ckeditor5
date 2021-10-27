@@ -78,11 +78,11 @@ export default class ListEditing extends Plugin {
 
 		editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
 
-		editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		// editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
-		editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
-		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
+		// editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
+		// editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
 		// editor.conversion.for( 'editingDowncast' )
@@ -100,7 +100,7 @@ export default class ListEditing extends Plugin {
 			.elementToElement( {
 				model: 'listItem',
 				view: ( modelElement, { writer } ) => writer.createContainerElement(
-					'span', { classes: 'ck-list-bogus-paragraph' }, { isAllowedInsideAttributeElement: true }
+					'span', { class: 'ck-list-bogus-paragraph' }, { isAllowedInsideAttributeElement: true }
 				)
 			} )
 			.add( dispatcher => {
@@ -108,6 +108,8 @@ export default class ListEditing extends Plugin {
 
 				dispatcher.on( 'attribute:listIndent:listItem', converter );
 				dispatcher.on( 'attribute:listType:listItem', converter );
+				dispatcher.on( 'insert:listItem', converter, { priority: 'low' } );
+				dispatcher.on( 'remove:listItem', converter, { priority: 'lowest' } );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
@@ -242,73 +244,119 @@ function listItemWrap( model ) {
 	const listItemsMap = new WeakMap();
 
 	return ( evt, data, conversionApi ) => {
-		if ( data.item.is( 'selection' ) ) {
+		let listItem;
+
+		if ( evt.name == 'remove:listItem' ) {
+			listItem = data.position.nodeBefore;
+
+			if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
+				listItem = data.position.nodeAfter;
+
+				if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
+					return;
+				}
+			}
+		} else {
+			listItem = data.item;
+		}
+
+		if ( listItem.is( 'selection' ) ) {
 			return;
 		}
 
-		if ( !consumer( data.item, conversionApi.consumable ) ) {
+		// Verify if attributes were not already consumed.
+		if ( !consumer( listItem, conversionApi.consumable, { preflight: true } ) ) {
 			return;
 		}
 
 		const viewWriter = conversionApi.writer;
-		const listItems = [ data.item ];
+		const listItems = [ listItem ];
 
-		if ( evt.name == 'attribute:listType:listItem' ) {
-			const listIndent = listItems[ 0 ].getAttribute( 'listIndent' );
+		// Find following nested list items and repack them on the list type change.
+		if (
+			evt.name == 'attribute:listType:listItem' ||
+			evt.name == 'remove:listItem' ||
+			evt.name == 'insert:listItem'
+		) {
+			const listIndent = listItem.getAttribute( 'listIndent' );
 			let currentListItem = listItems[ 0 ].nextSibling;
 
 			while (
 				currentListItem &&
 				currentListItem.is( 'element', 'listItem' ) &&
-				currentListItem.getAttribute( 'listIndent' ) > listIndent
+				currentListItem.getAttribute( 'listIndent' ) > listIndent &&
+				conversionApi.mapper.toViewElement( currentListItem )
 			) {
+				// Verify if attributes were not already consumed.
+				if ( !consumer( currentListItem, conversionApi.consumable, { preflight: true } ) ) {
+					return;
+				}
+
 				listItems.push( currentListItem );
 				currentListItem = currentListItem.nextSibling;
 			}
 		}
 
-		for ( const listItem of listItems ) {
-			let viewRange = conversionApi.mapper.toViewRange( model.createRangeOn( listItem ) );
+		// Consume attributes on the converted items.
+		for ( const item of listItems ) {
+			consumer( item, conversionApi.consumable );
+		}
 
-			// First, unwrap the range from current wrapper.
+		// First, unwrap the item from current list wrappers.
+		for ( const listItem of listItems ) {
+			let viewRange = conversionApi.mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+
 			if ( listItemsMap.has( listItem ) ) {
 				const listItemMap = listItemsMap.get( listItem );
 
-				for ( let i = listItemMap.length - 1; i >= 0; i-- ) {
-					const { listItemId, listType } = listItemMap[ i ];
+				for ( let indent = listItemMap.length - 1; indent >= 0; indent-- ) {
+					const { listItemId, listType } = listItemMap[ indent ];
 
-					const listItemViewElement = createListItemElement( viewWriter, i, listItemId );
-					const listViewElement = createListElement( viewWriter, i, listType );
+					const listItemViewElement = createListItemElement( viewWriter, indent, listItemId );
+					const listViewElement = createListElement( viewWriter, indent, listType );
 
 					viewRange = viewWriter.unwrap( viewRange, listViewElement );
 					viewRange = viewWriter.unwrap( viewRange, listItemViewElement );
 				}
 			}
+		}
 
+		// Then wrap them with the new list wrappers.
+		for ( const listItem of listItems ) {
+			let viewRange = conversionApi.mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
 			const listItemIndent = listItem.getAttribute( 'listIndent' );
 
 			if ( listItemIndent !== null ) {
 				const listItemMap = [];
+
+				let listItemId = uid();
+				let listType = listItem.getAttribute( 'listType' );
+
 				let currentListItem = listItem;
 
-				for ( let i = listItemIndent; i >= 0; i-- ) {
-					const listItemId = currentListItem.getAttribute( 'listItemId' );
-					const listType = currentListItem.getAttribute( 'listType' );
+				for ( let indent = listItemIndent; indent >= 0; indent-- ) {
+					// const listItemId = currentListItem.getAttribute( 'listItemId' );
+					// const listType = currentListItem.getAttribute( 'listType' );
 
-					listItemMap[ i ] = {
-						listItemId,
-						listType
-					};
+					if ( listItem != currentListItem ) {
+						const levels = listItemsMap.get( currentListItem );
 
-					const listItemViewElement = createListItemElement( viewWriter, i, listItemId );
-					const listViewElement = createListElement( viewWriter, i, listType );
+						listItemId = levels[ levels.length - 1 ].listItemId;
+						listType = levels[ levels.length - 1 ].listType;
+					}
+
+					listItemMap[ indent ] = { listItemId, listType };
+
+					const listItemViewElement = createListItemElement( viewWriter, indent, listItemId );
+					const listViewElement = createListElement( viewWriter, indent, listType );
 
 					viewRange = viewWriter.wrap( viewRange, listItemViewElement );
 					viewRange = viewWriter.wrap( viewRange, listViewElement );
 
-					currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: i } );
+					currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
 				}
 
+				// Store the list of wrappers so they could be later easily unwrapped.
 				listItemsMap.set( listItem, listItemMap );
 			}
 		}
