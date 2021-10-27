@@ -30,6 +30,10 @@ import {
 	modelToViewPosition,
 	viewToModelPosition
 } from './converters';
+import { createViewListItemElement, getSiblingListItem } from './utils';
+import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import { uid } from '@ckeditor/ckeditor5-utils';
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
@@ -65,7 +69,7 @@ export default class ListEditing extends Plugin {
 		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
 		editor.model.schema.register( 'listItem', {
 			inheritAllFrom: '$block',
-			allowAttributes: [ 'listType', 'listIndent' ]
+			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
 		} );
 
 		// Converters.
@@ -81,15 +85,29 @@ export default class ListEditing extends Plugin {
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
+		// editor.conversion.for( 'editingDowncast' )
+		// 	.add( dispatcher => {
+		// 		dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+		// 		dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+		// 		dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
+		// 		dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
+		// 		dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
+		// 		dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
+		// 		dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+		// 	} );
+
 		editor.conversion.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'listItem',
+				view: ( modelElement, { writer } ) => writer.createContainerElement(
+					'span', { classes: 'ck-list-bogus-paragraph' }, { isAllowedInsideAttributeElement: true }
+				)
+			} )
 			.add( dispatcher => {
-				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
-				dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
-				dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-				dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
-				dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
-				dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+				const converter = listItemWrap( editor.model );
+
+				dispatcher.on( 'attribute:listIndent:listItem', converter );
+				dispatcher.on( 'attribute:listType:listItem', converter );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
@@ -218,3 +236,119 @@ function getViewListItemLength( element ) {
 
 	return length;
 }
+
+function listItemWrap( model ) {
+	const consumer = createAttributesConsumer( { attributes: [ 'listType', 'listIndent' ] } );
+	const listItemsMap = new WeakMap();
+
+	return ( evt, data, conversionApi ) => {
+		if ( data.item.is( 'selection' ) ) {
+			return;
+		}
+
+		if ( !consumer( data.item, conversionApi.consumable ) ) {
+			return;
+		}
+
+		const viewWriter = conversionApi.writer;
+		const listItems = [ data.item ];
+
+		if ( evt.name == 'attribute:listType:listItem' ) {
+			const listIndent = listItems[ 0 ].getAttribute( 'listIndent' );
+			let currentListItem = listItems[ 0 ].nextSibling;
+
+			while (
+				currentListItem &&
+				currentListItem.is( 'element', 'listItem' ) &&
+				currentListItem.getAttribute( 'listIndent' ) > listIndent
+			) {
+				listItems.push( currentListItem );
+				currentListItem = currentListItem.nextSibling;
+			}
+		}
+
+		for ( const listItem of listItems ) {
+			let viewRange = conversionApi.mapper.toViewRange( model.createRangeOn( listItem ) );
+
+			// First, unwrap the range from current wrapper.
+			if ( listItemsMap.has( listItem ) ) {
+				const listItemMap = listItemsMap.get( listItem );
+
+				for ( let i = listItemMap.length - 1; i >= 0; i-- ) {
+					const { listItemId, listType } = listItemMap[ i ];
+
+					const listItemViewElement = createListItemElement( viewWriter, i, listItemId );
+					const listViewElement = createListElement( viewWriter, i, listType );
+
+					viewRange = viewWriter.unwrap( viewRange, listViewElement );
+					viewRange = viewWriter.unwrap( viewRange, listItemViewElement );
+				}
+			}
+
+			const listItemIndent = listItem.getAttribute( 'listIndent' );
+
+			if ( listItemIndent !== null ) {
+				const listItemMap = [];
+				let currentListItem = listItem;
+
+				for ( let i = listItemIndent; i >= 0; i-- ) {
+					const listItemId = currentListItem.getAttribute( 'listItemId' );
+					const listType = currentListItem.getAttribute( 'listType' );
+
+					listItemMap[ i ] = {
+						listItemId,
+						listType
+					};
+
+					const listItemViewElement = createListItemElement( viewWriter, i, listItemId );
+					const listViewElement = createListElement( viewWriter, i, listType );
+
+					viewRange = viewWriter.wrap( viewRange, listItemViewElement );
+					viewRange = viewWriter.wrap( viewRange, listViewElement );
+
+					currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: i } );
+				}
+
+				listItemsMap.set( listItem, listItemMap );
+			}
+		}
+	};
+}
+
+function createListElement( writer, indent, type, id ) {
+	return writer.createAttributeElement( type == 'numbered' ? 'ol' : 'ul', null, {
+		priority: indent / 100,
+		id
+	} );
+}
+
+function createListItemElement( writer, indent, id ) {
+	return writer.createAttributeElement( 'li', null, {
+		priority: ( indent + 0.5 ) / 100,
+		id
+	} );
+}
+
+function createAttributesConsumer( model ) {
+	return ( node, consumable, options = {} ) => {
+		const events = [];
+
+		// Collect all set attributes that are triggering conversion.
+		for ( const attributeName of model.attributes ) {
+			if ( node.hasAttribute( attributeName ) ) {
+				events.push( `attribute:${ attributeName }` );
+			}
+		}
+
+		if ( !events.every( event => consumable.test( node, event ) !== false ) ) {
+			return false;
+		}
+
+		if ( !options.preflight ) {
+			events.forEach( event => consumable.consume( node, event ) );
+		}
+
+		return true;
+	};
+}
+

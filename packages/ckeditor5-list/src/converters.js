@@ -8,6 +8,7 @@
  */
 
 import { TreeWalker } from 'ckeditor5/src/engine';
+import { uid } from 'ckeditor5/src/utils';
 
 import {
 	generateLiInUl,
@@ -715,6 +716,12 @@ export function modelChangePostFixer( model, writer ) {
 				} else {
 					typesStack[ itemIndent ] = item.getAttribute( 'listType' );
 				}
+			}
+
+			if ( !item.hasAttribute( 'listItemId' ) ) {
+				writer.setAttribute( 'listItemId', uid(), item );
+
+				applied = true;
 			}
 
 			prev = item;
