@@ -10,7 +10,6 @@ import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import ViewUIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
-import DowncastWriter from '../../../src/view/downcastwriter';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -474,68 +473,6 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', '<SCRIPT>something</SCRIPT>' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'something</SCRIPT>' ) ).to.be.false;
-		} );
-
-		describe( 'attribute names that were declaratively permitted', () => {
-			let writer;
-
-			beforeEach( () => {
-				writer = new DowncastWriter( viewDocument );
-			} );
-
-			it( 'should not be rejected when set on attribute elements', () => {
-				const viewElement = writer.createAttributeElement( 'span', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
-
-				expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-				expect( converter.shouldRenderAttribute( 'onkeydown', 'anything', viewElement ) ).to.be.false;
-			} );
-
-			it( 'should not be rejected when set on container elements', () => {
-				const viewElement = writer.createContainerElement( 'p', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
-
-				expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-				expect( converter.shouldRenderAttribute( 'onkeydown', 'anything', viewElement ) ).to.be.false;
-			} );
-
-			it( 'should not be rejected when set on editable elements', () => {
-				const viewElement = writer.createEditableElement( 'div', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
-
-				expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-				expect( converter.shouldRenderAttribute( 'onkeydown', 'anything', viewElement ) ).to.be.false;
-			} );
-
-			it( 'should not be rejected when set on empty elements', () => {
-				const viewElement = writer.createEmptyElement( 'img', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
-
-				expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-				expect( converter.shouldRenderAttribute( 'onkeydown', 'anything', viewElement ) ).to.be.false;
-			} );
-
-			it( 'should not be rejected when set on UI elements', () => {
-				const viewElement = writer.createUIElement( 'p', {}, function( domDocument ) {
-					const domElement = this.toDomElement( domDocument );
-					domElement.innerHTML = 'foo';
-					return domElement;
-				}, {
-					renderUnsafeAttributes: [ 'onclick' ]
-				} );
-
-				expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-				expect( converter.shouldRenderAttribute( 'onkeydown', 'anything', viewElement ) ).to.be.false;
-			} );
-
-			it( 'should not be rejected when set on raw elements', () => {
-				const viewElement = writer.createRawElement( 'p', {}, function( domDocument ) {
-					const domElement = this.toDomElement( domDocument );
-					domElement.innerHTML = 'foo';
-					return domElement;
-				}, {
-					renderUnsafeAttributes: [ 'onclick' ]
-				} );
-
-				expect( converter.shouldRenderAttribute( 'onclick', 'anything', viewElement ) ).to.be.true;
-				expect( converter.shouldRenderAttribute( 'onkeydown', 'anything', viewElement ) ).to.be.false;
-			} );
 		} );
 	} );
 

@@ -246,15 +246,10 @@ export default class DomConverter {
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
-	 * @param {TODO} [contextViewElement]
 	 * @returns {Boolean}
 	 */
-	shouldRenderAttribute( attributeKey, attributeValue, contextViewElement ) {
-		const isAttributePermitted = contextViewElement &&
-			contextViewElement._unsafeAttributes &&
-			contextViewElement._unsafeAttributes.includes( attributeKey );
-
-		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' || isAttributePermitted ) {
+	shouldRenderAttribute( attributeKey, attributeValue ) {
+		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
 			return true;
 		}
 
@@ -301,7 +296,7 @@ export default class DomConverter {
 			for ( const attributeName of currentNode.getAttributeNames() ) {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
-				if ( !this.shouldRenderAttribute( attributeName, attributeValue, null ) ) {
+				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
 					currentNode.removeAttribute( attributeName );
 				}
 			}
@@ -365,6 +360,15 @@ export default class DomConverter {
 					this.bindElements( domElement, viewNode );
 				}
 
+				// Copy element's attributes.
+				for ( const key of viewNode.getAttributeKeys() ) {
+					const value = viewNode.getAttribute( key );
+
+					if ( viewNode.shouldRenderAttribute( key ) || this.shouldRenderAttribute( key, value ) ) {
+						domElement.setAttribute( key, value );
+					}
+				}
+
 				return domElement;
 			} else {
 				// Create DOM element.
@@ -390,11 +394,9 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
 
-					if ( !this.shouldRenderAttribute( key, value, viewNode ) ) {
-						continue;
+					if ( viewNode.shouldRenderAttribute( key ) || this.shouldRenderAttribute( key, value ) ) {
+						domElement.setAttribute( key, value );
 					}
-
-					domElement.setAttribute( key, value );
 				}
 			}
 

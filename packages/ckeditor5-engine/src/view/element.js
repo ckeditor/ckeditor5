@@ -573,6 +573,17 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Decides whether an attribute should be rendered in the editing pipeline based on the `renderUnsafeAttributes` option
+	 * specified in the `DowncastWriter`.
+	 *
+	 * @param {String} attributeKey
+	 * @returns {Boolean}
+	 */
+	shouldRenderAttribute( attributeKey ) {
+		return this._unsafeAttributes && this._unsafeAttributes.includes( attributeKey );
+	}
+
+	/**
 	 * Clones provided element.
 	 *
 	 * @protected

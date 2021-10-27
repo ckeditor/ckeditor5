@@ -157,10 +157,6 @@ export default class UIElement extends Element {
 	toDomElement( domDocument ) {
 		const domElement = domDocument.createElement( this.name );
 
-		for ( const key of this.getAttributeKeys() ) {
-			domElement.setAttribute( key, this.getAttribute( key ) );
-		}
-
 		return domElement;
 	}
 }
