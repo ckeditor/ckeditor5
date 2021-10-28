@@ -149,6 +149,7 @@ export default class Element extends Node {
 		 * be permitted, use the {@link #shouldRenderUnsafeAttribute} method.
 		 *
 		 * @protected
+		 * @readonly
 		 * @member {Array.<String>}
 		 */
 		this._unsafeAttributes = [];
