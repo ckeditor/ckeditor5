@@ -65,8 +65,3 @@ https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
 .main .main__content-inner .features-html-output th {
 	background-color: hsl(0, 0%, 96%);
 }
-
-.live-snippet .ck-source-editing-area textarea {
-	width: 100%;
-	overflow: auto;
-}
