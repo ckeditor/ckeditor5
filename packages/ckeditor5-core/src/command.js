@@ -101,10 +101,10 @@ export default class Command {
 		 * A flag indicating whether a command execution changes the editor data or not.
 		 *
 		 * Commands with `affectsData` set to `false` will not be automatically disabled in
-		 * {@link module:core/editor/editor~Editor#isReadOnly read-only mode} and
+		 * the {@link module:core/editor/editor~Editor#isReadOnly read-only mode} and
 		 * {@glink features/read-only#related-features other editor modes} with restricted user write permissions.
 		 *
-		 * **Note:** You do not have to set it for your every command. It will be `true` by default.
+		 * **Note:** You do not have to set it for your every command. It is `true` by default.
 		 *
 		 * @readonly
 		 * @default true
