@@ -242,7 +242,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Decides whether given pair of attribute key and value should be passed further down the pipeline.
+	 * Decides whether a given pair of attribute key and value should be passed further down the pipeline.
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
@@ -1479,7 +1479,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Checks whether given element name should be renamed in a current rendering mode.
+	 * Checks whether a given element name should be renamed in a current rendering mode.
 	 *
 	 * @private
 	 * @param {String} elementName The name of view element.
@@ -1490,7 +1490,7 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Return a <span> element with special attribute holding the name of the original element.
+	 * Return a <span> element with a special attribute holding the name of the original element.
 	 * Optionally, copy all the attributes of the original element if that element is provided.
 	 *
 	 * @private
