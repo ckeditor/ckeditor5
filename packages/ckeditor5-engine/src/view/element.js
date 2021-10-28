@@ -138,6 +138,20 @@ export default class Element extends Node {
 		 * @member {Boolean}
 		 */
 		this._isAllowedInsideAttributeElement = false;
+
+		/**
+		 * A (white) list of attribute names that should be rendered in the editing pipeline even though filtering mechanisms
+		 * implemented in the {@link module:engine/view/domconverter~DomConverter} (for instance,
+		 * {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute}) would filter them out.
+		 *
+		 * These attributes can be specified as an option when the element is created by
+		 * the {@link module:engine/view/downcastwriter~DowncastWriter}. To check whether an unsafe an attribute should
+		 * be permitted, use the {@link #shouldRenderUnsafeAttribute} method.
+		 *
+		 * @protected
+		 * @member {Array.<String>}
+		 */
+		this._unsafeAttributes = [];
 	}
 
 	/**
@@ -573,14 +587,17 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Decides whether an attribute should be rendered in the editing pipeline based on the `renderUnsafeAttributes` option
-	 * specified in the `DowncastWriter`.
+	 * Decides whether an unsafe attribute is whitelisted and should be rendered in the editing pipeline even though filtering mechanisms
+	 * like {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute} say it should not.
 	 *
-	 * @param {String} attributeKey
+	 * Unsafe attribute names can be specified when creating an element via {@link module:engine/view/downcastwriter~DowncastWriter}.
+	 *
+	 * @protected
+	 * @param {String} attributeName The name of the attribute to be checked.
 	 * @returns {Boolean}
 	 */
-	shouldRenderUnsafeAttribute( attributeKey ) {
-		return this._unsafeAttributes && this._unsafeAttributes.includes( attributeKey );
+	_shouldRenderUnsafeAttribute( attributeName ) {
+		return this._unsafeAttributes.includes( attributeName );
 	}
 
 	/**
