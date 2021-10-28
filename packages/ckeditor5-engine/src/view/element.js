@@ -148,7 +148,7 @@ export default class Element extends Node {
 		 * the {@link module:engine/view/downcastwriter~DowncastWriter}. To check whether an unsafe an attribute should
 		 * be permitted, use the {@link #shouldRenderUnsafeAttribute} method.
 		 *
-		 * @protected
+		 * @private
 		 * @readonly
 		 * @member {Array.<String>}
 		 */
