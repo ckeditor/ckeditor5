@@ -99,17 +99,23 @@ export default class ListEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'listItem',
-				view: ( modelElement, { writer } ) => writer.createContainerElement(
-					'span', { class: 'ck-list-bogus-paragraph' }, { isAllowedInsideAttributeElement: true }
-				)
+				view: ( modelElement, { writer } ) => {
+					const viewElement = writer.createContainerElement(
+						'span', { class: 'ck-list-bogus-paragraph' }, { isAllowedInsideAttributeElement: true }
+					);
+
+					writer.setCustomProperty( 'listItemId', uid(), viewElement );
+
+					return viewElement;
+				}
 			} )
 			.add( dispatcher => {
 				const converter = listItemWrap( editor.model );
 
 				dispatcher.on( 'attribute:listIndent:listItem', converter );
 				dispatcher.on( 'attribute:listType:listItem', converter );
-				dispatcher.on( 'insert:listItem', converter, { priority: 'low' } );
-				dispatcher.on( 'remove:listItem', converter, { priority: 'lowest' } );
+				// dispatcher.on( 'insert:listItem', converter, { priority: 'low' } );
+				// dispatcher.on( 'remove:listItem', converter, { priority: 'lowest' } );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
@@ -128,6 +134,8 @@ export default class ListEditing extends Plugin {
 
 		// Fix indentation of pasted items.
 		editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
+
+		this.listenTo( editor.model.document, 'change:data', handleDataChange( editor.model, editor.editing.mapper ) );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
@@ -239,126 +247,62 @@ function getViewListItemLength( element ) {
 	return length;
 }
 
-function listItemWrap( model ) {
+function listItemWrap() {
 	const consumer = createAttributesConsumer( { attributes: [ 'listType', 'listIndent' ] } );
-	const listItemsMap = new WeakMap();
 
-	return ( evt, data, conversionApi ) => {
-		let listItem;
-
-		if ( evt.name == 'remove:listItem' ) {
-			listItem = data.position.nodeBefore;
-
-			if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
-				listItem = data.position.nodeAfter;
-
-				if ( !listItem || !listItem.is( 'element', 'listItem' ) ) {
-					return;
-				}
-			}
-		} else {
-			listItem = data.item;
-		}
-
-		if ( listItem.is( 'selection' ) ) {
+	return ( evt, data, { writer, mapper, consumable } ) => {
+		if ( data.item.is( 'selection' ) ) {
 			return;
 		}
 
-		// Verify if attributes were not already consumed.
-		if ( !consumer( listItem, conversionApi.consumable, { preflight: true } ) ) {
-			return;
-		}
-
-		const viewWriter = conversionApi.writer;
-		const listItems = [ listItem ];
-
-		// Find following nested list items and repack them on the list type change.
-		if (
-			evt.name == 'attribute:listType:listItem' ||
-			evt.name == 'remove:listItem' ||
-			evt.name == 'insert:listItem'
-		) {
-			const listIndent = listItem.getAttribute( 'listIndent' );
-			let currentListItem = listItems[ 0 ].nextSibling;
-
-			while (
-				currentListItem &&
-				currentListItem.is( 'element', 'listItem' ) &&
-				currentListItem.getAttribute( 'listIndent' ) > listIndent &&
-				conversionApi.mapper.toViewElement( currentListItem )
-			) {
-				// Verify if attributes were not already consumed.
-				if ( !consumer( currentListItem, conversionApi.consumable, { preflight: true } ) ) {
-					return;
-				}
-
-				listItems.push( currentListItem );
-				currentListItem = currentListItem.nextSibling;
-			}
-		}
+		const listItem = data.item;
 
 		// Consume attributes on the converted items.
-		for ( const item of listItems ) {
-			consumer( item, conversionApi.consumable );
+		if ( !consumer( listItem, consumable ) ) {
+			return;
 		}
 
+		const viewElement = mapper.toViewElement( listItem );
+
 		// First, unwrap the item from current list wrappers.
-		for ( const listItem of listItems ) {
-			let viewRange = conversionApi.mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+		let attributeElement = viewElement.parent;
 
-			if ( listItemsMap.has( listItem ) ) {
-				const listItemMap = listItemsMap.get( listItem );
+		while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
+			const parentElement = attributeElement.parent;
 
-				for ( let indent = listItemMap.length - 1; indent >= 0; indent-- ) {
-					const { listItemId, listType } = listItemMap[ indent ];
+			writer.unwrap( writer.createRangeOn( viewElement ), attributeElement );
 
-					const listItemViewElement = createListItemElement( viewWriter, indent, listItemId );
-					const listViewElement = createListElement( viewWriter, indent, listType );
-
-					viewRange = viewWriter.unwrap( viewRange, listViewElement );
-					viewRange = viewWriter.unwrap( viewRange, listItemViewElement );
-				}
-			}
+			attributeElement = parentElement;
 		}
 
 		// Then wrap them with the new list wrappers.
-		for ( const listItem of listItems ) {
-			let viewRange = conversionApi.mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
-			const listItemIndent = listItem.getAttribute( 'listIndent' );
+		const listItemIndent = listItem.getAttribute( 'listIndent' );
 
-			if ( listItemIndent !== null ) {
-				const listItemMap = [];
+		if ( listItemIndent === null ) {
+			return;
+		}
 
-				let listItemId = uid();
-				let listType = listItem.getAttribute( 'listType' );
+		let viewRange = writer.createRangeOn( viewElement );
 
-				let currentListItem = listItem;
+		let listItemId = viewElement.getCustomProperty( 'listItemId' );
+		let listType = listItem.getAttribute( 'listType' );
+		let currentListItem = listItem;
 
-				for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-					// const listItemId = currentListItem.getAttribute( 'listItemId' );
-					// const listType = currentListItem.getAttribute( 'listType' );
+		for ( let indent = listItemIndent; indent >= 0; indent-- ) {
+			const listItemViewElement = createListItemElement( writer, indent, listItemId );
+			const listViewElement = createListElement( writer, indent, listType );
 
-					if ( listItem != currentListItem ) {
-						const levels = listItemsMap.get( currentListItem );
+			viewRange = writer.wrap( viewRange, listItemViewElement );
+			viewRange = writer.wrap( viewRange, listViewElement );
 
-						listItemId = levels[ levels.length - 1 ].listItemId;
-						listType = levels[ levels.length - 1 ].listType;
-					}
-
-					listItemMap[ indent ] = { listItemId, listType };
-
-					const listItemViewElement = createListItemElement( viewWriter, indent, listItemId );
-					const listViewElement = createListElement( viewWriter, indent, listType );
-
-					viewRange = viewWriter.wrap( viewRange, listItemViewElement );
-					viewRange = viewWriter.wrap( viewRange, listViewElement );
-
-					currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
-				}
-
-				// Store the list of wrappers so they could be later easily unwrapped.
-				listItemsMap.set( listItem, listItemMap );
+			if ( indent == 0 ) {
+				break;
 			}
+
+			currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
+
+			listItemId = mapper.toViewElement( currentListItem ).getCustomProperty( 'listItemId' );
+			listType = currentListItem.getAttribute( 'listType' );
 		}
 	};
 }
@@ -400,3 +344,57 @@ function createAttributesConsumer( model ) {
 	};
 }
 
+function handleDataChange( model, mapper ) {
+	return () => {
+		const changes = model.document.differ.getChanges();
+
+		for ( const entry of changes ) {
+			let position = null;
+
+			if ( entry.type == 'insert' && entry.name == 'listItem' ) {
+				position = entry.position.getShiftedBy( entry.length );
+			} else if ( entry.type == 'remove' && entry.name == 'listItem' ) {
+				position = entry.position;
+			} else if ( entry.type == 'attribute' && [ 'listType', 'listIndent' ].includes( entry.attributeKey ) ) {
+				position = entry.range.start.getShiftedBy( 1 );
+			}
+
+			if ( !position ) {
+				continue;
+			}
+
+			const nodeBefore = position.nodeBefore;
+			const nodeAfter = position.nodeAfter;
+
+			if ( !nodeBefore || !nodeBefore.is( 'element', 'listItem' ) ) {
+				continue;
+			}
+
+			if ( !nodeAfter || !nodeAfter.is( 'element', 'listItem' ) ) {
+				continue;
+			}
+
+			const indent = entry.type == 'remove' ?
+				entry.attributes.get( 'listIndent' ) :
+				nodeBefore.getAttribute( 'listIndent' );
+
+			for (
+				let currentNode = nodeAfter;
+				currentNode && currentNode.is( 'element', 'listItem' );
+				currentNode = currentNode.nextSibling
+			) {
+				if ( currentNode.getAttribute( 'listIndent' ) <= indent ) {
+					break;
+				}
+
+				if ( !mapper.toViewElement( currentNode ) ) {
+					continue;
+				}
+
+				// TODO this could trigger refreshAttribute( currentNode, 'listIndent' )
+				model.document.differ.refreshItem( currentNode );
+				console.log( '-- refresh item', currentNode.getChild( 0 ).data );
+			}
+		}
+	};
+}
