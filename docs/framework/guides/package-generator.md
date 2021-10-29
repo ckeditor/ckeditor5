@@ -67,7 +67,7 @@ An overview of the project's directory structure:
 │  │  └─ **/*.svg      # All icon files should be saved here.
 │  └─ **/*.css         # All CSS files should be saved here.
 │
-├─ .editorconfig       # https://editorconfig.org/
+├─ .editorconfig       # See https://editorconfig.org/ for details.
 ├─ .eslintrc.js        # Eslint configuration file.
 ├─ .gitattributes      # https://git-scm.com/docs/gitattributes
 ├─ .gitignore          # https://git-scm.com/docs/gitignore
