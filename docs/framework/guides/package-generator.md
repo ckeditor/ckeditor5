@@ -68,7 +68,7 @@ An overview of the project's directory structure:
 │  └─ **/*.css         # All CSS files should be saved here.
 │
 ├─ .editorconfig       # See https://editorconfig.org/ for details.
-├─ .eslintrc.js        # Eslint configuration file.
+├─ .eslintrc.js        # ESLint configuration file.
 ├─ .gitattributes      # See https://git-scm.com/docs/gitattributes for details.
 ├─ .gitignore          # See https://git-scm.com/docs/gitignore for details.
 ├─ .stylelintrc        # Stylelint configuration file.
