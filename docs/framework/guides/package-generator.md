@@ -127,7 +127,7 @@ Runs ESLint, which analyzes the code (all `*.js` files) to quickly find problems
 Examples:
 
 ```bash
-# Execute eslint.
+# Execute ESLint.
 npm run lint
 ```
 
@@ -173,9 +173,9 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 
 ## How to change ESLint configuration?
 
-To change ESLint config, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [eslint docs](https://eslint.org/docs/rules/).
+To change ESLint config, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [ESLint docs](https://eslint.org/docs/rules/).
 
-### Why the predefined ESLint rules are recommended ?
+### Why the predefined ESLint rules are recommended?
 
 To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages. To learn more, visit the {@link builds/guides/development/dll-builds DLL guide} and {@link framework/guides/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see detailed explanation} about the limitation.
 
