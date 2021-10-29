@@ -69,7 +69,7 @@ An overview of the project's directory structure:
 │
 ├─ .editorconfig       # See https://editorconfig.org/ for details.
 ├─ .eslintrc.js        # Eslint configuration file.
-├─ .gitattributes      # https://git-scm.com/docs/gitattributes
+├─ .gitattributes      # See https://git-scm.com/docs/gitattributes for details.
 ├─ .gitignore          # https://git-scm.com/docs/gitignore
 ├─ .stylelintrc        # Stylelint configuration file.
 ├─ LICENSE.md          # All packages created with the tool are available under the MIT license.
