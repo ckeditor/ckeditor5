@@ -26,11 +26,13 @@
 				{
 					"elements": "div",
 					"attributes": "data-oembed-url",
+					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
 				},
 				{
 					"elements": "*",
 					"attributes": "url",
+					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned off, the plugin can be configured to return any element name specified by `config.mediaEmbed.elementName`."
 				},
 				{
@@ -40,6 +42,7 @@
 						"padding-bottom",
 						"position"
 					],
+					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
 				},
 				{
@@ -56,6 +59,7 @@
 						"frameborder",
 						"src"
 					],
+					"isAlternative": true,
 					"_comment": "If `config.mediaEmbed.previewsInData` is turned on, the media preview is displayed in the view."
 				},
 				{
@@ -63,6 +67,7 @@
 					"classes": "*",
 					"styles": "*",
 					"attributes": "*",
+					"isAlternative": true,
 					"_comment": "The plugin can be configured to return any element with any class, inline style, and attribute, via `config.mediaEmbed.providers` for previewable media."
 				}
 			]

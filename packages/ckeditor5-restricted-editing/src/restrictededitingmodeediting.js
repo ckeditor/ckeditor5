@@ -54,7 +54,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		 * @type {Set.<String>}
 		 * @private
 		 */
-		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingException', 'goToNextRestrictedEditingException' ] );
+		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
 
 		/**
 		 * Commands allowed in non-restricted areas.
@@ -241,7 +241,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const doc = model.document;
 
-		this._disableCommands( editor );
+		this._disableCommands();
 
 		this.listenTo( doc.selection, 'change', this._checkCommands.bind( this ) );
 		this.listenTo( doc, 'change:data', this._checkCommands.bind( this ) );
@@ -257,7 +257,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const selection = editor.model.document.selection;
 
 		if ( selection.rangeCount > 1 ) {
-			this._disableCommands( editor );
+			this._disableCommands();
 
 			return;
 		}
@@ -280,12 +280,21 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	_enableCommands( marker ) {
 		const editor = this.editor;
 
-		const commands = this._getCommandNamesToToggle( editor, this._allowedInException )
-			.filter( name => this._allowedInException.has( name ) )
-			.filter( filterDeleteCommandsOnMarkerBoundaries( editor.model.document.selection, marker.getRange() ) )
-			.map( name => editor.commands.get( name ) );
+		for ( const [ commandName, command ] of editor.commands ) {
+			if ( !command.affectsData || this._alwaysEnabled.has( commandName ) ) {
+				continue;
+			}
 
-		for ( const command of commands ) {
+			// Enable ony those commands that are allowed in the exception marker.
+			if ( !this._allowedInException.has( commandName ) ) {
+				continue;
+			}
+
+			// Do not enable 'delete' and 'deleteForward' commands on the exception marker boundaries.
+			if ( isDeleteCommandOnMarkerBoundaries( commandName, editor.model.document.selection, marker.getRange() ) ) {
+				continue;
+			}
+
 			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
@@ -297,24 +306,14 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	_disableCommands() {
 		const editor = this.editor;
-		const commands = this._getCommandNamesToToggle( editor )
-			.map( name => editor.commands.get( name ) );
 
-		for ( const command of commands ) {
+		for ( const [ commandName, command ] of editor.commands ) {
+			if ( !command.affectsData || this._alwaysEnabled.has( commandName ) ) {
+				continue;
+			}
+
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
-	}
-
-	/**
-	 * Returns command names that should be toggleable.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @returns {Array.<String>}
-	 * @private
-	 */
-	_getCommandNamesToToggle( editor ) {
-		return Array.from( editor.commands.names() )
-			.filter( name => !this._alwaysEnabled.has( name ) );
 	}
 }
 
@@ -357,24 +356,22 @@ function getSelectAllHandler( editor ) {
 	};
 }
 
-// Additional filtering rule for enabling "delete" and "deleteForward" commands if selection is on range boundaries:
+// Additional rule for enabling "delete" and "deleteForward" commands if selection is on range boundaries:
 //
 // Does not allow to enable command when selection focus is:
 // - is on marker start - "delete" - to prevent removing content before marker
 // - is on marker end - "deleteForward" - to prevent removing content after marker
-function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
-	return name => {
-		if ( name == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
-			return false;
-		}
-
-		// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
-		if ( name == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
-			return false;
-		}
-
+function isDeleteCommandOnMarkerBoundaries( commandName, selection, markerRange ) {
+	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
 		return true;
-	};
+	}
+
+	// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
+	if ( commandName == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
+		return true;
+	}
+
+	return false;
 }
 
 // Ensures that model.deleteContent() does not delete outside exception markers ranges.

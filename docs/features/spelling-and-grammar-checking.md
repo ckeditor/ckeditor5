@@ -2,6 +2,7 @@
 category: features
 menu-title: Spelling and grammar checking
 modified_at: 2021-05-07
+badges: [ premium ]
 ---
 
 # Proofreading, spelling and grammar checking

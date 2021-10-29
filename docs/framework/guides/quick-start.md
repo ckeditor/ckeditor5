@@ -10,7 +10,7 @@ This guide will show you how to initialize CKEditor 5 rich-text editor from sour
 ## How to install the framework?
 
 <info-box>
-	We are currently working on a [package generator](https://www.npmjs.com/package/ckeditor5-package-generator) that will automate the steps described in this guide. And you can test it already. Remember to [share your feedback](https://ckeditor.com/contact/) with us.
+	We are currently developing a [package generator](https://www.npmjs.com/package/ckeditor5-package-generator) that will automate the steps described in this guide. You can test it already. Remember to [share your feedback](https://ckeditor.com/contact/) with us.
 
 	Use the following command to create a new package:
 	```bash
