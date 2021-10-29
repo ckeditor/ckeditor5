@@ -189,7 +189,7 @@ npm run prepare
 
 To change eslint config, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [eslint docs](https://eslint.org/docs/rules/).
 
-## Why do we force using eslint (e.g. DLL limitations)?
+### Why the predefined ESLint rules are recommended ?
 
 To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages - [`More info here`](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/code-style.html#dll-builds-ckeditor5-rulesckeditor-imports).
 
