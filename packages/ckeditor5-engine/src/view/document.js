@@ -141,7 +141,8 @@ export default class Document {
 	 *
 	 * * adding or removing attribute from elements,
 	 * * changes inside of {@link module:engine/view/uielement~UIElement UI elements},
-	 * * {@link module:engine/model/differ~Differ#refreshItem marking some of the model elements to be re-converted}.
+	 * * {@link module:engine/controller/editingcontroller~EditingController#reconvertItem marking some of the model elements to be
+	 * re-converted}.
 	 *
 	 * Try to avoid changes which touch view structure:
 	 *
