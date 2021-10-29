@@ -144,7 +144,7 @@ npm run stylelint
 
 ### `dll:build`
 
-Creates a DLL-compatible package build which can be loaded into an editor using [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html).
+Creates a DLL-compatible package build which can be loaded into an editor using {@link builds/guides/development/dll-builds DLL builds}.
 
 Examples:
 
@@ -158,7 +158,7 @@ npm run dll:build -- --watch
 
 ### `dll:serve`
 
-Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor 5 [DLL builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html).
+Creates a simple HTTP server (without the live-reload mechanism) that allows verifying whether the DLL build of the package is compatible with the CKEditor 5 {@link builds/guides/development/dll-builds DLL builds}.
 
 Examples:
 
