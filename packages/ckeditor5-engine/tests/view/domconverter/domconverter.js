@@ -457,7 +457,7 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
 		} );
 
-		it( 'should reject certain attributes', () => {
+		it( 'should reject certain attributes in the editing pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'class', 'anything' ) ).to.be.true;
