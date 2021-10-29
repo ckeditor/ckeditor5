@@ -27,7 +27,7 @@ import DocumentSelection from './documentselection';
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -1047,7 +1047,14 @@ export default class Writer {
 		if ( !options ) {
 			this.model.markers._refresh( currentMarker );
 
-			throw 'ojezu';
+			/**
+			 * TODO
+			 *
+			 * @error writer-TODO
+			 */
+			logWarning( 'writer-TODO' );
+
+			return;
 		}
 
 		const hasUsingOperationDefined = typeof options.usingOperation == 'boolean';
