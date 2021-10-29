@@ -185,7 +185,7 @@ npm run prepare
 
 [npm Docs](https://docs.npmjs.com/cli/v7/using-npm/scripts#prepare-and-prepublish)
 
-## How to change eslint configuration?
+## How to change ESLint configuration?
 
 To change eslint config, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [eslint docs](https://eslint.org/docs/rules/).
 
