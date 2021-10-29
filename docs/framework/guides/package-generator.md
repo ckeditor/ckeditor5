@@ -191,7 +191,7 @@ To change eslint config, edit the [.eslintrc.js](https://github.com/ckeditor/cke
 
 ### Why the predefined ESLint rules are recommended ?
 
-To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages - [`More info here`](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/code-style.html#dll-builds-ckeditor5-rulesckeditor-imports).
+To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages - [see detailed explanation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/code-style.html#dll-builds-ckeditor5-rulesckeditor-imports).
 
 ## Publishing
 
