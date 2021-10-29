@@ -22,6 +22,7 @@ import {
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
@@ -151,6 +152,36 @@ export default class EditingController {
 	destroy() {
 		this.view.destroy();
 		this.stopListening();
+	}
+
+	/**
+	 * TODO
+	 */
+	reconvertMarker( markerOrName ) {
+		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
+		const currentMarker = this.model.markers.get( markerName );
+
+		if ( !currentMarker ) {
+			/**
+			 * Marker with provided name does not exists.
+			 *
+			 * @error editingcontroller-reconvertmarker-marker-not-exists
+			 */
+			throw new CKEditorError( 'editingcontroller-reconvertmarker-marker-not-exists', this );
+		}
+
+		this.model.change( () => {
+			this.model.markers._refresh( currentMarker );
+		} );
+	}
+
+	/**
+	 * TODO
+	 */
+	reconvertItem( item ) {
+		this.model.change( () => {
+			this.model.document.differ._refreshItem( item );
+		} );
 	}
 }
 

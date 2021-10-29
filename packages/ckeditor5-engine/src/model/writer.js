@@ -1047,7 +1047,7 @@ export default class Writer {
 		if ( !options ) {
 			this.model.markers._refresh( currentMarker );
 
-			return;
+			throw 'ojezu';
 		}
 
 		const hasUsingOperationDefined = typeof options.usingOperation == 'boolean';

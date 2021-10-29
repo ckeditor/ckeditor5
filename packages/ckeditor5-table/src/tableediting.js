@@ -193,8 +193,8 @@ export default class TableEditing extends Plugin {
 		injectTableCellParagraphPostFixer( model );
 
 		this.listenTo( model.document, 'change:data', () => {
-			tableHeadingsRefreshHandler( model, editor.editing.mapper );
-			tableCellRefreshHandler( model, editor.editing.mapper );
+			tableHeadingsRefreshHandler( model, editor.editing );
+			tableCellRefreshHandler( model, editor.editing );
 		} );
 	}
 }
