@@ -140,7 +140,7 @@ export default class Element extends Node {
 		this._isAllowedInsideAttributeElement = false;
 
 		/**
-		 * A (white) list of attribute names that should be rendered in the editing pipeline even though filtering mechanisms
+		 * A list of attribute names that should be rendered in the editing pipeline even though filtering mechanisms
 		 * implemented in the {@link module:engine/view/domconverter~DomConverter} (for instance,
 		 * {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute}) would filter them out.
 		 *
@@ -152,7 +152,7 @@ export default class Element extends Node {
 		 * @readonly
 		 * @member {Array.<String>}
 		 */
-		this._unsafeAttributes = [];
+		this._unsafeAttributesToRender = [];
 	}
 
 	/**
@@ -593,12 +593,11 @@ export default class Element extends Node {
 	 *
 	 * Unsafe attribute names can be specified when creating an element via {@link module:engine/view/downcastwriter~DowncastWriter}.
 	 *
-	 * @protected
 	 * @param {String} attributeName The name of the attribute to be checked.
 	 * @returns {Boolean}
 	 */
-	_shouldRenderUnsafeAttribute( attributeName ) {
-		return this._unsafeAttributes.includes( attributeName );
+	shouldRenderUnsafeAttribute( attributeName ) {
+		return this._unsafeAttributesToRender.includes( attributeName );
 	}
 
 	/**

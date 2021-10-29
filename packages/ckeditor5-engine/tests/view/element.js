@@ -1137,7 +1137,7 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( '_shouldRenderUnsafeAttribute()', () => {
+	describe( 'shouldRenderUnsafeAttribute()', () => {
 		let element;
 
 		beforeEach( () => {
@@ -1145,17 +1145,17 @@ describe( 'Element', () => {
 		} );
 
 		it( 'should return true if the atribute name is among unsafe attributes', () => {
-			element._unsafeAttributes = [ 'foo', 'bar', 'baz' ];
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
 
-			expect( element._shouldRenderUnsafeAttribute( 'foo' ) ).to.be.true;
-			expect( element._shouldRenderUnsafeAttribute( 'bar' ) ).to.be.true;
-			expect( element._shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'foo' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'bar' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 		} );
 
 		it( 'should return false if the atribute name is not among unsafe attributes', () => {
-			element._unsafeAttributes = [ 'foo', 'bar', 'baz' ];
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
 
-			expect( element._shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
+			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
 		} );
 	} );
 } );

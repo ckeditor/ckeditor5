@@ -124,7 +124,7 @@ describe( 'DowncastWriter', () => {
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			expect( element.priority ).to.equal( 99 );
 			expect( element.id ).to.equal( 'bar' );
-			expect( element._shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -154,7 +154,7 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.true;
-			expect( element._shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -174,7 +174,7 @@ describe( 'DowncastWriter', () => {
 				renderUnsafeAttributes: [ 'baz' ]
 			} );
 
-			expect( element._shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 		} );
 	} );
 
@@ -197,7 +197,7 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'emptyElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
-			expect( element._shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -276,7 +276,7 @@ describe( 'DowncastWriter', () => {
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
-			expect( element._shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
