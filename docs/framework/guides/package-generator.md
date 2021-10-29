@@ -173,7 +173,7 @@ Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/usi
 
 ## How to change ESLint configuration?
 
-To change eslint config, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [eslint docs](https://eslint.org/docs/rules/).
+To change ESLint config, edit the [.eslintrc.js](https://github.com/ckeditor/ckeditor5-package-generator/blob/master/.eslintrc.js) file. It is also a good idea to check out the [eslint docs](https://eslint.org/docs/rules/).
 
 ### Why the predefined ESLint rules are recommended ?
 
