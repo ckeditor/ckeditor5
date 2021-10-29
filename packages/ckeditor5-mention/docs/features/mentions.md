@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Mentions
+modified_at: 2021-10-20
 ---
 
 {@snippet features/build-mention-source}
@@ -140,6 +141,8 @@ A full, working demo with all possible customizations and its source code is ava
 
 ### Customizing the autocomplete list
 
+#### Styling
+
 The items displayed in the autocomplete list can be customized by defining the {@link module:mention/mention~MentionFeed `itemRenderer`} callback.
 
 This callback takes a feed item (it contains at least the `name` property) and must return a new DOM element.
@@ -177,6 +180,30 @@ function customItemRenderer( item ) {
 
 	return itemElement;
 }
+```
+
+A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
+
+#### List length
+
+The number of items displayed in the autocomplete list can be customized by defining the {@link module:mention/mention~MentionConfig#dropdownLimit `dropdownLimit`} option.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, ... ],
+		mention: {
+			feeds: [
+				{
+					// Define the custom number of visible mentions.
+					dropdownLimit: 4
+					feed: [ ... ]
+				}
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
 ```
 
 A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
@@ -282,6 +309,7 @@ Below is an example of a customized mention feature that:
 * Uses a feed of items with additional properties (`id`, `username`, `link`).
 * Renders custom item views in the autocomplete panel.
 * Converts a mention to an `<a>` element instead of a `<span>`.
+* Limits a number of mentions to 4 elements.
 
 {@snippet features/mention-customization}
 
@@ -292,6 +320,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
 		plugins: [ Mention, MentionCustomization, ... ],
 		mention: {
+			dropdownLimit: 4,
 			feeds: [
 				{
 					marker: '@',

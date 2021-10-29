@@ -29,6 +29,16 @@ export default class SelectAllCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	execute() {
 		const model = this.editor.model;
 		const selection = model.document.selection;

@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Math and chemical formulas
+badges: [ premium ]
 ---
 
 # Math equations and chemical formulas

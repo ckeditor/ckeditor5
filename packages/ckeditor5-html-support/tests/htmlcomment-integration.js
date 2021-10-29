@@ -389,13 +389,13 @@ describe( 'HtmlComment integration', () => {
 				'<figure class="image">' +
 					'<img src="/assets/sample.png" alt="Example image">' +
 					'<!-- c3 -->' +
-					'<!-- c6 -->' +
 					'<!-- c2 -->' +
 					'<figcaption>' +
 						'<!-- c4 -->' +
 						'image caption' +
 						'<!-- c5 -->' +
 					'</figcaption>' +
+					'<!-- c6 -->' +
 				'</figure>' +
 				'<!-- c7 -->'
 			);

@@ -862,6 +862,31 @@ describe( 'MediaEmbedEditing', () => {
 									'<oembed url="https://preview-less"></oembed>' +
 								'</figure>' );
 						} );
+
+						it( 'should output unfiltered data', () => {
+							const provider = {
+								name: 'test',
+								url: 'foo.com',
+								html: () => {
+									return '<div onclick="action()">foo</div>';
+								}
+							};
+
+							return createTestEditor( {
+								providers: [ provider ],
+								previewsInData: true
+							} )
+								.then( editor => {
+									setModelData( editor.model, '<media url="https://foo.com"></media>' );
+
+									expect( editor.getData() ).to.equal(
+										'<figure class="media">' +
+											'<div data-oembed-url="https://foo.com">' +
+												'<div onclick="action()">foo</div>' +
+											'</div>' +
+										'</figure>' );
+								} );
+						} );
 					} );
 
 					describe( 'view to model', () => {
@@ -1021,6 +1046,37 @@ describe( 'MediaEmbedEditing', () => {
 				} );
 
 				test();
+			} );
+
+			it( 'should apply filtering to the output', () => {
+				const provider = {
+					name: 'test',
+					url: 'foo.com',
+					html: () => {
+						return '<div onclick="action()">foo</div>';
+					}
+				};
+
+				return createTestEditor( {
+					providers: [
+						provider
+					]
+				} ).then( editor => {
+					editor.editing.view.domConverter.experimentalRenderingMode = true;
+					editor.setData( '<figure class="media"><div data-oembed-url="foo.com"></div></figure>' );
+
+					expect( getViewData( editor.editing.view, {
+						withoutSelection: true,
+						renderRawElements: true,
+						domConverter: editor.editing.view.domConverter
+					} ) ).to.equal(
+						'<figure class="ck-widget media" contenteditable="false">' +
+							'<div class="ck-media__wrapper" data-oembed-url="https://foo.com">' +
+								'<div>foo</div>' +
+							'</div>' +
+						'</figure>'
+					);
+				} );
 			} );
 
 			function test() {

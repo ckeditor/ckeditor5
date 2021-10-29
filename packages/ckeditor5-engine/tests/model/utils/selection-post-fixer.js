@@ -1410,6 +1410,24 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
+			it( 'should fix #4 (selection inside limit element that doesn\'t allow text)', () => {
+				setModelData( model, '<imageBlock>[]</imageBlock>' );
+
+				assertEqualMarkup( getModelData( model ),
+					'[<imageBlock></imageBlock>]'
+				);
+			} );
+
+			it( 'should fix #5 (selection inside limit element that doesn\'t allow text - closest ancestor)', () => {
+				setModelData( model,
+					'<table><tableRow><tableCell><imageBlock>[]</imageBlock></tableCell></tableRow></table>'
+				);
+
+				assertEqualMarkup( getModelData( model ),
+					'<table><tableRow><tableCell>[<imageBlock></imageBlock>]</tableCell></tableRow></table>'
+				);
+			} );
+
 			it( 'should fix multiple ranges outside block element (but not merge them)', () => {
 				setModelData( model,
 					'[]<paragraph>foo</paragraph>[]' +

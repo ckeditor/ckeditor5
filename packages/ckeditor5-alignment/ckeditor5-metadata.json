@@ -22,6 +22,7 @@
 				{
 					"elements": "$block",
 					"classes": "*",
+					"isAlternative": true,
 					"_comment": "If `config.alignment.options` is set, these classes are used for alignment instead of inline styles."
 				}
 			]
