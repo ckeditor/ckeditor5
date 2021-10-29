@@ -73,7 +73,7 @@ An overview of the project's directory structure:
 ├─ .gitignore          # See https://git-scm.com/docs/gitignore for details.
 ├─ .stylelintrc        # Stylelint configuration file.
 ├─ LICENSE.md          # All packages created with the tool are available under the MIT license.
-├─ package.json        # https://docs.npmjs.com/cli/v7/configuring-npm/package-json
+├─ package.json        # See https://docs.npmjs.com/cli/v7/configuring-npm/package-json for details.
 └─ README.md           # Description of your project and usage instructions.
 ```
 
