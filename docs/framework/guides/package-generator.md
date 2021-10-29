@@ -169,21 +169,7 @@ npm run dll:serve
 
 ### `prepare` and `prepublishOnly`
 
-If you need to perform operations on your package before it is used, in a way that is not dependent on the operating system or architecture of the target system, use a `prepare` script. This includes tasks such as:
-
-* Creating minified versions of JavaScript source code.
-* Fetching remote resources that your package will use.
-
-Examples:
-
-```bash
-#
-npm run prepare
-```
-
-> Since `npm@1.1.71`, the npm CLI has run the `prepublish` script for both `npm publish` and `npm install`, because it's a convenient way to prepare a package for use (some common use cases are described in the section below). It has also turned out to be, in practice, very confusing. As of `npm@4.0.0`, a new event has been introduced, `prepare`, that preserves this existing behavior. A new event, `prepublishOnly` has been added as a transitional strategy to allow users to avoid the confusing behavior of existing npm versions and only run on `npm publish` (for instance, running the tests one last time to ensure they're in good shape).
-
-[npm Docs](https://docs.npmjs.com/cli/v7/using-npm/scripts#prepare-and-prepublish)
+Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/using-npm/scripts#life-cycle-scripts) that allow performing operations on your package before it is published. In the context of the generated package, they just create a DLL-compatible package build.
 
 ## How to change ESLint configuration?
 
