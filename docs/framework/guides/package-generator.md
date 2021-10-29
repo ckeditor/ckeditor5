@@ -191,74 +191,11 @@ To change eslint config, edit the [.eslintrc.js](https://github.com/ckeditor/cke
 
 ### Why the predefined ESLint rules are recommended ?
 
-To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages - [see detailed explanation](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/code-style.html#dll-builds-ckeditor5-rulesckeditor-imports).
-
-## Publishing
-
-After generating the changelog, you are ready for publishing packages.
-
-First, you need to bump their versions:
-
-```bash
-npm run release:bump-version
-```
-
-You can also use the `--dry-run` option to see what this task does.
-
-After bumping versions, you can publish changes:
-
-```bash
-npm run release:publish
-```
-
-As in the previous task, the `--dry-run` option is also available.
-
-## DLL – what is it and why does it exist?
-
-The purpose of a DLL build is to allow adding plugins to an editor build without having to rebuild (recompile) the build itself.
-
-So far, the two most common integration methods included:
-
-* Using pre-compiled builds. This can be either one of the official builds or a custom build. In this case, adding a plugin requires recompiling the entire build.
-* Integrating the editor from source. In this case, if you want to add a plugin, your application needs to be recompiled.
-
-In some advanced use cases, the list of available plugins cannot be limited &mdash; it should be possible to add plugins without any access to Node.js. In other words, plugins should be built (compiled) separately from the editor's core.
-
-This is where the DLL builds come to the rescue.
-
-DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plugin/) plugin that provides a CKEditor 5 **base DLL** and a set of **[DLL consumer plugins](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin)**.
-
-Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this integration method requires creating it on your own, based on the tools available in the {@link framework/guides/contributing/development-environment CKEditor 5 development environment}.
-
-Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp; if you are interested in this functionality).
-
-For more info on DLL builds, [visit the docs page](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html).
+To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages. To learn more, visit the {@link builds/guides/development/dll-builds DLL guide} and {@link framework/guides/contributing/code-style#dll-builds-ckeditor5-rulesckeditor-imports see detailed explanation} about the limitation.
 
 ## Translations
 
-All CKEditor 5 WYSIWYG editor features support message localization. It means that the user interface of any feature can be translated into various languages and regions depending on the user's preferences.
-
-CKEditor 5 translation system is open to third-party plugins. Any custom features that you introduce can be localized. The system also provides a way to add missing or overwrite existing translations and supports translating plural forms.
-
-For more info on translations, [visit the docs page](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/deep-dive/ui/localization.html).
-
-## Developing tools in the repository
-
-When creating a new package with the `--dev` option, the local version of the `@ckeditor/ckeditor5-package-tools` will be installed instead of its npm version.
-
-However, applying changes in the local repository does not impact an already created package. Hence, you need to create a [link](https://docs.npmjs.com/cli/link/) between the local repository and the new package.
-
-```bash
-# The assumption here is your current working directory points to the root directory in the repository.
-cd packages/ckeditor5-package-tools
-npm link
-
-# Then, go to the newly created package.
-cd /path/to/new/package/ckeditor5-foo
-npm link @ckeditor/ckeditor5-package-tools
-```
-
-Now, the newly created package uses changes from the local repository.
+Packages created by this tool, just like the entirety of the CKEditor 5 ecosystem include full support for localization. If you wish to include translations for your package, {@link framework/guides/deep-dive/localization visit the docs page} and learn more.
 
 ## Reporting issues
 
