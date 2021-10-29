@@ -50,7 +50,7 @@ An overview of the project's directory structure:
 
 ```plain-text
 ├─ sample
-│  ├─ dll.html         # The editor initialized using the DLL builds. Check README for details.
+│  ├─ dll.html         # The editor initialized using the DLL builds.
 │  ├─ index.html       # The sample file.
 │  └─ ckeditor.js      # The editor initialization script.
 ├─ src
