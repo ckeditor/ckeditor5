@@ -1031,6 +1031,7 @@ export default class Writer {
 			 * instead.
 			 *
 			 * @error writer-updatemarker-reconvert-using-editingcontroller
+			 * @param {String} markerName The name of the updated marker.
 			 */
 			logWarning( 'writer-updatemarker-reconvert-using-editingcontroller', { markerName } );
 

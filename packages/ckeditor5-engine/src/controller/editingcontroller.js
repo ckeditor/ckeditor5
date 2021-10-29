@@ -196,6 +196,7 @@ export default class EditingController {
 			 * The marker with provided name does not exist and cannot be reconverted.
 			 *
 			 * @error editingcontroller-reconvertmarker-marker-not-exist
+			 * @param {String} markerName The name of the reconverted marker.
 			 */
 			throw new CKEditorError( 'editingcontroller-reconvertmarker-marker-not-exist', this, { markerName } );
 		}
