@@ -27,6 +27,17 @@ describe( 'FindCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		it( 'sets public properties', () => {
+			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).to.have.property( 'affectsData', false );
+		} );
+
+		it( 'sets state property', () => {
+			expect( command ).to.have.property( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
+		} );
+	} );
+
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
 			setData( model, '[]' );
@@ -53,12 +64,6 @@ describe( 'FindCommand', () => {
 			editor.isReadOnly = false;
 
 			expect( command.isEnabled ).to.be.true;
-		} );
-	} );
-
-	describe( 'state', () => {
-		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
