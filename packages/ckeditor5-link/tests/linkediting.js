@@ -1040,7 +1040,7 @@ describe( 'LinkEditing', () => {
 				expect( eventPreventDefault.calledOnce ).to.be.true;
 			} );
 
-			it( 'should now follow the link if "a" element doesn\'t have "href" attribute', () => {
+			it( 'should not follow the link if "a" element doesn\'t have "href" attribute', () => {
 				editor.conversion.attributeToElement( {
 					model: 'customLink',
 					view: 'a'
