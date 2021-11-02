@@ -356,41 +356,39 @@ export default class BalloonToolbar extends Plugin {
 	 */
 	_getBalloonPositions( isBackward ) {
 		const isSafariIniOS = env.isSafari && env.isiOS;
-		let generatedPositions;
 
-		if ( isSafariIniOS ) {
-			generatedPositions = generatePositions( {
-				// 20px when zoomed out.
-				// Less when zoomed in.
-				// No less than the default v-offsset, though.
-				verticalOffset: Math.max( BalloonPanelView.arrowVerticalOffset, 20 / global.window.visualViewport.scale )
-			} );
-		} else {
-			generatedPositions = generatePositions();
-		}
+		// https://github.com/ckeditor/ckeditor5/issues/7707
+		const positions = isSafariIniOS ? generatePositions( {
+			// 20px when zoomed out. Less then 20px when zoomed in; the "radius" of the native selection handle gets
+			// smaller as the user zooms in. No less than the default v-offset, though.
+			verticalOffset: Math.max(
+				BalloonPanelView.arrowVerticalOffset,
+				Math.round( 20 / global.window.visualViewport.scale )
+			)
+		} ) : BalloonPanelView.defaultPositions;
 
 		return isBackward ? [
-			generatedPositions.northWestArrowSouth,
-			generatedPositions.northWestArrowSouthWest,
-			generatedPositions.northWestArrowSouthEast,
-			generatedPositions.northWestArrowSouthMiddleEast,
-			generatedPositions.northWestArrowSouthMiddleWest,
-			generatedPositions.southWestArrowNorth,
-			generatedPositions.southWestArrowNorthWest,
-			generatedPositions.southWestArrowNorthEast,
-			generatedPositions.southWestArrowNorthMiddleWest,
-			generatedPositions.southWestArrowNorthMiddleEast
+			positions.northWestArrowSouth,
+			positions.northWestArrowSouthWest,
+			positions.northWestArrowSouthEast,
+			positions.northWestArrowSouthMiddleEast,
+			positions.northWestArrowSouthMiddleWest,
+			positions.southWestArrowNorth,
+			positions.southWestArrowNorthWest,
+			positions.southWestArrowNorthEast,
+			positions.southWestArrowNorthMiddleWest,
+			positions.southWestArrowNorthMiddleEast
 		] : [
-			generatedPositions.southEastArrowNorth,
-			generatedPositions.southEastArrowNorthEast,
-			generatedPositions.southEastArrowNorthWest,
-			generatedPositions.southEastArrowNorthMiddleEast,
-			generatedPositions.southEastArrowNorthMiddleWest,
-			generatedPositions.northEastArrowSouth,
-			generatedPositions.northEastArrowSouthEast,
-			generatedPositions.northEastArrowSouthWest,
-			generatedPositions.northEastArrowSouthMiddleEast,
-			generatedPositions.northEastArrowSouthMiddleWest
+			positions.southEastArrowNorth,
+			positions.southEastArrowNorthEast,
+			positions.southEastArrowNorthWest,
+			positions.southEastArrowNorthMiddleEast,
+			positions.southEastArrowNorthMiddleWest,
+			positions.northEastArrowSouth,
+			positions.northEastArrowSouthEast,
+			positions.northEastArrowSouthWest,
+			positions.northEastArrowSouthMiddleEast,
+			positions.northEastArrowSouthMiddleWest
 		];
 	}
 }
