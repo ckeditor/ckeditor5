@@ -750,7 +750,8 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
  *
- * Default positioning functions with customized offsets can be generated using {@link module:utils/dom/position~generatePositions}.
+ * Default positioning functions with customized offsets can be generated using
+ * {@link module:ui/panel/balloon/balloonpanelview~generatePositions}.
  *
  * The name that the position function returns will be reflected in the balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
