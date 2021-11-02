@@ -2,6 +2,7 @@
 menu-title: Using package generator
 category: framework-guides
 order: 35
+modified_at: 2021-11-01
 ---
 
 # Using package generator
