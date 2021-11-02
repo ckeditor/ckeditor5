@@ -79,22 +79,13 @@ export default class ListEditing extends Plugin {
 		editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
 
 		// editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
-		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+		// data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
+
+		data.mapper.on( 'modelToViewPosition', modelToDataViewPosition() );
 
 		// editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 		// editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
-		data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
-
-		// editor.conversion.for( 'editingDowncast' )
-		// 	.add( dispatcher => {
-		// 		dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-		// 		dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
-		// 		dispatcher.on( 'attribute:listType:listItem', modelViewChangeType, { priority: 'high' } );
-		// 		dispatcher.on( 'attribute:listType:listItem', modelViewMergeAfterChangeType, { priority: 'low' } );
-		// 		dispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent( editor.model ) );
-		// 		dispatcher.on( 'remove:listItem', modelViewRemove( editor.model ) );
-		// 		dispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-		// 	} );
+		// data.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
@@ -110,18 +101,15 @@ export default class ListEditing extends Plugin {
 				}
 			} )
 			.add( dispatcher => {
-				const converter = listItemWrap( editor.model );
+				const converter = listItemWrap();
 
 				dispatcher.on( 'attribute:listIndent:listItem', converter );
 				dispatcher.on( 'attribute:listType:listItem', converter );
-				// dispatcher.on( 'insert:listItem', converter, { priority: 'low' } );
-				// dispatcher.on( 'remove:listItem', converter, { priority: 'lowest' } );
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.add( dispatcher => {
-				dispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-				dispatcher.on( 'insert:listItem', modelViewInsertion( editor.model ) );
+				dispatcher.on( 'insert:listItem', listItemWrap( { dataPipeline: true } ) );
 			} );
 
 		editor.conversion.for( 'upcast' )
@@ -247,10 +235,11 @@ function getViewListItemLength( element ) {
 	return length;
 }
 
-function listItemWrap() {
+function listItemWrap( { dataPipeline } = {} ) {
 	const consumer = createAttributesConsumer( { attributes: [ 'listType', 'listIndent' ] } );
+	const listItemsIds = new WeakMap();
 
-	return ( evt, data, { writer, mapper, consumable } ) => {
+	return ( evt, data, { writer, mapper, consumable, convertChildren } ) => {
 		if ( data.item.is( 'selection' ) ) {
 			return;
 		}
@@ -262,17 +251,38 @@ function listItemWrap() {
 			return;
 		}
 
-		const viewElement = mapper.toViewElement( listItem );
+		let viewElement = mapper.toViewElement( listItem );
+		let viewRange;
 
-		// First, unwrap the item from current list wrappers.
-		let attributeElement = viewElement.parent;
+		if ( viewElement ) {
+			// First, unwrap the item from current list wrappers.
+			let attributeElement = viewElement.parent;
 
-		while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
-			const parentElement = attributeElement.parent;
+			while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
+				const parentElement = attributeElement.parent;
 
-			writer.unwrap( writer.createRangeOn( viewElement ), attributeElement );
+				writer.unwrap( writer.createRangeOn( viewElement ), attributeElement );
 
-			attributeElement = parentElement;
+				attributeElement = parentElement;
+			}
+
+			viewRange = writer.createRangeOn( viewElement );
+		} else if ( dataPipeline && evt.name == 'insert:listItem' ) {
+			if ( !consumable.consume( data.item, evt.name ) ) {
+				return;
+			}
+
+			viewElement = writer.createContainerElement( '$slot', null, { isAllowedInsideAttributeElement: true } );
+
+			const viewPosition = mapper.toViewPosition( data.range.start );
+
+			mapper.bindElements( data.item, viewElement );
+			writer.insert( viewPosition, viewElement );
+
+			convertChildren( data.item );
+
+			viewRange = writer.move( writer.createRangeIn( viewElement ), viewPosition );
+			writer.remove( viewElement );
 		}
 
 		// Then wrap them with the new list wrappers.
@@ -282,9 +292,12 @@ function listItemWrap() {
 			return;
 		}
 
-		let viewRange = writer.createRangeOn( viewElement );
+		let listItemId = viewElement && ( viewElement.getCustomProperty( 'listItemId' ) || listItemsIds.get( listItem ) );
 
-		let listItemId = viewElement.getCustomProperty( 'listItemId' );
+		if ( !listItemId ) {
+			listItemsIds.set( listItem, listItemId = uid() );
+		}
+
 		let listType = listItem.getAttribute( 'listType' );
 		let currentListItem = listItem;
 
@@ -301,7 +314,7 @@ function listItemWrap() {
 
 			currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
 
-			listItemId = mapper.toViewElement( currentListItem ).getCustomProperty( 'listItemId' );
+			listItemId = mapper.toViewElement( currentListItem ).getCustomProperty( 'listItemId' ) || listItemsIds.get( currentListItem );
 			listType = currentListItem.getAttribute( 'listType' );
 		}
 	};
@@ -344,6 +357,38 @@ function createAttributesConsumer( model ) {
 	};
 }
 
+function modelToDataViewPosition() {
+	return ( evt, data ) => {
+		if ( data.isPhantom || data.viewPosition ) {
+			return;
+		}
+
+		const modelItem = data.modelPosition.nodeBefore;
+
+		if ( !modelItem || !modelItem.is( 'element', 'listItem' ) ) {
+			return;
+		}
+
+		let offset = 0;
+
+		for ( const item of data.modelPosition.parent.getChildren() ) {
+			if ( item.is( 'element', 'listItem' ) ) {
+				offset += item.maxOffset;
+			} else {
+				offset += item.offsetSize;
+			}
+
+			if ( item == modelItem ) {
+				break;
+			}
+		}
+
+		const viewParent = data.mapper.toViewElement( data.modelPosition.parent );
+
+		data.viewPosition = data.mapper.findPositionIn( viewParent, offset );
+	};
+}
+
 function handleDataChange( model, mapper ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
@@ -383,7 +428,10 @@ function handleDataChange( model, mapper ) {
 				currentNode && currentNode.is( 'element', 'listItem' );
 				currentNode = currentNode.nextSibling
 			) {
-				if ( currentNode.getAttribute( 'listIndent' ) <= indent ) {
+				if (
+					currentNode.getAttribute( 'listIndent' ) <= indent && entry.attributeKey != 'listIndent' ||
+					currentNode.getAttribute( 'listIndent' ) < indent
+				) {
 					break;
 				}
 
