@@ -85,6 +85,7 @@ Guides for developing some files:
 * [.gitignore](https://git-scm.com/docs/gitignore)
 * {@link framework/guides/contributing/package-metadata ckeditor5-metadata.json}
 * [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
+
 ## Npm scripts
 
 Npm scripts are a convenient way to provide commands in a project. They are defined in the `package.json` file and shared with other people contributing to the project. It ensures that developers use the same command with the same options (flags).
