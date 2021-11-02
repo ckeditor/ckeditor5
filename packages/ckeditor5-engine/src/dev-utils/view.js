@@ -67,8 +67,8 @@ const domConverterStub = {
  * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~RawElement} will be printed.
  * @param {Object} [options.domConverter=null] When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
- * instance it lets the conversion go through exactly the same flow the editing view is going, i.e. with view data
- * filtering. Otherwise the simple stub is used.
+ * instance, it lets the conversion go through exactly the same flow the editing view is going through,
+ * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns {String} The stringified data.
  */
 export function getData( view, options = {} ) {
@@ -253,8 +253,8 @@ setData._parse = parse;
  * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~RawElement} will be printed.
  * @param {Object} [options.domConverter={}] When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
- * instance it lets the conversion go through exactly the same flow the editing view is going, i.e. with view data
- * filtering. Otherwise the simple stub is used.
+ * instance, it lets the conversion go through exactly the same flow the editing view is going through,
+ * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns {String} An HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -645,8 +645,8 @@ class ViewStringify {
 	 * {@link module:engine/view/uielement~UIElement} will be printed.
 	 * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
 	 * @param {Object} [options.domConverter={}] When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
-	 * instance it lets the conversion go through exactly the same flow the editing view is going, i.e. with view data
-	 * filtering. Otherwise the simple stub is used.
+	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
+	 * i.e. with view data filtering. Otherwise the simple stub is used.
 	 * {@link module:engine/view/rawelement~RawElement} will be printed.
 	 */
 	constructor( root, selection, options ) {

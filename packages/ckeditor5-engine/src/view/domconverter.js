@@ -73,6 +73,14 @@ export default class DomConverter {
 		this.renderingMode = options.renderingMode || 'editing';
 
 		/**
+		 * Main switch for new rendering approach in the editing view.
+		 *
+		 * @protected
+		 * @member {Boolean}
+		 */
+		this.experimentalRenderingMode = false;
+
+		/**
 		 * The mode of a block filler used by the DOM converter.
 		 *
 		 * @member {'br'|'nbsp'|'markedNbsp'} module:engine/view/domconverter~DomConverter#blockFillerMode
@@ -234,14 +242,14 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Decides whether given pair of attribute key and value should be passed further down the pipeline.
+	 * Decides whether a given pair of attribute key and value should be passed further down the pipeline.
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
 	 * @returns {Boolean}
 	 */
 	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( this.renderingMode === 'data' ) {
+		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
 			return true;
 		}
 
@@ -259,7 +267,7 @@ export default class DomConverter {
 	 */
 	setContentOf( domElement, html ) {
 		// For data pipeline we pass the HTML as-is.
-		if ( this.renderingMode === 'data' ) {
+		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
 			domElement.innerHTML = html;
 
 			return;
@@ -377,11 +385,9 @@ export default class DomConverter {
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
 
-					if ( !this.shouldRenderAttribute( key, value ) ) {
-						continue;
+					if ( this.shouldRenderAttribute( key, value ) || viewNode.shouldRenderUnsafeAttribute( key ) ) {
+						domElement.setAttribute( key, value );
 					}
-
-					domElement.setAttribute( key, value );
 				}
 			}
 
@@ -1471,18 +1477,18 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Checks whether given element name should be renamed in a current rendering mode.
+	 * Checks whether a given element name should be renamed in a current rendering mode.
 	 *
 	 * @private
 	 * @param {String} elementName The name of view element.
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.renderingMode == 'editing' && elementName == 'script';
+		return this.experimentalRenderingMode && this.renderingMode == 'editing' && elementName == 'script';
 	}
 
 	/**
-	 * Return a <span> element with special attribute holding the name of the original element.
+	 * Return a <span> element with a special attribute holding the name of the original element.
 	 * Optionally, copy all the attributes of the original element if that element is provided.
 	 *
 	 * @private

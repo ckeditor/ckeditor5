@@ -435,6 +435,14 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'shouldRenderAttribute()', () => {
+		beforeEach( () => {
+			converter.experimentalRenderingMode = true;
+		} );
+
+		afterEach( () => {
+			converter.experimentalRenderingMode = false;
+		} );
+
 		it( 'should allow all in for data pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
@@ -449,7 +457,7 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
 		} );
 
-		it( 'should reject certain attributes', () => {
+		it( 'should reject certain attributes in the editing pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'class', 'anything' ) ).to.be.true;
@@ -564,6 +572,14 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'editing pipeline', () => {
+			beforeEach( () => {
+				converter.experimentalRenderingMode = true;
+			} );
+
+			afterEach( () => {
+				converter.experimentalRenderingMode = false;
+			} );
+
 			it( 'should remove certain attributes', () => {
 				const element = document.createElement( 'p' );
 

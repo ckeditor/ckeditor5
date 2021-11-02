@@ -81,7 +81,7 @@ export default class SelectionObserver extends Observer {
 		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 
 		/**
-		 * When called, starts clearing the {@link #_loopbackCounter} counter in intervals of time. When the number of selection
+		 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
 		 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
 		 * possible infinite selection loop.
 		 *
@@ -92,7 +92,7 @@ export default class SelectionObserver extends Observer {
 
 		/**
 		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
-		 * correctly (for whatever the reason). It is a safeguard (paranoid check) that returns document to the normal state
+		 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
 		 * after a certain period of time (debounced, postponed by each selectionchange event).
 		 *
 		 * @private
