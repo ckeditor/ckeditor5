@@ -67,12 +67,14 @@
 				{
 					"elements": "span",
 					"styles": "font-size",
+					"isAlternative": true,
 					"_comment": "If the `config.fontSize.options` option contains numerical values, the font size feature uses the `font-size` inline style."
 				},
 				{
 					"elements": "*",
 					"classes": "*",
 					"styles": "*",
+					"isAlternative": true,
 					"_comment": "The plugin can be configured to return any element with any classes and any inline styles."
 				}
 			]
@@ -100,6 +102,7 @@
 					"elements": "*",
 					"classes": "*",
 					"styles": "*",
+					"isAlternative": true,
 					"_comment": "The plugin can be configured to return any element with any classes and any inline styles."
 				}
 			]

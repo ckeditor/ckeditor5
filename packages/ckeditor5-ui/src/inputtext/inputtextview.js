@@ -125,7 +125,10 @@ export default class InputTextView extends View {
 				'aria-describedby': bind.to( 'ariaDescribedById' )
 			},
 			on: {
-				input: bind.to( 'input' ),
+				input: bind.to( ( ...args ) => {
+					this.fire( 'input', ...args );
+					this._updateIsEmpty();
+				} ),
 				change: bind.to( this._updateIsEmpty.bind( this ) )
 			}
 		} );

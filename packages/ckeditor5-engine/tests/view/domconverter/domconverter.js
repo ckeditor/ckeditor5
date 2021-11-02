@@ -433,4 +433,232 @@ describe( 'DomConverter', () => {
 			} );
 		} );
 	} );
+
+	describe( 'shouldRenderAttribute()', () => {
+		beforeEach( () => {
+			converter.experimentalRenderingMode = true;
+		} );
+
+		afterEach( () => {
+			converter.experimentalRenderingMode = false;
+		} );
+
+		it( 'should allow all in for data pipeline', () => {
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
+
+			converter.renderingMode = 'data';
+
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
+		} );
+
+		it( 'should reject certain attributes in the editing pipeline', () => {
+			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'class', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'style', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'value', 'data:image/jpeg' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'value', 'DATA:IMAGE/GIF' ) ).to.be.true;
+
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'ONCLICK', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'JAVASCRIPT:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<SCRIPT>something</SCRIPT>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'something</SCRIPT>' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'setContentOf()', () => {
+		describe( 'data pipeline', () => {
+			it( 'should set content as-is', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<span>bar</span></div>';
+
+				converter.renderingMode = 'data';
+
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal( html );
+			} );
+
+			it( 'should keep attributes', () => {
+				const element = document.createElement( 'p' );
+
+				converter.renderingMode = 'data';
+
+				const testCases = [
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					}
+				];
+
+				testCases.forEach( ( testCase, index ) => {
+					converter.setContentOf( element, testCase.html );
+
+					expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+				} );
+			} );
+
+			it( 'should keep script element', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script onclick="foo">bar</script></div>';
+
+				converter.renderingMode = 'data';
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal( '<div>foo<script onclick="foo">bar</script></div>' );
+			} );
+		} );
+
+		describe( 'editing pipeline', () => {
+			beforeEach( () => {
+				converter.experimentalRenderingMode = true;
+			} );
+
+			afterEach( () => {
+				converter.experimentalRenderingMode = false;
+			} );
+
+			it( 'should remove certain attributes', () => {
+				const element = document.createElement( 'p' );
+
+				const testCases = [
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					}
+				];
+
+				testCases.forEach( ( testCase, index ) => {
+					converter.setContentOf( element, testCase.html );
+
+					expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+				} );
+			} );
+
+			it( 'should replace a script element with a span', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
+
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal(
+					'<div>foo<span data-ck-hidden="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+				);
+			} );
+		} );
+	} );
 } );

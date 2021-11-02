@@ -15,6 +15,7 @@ import ViewEmptyElement from '../../../src/view/emptyelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import ViewDocument from '../../../src/view/document';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 
 import { parse } from '../../../src/dev-utils/view';
@@ -230,6 +231,7 @@ describe( 'DomConverter', () => {
 					renderingMode: 'editing'
 				} );
 
+				converter.experimentalRenderingMode = true;
 				converter.bindElements( domImg, viewImg );
 
 				const domP = converter.viewToDom( viewP, document );
@@ -257,6 +259,7 @@ describe( 'DomConverter', () => {
 				converter = new DomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
+				converter.experimentalRenderingMode = true;
 
 				const domP = converter.viewToDom( viewP, document );
 
@@ -269,6 +272,72 @@ describe( 'DomConverter', () => {
 				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
 				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-hidden' ) ).to.equal( 'script' );
 				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			} );
+
+			describe( 'unsafe attribute names that were declaratively permitted', () => {
+				let writer;
+
+				beforeEach( () => {
+					writer = new DowncastWriter( viewDocument );
+					converter = new DomConverter( viewDocument, {
+						renderingMode: 'editing'
+					} );
+
+					converter.experimentalRenderingMode = true;
+				} );
+
+				it( 'should not be rejected when set on attribute elements', () => {
+					const viewElement = writer.createAttributeElement( 'span', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, { renderUnsafeAttributes: [ 'onclick' ] } );
+
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<span onclick="foo"></span>' );
+				} );
+
+				it( 'should not be rejected when set on container elements', () => {
+					const viewElement = writer.createContainerElement( 'p', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, { renderUnsafeAttributes: [ 'onclick' ] } );
+
+					viewElement.getFillerOffset = () => null;
+
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo"></p>' );
+				} );
+
+				it( 'should not be rejected when set on editable elements', () => {
+					const viewElement = writer.createEditableElement( 'div', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, { renderUnsafeAttributes: [ 'onclick' ] } );
+
+					viewElement.getFillerOffset = () => null;
+
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<div onclick="foo"></div>' );
+				} );
+
+				it( 'should not be rejected when set on empty elements', () => {
+					const viewElement = writer.createEmptyElement( 'img', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, { renderUnsafeAttributes: [ 'onclick' ] } );
+
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<img onclick="foo">' );
+				} );
+
+				it( 'should not be rejected when set on raw elements', () => {
+					const viewElement = writer.createRawElement( 'p', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, function( domElement ) {
+						domElement.innerHTML = 'foo';
+					}, {
+						renderUnsafeAttributes: [ 'onclick' ]
+					} );
+
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo">foo</p>' );
+				} );
 			} );
 		} );
 

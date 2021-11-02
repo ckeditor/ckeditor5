@@ -27,6 +27,16 @@ export default class SelectColumnCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	refresh() {
 		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
 

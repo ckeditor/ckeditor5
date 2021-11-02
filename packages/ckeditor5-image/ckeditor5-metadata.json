@@ -172,6 +172,7 @@
 				{
 					"elements": "figure",
 					"classes": "*",
+					"isAlternative": true,
 					"_comment": "The plugin can be configured to set any class names on the `<figure>` element."
 				}
 			]

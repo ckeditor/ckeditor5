@@ -527,7 +527,7 @@ export default class DataController {
 	 */
 
 	/**
-	 * Event fired after {@link #get get() method} has been run.
+	 * Event fired after the {@link #get get() method} has been run.
 	 *
 	 * The `get` event is fired by decorated {@link #get} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
@@ -570,18 +570,18 @@ function _getMarkersRelativeToElement( element ) {
 		}
 	}
 
-	// Sort the markers in a stable fashion to ensure that the order that they are
+	// Sort the markers in a stable fashion to ensure that the order in which they are
 	// added to the model's marker collection does not affect how they are
-	// downcast. One particular use case that we're targeting here is one where
+	// downcast. One particular use case that we are targeting here, is one where
 	// two markers are adjacent but not overlapping, such as an insertion/deletion
-	// suggestion pair represting the replacement of a range of text. In this
+	// suggestion pair representing the replacement of a range of text. In this
 	// case, putting the markers in DOM order causes the first marker's end to be
 	// serialized right after the second marker's start, while putting the markers
 	// in reverse DOM order causes it to be right before the second marker's
-	// start. So, we sort in a way that ensures non-intersecting ranges are in
+	// start. So, we sort these in a way that ensures non-intersecting ranges are in
 	// reverse DOM order, and intersecting ranges are in something approximating
 	// reverse DOM order (since reverse DOM order doesn't have a precise meaning
-	// when working with intersectng ranges).
+	// when working with intersecting ranges).
 	return result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
 		if ( r1.end.compareWith( r2.start ) !== 'after' ) {
 			// m1.end <= m2.start -- m1 is entirely <= m2
