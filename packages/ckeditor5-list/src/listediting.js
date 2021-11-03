@@ -13,27 +13,16 @@ import IndentCommand from './indentcommand';
 import { Plugin } from 'ckeditor5/src/core';
 import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
+import { uid } from 'ckeditor5/src/utils';
 
 import {
 	cleanList,
 	cleanListItem,
-	modelViewInsertion,
-	modelViewChangeType,
-	modelViewMergeAfterChangeType,
-	modelViewMergeAfter,
-	modelViewRemove,
-	modelViewSplitOnInsert,
-	modelViewChangeIndent,
 	modelChangePostFixer,
 	modelIndentPasteFixer,
-	viewModelConverter,
-	modelToViewPosition,
-	viewToModelPosition
+	viewModelConverter
 } from './converters';
-import { createViewListItemElement, getSiblingListItem } from './utils';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
-import { uid } from '@ckeditor/ckeditor5-utils';
+import { getSiblingListItem } from './utils';
 
 /**
  * The engine of the list feature. It handles creating, editing and removing lists and list items.
@@ -79,9 +68,7 @@ export default class ListEditing extends Plugin {
 		editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
 
 		// editing.mapper.registerViewToModelLength( 'li', getViewListItemLength );
-		// data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
-
-		data.mapper.on( 'modelToViewPosition', modelToDataViewPosition() );
+		data.mapper.registerViewToModelLength( 'li', getViewListItemLength );
 
 		// editing.mapper.on( 'modelToViewPosition', modelToViewPosition( editing.view ) );
 		// editing.mapper.on( 'viewToModelPosition', viewToModelPosition( editor.model ) );
@@ -251,7 +238,7 @@ function listItemWrap( { dataPipeline } = {} ) {
 			return;
 		}
 
-		let viewElement = mapper.toViewElement( listItem );
+		const viewElement = mapper.toViewElement( listItem );
 		let viewRange;
 
 		if ( viewElement ) {
@@ -272,17 +259,17 @@ function listItemWrap( { dataPipeline } = {} ) {
 				return;
 			}
 
-			viewElement = writer.createContainerElement( '$slot', null, { isAllowedInsideAttributeElement: true } );
-
+			const slotElement = writer.createContainerElement( '$slot', null, { isAllowedInsideAttributeElement: true } );
 			const viewPosition = mapper.toViewPosition( data.range.start );
 
-			mapper.bindElements( data.item, viewElement );
-			writer.insert( viewPosition, viewElement );
+			mapper.bindElements( data.item, slotElement );
+			writer.insert( viewPosition, slotElement );
 
 			convertChildren( data.item );
 
-			viewRange = writer.move( writer.createRangeIn( viewElement ), viewPosition );
-			writer.remove( viewElement );
+			viewRange = writer.move( writer.createRangeIn( slotElement ), viewPosition );
+			writer.remove( slotElement );
+			mapper.unbindViewElement( slotElement );
 		}
 
 		// Then wrap them with the new list wrappers.
@@ -305,6 +292,10 @@ function listItemWrap( { dataPipeline } = {} ) {
 			const listItemViewElement = createListItemElement( writer, indent, listItemId );
 			const listViewElement = createListElement( writer, indent, listType );
 
+			if ( dataPipeline ) {
+				listItemViewElement.getFillerOffset = getListItemFillerOffset;
+			}
+
 			viewRange = writer.wrap( viewRange, listItemViewElement );
 			viewRange = writer.wrap( viewRange, listViewElement );
 
@@ -314,7 +305,11 @@ function listItemWrap( { dataPipeline } = {} ) {
 
 			currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
 
-			listItemId = mapper.toViewElement( currentListItem ).getCustomProperty( 'listItemId' ) || listItemsIds.get( currentListItem );
+			const currentListItemViewElement = mapper.toViewElement( currentListItem );
+
+			listItemId = currentListItemViewElement ?
+				currentListItemViewElement.getCustomProperty( 'listItemId' ) :
+				listItemsIds.get( currentListItem );
 			listType = currentListItem.getAttribute( 'listType' );
 		}
 	};
@@ -357,38 +352,6 @@ function createAttributesConsumer( model ) {
 	};
 }
 
-function modelToDataViewPosition() {
-	return ( evt, data ) => {
-		if ( data.isPhantom || data.viewPosition ) {
-			return;
-		}
-
-		const modelItem = data.modelPosition.nodeBefore;
-
-		if ( !modelItem || !modelItem.is( 'element', 'listItem' ) ) {
-			return;
-		}
-
-		let offset = 0;
-
-		for ( const item of data.modelPosition.parent.getChildren() ) {
-			if ( item.is( 'element', 'listItem' ) ) {
-				offset += item.maxOffset;
-			} else {
-				offset += item.offsetSize;
-			}
-
-			if ( item == modelItem ) {
-				break;
-			}
-		}
-
-		const viewParent = data.mapper.toViewElement( data.modelPosition.parent );
-
-		data.viewPosition = data.mapper.findPositionIn( viewParent, offset );
-	};
-}
-
 function handleDataChange( model, mapper ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
@@ -428,6 +391,7 @@ function handleDataChange( model, mapper ) {
 				currentNode && currentNode.is( 'element', 'listItem' );
 				currentNode = currentNode.nextSibling
 			) {
+				// TODO this might be to greedy and reconvert to many elements.
 				if (
 					currentNode.getAttribute( 'listIndent' ) <= indent && entry.attributeKey != 'listIndent' ||
 					currentNode.getAttribute( 'listIndent' ) < indent
@@ -441,8 +405,26 @@ function handleDataChange( model, mapper ) {
 
 				// TODO this could trigger refreshAttribute( currentNode, 'listIndent' )
 				model.document.differ.refreshItem( currentNode );
-				console.log( '-- refresh item', currentNode.getChild( 0 ).data );
+				console.log( '-- refresh item', currentNode.childCount ? currentNode.getChild( 0 ).data : currentNode );
 			}
 		}
 	};
+}
+
+function getListItemFillerOffset() {
+	for ( const [ idx, child ] of Array.from( this.getChildren() ).entries() ) {
+		if ( child.is( 'uiElement' ) ) {
+			continue;
+		}
+
+		// There is no content before a nested list so render a block filler just before the nested list.
+		if ( child.is( 'element', 'ul' ) || child.is( 'element', 'ol' ) ) {
+			return idx;
+		} else {
+			return null;
+		}
+	}
+
+	// Render block filler at the end of element (after all ui elements).
+	return this.childCount;
 }
