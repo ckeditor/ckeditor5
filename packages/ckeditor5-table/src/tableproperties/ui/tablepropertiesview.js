@@ -379,6 +379,13 @@ export default class TablePropertiesView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Focuses the fist focusable field in the form.
 	 */

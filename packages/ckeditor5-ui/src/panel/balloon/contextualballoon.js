@@ -628,6 +628,12 @@ class RotatorView extends View {
 		this.focusTracker.add( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+	}
+
 	/**
 	 * Shows a given view.
 	 *

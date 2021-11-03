@@ -155,6 +155,13 @@ export default class LinkActionsView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Focuses the fist {@link #_focusables} in the actions.
 	 */

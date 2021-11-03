@@ -109,6 +109,13 @@ export default class ListView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Focuses the first focusable in {@link #items}.
 	 */

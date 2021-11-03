@@ -176,6 +176,13 @@ export default class ColorGridView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Fired when the `ColorTileView` for the picked item is executed.
 	 *

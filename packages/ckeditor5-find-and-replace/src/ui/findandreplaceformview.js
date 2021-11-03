@@ -353,6 +353,13 @@ export default class FindAndReplaceFormView extends View {
 		this._initKeystrokeHandling();
 	}
 
+	destroy() {
+		super.destroy();
+
+		this._focusTracker.destroy();
+		this._keystrokes.destroy();
+	}
+
 	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */

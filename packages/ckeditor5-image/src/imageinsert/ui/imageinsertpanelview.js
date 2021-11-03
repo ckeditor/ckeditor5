@@ -203,6 +203,13 @@ export default class ImageInsertPanelView extends View {
 		}, { priority: 'high' } );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Returns a view of the integration.
 	 *

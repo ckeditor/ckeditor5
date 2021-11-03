@@ -210,6 +210,13 @@ export default class MediaFormView extends View {
 		}, { priority: 'high' } );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */

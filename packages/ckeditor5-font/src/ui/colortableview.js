@@ -235,6 +235,13 @@ export default class ColorTableView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
 	 */

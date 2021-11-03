@@ -200,6 +200,13 @@ export default class LinkFormView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
 	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
