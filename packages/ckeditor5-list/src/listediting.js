@@ -371,31 +371,33 @@ function handleDataChange( model, mapper ) {
 				continue;
 			}
 
-			const nodeBefore = position.nodeBefore;
-			const nodeAfter = position.nodeAfter;
+			const changedListItem = position.nodeBefore;
+			const followingListItem = position.nodeAfter;
 
-			if ( !nodeBefore || !nodeBefore.is( 'element', 'listItem' ) ) {
+			if ( !changedListItem || !changedListItem.is( 'element', 'listItem' ) ) {
 				continue;
 			}
 
-			if ( !nodeAfter || !nodeAfter.is( 'element', 'listItem' ) ) {
+			if ( !followingListItem || !followingListItem.is( 'element', 'listItem' ) ) {
 				continue;
 			}
 
-			const indent = entry.type == 'remove' ?
-				entry.attributes.get( 'listIndent' ) :
-				nodeBefore.getAttribute( 'listIndent' );
+			let indent;
+
+			if ( entry.type == 'remove' ) {
+				indent = entry.attributes.get( 'listIndent' );
+			} else if ( entry.type == 'attribute' && entry.attributeKey == 'listIndent' ) {
+				indent = Math.min( changedListItem.getAttribute( 'listIndent' ), entry.attributeOldValue );
+			} else {
+				indent = changedListItem.getAttribute( 'listIndent' );
+			}
 
 			for (
-				let currentNode = nodeAfter;
+				let currentNode = followingListItem;
 				currentNode && currentNode.is( 'element', 'listItem' );
 				currentNode = currentNode.nextSibling
 			) {
-				// TODO this might be to greedy and reconvert to many elements.
-				if (
-					currentNode.getAttribute( 'listIndent' ) <= indent && entry.attributeKey != 'listIndent' ||
-					currentNode.getAttribute( 'listIndent' ) < indent
-				) {
+				if ( currentNode.getAttribute( 'listIndent' ) <= indent ) {
 					break;
 				}
 
