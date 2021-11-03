@@ -7,6 +7,7 @@
 
 import DeleteObserver from '../src/deleteobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -259,6 +260,118 @@ describe( 'DeleteObserver', () => {
 			preventDefault: sinon.spy()
 		};
 	}
+} );
+
+describe( 'DeleteObserver - Windows', () => {
+	let domElement, view, viewDocument, viewRoot;
+
+	testUtils.createSinonSandbox();
+	testUtils.sinon.stub( env, 'isWindows' ).value( true );
+
+	beforeEach( () => {
+		domElement = document.createElement( 'div', {
+			contenteditable: 'true'
+		} );
+
+		document.body.appendChild( domElement );
+
+		view = new View();
+		viewDocument = view.document;
+		view.addObserver( DeleteObserver );
+
+		viewRoot = createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+
+		view.change( writer => {
+			const p = writer.createContainerElement( 'p' );
+			const text = writer.createText( 'foo' );
+
+			writer.insert( writer.createPositionAt( viewRoot, 0 ), p );
+			writer.insert( writer.createPositionAt( p, 0 ), text );
+		} );
+	} );
+
+	afterEach( () => {
+		view.destroy();
+		domElement.remove();
+	} );
+
+	describe( 'Shift + Delete is pressed', () => {
+		let domEventData, keydownEvent, deleteEventSpy;
+
+		beforeEach( () => {
+			domEventData = new DomEventData( viewDocument, {}, {
+				keyCode: getCode( 'delete' ),
+				shiftKey: true
+			} );
+
+			keydownEvent = new EventInfo( viewDocument, 'keydown' );
+
+			deleteEventSpy = sinon.spy();
+		} );
+
+		it( 'should not fire delete event and should stop the keydown event on non-collapsed selection', () => {
+			view.change( writer => {
+				writer.setSelection( viewRoot, 'in' );
+			} );
+
+			viewDocument.on( 'delete', deleteEventSpy );
+			viewDocument.fire( keydownEvent, domEventData );
+
+			expect( deleteEventSpy.called, 'delete event is not fired' ).to.be.false;
+			expect( keydownEvent.stop.called, 'keydown event is stopped' ).to.be.true;
+		} );
+
+		it( 'should fire delete event and should not stop the keydown event on collapsed selection', () => {
+			view.change( writer => {
+				writer.setSelection( viewRoot, 'end' );
+			} );
+
+			viewDocument.on( 'delete', deleteEventSpy );
+			viewDocument.fire( keydownEvent, domEventData );
+
+			expect( deleteEventSpy.called, 'delete event is fired' ).to.be.true;
+			expect( keydownEvent.stop.called, 'keydown event is not stopped' ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'Only Delete is pressed', () => {
+		let domEventData, keydownEvent, deleteEventSpy;
+
+		beforeEach( () => {
+			domEventData = new DomEventData( viewDocument, {}, {
+				keyCode: getCode( 'delete' )
+			} );
+
+			keydownEvent = new EventInfo( viewDocument, 'keydown' );
+
+			deleteEventSpy = sinon.spy();
+		} );
+
+		it( 'should fire delete event and should not stop the keydown event on non-collapsed selection', () => {
+			view.change( writer => {
+				writer.setSelection( viewRoot, 'in' );
+			} );
+
+			viewDocument.on( 'delete', deleteEventSpy );
+			viewDocument.fire( keydownEvent, domEventData );
+
+			expect( deleteEventSpy.called, 'delete event is fired' ).to.be.true;
+			expect( keydownEvent.stop.called, 'keydown event is not stopped' ).to.be.undefined;
+		} );
+
+		it( 'should fire delete event and should not stop the keydown event on collapsed selection', () => {
+			view.change( writer => {
+				writer.setSelection( viewRoot, 'end' );
+			} );
+
+			viewDocument.on( 'delete', deleteEventSpy );
+			viewDocument.fire( keydownEvent, domEventData );
+
+			expect( deleteEventSpy.called, 'delete event is fired' ).to.be.true;
+			expect( keydownEvent.stop.called, 'keydown event is not stopped' ).to.be.undefined;
+		} );
+	} );
 } );
 
 describe( 'DeleteObserver - Android', () => {
