@@ -238,50 +238,62 @@ function downcastListStyleAttribute() {
 				return;
 			}
 
-			const viewWriter = conversionApi.writer;
-			const currentElement = data.item;
+			const writer = conversionApi.writer;
+			const listItem = data.item;
+			const viewElement = conversionApi.mapper.toViewElement( listItem );
+			const listItemIndent = listItem.getAttribute( 'listIndent' );
+			let viewRange;
 
-			const previousElement = getSiblingListItem( currentElement.previousSibling, {
-				sameIndent: true,
-				listIndent: currentElement.getAttribute( 'listIndent' ),
-				direction: 'backward'
-			} );
+			if ( viewElement ) {
+				// First, unwrap the item from current list wrappers.
+				let attributeElement = viewElement.parent;
 
-			const viewItem = conversionApi.mapper.toViewElement( currentElement );
+				while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
+					const parentElement = attributeElement.parent;
 
-			// A case when elements represent different lists. We need to separate their container.
-			if ( !areRepresentingSameList( currentElement, previousElement ) ) {
-				viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
+					if ( [ 'ul', 'ol' ].includes( attributeElement.name ) && attributeElement.hasStyle( 'list-style-type' ) ) {
+						// Make a clone of an attribute element that only includes properties of list styles.
+						const element = writer.createAttributeElement( attributeElement.name, null, {
+							priority: attributeElement.priority
+						} );
+
+						writer.setStyle( 'list-style-type', attributeElement.getStyle( 'list-style-type' ), element );
+						writer.unwrap( writer.createRangeOn( viewElement ), element );
+					}
+
+					attributeElement = parentElement;
+				}
+
+				viewRange = writer.createRangeOn( viewElement );
+			} else {
+				viewRange = conversionApi.mapper.toViewRange( data.range );
 			}
 
-			setListStyle( viewWriter, data.attributeNewValue, viewItem.parent );
+			let listType = listItem.getAttribute( 'listType' );
+			let listStyle = listItem.getAttribute( 'listStyle' );
+			let currentListItem = listItem;
+
+			for ( let indent = listItemIndent; indent >= 0; indent-- ) {
+				if ( listStyle && listStyle != DEFAULT_LIST_TYPE ) {
+					const listViewElement = writer.createAttributeElement( listType == 'numbered' ? 'ol' : 'ul', null, {
+						priority: indent / 100
+					} );
+
+					writer.setStyle( 'list-style-type', listStyle, listViewElement );
+
+					viewRange = writer.wrap( viewRange, listViewElement );
+				}
+
+				if ( indent == 0 ) {
+					break;
+				}
+
+				currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
+				listType = currentListItem.getAttribute( 'listType' );
+				listStyle = currentListItem.getAttribute( 'listStyle' );
+			}
 		}, { priority: 'low' } );
 	};
-
-	// Checks whether specified list items belong to the same list.
-	//
-	// @param {module:engine/model/element~Element} `listItem1` The first list item to check.
-	// @param {module:engine/model/element~Element|null} `listItem2` The second list item to check.
-	// @returns {Boolean}
-	function areRepresentingSameList( listItem1, listItem2 ) {
-		return listItem2 &&
-			listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
-			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
-			listItem1.getAttribute( 'listStyle' ) === listItem2.getAttribute( 'listStyle' );
-	}
-
-	// Updates or removes the `list-style-type` from the `element`.
-	//
-	// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-	// @param {String} listStyle
-	// @param {module:engine/view/element~Element} element
-	function setListStyle( writer, listStyle, element ) {
-		if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
-			writer.setStyle( 'list-style-type', listStyle, element );
-		} else {
-			writer.removeStyle( 'list-style-type', element );
-		}
-	}
 }
 
 // When indenting list, nested list should clear its value for the `listStyle` attribute or inherit from nested lists.

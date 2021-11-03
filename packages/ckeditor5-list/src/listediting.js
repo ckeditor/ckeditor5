@@ -248,7 +248,13 @@ function listItemWrap( { dataPipeline } = {} ) {
 			while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
 				const parentElement = attributeElement.parent;
 
-				writer.unwrap( writer.createRangeOn( viewElement ), attributeElement );
+				// Make a clone of an attribute element that only includes properties of generic list (i.e., without list styles).
+				const element = writer.createAttributeElement( attributeElement.name, null, {
+					priority: attributeElement.priority,
+					id: attributeElement.id
+				} );
+
+				writer.unwrap( writer.createRangeOn( viewElement ), element );
 
 				attributeElement = parentElement;
 			}
@@ -363,7 +369,7 @@ function handleDataChange( model, mapper ) {
 				position = entry.position.getShiftedBy( entry.length );
 			} else if ( entry.type == 'remove' && entry.name == 'listItem' ) {
 				position = entry.position;
-			} else if ( entry.type == 'attribute' && [ 'listType', 'listIndent' ].includes( entry.attributeKey ) ) {
+			} else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
 				position = entry.range.start.getShiftedBy( 1 );
 			}
 
