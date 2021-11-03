@@ -8,13 +8,12 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import RestrictedEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/restrictededitingmode';
 import StandardEditingMode from '@ckeditor/ckeditor5-restricted-editing/src/standardeditingmode';
-import ExportWord from '@ckeditor/ckeditor5-export-word/src/exportword';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 
 ClassicEditor.builtinPlugins.push(
-	RestrictedEditingMode, StandardEditingMode, ArticlePluginSet, Table, ExportWord );
+	RestrictedEditingMode, StandardEditingMode, ArticlePluginSet, Table );
 
 const restrictedModeButton = document.getElementById( 'mode-restricted' );
 const standardModeButton = document.getElementById( 'mode-standard' );
@@ -40,7 +39,7 @@ async function startStandardEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'RestrictedEditingMode' ],
 		toolbar: [
-			'restrictedEditingException', '|', 'exportWord', '|', 'heading', '|', 'bold', 'italic', 'link', '|',
+			'restrictedEditingException', '|', 'heading', '|', 'bold', 'italic', 'link', '|',
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'undo', 'redo'
 		],
@@ -57,7 +56,7 @@ async function startStandardEditingMode() {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
-		toolbar: [ 'restrictedEditing', '|', 'exportWord', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ]
+		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ]
 	} );
 }
 
