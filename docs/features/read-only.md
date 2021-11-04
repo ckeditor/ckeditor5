@@ -4,8 +4,6 @@ category: features
 
 # Read-only support
 
-{@snippet build-classic-source}
-
 The editor can be set into a read-only mode by changing the value of the {@link module:core/editor/editor~Editor#isReadOnly `Editor#isReadOnly`} property.
 
 The read-only mode may have several applications. It may be used to impose user-based access restriction, where a selected user or a group of users is only allowed to access the content for evaluation purposes but not change it.

@@ -3,8 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals ClassicEditor, console, window, document */
+/* globals console, window, document */
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import ExportPdf from '@ckeditor/ckeditor5-export-pdf/src/exportpdf';
 import ExportWord from '@ckeditor/ckeditor5-export-word/src/exportword';
@@ -13,10 +14,17 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-read-only' ), {
-		plugins: [ FindAndReplace, ExportPdf, ExportWord ],
+		extraPlugins: [
+			FindAndReplace,
+			ExportPdf,
+			ExportWord
+		],
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
+				'exportPdf',
+				'exportWord',
+				'|',
 				'heading',
 				'|',
 				'bold',
@@ -28,22 +36,38 @@ ClassicEditor
 				'outdent',
 				'indent',
 				'|',
-				'insertImage',
+				'uploadImage',
 				'blockQuote',
 				'insertTable',
-				'mediaEmbed',
-				'undo',
-				'redo',
-				'|',
 				'findAndReplace',
-				'exportPdf',
-				'exportWord'
+				'undo',
+				'redo'
 			]
 		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
+		},
+		exportPdf: {
+			stylesheets: [
+				'EDITOR_STYLES'
+			],
+			fileName: 'export-pdf-demo.pdf',
+			appID: 'cke5-docs',
+			converterOptions: {
+				format: 'A4',
+				margin_top: '20mm',
+				margin_bottom: '20mm',
+				margin_right: '12mm',
+				margin_left: '12mm',
+				page_orientation: 'portrait'
+			},
+			tokenUrl: false
+		},
+		exportWord: {
+			fileName: 'export-word-demo.docx',
+			tokenUrl: false
 		}
 	} )
 	.then( editor => {
