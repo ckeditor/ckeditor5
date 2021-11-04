@@ -673,7 +673,7 @@ class ViewStringify {
 	 * @param {Function} callback
 	 */
 	_walkView( root, callback ) {
-		const ignore = this.ignoreRoot && this.root === root;
+		const ignore = this.ignoreRoot && this.root === root || root.is( 'element', 'span' ) && root.hasClass( 'ck-list-bogus-paragraph' );
 
 		if ( root.is( 'element' ) || root.is( 'documentFragment' ) ) {
 			if ( root.is( 'element' ) && !ignore ) {
