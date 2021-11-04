@@ -13,8 +13,6 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-
 /* globals window, document */
 
 describe( 'Delete feature', () => {
@@ -223,9 +221,11 @@ describe( 'Delete feature - Android', () => {
 } );
 
 describe( 'Delete feature - handling Shift + Delete', () => {
-	let domElement, editor, viewDocument, model, root, deleteEvent;
+	let domElement, editor, viewDocument, model, root, deleteEvent, oldEnvIsWindows;
 
-	testUtils.createSinonSandbox();
+	before( () => {
+		oldEnvIsWindows = env.isWindows;
+	} );
 
 	beforeEach( async () => {
 		domElement = document.createElement( 'div' );
@@ -252,9 +252,13 @@ describe( 'Delete feature - handling Shift + Delete', () => {
 		return editor.destroy();
 	} );
 
+	after( () => {
+		env.isWindows = oldEnvIsWindows;
+	} );
+
 	describe( 'for Windows', () => {
 		before( () => {
-			testUtils.sinon.stub( env, 'isWindows' ).value( true );
+			env.isWindows = true;
 		} );
 
 		describe( 'when Shift + Delete is pressed', () => {
@@ -323,7 +327,7 @@ describe( 'Delete feature - handling Shift + Delete', () => {
 
 	describe( 'for non-Windows', () => {
 		before( () => {
-			testUtils.sinon.stub( env, 'isWindows' ).value( false );
+			env.isWindows = false;
 		} );
 
 		it( 'should not stop the delete event even if Shift + Delete is pressed on non-collapsed selection', () => {
