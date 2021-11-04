@@ -22,6 +22,7 @@ import {
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { convertSelectionChange } from '../conversion/upcasthelpers';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees, initDocumentDumping } = require( '../dev-utils/utils' );
@@ -151,6 +152,74 @@ export default class EditingController {
 	destroy() {
 		this.view.destroy();
 		this.stopListening();
+	}
+
+	/**
+	 * Calling this method will refresh the marker by triggering the downcast conversion for it.
+	 *
+	 * Reconverting the marker is useful when you want to change its {@link module:engine/view/element~Element view element}
+	 * without changing any marker data. For instance:
+	 *
+	 *		let isCommentActive = false;
+	 *
+	 *		model.conversion.markerToHighlight( {
+	 *			model: 'comment',
+	 *			view: data => {
+	 *				const classes = [ 'comment-marker' ];
+	 *
+	 *				if ( isCommentActive ) {
+	 *					classes.push( 'comment-marker--active' );
+	 *				}
+	 *
+	 *				return { classes };
+	 *			}
+	 *		} );
+	 *
+	 *		// ...
+	 *
+	 *		// Change the property that indicates if marker is displayed as active or not.
+	 *		isCommentActive = true;
+	 *
+	 *		// Reconverting will downcast and synchronize the marker with the new isCommentActive state value.
+	 *		editor.editing.reconvertMarker( 'comment' );
+	 *
+	 * **Note**: If you want to reconvert a model item, use {@link #reconvertItem} instead.
+	 *
+	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of a marker to update, or a marker instance.
+	 */
+	reconvertMarker( markerOrName ) {
+		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
+		const currentMarker = this.model.markers.get( markerName );
+
+		if ( !currentMarker ) {
+			/**
+			 * The marker with provided name does not exist and cannot be reconverted.
+			 *
+			 * @error editingcontroller-reconvertmarker-marker-not-exist
+			 * @param {String} markerName The name of the reconverted marker.
+			 */
+			throw new CKEditorError( 'editingcontroller-reconvertmarker-marker-not-exist', this, { markerName } );
+		}
+
+		this.model.change( () => {
+			this.model.markers._refresh( currentMarker );
+		} );
+	}
+
+	/**
+	 * Calling this method will downcast a model item on demand (by requesting a refresh in the {@link module:engine/model/differ~Differ}).
+	 *
+	 * You can use it if you want the view representation of a specific item updated as a response to external modifications. For instance,
+	 * when the view structure depends not only on the associated model data but also on some external state.
+	 *
+	 * **Note**: If you want to reconvert a model marker, use {@link #reconvertMarker} instead.
+	 *
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
+	reconvertItem( item ) {
+		this.model.change( () => {
+			this.model.document.differ._refreshItem( item );
+		} );
 	}
 }
 
