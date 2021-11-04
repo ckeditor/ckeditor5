@@ -13,6 +13,8 @@ import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 /* globals window, document */
 
 describe( 'Delete feature', () => {
@@ -217,6 +219,128 @@ describe( 'Delete feature - Android', () => {
 				domTarget: domRoot
 			} ) );
 		} ).not.to.throw();
+	} );
+} );
+
+describe( 'Delete feature - handling Shift + Delete', () => {
+	let domElement, editor, viewDocument, model, root, deleteEvent;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( async () => {
+		domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
+
+		editor = await ClassicTestEditor.create( domElement, { plugins: [ Delete, Paragraph ] } );
+
+		model = editor.model;
+		root = model.document.getRoot();
+
+		model.change( writer => {
+			writer.insertElement( 'paragraph', root, 0 );
+			writer.insertText( 'foobar', root.getChild( 0 ), 0 );
+		} );
+
+		viewDocument = editor.editing.view.document;
+
+		deleteEvent = new EventInfo( viewDocument, 'delete' );
+	} );
+
+	afterEach( () => {
+		domElement.remove();
+
+		return editor.destroy();
+	} );
+
+	describe( 'for Windows', () => {
+		before( () => {
+			testUtils.sinon.stub( env, 'isWindows' ).value( true );
+		} );
+
+		describe( 'when Shift + Delete is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( viewDocument, {
+					keyCode: getCode( 'delete' ),
+					shiftKey: true,
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should stop the delete event on non-collapsed selection', () => {
+				editor.model.change( writer => {
+					writer.setSelection( root, 'in' );
+				} );
+
+				viewDocument.fire( deleteEvent, domEventData );
+
+				expect( deleteEvent.stop.called ).to.be.true;
+			} );
+
+			it( 'should not stop the delete event on collapsed selection', () => {
+				editor.model.change( writer => {
+					writer.setSelection( root, 'end' );
+				} );
+
+				viewDocument.fire( deleteEvent, domEventData );
+
+				expect( deleteEvent.stop.called ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'when only Delete (without Shift) is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( viewDocument, {
+					keyCode: getCode( 'delete' ),
+					preventDefault: sinon.spy()
+				} );
+			} );
+
+			it( 'should not stop the delete event on non-collapsed selection', () => {
+				editor.model.change( writer => {
+					writer.setSelection( root, 'in' );
+				} );
+
+				viewDocument.fire( deleteEvent, domEventData );
+
+				expect( deleteEvent.stop.called ).to.be.undefined;
+			} );
+
+			it( 'should not stop the delete event on collapsed selection', () => {
+				editor.model.change( writer => {
+					writer.setSelection( root, 'end' );
+				} );
+
+				viewDocument.fire( deleteEvent, domEventData );
+
+				expect( deleteEvent.stop.called ).to.be.undefined;
+			} );
+		} );
+	} );
+
+	describe( 'for non-Windows', () => {
+		before( () => {
+			testUtils.sinon.stub( env, 'isWindows' ).value( false );
+		} );
+
+		it( 'should not stop the delete event even if Shift + Delete is pressed on non-collapsed selection', () => {
+			editor.model.change( writer => {
+				writer.setSelection( root, 'in' );
+			} );
+
+			const domEventData = new DomEventData( viewDocument, {
+				keyCode: getCode( 'delete' ),
+				shiftKey: true,
+				preventDefault: sinon.spy()
+			} );
+
+			viewDocument.fire( deleteEvent, domEventData );
+
+			expect( deleteEvent.stop.called ).to.be.undefined;
+		} );
 	} );
 } );
 
