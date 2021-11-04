@@ -5,11 +5,41 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import ExportPdf from '@ckeditor/ckeditor5-export-pdf/src/exportpdf';
+import ExportWord from '@ckeditor/ckeditor5-export-word/src/exportword';
+
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-read-only' ), {
+		plugins: [ FindAndReplace, ExportPdf, ExportWord ],
 		cloudServices: CS_CONFIG,
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'numberedList',
+				'bulletedList',
+				'|',
+				'outdent',
+				'indent',
+				'|',
+				'insertImage',
+				'blockQuote',
+				'insertTable',
+				'mediaEmbed',
+				'undo',
+				'redo',
+				'|',
+				'findAndReplace',
+				'exportPdf',
+				'exportWord'
+			]
+		},
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
