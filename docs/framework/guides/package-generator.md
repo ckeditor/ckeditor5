@@ -32,14 +32,14 @@ Available modifiers for the command are:
 
 After successfully creating the new package, enter it by executing the following command:
 
-```
-// assuming that your package was created with `ckeditor5-foo` as its name
+```bash
+# Assuming that your package was created with `ckeditor5-foo` as its name.
 cd ckeditor5-foo
 ```
 
 Then run the test environment for the plugin by executing:
 
-```
+```bash
 npm run start
 ```
 
