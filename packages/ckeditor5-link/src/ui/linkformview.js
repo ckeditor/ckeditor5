@@ -200,6 +200,9 @@ export default class LinkFormView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

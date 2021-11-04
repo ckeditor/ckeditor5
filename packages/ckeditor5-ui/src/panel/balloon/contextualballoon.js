@@ -171,6 +171,17 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.view.destroy();
+		this._rotatorView.destroy();
+		this._fakePanelsView.destroy();
+	}
+
+	/**
 	 * Returns `true` when the given view is in one of the stacks. Otherwise returns `false`.
 	 *
 	 * @param {module:ui/view~View} view
@@ -628,6 +639,9 @@ class RotatorView extends View {
 		this.focusTracker.add( this.element );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

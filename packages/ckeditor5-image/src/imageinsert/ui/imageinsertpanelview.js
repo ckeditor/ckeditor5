@@ -203,6 +203,9 @@ export default class ImageInsertPanelView extends View {
 		}, { priority: 'high' } );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

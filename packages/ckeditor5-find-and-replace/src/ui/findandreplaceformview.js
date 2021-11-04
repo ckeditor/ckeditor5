@@ -353,6 +353,9 @@ export default class FindAndReplaceFormView extends View {
 		this._initKeystrokeHandling();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

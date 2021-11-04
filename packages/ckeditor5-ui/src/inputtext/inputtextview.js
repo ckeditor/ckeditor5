@@ -160,6 +160,9 @@ export default class InputTextView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

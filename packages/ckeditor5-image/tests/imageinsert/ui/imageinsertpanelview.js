@@ -271,6 +271,24 @@ describe( 'ImageUploadPanelView', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
+
 	describe( 'focus()', () => {
 		it( 'should focus on the first integration', () => {
 			const spy = sinon.spy( view.getIntegration( 'insertImageViaUrl' ), 'focus' );

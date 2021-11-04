@@ -210,6 +210,9 @@ export default class MediaFormView extends View {
 		}, { priority: 'high' } );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

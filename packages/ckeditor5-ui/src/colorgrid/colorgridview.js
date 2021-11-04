@@ -176,6 +176,9 @@ export default class ColorGridView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

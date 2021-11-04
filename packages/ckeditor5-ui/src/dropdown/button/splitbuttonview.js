@@ -155,6 +155,9 @@ export default class SplitButtonView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

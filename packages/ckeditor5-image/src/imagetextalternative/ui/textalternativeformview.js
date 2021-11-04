@@ -151,6 +151,9 @@ export default class TextAlternativeFormView extends View {
 			} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

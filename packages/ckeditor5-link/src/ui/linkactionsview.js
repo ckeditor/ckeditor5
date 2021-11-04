@@ -155,6 +155,9 @@ export default class LinkActionsView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 

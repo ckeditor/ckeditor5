@@ -430,6 +430,9 @@ export default class TableCellPropertiesView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 
