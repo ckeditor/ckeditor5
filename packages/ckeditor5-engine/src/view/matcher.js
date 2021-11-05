@@ -531,7 +531,7 @@ function matchStyles( patterns, element ) {
  *			name: 'figure',
  *			attributes: [
  *				'title',    // Match `title` attribute (can be empty).
- *				/^data-*$/, // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
+ *				/^data-*$/ // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
  *			]
  *		};
  *
@@ -541,7 +541,8 @@ function matchStyles( patterns, element ) {
  *			attributes: [
  *				{
  *					key: 'type',                     // Match `type` as an attribute key.
- *					value: /^(text|number|date)$/ }, // Match `text`, `number` or `date` values.
+ *					value: /^(text|number|date)$/	 // Match `text`, `number` or `date` values.
+ *				},
  *				{
  *					key: /^data-.*$/,                // Match attributes starting with `data-` e.g. `data-foo`.
  *					value: true                      // Match any value (can be empty).
@@ -584,7 +585,7 @@ function matchStyles( patterns, element ) {
  *			name: 'p',
  *			styles: [
  *				'color',      // Match `color` with any value.
- *				/^border.*$/, // Match all border properties.
+ *				/^border.*$/ // Match all border properties.
  *			]
  *		};
  *
@@ -593,8 +594,8 @@ function matchStyles( patterns, element ) {
  *			name: 'p',
  *			styles: [
  *				{
- *					key: 'color',                                    // Match `color` as an property key.
- *					value: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/, // Match RGB format only.
+ *					key: 'color',                                  		// Match `color` as an property key.
+ *					value: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/		// Match RGB format only.
  *				},
  *				{
  *					key: /^border.*$/, // Match any border style.
@@ -702,11 +703,9 @@ function matchStyles( patterns, element ) {
  * @typedef {String|RegExp|Object|Function} module:engine/view/matcher~MatcherPattern
  *
  * @property {String|RegExp} [name] View element name to match.
- * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [classes] View element's class name(s) to match.
- * @property {Boolean|Object} [styles] Object with key-value pairs representing styles to match.
- * Each object key represents style name. Value can be given as `String` or `RegExp`.
- * @property {Boolean|Object} [attributes] Object with key-value pairs representing attributes to match.
- * Each object key represents attribute name. Value can be given as `String` or `RegExp`.
+ * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [classes] View element's classes to match.
+ * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [styles] View element's styles to match.
+ * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [attributes] View element's attributes to match.
  */
 
 /**
