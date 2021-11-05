@@ -43,9 +43,6 @@ async function startStandardEditingMode() {
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'undo', 'redo'
 		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
-		},
 		table: {
 			contentToolbar: [
 				'tableColumn',

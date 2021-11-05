@@ -113,13 +113,18 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should allow to pass additional options', () => {
-			const element = writer.createAttributeElement( 'foo', attributes, { priority: 99, id: 'bar' } );
+			const element = writer.createAttributeElement( 'foo', attributes, {
+				priority: 99,
+				id: 'bar',
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			expect( element.priority ).to.equal( 99 );
 			expect( element.id ).to.equal( 'bar' );
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -142,11 +147,15 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should allow to pass additional options', () => {
-			const element = writer.createContainerElement( 'foo', attributes, { isAllowedInsideAttributeElement: true } );
+			const element = writer.createContainerElement( 'foo', attributes, {
+				isAllowedInsideAttributeElement: true,
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
 
 			expect( element.is( 'containerElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 
@@ -208,6 +217,14 @@ describe( 'DowncastWriter', () => {
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
 			assertElementAttributes( element, attributes );
 		} );
+
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createEditableElement( 'foo', attributes, {
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
+
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'createEmptyElement()', () => {
@@ -221,11 +238,15 @@ describe( 'DowncastWriter', () => {
 		} );
 
 		it( 'should allow to pass additional options', () => {
-			const element = writer.createEmptyElement( 'foo', attributes, { isAllowedInsideAttributeElement: false } );
+			const element = writer.createEmptyElement( 'foo', attributes, {
+				isAllowedInsideAttributeElement: false,
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
 
 			expect( element.is( 'emptyElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -296,11 +317,15 @@ describe( 'DowncastWriter', () => {
 
 		it( 'should allow to pass additional options', () => {
 			const renderFn = function() {};
-			const element = writer.createRawElement( 'foo', attributes, renderFn, { isAllowedInsideAttributeElement: false } );
+			const element = writer.createRawElement( 'foo', attributes, renderFn, {
+				isAllowedInsideAttributeElement: false,
+				renderUnsafeAttributes: [ 'baz' ]
+			} );
 
 			expect( element.is( 'rawElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.isAllowedInsideAttributeElement ).to.be.false;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
 			assertElementAttributes( element, attributes );
 		} );
 	} );

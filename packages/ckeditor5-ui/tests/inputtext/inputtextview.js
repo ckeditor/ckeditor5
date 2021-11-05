@@ -208,6 +208,16 @@ describe( 'InputTextView', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
+
 	describe( 'select()', () => {
 		it( 'should select input value', () => {
 			const selectSpy = sinon.spy( view.element, 'select' );

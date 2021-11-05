@@ -7,6 +7,8 @@
  * @module link/utils
  */
 
+/* global window */
+
 import { upperFirst } from 'lodash-es';
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g; // eslint-disable-line no-control-regex
@@ -170,4 +172,13 @@ export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
 	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( link );
 
 	return link && isProtocolNeeded ? protocol + link : link;
+}
+
+/**
+ * Opens the link in a new browser tab.
+ *
+ * @param {String} link
+ */
+export function openLink( link ) {
+	window.open( link, '_blank', 'noopener' );
 }

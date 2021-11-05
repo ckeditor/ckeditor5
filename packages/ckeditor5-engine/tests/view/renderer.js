@@ -4031,6 +4031,25 @@ describe( 'Renderer', () => {
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foo</p>' );
 			} );
 
+			it( 'should remove attributes that can affect editing pipeline unless permitted when the element was created', () => {
+				view.change( writer => {
+					const containerElement = writer.createContainerElement( 'p', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, {
+						renderUnsafeAttributes: [ 'onclick' ]
+					} );
+
+					writer.insert( writer.createPositionAt( containerElement, 'start' ), writer.createText( 'baz' ) );
+					writer.insert( writer.createPositionAt( view.document.getRoot(), 'start' ), containerElement );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p onclick="foo">baz</p>' );
+			} );
+
 			it( 'should remove attributes from the View that can are not present in the DOM', () => {
 				setViewData( view,
 					'<container:p>' +

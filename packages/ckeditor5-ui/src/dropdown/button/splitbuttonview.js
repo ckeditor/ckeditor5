@@ -156,6 +156,16 @@ export default class SplitButtonView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
 	 * Focuses the {@link #actionView#element} of the action part of split button.
 	 */
 	focus() {
