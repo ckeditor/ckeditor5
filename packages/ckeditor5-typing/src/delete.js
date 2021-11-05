@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
 import DeleteObserver from './deleteobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
@@ -105,26 +104,6 @@ export default class Delete extends Plugin {
 					domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );
 
 					domSelectionAfterDeletion = null;
-				}
-			} );
-		}
-
-		// Stop the `delete` event on Windows, if Shift + Delete key combination on a non-collapsed selection was pressed.
-		//
-		// The Shift + Delete key combination should work in the same way as the `cut` event on a non-collapsed selection on Windows.
-		// In fact, the native `cut` event is actually emitted in this case, but with a lower priority. Therefore, in order to handle the
-		// Shift + Delete key combination correctly on Windows, it is enough to stop the `delete` event to prevent the execution of the
-		// `DeleteCommand`. Additionally, stopping the `delete` event will cause the original `keydown` event to be stopped as well, so that
-		// {@link module:typing/utils/injectunsafekeystrokeshandling `injectUnsafeKeystrokesHandling()`} will not interfere.
-		//
-		// See https://github.com/ckeditor/ckeditor5/issues/9326.
-		if ( env.isWindows ) {
-			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-				const isShiftDelete = data.domEvent.shiftKey && data.domEvent.keyCode === keyCodes.delete;
-				const isNonCollapsedSelection = !viewDocument.selection.isCollapsed;
-
-				if ( isShiftDelete && isNonCollapsedSelection ) {
-					evt.stop();
 				}
 			} );
 		}
