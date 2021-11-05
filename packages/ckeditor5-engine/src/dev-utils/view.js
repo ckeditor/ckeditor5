@@ -39,6 +39,13 @@ const allowedTypes = {
 	'ui': UIElement,
 	'raw': RawElement
 };
+// Returns simplified implementation of {@link module:engine/view/domconverter~DomConverter#setContentOf DomConverter.setContentOf} method.
+// Used to render UIElement and RawElement.
+const domConverterStub = {
+	setContentOf: ( node, html ) => {
+		node.innerHTML = html;
+	}
+};
 
 /**
  * Writes the content of the {@link module:engine/view/document~Document document} to an HTML-like string.
@@ -59,6 +66,9 @@ const allowedTypes = {
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~RawElement} will be printed.
+ * @param {Object} [options.domConverter=null] When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+ * instance, it lets the conversion go through exactly the same flow the editing view is going through,
+ * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns {String} The stringified data.
  */
 export function getData( view, options = {} ) {
@@ -75,7 +85,8 @@ export function getData( view, options = {} ) {
 		showPriority: options.showPriority,
 		renderUIElements: options.renderUIElements,
 		renderRawElements: options.renderRawElements,
-		ignoreRoot: true
+		ignoreRoot: true,
+		domConverter: options.domConverter
 	};
 
 	return withoutSelection ?
@@ -241,6 +252,9 @@ setData._parse = parse;
  * {@link module:engine/view/uielement~UIElement} will be printed.
  * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
  * {@link module:engine/view/rawelement~RawElement} will be printed.
+ * @param {Object} [options.domConverter={}] When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+ * instance, it lets the conversion go through exactly the same flow the editing view is going through,
+ * i.e. with view data filtering. Otherwise the simple stub is used.
  * @returns {String} An HTML-like string representing the view.
  */
 export function stringify( node, selectionOrPositionOrRange = null, options = {} ) {
@@ -630,6 +644,9 @@ class ViewStringify {
 	 * @param {Boolean} [options.renderUIElements=false] When set to `true`, the inner content of each
 	 * {@link module:engine/view/uielement~UIElement} will be printed.
 	 * @param {Boolean} [options.renderRawElements=false] When set to `true`, the inner content of each
+	 * @param {Object} [options.domConverter={}] When set to an actual {@link module:engine/view/domconverter~DomConverter DomConverter}
+	 * instance, it lets the conversion go through exactly the same flow the editing view is going through,
+	 * i.e. with view data filtering. Otherwise the simple stub is used.
 	 * {@link module:engine/view/rawelement~RawElement} will be printed.
 	 */
 	constructor( root, selection, options ) {
@@ -648,6 +665,7 @@ class ViewStringify {
 		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
 		this.renderUIElements = !!options.renderUIElements;
 		this.renderRawElements = !!options.renderRawElements;
+		this.domConverter = options.domConverter || domConverterStub;
 	}
 
 	/**
@@ -681,12 +699,12 @@ class ViewStringify {
 			}
 
 			if ( ( this.renderUIElements && root.is( 'uiElement' ) ) ) {
-				callback( root.render( document ).innerHTML );
+				callback( root.render( document, this.domConverter ).innerHTML );
 			} else if ( this.renderRawElements && root.is( 'rawElement' ) ) {
 				// There's no DOM element for "root" to pass to render(). Creating
 				// a surrogate container to render the children instead.
 				const rawContentContainer = document.createElement( 'div' );
-				root.render( rawContentContainer );
+				root.render( rawContentContainer, this.domConverter );
 
 				callback( rawContentContainer.innerHTML );
 			} else {

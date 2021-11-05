@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 order: 30
-modified_at: 2021-08-24
+modified_at: 2021-10-25
 ---
 
 # Code style
@@ -929,7 +929,7 @@ It is allowed to import modules from other packages:
 import { toArray } from 'ckeditor5/src/utils';
 ```
 
-However, some packages cannot import modules from CKEditor 5 as it could lead to code duplication and errors in runtime. Hence the rule disables this kind of import.
+However, some packages cannot import modules from CKEditor 5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
 
 Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
 

@@ -383,7 +383,7 @@ describe( 'DowncastHelpers', () => {
 				expect( textAfter ).to.equal( textBefore );
 			} );
 
-			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block', allowIn: 'simpleBlock' } );
 				downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
 
@@ -393,7 +393,7 @@ describe( 'DowncastHelpers', () => {
 
 				model.change( writer => {
 					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
-					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+					model.document.differ._refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
 				} );
 
 				const [ viewAfter, paraAfter, textAfter ] = getNodes();
@@ -756,14 +756,14 @@ describe( 'DowncastHelpers', () => {
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
 			} );
 
-			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
 				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
 				model.change( writer => {
 					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
-					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+					model.document.differ._refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
 				} );
 
 				const [ viewAfter, paraAfter, textAfter ] = getNodes();
@@ -1306,14 +1306,14 @@ describe( 'DowncastHelpers', () => {
 				expect( textAfter, 'text' ).to.equal( textBefore );
 			} );
 
-			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
 				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
 				model.change( writer => {
 					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
-					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+					model.document.differ._refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
 				} );
 
 				const [ viewAfter, paraAfter, textAfter ] = getNodes();
@@ -1584,14 +1584,14 @@ describe( 'DowncastHelpers', () => {
 				expect( textAfterAfter1, 'text' ).to.equal( textAfter1 );
 			} );
 
-			it( 'should not reuse child view element if marked by Differ#refreshItem()', () => {
+			it( 'should not reuse child view element if marked by Differ#_refreshItem()', () => {
 				setModelData( model, '<simpleBlock toStyle="display:block"><paragraph>foo</paragraph></simpleBlock>' );
 
 				const [ viewBefore, paraBefore, textBefore ] = getNodes();
 
 				model.change( writer => {
 					writer.setAttribute( 'toStyle', 'display:inline', modelRoot.getChild( 0 ) );
-					model.document.differ.refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
+					model.document.differ._refreshItem( modelRoot.getChild( 0 ).getChild( 0 ) );
 				} );
 
 				const [ viewAfter, paraAfter, textAfter ] = getNodes();

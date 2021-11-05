@@ -18,9 +18,9 @@ import TableWalker from '../tablewalker';
  * When table headings attribute changes, all the cells/rows are marked to re-render to change between `<td>` and `<th>`.
  *
  * @param {module:engine/model/model~Model} model
- * @param {module:engine/conversion/mapper~Mapper} mapper
+ * @param {module:engine/controller/editingcontroller~EditingController} editing
  */
-export default function tableHeadingsRefreshHandler( model, mapper ) {
+export default function tableHeadingsRefreshHandler( model, editing ) {
 	const differ = model.document.differ;
 
 	for ( const change of differ.getChanges() ) {
@@ -58,10 +58,10 @@ export default function tableHeadingsRefreshHandler( model, mapper ) {
 			const isHeading = tableSlot.row < headingRows || tableSlot.column < headingColumns;
 			const expectedElementName = isHeading ? 'th' : 'td';
 
-			const viewElement = mapper.toViewElement( tableSlot.cell );
+			const viewElement = editing.mapper.toViewElement( tableSlot.cell );
 
 			if ( viewElement && viewElement.is( 'element' ) && viewElement.name != expectedElementName ) {
-				differ.refreshItem( isRowChange ? tableSlot.cell.parent : tableSlot.cell );
+				editing.reconvertItem( isRowChange ? tableSlot.cell.parent : tableSlot.cell );
 			}
 		}
 	}

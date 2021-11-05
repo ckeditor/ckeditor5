@@ -1136,4 +1136,26 @@ describe( 'Element', () => {
 			);
 		} );
 	} );
+
+	describe( 'shouldRenderUnsafeAttribute()', () => {
+		let element;
+
+		beforeEach( () => {
+			element = new Element( document, 'p' );
+		} );
+
+		it( 'should return true if the atribute name is among unsafe attributes', () => {
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
+
+			expect( element.shouldRenderUnsafeAttribute( 'foo' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'bar' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+		} );
+
+		it( 'should return false if the atribute name is not among unsafe attributes', () => {
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
+
+			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
+		} );
+	} );
 } );

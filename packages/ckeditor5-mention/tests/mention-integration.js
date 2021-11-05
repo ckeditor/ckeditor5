@@ -313,7 +313,7 @@ describe( 'Mention feature - integration', () => {
 						writer.setSelection( writer.createRangeOn( model.document.getRoot().getChild( 0 ).getChild( 0 ) ) );
 					} );
 
-					editor.editing.view.document.fire( 'click' );
+					editor.editing.view.document.fire( 'click', { domEvent: {} } );
 
 					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI

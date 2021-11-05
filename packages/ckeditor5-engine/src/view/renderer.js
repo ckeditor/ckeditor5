@@ -109,17 +109,19 @@ export default class Renderer {
 		 * When they stop selecting, the property goes back to `false`.
 		 *
 		 * Note: In some browsers, the renderer will stop rendering the selection and inline fillers while the user is making
-		 * a selection to avoid glitches in DOM selection (https://github.com/ckeditor/ckeditor5/issues/10562).
+		 * a selection to avoid glitches in DOM selection
+		 * (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
 		 *
 		 * @member {Boolean}
 		 * @observable
 		 */
 		this.set( 'isSelecting', false );
 
-		// Rendering the selection and inline filler manipulation should be postponed in Blink until the user finishes creating
-		// the selection in DOM to avoid accidental selection collapsing (https://github.com/ckeditor/ckeditor5/issues/10562).
-		// When the user stops, selecting, all pending changes should be rendered ASAP, though.
-		if ( env.isBlink ) {
+		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
+		// creating the selection in DOM to avoid accidental selection collapsing
+		// (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
+		// When the user stops selecting, all pending changes should be rendered ASAP, though.
+		if ( env.isBlink && !env.isAndroid ) {
 			this.on( 'change:isSelecting', () => {
 				if ( !this.isSelecting ) {
 					this.render();
@@ -196,15 +198,16 @@ export default class Renderer {
 	 */
 	render() {
 		let inlineFillerPosition;
-		const isInlineFillerRenderingPossible = env.isBlink ? !this.isSelecting : true;
+		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
 
 		// Refresh mappings.
 		for ( const element of this.markedChildren ) {
 			this._updateChildrenMappings( element );
 		}
 
-		// Don't manipulate inline fillers while the selection is being made in Blink to prevent accidental
-		// DOM selection collapsing (https://github.com/ckeditor/ckeditor5/issues/10562).
+		// Don't manipulate inline fillers while the selection is being made in (non-Android) Blink to prevent accidental
+		// DOM selection collapsing
+		// (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
 		if ( isInlineFillerRenderingPossible ) {
 			// There was inline filler rendered in the DOM but it's not
 			// at the selection position any more, so we can remove it
@@ -251,8 +254,9 @@ export default class Renderer {
 		//   For example, if the inline filler was deep in the created DOM structure, it will not be created.
 		//   Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
 		//   it will not be present. Fix those and similar scenarios.
-		// * Don't manipulate inline fillers while the selection is being made in Blink to prevent accidental
-		//   DOM selection collapsing (https://github.com/ckeditor/ckeditor5/issues/10562).
+		// * Don't manipulate inline fillers while the selection is being made in (non-Android) Blink to prevent accidental
+		//   DOM selection collapsing
+		//   (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
 		if ( isInlineFillerRenderingPossible ) {
 			if ( inlineFillerPosition ) {
 				const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
@@ -553,10 +557,10 @@ export default class Renderer {
 		for ( const key of viewAttrKeys ) {
 			const value = viewElement.getAttribute( key );
 
-			if ( !this.domConverter.shouldRenderAttribute( key, value ) ) {
-				domElement.removeAttribute( key );
-			} else {
+			if ( this.domConverter.shouldRenderAttribute( key, value ) || viewElement.shouldRenderUnsafeAttribute( key ) ) {
 				domElement.setAttribute( key, value );
+			} else {
+				domElement.removeAttribute( key );
 			}
 		}
 
@@ -736,11 +740,11 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
-		// Block updating DOM selection in Blink while the user is selecting to prevent accidental selection collapsing.
+		// Block updating DOM selection in (non-Android) Blink while the user is selecting to prevent accidental selection collapsing.
 		// Note: Structural changes in DOM must trigger selection rendering, though. Nodes the selection was anchored
-		// to may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
-		// https://github.com/ckeditor/ckeditor5/issues/10562
-		if ( env.isBlink && this.isSelecting && !this.markedChildren.size ) {
+		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
+		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
+		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
 			return;
 		}
 

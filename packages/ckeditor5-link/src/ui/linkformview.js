@@ -201,6 +201,16 @@ export default class LinkFormView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	focus() {

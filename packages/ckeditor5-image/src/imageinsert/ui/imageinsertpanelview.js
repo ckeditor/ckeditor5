@@ -204,6 +204,16 @@ export default class ImageInsertPanelView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
 	 * Returns a view of the integration.
 	 *
 	 * @param {String} name The name of the integration.

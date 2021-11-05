@@ -9,6 +9,7 @@
 
 .ck-source-editing-area {
 	position: relative;
+	overflow: hidden;
 }
 
 .ck-source-editing-area::after,

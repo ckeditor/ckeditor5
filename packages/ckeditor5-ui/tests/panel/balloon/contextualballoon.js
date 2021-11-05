@@ -707,6 +707,54 @@ describe( 'ContextualBalloon', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/10597
+		it( 'should respect viewportOffset#top config and allow to set it in runtime', () => {
+			const editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, ContextualBalloon ],
+					ui: {
+						viewportOffset: {
+							top: 100
+						}
+					}
+				} )
+				.then( newEditor => {
+					balloon = newEditor.plugins.get( ContextualBalloon );
+					sinon.stub( balloon.view, 'pin' ).returns( {} );
+
+					viewA = new View();
+					viewB = new View();
+
+					balloon.add( {
+						view: viewA,
+						position: {
+							target: 'fake'
+						}
+					} );
+
+					expect( balloon.view.pin.calledOnce );
+					expect( balloon.view.pin.firstCall.args[ 0 ].viewportOffsetConfig.top ).to.equal( 100 );
+
+					newEditor.ui.viewportOffset = { top: 200 };
+
+					balloon.add( {
+						view: viewB,
+						position: {
+							target: 'fake'
+						}
+					} );
+
+					expect( balloon.view.pin.calledTwice );
+					expect( balloon.view.pin.secondCall.args[ 0 ].viewportOffsetConfig.top ).to.equal( 200 );
+
+					newEditor.destroy();
+					editorElement.remove();
+				} );
+		} );
+
 		it( 'should throw an error when there is no given view in the stack', () => {
 			expectToThrowCKEditorError( () => {
 				balloon.remove( viewB );
@@ -726,6 +774,30 @@ describe( 'ContextualBalloon', () => {
 			balloon.destroy();
 
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.not.equal( -1 );
+		} );
+
+		it( 'should destroy the #view', () => {
+			const destroySpy = sinon.spy( balloon.view, 'destroy' );
+
+			balloon.destroy();
+
+			sinon.assert.called( destroySpy );
+		} );
+
+		it( 'should destroy the #_rotatorView', () => {
+			const destroySpy = sinon.spy( balloon._rotatorView, 'destroy' );
+
+			balloon.destroy();
+
+			sinon.assert.called( destroySpy );
+		} );
+
+		it( 'should destroy the #_fakePanelsView', () => {
+			const destroySpy = sinon.spy( balloon._rotatorView, 'destroy' );
+
+			balloon.destroy();
+
+			sinon.assert.called( destroySpy );
 		} );
 	} );
 
@@ -1033,6 +1105,16 @@ describe( 'ContextualBalloon', () => {
 					expect( rotatorView.buttonPrevView.labelView.element.textContent ).to.equal( 'Poprzedni' );
 					expect( rotatorView.buttonNextView.labelView.element.textContent ).to.equal( 'Następny' );
 				} );
+		} );
+
+		describe( 'destroy()', () => {
+			it( 'should destroy the FocusTracker instance', () => {
+				const destroySpy = sinon.spy( rotatorView.focusTracker, 'destroy' );
+
+				rotatorView.destroy();
+
+				sinon.assert.calledOnce( destroySpy );
+			} );
 		} );
 
 		describe( 'singleViewMode', () => {

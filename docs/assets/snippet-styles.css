@@ -289,3 +289,9 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 .live-snippet .document-editor {
 	margin: 1.5em 0;
 }
+
+/* https://github.com/ckeditor/ckeditor5/issues/10731 */
+.live-snippet .ck-source-editing-area textarea {
+	width: 100%;
+	overflow: auto;
+}

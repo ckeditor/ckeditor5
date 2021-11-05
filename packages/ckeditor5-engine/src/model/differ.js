@@ -100,7 +100,7 @@ export default class Differ {
 		this._cachedChangesWithGraveyard = null;
 
 		/**
-		 * Set of model items that were marked to get refreshed in {@link #refreshItem}.
+		 * Set of model items that were marked to get refreshed in {@link #_refreshItem}.
 		 *
 		 * @private
 		 * @type {Set.<module:engine/model/item~Item>}
@@ -116,34 +116,6 @@ export default class Differ {
 	 */
 	get isEmpty() {
 		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
-	}
-
-	/**
-	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
-	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
-	 *
-	 * @param {module:engine/model/item~Item} item Item to refresh.
-	 */
-	refreshItem( item ) {
-		if ( this._isInInsertedElement( item.parent ) ) {
-			return;
-		}
-
-		this._markRemove( item.parent, item.startOffset, item.offsetSize );
-		this._markInsert( item.parent, item.startOffset, item.offsetSize );
-
-		this._refreshedItems.add( item );
-
-		const range = Range._createOn( item );
-
-		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
-			const markerRange = marker.getRange();
-
-			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
-		}
-
-		// Clear cache after each buffered operation as it is no longer valid.
-		this._cachedChanges = null;
 	}
 
 	/**
@@ -577,6 +549,35 @@ export default class Differ {
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
 		this._refreshedItems = new Set();
+		this._cachedChanges = null;
+	}
+
+	/**
+	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
+	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 *
+	 * @protected
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
+	_refreshItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		this._refreshedItems.add( item );
+
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
 		this._cachedChanges = null;
 	}
 

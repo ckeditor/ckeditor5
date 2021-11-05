@@ -3,7 +3,6 @@
 category: builds-migration
 menu-title: Migration to v30.x
 order: 94
-modified_at: 2021-09-16
 ---
 
 # Migration to CKEditor 5 v30.0.0

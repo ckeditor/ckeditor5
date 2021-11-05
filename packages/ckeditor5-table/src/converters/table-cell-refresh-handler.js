@@ -19,9 +19,9 @@ import { isSingleParagraphWithoutAttributes } from './downcast';
  * re-rendered so it changes from `<span>` to `<p>`. The easiest way to do it is to re-render the entire table cell.
  *
  * @param {module:engine/model/model~Model} model
- * @param {module:engine/conversion/mapper~Mapper} mapper
+ * @param {module:engine/controller/editingcontroller~EditingController} editing
  */
-export default function tableCellRefreshHandler( model, mapper ) {
+export default function tableCellRefreshHandler( model, editing ) {
 	const differ = model.document.differ;
 
 	// Stores cells to be refreshed, so the table cell will be refreshed once for multiple changes.
@@ -36,10 +36,10 @@ export default function tableCellRefreshHandler( model, mapper ) {
 	}
 
 	for ( const tableCell of cellsToCheck.values() ) {
-		const paragraphsToRefresh = Array.from( tableCell.getChildren() ).filter( child => shouldRefresh( child, mapper ) );
+		const paragraphsToRefresh = Array.from( tableCell.getChildren() ).filter( child => shouldRefresh( child, editing.mapper ) );
 
 		for ( const paragraph of paragraphsToRefresh ) {
-			differ.refreshItem( paragraph );
+			editing.reconvertItem( paragraph );
 		}
 	}
 }

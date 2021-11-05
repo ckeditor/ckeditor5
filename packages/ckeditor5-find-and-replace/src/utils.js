@@ -150,7 +150,7 @@ export function findByTextCallback( searchTerm, options ) {
 		}
 
 		if ( !new RegExp( nonLetterGroup + '$' ).test( searchTerm ) ) {
-			regExpQuery = `${ regExpQuery }(?:_|${ nonLetterGroup }|$)`;
+			regExpQuery = `${ regExpQuery }(?=_|${ nonLetterGroup }|$)`;
 		}
 	}
 
