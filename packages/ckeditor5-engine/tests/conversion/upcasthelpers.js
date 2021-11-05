@@ -32,6 +32,7 @@ import { StylesProcessor } from '../../src/view/stylesmap';
 import Writer from '../../src/model/writer';
 
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 describe( 'UpcastHelpers', () => {
 	let upcastDispatcher, model, schema, upcastHelpers, viewDocument;
@@ -352,6 +353,29 @@ describe( 'UpcastHelpers', () => {
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'strong', { class: 'foo' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text attribB="true" bold="true">foo</$text>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10800
+		it( 'should consume element at a low-1 priority so that converters on lower priorities will not convert it', () => {
+			upcastHelpers.elementToAttribute( {
+				model: 'attribA',
+				view: { name: 'a', attributes: 'href' }
+			} );
+
+			upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+				if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+					return;
+				}
+
+				for ( const node of data.modelRange.getItems() ) {
+					conversionApi.writer.setAttribute( 'htmlA', 'true', node );
+				}
+			}, { priority: priorities.get( 'low' ) - 1 } );
+
+			expectResult(
+				new ViewAttributeElement( viewDocument, 'a', { href: 'foo' }, new ViewText( viewDocument, 'foo' ) ),
+				'<$text attribA="true">foo</$text>'
 			);
 		} );
 

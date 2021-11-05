@@ -1200,13 +1200,11 @@ describe( 'DataFilter', () => {
 
 		// Font feature should take over color CSS property.
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: '<paragraph><$text fontColor="blue" htmlSpan="(1)">foobar</$text></paragraph>',
-			attributes: {
-				1: {}
-			}
+			data: '<paragraph><$text fontColor="blue">foobar</$text></paragraph>',
+			attributes: {}
 		} );
 
-		expect( editor.getData() ).to.equal( '<p><span style="color:blue;"><span>foobar</span></span></p>' );
+		expect( editor.getData() ).to.equal( '<p><span style="color:blue;">foobar</span></p>' );
 	} );
 
 	describe( 'existing features', () => {

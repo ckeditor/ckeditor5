@@ -33,6 +33,7 @@ import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
@@ -46,9 +47,11 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PageBreak, HorizontalLine,
 			ImageUpload, CloudServices,
-			GeneralHtmlSupport
+			GeneralHtmlSupport, SourceEditing
 		],
 		toolbar: [
+			'sourceEditing',
+			'|',
 			'heading',
 			'|',
 			'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',

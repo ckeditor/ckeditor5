@@ -9,6 +9,7 @@
 
 import { toWidget } from 'ckeditor5/src/widget';
 import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
+import { priorities } from 'ckeditor5/src/utils';
 
 /**
  * View-to-model conversion helper for object elements.
@@ -111,7 +112,11 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 					conversionApi.writer.setAttribute( attributeKey, attributesToAdd, node );
 				}
 			}
-		}, { priority: 'low' } );
+		}, {
+			// With the low - 10 priority to execute after the element-to-attribute converters and their fallback converters
+			// for consuming the element itself so after consuming <a href="..."> both an attribute and the element should be consumed.
+			priority: priorities.get( 'low' ) - 10
+		} );
 	};
 }
 

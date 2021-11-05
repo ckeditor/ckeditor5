@@ -555,12 +555,23 @@ function upcastElementToAttribute( config ) {
 	normalizeModelAttributeConfig( config );
 
 	const converter = prepareToAttributeConverter( config, false );
+	const consumingConverter = prepareToAttributeConsumingConverter( config );
+
+	const converterPriority = config.converterPriority || 'low';
+	const consumingConverterPriority = Math.min( priorities.get( converterPriority ), priorities.get( 'low' ) ) - 1;
 
 	const elementName = getViewElementNameFromConfig( config.view );
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
-		dispatcher.on( eventName, converter, { priority: config.converterPriority || 'low' } );
+		dispatcher.on( eventName, converter, { priority: converterPriority } );
+
+		// Consume the element itself for element-to-attribute conversion so it won't get converted by any other converter
+		// since this element's whole purpose was to provide some attributes (for example <a href=""> or <span style="font-size: ...">).
+		//
+		// This is handled in a separate lower priority converter to allow element itself to be handled also.
+		// For example <bold class="..."> and <bold> itself.
+		dispatcher.on( eventName, consumingConverter, { priority: consumingConverterPriority } );
 	};
 }
 
@@ -872,27 +883,24 @@ function prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
-		const matchToTestConsumable = {
-			...match.match
-		};
-
 		if ( onlyViewNameIsDefined( config.view, data.viewItem ) ) {
-			matchToTestConsumable.name = true;
+			match.match.name = true;
 		} else {
 			// Do not test or consume `name` consumable.
-			delete matchToTestConsumable.name;
+			delete match.match.name;
 		}
 
 		// Try to consume appropriate values from consumable values list.
-		if ( !conversionApi.consumable.test( data.viewItem, matchToTestConsumable ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, match.match ) ) {
 			return;
 		}
 
 		const modelKey = config.model.key;
 		const modelValue = typeof config.model.value == 'function' ?
-			config.model.value( data.viewItem, conversionApi ) : config.model.value;
+			config.model.value( data.viewItem, conversionApi ) :
+			config.model.value;
 
-		// Do not convert if attribute building function returned falsy value.
+		// Do not convert if attribute building function returned null.
 		if ( modelValue === null ) {
 			return;
 		}
@@ -912,6 +920,33 @@ function prepareToAttributeConverter( config, shallow ) {
 		if ( attributeWasSet ) {
 			conversionApi.consumable.consume( data.viewItem, match.match );
 		}
+	};
+}
+
+// TODO
+function prepareToAttributeConsumingConverter( config ) {
+	const matcher = new Matcher( config.view );
+
+	return ( evt, data, conversionApi ) => {
+		const match = matcher.match( data.viewItem );
+
+		// If there is no match, this callback should not do anything.
+		if ( !match ) {
+			return;
+		}
+
+		const modelValue = typeof config.model.value == 'function' ?
+			config.model.value( data.viewItem, conversionApi ) :
+			config.model.value;
+
+		// An attribute building function returned null so it was not converted so should not be consumed.
+		if ( modelValue === null ) {
+			return;
+		}
+
+		// Consume the element itself for element-to-attribute conversion so it won't get converted by any other converter
+		// since this element's whole purpose was to provide some attributes (for example <a href=""> or <span style="font-size: ...">).
+		conversionApi.consumable.consume( data.viewItem, { name: true } );
 	};
 }
 
