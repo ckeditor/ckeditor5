@@ -89,6 +89,11 @@ export function viewToAttributeInlineConverter( { view: viewName, model: attribu
 		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
 			const viewAttributes = dataFilter._consumeAllowedAttributes( data.viewItem, conversionApi );
 
+			// Do not convert element itself if it was already consumed and does not have any not consumed attributes.
+			if ( !viewAttributes && !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+				return;
+			}
+
 			// Since we are converting to attribute we need a range on which we will set the attribute.
 			// If the range is not created yet, we will create it.
 			if ( !data.modelRange ) {

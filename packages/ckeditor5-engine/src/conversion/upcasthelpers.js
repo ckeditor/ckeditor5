@@ -872,15 +872,19 @@ function prepareToAttributeConverter( config, shallow ) {
 			return;
 		}
 
+		const matchToTestConsumable = {
+			...match.match
+		};
+
 		if ( onlyViewNameIsDefined( config.view, data.viewItem ) ) {
-			match.match.name = true;
+			matchToTestConsumable.name = true;
 		} else {
 			// Do not test or consume `name` consumable.
-			delete match.match.name;
+			delete matchToTestConsumable.name;
 		}
 
 		// Try to consume appropriate values from consumable values list.
-		if ( !conversionApi.consumable.test( data.viewItem, match.match ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, matchToTestConsumable ) ) {
 			return;
 		}
 
