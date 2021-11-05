@@ -110,7 +110,7 @@ export default class ListEditing extends Plugin {
 		// Fix indentation of pasted items.
 		editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
 
-		this.listenTo( editor.model.document, 'change:data', handleDataChange( editor.model, editor.editing.mapper ) );
+		this.listenTo( editor.model.document, 'change:data', handleDataChange( editor.model, editor.editing ) );
 
 		// Register commands for numbered and bulleted list.
 		editor.commands.add( 'numberedList', new ListCommand( editor, 'numbered' ) );
@@ -358,7 +358,7 @@ function createAttributesConsumer( model ) {
 	};
 }
 
-function handleDataChange( model, mapper ) {
+function handleDataChange( model, editing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
 
@@ -407,12 +407,12 @@ function handleDataChange( model, mapper ) {
 					break;
 				}
 
-				if ( !mapper.toViewElement( currentNode ) ) {
+				if ( !editing.mapper.toViewElement( currentNode ) ) {
 					continue;
 				}
 
 				// TODO this could trigger refreshAttribute( currentNode, 'listIndent' )
-				model.document.differ.refreshItem( currentNode );
+				editing.reconvertItem( currentNode );
 				console.log( '-- refresh item', currentNode.childCount ? currentNode.getChild( 0 ).data : currentNode );
 			}
 		}
