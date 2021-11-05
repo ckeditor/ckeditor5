@@ -23,7 +23,7 @@ Use the demo below to toggle between editing modes and test the feature.
 {@snippet features/read-only}
 
 <info-box>
-	You can see that after switching to read-only mode, some of the toolbar items are still active and functional. This is not a bug. It happens thanks to the {@link module:core/editor/command~Command#affectsData `affectsData` property}. For most of the plugins, it is set to `true` by default, which makes them inactive when entering read-only mode. However, for those plugins that do not make any changes in the model, it is set to `false`, thus allowing to still make use of them in modes with restricted user write permissions.
+	You can see that after switching to read-only mode, some of the toolbar items are still active and functional. This is not a bug. It happens thanks to the {@link module:core/command~Command#affectsData `affectsData` property}. For most of the plugins, it is set to `true` by default, which makes them inactive when entering read-only mode. However, for those plugins that do not make any changes in the model, it is set to `false`, thus allowing to still make use of them in modes with restricted user write permissions.
 </info-box>
 
 ## Hiding toolbar in read-only mode
