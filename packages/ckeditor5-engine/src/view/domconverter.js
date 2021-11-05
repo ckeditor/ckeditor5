@@ -253,12 +253,16 @@ export default class DomConverter {
 			return true;
 		}
 
-		if ( attributeKey.toLowerCase().startsWith( 'on' ) || attributeKey.toLowerCase() === 'contenteditable' ) {
+		attributeKey = attributeKey.toLowerCase();
+
+		if ( attributeKey.startsWith( 'on' ) || attributeKey === 'contenteditable' ) {
 			return false;
 		}
 
-		if ( attributeKey.toLowerCase() === 'srcdoc' &&
-			attributeValue.match( /\bon\S+\s*=|javascript:|<\s*\/*script/i ) ) {
+		if (
+			attributeKey === 'srcdoc' &&
+			attributeValue.match( /\bon\S+\s*=|javascript:|<\s*\/*script/i )
+		) {
 			return false;
 		}
 
