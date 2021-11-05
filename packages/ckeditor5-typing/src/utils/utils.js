@@ -9,6 +9,7 @@
 
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
  * Returns true if container children have mutated or more than a single text node was changed.
@@ -82,4 +83,26 @@ export function compareChildNodes( oldChild, newChild ) {
 	} else {
 		return oldChild === newChild;
 	}
+}
+
+/**
+ * Checks if <kbd>Shift</kbd> + <kbd>Delete</kbd> keystroke was pressed on a non-collapsed selection.
+ *
+ * This key combination has a special meaning on Windows machines and it should work in the same way as the `cut` event on a non-collapsed
+ * selection.
+ *
+ * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData Event data.
+ * @returns {Boolean}
+ */
+export function isShiftDeleteOnNonCollapsedSelection( domEventData ) {
+	const selection = domEventData.document && domEventData.document.selection;
+
+	if ( !selection ) {
+		return false;
+	}
+
+	const isShiftDelete = domEventData.shiftKey && domEventData.keyCode === keyCodes.delete;
+	const isNonCollapsedSelection = !selection.isCollapsed;
+
+	return isShiftDelete && isNonCollapsedSelection;
 }

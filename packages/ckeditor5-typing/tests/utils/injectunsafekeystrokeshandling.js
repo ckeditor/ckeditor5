@@ -5,8 +5,10 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes, getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { isNonTypingKeystroke } from '../../src/utils/injectunsafekeystrokeshandling';
 import Typing from '../../src/typing';
 
@@ -128,6 +130,33 @@ describe( 'unsafe keystroke handling utils', () => {
 			function getCurrentBatch() {
 				return editor.model.change( writer => writer.batch );
 			}
+		} );
+
+		describe( 'handling Shift + Delete on Windows', () => {
+			let oldEnvIsWindows;
+
+			before( () => {
+				oldEnvIsWindows = env.isWindows;
+				env.isWindows = true;
+			} );
+
+			after( () => {
+				env.isWindows = oldEnvIsWindows;
+			} );
+
+			it( 'should not delete the selected content', () => {
+				setData( model, '<paragraph>[foo]</paragraph>' );
+
+				const keydownEvent = new EventInfo( editor.editing.view.document, 'keydown' );
+
+				editor.editing.view.document.fire( keydownEvent, new DomEventData( editor.editing.view, {}, {
+					preventDefault: () => {},
+					keyCode: getCode( 'delete' ),
+					shiftKey: true
+				} ) );
+
+				expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+			} );
 		} );
 	} );
 } );

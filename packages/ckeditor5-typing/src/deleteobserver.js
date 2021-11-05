@@ -12,6 +12,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { isShiftDeleteOnNonCollapsedSelection } from './utils/utils';
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
@@ -35,17 +36,12 @@ export default class DeleteObserver extends Observer {
 		} );
 
 		document.on( 'keydown', ( evt, data ) => {
-			// Do not fire the `delete` event on Windows, if Shift + Delete key combination on a non-collapsed selection was pressed.
+			// Do not fire the `delete` event, if Shift + Delete key combination was pressed on a non-collapsed selection on Windows.
 			//
 			// The Shift + Delete key combination should work in the same way as the `cut` event on a non-collapsed selection on Windows.
 			// In fact, the native `cut` event is actually emitted in this case, but with lower priority. Therefore, in order to handle the
-			// Shift + Delete key combination correctly, it is enough not to emit the `delete` event and stop the original `keydown` event,
-			// so that {@link module:typing/utils/injectunsafekeystrokeshandling `injectUnsafeKeystrokesHandling()`} will not interfere.
-			//
-			// See https://github.com/ckeditor/ckeditor5/issues/9326.
-			if ( env.isWindows && this._isShiftDelete( data ) && this._isNonCollapsedSelection( data ) ) {
-				evt.stop();
-
+			// Shift + Delete key combination correctly, it is enough not to emit the `delete` event.
+			if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( data ) ) {
 				return;
 			}
 
@@ -114,27 +110,6 @@ export default class DeleteObserver extends Observer {
 	 * @inheritDoc
 	 */
 	observe() {}
-
-	/**
-	 * Checks if <kbd>Shift</kbd> + <kbd>Delete</kbd> keystroke was pressed.
-	 *
-	 * @private
-	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData Event data.
-	 * @returns {Boolean}
-	 */
-	_isShiftDelete( domEventData ) {
-		return domEventData.shiftKey && domEventData.keyCode === keyCodes.delete;
-	}
-
-	/**
-	 * Indicates whether the view selection is not collapsed.
-	 *
-	 * @private
-	 * @returns {Boolean}
-	 */
-	_isNonCollapsedSelection() {
-		return !this.view.document.selection.isCollapsed;
-	}
 }
 
 /**
