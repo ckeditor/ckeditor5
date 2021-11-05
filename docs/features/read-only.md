@@ -18,17 +18,17 @@ The feature may also be used to view content that should not be edited, like fin
 
 ## Demo
 
-Use the demo below to toggle between editing modes and test the feature.
+Use the demo below to toggle between editing modes and test the feature. Some features, like exports or search, are still functional even in the read-only mode. While the search is available, the replace function, however, is disabled, as changing the content is blocked.
 
 {@snippet features/read-only}
 
 <info-box>
-	You can see that after switching to read-only mode, some of the toolbar items are still active and functional. This is not a bug. It happens thanks to the {@link module:core/command~Command#affectsData `affectsData` property}. For most of the plugins, it is set to `true` by default, which makes them inactive when entering read-only mode. However, for those plugins that do not make any changes in the model, it is set to `false`, thus allowing to still make use of them in modes with restricted user write permissions.
+	You can see that after switching to read-only mode, some of the toolbar items are still active and functional. It happens thanks to the {@link module:core/command~Command#affectsData `affectsData` property}. For most of the plugins, it is set to `true` by default, which makes them inactive when entering read-only mode. However, for those plugins that do not make any changes in the model &ndash; do not affect the content &ndash; it is set to `false`, thus allowing to still make use of them in modes with restricted user write permissions.
 </info-box>
 
 ## Hiding toolbar in read-only mode
 
-Some use cases might require hiding the editor toolbar when entering read-only mode. This can be achieved easily with the following code:
+Some use cases might require hiding the editor toolbar when entering the read-only mode. This can be achieved easily with the following code:
 
 ```js
 ClassicEditor
@@ -53,7 +53,7 @@ ClassicEditor
 
 When the button is clicked, the property `editor.isReadOnly` is set to `true`. This triggers the code showed above, which in turn removes the toolbar. After clicking the button again and setting `editor.isReadOnly` to `false`, the code adds the toolbar to the editor again.
 
-Use the button below to see this code in action:
+Use the demo below to see this code in action, toggle read-only mode together with the editor's toolbar with the dedicated button.
 
 {@snippet features/read-only-hide-toolbar}
 
@@ -62,5 +62,4 @@ Use the button below to see this code in action:
 There are more features that help control user permissions in the WYSIWYG editor:
 
 * {@link features/restricted-editing Restricted editing} &ndash; Define editable areas of the document for users with restricted editing rights.
-* {@link features/track-changes Track changes} &ndash; User changes are marked in the content and shown as suggestions in the sidebar for acceptance or rejection.
-* {@link features/comments Comments} &ndash; Users can add comments to any part of the content instead of editing it directly.
+* {@link features/comments-only-mode Comments-only mode} &ndash; Users can add comments to any part of the content instead of editing it directly.
