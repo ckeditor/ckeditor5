@@ -790,6 +790,30 @@ describe( 'TableElementSupport', () => {
 		expect( editor.getData() ).to.equal( expectedHtml );
 	} );
 
+	it( 'should not double convert figure element', () => {
+		dataFilter.loadAllowedConfig( [ {
+			name: /^.*$/,
+			styles: true,
+			attributes: true,
+			classes: true
+		} ] );
+
+		const expectedHtml =
+			'<figure class="table">' +
+				'<table>' +
+					'<tbody>' +
+						'<tr>' +
+							'<td>foo</td>' +
+						'</tr>' +
+					'</tbody>' +
+				'</table>' +
+			'</figure>';
+
+		editor.setData( expectedHtml );
+
+		expect( editor.getData() ).to.equal( expectedHtml );
+	} );
+
 	it( 'should not consume attributes already consumed (downcast)', () => {
 		[
 			'htmlAttributes',
