@@ -12,6 +12,7 @@
 import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
+import { UNSAFE_ATTRIBUTE_NAME_PREFIX, UNSAFE_ELEMENT_ATTRIBUTE_REPLACEMENT } from './domconverter';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -560,14 +561,17 @@ export default class Renderer {
 			if ( this.domConverter.shouldRenderAttribute( key, value ) || viewElement.shouldRenderUnsafeAttribute( key ) ) {
 				domElement.setAttribute( key, value );
 			} else {
+				// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
+				// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
 				domElement.removeAttribute( key );
+				domElement.setAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
 			}
 		}
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
 			// Do not remove attributes on `script` elements with special data attributes `data-ck-unsafe-element`.
-			if ( viewElement.name === 'script' && key === 'data-ck-unsafe-element' ) {
+			if ( viewElement.name === 'script' && key === UNSAFE_ELEMENT_ATTRIBUTE_REPLACEMENT ) {
 				continue;
 			}
 

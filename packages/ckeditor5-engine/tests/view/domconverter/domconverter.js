@@ -593,8 +593,11 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-onclick="foobar">bar' +
 							'</span>' +
 							'</div>'
 					},
@@ -607,8 +610,11 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-value="javascript:baz">bar' +
 							'</span>' +
 							'</div>'
 					},
@@ -621,8 +627,11 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-value="data:application/html">bar' +
 							'</span>' +
 							'</div>'
 					},
@@ -635,8 +644,11 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-value="<script>baz</script>">bar' +
 							'</span>' +
 							'</div>'
 					}

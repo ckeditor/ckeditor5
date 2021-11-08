@@ -4018,7 +4018,7 @@ describe( 'Renderer', () => {
 				delete window.spy;
 			} );
 
-			it( 'should remove attributes that can affect editing pipeline', () => {
+			it( 'should rename attributes that can affect editing pipeline', () => {
 				setViewData( view,
 					'<container:p onclick="test">' +
 						'foo' +
@@ -4028,10 +4028,10 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="test">foo</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foo</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="test">foo</p>' );
 			} );
 
-			it( 'should remove attributes that can affect editing pipeline unless permitted when the element was created', () => {
+			it( 'should rename attributes that can affect editing pipeline unless permitted when the element was created', () => {
 				view.change( writer => {
 					const containerElement = writer.createContainerElement( 'p', {
 						onclick: 'foo',
@@ -4047,10 +4047,12 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p onclick="foo">baz</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+					'<p data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</p>'
+				);
 			} );
 
-			it( 'should remove attributes from the View that can are not present in the DOM', () => {
+			it( 'should rename attributes that can not be rendered in the editing pipeline', () => {
 				setViewData( view,
 					'<container:p>' +
 						'bar' +
@@ -4066,7 +4068,7 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="foo">bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="foo">bar</p>' );
 			} );
 
 			it( 'should remove attributes not present in the DOM if the view node is just a script element', () => {

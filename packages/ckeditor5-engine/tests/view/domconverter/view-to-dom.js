@@ -238,7 +238,8 @@ describe( 'DomConverter', () => {
 
 				expect( domP ).to.be.an.instanceof( HTMLElement );
 				expect( domP.tagName ).to.equal( 'P' );
-				expect( domP.attributes.length ).to.equal( 0 );
+				expect( domP.attributes.length ).to.equal( 1 );
+				expect( domP.dataset.ckUnsafeAttributeOnclick ).to.equal( 'bar' );
 
 				expect( domP.childNodes.length ).to.equal( 2 );
 				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
@@ -292,7 +293,9 @@ describe( 'DomConverter', () => {
 						onkeydown: 'bar'
 					}, { renderUnsafeAttributes: [ 'onclick' ] } );
 
-					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<span onclick="foo"></span>' );
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal(
+						'<span onclick="foo" data-ck-unsafe-attribute-onkeydown="bar"></span>'
+					);
 				} );
 
 				it( 'should not be rejected when set on container elements', () => {
@@ -303,7 +306,9 @@ describe( 'DomConverter', () => {
 
 					viewElement.getFillerOffset = () => null;
 
-					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo"></p>' );
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal(
+						'<p onclick="foo" data-ck-unsafe-attribute-onkeydown="bar"></p>'
+					);
 				} );
 
 				it( 'should not be rejected when set on editable elements', () => {
@@ -314,7 +319,9 @@ describe( 'DomConverter', () => {
 
 					viewElement.getFillerOffset = () => null;
 
-					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<div onclick="foo"></div>' );
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal(
+						'<div onclick="foo" data-ck-unsafe-attribute-onkeydown="bar"></div>'
+					);
 				} );
 
 				it( 'should not be rejected when set on empty elements', () => {
@@ -323,7 +330,9 @@ describe( 'DomConverter', () => {
 						onkeydown: 'bar'
 					}, { renderUnsafeAttributes: [ 'onclick' ] } );
 
-					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<img onclick="foo">' );
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal(
+						'<img onclick="foo" data-ck-unsafe-attribute-onkeydown="bar">'
+					);
 				} );
 
 				it( 'should not be rejected when set on raw elements', () => {
@@ -336,7 +345,9 @@ describe( 'DomConverter', () => {
 						renderUnsafeAttributes: [ 'onclick' ]
 					} );
 
-					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal( '<p onclick="foo">foo</p>' );
+					expect( converter.viewToDom( viewElement, document ).outerHTML ).to.equal(
+						'<p onclick="foo" data-ck-unsafe-attribute-onkeydown="bar">foo</p>'
+					);
 				} );
 			} );
 		} );

@@ -33,6 +33,22 @@ const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 
 /**
+ * A prefix added to attribute names that are considered unsafe to render in the editing pipeline.
+ *
+ * @protected
+ * @type {String}
+ */
+export const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
+
+/**
+ * A name of the attribute that represents the fact an unsafe `<script>` element was replaced in the editing pipeline.
+ *
+ * @protected
+ * @type {String}
+ */
+export const UNSAFE_ELEMENT_ATTRIBUTE_REPLACEMENT = 'data-ck-unsafe-element';
+
+/**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
  * {@link module:engine/view/domconverter~DomConverter#bindElements bindings} between these nodes.
  *
@@ -296,8 +312,11 @@ export default class DomConverter {
 			for ( const attributeName of currentNode.getAttributeNames() ) {
 				const attributeValue = currentNode.getAttribute( attributeName );
 
+				// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
+				// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
 				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
 					currentNode.removeAttribute( attributeName );
+					currentNode.setAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + attributeName, attributeValue );
 				}
 			}
 
@@ -384,10 +403,13 @@ export default class DomConverter {
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
 					const value = viewNode.getAttribute( key );
+					const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) || viewNode.shouldRenderUnsafeAttribute( key );
 
-					if ( this.shouldRenderAttribute( key, value ) || viewNode.shouldRenderUnsafeAttribute( key ) ) {
-						domElement.setAttribute( key, value );
-					}
+					// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
+					// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
+					const attributeName = shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key;
+
+					domElement.setAttribute( attributeName, value );
 				}
 			}
 
@@ -1500,7 +1522,7 @@ export default class DomConverter {
 		const newDomElement = document.createElement( 'span' );
 
 		// Mark the span replacing a script as hidden.
-		newDomElement.setAttribute( 'data-ck-unsafe-element', elementName );
+		newDomElement.setAttribute( UNSAFE_ELEMENT_ATTRIBUTE_REPLACEMENT, elementName );
 
 		if ( originalDomElement ) {
 			while ( originalDomElement.firstChild ) {
