@@ -368,14 +368,29 @@ describe( 'UpcastHelpers', () => {
 					return;
 				}
 
-				for ( const node of data.modelRange.getItems() ) {
-					conversionApi.writer.setAttribute( 'htmlA', 'true', node );
-				}
+				conversionApi.writer.setAttribute( 'htmlA', 'true', data.modelRange );
 			}, { priority: priorities.get( 'low' ) - 1 } );
 
 			expectResult(
 				new ViewAttributeElement( viewDocument, 'a', { href: 'foo' }, new ViewText( viewDocument, 'foo' ) ),
 				'<$text attribA="true">foo</$text>'
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10800
+		it( 'should convert children even if some custom converter consumed attributes without triggering children conversion', () => {
+			upcastHelpers.elementToAttribute( {
+				model: 'attribA',
+				view: { name: 'a', attributes: 'href' }
+			} );
+
+			upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { attributes: [ 'href' ] } );
+			}, { priority: 'high' } );
+
+			expectResult(
+				new ViewAttributeElement( viewDocument, 'a', { href: 'foo' }, new ViewText( viewDocument, 'foo' ) ),
+				'foo'
 			);
 		} );
 
