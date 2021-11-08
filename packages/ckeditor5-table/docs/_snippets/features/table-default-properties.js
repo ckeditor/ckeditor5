@@ -39,6 +39,11 @@ ClassicEditor
 				'imageTextAlternative'
 			]
 		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
 		placeholder: 'Insert the new table with the default styles applied.'
 	} )
 	.then( editor => {
