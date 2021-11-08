@@ -49,6 +49,11 @@ async function startStandardEditingMode() {
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} );
 }
@@ -56,7 +61,12 @@ async function startStandardEditingMode() {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
-		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ]
+		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ],
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} );
 }
 
