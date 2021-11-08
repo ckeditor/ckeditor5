@@ -4,6 +4,6 @@
  */
 
 /* Elements marked by the Renderer as hidden should be invisible in the editor. */
-.ck.ck-editor__editable span[data-ck-hidden] {
+.ck.ck-editor__editable span[data-ck-unsafe-element] {
 	display: none;
 }

@@ -656,7 +656,7 @@ describe( 'DomConverter', () => {
 				converter.setContentOf( element, html );
 
 				expect( element.innerHTML ).to.equal(
-					'<div>foo<span data-ck-hidden="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+					'<div>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
 				);
 			} );
 		} );

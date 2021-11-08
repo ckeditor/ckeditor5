@@ -4013,7 +4013,7 @@ describe( 'Renderer', () => {
 
 				expect( window.spy.calledOnce ).to.be.false;
 				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-hidden="script">spy()</span>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="script">spy()</span>' );
 
 				delete window.spy;
 			} );
@@ -4086,28 +4086,29 @@ describe( 'Renderer', () => {
 
 				expect( getViewData( view ) ).to.equal( '<script>bar</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
-					'<span data-ck-hidden="script">bar</span>'
+					'<span data-ck-unsafe-element="script">bar</span>'
 				);
 			} );
 
-			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-hidden attribute', () => {
-				setViewData( view,
-					'<container:p data-ck-hidden="foo">' +
-						'bar' +
-					'</container:p>'
-				);
+			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-unsafe-element attribute',
+				() => {
+					setViewData( view,
+						'<container:p data-ck-unsafe-element="foo">' +
+							'bar' +
+						'</container:p>'
+					);
 
-				view.forceRender();
+					view.forceRender();
 
-				view.change( writer => {
-					writer.removeAttribute( 'data-ck-hidden', viewRoot.getChild( 0 ) );
+					view.change( writer => {
+						writer.removeAttribute( 'data-ck-unsafe-element', viewRoot.getChild( 0 ) );
+					} );
+
+					view.forceRender();
+
+					expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
+					expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
 				} );
-
-				view.forceRender();
-
-				expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
-			} );
 		} );
 	} );
 

@@ -270,7 +270,7 @@ describe( 'DomConverter', () => {
 
 				expect( domP.childNodes.length ).to.equal( 2 );
 				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
-				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-hidden' ) ).to.equal( 'script' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'script' );
 				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
 			} );
 

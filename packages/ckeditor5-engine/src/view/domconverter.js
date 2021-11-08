@@ -1500,7 +1500,7 @@ export default class DomConverter {
 		const newDomElement = document.createElement( 'span' );
 
 		// Mark the span replacing a script as hidden.
-		newDomElement.setAttribute( 'data-ck-hidden', elementName );
+		newDomElement.setAttribute( 'data-ck-unsafe-element', elementName );
 
 		if ( originalDomElement ) {
 			while ( originalDomElement.firstChild ) {
