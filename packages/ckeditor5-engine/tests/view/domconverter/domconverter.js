@@ -464,6 +464,11 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.true;
 		} );
 
+		it( 'allow all Base64-encoded content', () => {
+			// Notice, that the Base64 string starts with `on` and ends with `=` which could led to false positives.
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/jpeg;base64,onZm9vonFy=' ) ).to.be.true;
+		} );
+
 		it( 'should reject certain attributes in the editing pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything' ) ).to.be.true;
