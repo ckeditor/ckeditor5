@@ -25,7 +25,7 @@ The easiest way to use CKEditor 5 in your Vue.js application is by choosing one 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
 <info-box>
-	The {@link features/watchdog watchdog feature}, which is available for {@link builds/guides/frameworks/react React} and {@link builds/guides/frameworks/angular Angular} integrations, is not supported in Vue yet.
+	The {@link features/watchdog watchdog feature} is available for the {@link builds/guides/frameworks/react React} and {@link builds/guides/frameworks/angular Angular} integrations, but is not supported in Vue yet.
 </info-box>
 
 ## Quick start
