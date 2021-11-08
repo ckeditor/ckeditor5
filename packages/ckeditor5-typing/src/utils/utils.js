@@ -92,15 +92,11 @@ export function compareChildNodes( oldChild, newChild ) {
  * selection.
  *
  * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData Event data.
+ * @param {module:engine/view/document~Document} document The document instance on which the event has been fired.
  * @returns {Boolean}
  */
-export function isShiftDeleteOnNonCollapsedSelection( domEventData ) {
-	const selection = domEventData.document && domEventData.document.selection;
-
-	if ( !selection ) {
-		return false;
-	}
-
+export function isShiftDeleteOnNonCollapsedSelection( domEventData, document ) {
+	const selection = document.selection;
 	const isShiftDelete = domEventData.shiftKey && domEventData.keyCode === keyCodes.delete;
 	const isNonCollapsedSelection = !selection.isCollapsed;
 

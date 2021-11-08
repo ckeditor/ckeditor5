@@ -55,7 +55,7 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 		// The Shift + Delete key combination should work in the same way as the `cut` event on a non-collapsed selection on Windows.
 		// In fact, the native `cut` event is actually emitted in this case, but with lower priority. Therefore, in order to handle the
 		// Shift + Delete key combination correctly, it is enough to prevent the content deletion here.
-		if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( evtData ) ) {
+		if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( evtData, view.document ) ) {
 			return;
 		}
 

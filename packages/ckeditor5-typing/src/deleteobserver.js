@@ -41,7 +41,7 @@ export default class DeleteObserver extends Observer {
 			// The Shift + Delete key combination should work in the same way as the `cut` event on a non-collapsed selection on Windows.
 			// In fact, the native `cut` event is actually emitted in this case, but with lower priority. Therefore, in order to handle the
 			// Shift + Delete key combination correctly, it is enough not to emit the `delete` event.
-			if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( data ) ) {
+			if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( data, document ) ) {
 				return;
 			}
 
