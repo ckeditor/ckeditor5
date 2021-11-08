@@ -944,6 +944,13 @@ function prepareToAttributeConsumingConverter( config ) {
 			return;
 		}
 
+		// We need to convert children if some higher priority converter did not convert them.
+		// After the element got consumed the default handler for converting children will not trigger.
+		if ( !data.modelRange ) {
+			// Convert children and set conversion result as a current data.
+			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
+
 		// Consume the element itself for element-to-attribute conversion so it won't get converted by any other converter
 		// since this element's whole purpose was to provide some attributes (for example <a href=""> or <span style="font-size: ...">).
 		conversionApi.consumable.consume( data.viewItem, { name: true } );
