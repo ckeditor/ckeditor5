@@ -255,7 +255,7 @@ export default class DomConverter {
 
 		attributeKey = attributeKey.toLowerCase();
 
-		if ( attributeKey.startsWith( 'on' ) || attributeKey === 'contenteditable' ) {
+		if ( attributeKey.startsWith( 'on' ) ) {
 			return false;
 		}
 

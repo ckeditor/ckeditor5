@@ -447,10 +447,12 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.false;
+
+			// Make sure it's rendered in the editing mode.
+			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
 
 			converter.renderingMode = 'data';
 
@@ -479,7 +481,6 @@ describe( 'DomConverter', () => {
 
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'ONCLICK', 'anything' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'JAVASCRIPT:something' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
@@ -677,7 +678,7 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>'
