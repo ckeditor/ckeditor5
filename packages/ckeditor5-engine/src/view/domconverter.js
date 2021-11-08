@@ -253,10 +253,24 @@ export default class DomConverter {
 			return true;
 		}
 
-		return !( attributeKey.toLowerCase().startsWith( 'on' ) ||
-			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
-			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
-		);
+		attributeKey = attributeKey.toLowerCase();
+
+		if ( attributeKey.startsWith( 'on' ) || attributeKey === 'contenteditable' ) {
+			return false;
+		}
+
+		if (
+			attributeKey === 'srcdoc' &&
+			attributeValue.match( /\bon\S+\s*=|javascript:|<\s*\/*script/i )
+		) {
+			return false;
+		}
+
+		if ( attributeValue.match( /^\s*javascript:|data:(image\/svg|text\/x?html)/i ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
