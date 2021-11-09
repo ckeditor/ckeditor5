@@ -21,7 +21,7 @@ Predefined CKEditor 5 builds are ready-to-use installations aimed at specific ne
 
 ## CKEditor 5 online builder
 
-The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an installation tool, that lets you download custom-made CKEditor 5 builds. It allows you to create your own, customized packages with a different set of plugins in a few easy steps, through a simple and intuitive UI.
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an installation tool that lets you download custom-made CKEditor 5 builds. It allows you to create your own, customized packages with a different set of plugins in a few easy steps, through a simple and intuitive UI.
 
 ## Installing CKEditor 5 from scratch
 
