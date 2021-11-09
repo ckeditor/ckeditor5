@@ -45,7 +45,7 @@ export default class LinkImageEditing extends Plugin {
 		}
 
 		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-			schema.extend( 'imageInline', { allowAttributes: [ 'linkHref' ] } );
+			schema.extend( 'imageInline', { allowAttributesOf: '$text' } );
 		}
 
 		editor.conversion.for( 'upcast' ).add( upcastLink( editor ) );
@@ -256,6 +256,7 @@ function downcastImageLinkManualDecorator( decorator ) {
 // @private
 // @returns {Function}
 function upcastImageLinkManualDecorator( editor, decorator ) {
+	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
@@ -266,6 +267,12 @@ function upcastImageLinkManualDecorator( editor, decorator ) {
 			// We need to check whether an image is inside a link because the converter handles
 			// only manual decorators for linked images. See #7975.
 			if ( !imageInLink ) {
+				return;
+			}
+
+			const blockImageView = imageInLink.findAncestor( element => imageUtils.isBlockImageView( element ) );
+
+			if ( isImageInlinePluginLoaded && !blockImageView ) {
 				return;
 			}
 
