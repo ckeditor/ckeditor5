@@ -44,10 +44,6 @@ export default class LinkImageEditing extends Plugin {
 			schema.extend( 'imageBlock', { allowAttributes: [ 'linkHref' ] } );
 		}
 
-		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-			schema.extend( 'imageInline', { allowAttributesOf: '$text' } );
-		}
-
 		editor.conversion.for( 'upcast' ).add( upcastLink( editor ) );
 		editor.conversion.for( 'downcast' ).add( downcastImageLink( editor ) );
 
