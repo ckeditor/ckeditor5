@@ -410,7 +410,16 @@ export default class DomConverter {
 	}
 
 	/**
-	 * TODO
+	 * Sets the attribute on a DOM element.
+	 *
+	 * **Note**: To remove the attribute, use {@link #removeDomElementAttribute}.
+	 *
+	 * @param {HTMLElement} domElement The DOM element the attribute should be set on.
+	 * @param {String} key The name of the attribute
+	 * @param {String} value The value of the attribute
+	 * @param {module:engine/view/element~Element} [relatedViewElement] The view element related to the `domElement` (if there is any).
+	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via
+	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
 	 */
 	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
 		this.removeDomElementAttribute( domElement, key );
@@ -420,20 +429,26 @@ export default class DomConverter {
 
 		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
 		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
-		const attributeName = shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key;
-
-		domElement.setAttribute( attributeName, value );
+		domElement.setAttribute( shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
 	}
 
 	/**
-	 * TODO
+	 * Removes an attribute from a DOM element.
+	 *
+	 * **Note**: To set the attribute, use {@link #setDomElementAttribute}.
+	 *
+	 * @param {HTMLElement} domElement The DOM element the attribute should be removed from.
+	 * @param {String} key The name of the attribute.
 	 */
 	removeDomElementAttribute( domElement, key ) {
+		// See #_createReplacementDomElement() to learn what this is.
 		if ( key == UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE ) {
 			return;
 		}
 
 		domElement.removeAttribute( key );
+
+		// See setDomElementAttribute() to learn what this is.
 		domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
 	}
 
