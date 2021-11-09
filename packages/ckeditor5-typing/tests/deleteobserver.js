@@ -261,6 +261,162 @@ describe( 'DeleteObserver', () => {
 	}
 } );
 
+describe( 'DeleteObserver - handling Shift + Delete on Windows', () => {
+	let domElement, view, viewDocument, viewRoot, onDeleteEventSpy;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		domElement = document.createElement( 'div', {
+			contenteditable: 'true'
+		} );
+
+		document.body.appendChild( domElement );
+
+		view = new View();
+		viewDocument = view.document;
+		view.addObserver( DeleteObserver );
+
+		viewRoot = createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+
+		view.change( writer => {
+			const p = writer.createContainerElement( 'p' );
+			const text = writer.createText( 'foo' );
+
+			writer.insert( writer.createPositionAt( viewRoot, 0 ), p );
+			writer.insert( writer.createPositionAt( p, 0 ), text );
+		} );
+
+		onDeleteEventSpy = sinon.spy();
+
+		viewDocument.on( 'delete', onDeleteEventSpy );
+	} );
+
+	afterEach( () => {
+		view.destroy();
+		domElement.remove();
+	} );
+
+	describe( 'on Windows', () => {
+		beforeEach( () => {
+			testUtils.sinon.stub( env, 'isWindows' ).value( true );
+		} );
+
+		describe( 'Shift + Delete is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {}, {
+					keyCode: getCode( 'delete' ),
+					shiftKey: true
+				} );
+			} );
+
+			it( 'should not fire the delete event on non-collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'in' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.false;
+			} );
+
+			it( 'should fire the delete event on collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'end' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+		} );
+
+		describe( 'Only Delete is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {}, {
+					keyCode: getCode( 'delete' )
+				} );
+			} );
+
+			it( 'should fire the delete event on non-collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'in' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+
+			it( 'should fire the delete event on collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'end' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+		} );
+
+		describe( 'Backspace is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {}, {
+					keyCode: getCode( 'backspace' )
+				} );
+			} );
+
+			it( 'should fire the delete event on non-collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'in' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+
+			it( 'should fire the delete event on collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'end' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'on non-Windows', () => {
+		beforeEach( () => {
+			testUtils.sinon.stub( env, 'isWindows' ).value( false );
+		} );
+
+		it( 'should fire the delete event if Shift + Delete is pressed on non-collapsed selection', () => {
+			const domEventData = new DomEventData( view, {}, {
+				keyCode: getCode( 'delete' ),
+				shiftKey: true
+			} );
+
+			view.change( writer => {
+				writer.setSelection( viewRoot, 'in' );
+			} );
+
+			viewDocument.fire( 'keydown', domEventData );
+
+			expect( onDeleteEventSpy.called ).to.be.true;
+		} );
+	} );
+} );
+
 describe( 'DeleteObserver - Android', () => {
 	let view, viewDocument, oldEnvIsAndroid, domElement, viewRoot, domText;
 
