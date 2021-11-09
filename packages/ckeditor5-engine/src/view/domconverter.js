@@ -395,7 +395,7 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					this.setDomElementAttribute( domElement, key, viewNode.getAttribute( key ) );
+					this.setDomElementAttribute( domElement, key, viewNode.getAttribute( key ), viewNode );
 				}
 			}
 
@@ -412,11 +412,11 @@ export default class DomConverter {
 	/**
 	 * TODO
 	 */
-	setDomElementAttribute( domElement, key, value ) {
+	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
 		this.removeDomElementAttribute( domElement, key );
 
-		const viewNode = this._domToViewMapping.get( domElement );
-		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) || viewNode && viewNode.shouldRenderUnsafeAttribute( key );
+		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) ||
+			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
 
 		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
 		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
@@ -429,12 +429,9 @@ export default class DomConverter {
 	 * TODO
 	 */
 	removeDomElementAttribute( domElement, key ) {
-		if ( this._shouldRenameElement( domElement.tagName ) && key == UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE ) {
+		if ( key == UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE ) {
 			return;
 		}
-
-		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
-		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
 
 		domElement.removeAttribute( key );
 		domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );

@@ -555,7 +555,7 @@ export default class Renderer {
 
 		// Add or overwrite attributes.
 		for ( const key of viewAttrKeys ) {
-			this.domConverter.setDomElementAttribute( domElement, key, viewElement.getAttribute( key ) );
+			this.domConverter.setDomElementAttribute( domElement, key, viewElement.getAttribute( key ), viewElement );
 		}
 
 		// Remove from DOM attributes which do not exists in the view.

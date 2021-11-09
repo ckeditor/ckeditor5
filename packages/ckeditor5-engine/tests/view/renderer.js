@@ -4091,26 +4091,6 @@ describe( 'Renderer', () => {
 					'<span data-ck-unsafe-element="script">bar</span>'
 				);
 			} );
-
-			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-unsafe-element attribute',
-				() => {
-					setViewData( view,
-						'<container:p data-ck-unsafe-element="foo">' +
-							'bar' +
-						'</container:p>'
-					);
-
-					view.forceRender();
-
-					view.change( writer => {
-						writer.removeAttribute( 'data-ck-unsafe-element', viewRoot.getChild( 0 ) );
-					} );
-
-					view.forceRender();
-
-					expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
-					expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
-				} );
 		} );
 	} );
 
