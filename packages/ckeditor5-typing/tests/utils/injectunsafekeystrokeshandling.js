@@ -132,27 +132,91 @@ describe( 'unsafe keystroke handling utils', () => {
 		} );
 
 		describe( 'handling Shift + Delete on Windows', () => {
-			let oldEnvIsWindows;
+			let view, viewDocument, oldEnvIsWindows;
 
-			before( () => {
-				oldEnvIsWindows = env.isWindows;
-				env.isWindows = true;
+			beforeEach( () => {
+				view = editor.editing.view;
+				viewDocument = view.document;
 			} );
 
-			after( () => {
-				env.isWindows = oldEnvIsWindows;
+			describe( 'on Windows', () => {
+				before( () => {
+					oldEnvIsWindows = env.isWindows;
+					env.isWindows = true;
+				} );
+
+				after( () => {
+					env.isWindows = oldEnvIsWindows;
+				} );
+
+				it( 'should not delete the selected content if Shift + Delete is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'delete' ),
+						shiftKey: true
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+				} );
+
+				it( 'should delete the selected content if only Delete is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'delete' )
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
+
+				it( 'should delete the selected content if Backspace is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'backspace' )
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
 			} );
 
-			it( 'should not delete the selected content', () => {
-				setData( model, '<paragraph>[foo]</paragraph>' );
+			describe( 'on non-Windows', () => {
+				before( () => {
+					oldEnvIsWindows = env.isWindows;
+					env.isWindows = false;
+				} );
 
-				editor.editing.view.document.fire( 'keydown', new DomEventData( editor.editing.view, {}, {
-					preventDefault: () => {},
-					keyCode: getCode( 'delete' ),
-					shiftKey: true
-				} ) );
+				after( () => {
+					env.isWindows = oldEnvIsWindows;
+				} );
 
-				expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+				it( 'should delete the selected content if Shift + Delete is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'delete' ),
+						shiftKey: true
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
 			} );
 		} );
 	} );

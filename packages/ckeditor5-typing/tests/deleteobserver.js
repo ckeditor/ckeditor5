@@ -267,8 +267,6 @@ describe( 'DeleteObserver - handling Shift + Delete on Windows', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
-		testUtils.sinon.stub( env, 'isWindows' ).value( true );
-
 		domElement = document.createElement( 'div', {
 			contenteditable: 'true'
 		} );
@@ -300,59 +298,116 @@ describe( 'DeleteObserver - handling Shift + Delete on Windows', () => {
 		domElement.remove();
 	} );
 
-	describe( 'Shift + Delete is pressed', () => {
-		let domEventData;
-
+	describe( 'on Windows', () => {
 		beforeEach( () => {
-			domEventData = new DomEventData( view, {}, {
-				keyCode: getCode( 'delete' ),
-				shiftKey: true
+			testUtils.sinon.stub( env, 'isWindows' ).value( true );
+		} );
+
+		describe( 'Shift + Delete is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {}, {
+					keyCode: getCode( 'delete' ),
+					shiftKey: true
+				} );
+			} );
+
+			it( 'should not fire the delete event on non-collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'in' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.false;
+			} );
+
+			it( 'should fire the delete event on collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'end' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
 			} );
 		} );
 
-		it( 'should not fire the delete event on non-collapsed selection', () => {
-			view.change( writer => {
-				writer.setSelection( viewRoot, 'in' );
+		describe( 'Only Delete is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {}, {
+					keyCode: getCode( 'delete' )
+				} );
 			} );
 
-			viewDocument.fire( 'keydown', domEventData );
+			it( 'should fire the delete event on non-collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'in' );
+				} );
 
-			expect( onDeleteEventSpy.called ).to.be.false;
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+
+			it( 'should fire the delete event on collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'end' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
 		} );
 
-		it( 'should fire the delete event on collapsed selection', () => {
-			view.change( writer => {
-				writer.setSelection( viewRoot, 'end' );
+		describe( 'Backspace is pressed', () => {
+			let domEventData;
+
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {}, {
+					keyCode: getCode( 'backspace' )
+				} );
 			} );
 
-			viewDocument.fire( 'keydown', domEventData );
+			it( 'should fire the delete event on non-collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'in' );
+				} );
 
-			expect( onDeleteEventSpy.called ).to.be.true;
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
+
+			it( 'should fire the delete event on collapsed selection', () => {
+				view.change( writer => {
+					writer.setSelection( viewRoot, 'end' );
+				} );
+
+				viewDocument.fire( 'keydown', domEventData );
+
+				expect( onDeleteEventSpy.called ).to.be.true;
+			} );
 		} );
 	} );
 
-	describe( 'Only Delete is pressed', () => {
-		let domEventData;
-
+	describe( 'on non-Windows', () => {
 		beforeEach( () => {
-			domEventData = new DomEventData( view, {}, {
-				keyCode: getCode( 'delete' )
-			} );
+			testUtils.sinon.stub( env, 'isWindows' ).value( false );
 		} );
 
-		it( 'should fire the delete event on non-collapsed selection', () => {
+		it( 'should fire the delete event if Shift + Delete is pressed on non-collapsed selection', () => {
+			const domEventData = new DomEventData( view, {}, {
+				keyCode: getCode( 'delete' ),
+				shiftKey: true
+			} );
+
 			view.change( writer => {
 				writer.setSelection( viewRoot, 'in' );
-			} );
-
-			viewDocument.fire( 'keydown', domEventData );
-
-			expect( onDeleteEventSpy.called ).to.be.true;
-		} );
-
-		it( 'should fire the delete event on collapsed selection', () => {
-			view.change( writer => {
-				writer.setSelection( viewRoot, 'end' );
 			} );
 
 			viewDocument.fire( 'keydown', domEventData );
