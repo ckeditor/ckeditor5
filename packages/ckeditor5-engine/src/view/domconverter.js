@@ -422,10 +422,15 @@ export default class DomConverter {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
 	 */
 	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
-		this.removeDomElementAttribute( domElement, key );
-
 		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) ||
 			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
+
+		// See #_createReplacementDomElement() to learn what this is.
+		if ( domElement.hasAttribute( key ) && !shouldRenderAttribute ) {
+			domElement.removeAttribute( key );
+		} else if ( domElement.hasAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key ) && shouldRenderAttribute ) {
+			domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
+		}
 
 		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
 		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
