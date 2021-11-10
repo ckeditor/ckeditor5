@@ -419,13 +419,20 @@ export default class DomConverter {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
 	 */
 	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
-		this.removeDomElementAttribute( domElement, key );
-
 		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) ||
 			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
 
 		if ( !shouldRenderAttribute ) {
 			logWarning( 'domconverter-unsafe-attribute-detected', { domElement, key, value } );
+		}
+
+		// The old value was safe but the new value is unsafe.
+		if ( domElement.hasAttribute( key ) && !shouldRenderAttribute ) {
+			domElement.removeAttribute( key );
+		}
+		// The old value was unsafe (but prefixed) but the new value will be safe (will be unprefixed).
+		else if ( domElement.hasAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key ) && shouldRenderAttribute ) {
+			domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
 		}
 
 		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what

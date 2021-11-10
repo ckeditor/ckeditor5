@@ -720,12 +720,38 @@ describe( 'DomConverter', () => {
 			expect( domElement.outerHTML ).to.equal( '<p foo="bar"></p>' );
 		} );
 
+		it( 'should not remove while overriding it\'s value (the plain value of an attribute)', () => {
+			const domElement = document.createElement( 'p' );
+
+			domElement.setAttribute( 'foo', '123' );
+
+			const spy = sinon.spy( domElement, 'removeAttribute' );
+
+			converter.setDomElementAttribute( domElement, 'foo', 'bar' );
+
+			expect( domElement.outerHTML ).to.equal( '<p foo="bar"></p>' );
+			expect( spy.callCount ).to.equal( 0 );
+		} );
+
 		it( 'should render the prefixed value of an attribute if considered unsafe', () => {
 			const domElement = document.createElement( 'p' );
 
 			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
 
 			expect( domElement.outerHTML ).to.equal( '<p data-ck-unsafe-attribute-onclick="bar"></p>' );
+		} );
+
+		it( 'should not remove while overriding it\'s value (the value considered unsafe)', () => {
+			const domElement = document.createElement( 'p' );
+
+			domElement.setAttribute( 'data-ck-unsafe-attribute-onclick', '123' );
+
+			const spy = sinon.spy( domElement, 'removeAttribute' );
+
+			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
+
+			expect( domElement.outerHTML ).to.equal( '<p data-ck-unsafe-attribute-onclick="bar"></p>' );
+			expect( spy.callCount ).to.equal( 0 );
 		} );
 
 		it( 'should render the plain attribute if unsafe but declaratively permitted on the related view element', () => {
