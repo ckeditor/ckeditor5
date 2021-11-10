@@ -32,14 +32,14 @@ Available modifiers for the command are:
 
 After successfully creating the new package, enter it by executing the following command:
 
-```
-// assuming that your package was created with `ckeditor5-foo` as its name
+```bash
+# Assuming that your package was created with `ckeditor5-foo` as its name.
 cd ckeditor5-foo
 ```
 
 Then run the test environment for the plugin by executing:
 
-```
+```bash
 npm run start
 ```
 
@@ -51,32 +51,40 @@ An overview of the project's directory structure:
 
 ```plain-text
 ├─ sample
-│  ├─ dll.html         # The editor initialized using the DLL builds.
-│  ├─ index.html       # The sample file.
-│  └─ ckeditor.js      # The editor initialization script.
+│  ├─ dll.html             # The editor initialized using the DLL builds.
+│  ├─ index.html           # The sample file.
+│  └─ ckeditor.js          # The editor initialization script.
 ├─ src
-│  ├─ index.js         # The modules exported by the package when using the DLL builds.
-│  ├─ myplugin.js      # The plugin that shows the very basic usage of the CKEditor 5 framework.
-│  └─ **/*.js          # All JavaScript source files should be saved here.
+│  ├─ index.js             # The modules exported by the package when using the DLL builds.
+│  ├─ myplugin.js          # Very basic plugin that utilizes the CKEditor 5 framework.
+│  └─ **/*.js              # All JavaScript source files should be saved here.
 ├─ tests
-│  ├─ index.js         # Tests for the plugin.
+│  ├─ index.js             # Tests for the plugin.
 │  ├─ myplugin.js
-│  └─ **/*.js          # All tests should be saved here.
+│  └─ **/*.js              # All tests should be saved here.
 ├─ theme
 │  ├─ icons
-│  │  ├─ ckeditor.svg  # The CKEditor 5 icon displayed in the toolbar.
-│  │  └─ **/*.svg      # All icon files should be saved here.
-│  └─ **/*.css         # All CSS files should be saved here.
+│  │  ├─ ckeditor.svg      # The CKEditor 5 icon displayed in the toolbar.
+│  │  └─ **/*.svg          # All icon files should be saved here.
+│  └─ **/*.css             # All CSS files should be saved here.
 │
-├─ .editorconfig       # See https://editorconfig.org/ for details.
-├─ .eslintrc.js        # ESLint configuration file.
-├─ .gitattributes      # See https://git-scm.com/docs/gitattributes for details.
-├─ .gitignore          # See https://git-scm.com/docs/gitignore for details.
-├─ .stylelintrc        # Stylelint configuration file.
-├─ LICENSE.md          # All packages created with the tool are available under the MIT license.
-├─ package.json        # See https://docs.npmjs.com/cli/v7/configuring-npm/package-json for details.
-└─ README.md           # Description of your project and usage instructions.
+├─ .editorconfig           # See link below for details.
+├─ .eslintrc.js            # ESLint configuration file.
+├─ .gitattributes          # See link below for details.
+├─ .gitignore              # See link below for details.
+├─ .stylelintrc            # Stylelint configuration file.
+├─ ckeditor5-metadata.json # See link below for details.
+├─ LICENSE.md              # All created packages fall under the MIT license.
+├─ package.json            # See link below for details.
+└─ README.md               # Description of your project and usage instructions.
 ```
+
+Guides for developing some files:
+* [.editorconfig](https://editorconfig.org/)
+* [.gitattributes](https://git-scm.com/docs/gitattributes)
+* [.gitignore](https://git-scm.com/docs/gitignore)
+* {@link framework/guides/contributing/package-metadata ckeditor5-metadata.json}
+* [package.json](https://docs.npmjs.com/cli/v7/configuring-npm/package-json)
 
 ## Npm scripts
 

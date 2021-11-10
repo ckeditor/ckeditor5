@@ -161,6 +161,15 @@ export default class InputTextView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+	}
+
+	/**
 	 * Moves the focus to the input and selects the value.
 	 */
 	select() {

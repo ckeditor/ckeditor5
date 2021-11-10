@@ -26,6 +26,14 @@ const env = {
 	isMac: isMac( userAgent ),
 
 	/**
+	 * Indicates that the application is running on Windows.
+	 *
+	 * @static
+	 * @type {Boolean}
+	 */
+	isWindows: isWindows( userAgent ),
+
+	/**
 	 * Indicates that the application is running in Firefox (Gecko).
 	 *
 	 * @static
@@ -93,6 +101,16 @@ export default env;
  */
 export function isMac( userAgent ) {
 	return userAgent.indexOf( 'macintosh' ) > -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is running on Windows.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is running on Windows or not.
+ */
+export function isWindows( userAgent ) {
+	return userAgent.indexOf( 'windows' ) > -1;
 }
 
 /**

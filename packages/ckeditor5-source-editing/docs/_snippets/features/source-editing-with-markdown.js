@@ -62,6 +62,11 @@ ClassicEditor
 				},
 				{ name: 'script' }
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

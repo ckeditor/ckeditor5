@@ -43,15 +43,17 @@ async function startStandardEditingMode() {
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'undo', 'redo'
 		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
-		},
 		table: {
 			contentToolbar: [
 				'tableColumn',
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} );
 }
@@ -59,7 +61,12 @@ async function startStandardEditingMode() {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
-		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ]
+		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ],
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} );
 }
 

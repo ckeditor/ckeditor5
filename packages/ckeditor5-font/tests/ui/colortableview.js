@@ -145,6 +145,24 @@ describe( 'ColorTableView', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( colorTableView.focusTracker, 'destroy' );
+
+			colorTableView.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( colorTableView.keystrokes, 'destroy' );
+
+			colorTableView.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
+
 	describe( 'focus tracker', () => {
 		it( 'should focus first child of colorTableView in DOM', () => {
 			const spy = sinon.spy( colorTableView._focusCycler, 'focusFirst' );

@@ -673,6 +673,24 @@ describe( 'FindAndReplaceFormView', () => {
 		} );
 	} );
 
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view._focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view._keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+	} );
+
 	describe( 'focus()', () => {
 		it( 'should focus the #findInputView', () => {
 			const spy = sinon.spy( view._findInputView, 'focus' );
