@@ -36,13 +36,13 @@ ClassicEditor
 		// ...
 	} )
 	.then( editor => {
-		const toolbarContainer = editor.ui.view.stickyPanel;
+		const toolbarElement = editor.ui.view.toolbar.element;
 
 		editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
 			if ( isReadOnly ) {
-				editor.ui.view.top.remove( toolbarContainer );
+				toolbarElement.style.display = 'none';
 			} else {
-				editor.ui.view.top.add( toolbarContainer );
+				toolbarElement.style.display = 'flex';
 			}
 		} );
 	} )
@@ -51,7 +51,7 @@ ClassicEditor
 	} );
 ```
 
-When the button is clicked, the property `editor.isReadOnly` is set to `true`. This triggers the code showed above, which in turn removes the toolbar. After clicking the button again and setting `editor.isReadOnly` to `false`, the code adds the toolbar to the editor again.
+When the button is clicked, the property `editor.isReadOnly` is set to `true`. This triggers the code showed above, which in turn hides the toolbar using CSS styles. After clicking the button once more and setting `editor.isReadOnly` to `false`, the toolbar is visible again. This approach will work both for classic and decoupled editors.
 
 Use the demo below to see this code in action, toggle read-only mode together with the editor's toolbar with the dedicated button.
 

@@ -27,13 +27,13 @@ ClassicEditor
 			button.innerText = editor.isReadOnly ? 'Switch to editable mode' : 'Switch to read-only mode';
 		} );
 
-		const toolbarContainer = editor.ui.view.stickyPanel;
+		const toolbarElement = editor.ui.view.toolbar.element;
 
 		editor.on( 'change:isReadOnly', ( evt, propertyName, isReadOnly ) => {
 			if ( isReadOnly ) {
-				editor.ui.view.top.remove( toolbarContainer );
+				toolbarElement.style.display = 'none';
 			} else {
-				editor.ui.view.top.add( toolbarContainer );
+				toolbarElement.style.display = 'flex';
 			}
 		} );
 	} )
