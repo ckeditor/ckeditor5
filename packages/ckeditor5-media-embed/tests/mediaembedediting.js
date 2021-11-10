@@ -1062,7 +1062,6 @@ describe( 'MediaEmbedEditing', () => {
 						provider
 					]
 				} ).then( editor => {
-					editor.editing.view.domConverter.experimentalRenderingMode = true;
 					editor.setData( '<figure class="media"><div data-oembed-url="foo.com"></div></figure>' );
 
 					expect( getViewData( editor.editing.view, {

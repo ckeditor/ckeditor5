@@ -231,7 +231,6 @@ describe( 'DomConverter', () => {
 					renderingMode: 'editing'
 				} );
 
-				converter.experimentalRenderingMode = true;
 				converter.bindElements( domImg, viewImg );
 
 				const domP = converter.viewToDom( viewP, document );
@@ -260,7 +259,6 @@ describe( 'DomConverter', () => {
 				converter = new DomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
-				converter.experimentalRenderingMode = true;
 
 				const domP = converter.viewToDom( viewP, document );
 
@@ -283,8 +281,6 @@ describe( 'DomConverter', () => {
 					converter = new DomConverter( viewDocument, {
 						renderingMode: 'editing'
 					} );
-
-					converter.experimentalRenderingMode = true;
 				} );
 
 				it( 'should not be rejected when set on attribute elements', () => {

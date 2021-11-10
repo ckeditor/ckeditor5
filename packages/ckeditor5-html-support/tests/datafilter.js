@@ -188,8 +188,6 @@ describe( 'DataFilter', () => {
 				'</paragraph>'
 			);
 
-			editor.editing.view.domConverter.experimentalRenderingMode = true;
-
 			expect( getViewData( editor.editing.view, {
 				withoutSelection: true,
 				renderRawElements: true,
@@ -202,14 +200,6 @@ describe( 'DataFilter', () => {
 							'Your browser does not support the video tag.' +
 						'</video>' +
 					'</span>' +
-				'</p>'
-			);
-
-			editor.editing.view.domConverter.experimentalRenderingMode = false;
-
-			expect( editor.getData() ).to.equal( '<p><video>' +
-				'<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
-					'Your browser does not support the video tag.</video>' +
 				'</p>'
 			);
 		} );

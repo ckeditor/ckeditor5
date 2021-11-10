@@ -24,6 +24,7 @@ import {
 } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
@@ -73,14 +74,6 @@ export default class DomConverter {
 		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderingMode
 		 */
 		this.renderingMode = options.renderingMode || 'editing';
-
-		/**
-		 * Main switch for new rendering approach in the editing view.
-		 *
-		 * @protected
-		 * @member {Boolean}
-		 */
-		this.experimentalRenderingMode = false;
 
 		/**
 		 * The mode of a block filler used by the DOM converter.
@@ -251,7 +244,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
+		if ( this.renderingMode === 'data' ) {
 			return true;
 		}
 
@@ -283,7 +276,7 @@ export default class DomConverter {
 	 */
 	setContentOf( domElement, html ) {
 		// For data pipeline we pass the HTML as-is.
-		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
+		if ( this.renderingMode === 'data' ) {
 			domElement.innerHTML = html;
 
 			return;
@@ -317,6 +310,8 @@ export default class DomConverter {
 
 			// There are certain nodes, that should be renamed to <span> in editing pipeline.
 			if ( this._shouldRenameElement( elementName ) ) {
+				logWarning( 'domconverter-unsafe-element-detected', { unsafeElement: currentNode } );
+
 				currentNode.replaceWith( this._createReplacementDomElement( elementName, currentNode ) );
 			}
 		}
@@ -376,6 +371,8 @@ export default class DomConverter {
 			} else {
 				// Create DOM element.
 				if ( this._shouldRenameElement( viewNode.name ) ) {
+					logWarning( 'domconverter-unsafe-element-detected', { unsafeElement: viewNode } );
+
 					domElement = this._createReplacementDomElement( viewNode.name );
 				} else if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
@@ -426,6 +423,10 @@ export default class DomConverter {
 
 		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) ||
 			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
+
+		if ( !shouldRenderAttribute ) {
+			logWarning( 'domconverter-unsafe-attribute-detected', { domElement, key, value } );
+		}
 
 		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
 		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
@@ -1535,7 +1536,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.experimentalRenderingMode && this.renderingMode == 'editing' && elementName.toLowerCase() == 'script';
+		return this.renderingMode == 'editing' && elementName.toLowerCase() == 'script';
 	}
 
 	/**
@@ -1626,4 +1627,33 @@ function hasBlockParent( domNode, blockElements ) {
  * used in the data.
  *
  * @typedef {String} module:engine/view/filler~BlockFillerMode
+ */
+
+/**
+ * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element in the
+ * {@link framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
+ * the users of CKEditor. To minimize the risk, the `<script>` element was renamed to a
+ * `<span data-ck-unsafe-element="script"></span>`.
+ *
+ * If you are the author of the plugin that generated this `<script>` and you want it to be preserved
+ * in the editing pipeline (because you know it is safe), please refer to the {@link TODO official guide}.
+ *
+ * @error domconverter-unsafe-element-detected
+ * @param {module:engine/model/element~Element|HTMLElement} unsafeElement The editing view or DOM element
+ * that was replaced.
+ */
+
+/**
+ * The {@link module:engine/view/domconverter~DomConverter} detected an attribute in the
+ * {@link framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
+ * the users of CKEditor. To minimize the risk, the attribute was renamed to
+ * `data-ck-unsafe-attribute-[original attribute name]`.
+ *
+ * If you are the author of the plugin that generated this attribute and you want it to be preserved
+ * in the editing pipeline (because you know it is safe), please refer to the {@link TODO official guide}.
+ *
+ * @error domconverter-unsafe-attribute-detected
+ * @param {HTMLElement} domElement The DOM element the attribute was set on.
+ * @param {String} key The original name of the attribute
+ * @param {String} value The value of the original attribute
  */

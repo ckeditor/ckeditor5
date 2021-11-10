@@ -3975,7 +3975,6 @@ describe( 'Renderer', () => {
 
 			beforeEach( () => {
 				view = new View( new StylesProcessor() );
-				view.domConverter.experimentalRenderingMode = true;
 
 				viewDoc = view.document;
 				domRoot = document.createElement( 'div' );

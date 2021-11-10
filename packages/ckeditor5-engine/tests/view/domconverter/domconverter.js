@@ -436,14 +436,6 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'shouldRenderAttribute()', () => {
-		beforeEach( () => {
-			converter.experimentalRenderingMode = true;
-		} );
-
-		afterEach( () => {
-			converter.experimentalRenderingMode = false;
-		} );
-
 		it( 'should allow all in data pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
@@ -602,14 +594,6 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'editing pipeline', () => {
-			beforeEach( () => {
-				converter.experimentalRenderingMode = true;
-			} );
-
-			afterEach( () => {
-				converter.experimentalRenderingMode = false;
-			} );
-
 			it( 'should replace certain unsafe attributes', () => {
 				const element = document.createElement( 'p' );
 
@@ -726,12 +710,6 @@ describe( 'DomConverter', () => {
 			converter = new DomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
-
-			converter.experimentalRenderingMode = true;
-		} );
-
-		afterEach( () => {
-			converter.experimentalRenderingMode = false;
 		} );
 
 		it( 'should set the plain value of an attribute', () => {
@@ -783,14 +761,6 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'removeDomElementAttribute()', () => {
-		beforeEach( () => {
-			converter.experimentalRenderingMode = true;
-		} );
-
-		afterEach( () => {
-			converter.experimentalRenderingMode = false;
-		} );
-
 		it( 'should remove the plain attribute value', () => {
 			const domElement = document.createElement( 'img' );
 
