@@ -1072,7 +1072,7 @@ describe( 'MediaEmbedEditing', () => {
 					} ) ).to.equal(
 						'<figure class="ck-widget media" contenteditable="false">' +
 							'<div class="ck-media__wrapper" data-oembed-url="https://foo.com">' +
-								'<div>foo</div>' +
+								'<div data-ck-unsafe-attribute-onclick="action()">foo</div>' +
 							'</div>' +
 						'</figure>'
 					);

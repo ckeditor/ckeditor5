@@ -31,6 +31,8 @@ import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
+const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
+const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
 
 /**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -308,11 +310,7 @@ export default class DomConverter {
 		for ( const currentNode of nodes ) {
 			// Go through nodes to remove those that are prohibited in editing pipeline.
 			for ( const attributeName of currentNode.getAttributeNames() ) {
-				const attributeValue = currentNode.getAttribute( attributeName );
-
-				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
-					currentNode.removeAttribute( attributeName );
-				}
+				this.setDomElementAttribute( currentNode, attributeName, currentNode.getAttribute( attributeName ) );
 			}
 
 			const elementName = currentNode.tagName.toLowerCase();
@@ -397,11 +395,7 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					const value = viewNode.getAttribute( key );
-
-					if ( this.shouldRenderAttribute( key, value ) || viewNode.shouldRenderUnsafeAttribute( key ) ) {
-						domElement.setAttribute( key, value );
-					}
+					this.setDomElementAttribute( domElement, key, viewNode.getAttribute( key ), viewNode );
 				}
 			}
 
@@ -413,6 +407,49 @@ export default class DomConverter {
 
 			return domElement;
 		}
+	}
+
+	/**
+	 * Sets the attribute on a DOM element.
+	 *
+	 * **Note**: To remove the attribute, use {@link #removeDomElementAttribute}.
+	 *
+	 * @param {HTMLElement} domElement The DOM element the attribute should be set on.
+	 * @param {String} key The name of the attribute
+	 * @param {String} value The value of the attribute
+	 * @param {module:engine/view/element~Element} [relatedViewElement] The view element related to the `domElement` (if there is any).
+	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via
+	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
+	 */
+	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
+		this.removeDomElementAttribute( domElement, key );
+
+		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) ||
+			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
+
+		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
+		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
+		domElement.setAttribute( shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
+	}
+
+	/**
+	 * Removes an attribute from a DOM element.
+	 *
+	 * **Note**: To set the attribute, use {@link #setDomElementAttribute}.
+	 *
+	 * @param {HTMLElement} domElement The DOM element the attribute should be removed from.
+	 * @param {String} key The name of the attribute.
+	 */
+	removeDomElementAttribute( domElement, key ) {
+		// See #_createReplacementDomElement() to learn what this is.
+		if ( key == UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE ) {
+			return;
+		}
+
+		domElement.removeAttribute( key );
+
+		// See setDomElementAttribute() to learn what this is.
+		domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
 	}
 
 	/**
@@ -1498,7 +1535,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.experimentalRenderingMode && this.renderingMode == 'editing' && elementName == 'script';
+		return this.experimentalRenderingMode && this.renderingMode == 'editing' && elementName.toLowerCase() == 'script';
 	}
 
 	/**
@@ -1514,7 +1551,7 @@ export default class DomConverter {
 		const newDomElement = document.createElement( 'span' );
 
 		// Mark the span replacing a script as hidden.
-		newDomElement.setAttribute( 'data-ck-hidden', elementName );
+		newDomElement.setAttribute( UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE, elementName );
 
 		if ( originalDomElement ) {
 			while ( originalDomElement.firstChild ) {
