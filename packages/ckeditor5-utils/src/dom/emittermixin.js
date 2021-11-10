@@ -52,19 +52,24 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
 	 * and prevents blocking browser's main thread by this event handler.
 	 */
-	listenTo( emitter, ...rest ) {
+	listenTo( emitter, event, callback, options = {} ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
 		if ( isNode( emitter ) || isWindow( emitter ) ) {
-			const proxy = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
+			const listenerOptions = {
+				capture: !!options.useCapture,
+				passive: !!options.usePassive
+			};
 
-			proxy.attach( ...rest );
+			const proxy = this._getProxyEmitter( emitter, listenerOptions ) || new ProxyEmitter( emitter, listenerOptions );
+
+			proxy.attach( event );
 
 			emitter = proxy;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.listenTo.call( this, emitter, ...rest );
+		EmitterMixin.listenTo.call( this, emitter, event, callback, options );
 	},
 
 	/**
@@ -83,16 +88,15 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * `event`.
 	 */
 	stopListening( emitter, event, callback ) {
-		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
+		// Check if the emitter is an instance of DOM Node. If so, forward the call to the corresponding ProxyEmitters.
 		if ( isNode( emitter ) || isWindow( emitter ) ) {
-			const proxy = this._getProxyEmitter( emitter );
+			const proxyEmmiters = this._getAllProxyEmitters( emitter );
 
-			// Element has no listeners.
-			if ( !proxy ) {
-				return;
+			for ( const proxy of proxyEmmiters ) {
+				this.stopListening( proxy, event, callback );
 			}
 
-			emitter = proxy;
+			return;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
@@ -104,14 +108,36 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	},
 
 	/**
-	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
+	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host and given options.
 	 *
 	 * @private
 	 * @param {Node} node DOM Node of the ProxyEmitter.
+	 * @param {Object} [options] Additional options.
+	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
+	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
+	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
+	 * and prevents blocking browser's main thread by this event handler.
+	 * @returns {Object} ProxyEmitter instance bound to the DOM Node.
 	 * @returns {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
-	_getProxyEmitter( node ) {
-		return _getEmitterListenedTo( this, getNodeUID( node ) );
+	_getProxyEmitter( node, options ) {
+		return _getEmitterListenedTo( this, getProxyEmitterId( node, options ) );
+	},
+
+	/**
+	 * Retrieves all the ProxyEmitter instances for given DOM Node residing in this Host.
+	 *
+	 * @private
+	 * @param {Node} node DOM Node of the ProxyEmitter.
+	 * @returns {Array.<module:utils/dom/emittermixin~ProxyEmitter>}
+	 */
+	_getAllProxyEmitters( node ) {
+		return [
+			{ capture: false, passive: false },
+			{ capture: false, passive: true },
+			{ capture: true, passive: false },
+			{ capture: true, passive: true }
+		].map( options => this._getProxyEmitter( node, options ) ).filter( proxy => !!proxy );
 	}
 } );
 
@@ -120,6 +146,8 @@ export default DomEmitterMixin;
 /**
  * Creates a ProxyEmitter instance. Such an instance is a bridge between a DOM Node firing events
  * and any Host listening to them. It is backwards compatible with {@link module:utils/emittermixin~EmitterMixin#on}.
+ * There is a separate instance for each combination of modes (useCapture & usePassive). The mode is concatenated with
+ * UID stored in HTMLElement to give each instance unique identifier.
  *
  *                                  listenTo( click, ... )
  *                    +-----------------------------------------+
@@ -128,14 +156,14 @@ export default DomEmitterMixin;
  *     | Host                       |                           |   +---------------------------------------------+
  *     +----------------------------+                           |   |       removeEventListener( click, ... )     |
  *     | _listeningTo: {            |                +----------v-------------+                                   |
- *     |   UID: {                   |                | ProxyEmitter           |                                   |
+ *     |   UID+mode: {              |                | ProxyEmitter           |                                   |
  *     |     emitter: ProxyEmitter, |                +------------------------+                      +------------v----------+
  *     |     callbacks: {           |                | events: {              |                      | Node (HTMLElement)    |
  *     |       click: [ callbacks ] |                |   click: [ callbacks ] |                      +-----------------------+
  *     |     }                      |                | },                     |                      | data-ck-expando: UID  |
  *     |   }                        |                | _domNode: Node,        |                      +-----------------------+
  *     | }                          |                | _domListeners: {},     |                                   |
- *     | +------------------------+ |                | _emitterId: UID        |                                   |
+ *     | +------------------------+ |                | _emitterId: UID+mode   |                                   |
  *     | | DomEmitterMixin        | |                +--------------^---------+                                   |
  *     | +------------------------+ |                           |   |                                             |
  *     +--------------^-------------+                           |   +---------------------------------------------+
@@ -150,14 +178,22 @@ export default DomEmitterMixin;
 class ProxyEmitter {
 	/**
 	 * @param {Node} node DOM Node that fires events.
+	 * @param {Object} [options] Additional options.
+	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
+	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
+	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
+	 * and prevents blocking browser's main thread by this event handler.
 	 * @returns {Object} ProxyEmitter instance bound to the DOM Node.
 	 */
-	constructor( node ) {
+	constructor( node, options ) {
 		// Set emitter ID to match DOM Node "expando" property.
-		_setEmitterId( this, getNodeUID( node ) );
+		_setEmitterId( this, getProxyEmitterId( node, options ) );
 
 		// Remember the DOM Node this ProxyEmitter is bound to.
 		this._domNode = node;
+
+		// And given options.
+		this._options = options;
 	}
 }
 
@@ -177,29 +213,18 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#attach
 	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [options={}] Additional options.
-	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
-	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
-	 * and prevents blocking browser's main thread by this event handler.
 	 */
-	attach( event, callback, options = {} ) {
+	attach( event ) {
 		// If the DOM Listener for given event already exist it is pointless
 		// to attach another one.
 		if ( this._domListeners && this._domListeners[ event ] ) {
 			return;
 		}
 
-		const listenerOptions = {
-			capture: !!options.useCapture,
-			passive: !!options.usePassive
-		};
-
-		const domListener = this._createDomListener( event, listenerOptions );
+		const domListener = this._createDomListener( event );
 
 		// Attach the native DOM listener to DOM Node.
-		this._domNode.addEventListener( event, domListener, listenerOptions );
+		this._domNode.addEventListener( event, domListener, this._options );
 
 		if ( !this._domListeners ) {
 			this._domListeners = {};
@@ -236,13 +261,9 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * @private
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
 	 * @param {String} event The name of the event.
-	 * @param {Object} [options] Additional options.
-	 * @param {Boolean} [options.capture=false] Indicates whether the listener was created for capturing event.
-	 * @param {Boolean} [options.passive=false] Indicates that the function specified by listener will never call preventDefault()
-	 * and prevents blocking browser's main thread by this event handler.
 	 * @returns {Function} The DOM listener callback.
 	 */
-	_createDomListener( event, options ) {
+	_createDomListener( event ) {
 		const domListener = domEvt => {
 			this.fire( event, domEvt );
 		};
@@ -251,7 +272,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		// detach it from the DOM Node, when it is no longer necessary.
 		// See: {@link detach}.
 		domListener.removeListener = () => {
-			this._domNode.removeEventListener( event, domListener, options );
+			this._domNode.removeEventListener( event, domListener, this._options );
 			delete this._domListeners[ event ];
 		};
 
@@ -259,13 +280,35 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	}
 } );
 
-// Gets an unique DOM Node identifier. The identifier will be set if not defined.
-//
-// @private
-// @param {Node} node
-// @returns {String} UID for given DOM Node.
+/** Gets an unique DOM Node identifier. The identifier will be set if not defined.
+ *
+ * @private
+ * @param {Node} node
+ * @returns {String} UID for given DOM Node.
+ */
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
+}
+
+/** Gets id of the ProxyEmitter for the given node.
+ *
+ * Combines DOM Node identifier and additional options.
+ *
+ * @private
+ * @param {Node} node
+ * @param {Object} options Additional options.
+ * @returns {String} ProxyEmitter id.
+ */
+function getProxyEmitterId( node, options ) {
+	let id = getNodeUID( node );
+
+	for ( const option of Object.keys( options ).sort() ) {
+		if ( options[ option ] ) {
+			id += '-' + option;
+		}
+	}
+
+	return id;
 }
 
 /**
