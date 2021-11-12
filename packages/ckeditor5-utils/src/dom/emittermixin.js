@@ -53,23 +53,20 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * and prevents blocking browser's main thread by this event handler.
 	 */
 	listenTo( emitter, event, callback, options = {} ) {
-		// Check if emitter is an instance of DOM Node. If so, replace the argument with
-		// corresponding ProxyEmitter (or create one if not existing).
+		// Check if emitter is an instance of DOM Node. If so, use corresponding ProxyEmitter (or create one if not existing).
 		if ( isNode( emitter ) || isWindow( emitter ) ) {
-			const listenerOptions = {
+			const proxyOptions = {
 				capture: !!options.useCapture,
 				passive: !!options.usePassive
 			};
 
-			const proxy = this._getProxyEmitter( emitter, listenerOptions ) || new ProxyEmitter( emitter, listenerOptions );
+			const proxyEmitter = this._getProxyEmitter( emitter, proxyOptions ) || new ProxyEmitter( emitter, proxyOptions );
 
-			proxy.attach( event );
-
-			emitter = proxy;
+			this.listenTo( proxyEmitter, event, callback, options );
+		} else {
+			// Execute parent class method with Emitter (or ProxyEmitter) instance.
+			EmitterMixin.listenTo.call( this, emitter, event, callback, options );
 		}
-
-		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.listenTo.call( this, emitter, event, callback, options );
 	},
 
 	/**
@@ -90,20 +87,14 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	stopListening( emitter, event, callback ) {
 		// Check if the emitter is an instance of DOM Node. If so, forward the call to the corresponding ProxyEmitters.
 		if ( isNode( emitter ) || isWindow( emitter ) ) {
-			const proxyEmmiters = this._getAllProxyEmitters( emitter );
+			const proxyEmitters = this._getAllProxyEmitters( emitter );
 
-			for ( const proxy of proxyEmmiters ) {
+			for ( const proxy of proxyEmitters ) {
 				this.stopListening( proxy, event, callback );
 			}
-
-			return;
-		}
-
-		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.stopListening.call( this, emitter, event, callback );
-
-		if ( emitter instanceof ProxyEmitter ) {
-			emitter.detach( event );
+		} else {
+			// Execute parent class method with Emitter (or ProxyEmitter) instance.
+			EmitterMixin.stopListening.call( this, emitter, event, callback );
 		}
 	},
 
@@ -117,8 +108,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
 	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
 	 * and prevents blocking browser's main thread by this event handler.
-	 * @returns {Object} ProxyEmitter instance bound to the DOM Node.
-	 * @returns {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
+	 * @returns {module:utils/dom/emittermixin~ProxyEmitter|null} ProxyEmitter instance bound to the DOM Node.
 	 */
 	_getProxyEmitter( node, options ) {
 		return _getEmitterListenedTo( this, getProxyEmitterId( node, options ) );
@@ -183,7 +173,6 @@ class ProxyEmitter {
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
 	 * @param {Boolean} [options.usePassive=false] Indicates that the function specified by listener will never call preventDefault()
 	 * and prevents blocking browser's main thread by this event handler.
-	 * @returns {Object} ProxyEmitter instance bound to the DOM Node.
 	 */
 	constructor( node, options ) {
 		// Set emitter ID to match DOM Node "expando" property.
@@ -210,6 +199,9 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 *
 	 * It attaches a native DOM listener to the DOM Node. When fired,
 	 * a corresponding Emitter event will also fire with DOM Event object as an argument.
+	 *
+	 * **Note**: This is automatically called by the
+	 * {@link module:utils/emittermixin~EmitterMixin#listenTo `EmitterMixin#listenTo()`}.
 	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#attach
 	 * @param {String} event The name of the event.
@@ -238,6 +230,9 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	/**
 	 * Stops executing the callback on the given event.
 	 *
+	 * **Note**: This is automatically called by the
+	 * {@link module:utils/emittermixin~EmitterMixin#stopListening `EmitterMixin#stopListening()`}.
+	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#detach
 	 * @param {String} event The name of the event.
 	 */
@@ -251,6 +246,36 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 		if ( this._domListeners[ event ] && ( !( events = this._events[ event ] ) || !events.callbacks.length ) ) {
 			this._domListeners[ event ].removeListener();
 		}
+	},
+
+	/**
+	 * Adds callback to emitter for given event.
+	 *
+	 * @protected
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#_addEventListener
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to be called on event.
+	 * @param {Object} [options={}] Additional options.
+	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+	 * order they were added.
+	 */
+	_addEventListener( event, callback, options ) {
+		this.attach( event );
+		EmitterMixin._addEventListener.call( this, event, callback, options );
+	},
+
+	/**
+	 * Removes callback from emitter for given event.
+	 *
+	 * @protected
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#_removeEventListener
+	 * @param {String} event The name of the event.
+	 * @param {Function} callback The function to stop being called.
+	 */
+	_removeEventListener( event, callback ) {
+		EmitterMixin._removeEventListener.call( this, event, callback );
+		this.detach( event );
 	},
 
 	/**
@@ -280,25 +305,23 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	}
 } );
 
-/** Gets an unique DOM Node identifier. The identifier will be set if not defined.
- *
- * @private
- * @param {Node} node
- * @returns {String} UID for given DOM Node.
- */
+// Gets an unique DOM Node identifier. The identifier will be set if not defined.
+//
+// @private
+// @param {Node} node
+// @returns {String} UID for given DOM Node.
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
 }
 
-/** Gets id of the ProxyEmitter for the given node.
- *
- * Combines DOM Node identifier and additional options.
- *
- * @private
- * @param {Node} node
- * @param {Object} options Additional options.
- * @returns {String} ProxyEmitter id.
- */
+// Gets id of the ProxyEmitter for the given node.
+//
+// Combines DOM Node identifier and additional options.
+//
+// @private
+// @param {Node} node
+// @param {Object} options Additional options.
+// @returns {String} ProxyEmitter id.
 function getProxyEmitterId( node, options ) {
 	let id = getNodeUID( node );
 
