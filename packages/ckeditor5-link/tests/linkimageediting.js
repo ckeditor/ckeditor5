@@ -976,6 +976,44 @@ describe( 'LinkImageEditing', () => {
 					'</paragraph>'
 				);
 			} );
+
+			it( 'should properly upcast manual decorators for linked inline images', async () => {
+				const newEditor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlockEditing, ImageInlineEditing, LinkImageEditing ],
+					link: {
+						decorators: {
+							isGallery: {
+								mode: 'manual',
+								classes: 'gallery'
+							}
+						}
+					}
+				} );
+
+				newEditor.setData(
+					'<p>' +
+						'foo ' +
+						'<a class="gallery" href="https://cksource.com">' +
+							'abc ' +
+							'<img src="sample.jpg" alt="bar">' +
+							' 123' +
+						'</a>' +
+						' bar' +
+					'</p>'
+				);
+
+				expect( getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'foo ' +
+						'<$text linkHref="https://cksource.com" linkIsGallery="true">abc </$text>' +
+						'<imageInline alt="bar" linkHref="https://cksource.com" linkIsGallery="true" src="sample.jpg"></imageInline>' +
+						'<$text linkHref="https://cksource.com" linkIsGallery="true"> 123</$text>' +
+						' bar' +
+					'</paragraph>'
+				);
+
+				await newEditor.destroy();
+			} );
 		} );
 
 		describe( 'downcast converter', () => {
