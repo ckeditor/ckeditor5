@@ -41,16 +41,18 @@ ClassicEditor
 		},
 		exportPdf: {
 			stylesheets: [
-				'EDITOR_STYLES'
+				'../assets/fonts.css',
+				'EDITOR_STYLES',
+				'../assets/read-only-export-pdf.css'
 			],
 			fileName: 'export-pdf-demo.pdf',
 			appID: 'cke5-docs',
 			converterOptions: {
 				format: 'A4',
-				margin_top: '20mm',
-				margin_bottom: '20mm',
-				margin_right: '12mm',
-				margin_left: '12mm',
+				margin_top: '15mm',
+				margin_bottom: '15mm',
+				margin_right: '15mm',
+				margin_left: '15mm',
 				page_orientation: 'portrait'
 			},
 			tokenUrl: false
@@ -72,3 +74,10 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// Demo styles.
+const link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.href = '../assets/read-only-export-pdf.css';
+
+document.head.appendChild( link );
