@@ -601,6 +601,30 @@ describe( 'MediaEmbedEditing', () => {
 							.to.equal( '' );
 					} );
 
+					it( 'should not consume if the media element was not converted', () => {
+						editor.data.upcastDispatcher.on( 'element:o-embed', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.viewItem, { name: true } );
+							data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+						}, { priority: 'highest' } );
+
+						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'media' } ) ).to.be.true;
+						}, { priority: 'low' } );
+
+						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
+
+						expect( getModelData( model, { withoutSelection: true } ) )
+							.to.equal( '' );
+					} );
+
+					it( 'should consume the figure element before the o-embed conversion starts', () => {
+						editor.data.upcastDispatcher.on( 'element:o-embed', ( evt, data, conversionApi ) => {
+							expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'media' } ) ).to.be.false;
+						}, { priority: 'low' } );
+
+						editor.setData( '<figure class="media"><o-embed url="https://ckeditor.com"></o-embed></figure>' );
+					} );
+
 					it( 'should not convert if the figure is already consumed', () => {
 						editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.viewItem, { name: true, class: 'media' } );

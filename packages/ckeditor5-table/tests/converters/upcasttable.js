@@ -81,13 +81,25 @@ describe( 'upcastTable()', () => {
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
-
 				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
 			}, { priority: 'highest' } );
+
+			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ).to.be.true;
+			}, { priority: 'low' } );
 		} );
+
 		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
 
 		expectModel( '<paragraph>xyz</paragraph>' );
+	} );
+
+	it( 'should consume the figure element before the table conversion starts', () => {
+		editor.data.upcastDispatcher.on( 'element:table', ( evt, data, conversionApi ) => {
+			expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'table' } ) ).to.be.false;
+		}, { priority: 'low' } );
+
+		editor.setData( '<figure class="table"><table>xyz</table></figure>' );
 	} );
 
 	it( 'should convert if figure do not have class="table" attribute', () => {
