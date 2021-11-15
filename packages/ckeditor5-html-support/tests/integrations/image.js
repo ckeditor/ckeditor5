@@ -266,6 +266,24 @@ describe( 'ImageElementSupport', () => {
 			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 
+		it( 'should not double convert figure element', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
 		it( 'should not consume attributes already consumed (downcast)', () => {
 			[
 				'htmlAttributes',

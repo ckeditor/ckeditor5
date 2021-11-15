@@ -1,0 +1,58 @@
+* {
+	box-sizing: border-box;
+}
+
+body, html {
+	font-weight: 400;
+	line-height: 1.6;
+	font-family: "Source Sans Pro",system-ui,Roboto,"Helvetica Neue","Helvetica",Arial,sans-serif;
+	font-size: 15px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-print-color-adjust: exact;
+	overflow-x: hidden;
+}
+
+h2 {
+	font-size: 1.68em;
+	line-height: 1.68em;
+	padding-top: 0.8em;
+	margin-bottom: 0.4em;
+	padding-bottom: .2em;
+	border-bottom: 1px solid hsl( 0, 0%, 90% );
+	font-weight: 400;
+}
+
+h3 {
+	font-size: 1.36em;
+	line-height: 1.5em;
+	padding-top: 0.6em;
+	margin-bottom: 1.5em;
+	font-weight: 400
+}
+
+h4 {
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding-top: 0.6em;
+	margin-bottom: 0.2em;
+	font-weight: 400
+}
+
+h5 {
+	font-size: 1em;
+	line-height: 1.6em;
+	padding-top: 0.2em;
+	margin-bottom: 0.8em;
+	font-weight: 400
+}
+
+strong, b {
+	font-weight: 600;
+}
+
+.ck.ck-editor__editable_inline {
+	/* A4 size */
+	padding: 15mm;
+	overflow: hidden;
+}
