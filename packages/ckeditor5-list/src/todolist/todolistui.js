@@ -4,11 +4,11 @@
  */
 
 /**
- * @module list/todolistui
+ * @module list/todolist/todolistui
  */
 
-import { createUIComponent } from './utils';
-import todoListIcon from '../theme/icons/todolist.svg';
+import { createUIComponent } from '../list/utils';
+import todoListIcon from '../../theme/icons/todolist.svg';
 import { Plugin } from 'ckeditor5/src/core';
 
 /**

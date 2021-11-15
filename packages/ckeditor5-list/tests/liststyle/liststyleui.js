@@ -10,23 +10,23 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ListStyle from '../src/liststyle';
-import ListStyleUI from '../src/liststyleui';
+import ListStyle from '../../src/liststyle';
+import ListStyleUI from '../../src/liststyle/liststyleui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
-import bulletedListIcon from '../theme/icons/bulletedlist.svg';
-import numberedListIcon from '../theme/icons/numberedlist.svg';
+import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
+import numberedListIcon from '../../theme/icons/numberedlist.svg';
 
-import listStyleDiscIcon from '../theme/icons/liststyledisc.svg';
-import listStyleCircleIcon from '../theme/icons/liststylecircle.svg';
-import listStyleSquareIcon from '../theme/icons/liststylesquare.svg';
-import listStyleDecimalIcon from '../theme/icons/liststyledecimal.svg';
-import listStyleDecimalWithLeadingZeroIcon from '../theme/icons/liststyledecimalleadingzero.svg';
-import listStyleLowerRomanIcon from '../theme/icons/liststylelowerroman.svg';
-import listStyleUpperRomanIcon from '../theme/icons/liststyleupperroman.svg';
-import listStyleLowerLatinIcon from '../theme/icons/liststylelowerlatin.svg';
-import listStyleUpperLatinIcon from '../theme/icons/liststyleupperlatin.svg';
+import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
+import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
+import listStyleSquareIcon from '../../theme/icons/liststylesquare.svg';
+import listStyleDecimalIcon from '../../theme/icons/liststyledecimal.svg';
+import listStyleDecimalWithLeadingZeroIcon from '../../theme/icons/liststyledecimalleadingzero.svg';
+import listStyleLowerRomanIcon from '../../theme/icons/liststylelowerroman.svg';
+import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
+import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
+import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
 describe( 'ListStyleUI', () => {
 	let editorElement, editor, model, listStyleCommand;

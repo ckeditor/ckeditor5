@@ -4,8 +4,8 @@
  */
 
 import ListStyle from '../src/liststyle';
-import ListStyleEditing from '../src/liststyleediting';
-import ListStyleUI from '../src/liststyleui';
+import ListStyleEditing from '../src/liststyle/liststyleediting';
+import ListStyleUI from '../src/liststyle/liststyleui';
 
 describe( 'ListStyle', () => {
 	it( 'should be named', () => {

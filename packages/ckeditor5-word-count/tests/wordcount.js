@@ -16,7 +16,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';

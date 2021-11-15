@@ -8,11 +8,11 @@
  */
 
 export { default as List } from './list';
-export { default as ListEditing } from './listediting';
-export { default as ListUI } from './listui';
+export { default as ListEditing } from './list/listediting';
+export { default as ListUI } from './list/listui';
 export { default as ListStyle } from './liststyle';
-export { default as ListStyleEditing } from './liststyleediting';
-export { default as ListStyleUI } from './liststyleui';
+export { default as ListStyleEditing } from './liststyle/liststyleediting';
+export { default as ListStyleUI } from './liststyle/liststyleui';
 export { default as TodoList } from './todolist';
-export { default as TodoListEditing } from './todolistediting';
-export { default as TodoListUI } from './todolistui';
+export { default as TodoListEditing } from './todolist/todolistediting';
+export { default as TodoListUI } from './todolist/todolistui';

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listcommand
+ * @module list/list/listcommand
  */
 
 import { Command } from 'ckeditor5/src/core';

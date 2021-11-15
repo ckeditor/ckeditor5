@@ -3,13 +3,13 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TodoListEditing from '../src/todolistediting';
-import ListEditing from '../src/listediting';
+import TodoListEditing from '../../src/todolist/todolistediting';
+import ListEditing from '../../src/list/listediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import ListCommand from '../src/listcommand';
-import CheckTodoListCommand from '../src/checktodolistcommand';
+import ListCommand from '../../src/list/listcommand';
+import CheckTodoListCommand from '../../src/todolist/checktodolistcommand';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';

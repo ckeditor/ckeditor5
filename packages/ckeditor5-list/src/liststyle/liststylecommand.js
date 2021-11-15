@@ -4,11 +4,11 @@
  */
 
 /**
- * @module list/liststylecommand
+ * @module list/liststyle/liststylecommand
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getSiblingNodes } from './utils';
+import { getSiblingNodes } from '../list/utils';
 
 /**
  * The list style command. It is used by the {@link module:list/liststyle~ListStyle list style feature}.

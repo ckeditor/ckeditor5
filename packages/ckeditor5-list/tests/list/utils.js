@@ -8,10 +8,10 @@ import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwrit
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
-import ListEditing from '../src/listediting';
-import ListStyleEditing from '../src/liststyleediting';
+import ListEditing from '../../src/list/listediting';
+import ListStyleEditing from '../../src/liststyle/liststyleediting';
 
-import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
+import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'utils', () => {

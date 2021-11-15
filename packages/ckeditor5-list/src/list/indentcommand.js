@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/indentcommand
+ * @module list/list/indentcommand
  */
 
 import { Command } from 'ckeditor5/src/core';

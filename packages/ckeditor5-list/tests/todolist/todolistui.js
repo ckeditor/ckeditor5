@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import TodoListEditing from '../src/todolistediting';
-import TodoListUI from '../src/todolistui';
+import TodoListEditing from '../../src/todolist/todolistediting';
+import TodoListUI from '../../src/todolist/todolistui';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

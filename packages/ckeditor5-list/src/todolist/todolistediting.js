@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/todolistediting
+ * @module list/todolist/todolistediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -14,8 +14,8 @@ import {
 	getLocalizedArrowKeyCodeDirection
 } from 'ckeditor5/src/utils';
 
-import ListCommand from './listcommand';
-import ListEditing from './listediting';
+import ListCommand from '../list/listcommand';
+import ListEditing from '../list/listediting';
 import CheckTodoListCommand from './checktodolistcommand';
 import {
 	dataModelViewInsertion,
@@ -31,7 +31,7 @@ const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
  *
- * It registers the entire functionality of the {@link module:list/listediting~ListEditing list editing plugin} and extends
+ * It registers the entire functionality of the {@link module:list/list/listediting~ListEditing list editing plugin} and extends
  * it with the commands:
  *
  * - `'todoList'`,

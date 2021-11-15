@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import TodoListEditing from '../src/todolistediting';
-import CheckTodoListCommand from '../src/checktodolistcommand';
+import TodoListEditing from '../../src/todolist/todolistediting';
+import CheckTodoListCommand from '../../src/todolist/checktodolistcommand';
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';

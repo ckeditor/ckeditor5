@@ -5,7 +5,7 @@
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import ListCommand from '../src/listcommand';
+import ListCommand from '../../src/list/listcommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ListCommand', () => {

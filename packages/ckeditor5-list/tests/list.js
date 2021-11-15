@@ -4,8 +4,8 @@
  */
 
 import List from '../src/list';
-import ListEditing from '../src/listediting';
-import ListUI from '../src/listui';
+import ListEditing from '../src/list/listediting';
+import ListUI from '../src/list/listui';
 
 describe( 'List', () => {
 	it( 'should be named', () => {

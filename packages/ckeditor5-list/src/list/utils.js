@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/utils
+ * @module list/list/utils
  */
 
 import { TreeWalker, getFillerOffset } from 'ckeditor5/src/engine';

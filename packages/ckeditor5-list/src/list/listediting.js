@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listediting
+ * @module list/list/listediting
  */
 
 import ListCommand from './listcommand';

@@ -14,9 +14,9 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import ListStyleEditing from '../src/liststyleediting';
-import TodoListEditing from '../src/todolistediting';
-import ListStyleCommand from '../src/liststylecommand';
+import ListStyleEditing from '../../src/liststyle/liststyleediting';
+import TodoListEditing from '../../src/todolist/todolistediting';
+import ListStyleCommand from '../../src/liststyle/liststylecommand';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 
 describe( 'ListStyleEditing', () => {

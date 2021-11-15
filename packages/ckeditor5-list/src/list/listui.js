@@ -4,13 +4,13 @@
  */
 
 /**
- * @module list/listui
+ * @module list/list/listui
  */
 
 import { createUIComponent } from './utils';
 
-import numberedListIcon from '../theme/icons/numberedlist.svg';
-import bulletedListIcon from '../theme/icons/bulletedlist.svg';
+import numberedListIcon from '../../theme/icons/numberedlist.svg';
+import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
 
 import { Plugin } from 'ckeditor5/src/core';
 
