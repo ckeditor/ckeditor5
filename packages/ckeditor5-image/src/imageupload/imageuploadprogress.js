@@ -12,8 +12,6 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { FileRepository } from 'ckeditor5/src/upload';
 
-import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
-
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
 import '../../theme/imageuploadloader.css';
@@ -41,10 +39,12 @@ export default class ImageUploadProgress extends Plugin {
 		/**
 		 * The image placeholder that is displayed before real image data can be accessed.
 		 *
+		 * For the record, this image is a 1x1 px GIF with an aspect ratio set by CSS.
+		 *
 		 * @protected
 		 * @member {String} #placeholder
 		 */
-		this.placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent( uploadingPlaceholder );
+		this.placeholder = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 	}
 
 	/**
