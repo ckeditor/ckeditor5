@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text */
+/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
 
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
@@ -21,10 +21,13 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBS
 import { parse } from '../../../src/dev-utils/view';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
@@ -217,6 +220,12 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'options.renderingMode = editing', () => {
+			let warnStub;
+
+			beforeEach( () => {
+				warnStub = testUtils.sinon.stub( console, 'warn' );
+			} );
+
 			it( 'should filter DOM event handlers', () => {
 				const viewImg = new ViewElement( viewDocument, 'img' );
 				const viewText = new ViewText( viewDocument, 'foo' );
@@ -248,6 +257,27 @@ describe( 'DomConverter', () => {
 				expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
 			} );
 
+			it( 'should warn when an unsafe attribute was filtered out', () => {
+				const viewP = new ViewElement( viewDocument, 'p', { onclick: 'bar' } );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				const domP = converter.viewToDom( viewP, document );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+					{
+						domElement: domP,
+						key: 'onclick',
+						value: 'bar'
+					},
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
 			it( 'should replace script with span and add special data attribute', () => {
 				const viewScript = new ViewElement( viewDocument, 'script' );
 				const viewText = new ViewText( viewDocument, 'foo' );
@@ -271,6 +301,28 @@ describe( 'DomConverter', () => {
 				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
 				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'script' );
 				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			} );
+
+			it( 'should warn when an unsafe script was filtered out', () => {
+				const viewScript = new ViewElement( viewDocument, 'script' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
+
+				viewP._appendChild( viewScript );
+				viewP._appendChild( viewText );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				converter.viewToDom( viewP, document );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-element-detected/ ),
+					sinon.match.has( 'unsafeElement', sinon.match.has( 'name', 'script' ) ),
+					sinon.match.string // Link to the documentation
+				);
 			} );
 
 			describe( 'unsafe attribute names that were declaratively permitted', () => {

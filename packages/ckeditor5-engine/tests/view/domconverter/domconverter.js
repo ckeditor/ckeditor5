@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, console */
 
 import DomConverter from '../../../src/view/domconverter';
 import ViewEditable from '../../../src/view/editableelement';
@@ -594,6 +594,12 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'editing pipeline', () => {
+			let warnStub;
+
+			beforeEach( () => {
+				warnStub = testUtils.sinon.stub( console, 'warn' );
+			} );
+
 			it( 'should replace certain unsafe attributes', () => {
 				const element = document.createElement( 'p' );
 
@@ -689,6 +695,24 @@ describe( 'DomConverter', () => {
 				} );
 			} );
 
+			it( 'should warn when an unsafe attribute was detected and renamed', () => {
+				const element = document.createElement( 'p' );
+				const html = '<a href="foo" onclick="alert(1)">foo</a>';
+
+				converter.setContentOf( element, html );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+					{
+						domElement: element.firstChild,
+						key: 'onclick',
+						value: 'alert(1)'
+					},
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
 			it( 'should replace a script element with a span', () => {
 				const element = document.createElement( 'p' );
 				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
@@ -697,6 +721,20 @@ describe( 'DomConverter', () => {
 
 				expect( element.innerHTML ).to.equal(
 					'<div>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+				);
+			} );
+
+			it( 'should warn when an unsafe element was detected and renamed', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
+
+				converter.setContentOf( element, html );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-element-detected/ ),
+					sinon.match.has( 'unsafeElement', sinon.match.has( 'tagName', 'SCRIPT' ) ),
+					sinon.match.string // Link to the documentation
 				);
 			} );
 		} );
@@ -783,6 +821,24 @@ describe( 'DomConverter', () => {
 
 			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
 			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+		} );
+
+		it( 'should warn when an unsafe attribute was prefixed (renamed)', () => {
+			const warnStub = testUtils.sinon.stub( console, 'warn' );
+			const domElement = document.createElement( 'p' );
+
+			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
+
+			sinon.assert.calledOnce( warnStub );
+			sinon.assert.calledWithExactly( warnStub,
+				sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+				{
+					domElement,
+					key: 'onclick',
+					value: 'bar'
+				},
+				sinon.match.string // Link to the documentation
+			);
 		} );
 	} );
 
