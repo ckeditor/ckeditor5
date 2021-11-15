@@ -121,9 +121,9 @@ export default class Mapper {
 				 *
 				 * Make sure that the model element is correctly converted to the view.
 				 *
-				 * @error mapping-view-position-parent-not-found
+				 * @error mapping-model-position-view-parent-not-found
 				 */
-				throw new CKEditorError( 'mapping-view-position-parent-not-found', this, { modelPosition: data.modelPosition } );
+				throw new CKEditorError( 'mapping-model-position-view-parent-not-found', this, { modelPosition: data.modelPosition } );
 			}
 
 			data.viewPosition = this.findPositionIn( viewContainer, data.modelPosition.offset );

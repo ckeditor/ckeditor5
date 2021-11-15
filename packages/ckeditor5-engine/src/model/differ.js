@@ -412,12 +412,12 @@ export default class Differ {
 			for ( const action of actions ) {
 				if ( action === 'i' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getInsertDiff( element, i, elementChildren[ i ].name ) );
+					diffSet.push( this._getInsertDiff( element, i, elementChildren[ i ] ) );
 
 					i++;
 				} else if ( action === 'r' ) {
 					// Generate diff item for this element and insert it into the diff set.
-					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ].name ) );
+					diffSet.push( this._getRemoveDiff( element, i, snapshotChildren[ j ] ) );
 
 					j++;
 				} else if ( action === 'a' ) {
@@ -918,14 +918,15 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @param {String} name The name of the removed element or `'$text'` for a character. TODO
 	 * @returns {Object} The diff item.
 	 */
-	_getInsertDiff( parent, offset, name ) {
+	_getInsertDiff( parent, offset, elementSnapshot ) {
 		return {
 			type: 'insert',
 			position: Position._createAt( parent, offset ),
-			name,
+			name: elementSnapshot.name,
+			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
 			changeCount: this._changeCount++
 		};
@@ -937,14 +938,15 @@ export default class Differ {
 	 * @private
 	 * @param {module:engine/model/element~Element} parent The element in which change happened.
 	 * @param {Number} offset The offset at which change happened.
-	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @param {String} name The name of the removed element or `'$text'` for a character. TODO
 	 * @returns {Object} The diff item.
 	 */
-	_getRemoveDiff( parent, offset, name ) {
+	_getRemoveDiff( parent, offset, elementSnapshot ) {
 		return {
 			type: 'remove',
 			position: Position._createAt( parent, offset ),
-			name,
+			name: elementSnapshot.name,
+			attributes: new Map( elementSnapshot.attributes ),
 			length: 1,
 			changeCount: this._changeCount++
 		};
