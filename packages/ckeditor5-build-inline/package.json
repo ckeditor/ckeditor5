@@ -1,41 +1,23 @@
 {
-  "name": "@ckeditor/ckeditor5-build-inline",
-  "version": "31.0.0",
-  "description": "The inline editor build of CKEditor 5 – the best browser-based rich text editor.",
-  "keywords": [
-    "ckeditor5-build",
-    "ckeditor",
-    "ckeditor5",
-    "ckeditor 5",
-    "wysiwyg",
-    "rich text",
-    "editor",
-    "html",
-    "contentEditable",
-    "editing",
-    "operational transformation",
-    "ot",
-    "collaboration",
-    "collaborative",
-    "real-time",
-    "framework"
-  ],
+  "name": "ckeditor5-custom-build",
+  "author": "CKSource",
+  "description": "A custom CKEditor 5 build made by the CKEditor 5 online builder.",
+  "version": "0.0.1",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "private": true,
   "main": "./build/ckeditor.js",
-  "files": [
-    "build",
-    "ckeditor5-metadata.json"
-  ],
-  "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "^31.0.0",
+  "devDependencies": {
+    "@ckeditor/ckeditor5-alignment": "^31.0.0",
     "@ckeditor/ckeditor5-autoformat": "^31.0.0",
     "@ckeditor/ckeditor5-basic-styles": "^31.0.0",
     "@ckeditor/ckeditor5-block-quote": "^31.0.0",
-    "@ckeditor/ckeditor5-ckfinder": "^31.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^31.0.0",
-    "@ckeditor/ckeditor5-easy-image": "^31.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^25.4.5",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.4.5",
     "@ckeditor/ckeditor5-editor-inline": "^31.0.0",
     "@ckeditor/ckeditor5-essentials": "^31.0.0",
+    "@ckeditor/ckeditor5-font": "^31.0.0",
     "@ckeditor/ckeditor5-heading": "^31.0.0",
+    "@ckeditor/ckeditor5-highlight": "^31.0.0",
     "@ckeditor/ckeditor5-image": "^31.0.0",
     "@ckeditor/ckeditor5-indent": "^31.0.0",
     "@ckeditor/ckeditor5-link": "^31.0.0",
@@ -44,35 +26,18 @@
     "@ckeditor/ckeditor5-paragraph": "^31.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^31.0.0",
     "@ckeditor/ckeditor5-table": "^31.0.0",
-    "@ckeditor/ckeditor5-typing": "^31.0.0"
-  },
-  "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^31.0.0",
-    "@ckeditor/ckeditor5-dev-utils": "^25.4.0",
-    "@ckeditor/ckeditor5-dev-webpack-plugin": "^25.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^31.0.0",
-    "postcss-loader": "^3.0.0",
-    "raw-loader": "^4.0.1",
-    "style-loader": "^1.2.1",
-    "terser-webpack-plugin": "^3.0.2",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
-  },
-  "engines": {
-    "node": ">=12.0.0",
-    "npm": ">=5.7.1"
-  },
-  "author": "CKSource (http://cksource.com/)",
-  "license": "GPL-2.0-or-later",
-  "homepage": "https://ckeditor.com/ckeditor-5",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ckeditor/ckeditor5.git",
-    "directory": "packages/ckeditor5-build-inline"
+    "@ckeditor/ckeditor5-typing": "^31.0.0",
+    "css-loader": "^5.2.7",
+    "postcss": "^8.3.11",
+    "postcss-loader": "^4.3.0",
+    "raw-loader": "^4.0.2",
+    "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^4.2.3",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.9.1"
   },
   "scripts": {
-    "build": "webpack --mode production",
-    "preversion": "npm run build"
+    "build": "webpack --mode production"
   }
 }
