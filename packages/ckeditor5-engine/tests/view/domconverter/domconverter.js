@@ -741,13 +741,19 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'setDomElementAttribute()', () => {
-		let writer;
+		let writer, warnStub;
 
 		beforeEach( () => {
 			writer = new DowncastWriter( viewDocument );
 			converter = new DomConverter( viewDocument, {
 				renderingMode: 'editing'
 			} );
+
+			warnStub = testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
+
+			console.warn.callThrough();
 		} );
 
 		it( 'should set the plain value of an attribute', () => {
@@ -824,7 +830,6 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should warn when an unsafe attribute was prefixed (renamed)', () => {
-			const warnStub = testUtils.sinon.stub( console, 'warn' );
 			const domElement = document.createElement( 'p' );
 
 			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
@@ -843,6 +848,19 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'removeDomElementAttribute()', () => {
+		beforeEach( () => {
+			// Silence warnings about unsafe attributes and elements created by the DomConverter.
+			testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
+
+			console.warn
+				.withArgs( sinon.match( /^domconverter-unsafe-element-detected/ ) )
+				.callsFake( () => {} );
+
+			console.warn.callThrough();
+		} );
+
 		it( 'should remove the plain attribute value', () => {
 			const domElement = document.createElement( 'img' );
 
