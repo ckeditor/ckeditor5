@@ -31,9 +31,16 @@ const tasks = {
 		const includeExternalDirectory = process.argv.includes( '--include-external-directory' );
 
 		return createPotFiles( {
+			// An array containing absolute paths CKEditor 5 source files.
 			sourceFiles: getCKEditor5SourceFiles( { includeExternalDirectory } ),
+
+			// Packages to process.
 			packagePaths: getCKEditor5PackagePaths( { includeExternalDirectory } ),
+
+			// A relative path to the `@ckeditor/ckeditor5-core` package where common translations are located.
 			corePackagePath: 'packages/ckeditor5-core',
+
+			// Where to save translation files.
 			translationsDirectory: TRANSLATION_DIRECTORY_PATH
 		} );
 	},
