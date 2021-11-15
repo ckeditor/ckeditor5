@@ -79,7 +79,7 @@ ClassicEditor
 </info-box>
 
 <info-box warning>
-	The {@link module:list/liststyle~ListStyle} feature overrides UI button implementations from the {@link module:list/listui~ListUI}.
+	The {@link module:list/liststyle~ListStyle} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
 ## List indentation
@@ -90,16 +90,16 @@ Refer to the {@link features/indent Indenting lists} section of the Block indent
 
 The {@link module:list/list~List} plugin registers:
 
-* The {@link module:list/listcommand~ListCommand `'numberedList'`} command.
-* The {@link module:list/listcommand~ListCommand `'bulletedList'`} command.
-* The {@link module:list/indentcommand~IndentCommand `'indentList'`} command.
-* The {@link module:list/indentcommand~IndentCommand `'outdentList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
+* The {@link module:list/list/indentcommand~IndentCommand `'indentList'`} command.
+* The {@link module:list/list/indentcommand~IndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
 The {@link module:list/liststyle~ListStyle} plugin registers:
 
-* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts a `type` of the list style to set.
+* The {@link module:list/liststyle/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts a `type` of the list style to set.
     ```js
     editor.execute( 'listStyle', { type: 'decimal' } );
     ```
