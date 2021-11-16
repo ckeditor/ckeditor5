@@ -247,8 +247,7 @@
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"order": 400,
-							"badges": [ "premium" ]
+							"order": 400
 						}
 					]
 				},
