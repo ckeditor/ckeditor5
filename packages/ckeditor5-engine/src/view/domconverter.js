@@ -1638,26 +1638,40 @@ function hasBlockParent( domNode, blockElements ) {
 
 /**
  * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element in the
- * {@link framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
+ * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
  * the users of CKEditor. To minimize the risk, the `<script>` element was renamed to a
  * `<span data-ck-unsafe-element="script"></span>`.
  *
- * If you are the author of the plugin that generated this `<script>` and you want it to be preserved
- * in the editing pipeline (because you know it is safe), please refer to the {@link TODO official guide}.
- *
  * @error domconverter-unsafe-element-detected
  * @param {module:engine/model/element~Element|HTMLElement} unsafeElement The editing view or DOM element
- * that was replaced.
+ * that was renamed.
  */
 
 /**
  * The {@link module:engine/view/domconverter~DomConverter} detected an attribute in the
- * {@link framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
+ * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
  * the users of CKEditor. To minimize the risk, the attribute was renamed to
  * `data-ck-unsafe-attribute-[original attribute name]`.
  *
  * If you are the author of the plugin that generated this attribute and you want it to be preserved
- * in the editing pipeline (because you know it is safe), please refer to the {@link TODO official guide}.
+ * in the editing pipeline (e.g. because you know it is safe), you can configure this when creating the element
+ * using {@link module:engine/view/downcastwriter~DowncastWriter} during the
+ * {@glink framework/guides/architecture/editing-engine#conversion model–view conversion}. Methods such as
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement}
+ * accept an option that will disable filtering of specific attributes:
+ *
+ *		const paragraph = writer.createContainerElement( 'p',
+ *			{
+ *				class: 'clickable-paragraph',
+ *				onclick: 'alert( "Paragraph clicked!" )'
+ *			},
+ *			{
+ *				// The "onclick" attribute will pass-through.
+ *				renderUnsafeAttributes: [ 'onclick' ]
+ *			}
+ *		);
  *
  * @error domconverter-unsafe-attribute-detected
  * @param {HTMLElement} domElement The DOM element the attribute was set on.

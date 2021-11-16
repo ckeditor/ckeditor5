@@ -20,8 +20,10 @@
 
 	& img {
 		/*
-		 * This is an arbitrary aspect for a 1x1 px GIF to display to the user. Not too high, not too short.
-		 * There's nothing special about it.
+		 * This is an arbitrary aspect for a 1x1 px GIF to display to the user. Not too tall, not too short.
+		 * There's nothing special about this number except that it should make the image placeholder look like
+		 * a real image during this short period after the upload started and before the image was read from the
+		 * file system (and a rich preview was loaded).
 		 */
 		aspect-ratio: var(--ck-upload-placeholder-image-aspect-ratio);
 	}
