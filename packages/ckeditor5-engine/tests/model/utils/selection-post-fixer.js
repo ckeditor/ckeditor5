@@ -5,9 +5,9 @@
 
 import Model from '../../../src/model/model';
 
-import { injectSelectionPostFixer } from '../../../src/model/utils/selection-post-fixer';
+import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
+import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer';
 
-import { getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'Selection post-fixer', () => {
@@ -1095,6 +1095,86 @@ describe( 'Selection post-fixer', () => {
 					'</imageBlock>' +
 					'<paragraph>]bar</paragraph>'
 				);
+			} );
+		} );
+
+		describe( 'intersecting selection - merge ranges', () => {
+			it( 'should return one merged range: A+B+C - #1', () => {
+				setModelData( model,
+					'<paragraph>fo[o b][ar b]az</paragraph>'
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				// A range containing both rangeA and rangeB.
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 0 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 1 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>[foo bar baz]</paragraph>' );
+			} );
+
+			it( 'should return one merged range: A+B+C - #2', () => {
+				setModelData( model,
+					'<paragraph>f[oo b]a[r ba]z</paragraph>'
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				// Range intersecting with rangeA and rangeB
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 4 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 1 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo bar baz]</paragraph>' );
+			} );
+
+			it( 'should return two ranges: A, B+C', () => {
+				setModelData( model,
+					'<paragraph>f[oo] ba[r ba]z</paragraph>'
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				// Range intersecting with rangeB
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 4 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 10 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 2 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo [bar ba]z</paragraph>' );
+			} );
+
+			it( 'should return two ranges: A+B,C', () => {
+				setModelData( model,
+					'<paragraph>f[oo][ bar] baz</paragraph>'	// foo bar baz
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 8 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 3 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo[ bar] baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 2 ] ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 			} );
 		} );
 
