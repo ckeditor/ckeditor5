@@ -24,16 +24,6 @@ const DEFAULT_PRIORITY = 10;
  * To create a new attribute element instance use the
  * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement `DowncastWriter#createAttributeElement()`} method.
  *
- * **Note:** Attribute elements by default can wrap {@link module:engine/view/text~Text},
- * {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement},
- * {@link module:engine/view/rawelement~RawElement} and other attribute elements with higher priority. Other elements while placed inside
- * an attribute element will split it (or nest in case of an `AttributeElement`). This behavior can be modified by changing
- * the `isAllowedInsideAttributeElement` option while creating
- * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
- * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement},
- * {@link module:engine/view/downcastwriter~DowncastWriter#createUIElement} or
- * {@link module:engine/view/downcastwriter~DowncastWriter#createRawElement}.
- *
  * @extends module:engine/view/element~Element
  */
 export default class AttributeElement extends Element {

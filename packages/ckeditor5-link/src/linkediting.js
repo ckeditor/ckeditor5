@@ -192,12 +192,13 @@ export default class LinkEditing extends Plugin {
 			manualDecorators.add( decorator );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
-				model: {
-					key: decorator.id,
-					name: ( item, { schema } ) => schema.isInline( item )
-				},
-				view: ( manualDecoratorName, { writer } ) => {
-					if ( manualDecoratorName ) {
+				model: decorator.id,
+				view: ( manualDecoratorValue, { writer, schema }, { item } ) => {
+					if ( !schema.isInline( item ) ) {
+						return;
+					}
+
+					if ( manualDecoratorValue ) {
 						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
 
 						if ( decorator.classes ) {

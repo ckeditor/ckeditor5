@@ -131,15 +131,6 @@ export default class Element extends Node {
 		this._customProperties = new Map();
 
 		/**
-		 * Whether an element is allowed inside an AttributeElement and can be wrapped with
-		 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
-		 *
-		 * @protected
-		 * @member {Boolean}
-		 */
-		this._isAllowedInsideAttributeElement = false;
-
-		/**
 		 * A list of attribute names that should be rendered in the editing pipeline even though filtering mechanisms
 		 * implemented in the {@link module:engine/view/domconverter~DomConverter} (for instance,
 		 * {@link module:engine/view/domconverter~DomConverter#shouldRenderAttribute}) would filter them out.
@@ -173,17 +164,6 @@ export default class Element extends Node {
 	 */
 	get isEmpty() {
 		return this._children.length === 0;
-	}
-
-	/**
-	 * Whether the element is allowed inside an AttributeElement and can be wrapped with
-	 * {@link module:engine/view/attributeelement~AttributeElement} by {@link module:engine/view/downcastwriter~DowncastWriter}.
-	 *
-	 * @readonly
-	 * @type {Boolean}
-	 */
-	get isAllowedInsideAttributeElement() {
-		return this._isAllowedInsideAttributeElement;
 	}
 
 	/**
@@ -347,11 +327,6 @@ export default class Element extends Node {
 
 		// Check element name.
 		if ( this.name != otherElement.name ) {
-			return false;
-		}
-
-		// Check isAllowedInsideAttributeElement property.
-		if ( this.isAllowedInsideAttributeElement != otherElement.isAllowedInsideAttributeElement ) {
 			return false;
 		}
 
@@ -632,8 +607,6 @@ export default class Element extends Node {
 		// We can't define this method in a prototype because it's behavior which
 		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
 		cloned.getFillerOffset = this.getFillerOffset;
-
-		cloned._isAllowedInsideAttributeElement = this.isAllowedInsideAttributeElement;
 
 		return cloned;
 	}

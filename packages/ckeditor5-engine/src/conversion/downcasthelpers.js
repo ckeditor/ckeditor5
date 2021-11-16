@@ -960,25 +960,20 @@ export function clearAttributes() {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element that will be used for wrapping.
- * @param {Function} [conditionCallback] Function returning a boolean whether attribute of the given item should be converted.
  * @returns {Function} Set/change attribute converter.
  */
-export function wrap( elementCreator, conditionCallback = () => true ) {
+export function wrap( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 			return;
 		}
 
-		if ( !conditionCallback( data.item, conversionApi ) ) {
-			return;
-		}
-
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
-		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi );
+		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi, data );
 
 		// Create node to wrap with.
-		const newViewElement = elementCreator( data.attributeNewValue, conversionApi );
+		const newViewElement = elementCreator( data.attributeNewValue, conversionApi, data );
 
 		if ( !oldViewElement && !newViewElement ) {
 			return;
@@ -1041,7 +1036,7 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 			return;
 		}
 
-		const viewElement = elementCreator( data.item, conversionApi );
+		const viewElement = elementCreator( data.item, conversionApi, data );
 
 		if ( !viewElement ) {
 			return;
@@ -1093,7 +1088,7 @@ export function insertStructure( elementCreator, consumer ) {
 		const viewElement = elementCreator( data.item, {
 			...conversionApi,
 			slotFor: createSlotFactory( data.item, slotsMap, conversionApi )
-		} );
+		}, data );
 
 		if ( !viewElement ) {
 			return;
@@ -1215,7 +1210,7 @@ function removeUIElement() {
 // @returns {Function} Add marker converter.
 function insertMarkerData( viewCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewMarkerData = viewCreator( data.markerName, conversionApi );
+		const viewMarkerData = viewCreator( data.markerName, conversionApi, data );
 
 		if ( !viewMarkerData ) {
 			return;
@@ -1303,7 +1298,7 @@ function insertMarkerAsElement( position, isStart, conversionApi, data, viewMark
 // @returns {Function} Remove marker converter.
 function removeMarkerData( viewCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewData = viewCreator( data.markerName, conversionApi );
+		const viewData = viewCreator( data.markerName, conversionApi, data );
 
 		if ( !viewData ) {
 			return;
@@ -1382,8 +1377,8 @@ function changeAttribute( attributeCreator ) {
 			return;
 		}
 
-		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
-		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
+		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi, data );
+		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi, data );
 
 		if ( !oldAttribute && !newAttribute ) {
 			return;
@@ -1735,14 +1730,9 @@ function downcastAttributeToElement( config ) {
 
 	const modelKey = config.model.key ? config.model.key : config.model;
 	let eventName = 'attribute:' + modelKey;
-	let conditionCallback;
 
 	if ( config.model.name ) {
-		if ( typeof config.model.name == 'function' ) {
-			conditionCallback = config.model.name;
-		} else {
-			eventName += ':' + config.model.name;
-		}
+		eventName += ':' + config.model.name;
 	}
 
 	if ( config.model.values ) {
@@ -1756,7 +1746,7 @@ function downcastAttributeToElement( config ) {
 	const elementCreator = getFromAttributeCreator( config );
 
 	return dispatcher => {
-		dispatcher.on( eventName, wrap( elementCreator, conditionCallback ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 

@@ -32,7 +32,6 @@ describe( 'UIElement', () => {
 			expect( uiElement.getStyle( 'color' ) ).to.equal( 'white' );
 			expect( uiElement.hasClass( 'foo' ) ).to.true;
 			expect( uiElement.hasClass( 'bar' ) ).to.true;
-			expect( uiElement.isAllowedInsideAttributeElement ).to.be.true;
 		} );
 
 		it( 'should throw if child elements are passed to constructor', () => {

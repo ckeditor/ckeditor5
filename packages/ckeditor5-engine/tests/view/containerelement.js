@@ -23,7 +23,6 @@ describe( 'ContainerElement', () => {
 			expect( el ).to.be.an.instanceof( ContainerElement );
 			expect( el ).to.be.an.instanceof( Element );
 			expect( el ).to.have.property( 'name' ).that.equals( 'p' );
-			expect( el.isAllowedInsideAttributeElement ).to.be.false;
 		} );
 	} );
 
