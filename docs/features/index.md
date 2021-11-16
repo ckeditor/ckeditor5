@@ -7,7 +7,7 @@ feedback-widget: false
 
 # Features
 
-The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting. The Premium features, which require additional license to work, are marked with a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
+The number of features available for CKEditor 5 is constantly growing. You can find the most recent list of the available ones on the left. CKEditor 5 is in active development now and new features are added all the time, while the existing ones are being expanded and improved. Newly added or meaningfully updated feature guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting. Premium features, which require an additional license to work, are marked with a <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> icon.
 
 ## Using CKEditor 5 features
 
