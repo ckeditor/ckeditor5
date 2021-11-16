@@ -7,7 +7,7 @@ menu-title: Page break
 
 The {@link module:page-break/pagebreak~PageBreak} plugin provides a possibility to insert a page break into the rich-text editor. This is useful in paged editing scenarios where you want to have more control over the final structure of the document that is printed, [exported to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) or [to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html).
 
-The page break feature is further complemented by the [pagination feature](https://ckeditor.com/docs/ckeditor5/latest/features/pagination.html) that allows you to see where page breaks would be after the document is exported to PDF or to Word.
+The page break feature is further complemented by the [pagination feature](https://ckeditor.com/docs/ckeditor5/latest/features/pagination/pagination.html) that allows you to see where page breaks would be after the document is exported to PDF or to Word.
 
 ## Demo
 
