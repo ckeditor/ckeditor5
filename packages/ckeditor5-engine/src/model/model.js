@@ -93,16 +93,27 @@ export default class Model {
 
 		// Register some default abstract entities.
 		this.schema.register( '$root', {
+			allowContentOf: '$container',
 			isLimit: true
 		} );
 
+		this.schema.register( '$container', {
+			allowChildren: [ '$block', '$container' ],
+			isContainer: true
+		} );
+
 		this.schema.register( '$block', {
-			allowIn: '$root',
+			allowChildren: '$text',
+			isBlock: true
+		} );
+
+		this.schema.register( '$blockObject', {
+			allowWhere: '$block',
+			isObject: true,
 			isBlock: true
 		} );
 
 		this.schema.register( '$text', {
-			allowIn: '$block',
 			isInline: true,
 			isContent: true
 		} );

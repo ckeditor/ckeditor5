@@ -40,6 +40,10 @@ export default class DocumentListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 
+		editor.model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		editor.model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		editor.model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( 'element:li', listItemUpcastConverter );
 		} );
@@ -82,7 +86,7 @@ function listItemUpcastConverter( evt, data, conversionApi ) {
 	data.modelCursor = modelCursor;
 
 	for ( const { item } of data.modelRange.getWalker( { shallow: true } ) ) {
-		if ( !item.hasAttribute( 'listItemId' ) ) {
+		if ( !item.hasAttribute( 'listItemId' ) && conversionApi.schema.checkAttribute( item, 'listItemId' ) ) {
 			conversionApi.writer.setAttribute( 'listItemId', id, item );
 			conversionApi.writer.setAttribute( 'listIndent', indent, item );
 			conversionApi.writer.setAttribute( 'listType', type, item );
@@ -137,7 +141,7 @@ function getIndent( listItem ) {
 		// Each LI in the tree will result in an increased indent for HTML compliant lists.
 		if ( parent.is( 'element', 'li' ) ) {
 			indent++;
-		} else {
+		} else if ( parent.is( 'element', 'ul' ) || parent.is( 'element', 'ol' ) ) {
 			// If however the list is nested in other list we should check previous sibling of any of the list elements...
 			const previousSibling = parent.previousSibling;
 
@@ -150,6 +154,8 @@ function getIndent( listItem ) {
 			if ( previousSibling && previousSibling.is( 'element', 'li' ) ) {
 				indent++;
 			}
+		} else {
+			break;
 		}
 
 		parent = parent.parent;
