@@ -1668,7 +1668,7 @@ function hasBlockParent( domNode, blockElements ) {
  *				onclick: 'alert( "Paragraph clicked!" )'
  *			},
  *			{
- *				// The "onclick" attribute will pass-through.
+ *				// Make sure the "onclick" attribute will pass through.
  *				renderUnsafeAttributes: [ 'onclick' ]
  *			}
  *		);
