@@ -66,6 +66,11 @@ export default class AutomaticDecorators {
 				if ( !conversionApi.consumable.test( data.item, 'attribute:linkHref' ) ) {
 					return;
 				}
+
+				if ( !conversionApi.schema.isInline( data.item ) ) {
+					return;
+				}
+
 				const viewWriter = conversionApi.writer;
 				const viewSelection = viewWriter.document.selection;
 

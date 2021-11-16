@@ -387,9 +387,9 @@ describe( 'HtmlComment integration', () => {
 			expect( editor.getData() ).to.equal(
 				'<!-- c1 -->' +
 				'<figure class="image">' +
-					'<img src="/assets/sample.png" alt="Example image">' +
 					'<!-- c3 -->' +
 					'<!-- c2 -->' +
+					'<img src="/assets/sample.png" alt="Example image">' +
 					'<figcaption>' +
 						'<!-- c4 -->' +
 						'image caption' +

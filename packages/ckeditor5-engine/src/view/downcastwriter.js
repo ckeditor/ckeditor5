@@ -1334,7 +1334,6 @@ export default class DowncastWriter {
 			const child = parent.getChild( i );
 			const isText = child.is( '$text' );
 			const isAttribute = child.is( 'attributeElement' );
-			const isAllowedInsideAttributeElement = child.isAllowedInsideAttributeElement;
 
 			//
 			// (In all examples, assume that `wrapElement` is `<span class="foo">` element.)
@@ -1353,7 +1352,7 @@ export default class DowncastWriter {
 			//
 			// <p>abc</p>                   -->  <p><span class="foo">abc</span></p>
 			// <p><strong>abc</strong></p>  -->  <p><span class="foo"><strong>abc</strong></span></p>
-			else if ( isText || isAllowedInsideAttributeElement || ( isAttribute && shouldABeOutsideB( wrapElement, child ) ) ) {
+			else if ( isText || !isAttribute || shouldABeOutsideB( wrapElement, child ) ) {
 				// Clone attribute.
 				const newAttribute = wrapElement._clone();
 

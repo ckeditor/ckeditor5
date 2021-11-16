@@ -960,11 +960,16 @@ export function clearAttributes() {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element that will be used for wrapping.
+ * @param {Function} [conditionCallback] Function returning a boolean whether attribute of the given item should be converted.
  * @returns {Function} Set/change attribute converter.
  */
-export function wrap( elementCreator ) {
+export function wrap( elementCreator, conditionCallback = () => true ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
+		if ( !conditionCallback( data.item, conversionApi ) ) {
 			return;
 		}
 
@@ -1730,9 +1735,14 @@ function downcastAttributeToElement( config ) {
 
 	const modelKey = config.model.key ? config.model.key : config.model;
 	let eventName = 'attribute:' + modelKey;
+	let conditionCallback;
 
 	if ( config.model.name ) {
-		eventName += ':' + config.model.name;
+		if ( typeof config.model.name == 'function' ) {
+			conditionCallback = config.model.name;
+		} else {
+			eventName += ':' + config.model.name;
+		}
 	}
 
 	if ( config.model.values ) {
@@ -1746,7 +1756,7 @@ function downcastAttributeToElement( config ) {
 	const elementCreator = getFromAttributeCreator( config );
 
 	return dispatcher => {
-		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( eventName, wrap( elementCreator, conditionCallback ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 

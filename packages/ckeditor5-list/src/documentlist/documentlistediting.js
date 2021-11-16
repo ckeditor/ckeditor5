@@ -44,26 +44,12 @@ export default class DocumentListEditing extends Plugin {
 			dispatcher.on( 'element:li', listItemUpcastConverter );
 		} );
 
-		editor.conversion.for( 'downcast' )
-			.elementToElement( {
-				model: 'paragraph',
-				view: ( modelElement, { writer } ) => {
-					if ( !modelElement.hasAttribute( 'listItemId' ) ) {
-						return;
-					}
+		editor.conversion.for( 'downcast' ).add( dispatcher => {
+			const converter = listItemWrap();
 
-					return writer.createContainerElement(
-						'p', { class: 'ck-list-bogus-paragraph' }, { isAllowedInsideAttributeElement: true }
-					);
-				},
-				converterPriority: 'high'
-			} )
-			.add( dispatcher => {
-				const converter = listItemWrap();
-
-				dispatcher.on( 'attribute:listIndent', converter );
-				dispatcher.on( 'attribute:listType', converter );
-			} );
+			dispatcher.on( 'attribute:listIndent', converter );
+			dispatcher.on( 'attribute:listType', converter );
+		} );
 
 		this.listenTo( editor.model.document, 'change:data', handleDataChange( editor.model, editor.editing ) );
 	}

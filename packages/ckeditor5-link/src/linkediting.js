@@ -192,7 +192,10 @@ export default class LinkEditing extends Plugin {
 			manualDecorators.add( decorator );
 
 			editor.conversion.for( 'downcast' ).attributeToElement( {
-				model: decorator.id,
+				model: {
+					key: decorator.id,
+					name: ( item, { schema } ) => schema.isInline( item )
+				},
 				view: ( manualDecoratorName, { writer } ) => {
 					if ( manualDecoratorName ) {
 						const element = writer.createAttributeElement( 'a', decorator.attributes, { priority: 5 } );
@@ -209,7 +212,8 @@ export default class LinkEditing extends Plugin {
 
 						return element;
 					}
-				} } );
+				}
+			} );
 
 			editor.conversion.for( 'upcast' ).elementToAttribute( {
 				view: {
