@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListEditing from '../src/listediting';
-import ListCommand from '../src/listcommand';
-import IndentCommand from '../src/indentcommand';
+import ListEditing from '../../src/list/listediting';
+import ListCommand from '../../src/list/listcommand';
+import IndentCommand from '../../src/list/indentcommand';
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 

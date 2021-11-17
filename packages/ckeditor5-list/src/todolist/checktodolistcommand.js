@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/checktodolistcommand
+ * @module list/todolist/checktodolistcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -14,7 +14,7 @@ const attributeKey = 'todoListChecked';
 /**
  * The check to-do command.
  *
- * The command is registered by the {@link module:list/todolistediting~TodoListEditing} as
+ * The command is registered by the {@link module:list/todolist/todolistediting~TodoListEditing} as
  * the `checkTodoList` editor command and it is also available via aliased `todoListCheck` name.
  *
  * @extends module:core/command~Command

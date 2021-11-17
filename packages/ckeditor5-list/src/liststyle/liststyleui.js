@@ -4,32 +4,32 @@
  */
 
 /**
- * @module list/liststyleui
+ * @module list/liststyle/liststyleui
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 import { ButtonView, SplitButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
-import bulletedListIcon from '../theme/icons/bulletedlist.svg';
-import numberedListIcon from '../theme/icons/numberedlist.svg';
+import bulletedListIcon from '../../theme/icons/bulletedlist.svg';
+import numberedListIcon from '../../theme/icons/numberedlist.svg';
 
-import listStyleDiscIcon from '../theme/icons/liststyledisc.svg';
-import listStyleCircleIcon from '../theme/icons/liststylecircle.svg';
-import listStyleSquareIcon from '../theme/icons/liststylesquare.svg';
-import listStyleDecimalIcon from '../theme/icons/liststyledecimal.svg';
-import listStyleDecimalWithLeadingZeroIcon from '../theme/icons/liststyledecimalleadingzero.svg';
-import listStyleLowerRomanIcon from '../theme/icons/liststylelowerroman.svg';
-import listStyleUpperRomanIcon from '../theme/icons/liststyleupperroman.svg';
-import listStyleLowerLatinIcon from '../theme/icons/liststylelowerlatin.svg';
-import listStyleUpperLatinIcon from '../theme/icons/liststyleupperlatin.svg';
+import listStyleDiscIcon from '../../theme/icons/liststyledisc.svg';
+import listStyleCircleIcon from '../../theme/icons/liststylecircle.svg';
+import listStyleSquareIcon from '../../theme/icons/liststylesquare.svg';
+import listStyleDecimalIcon from '../../theme/icons/liststyledecimal.svg';
+import listStyleDecimalWithLeadingZeroIcon from '../../theme/icons/liststyledecimalleadingzero.svg';
+import listStyleLowerRomanIcon from '../../theme/icons/liststylelowerroman.svg';
+import listStyleUpperRomanIcon from '../../theme/icons/liststyleupperroman.svg';
+import listStyleLowerLatinIcon from '../../theme/icons/liststylelowerlatin.svg';
+import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 
-import '../theme/liststyles.css';
+import '../../theme/liststyles.css';
 
 /**
  * The list style UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
  * buttons that allow users to change styles of individual lists in the content.
  *
- * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/listui~ListUI}
+ * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/list/listui~ListUI}
  * (because they share the same names).
  *
  * @extends module:core/plugin~Plugin
@@ -174,7 +174,7 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 //
 // @param {Object} options
 // @param {module:core/editor/editor~Editor} options.editor
-// @param {module:list/liststylecommand~ListStylesCommand} options.listStyleCommand The instance of the `ListStylesCommand` class.
+// @param {module:list/liststyle/liststylecommand~ListStylesCommand} options.listStyleCommand The instance of the `ListStylesCommand` class.
 // @param {'bulletedList'|'numberedList'} options.parentCommandName The name of the higher-order command associated with a
 // particular list style (e.g. "bulletedList" is associated with "square" and "numberedList" is associated with "roman").
 // @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.

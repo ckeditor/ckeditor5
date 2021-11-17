@@ -29,9 +29,9 @@ import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
-import ListStyleEditing from '@ckeditor/ckeditor5-list/src/liststyleediting';
-import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
+import ListStyleEditing from '@ckeditor/ckeditor5-list/src/liststyle/liststyleediting';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
 
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
 

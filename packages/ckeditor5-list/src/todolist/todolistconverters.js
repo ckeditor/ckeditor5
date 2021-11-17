@@ -4,14 +4,14 @@
  */
 
 /**
- * @module list/todolistconverters
+ * @module list/todolist/todolistconverters
  */
 
 /* global document */
 
 import { createElement } from 'ckeditor5/src/utils';
 
-import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from './utils';
+import { generateLiInUl, injectViewList, positionAfterUiElements, findNestedList } from '../list/utils';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.
@@ -171,8 +171,8 @@ export function dataViewModelCheckmarkInsertion( evt, data, conversionApi ) {
  * {@link module:engine/view/uielement~UIElement checkbox UI element} is added at the beginning
  * of the list item element (or vice versa).
  *
- * This converter is preceded by {@link module:list/converters~modelViewChangeType} and followed by
- * {@link module:list/converters~modelViewMergeAfterChangeType} to handle splitting and merging surrounding lists of the same type.
+ * This converter is preceded by {@link module:list/list/converters~modelViewChangeType} and followed by
+ * {@link module:list/list/converters~modelViewMergeAfterChangeType} to handle splitting and merging surrounding lists of the same type.
  *
  * It is used by {@link module:engine/controller/editingcontroller~EditingController}.
  *

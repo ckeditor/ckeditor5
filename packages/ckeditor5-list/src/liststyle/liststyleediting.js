@@ -4,13 +4,13 @@
  */
 
 /**
- * @module list/liststyleediting
+ * @module list/liststyle/liststyleediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ListEditing from './listediting';
+import ListEditing from '../list/listediting';
 import ListStyleCommand from './liststylecommand';
-import { getSiblingListItem, getSiblingNodes } from './utils';
+import { getSiblingListItem, getSiblingNodes } from '../list/utils';
 
 const DEFAULT_LIST_TYPE = 'default';
 

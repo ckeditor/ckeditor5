@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import ListEditing from '../src/listediting';
-import ListUI from '../src/listui';
+import ListEditing from '../../src/list/listediting';
+import ListUI from '../../src/list/listui';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
