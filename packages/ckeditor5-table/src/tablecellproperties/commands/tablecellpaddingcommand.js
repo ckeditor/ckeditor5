@@ -40,7 +40,7 @@ export default class TableCellPaddingCommand extends TableCellPropertyCommand {
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'padding', defaultValue );
+		super( editor, 'tableCellPadding', defaultValue );
 	}
 
 	/**

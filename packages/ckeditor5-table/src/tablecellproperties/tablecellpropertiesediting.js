@@ -99,14 +99,14 @@ export default class TableCellPropertiesEditing extends Plugin {
 		);
 
 		enableProperty( schema, conversion, {
-			modelAttribute: 'width',
+			modelAttribute: 'tableCellWidth',
 			styleName: 'width',
 			defaultValue: defaultTableCellProperties.width
 		} );
 		editor.commands.add( 'tableCellWidth', new TableCellWidthCommand( editor, defaultTableCellProperties.width ) );
 
 		enableProperty( schema, conversion, {
-			modelAttribute: 'height',
+			modelAttribute: 'tableCellHeight',
 			styleName: 'height',
 			defaultValue: defaultTableCellProperties.height
 		} );
@@ -114,7 +114,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 
 		editor.data.addStyleProcessorRules( addPaddingRules );
 		enableProperty( schema, conversion, {
-			modelAttribute: 'padding',
+			modelAttribute: 'tableCellPadding',
 			styleName: 'padding',
 			reduceBoxSides: true,
 			defaultValue: defaultTableCellProperties.padding
@@ -123,7 +123,7 @@ export default class TableCellPropertiesEditing extends Plugin {
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, {
-			modelAttribute: 'backgroundColor',
+			modelAttribute: 'tableCellBackgroundColor',
 			styleName: 'background-color',
 			defaultValue: defaultTableCellProperties.backgroundColor
 		} );

@@ -200,7 +200,7 @@ describe( 'table cell properties', () => {
 					expect( getModelData( editor.model ) ).to.equal(
 						'<table>' +
 							'<tableRow>' +
-								'<tableCell backgroundColor="red" borderStyle="dotted">' +
+								'<tableCell borderStyle="dotted" tableCellBackgroundColor="red">' +
 									'<paragraph>[]foo</paragraph>' +
 								'</tableCell>' +
 							'</tableRow>' +

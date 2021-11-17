@@ -67,17 +67,17 @@ describe( 'table properties', () => {
 				editor.execute( 'tableCellBackgroundColor', { value: 'green' } );
 
 				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'red' );
-				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.equal( 'green' );
+				expect( firstCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( 'green' );
 
 				editor.execute( 'undo' );
 
 				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'red' );
-				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				expect( firstCell.getAttribute( 'tableCellBackgroundColor' ) ).to.be.undefined;
 
 				editor.execute( 'undo' );
 
 				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
-				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				expect( firstCell.getAttribute( 'tableCellBackgroundColor' ) ).to.be.undefined;
 			} );
 		} );
 
