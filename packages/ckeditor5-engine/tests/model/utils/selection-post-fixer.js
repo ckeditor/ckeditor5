@@ -8,7 +8,7 @@ import Model from '../../../src/model/model';
 import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
 import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer';
 
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
 describe( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {
@@ -219,7 +219,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -622,7 +622,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 					'<tableRow>' +
 							'[<tableCell><paragraph>a</paragraph></tableCell>]' +
@@ -645,7 +645,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow><tableCell><paragraph>[aaa]</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -670,7 +670,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
@@ -709,7 +709,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -751,7 +751,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -783,7 +783,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>[foo]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -805,7 +805,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -827,7 +827,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -856,7 +856,7 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelectionAttribute( 'foo', 'bar' );
 				} );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell>[<imageBlock></imageBlock>]</tableCell>' +
@@ -884,7 +884,7 @@ describe( 'Selection post-fixer', () => {
 					'</blockQuote>]'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<blockQuote>' +
 						'<paragraph>[foo</paragraph>' +
 						'<table>' +
@@ -1479,7 +1479,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1493,7 +1493,7 @@ describe( 'Selection post-fixer', () => {
 			it( 'should fix #4 (selection inside limit element that doesn\'t allow text)', () => {
 				setModelData( model, '<imageBlock>[]</imageBlock>' );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'[<imageBlock></imageBlock>]'
 				);
 			} );
@@ -1503,7 +1503,7 @@ describe( 'Selection post-fixer', () => {
 					'<table><tableRow><tableCell><imageBlock>[]</imageBlock></tableCell></tableRow></table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table><tableRow><tableCell>[<imageBlock></imageBlock>]</tableCell></tableRow></table>'
 				);
 			} );
@@ -1519,7 +1519,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>[]foo[]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
