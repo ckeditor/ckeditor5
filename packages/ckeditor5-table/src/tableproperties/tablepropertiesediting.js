@@ -91,14 +91,14 @@ export default class TablePropertiesEditing extends Plugin {
 		editor.commands.add( 'tableAlignment', new TableAlignmentCommand( editor, defaultTableProperties.alignment ) );
 
 		enableTableToFigureProperty( schema, conversion, {
-			modelAttribute: 'width',
+			modelAttribute: 'tableWidth',
 			styleName: 'width',
 			defaultValue: defaultTableProperties.width
 		} );
 		editor.commands.add( 'tableWidth', new TableWidthCommand( editor, defaultTableProperties.width ) );
 
 		enableTableToFigureProperty( schema, conversion, {
-			modelAttribute: 'height',
+			modelAttribute: 'tableHeight',
 			styleName: 'height',
 			defaultValue: defaultTableProperties.height
 		} );
@@ -106,7 +106,7 @@ export default class TablePropertiesEditing extends Plugin {
 
 		editor.data.addStyleProcessorRules( addBackgroundRules );
 		enableProperty( schema, conversion, {
-			modelAttribute: 'backgroundColor',
+			modelAttribute: 'tableBackgroundColor',
 			styleName: 'background-color',
 			defaultValue: defaultTableProperties.backgroundColor
 		} );
@@ -130,9 +130,9 @@ function enableBorderProperties( schema, conversion, defaultBorder ) {
 		allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
 	} );
 	upcastBorderStyles( conversion, 'table', defaultBorder );
-	downcastTableAttribute( conversion, { modelAttribute: 'borderColor', styleName: 'border-color' } );
-	downcastTableAttribute( conversion, { modelAttribute: 'borderStyle', styleName: 'border-style' } );
-	downcastTableAttribute( conversion, { modelAttribute: 'borderWidth', styleName: 'border-width' } );
+	downcastTableAttribute( conversion, { modelAttribute: 'tableBorderColor', styleName: 'border-color' } );
+	downcastTableAttribute( conversion, { modelAttribute: 'tableBorderStyle', styleName: 'border-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: 'tableBorderWidth', styleName: 'border-width' } );
 }
 
 // Enables the `'alignment'` attribute for table.
@@ -142,14 +142,14 @@ function enableBorderProperties( schema, conversion, defaultBorder ) {
 // @param {String} defaultValue The default alignment value.
 function enableAlignmentProperty( schema, conversion, defaultValue ) {
 	schema.extend( 'table', {
-		allowAttributes: [ 'alignment' ]
+		allowAttributes: [ 'tableAlignment' ]
 	} );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
 			model: {
 				name: 'table',
-				key: 'alignment'
+				key: 'tableAlignment'
 			},
 			view: alignment => ( {
 				key: 'style',
@@ -171,7 +171,7 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 				}
 			},
 			model: {
-				key: 'alignment',
+				key: 'tableAlignment',
 				value: viewElement => {
 					let align = viewElement.getStyle( 'float' );
 
@@ -193,7 +193,7 @@ function enableAlignmentProperty( schema, conversion, defaultValue ) {
 			},
 			model: {
 				name: 'table',
-				key: 'alignment',
+				key: 'tableAlignment',
 				value: viewElement => {
 					const align = viewElement.getAttribute( 'align' );
 

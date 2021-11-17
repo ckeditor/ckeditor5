@@ -37,7 +37,7 @@ describe( 'table properties', () => {
 			} );
 
 			it( 'should properly downcast table with Alignment plugin enabled', () => {
-				model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
 				assertTableStyle( editor, null, 'float:right;' );
 			} );
@@ -66,17 +66,17 @@ describe( 'table properties', () => {
 
 				editor.execute( 'tableCellBackgroundColor', { value: 'green' } );
 
-				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'red' );
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'red' );
 				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.equal( 'green' );
 
 				editor.execute( 'undo' );
 
-				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'red' );
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'red' );
 				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
 
 				editor.execute( 'undo' );
 
-				expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
 				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
 			} );
 		} );

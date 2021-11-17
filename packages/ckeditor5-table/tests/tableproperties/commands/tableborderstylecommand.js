@@ -65,14 +65,14 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has borderStyle property (single string)', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						expect( command.value ).to.equal( 'ridge' );
 					} );
 
 					it( 'should be set if selected table has borderStyle property object with same values', () => {
 						setTableWithObjectAttributes( model, {
-							borderStyle: {
+							tableBorderStyle: {
 								top: 'ridge',
 								right: 'ridge',
 								bottom: 'ridge',
@@ -84,7 +84,7 @@ describe( 'table properties', () => {
 
 					it( 'should be undefined if selected table has borderStyle property object with different values', () => {
 						setTableWithObjectAttributes( model, {
-							borderStyle: {
+							tableBorderStyle: {
 								top: 'ridge',
 								right: 'dashed',
 								bottom: 'ridge',
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						expect( command.value ).to.equal( 'ridge' );
 					} );
@@ -131,7 +131,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table borderStyle to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						command.execute( { value: 'solid' } );
 
@@ -139,7 +139,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove borderStyle from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'ridge' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'ridge' } ) );
 
 						command.execute();
 
@@ -194,13 +194,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'none' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'none' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has borderStyle property other than the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'solid' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'solid' } ) );
 
 						expect( command.value ).to.equal( 'solid' );
 					} );
@@ -208,13 +208,13 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderStyle: 'none' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'none' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has borderStyle property other than the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderStyle: 'solid' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderStyle: 'solid' } ) );
 
 						expect( command.value ).to.equal( 'solid' );
 					} );
@@ -224,7 +224,7 @@ describe( 'table properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove borderStyle from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderStyle: 'solid' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderStyle: 'solid' } ) );
 
 						command.execute( { value: 'none' } );
 
@@ -234,7 +234,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove borderStyle from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ], { borderStyle: 'solid' } ) );
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBorderStyle: 'solid' } ) );
 
 						command.execute( { value: 'none' } );
 
