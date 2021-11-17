@@ -59,7 +59,7 @@ describe( 'LinkImageUI', () => {
 
 			listenToSpy( viewDocument, 'click' );
 
-			viewDocument.fire( 'click' );
+			viewDocument.fire( 'click', { domEvent: {} } );
 
 			sinon.assert.calledOnce( listenToSpy );
 		} );

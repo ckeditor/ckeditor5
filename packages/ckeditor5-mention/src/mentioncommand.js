@@ -68,8 +68,8 @@ export default class MentionCommand extends Command {
 	 * @param {String} options.marker The marker character (e.g. `'@'`).
 	 * @param {String} [options.text] The text of the inserted mention. Defaults to the full mention string composed from `marker` and
 	 * `mention` string or `mention.id` if an object is passed.
-	 * @param {String} [options.range] The range to replace. Note that the replaced range might be shorter than the inserted text with the
-	 * mention attribute.
+	 * @param {module:engine/model/range~Range} [options.range] The range to replace.
+	 * Note that the replaced range might be shorter than the inserted text with the mention attribute.
 	 * @fires execute
 	 */
 	execute( options ) {

@@ -37,6 +37,9 @@ export function upcastTableFigure() {
 				return;
 			}
 
+			// Consume the figure to prevent other converters from processing it again.
+			conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } );
+
 			// Convert view table to model table.
 			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
 
@@ -45,6 +48,9 @@ export function upcastTableFigure() {
 
 			// When table wasn't successfully converted then finish conversion.
 			if ( !modelTable ) {
+				// Revert consumed figure so other features can convert it.
+				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
+
 				return;
 			}
 

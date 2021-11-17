@@ -1,0 +1,69 @@
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+#
+#                                     !!! IMPORTANT !!!
+#
+#         Before you edit this file, please keep in mind that contributing to the project
+#                translations is possible ONLY via the Transifex online service.
+#
+#         To submit your translations, visit https://www.transifex.com/ckeditor/ckeditor5.
+#
+#                   To learn more, check out the official contributor's guide:
+#     https://ckeditor.com/docs/ckeditor5/latest/framework/guides/contributing/contributing.html
+#
+msgid ""
+msgstr ""
+"Language-Team: Polish (https://www.transifex.com/ckeditor/teams/11143/pl/)\n"
+"Language: pl\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+
+msgctxt "The tooltip of a find and replace button in the toolbar. Also, the title of the find and replace form."
+msgid "Find and replace"
+msgstr "Znajdź i zamień"
+
+msgctxt "The label for the searched text in the find and replace dropdown."
+msgid "Find in text…"
+msgstr "Znajdź…"
+
+msgctxt "The label for the find action button in the find and replace dropdown."
+msgid "Find"
+msgstr "Znajdź"
+
+msgctxt "The label for the previous result button in the find and replace dropdown."
+msgid "Previous result"
+msgstr "Poprzedni"
+
+msgctxt "The label for the previous result button in the find and replace dropdown."
+msgid "Next result"
+msgstr "Następny"
+
+msgctxt "The label for the (single) replace action button in the find and replace dropdown."
+msgid "Replace"
+msgstr "Zamień"
+
+msgctxt "The label for the replace all action button in the find and replace dropdown."
+msgid "Replace all"
+msgstr "Zamień wszystko"
+
+msgctxt "The label for the match case checkbox in the find and replace dropdown."
+msgid "Match case"
+msgstr "Uwzględnij wielkość liter"
+
+msgctxt "The label for the whole words only checkbox in the find and replace dropdown."
+msgid "Whole words only"
+msgstr "Znajdź tylko całe wyrazy"
+
+msgctxt "The label for the text replacement in the find and replace dropdown."
+msgid "Replace with…"
+msgstr "Zamień na…"
+
+msgctxt "An error text displayed when user attempted to find an empty text."
+msgid "Text to find must not be empty."
+msgstr "Szukany tekst nie może być pusty."
+
+msgctxt "A message displayed next to the replace field when disabled but user tries to use it."
+msgid "Tip: Find some text first in order to replace it."
+msgstr "Podpowiedź: Znajdź jakiś tekst, aby go zamienić."
+
+msgctxt "The label and a tooltip of the options dropdown button in the find and replace form."
+msgid "Show options"
+msgstr "Pokaż opcje"

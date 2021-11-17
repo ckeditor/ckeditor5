@@ -4,10 +4,10 @@
  */
 
 .ck-find-result {
-	background: hsl(58, 100%, 50%);
+	background: hsl(60, 100%, 50%);
 	color: var(--ck-color-text);
 }
 
 .ck-find-result_selected {
-	background: hsl(52, 100%, 50%);
+	background: hsl(29, 100%, 60%);
 }

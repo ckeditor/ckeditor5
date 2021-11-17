@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { Delete } from 'ckeditor5/src/typing';
 
 import blockAutoformatEditing from './blockautoformatediting';
 import inlineAutoformatEditing from './inlineautoformatediting';
@@ -21,6 +22,13 @@ import inlineAutoformatEditing from './inlineautoformatediting';
  * @extends module:core/plugin~Plugin
  */
 export default class Autoformat extends Plugin {
+	/**
+	 * @inheritdoc
+	 */
+	static get requires() {
+		return [ Delete ];
+	}
+
 	/**
 	 * @inheritDoc
 	 */

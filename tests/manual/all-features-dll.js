@@ -17,7 +17,6 @@ import '@ckeditor/ckeditor5-editor-balloon/build/editor-balloon';
 import '@ckeditor/ckeditor5-image/build/image';
 import '@ckeditor/ckeditor5-link/build/link';
 import '@ckeditor/ckeditor5-basic-styles/build/basic-styles';
-// import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import '@ckeditor/ckeditor5-find-and-replace/build/find-and-replace';
 import '@ckeditor/ckeditor5-font/build/font';
 import '@ckeditor/ckeditor5-indent/build/indent';
@@ -239,9 +238,7 @@ const config = {
 			isGallery: {
 				mode: 'manual',
 				label: 'Gallery link',
-				attributes: {
-					class: 'gallery'
-				}
+				classes: 'gallery'
 			}
 		}
 	},

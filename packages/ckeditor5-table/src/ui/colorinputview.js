@@ -25,7 +25,7 @@ export default class ColorInputView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Object} options The input options.
-	 * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options.colorDefinitions The colors to be displayed
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.colorDefinitions The colors to be displayed
 	 * in the palette inside the input's dropdown.
 	 * @param {Number} options.columns The number of columns in which the colors will be displayed.
 	 * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
@@ -98,7 +98,7 @@ export default class ColorInputView extends View {
 		 * some error, it helps screen readers read the error text.
 		 *
 		 * @observable
-		 * @member {Boolean} #ariaDescribedById
+		 * @member {String} #ariaDescribedById
 		 */
 		this.set( 'ariaDescribedById' );
 

@@ -38,29 +38,27 @@ export default class FindAndReplace extends Plugin {
 		return 'FindAndReplace';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const ui = this.editor.plugins.get( 'FindAndReplaceUI' );
 		const findAndReplaceEditing = this.editor.plugins.get( 'FindAndReplaceEditing' );
+		const state = findAndReplaceEditing.state;
 
-		/**
-		 * Delegate find next request.
-		 */
 		ui.on( 'findNext', ( event, data ) => {
 			// Data is contained only for the "find" button.
 			if ( data ) {
-				findAndReplaceEditing.state.searchText = data.searchText;
+				state.searchText = data.searchText;
 				this.editor.execute( 'find', data.searchText, data );
 			} else {
-				// Arrow button press.
+				// Find next arrow button press.
 				this.editor.execute( 'findNext' );
 			}
 		} );
 
-		/**
-		 * Delegate find previous request
-		 */
 		ui.on( 'findPrevious', ( event, data ) => {
-			if ( data && findAndReplaceEditing.state.searchText !== data.searchText ) {
+			if ( data && state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
 			} else {
 				// Subsequent calls.
@@ -68,65 +66,32 @@ export default class FindAndReplace extends Plugin {
 			}
 		} );
 
-		/**
-		 * Delegate replace action.
-		 */
 		ui.on( 'replace', ( event, data ) => {
-			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+			if ( state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
 			}
 
-			const highlightedResult = findAndReplaceEditing.state.highlightedResult;
+			const highlightedResult = state.highlightedResult;
 
 			if ( highlightedResult ) {
 				this.editor.execute( 'replace', data.replaceText, highlightedResult );
 			}
 		} );
 
-		/**
-		 * Delegate replace all action.
-		 */
 		ui.on( 'replaceAll', ( event, data ) => {
 			// The state hadn't been yet built for this search text.
-			if ( findAndReplaceEditing.state.searchText !== data.searchText ) {
+			if ( state.searchText !== data.searchText ) {
 				this.editor.execute( 'find', data.searchText );
 			}
 
-			this.editor.execute( 'replaceAll', data.replaceText, findAndReplaceEditing.state.results );
+			this.editor.execute( 'replaceAll', data.replaceText, state.results );
 		} );
 
-		ui.on( 'dropdown:closed', () => {
-			findAndReplaceEditing.state.clear( this.editor.model );
+		// Reset the state when the user invalidated last search results, for instance,
+		// by starting typing another search query or changing options.
+		ui.on( 'searchReseted', () => {
+			state.clear( this.editor.model );
 			findAndReplaceEditing.stop();
 		} );
-
-		if ( this.editor.ui ) {
-			// We need to wait for the UI to be ready to have the toolbar dropdown available.
-			// Otherwise the findAndReplace component is registered but not yet constructed.
-			this.listenTo( this.editor.ui, 'ready', () => {
-				const formView = ui.formView;
-				// If the editor doesn't contain the findAndReplace button then there's no ui#formView property.
-				if ( formView ) {
-					const commands = this.editor.commands;
-
-					formView.findNextButtonView.bind( 'isEnabled' ).to( commands.get( 'findNext' ), 'isEnabled' );
-					formView.findPrevButtonView.bind( 'isEnabled' ).to( commands.get( 'findPrevious' ), 'isEnabled' );
-
-					formView.replaceButtonView.unbind( 'isEnabled' );
-					formView.replaceButtonView.bind( 'isEnabled' ).to(
-						commands.get( 'replace' ), 'isEnabled', formView, 'isSearching', ( commandEnabled, isSearching ) => {
-							return commandEnabled && isSearching;
-						} );
-
-					formView.replaceAllButtonView.unbind( 'isEnabled' );
-					formView.replaceAllButtonView.bind( 'isEnabled' ).to(
-						commands.get( 'replaceAll' ), 'isEnabled', formView, 'isSearching', ( commandEnabled, isSearching ) => {
-							return commandEnabled && isSearching;
-						} );
-				}
-			} );
-		}
-
-		ui._setState( findAndReplaceEditing.state );
 	}
 }

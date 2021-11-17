@@ -4,7 +4,31 @@ menu-title: Migration to v27.x
 order: 97
 ---
 
+<info-box>
+	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
+
+	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
+</info-box>
+
 # Migration to CKEditor 5 v27.x
+
+## Migration to CKEditor 5 v27.1.0
+
+For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v27.1.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#2710-2021-04-19).
+
+Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v27.1.0.
+
+### Disallowing nesting tables
+
+Prior to version 27.1.0 inserting a table into another table was not allowed.
+
+If you wish to bring back this restriction, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
+
+### Disallowing nesting block quotes
+
+Prior to version 27.1.0 inserting a block quote into another block quote was not allowed.
+
+If you wish to bring back this restriction, see the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section in the block quote feature guide.
 
 ## Migration to CKEditor 5 v27.0.0
 
@@ -98,21 +122,3 @@ We recommend reviewing your integration if some of your listeners were attached 
 This is a new event type that is introduced by the {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}. It listens to the `keydown` events at the `normal` priority and fires the {@link module:engine/view/document~Document#event:arrowKey `arrowKey`} events that bubble down the view document tree. This is similar behavior to the {@link module:enter/enterobserver~EnterObserver} and {@link module:typing/deleteobserver~DeleteObserver}.
 
 You should review your integration if some of your listeners were attached to the `keydown` event to handle arrow key presses.
-
-## Migration to CKEditor 5 v27.1.0
-
-For the entire list of changes introduced in version 27.1.0, see the [changelog for CKEditor 5 v27.1.0](https://github.com/ckeditor/ckeditor5/blob/release/CHANGELOG.md#2710-2021-04-19).
-
-Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v27.1.0.
-
-### Disallowing nesting tables
-
-Prior to version 27.1.0 inserting a table into another table was not allowed.
-
-If you wish to bring back this restriction, see the {@link features/table#disallow-nesting-tables Disallow nesting tables} section of the table feature guide.
-
-### Disallowing nesting block quotes
-
-Prior to version 27.1.0 inserting a block quote into another block quote was not allowed.
-
-If you wish to bring back this restriction, see the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section in the block quote feature guide.

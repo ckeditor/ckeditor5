@@ -128,9 +128,17 @@ function tryFixingCollapsedRange( range, schema ) {
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
 
-	// This might be null ie when editor data is empty.
-	// In such cases there is no need to fix the selection range.
+	// This might be null, i.e. when the editor data is empty or the selection is inside a limit element
+	// that doesn't allow text inside.
+	// In the first case, there is no need to fix the selection range.
+	// In the second, let's go up to the outer selectable element
 	if ( !nearestSelectionRange ) {
+		const ancestorObject = originalPosition.getAncestors().reverse().find( item => schema.isObject( item ) );
+
+		if ( ancestorObject ) {
+			return Range._createOn( ancestorObject );
+		}
+
 		return null;
 	}
 

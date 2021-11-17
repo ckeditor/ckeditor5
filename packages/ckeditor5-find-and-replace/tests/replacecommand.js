@@ -9,6 +9,7 @@ import FindAndReplaceEditing from '../src/findandreplaceediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'ReplaceCommand', () => {
 	let editor, model, command;
@@ -16,7 +17,7 @@ describe( 'ReplaceCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing ]
+				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -75,6 +76,25 @@ describe( 'ReplaceCommand', () => {
 			} );
 
 			expect( editor.getData() ).to.equal( '<p>Foo bar baz</p><p>Foo new baz</p>' );
+		} );
+
+		it( 'should replace all with text', () => {
+			setData( model, '<paragraph>Foo bar baz</paragraph><paragraph>Foo bar baz</paragraph>' );
+
+			const root = editor.model.document.getRoot();
+			const markerId = 'my-marker-id';
+
+			model.change( writer => {
+				const marker = writer.addMarker( markerId, {
+					usingOperation: false,
+					affectsData: false,
+					range: writer.createRangeIn( root )
+				} );
+
+				editor.execute( 'replace', 'new', { marker } );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p>new</p>' );
 		} );
 
 		it( 'should highlight next match', () => {
@@ -148,6 +168,35 @@ describe( 'ReplaceCommand', () => {
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
+		} );
+
+		it( 'should not replace find results that landed in the $graveyard root (e.g. removed by collaborators)', () => {
+			setData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
+
+			const { results } = editor.execute( 'find', 'oo' );
+
+			model.change( writer => {
+				writer.remove(
+					// <paragraph>Aoo [Boo Coo] Doo</paragraph>
+					model.createRange(
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 4 ),
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 11 )
+					)
+				);
+			} );
+
+			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
+			// In real life scenario the above deletion would be a transparent batch from the remote user,
+			// and undo would also be triggered by the remote user.
+			model.enqueueChange( 'transparent', () => {
+				editor.execute( 'replaceAll', 'aa', results );
+			} );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+
+			editor.execute( 'undo' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 	} );
 } );

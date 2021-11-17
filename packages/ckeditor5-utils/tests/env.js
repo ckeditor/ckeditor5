@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isMac, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported, isBlink } from '../src/env';
+import env, { isMac, isWindows, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported, isBlink } from '../src/env';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
@@ -17,6 +17,12 @@ describe( 'Env', () => {
 	describe( 'isMac', () => {
 		it( 'is a boolean', () => {
 			expect( env.isMac ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isWindows', () => {
+		it( 'is a boolean', () => {
+			expect( env.isWindows ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -71,6 +77,26 @@ describe( 'Env', () => {
 			expect( isMac( '' ) ).to.be.false;
 			expect( isMac( 'mac' ) ).to.be.false;
 			expect( isMac( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isWindows()', () => {
+		it( 'returns true for Windows UA strings', () => {
+			expect( isWindows( 'windows' ) ).to.be.true;
+
+			expect( isWindows( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0'
+			) ) ).to.be.true;
+
+			expect( isWindows( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-Windows UA strings', () => {
+			expect( isWindows( '' ) ).to.be.false;
+			expect( isWindows( 'macintosh' ) ).to.be.false;
+			expect( isWindows( 'foo' ) ).to.be.false;
 		} );
 	} );
 

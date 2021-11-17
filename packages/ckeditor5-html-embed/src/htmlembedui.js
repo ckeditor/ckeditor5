@@ -34,7 +34,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 		// Add the `htmlEmbed` button to feature components.
 		editor.ui.componentFactory.add( 'htmlEmbed', locale => {
-			const command = editor.commands.get( 'insertHtmlEmbed' );
+			const command = editor.commands.get( 'htmlEmbed' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -47,7 +47,7 @@ export default class HtmlEmbedUI extends Plugin {
 
 			// Execute the command.
 			this.listenTo( view, 'execute', () => {
-				editor.execute( 'insertHtmlEmbed' );
+				editor.execute( 'htmlEmbed' );
 				editor.editing.view.focus();
 
 				const widgetWrapper = editor.editing.view.document.selection.getSelectedElement();

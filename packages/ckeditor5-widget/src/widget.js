@@ -11,12 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import { isForwardArrowKeyCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+import verticalNavigationHandler from './verticalnavigation';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 
 import '../theme/widget.css';
-import verticalNavigationHandler from './verticalnavigation';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -130,11 +131,9 @@ export default class Widget extends Plugin {
 				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
-
-					// Do not mark nested widgets in selected one. See: #57.
+					// Do not mark nested widgets in selected one. See: #4594
 					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
-
 						this._previouslySelected.add( node );
 						lastMarked = node;
 					}
@@ -256,7 +255,9 @@ export default class Widget extends Plugin {
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
 		const objectElement = modelSelection.getSelectedElement();
-		const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, this.editor.locale.contentLanguageDirection );
+		const isForward = direction == 'down' || direction == 'right';
+		const isVerticalNavigation = direction == 'up' || direction == 'down';
 
 		// If object element is selected.
 		if ( objectElement && schema.isObject( objectElement ) ) {
@@ -275,15 +276,42 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		// If selection is next to object element.
+		// Handle collapsing of the selection when there is any widget on the edge of selection.
+		// This is needed because browsers have problems with collapsing such selection.
+		if ( !modelSelection.isCollapsed && !domEventData.shiftKey ) {
+			const firstPosition = modelSelection.getFirstPosition();
+			const lastPosition = modelSelection.getLastPosition();
+
+			const firstSelectedNode = firstPosition.nodeAfter;
+			const lastSelectedNode = lastPosition.nodeBefore;
+
+			if ( firstSelectedNode && schema.isObject( firstSelectedNode ) || lastSelectedNode && schema.isObject( lastSelectedNode ) ) {
+				model.change( writer => {
+					writer.setSelection( isForward ? lastPosition : firstPosition );
+				} );
+
+				domEventData.preventDefault();
+				eventInfo.stop();
+			}
+
+			return;
+		}
+
 		// Return if not collapsed.
 		if ( !modelSelection.isCollapsed ) {
 			return;
 		}
 
+		// If selection is next to object element.
+
 		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
+			// Do not select an inline widget while handling up/down arrow.
+			if ( schema.isInline( objectElementNextToSelection ) && isVerticalNavigation ) {
+				return;
+			}
+
 			this._setSelectionOverElement( objectElementNextToSelection );
 
 			domEventData.preventDefault();
@@ -386,6 +414,12 @@ export default class Widget extends Plugin {
 		// to its current state after undo.
 		const probe = model.createSelection( modelSelection );
 		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+
+		// The selection didn't change so there is nothing there.
+		if ( probe.isEqual( modelSelection ) ) {
+			return null;
+		}
+
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
 		if ( !!objectElement && schema.isObject( objectElement ) ) {

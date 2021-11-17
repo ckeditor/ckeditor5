@@ -117,14 +117,14 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data
 ```
 
 <info-box>
-	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive guide} to learn more about event listener priorities.
+	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive} guide to learn more about event listener priorities.
 </info-box>
 
 ### Paste as plain text plugin example
 
 You can use the knowledge from the previous sections to create a complete plugin that will allow users to paste the content as plain text while the feature is toggled on.
 
-If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/guides/creating-simple-plugin Creating a simple plugin guide} to get a better understanding of what happens in the code below.
+If you are not familiar with creating plugins in CKEditor 5, it is recommended to start from reading the {@link framework/guides/creating-simple-plugin Creating a simple plugin} guide to get a better understanding of what happens in the code below.
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';

@@ -107,3 +107,9 @@ ClassicEditor
 ```
 
 See the helper documentation to learn more about useful options.
+
+## Package generator
+
+For a quick jump start on development of a plugin, use the [CKEditor5 Package Generator](https://www.npmjs.com/package/ckeditor5-package-generator).
+
+See the {@link framework/guides/package-generator documentation} to learn more.

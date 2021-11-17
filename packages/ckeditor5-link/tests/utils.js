@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global window */
+
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewDowncastWriter from '@ckeditor/ckeditor5-engine/src/view/downcastwriter';
 import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
@@ -17,7 +19,8 @@ import {
 	normalizeDecorators,
 	isLinkableElement,
 	isEmail,
-	addLinkProtocolIfApplicable
+	addLinkProtocolIfApplicable,
+	openLink
 } from '../src/utils';
 
 describe( 'utils', () => {
@@ -301,6 +304,30 @@ describe( 'utils', () => {
 			expect( addLinkProtocolIfApplicable( 'http://www.ckeditor.com', 'http://' ) ).to.equal( 'http://www.ckeditor.com' );
 			expect( addLinkProtocolIfApplicable( 'mailto:foo@bar.com' ) ).to.equal( 'mailto:foo@bar.com' );
 			expect( addLinkProtocolIfApplicable( 'mailto:foo@bar.com', 'http://' ) ).to.equal( 'mailto:foo@bar.com' );
+		} );
+	} );
+
+	describe( 'openLink()', () => {
+		let stub;
+
+		beforeEach( () => {
+			stub = sinon.stub( window, 'open' );
+
+			stub.returns( undefined );
+		} );
+
+		afterEach( () => {
+			stub.restore();
+		} );
+
+		it( 'should open a new browser tab', () => {
+			const url = 'http://www.ckeditor.com';
+
+			openLink( url );
+
+			expect( stub.calledOnce ).to.be.true;
+			expect( stub.calledOn( window ) ).to.be.true;
+			expect( stub.calledWith( url, '_blank', 'noopener' ) ).to.be.true;
 		} );
 	} );
 } );

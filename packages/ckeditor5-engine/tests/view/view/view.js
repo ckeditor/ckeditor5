@@ -488,8 +488,8 @@ describe( 'view', () => {
 		} );
 	} );
 
-	describe( 'isFocused', () => {
-		it( 'should change renderer.isFocused too', () => {
+	describe( 'Renderer property bindings to the document', () => {
+		it( 'Renderer#isFocused should be bound to Document#isFocused', () => {
 			expect( viewDocument.isFocused ).to.equal( false );
 			expect( view._renderer.isFocused ).to.equal( false );
 
@@ -497,6 +497,16 @@ describe( 'view', () => {
 
 			expect( viewDocument.isFocused ).to.equal( true );
 			expect( view._renderer.isFocused ).to.equal( true );
+		} );
+
+		it( 'Renderer#isSelecting should be bound to Document#isSelecting', () => {
+			expect( viewDocument.isSelecting ).to.equal( false );
+			expect( view._renderer.isSelecting ).to.equal( false );
+
+			viewDocument.isSelecting = true;
+
+			expect( viewDocument.isSelecting ).to.equal( true );
+			expect( view._renderer.isSelecting ).to.equal( true );
 		} );
 	} );
 

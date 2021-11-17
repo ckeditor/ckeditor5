@@ -23,11 +23,12 @@ import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import TodoList from '@ckeditor/ckeditor5-list/src/todolist';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 
 ClassicEditor.builtinPlugins.push(
 	SourceEditing, GeneralHtmlSupport, TableCellProperties, TableProperties, IndentBlock,
 	CodeBlock, Underline, Strikethrough, Code, TodoList, Superscript, Subscript, Alignment,
-	ImageCaption );
+	ImageCaption, LinkImage );
 
 ClassicEditor.defaultConfig = {
 	cloudServices: CS_CONFIG,
@@ -50,8 +51,12 @@ ClassicEditor.defaultConfig = {
 			'|',
 			'undo',
 			'redo'
-		],
-		viewportTopOffset: window.getViewportTopOffsetConfig()
+		]
+	},
+	ui: {
+		viewportOffset: {
+			top: window.getViewportTopOffsetConfig()
+		}
 	}
 };
 

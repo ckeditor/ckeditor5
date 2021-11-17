@@ -170,6 +170,10 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 			for ( const range of rangesToRemove.reverse() ) {
 				writer.remove( range );
 			}
+
+			model.enqueueChange( () => {
+				editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
+			} );
 		} );
 	} );
 }

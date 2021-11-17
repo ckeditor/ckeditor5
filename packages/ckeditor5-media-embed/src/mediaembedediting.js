@@ -8,6 +8,7 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 import { modelToViewUrlAttributeConverter } from './converters';
 import MediaEmbedCommand from './mediaembedcommand';
@@ -251,6 +252,28 @@ export default class MediaEmbedEditing extends Plugin {
 
 					if ( registry.hasMedia( url ) ) {
 						return writer.createElement( 'media', { url } );
+					}
+				}
+			} )
+			// Consume `<figure class="media">` elements, that were left after upcast.
+			.add( dispatcher => {
+				dispatcher.on( 'element:figure', converter );
+
+				function converter( evt, data, conversionApi ) {
+					if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+						return;
+					}
+
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+
+					const modelElement = first( modelRange.getItems() );
+
+					if ( !modelElement ) {
+						// Revert consumed figure so other features can convert it.
+						conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'media' } );
 					}
 				}
 			} );

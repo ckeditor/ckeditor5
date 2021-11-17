@@ -26,6 +26,17 @@ describe( 'FindPreviousCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		it( 'sets public properties', () => {
+			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).to.have.property( 'affectsData', false );
+		} );
+
+		it( 'sets state property', () => {
+			expect( command ).to.have.property( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
+		} );
+	} );
+
 	describe( 'isEnabled', () => {
 		it( 'should be enabled in empty document', () => {
 			setData( model, '[]' );
@@ -65,6 +76,19 @@ describe( 'FindPreviousCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
+		it( 'should be enabled after disabling readonly mode', () => {
+			setData( model, '<paragraph>foo[]</paragraph>' );
+
+			command._state.results.clear();
+			command._state.results.add( {} );
+			command._state.results.add( {} );
+
+			editor.isReadOnly = true;
+			editor.isReadOnly = false;
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be enabled if the next previous is not in the main root', async () => {
 			const multiRootEditor = await initMultiRootEditor();
 
@@ -73,12 +97,6 @@ describe( 'FindPreviousCommand', () => {
 			expect( multiRootEditor.commands.get( 'findPrevious' ).isEnabled ).to.be.true;
 
 			multiRootEditor.destroy();
-		} );
-	} );
-
-	describe( 'state', () => {
-		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 
