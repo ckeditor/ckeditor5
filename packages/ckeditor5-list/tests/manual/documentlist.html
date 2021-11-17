@@ -1,46 +1,97 @@
 <div id="editor">
-	<p>This is a test for list feature.</p>
-	<p>Some more text for testing.</p>
+	<h2>Document lists</h2>
 	<ul>
-		<li>Bullet list item 1</li>
-		<li>Bullet list item 2</li>
 		<li>
-			<h2>Title</h2>
-			<p>Bullet list item 3a</p>
-			<p>Bullet list item 3b</p>
+			<p>First</p>
+			<p>Second</p>
+			<p>Third</p>
 		</li>
 		<li>
-			<p>Bullet list item 4a</p>
-			<p>Bullet list item 4b</p>
-			<p>Bullet list item 4c</p>
-		</li>
-		<li>
-			<p>Bullet list item 5</p>
+			<p>First</p>
 			<ul>
-				<li>Nested list item 1</li>
-				<li>Nested list item 2</li>
-				<li>Nested list item 3</li>
+				<li>Nested a</li>
+				<li>Nested b</li>
+				<li>
+					<p>Nested multi a</p>
+					<p>Nested multi b</p>
+				</li>
 			</ul>
-			<p>Some text after nested list item</p>
+			<p>Third</p>
 		</li>
 		<li>
-			<b>Bullet</b> list item 6
-			<ul>
-				<li>Nested list 6 item 1</li>
-				<li>Nested list 6 item 2</li>
-				<li>Nested list 6 item 3</li>
-			</ul>
-			<b>Some text after</b> nested list 6 item
+			before horizontal line
+			<hr>
+			after horizontal line
 		</li>
-		<li>Bullet list item 7</li>
-		<li>Bullet list item 8</li>
+		<li>
+			before page break
+			<div class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+			after page break
+		</li>
+		<li>
+			before image
+			<figure class="image">
+				<img alt="bar" src="sample.jpg">
+			</figure>
+			after image
+		</li>
+		<li>
+			before image with caption
+			<figure class="image">
+				<img alt="bar" src="sample.jpg">
+				<figcaption>Caption</figcaption>
+			</figure>
+			after image with caption
+		</li>
+		<li>
+			<h2>Heading 1</h2>
+			<p>Text</p>
+			<p>Text</p>
+		</li>
+		<li><h3>Heading 2</h3></li>
+		<li><h4>Heading 3</h4></li>
+		<li>
+			before block quote
+			<blockquote>
+				<p>Quote</p>
+				<ul>
+					<li>List in quote</li>
+				</ul>
+				<p>End of quote</p>
+			</blockquote>
+			after block quote
+		</li>
+		<li>
+			before table
+			<table>
+				<tr><td>Foo</td><td>Bar</td></tr>
+				<tr>
+					<td>
+						<ul><li>1</li><li>2</li></ul>
+					</td>
+					<td>
+						123
+					</td>
+				</tr>
+			</table>
+			after table
+		</li>
+		<li>
+			<pre><code class="language-css">abc</code></pre>
+		</li>
 	</ul>
-	<p>Paragraph.</p>
-	<p>Another testing paragraph.</p>
-	<!--<ol>
-		<li>Numbered list item 1</li>
-	</ol>
-	<ul>
-		<li>Another bullet list</li>
-	</ul>-->
 </div>
+
+<style>
+	ul, ol {
+		border: 2px dashed blue;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin: 5px;
+	}
+	li {
+		border: 2px dotted red;
+		padding: 5px;
+		margin: 5px;
+	}
+</style>
