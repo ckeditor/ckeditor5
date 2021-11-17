@@ -10,9 +10,9 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials.js';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor.js';
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily.js';
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize.js';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading.js';
-import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight.js';
 import Image from '@ckeditor/ckeditor5-image/src/image.js';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption.js';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle.js';
@@ -25,6 +25,7 @@ import List from '@ckeditor/ckeditor5-list/src/list.js';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js';
+import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter.js';
 import Table from '@ckeditor/ckeditor5-table/src/table.js';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption.js';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
@@ -43,9 +44,9 @@ Editor.builtinPlugins = [
 	Essentials,
 	FontBackgroundColor,
 	FontColor,
+	FontFamily,
 	FontSize,
 	Heading,
-	Highlight,
 	Image,
 	ImageCaption,
 	ImageStyle,
@@ -58,6 +59,7 @@ Editor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	SimpleUploadAdapter,
 	Table,
 	TableCaption,
 	TableCellProperties,
@@ -78,23 +80,23 @@ Editor.defaultConfig = {
 			'bulletedList',
 			'numberedList',
 			'|',
-			'alignment',
 			'outdent',
 			'indent',
 			'|',
+			'alignment',
+			'fontSize',
 			'fontColor',
 			'fontBackgroundColor',
-			'fontSize',
-			'highlight',
+			'fontFamily',
+			'imageUpload',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo',
-			'imageUpload'
+			'redo'
 		]
 	},
-	language: 'en',
+	language: 'vi',
 	image: {
 		toolbar: [
 			'imageTextAlternative',
