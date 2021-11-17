@@ -147,14 +147,12 @@ export function getListItemElements( listItem, direction = 'forward' ) {
 
 	const walkerOptions = {
 		ignoreElementEnd: true,
-		startPosition: direction == 'forward' ?
-			model.createPositionAfter( listItem ) :
-			model.createPositionBefore( listItem ),
+		startPosition: model.createPositionBefore( listItem ),
 		shallow: true,
 		direction
 	};
 
-	const items = [ listItem ];
+	const items = [];
 	const limitIndent = listItem.getAttribute( 'listIndent' );
 	const listItemId = listItem.getAttribute( 'listItemId' );
 

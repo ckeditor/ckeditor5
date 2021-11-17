@@ -7,21 +7,40 @@ import {
 	createListElement,
 	createListItemElement,
 	getIndent,
+	getListItemElements,
 	getSiblingListItem
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
 
 /**
- * @module list/documentlist/conversion
+ * @module list/documentlist/converters
  */
 
 /**
  * TODO
  */
-export function listItemDowncastConverter( attributes ) {
+export function listItemDowncastConverter( attributes, { dataPipeline } = {} ) {
 	const consumer = createAttributesConsumer( attributes );
 
-	return ( evt, data, { writer, mapper, consumable } ) => {
+	return ( evt, data, { writer, mapper, consumable, convertChildren } ) => {
+		// Do not convert paragraph if it should get converted by the default converters.
+		if ( evt.name == 'insert:paragraph' ) {
+			if ( !data.item.hasAttribute( 'listItemId' ) ) {
+				return;
+			}
+
+			// TODO do not convert if paragraph has any attributes other than those from lists
+
+			const listItemElements = [
+				...getListItemElements( data.item, 'backward' ),
+				...getListItemElements( data.item, 'forward' )
+			];
+
+			if ( listItemElements.length > 1 ) {
+				return;
+			}
+		}
+
 		const listItem = data.item;
 
 		// Consume attributes on the converted items.
@@ -52,6 +71,29 @@ export function listItemDowncastConverter( attributes ) {
 
 			viewRange = writer.createRangeOn( viewElement );
 		}
+		else if ( evt.name == 'insert:paragraph' ) {
+			if ( !consumable.consume( data.item, evt.name ) ) {
+				return;
+			}
+
+			const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
+			const viewPosition = mapper.toViewPosition( data.range.start );
+
+			mapper.bindElements( data.item, paragraphElement );
+			writer.insert( viewPosition, paragraphElement );
+
+			convertChildren( data.item );
+
+			if ( dataPipeline ) {
+				// Unwrap paragraph content from bogus paragraph.
+				viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
+
+				writer.remove( paragraphElement );
+				mapper.unbindViewElement( paragraphElement );
+			} else {
+				viewRange = writer.createRangeOn( paragraphElement );
+			}
+		}
 
 		// Then wrap them with the new list wrappers.
 		const listItemIndent = listItem.getAttribute( 'listIndent' );
@@ -67,6 +109,10 @@ export function listItemDowncastConverter( attributes ) {
 		for ( let indent = listItemIndent; indent >= 0; indent-- ) {
 			const listItemViewElement = createListItemElement( writer, indent, listItemId );
 			const listViewElement = createListElement( writer, indent, listType );
+
+			if ( dataPipeline ) {
+				listItemViewElement.getFillerOffset = getListItemFillerOffset;
+			}
 
 			viewRange = writer.wrap( viewRange, listItemViewElement );
 			viewRange = writer.wrap( viewRange, listViewElement );
@@ -156,4 +202,23 @@ function createAttributesConsumer( attributes ) {
 
 		return true;
 	};
+}
+
+// TODO
+function getListItemFillerOffset() {
+	for ( const [ idx, child ] of Array.from( this.getChildren() ).entries() ) {
+		if ( child.is( 'uiElement' ) ) {
+			continue;
+		}
+
+		// There is no content before a nested list so render a block filler just before the nested list.
+		if ( child.is( 'element', 'ul' ) || child.is( 'element', 'ol' ) ) {
+			return idx;
+		} else {
+			return null;
+		}
+	}
+
+	// Render block filler at the end of element (after all ui elements).
+	return this.childCount;
 }
