@@ -17,8 +17,6 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
-
 describe( 'TwoStepCaretMovement()', () => {
 	let editor, model, emitter, selection, view, plugin;
 	let preventDefaultSpy, evtStopSpy;

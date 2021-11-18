@@ -8,8 +8,6 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
-
 /* global document */
 
 describe( 'inlineHighlight', () => {
