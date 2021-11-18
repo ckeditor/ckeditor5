@@ -89,9 +89,9 @@ describe( 'table cell properties', () => {
 
 		describe( 'border', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderColor' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderStyle' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderWidth' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderColor' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderStyle' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderWidth' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -100,9 +100,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -110,7 +110,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -118,7 +118,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -126,7 +126,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -134,9 +134,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, null, null );
 				} );
 
 				it( 'should upcast border-right shorthand', () => {
@@ -144,9 +144,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, '#f00', null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, 'solid', null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, '1px', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, '#f00', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, 'solid', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, '1px', null, null );
 				} );
 
 				it( 'should upcast border-bottom shorthand', () => {
@@ -154,9 +154,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, '#f00', null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, 'solid', null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, '1px', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, '#f00', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, 'solid', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, '1px', null );
 				} );
 
 				it( 'should upcast border-left shorthand', () => {
@@ -164,9 +164,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, null, '#f00' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, null, 'solid' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, null, '1px' );
 				} );
 
 				it( 'should upcast mixed shorthands', () => {
@@ -176,9 +176,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, 'ridge', null );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, '2em', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, 'ridge', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, '2em', null );
 				} );
 
 				it( 'should upcast border-top-* styles', () => {
@@ -188,9 +188,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, null, null );
 				} );
 
 				it( 'should upcast border-right-* styles', () => {
@@ -204,9 +204,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, '#f00', null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, 'solid', null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, '1px', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, '#f00', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, 'solid', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, '1px', null, null );
 				} );
 
 				it( 'should upcast border-bottom-* styles', () => {
@@ -220,9 +220,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, '#f00', null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, 'solid', null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, '1px', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, '#f00', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, 'solid', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, '1px', null );
 				} );
 
 				it( 'should upcast border-left-* styles', () => {
@@ -236,9 +236,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, null, '#f00' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, null, 'solid' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, null, '1px' );
 				} );
 
 				it( 'should allow to be overriden (only border-top consumed)', () => {
@@ -252,9 +252,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -275,28 +275,28 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item borderColor attribute', () => {
+				it( 'should consume converted item tableCellBorderColor attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderColor:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderColor:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'borderColor', '#f00', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', '#f00', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderColor:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderColor:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'borderColor', '#f00', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', '#f00', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderColor', {
+				it( 'should downcast tableCellBorderColor attribute (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', {
 						top: '#f00',
 						right: '#f00',
 						bottom: '#f00',
@@ -306,8 +306,8 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'border-color:#f00;' );
 				} );
 
-				it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderColor', {
+				it( 'should downcast tableCellBorderColor attribute (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', {
 						top: '#f00',
 						right: 'hsla(0, 100%, 50%, 0.5)',
 						bottom: 'deeppink',
@@ -322,28 +322,28 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should consume converted item borderStyle attribute', () => {
+				it( 'should consume converted item tableCellBorderStyle attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderStyle:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'borderStyle', 'ridge', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', 'ridge', tableCell ) );
 				} );
 
-				it( 'should be overridable for borderStyle', () => {
+				it( 'should be overridable for tableCellBorderStyle', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderStyle:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'borderStyle', 'ridge', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', 'ridge', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast borderStyle attribute (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderStyle', {
+				it( 'should downcast tableCellBorderStyle attribute (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', {
 						top: 'solid',
 						right: 'solid',
 						bottom: 'solid',
@@ -353,8 +353,8 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'border-style:solid;' );
 				} );
 
-				it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderStyle', {
+				it( 'should downcast tableCellBorderStyle attribute (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', {
 						top: 'solid',
 						right: 'ridge',
 						bottom: 'dotted',
@@ -369,28 +369,28 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should consume converted item borderWidth attribute', () => {
+				it( 'should consume converted item tableCellBorderWidth attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderWidth:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'borderWidth', '2px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', '2px', tableCell ) );
 				} );
 
-				it( 'should be overridable for borderWidth', () => {
+				it( 'should be overridable for tableCellBorderWidth', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderWidth:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'borderWidth', '2px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', '2px', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderWidth', {
+				it( 'should downcast tableCellBorderWidth attribute (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', {
 						top: '42px',
 						right: '.1em',
 						bottom: '1337rem',
@@ -405,8 +405,8 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderWidth', {
+				it( 'should downcast tableCellBorderWidth attribute (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', {
 						top: '42px',
 						right: '42px',
 						bottom: '42px',
@@ -416,23 +416,24 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'border-width:42px;' );
 				} );
 
-				it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
+				it( `should downcast tableCellBorderColor, tableCellBorderStyle
+					and tableCellBorderWidth attributes together (same top, right, bottom, left)`, () => {
 					model.change( writer => {
-						writer.setAttribute( 'borderColor', {
+						writer.setAttribute( 'tableCellBorderColor', {
 							top: '#f00',
 							right: '#f00',
 							bottom: '#f00',
 							left: '#f00'
 						}, tableCell );
 
-						writer.setAttribute( 'borderStyle', {
+						writer.setAttribute( 'tableCellBorderStyle', {
 							top: 'solid',
 							right: 'solid',
 							bottom: 'solid',
 							left: 'solid'
 						}, tableCell );
 
-						writer.setAttribute( 'borderWidth', {
+						writer.setAttribute( 'tableCellBorderWidth', {
 							top: '42px',
 							right: '42px',
 							bottom: '42px',
@@ -444,24 +445,25 @@ describe( 'table cell properties', () => {
 				} );
 
 				it(
-					'should downcast borderColor, borderStyle and borderWidth attributes together (different top, right, bottom, left)',
+					`should downcast tableCellBorderColor, tableCellBorderStyle
+					and tableCellBorderWidth attributes together (different top, right, bottom, left)`,
 					() => {
 						model.change( writer => {
-							writer.setAttribute( 'borderColor', {
+							writer.setAttribute( 'tableCellBorderColor', {
 								top: '#f00',
 								right: 'hsla(0, 100%, 50%, 0.5)',
 								bottom: 'deeppink',
 								left: 'rgb(255, 0, 0)'
 							}, tableCell );
 
-							writer.setAttribute( 'borderStyle', {
+							writer.setAttribute( 'tableCellBorderStyle', {
 								top: 'solid',
 								right: 'ridge',
 								bottom: 'dotted',
 								left: 'dashed'
 							}, tableCell );
 
-							writer.setAttribute( 'borderWidth', {
+							writer.setAttribute( 'tableCellBorderWidth', {
 								top: '42px',
 								right: '.1em',
 								bottom: '1337rem',
@@ -481,21 +483,21 @@ describe( 'table cell properties', () => {
 				describe( 'change attribute', () => {
 					beforeEach( () => {
 						model.change( writer => {
-							writer.setAttribute( 'borderColor', {
+							writer.setAttribute( 'tableCellBorderColor', {
 								top: '#f00',
 								right: '#f00',
 								bottom: '#f00',
 								left: '#f00'
 							}, tableCell );
 
-							writer.setAttribute( 'borderStyle', {
+							writer.setAttribute( 'tableCellBorderStyle', {
 								top: 'solid',
 								right: 'solid',
 								bottom: 'solid',
 								left: 'solid'
 							}, tableCell );
 
-							writer.setAttribute( 'borderWidth', {
+							writer.setAttribute( 'tableCellBorderWidth', {
 								top: '42px',
 								right: '42px',
 								bottom: '42px',
@@ -504,8 +506,8 @@ describe( 'table cell properties', () => {
 						} );
 					} );
 
-					it( 'should downcast borderColor attribute change', () => {
-						model.change( writer => writer.setAttribute( 'borderColor', {
+					it( 'should downcast tableCellBorderColor attribute change', () => {
+						model.change( writer => writer.setAttribute( 'tableCellBorderColor', {
 							top: 'deeppink',
 							right: 'deeppink',
 							bottom: 'deeppink',
@@ -515,8 +517,8 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border:42px solid deeppink;' );
 					} );
 
-					it( 'should downcast borderStyle attribute change', () => {
-						model.change( writer => writer.setAttribute( 'borderStyle', {
+					it( 'should downcast tableCellBorderStyle attribute change', () => {
+						model.change( writer => writer.setAttribute( 'tableCellBorderStyle', {
 							top: 'ridge',
 							right: 'ridge',
 							bottom: 'ridge',
@@ -526,8 +528,8 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border:42px ridge #f00;' );
 					} );
 
-					it( 'should downcast borderWidth attribute change', () => {
-						model.change( writer => writer.setAttribute( 'borderWidth', {
+					it( 'should downcast tableCellBorderWidth attribute change', () => {
+						model.change( writer => writer.setAttribute( 'tableCellBorderWidth', {
 							top: 'thick',
 							right: 'thick',
 							bottom: 'thick',
@@ -537,8 +539,8 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border:thick solid #f00;' );
 					} );
 
-					it( 'should downcast borderColor attribute removal', () => {
-						model.change( writer => writer.removeAttribute( 'borderColor', tableCell ) );
+					it( 'should downcast tableCellBorderColor attribute removal', () => {
+						model.change( writer => writer.removeAttribute( 'tableCellBorderColor', tableCell ) );
 
 						assertTableCellStyle( editor,
 							'border-style:solid;' +
@@ -546,8 +548,8 @@ describe( 'table cell properties', () => {
 						);
 					} );
 
-					it( 'should downcast borderStyle attribute removal', () => {
-						model.change( writer => writer.removeAttribute( 'borderStyle', tableCell ) );
+					it( 'should downcast tableCellBorderStyle attribute removal', () => {
+						model.change( writer => writer.removeAttribute( 'tableCellBorderStyle', tableCell ) );
 
 						assertTableCellStyle( editor,
 							'border-color:#f00;' +
@@ -555,8 +557,8 @@ describe( 'table cell properties', () => {
 						);
 					} );
 
-					it( 'should downcast borderWidth attribute removal', () => {
-						model.change( writer => writer.removeAttribute( 'borderWidth', tableCell ) );
+					it( 'should downcast tableCellBorderWidth attribute removal', () => {
+						model.change( writer => writer.removeAttribute( 'tableCellBorderWidth', tableCell ) );
 
 						assertTableCellStyle( editor,
 							'border-color:#f00;' +
@@ -564,11 +566,11 @@ describe( 'table cell properties', () => {
 						);
 					} );
 
-					it( 'should downcast borderColor, borderStyle and borderWidth attributes removal', () => {
+					it( 'should downcast tableCellBorderColor, tableCellBorderStyle and tableCellBorderWidth attributes removal', () => {
 						model.change( writer => {
-							writer.removeAttribute( 'borderColor', tableCell );
-							writer.removeAttribute( 'borderStyle', tableCell );
-							writer.removeAttribute( 'borderWidth', tableCell );
+							writer.removeAttribute( 'tableCellBorderColor', tableCell );
+							writer.removeAttribute( 'tableCellBorderStyle', tableCell );
+							writer.removeAttribute( 'tableCellBorderWidth', tableCell );
 						} );
 
 						assertEqualMarkup(
@@ -1073,7 +1075,7 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item borderColor attribute', () => {
+				it( 'should consume converted item tableCellBorderColor attribute', () => {
 					editor.conversion.for( 'downcast' )
 						.add( dispatcher => dispatcher.on( 'attribute:tableCellPadding:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
@@ -1338,9 +1340,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border` values from <th>', () => {
@@ -1348,9 +1350,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-color` value from <td>', () => {
@@ -1358,7 +1360,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-style` value from <th>', () => {
@@ -1366,7 +1368,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-width` value from <td>', () => {
@@ -1374,7 +1376,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-width` value from <th>', () => {
@@ -1382,7 +1384,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 			} );
 

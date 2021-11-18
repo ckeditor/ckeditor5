@@ -70,21 +70,21 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no borderColor property', () => {
+					it( 'should be undefined if selected table cell has no tableCellBorderColor property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has borderColor property (single string)', () => {
-						setData( model, modelTable( [ [ { borderColor: 'blue', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellBorderColor property (single string)', () => {
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'blue', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
 
-					it( 'should be set if selected table cell has borderColor property object with same values', () => {
+					it( 'should be set if selected table cell has tableCellBorderColor property object with same values', () => {
 						setTableCellWithObjectAttributes( model, {
-							borderColor: {
+							tableCellBorderColor: {
 								top: 'blue',
 								right: 'blue',
 								bottom: 'blue',
@@ -94,9 +94,9 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( 'blue' );
 					} );
 
-					it( 'should be undefined if selected table cell has borderColor property object with different values', () => {
+					it( 'should be undefined if selected table cell has tableCellBorderColor property object with different values', () => {
 						setTableCellWithObjectAttributes( model, {
-							borderColor: {
+							tableCellBorderColor: {
 								top: 'blue',
 								right: 'red',
 								bottom: 'blue',
@@ -116,14 +116,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { borderColor: 'blue', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'blue', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cells have the "borderColor" property', () => {
+					it( 'should be undefined if no table cells have the "tableCellBorderColor" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -138,45 +138,45 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "borderColor" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellBorderColor" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, borderColor: '#f00' },
+								{ contents: '00', isSelected: true, tableCellBorderColor: '#f00' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, borderColor: '#f00' }
+								{ contents: '11', isSelected: true, tableCellBorderColor: '#f00' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "borderColor" property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "tableCellBorderColor" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, borderColor: '#f00' },
-								{ contents: '01', isSelected: true, borderColor: 'pink' }
+								{ contents: '00', isSelected: true, tableCellBorderColor: '#f00' },
+								{ contents: '01', isSelected: true, tableCellBorderColor: 'pink' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, borderColor: '#f00' }
+								{ contents: '11', isSelected: true, tableCellBorderColor: '#f00' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cells have the same "borderColor" property value', () => {
+					it( 'should be set if all table cells have the same "tableCellBorderColor" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, borderColor: '#f00' },
-								{ contents: '01', isSelected: true, borderColor: '#f00' }
+								{ contents: '00', isSelected: true, tableCellBorderColor: '#f00' },
+								{ contents: '01', isSelected: true, tableCellBorderColor: '#f00' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, borderColor: '#f00' }
+								{ contents: '11', isSelected: true, tableCellBorderColor: '#f00' }
 							]
 						] ) );
 
@@ -196,7 +196,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'collapsed selection', () => {
-					it( 'should set selected table cell borderColor to a passed value', () => {
+					it( 'should set selected table cell tableCellBorderColor to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 						command.execute( { value: '#f00' } );
@@ -204,16 +204,16 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
-					it( 'should change selected table cell borderColor to a passed value', () => {
-						setData( model, modelTable( [ [ { borderColor: 'blue', contents: '[]foo' } ] ] ) );
+					it( 'should change selected table cell tableCellBorderColor to a passed value', () => {
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'blue', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: '#f00' } );
 
 						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
-					it( 'should remove borderColor from a selected table cell if no value is passed', () => {
-						setData( model, modelTable( [ [ { borderColor: 'blue', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellBorderColor from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'blue', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -222,7 +222,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should set selected table cell borderColor to a passed value', () => {
+					it( 'should set selected table cell tableCellBorderColor to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '#f00' } );
@@ -230,7 +230,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
-					it( 'should change selected table cell borderColor to a passed value', () => {
+					it( 'should change selected table cell tableCellBorderColor to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '#f00' } );
@@ -238,7 +238,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border-color:#f00;' );
 					} );
 
-					it( 'should remove borderColor from a selected table cell if no value is passed', () => {
+					it( 'should remove tableCellBorderColor from a selected table cell if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
@@ -255,7 +255,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set the "borderColor" attribute value of selected table cells', () => {
+					it( 'should set the "tableCellBorderColor" attribute value of selected table cells', () => {
 						command.execute( { value: '#f00' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
@@ -266,8 +266,8 @@ describe( 'table cell properties', () => {
 
 					it( 'should remove "borderColor" from the selected table cell if no value is passed', () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, borderColor: '#f00' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, borderColor: '#f00' } ]
+							[ { contents: '00', isSelected: true, tableCellBorderColor: '#f00' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellBorderColor: '#f00' } ]
 						] ) );
 
 						command.execute();
@@ -299,15 +299,16 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has the default borderColor property (single string)', () => {
-						setData( model, modelTable( [ [ { borderColor: 'red', contents: '[]foo' } ] ] ) );
+					it( 'should be undefined if selected table cell has the default tableCellBorderColor property (single string)', () => {
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'red', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if selected table cell has the default borderColor property object with same values', () => {
+					it( `should be undefined if selected table cell
+						has the default tableCellBorderColor property object with same values`, () => {
 						setTableCellWithObjectAttributes( model, {
-							borderColor: {
+							tableCellBorderColor: {
 								top: 'red',
 								right: 'red',
 								bottom: 'red',
@@ -320,7 +321,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined is selection contains the default value', () => {
-						setData( model, modelTable( [ [ { borderColor: 'red', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'red', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -332,12 +333,12 @@ describe( 'table cell properties', () => {
 						() => {
 							setData( model, modelTable( [
 								[
-									{ contents: '00', isSelected: true, borderColor: 'red' },
-									{ contents: '01', isSelected: true, borderColor: 'red' }
+									{ contents: '00', isSelected: true, tableCellBorderColor: 'red' },
+									{ contents: '01', isSelected: true, tableCellBorderColor: 'red' }
 								],
 								[
 									'10',
-									{ contents: '11', isSelected: true, borderColor: 'red' }
+									{ contents: '11', isSelected: true, tableCellBorderColor: 'red' }
 								]
 							] ) );
 
@@ -348,8 +349,8 @@ describe( 'table cell properties', () => {
 
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should remove borderColor from a selected table cell if the default value is passed', () => {
-						setData( model, modelTable( [ [ { borderColor: 'blue', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellBorderColor from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellBorderColor: 'blue', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: 'red' } );
 
@@ -358,7 +359,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should remove borderColor from a selected table cell if the default value is passed', () => {
+					it( 'should remove tableCellBorderColor from a selected table cell if the default value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'red' } );
@@ -370,8 +371,8 @@ describe( 'table cell properties', () => {
 				describe( 'multi-cell selection', () => {
 					it( 'should remove "borderColor" from the selected table cell if the default value is passed', () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, borderColor: '#f00' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, borderColor: '#f00' } ]
+							[ { contents: '00', isSelected: true, tableCellBorderColor: '#f00' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellBorderColor: '#f00' } ]
 						] ) );
 
 						command.execute( { value: 'red' } );

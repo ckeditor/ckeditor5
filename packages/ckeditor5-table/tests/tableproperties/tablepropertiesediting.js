@@ -85,9 +85,9 @@ describe( 'table properties', () => {
 
 		describe( 'border', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderColor' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderStyle' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'borderWidth' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderColor' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderStyle' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'table' ], 'tableBorderWidth' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -96,9 +96,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
-					expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
-					expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -106,7 +106,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -114,7 +114,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -122,7 +122,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -130,9 +130,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', '#f00', null, null, null );
-					assertTRBLAttribute( table, 'borderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( table, 'borderWidth', '1px', null, null, null );
+					assertTRBLAttribute( table, 'tableBorderColor', '#f00', null, null, null );
+					assertTRBLAttribute( table, 'tableBorderStyle', 'solid', null, null, null );
+					assertTRBLAttribute( table, 'tableBorderWidth', '1px', null, null, null );
 				} );
 
 				it( 'should upcast border-right shorthand', () => {
@@ -140,9 +140,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', null, '#f00', null, null );
-					assertTRBLAttribute( table, 'borderStyle', null, 'solid', null, null );
-					assertTRBLAttribute( table, 'borderWidth', null, '1px', null, null );
+					assertTRBLAttribute( table, 'tableBorderColor', null, '#f00', null, null );
+					assertTRBLAttribute( table, 'tableBorderStyle', null, 'solid', null, null );
+					assertTRBLAttribute( table, 'tableBorderWidth', null, '1px', null, null );
 				} );
 
 				it( 'should upcast border-bottom shorthand', () => {
@@ -150,9 +150,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', null, null, '#f00', null );
-					assertTRBLAttribute( table, 'borderStyle', null, null, 'solid', null );
-					assertTRBLAttribute( table, 'borderWidth', null, null, '1px', null );
+					assertTRBLAttribute( table, 'tableBorderColor', null, null, '#f00', null );
+					assertTRBLAttribute( table, 'tableBorderStyle', null, null, 'solid', null );
+					assertTRBLAttribute( table, 'tableBorderWidth', null, null, '1px', null );
 				} );
 
 				it( 'should upcast border-left shorthand', () => {
@@ -160,9 +160,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', null, null, null, '#f00' );
-					assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
+					assertTRBLAttribute( table, 'tableBorderColor', null, null, null, '#f00' );
+					assertTRBLAttribute( table, 'tableBorderStyle', null, null, null, 'solid' );
+					assertTRBLAttribute( table, 'tableBorderWidth', null, null, null, '1px' );
 				} );
 
 				it( 'should upcast border-top-* styles', () => {
@@ -172,9 +172,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', '#f00', null, null, null );
-					assertTRBLAttribute( table, 'borderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( table, 'borderWidth', '1px', null, null, null );
+					assertTRBLAttribute( table, 'tableBorderColor', '#f00', null, null, null );
+					assertTRBLAttribute( table, 'tableBorderStyle', 'solid', null, null, null );
+					assertTRBLAttribute( table, 'tableBorderWidth', '1px', null, null, null );
 				} );
 
 				it( 'should upcast border-right-* styles', () => {
@@ -188,9 +188,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', null, '#f00', null, null );
-					assertTRBLAttribute( table, 'borderStyle', null, 'solid', null, null );
-					assertTRBLAttribute( table, 'borderWidth', null, '1px', null, null );
+					assertTRBLAttribute( table, 'tableBorderColor', null, '#f00', null, null );
+					assertTRBLAttribute( table, 'tableBorderStyle', null, 'solid', null, null );
+					assertTRBLAttribute( table, 'tableBorderWidth', null, '1px', null, null );
 				} );
 
 				it( 'should upcast border-bottom-* styles', () => {
@@ -204,9 +204,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', null, null, '#f00', null );
-					assertTRBLAttribute( table, 'borderStyle', null, null, 'solid', null );
-					assertTRBLAttribute( table, 'borderWidth', null, null, '1px', null );
+					assertTRBLAttribute( table, 'tableBorderColor', null, null, '#f00', null );
+					assertTRBLAttribute( table, 'tableBorderStyle', null, null, 'solid', null );
+					assertTRBLAttribute( table, 'tableBorderWidth', null, null, '1px', null );
 				} );
 
 				it( 'should upcast border-left-* styles', () => {
@@ -216,9 +216,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					assertTRBLAttribute( table, 'borderColor', null, null, null, '#f00' );
-					assertTRBLAttribute( table, 'borderStyle', null, null, null, 'solid' );
-					assertTRBLAttribute( table, 'borderWidth', null, null, null, '1px' );
+					assertTRBLAttribute( table, 'tableBorderColor', null, null, null, '#f00' );
+					assertTRBLAttribute( table, 'tableBorderStyle', null, null, null, 'solid' );
+					assertTRBLAttribute( table, 'tableBorderWidth', null, null, null, '1px' );
 				} );
 
 				describe( 'nested tables', () => {
@@ -237,14 +237,14 @@ describe( 'table properties', () => {
 
 						const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-						expect( table.getAttribute( 'borderColor' ) ).to.equal( 'red' );
-						expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
-						expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+						expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( 'red' );
+						expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
+						expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
 
 						// Also check the entire structure of the model.
 						// Previously the test was too loose in that regard.
 						expect( getModelData( editor.model ) ).to.equal(
-							'[<table borderColor="red" borderStyle="solid" borderWidth="1px">' +
+							'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="1px">' +
 								'<tableRow>' +
 									'<tableCell>' +
 										'<paragraph>' +
@@ -252,7 +252,7 @@ describe( 'table properties', () => {
 										'</paragraph>' +
 									'</tableCell>' +
 									'<tableCell>' +
-										'<table borderColor="green" borderStyle="solid" borderWidth="1px">' +
+										'<table tableBorderColor="green" tableBorderStyle="solid" tableBorderWidth="1px">' +
 											'<tableRow>' +
 												'<tableCell>' +
 													'<paragraph>' +
@@ -327,9 +327,9 @@ describe( 'table properties', () => {
 								'<tableRow>' +
 									'<tableCell>' +
 										'<table ' +
-											'borderColor="{"bottom":"#fff"}" ' +
-											'borderStyle="{"bottom":"solid"}" ' +
-											'borderWidth="{"bottom":"0"}"' +
+											'tableBorderColor="{"bottom":"#fff"}" ' +
+											'tableBorderStyle="{"bottom":"solid"}" ' +
+											'tableBorderWidth="{"bottom":"0"}"' +
 										'>' +
 											'<tableRow>' +
 												'<tableCell>' +
@@ -377,7 +377,7 @@ describe( 'table properties', () => {
 										'<paragraph>parent:00</paragraph>' +
 									'</tableCell>' +
 									'<tableCell>' +
-										'<table borderColor="green" borderStyle="solid" borderWidth="1px">' +
+										'<table tableBorderColor="green" tableBorderStyle="solid" tableBorderWidth="1px">' +
 											'<tableRow>' +
 												'<tableCell>' +
 													'<paragraph>child:00</paragraph>' +
@@ -415,12 +415,12 @@ describe( 'table properties', () => {
 
 							const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-							expect( table.getAttribute( 'borderColor' ) ).to.equal( 'red' );
-							expect( table.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
-							expect( table.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+							expect( table.getAttribute( 'tableBorderColor' ) ).to.equal( 'red' );
+							expect( table.getAttribute( 'tableBorderStyle' ) ).to.equal( 'solid' );
+							expect( table.getAttribute( 'tableBorderWidth' ) ).to.equal( '1px' );
 
 							expect( getModelData( editor.model ) ).to.equal(
-								'[<table borderColor="red" borderStyle="solid" borderWidth="1px">' +
+								'[<table tableBorderColor="red" tableBorderStyle="solid" tableBorderWidth="1px">' +
 									'<tableRow>' +
 										'<tableCell>' +
 											'<paragraph>' +
@@ -1269,9 +1269,9 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( table.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( table.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-color` value', () => {
@@ -1279,7 +1279,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderColor' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-style` value', () => {
@@ -1287,7 +1287,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderStyle' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-width` value', () => {
@@ -1295,7 +1295,7 @@ describe( 'table properties', () => {
 
 					const table = model.document.getRoot().getNodeByPath( [ 0 ] );
 
-					expect( table.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( table.getAttribute( 'tableBorderWidth' ) ).to.be.undefined;
 				} );
 			} );
 
