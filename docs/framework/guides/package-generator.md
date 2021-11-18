@@ -102,7 +102,7 @@ Starts a HTTP server with the live-reload mechanism that allows previewing and t
 
 When the server has been started, the default browser will open the developer sample. This can be disabled by passing the `--no-open` option to that command.
 
-You can also define a language that will translate the created editor by specifying the `--language [LANG]` option. It defaults to `'en'`.
+You can also define the language that will translate the created editor by specifying the `--language [LANG]` option. It defaults to `'en'`.
 
 Examples:
 
@@ -113,7 +113,7 @@ npm run start
 # Disable auto-opening the browser.
 npm run start -- --no-open
 
-# Create the editor with the interface using the German language.
+# Create the editor with the interface in German.
 npm run start -- --language=de
 ```
 
@@ -185,7 +185,7 @@ npm run dll:serve
 
 ### `translations:collect`
 
-Collects translation messages (arguments of the `t()` function) and context files, then validate whether provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
+Collects translation messages (arguments of the `t()` function) and context files, then validates whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
 
 The task may end with an error if one of the following conditions is met:
 
@@ -217,12 +217,12 @@ npm run translations:download -- --transifex [API URL]
 
 ### `translations:upload`
 
-Uploads translation messages on the Transifex server. It allows the creation of translations for other languages by users using the Transifex platform.
+Uploads translation messages onto the Transifex server. It allows for the creation of translations into other languages by users using the Transifex platform.
 
 <info-box info>
-The task requires passing the URL to Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+The task requires passing the URL to the Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
 
-To avoid passing the `--transifex` option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+To avoid passing the `--transifex` option every time when you call the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
 </info-box>
 
 Examples:
@@ -247,13 +247,13 @@ To make CKEditor 5 plugins compatible with each other, we needed to introduce li
 
 Packages created by this tool, just like the entirety of the CKEditor 5 ecosystem include full support for localization. If you wish to include translations for your package, {@link framework/guides/deep-dive/localization visit the docs page} and learn more.
 
-The package contains several tools for handling translations in the created package. We recommend the following flow when playing with translations:
+The package contains several tools for handling translations in the created package. We recommend the following flow when dealing with translations:
 
-1. Call `npm run translations:download` &ndash; to download the latest version of translations.
+1. Call `npm run translations:download` &ndash; download the latest version of translations.
     * If there are changes in the `lang/translations/*` files, commit them as they represent new or updated translation files.
-1. Call `npm run translations:collect` &ndash; to verify whether contexts are up-to-date.
-1. Call `npm run translations:upload` &ndash; to upload new translations.
-1. Call `npm run translations:download` &ndash; if new contexts were uploaded, it updates the `en.po` file in the package. Do not forget to commit the change. 
+1. Call `npm run translations:collect` &ndash; verify whether contexts are up-to-date.
+1. Call `npm run translations:upload` &ndash; upload new translations.
+1. Call `npm run translations:download` &ndash; if new contexts were uploaded, it updates the `en.po` file in the package. Do not forget to commit the change.
 
 ## Reporting issues
 

@@ -22,16 +22,16 @@ const task = process.argv[ 2 ];
 
 const tasks = {
 	/**
-	 * Collects translation messages (from `t()` calls and context files) and stores them in the `ckeditor5/build/.transifex` directory.
+	 * Collects translation messages (from  the`t()` calls and context files) and stores them in the `ckeditor5/build/.transifex` directory.
 	 *
-	 * The script by default does not check the `external/` directory. Add the `--include-external-directory` flag to enable
+	 * By default, the script does not check the `external/` directory. Add the `--include-external-directory` flag to enable
 	 * checking packages located in the `external/` directory.
 	 */
 	collect() {
 		const includeExternalDirectory = process.argv.includes( '--include-external-directory' );
 
 		return createPotFiles( {
-			// An array containing absolute paths CKEditor 5 source files.
+			// An array containing absolute paths to CKEditor 5 source files.
 			sourceFiles: getCKEditor5SourceFiles( { includeExternalDirectory } ),
 
 			// Packages to process.
@@ -139,7 +139,7 @@ function getCKEditor5SourceFiles( { includeExternalDirectory } ) {
  * Returns relative paths to CKEditor 5 packages. By default the function does not check the `external/` directory.
  *
  * @param {Object} options
- * @param {Boolean} options.includeExternalDirectory If set to `true`, packages from the `external/` directory will be returned too.
+ * @param {Boolean} options.includeExternalDirectory If set to `true`, the packages from the `external/` directory will be returned, too.
  * @returns {Array.<String>}
  */
 function getCKEditor5PackagePaths( { includeExternalDirectory } ) {
