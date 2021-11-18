@@ -34,10 +34,10 @@ const FLOAT_VALUES_REG_EXP = /^(left|none|right)$/;
  *
  * Introduces table's model attributes and their conversion:
  *
- * - border: `borderStyle`, `borderColor` and `borderWidth`
- * - background color: `backgroundColor`
- * - horizontal alignment: `alignment`
- * - width & height: `width` & `height`
+ * - border: `tableBorderStyle`, `tableBorderColor` and `tableBorderWidth`
+ * - background color: `tableBackgroundColor`
+ * - horizontal alignment: `tableAlignment`
+ * - width & height: `tableWidth` & `tableHeight`
  *
  * It also registers commands used to manipulate the above attributes:
  *
@@ -117,14 +117,14 @@ export default class TablePropertiesEditing extends Plugin {
 	}
 }
 
-// Enables `'borderStyle'`, `'borderColor'` and `'borderWidth'` attributes for table.
+// Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBrderWidth'` attributes for table.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
 // @param {Object} defaultBorder The default border values.
-// @param {String} defaultBorder.color The default `borderColor` value.
-// @param {String} defaultBorder.style The default `borderStyle` value.
-// @param {String} defaultBorder.width The default `borderWidth` value.
+// @param {String} defaultBorder.color The default `tableBorderColor` value.
+// @param {String} defaultBorder.style The default `tableBorderStyle` value.
+// @param {String} defaultBorder.width The default `tableBorderWidth` value.
 function enableBorderProperties( schema, conversion, defaultBorder ) {
 	const modelAttributes = {
 		width: 'tableBorderWidth',

@@ -70,14 +70,14 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no horizontalAlignment property', () => {
+					it( 'should be undefined if selected table cell has no tableCellHorizontalAlignment property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has horizontalAlignment property', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellHorizontalAlignment property', () => {
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( 'center' );
 					} );
@@ -91,14 +91,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'center', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( 'center' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cells have the "horizontalAlignment" property', () => {
+					it( 'should be undefined if no table cells have the "tableCellHorizontalAlignment" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -113,45 +113,46 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "horizontalAlignment" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellHorizontalAlignment" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
+								{ contents: '00', isSelected: true, tableCellHorizontalAlignment: 'center' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, horizontalAlignment: 'center' }
+								{ contents: '11', isSelected: true, tableCellHorizontalAlignment: 'center' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "horizontalAlignment" property value', () => {
+					it( `should be undefined if one of selected table cells
+						has a different "tableCellHorizontalAlignment" property value`, () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
-								{ contents: '01', isSelected: true, horizontalAlignment: 'right' }
+								{ contents: '00', isSelected: true, tableCellHorizontalAlignment: 'center' },
+								{ contents: '01', isSelected: true, tableCellHorizontalAlignment: 'right' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, horizontalAlignment: 'center' }
+								{ contents: '11', isSelected: true, tableCellHorizontalAlignment: 'center' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cells have the same "horizontalAlignment" property value', () => {
+					it( 'should be set if all table cells have the same "tableCellHorizontalAlignment" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, horizontalAlignment: 'center' },
-								{ contents: '01', isSelected: true, horizontalAlignment: 'center' }
+								{ contents: '00', isSelected: true, tableCellHorizontalAlignment: 'center' },
+								{ contents: '01', isSelected: true, tableCellHorizontalAlignment: 'center' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, horizontalAlignment: 'center' }
+								{ contents: '11', isSelected: true, tableCellHorizontalAlignment: 'center' }
 							]
 						] ) );
 
@@ -171,7 +172,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'collapsed selection', () => {
-					it( 'should set selected table cell horizontalAlignment to a passed value', () => {
+					it( 'should set selected table cell tableCellHorizontalAlignment to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 						command.execute( { value: 'right' } );
@@ -179,16 +180,16 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'text-align:right;' );
 					} );
 
-					it( 'should change selected table cell horizontalAlignment to a passed value', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
+					it( 'should change selected table cell tableCellHorizontalAlignment to a passed value', () => {
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: 'right' } );
 
 						assertTableCellStyle( editor, 'text-align:right;' );
 					} );
 
-					it( 'should remove horizontalAlignment from a selected table cell if no value is passed', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellHorizontalAlignment from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -197,7 +198,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should set selected table cell horizontalAlignment to a passed value', () => {
+					it( 'should set selected table cell tableCellHorizontalAlignment to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'right' } );
@@ -205,7 +206,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'text-align:right;' );
 					} );
 
-					it( 'should change selected table cell horizontalAlignment to a passed value', () => {
+					it( 'should change selected table cell tableCellHorizontalAlignment to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'right' } );
@@ -213,7 +214,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'text-align:right;' );
 					} );
 
-					it( 'should remove horizontalAlignment from a selected table cell if no value is passed', () => {
+					it( 'should remove tableCellHorizontalAlignment from a selected table cell if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
@@ -230,7 +231,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set the "horizontalAlignment" attribute value of selected table cells', () => {
+					it( 'should set the "tableCellHorizontalAlignment" attribute value of selected table cells', () => {
 						command.execute( { value: 'right' } );
 
 						assertEqualMarkup( editor.getData(), viewTable( [
@@ -239,10 +240,11 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove the "horizontalAlignment" attribute from selected table cells if no value is passed', () => {
+					it( `should remove the "tableCellHorizontalAlignment" attribute
+						from selected table cells if no value is passed`, () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, horizontalAlignment: 'right' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, horizontalAlignment: 'right' } ]
+							[ { contents: '00', isSelected: true, tableCellHorizontalAlignment: 'right' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellHorizontalAlignment: 'right' } ]
 						] ) );
 
 						command.execute();
@@ -275,7 +277,7 @@ describe( 'table cell properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table cell has the default value', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'left', contents: '[]foo' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'left', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -283,7 +285,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined is selection contains the default value', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'left', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'left', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -291,16 +293,17 @@ describe( 'table cell properties', () => {
 
 				describe( 'multi-cell selection', () => {
 					it(
-						'should be set if all table cells have the same "horizontalAlignment" property value which is the default value',
+						`should be set if all table cells have the same
+						"tableCellHorizontalAlignment" property value which is the default value`,
 						() => {
 							setData( model, modelTable( [
 								[
-									{ contents: '00', isSelected: true, horizontalAlignment: 'left' },
-									{ contents: '01', isSelected: true, horizontalAlignment: 'left' }
+									{ contents: '00', isSelected: true, tableCellHorizontalAlignment: 'left' },
+									{ contents: '01', isSelected: true, tableCellHorizontalAlignment: 'left' }
 								],
 								[
 									'10',
-									{ contents: '11', isSelected: true, horizontalAlignment: 'left' }
+									{ contents: '11', isSelected: true, tableCellHorizontalAlignment: 'left' }
 								]
 							] ) );
 
@@ -311,8 +314,8 @@ describe( 'table cell properties', () => {
 
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should remove horizontalAlignment from a selected table cell if the default value is passed', () => {
-						setData( model, modelTable( [ [ { horizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellHorizontalAlignment from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellHorizontalAlignment: 'center', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: 'left' } );
 
@@ -321,7 +324,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should remove horizontalAlignment from a selected table cell if the default value is passed', () => {
+					it( 'should remove tableCellHorizontalAlignment from a selected table cell if the default value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'left' } );
@@ -332,11 +335,12 @@ describe( 'table cell properties', () => {
 
 				describe( 'multi-cell selection', () => {
 					it(
-						'should remove the "horizontalAlignment" attribute from selected table cells if the default value is passed',
+						`should remove the "tableCellHorizontalAlignment" attribute
+						from selected table cells if the default value is passed`,
 						() => {
 							setData( model, modelTable( [
-								[ { contents: '00', isSelected: true, horizontalAlignment: 'right' }, '01' ],
-								[ '10', { contents: '11', isSelected: true, horizontalAlignment: 'right' } ]
+								[ { contents: '00', isSelected: true, tableCellHorizontalAlignment: 'right' }, '01' ],
+								[ '10', { contents: '11', isSelected: true, tableCellHorizontalAlignment: 'right' } ]
 							] ) );
 
 							command.execute( { value: 'left' } );

@@ -31,11 +31,11 @@ const ALIGN_VALUES_REG_EXP = /^(left|center|right|justify)$/;
  *
  * Introduces table cell model attributes and their conversion:
  *
- * - border: `borderStyle`, `borderColor` and `borderWidth`
- * - background color: `backgroundColor`
- * - cell padding: `padding`
- * - horizontal and vertical alignment: `horizontalAlignment`, `verticalAlignment`
- * - cell width and height: `width`, `height`
+ * - border: `tableCellBorderStyle`, `tableCellBorderColor` and `tableCellBorderWidth`
+ * - background color: `tableCellBackgroundColor`
+ * - cell padding: `tableCellPadding`
+ * - horizontal and vertical alignment: `tableCellHorizontalAlignment`, `tableCellVerticalAlignment`
+ * - cell width and height: `tableCellWidth`, `tableCellHeight`
  *
  * It also registers commands used to manipulate the above attributes:
  *
@@ -92,12 +92,6 @@ export default class TableCellPropertiesEditing extends Plugin {
 		editor.commands.add( 'tableCellBorderColor', new TableCellBorderColorCommand( editor, defaultTableCellProperties.borderColor ) );
 		editor.commands.add( 'tableCellBorderWidth', new TableCellBorderWidthCommand( editor, defaultTableCellProperties.borderWidth ) );
 
-		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment );
-		editor.commands.add(
-			'tableCellHorizontalAlignment',
-			new TableCellHorizontalAlignmentCommand( editor, defaultTableCellProperties.horizontalAlignment )
-		);
-
 		enableProperty( schema, conversion, {
 			modelAttribute: 'tableCellWidth',
 			styleName: 'width',
@@ -132,6 +126,12 @@ export default class TableCellPropertiesEditing extends Plugin {
 			new TableCellBackgroundColorCommand( editor, defaultTableCellProperties.backgroundColor )
 		);
 
+		enableHorizontalAlignmentProperty( schema, conversion, defaultTableCellProperties.horizontalAlignment );
+		editor.commands.add(
+			'tableCellHorizontalAlignment',
+			new TableCellHorizontalAlignmentCommand( editor, defaultTableCellProperties.horizontalAlignment )
+		);
+
 		enableVerticalAlignmentProperty( schema, conversion, defaultTableCellProperties.verticalAlignment );
 		editor.commands.add(
 			'tableCellVerticalAlignment',
@@ -140,14 +140,14 @@ export default class TableCellPropertiesEditing extends Plugin {
 	}
 }
 
-// Enables the `'borderStyle'`, `'borderColor'` and `'borderWidth'` attributes for table cells.
+// Enables the `'tableCellBorderStyle'`, `'tableCellBorderColor'` and `'tableCellBorderWidth'` attributes for table cells.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
 // @param {Object} defaultBorder The default border values.
-// @param {String} defaultBorder.color The default `borderColor` value.
-// @param {String} defaultBorder.style The default `borderStyle` value.
-// @param {String} defaultBorder.width The default `borderWidth` value.
+// @param {String} defaultBorder.color The default `tableCellBorderColor` value.
+// @param {String} defaultBorder.style The default `tableCellBorderStyle` value.
+// @param {String} defaultBorder.width The default `tableCellBorderWidth` value.
 function enableBorderProperties( schema, conversion, defaultBorder ) {
 	const modelAttributes = {
 		width: 'tableCellBorderWidth',
@@ -166,7 +166,7 @@ function enableBorderProperties( schema, conversion, defaultBorder ) {
 	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.width, styleName: 'border-width' } );
 }
 
-// Enables the `'horizontalAlignment'` attribute for table cells.
+// Enables the `'tableCellHorizontalAlignment'` attribute for table cells.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
@@ -174,14 +174,14 @@ function enableBorderProperties( schema, conversion, defaultBorder ) {
 // @param {String} defaultValue The default horizontal alignment value.
 function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 	schema.extend( 'tableCell', {
-		allowAttributes: [ 'horizontalAlignment' ]
+		allowAttributes: [ 'tableCellHorizontalAlignment' ]
 	} );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
 			model: {
 				name: 'tableCell',
-				key: 'horizontalAlignment'
+				key: 'tableCellHorizontalAlignment'
 			},
 			view: alignment => ( {
 				key: 'style',
@@ -201,7 +201,7 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 				}
 			},
 			model: {
-				key: 'horizontalAlignment',
+				key: 'tableCellHorizontalAlignment',
 				value: viewElement => {
 					const align = viewElement.getStyle( 'text-align' );
 
@@ -218,7 +218,7 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 				}
 			},
 			model: {
-				key: 'horizontalAlignment',
+				key: 'tableCellHorizontalAlignment',
 				value: viewElement => {
 					const align = viewElement.getAttribute( 'align' );
 
@@ -235,14 +235,14 @@ function enableHorizontalAlignmentProperty( schema, conversion, defaultValue ) {
 // @param {String} defaultValue The default vertical alignment value.
 function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 	schema.extend( 'tableCell', {
-		allowAttributes: [ 'verticalAlignment' ]
+		allowAttributes: [ 'tableCellVerticalAlignment' ]
 	} );
 
 	conversion.for( 'downcast' )
 		.attributeToAttribute( {
 			model: {
 				name: 'tableCell',
-				key: 'verticalAlignment'
+				key: 'tableCellVerticalAlignment'
 			},
 			view: alignment => ( {
 				key: 'style',
@@ -262,7 +262,7 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 				}
 			},
 			model: {
-				key: 'verticalAlignment',
+				key: 'tableCellVerticalAlignment',
 				value: viewElement => {
 					const align = viewElement.getStyle( 'vertical-align' );
 
@@ -279,7 +279,7 @@ function enableVerticalAlignmentProperty( schema, conversion, defaultValue ) {
 				}
 			},
 			model: {
-				key: 'verticalAlignment',
+				key: 'tableCellVerticalAlignment',
 				value: viewElement => {
 					const valign = viewElement.getAttribute( 'valign' );
 
