@@ -6,8 +6,8 @@
 import {
 	createListElement,
 	createListItemElement,
+	getAllListItemElements,
 	getIndent,
-	getListItemElements,
 	getSiblingListItem
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
@@ -22,7 +22,9 @@ import { uid } from 'ckeditor5/src/utils';
 export function listItemDowncastConverter( attributes, model, { dataPipeline } = {} ) {
 	const consumer = createAttributesConsumer( attributes );
 
-	return ( evt, data, { writer, mapper, consumable, convertChildren } ) => {
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper, consumable } = conversionApi;
+
 		// Do not convert paragraph if it should get converted by the default converters.
 		if ( evt.name == 'insert:paragraph' ) {
 			if ( !data.item.hasAttribute( 'listItemId' ) ) {
@@ -31,10 +33,7 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 
 			// TODO do not convert if paragraph has any attributes other than those from lists
 
-			const listItemElements = [
-				...getListItemElements( data.item, model, 'backward' ),
-				...getListItemElements( data.item, model, 'forward' )
-			];
+			const listItemElements = getAllListItemElements( data.item, model );
 
 			if ( listItemElements.length > 1 ) {
 				return;
@@ -48,12 +47,18 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 			return;
 		}
 
+		let viewElement = mapper.toViewElement( listItem );
 		let viewRange;
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		const viewElement = mapper.toViewElement( listItem ) ?
-			mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed().getContainedElement() :
+		viewRange = viewElement ?
+			mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed() :
+			null;
+
+		// But verify if this is a range for the same element (in case the original element was removed).
+		viewElement = viewRange && viewRange.containsRange( writer.createRangeOn( viewElement ) ) ?
+			viewRange.getContainedElement() :
 			null;
 
 		if ( viewElement ) {
@@ -89,7 +94,7 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 			mapper.bindElements( data.item, paragraphElement );
 			writer.insert( viewPosition, paragraphElement );
 
-			convertChildren( data.item );
+			conversionApi.convertChildren( data.item );
 
 			if ( dataPipeline ) {
 				// Unwrap paragraph content from bogus paragraph.

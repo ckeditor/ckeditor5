@@ -13,7 +13,7 @@ import { Delete } from 'ckeditor5/src/typing';
 import { CKEditorError, uid } from 'ckeditor5/src/utils';
 
 import { listItemUpcastConverter, listItemDowncastConverter } from './converters';
-import { getListItemElements } from './utils';
+import { getAllListItemElementsByDetails, getListItemElements } from './utils';
 
 /**
  * TODO
@@ -149,6 +149,30 @@ function handleDataChange( model, editing ) {
 				continue;
 			}
 
+			// Reconvert bogus vs not bogus paragraph.
+			if ( entry.type == 'remove' || entry.type == 'insert' ) {
+				const items = getAllListItemElementsByDetails(
+					entry.attributes.get( 'listItemId' ),
+					entry.attributes.get( 'listIndent' ),
+					position
+				);
+
+				const item = items.length ? items[ 0 ] : null;
+				const viewElement = item ? editing.mapper.toViewElement( item ) : null;
+
+				if ( viewElement ) {
+					if ( items.length == 1 && !viewElement.is( 'element', 'span' ) ) {
+						editing.reconvertItem( item );
+						// @if CK_DEBUG // console.log( 'Refresh item', item.childCount ? item.getChild( 0 ).data : item );
+					} else if ( items.length > 1 && viewElement.is( 'element', 'span' ) ) {
+						editing.reconvertItem( item );
+						// @if CK_DEBUG // console.log( 'Refresh item', item.childCount ? item.getChild( 0 ).data : item );
+					}
+				}
+			}
+			// TODO refresh bogus in case some list entries got merged (id change) or on indentation change.
+
+			// Reconvert following items that require re-wrapping with LIs and ULs.
 			let indent;
 
 			if ( entry.type == 'remove' ) {
@@ -158,8 +182,6 @@ function handleDataChange( model, editing ) {
 			} else {
 				indent = changedListItem.getAttribute( 'listIndent' );
 			}
-
-			// TODO Refresh bogus vs not bogus.
 
 			for (
 				let currentNode = followingListItem;

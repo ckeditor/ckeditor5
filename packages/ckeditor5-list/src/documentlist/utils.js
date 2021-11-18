@@ -134,6 +134,35 @@ export function getSiblingListItem( modelItem, options ) {
 }
 
 /**
+ * TODO
+ *
+ * @param listItem
+ * @param model
+ * @return {module:engine/model/element~Element[]}
+ */
+export function getAllListItemElements( listItem, model ) {
+	return [
+		...getListItemElements( listItem, model, 'backward' ),
+		...getListItemElements( listItem, model, 'forward' )
+	];
+}
+
+/**
+ * TODO
+ *
+ * @param listItemId
+ * @param limitIndent
+ * @param startPosition
+ * @return {*[]}
+ */
+export function getAllListItemElementsByDetails( listItemId, limitIndent, startPosition ) {
+	return [
+		...getListItemElementsByDetails( listItemId, limitIndent, startPosition, 'backward' ),
+		...getListItemElementsByDetails( listItemId, limitIndent, startPosition, 'forward' )
+	];
+}
+
+/**
  * Returns an array with all elements that represents the same list item.
  *
  * It means that values for `listIndent`, `listType`, `listStyle`, and `listItemId` for all items are equal.
@@ -144,16 +173,22 @@ export function getSiblingListItem( modelItem, options ) {
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItemElements( listItem, model, direction = 'forward' ) {
-	const walkerOptions = {
-		ignoreElementEnd: true,
-		startPosition: model.createPositionBefore( listItem ),
-		shallow: true,
-		direction
-	};
-
-	const items = [];
 	const limitIndent = listItem.getAttribute( 'listIndent' );
 	const listItemId = listItem.getAttribute( 'listItemId' );
+
+	return getListItemElementsByDetails( listItemId, limitIndent, model.createPositionBefore( listItem ), direction );
+}
+
+// TODO
+function getListItemElementsByDetails( listItemId, limitIndent, startPosition, direction ) {
+	const items = [];
+
+	const walkerOptions = {
+		ignoreElementEnd: true,
+		shallow: true,
+		startPosition,
+		direction
+	};
 
 	for ( const { item } of new TreeWalker( walkerOptions ) ) {
 		if ( !item.is( 'element' ) || !item.hasAttribute( 'listItemId' ) ) {
@@ -183,31 +218,15 @@ export function getListItemElements( listItem, model, direction = 'forward' ) {
 			continue;
 		}
 
-		// ■ List item 1.[]  [listType=bulleted]
-		// 1. List item 2.   [listType=numbered]
-		// 2.List item 3.    [listType=numbered]
-		//
-		// Abort searching when found a different kind of a list.
-		if ( item.getAttribute( 'listType' ) !== listItem.getAttribute( 'listType' ) ) {
+		// Abort if item has a different ID.
+		if ( item.getAttribute( 'listItemId' ) != listItemId ) {
 			break;
 		}
 
-		// ■ List item 1.[]  [listType=bulleted]
-		// ■ List item 2.    [listType=bulleted]
-		// ○ List item 3.    [listType=bulleted]
-		// ○ List item 4.    [listType=bulleted]
-		//
-		// Abort searching when found a different list style.
-		if ( item.getAttribute( 'listStyle' ) !== listItem.getAttribute( 'listStyle' ) ) {
-			break;
-		}
-
-		if ( item.getAttribute( 'listItemId' ) == listItemId ) {
-			if ( direction == 'backward' ) {
-				items.unshift( item );
-			} else {
-				items.push( item );
-			}
+		if ( direction == 'backward' ) {
+			items.unshift( item );
+		} else {
+			items.push( item );
 		}
 	}
 
