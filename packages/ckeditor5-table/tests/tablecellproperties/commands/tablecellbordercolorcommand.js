@@ -11,7 +11,6 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellBorderColorCommand from '../../../src/tablecellproperties/commands/tablecellbordercolorcommand';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -258,7 +257,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "borderColor" attribute value of selected table cells', () => {
 						command.execute( { value: '#f00' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ { contents: '00', style: 'border-color:#f00;' }, '01' ],
 							[ '10', { contents: '11', style: 'border-color:#f00;' } ]
 						] ) );
@@ -272,7 +271,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -376,7 +375,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'red' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

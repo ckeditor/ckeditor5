@@ -18,7 +18,6 @@ import TableHeightCommand from '../../src/tableproperties/commands/tableheightco
 import TableBackgroundColorCommand from '../../src/tableproperties/commands/tablebackgroundcolorcommand';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableStyle, assertTRBLAttribute } from '../_utils/utils';
 
 describe( 'table properties', () => {
@@ -843,8 +842,8 @@ describe( 'table properties', () => {
 							writer.removeAttribute( 'borderWidth', table );
 						} );
 
-						assertEqualMarkup(
-							editor.getData(),
+						expect(
+							editor.getData() ).to.equalMarkup(
 							'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 						);
 					} );
