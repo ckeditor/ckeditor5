@@ -19,7 +19,7 @@ import { uid } from 'ckeditor5/src/utils';
 /**
  * TODO
  */
-export function listItemDowncastConverter( attributes, { dataPipeline } = {} ) {
+export function listItemDowncastConverter( attributes, model, { dataPipeline } = {} ) {
 	const consumer = createAttributesConsumer( attributes );
 
 	return ( evt, data, { writer, mapper, consumable, convertChildren } ) => {
@@ -48,8 +48,13 @@ export function listItemDowncastConverter( attributes, { dataPipeline } = {} ) {
 			return;
 		}
 
-		const viewElement = mapper.toViewElement( listItem );
 		let viewRange;
+
+		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+		const viewElement = mapper.toViewElement( listItem ) ?
+			mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed().getContainedElement() :
+			null;
 
 		if ( viewElement ) {
 			// First, unwrap the item from current list wrappers.
@@ -69,7 +74,9 @@ export function listItemDowncastConverter( attributes, { dataPipeline } = {} ) {
 				attributeElement = parentElement;
 			}
 
-			viewRange = writer.createRangeOn( viewElement );
+			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+			viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
 		}
 		else if ( evt.name == 'insert:paragraph' ) {
 			if ( !consumable.consume( data.item, evt.name ) ) {

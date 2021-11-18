@@ -115,7 +115,8 @@ export default class CodeBlockEditing extends Plugin {
 			allowWhere: '$block',
 			allowChildren: '$text',
 			isBlock: true,
-			allowAttributes: [ 'language' ]
+			allowAttributes: [ 'language' ],
+			allowAttributesOf: '$container'
 		} );
 
 		// Disallow all attributes on $text inside `codeBlock`.

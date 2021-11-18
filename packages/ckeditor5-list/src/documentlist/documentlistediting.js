@@ -65,7 +65,7 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
 			const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-			const converter = listItemDowncastConverter( attributes );
+			const converter = listItemDowncastConverter( attributes, editor.model );
 
 			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
 
@@ -76,7 +76,7 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
 			const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-			const converter = listItemDowncastConverter( attributes, { dataPipeline: true } );
+			const converter = listItemDowncastConverter( attributes, editor.model, { dataPipeline: true } );
 
 			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
 
