@@ -149,14 +149,21 @@ export default class TableCellPropertiesEditing extends Plugin {
 // @param {String} defaultBorder.style The default `borderStyle` value.
 // @param {String} defaultBorder.width The default `borderWidth` value.
 function enableBorderProperties( schema, conversion, defaultBorder ) {
+	const modelAttributes = {
+		width: 'tableCellBorderWidth',
+		color: 'tableCellBorderColor',
+		style: 'tableCellBorderStyle'
+	};
+
 	schema.extend( 'tableCell', {
-		allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
+		allowAttributes: Object.values( modelAttributes )
 	} );
-	upcastBorderStyles( conversion, 'td', defaultBorder );
-	upcastBorderStyles( conversion, 'th', defaultBorder );
-	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: 'borderStyle', styleName: 'border-style' } );
-	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: 'borderColor', styleName: 'border-color' } );
-	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: 'borderWidth', styleName: 'border-width' } );
+
+	upcastBorderStyles( conversion, 'td', modelAttributes, defaultBorder );
+	upcastBorderStyles( conversion, 'th', modelAttributes, defaultBorder );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.style, styleName: 'border-style' } );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.color, styleName: 'border-color' } );
+	downcastAttributeToStyle( conversion, { modelElement: 'tableCell', modelAttribute: modelAttributes.width, styleName: 'border-width' } );
 }
 
 // Enables the `'horizontalAlignment'` attribute for table cells.
