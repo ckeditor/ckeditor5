@@ -431,6 +431,10 @@ function createModelIndentPasteFixer( model ) {
 		// would create incorrect model.
 		let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
 
+		if ( !item || !item.hasAttribute( 'listItemId' ) ) {
+			return;
+		}
+
 		let selection;
 
 		if ( !selectable ) {
@@ -439,36 +443,38 @@ function createModelIndentPasteFixer( model ) {
 			selection = model.createSelection( selectable );
 		}
 
-		if ( item && item.hasAttribute( 'listItemId' ) ) {
-			// Get a reference list item. Inserted list items will be fixed according to that item.
-			const pos = selection.getFirstPosition();
-			let refItem = null;
+		// Get a reference list item. Inserted list items will be fixed according to that item.
+		const pos = selection.getFirstPosition();
+		let refItem = null;
 
-			if ( pos.parent.hasAttribute( 'listItemId' ) ) {
-				refItem = pos.parent;
-			} else if ( pos.nodeBefore && pos.nodeBefore.hasAttribute( 'listItemId' ) ) {
-				refItem = pos.nodeBefore;
-			}
-
-			// If there is `refItem` it means that we do insert list items into an existing list.
-			if ( refItem ) {
-				// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
-				// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
-				// Indent of all those items has to be adjusted to reference item.
-				const indentChange = refItem.getAttribute( 'listIndent' );
-
-				// Fix only if there is anything to fix.
-				if ( indentChange > 0 ) {
-					model.change( writer => {
-						// Adjust indent of all "first" list items in inserted data.
-						while ( item && item.hasAttribute( 'listItemId' ) ) {
-							writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange, item );
-
-							item = item.nextSibling;
-						}
-					} );
-				}
-			}
+		if ( pos.parent.hasAttribute( 'listItemId' ) ) {
+			refItem = pos.parent;
+		} else if ( pos.nodeBefore && pos.nodeBefore.hasAttribute( 'listItemId' ) ) {
+			refItem = pos.nodeBefore;
 		}
+
+		// If there is `refItem` it means that we do insert list items into an existing list.
+		if ( !refItem ) {
+			return;
+		}
+
+		// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
+		// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
+		// Indent of all those items has to be adjusted to reference item.
+		const indentChange = refItem.getAttribute( 'listIndent' );
+
+		// Fix only if there is anything to fix.
+		if ( indentChange == 0 ) {
+			return;
+		}
+
+		model.change( writer => {
+			// Adjust indent of all "first" list items in inserted data.
+			while ( item && item.hasAttribute( 'listItemId' ) ) {
+				writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange, item );
+
+				item = item.nextSibling;
+			}
+		} );
 	};
 }
