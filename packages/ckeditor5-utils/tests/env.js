@@ -3,13 +3,20 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isMac, isWindows, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported, isBlink } from '../src/env';
+import env, {
+	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink
+} from '../src/env';
+
+import global from '../src/dom/global';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
 }
 
 describe( 'Env', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'is an object', () => {
 		expect( env ).to.be.an( 'object' );
 	} );
@@ -35,6 +42,12 @@ describe( 'Env', () => {
 	describe( 'isSafari', () => {
 		it( 'is a boolean', () => {
 			expect( env.isSafari ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isiOS', () => {
+		it( 'is a boolean', () => {
+			expect( env.isiOS ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -144,6 +157,52 @@ describe( 'Env', () => {
 			) ) ).to.be.false;
 
 			expect( isSafari( toLowerCase(
+				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
+			) ) ).to.be.false;
+		} );
+		/* eslint-enable max-len */
+	} );
+
+	describe( 'isiOS()', () => {
+		/* eslint-disable max-len */
+		it( 'returns true for Safari@iPhone UA string ("Request Mobile Website")', () => {
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (iPhone; CPU OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns true for Safari@iPad UA string ("Request Mobile Website")', () => {
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (iPad; CPU OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns true for Safari UA string ("Request Desktop Website")', () => {
+			// This is how you tell Safari@Mac from Safari@iOS.
+			testUtils.sinon.stub( global.window.navigator, 'maxTouchPoints' ).get( () => 3 );
+
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns true for Chrome UA string', () => {
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (iPad; CPU OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/95.0.4638.50 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-iOS UA strings', () => {
+			// Safari on Mac
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
+			) ) ).to.be.false;
+
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+			) ) ).to.be.false;
+
+			expect( isiOS( toLowerCase(
 				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
 			) ) ).to.be.false;
 		} );
