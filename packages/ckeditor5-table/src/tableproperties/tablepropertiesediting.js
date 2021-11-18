@@ -126,13 +126,21 @@ export default class TablePropertiesEditing extends Plugin {
 // @param {String} defaultBorder.style The default `borderStyle` value.
 // @param {String} defaultBorder.width The default `borderWidth` value.
 function enableBorderProperties( schema, conversion, defaultBorder ) {
+	const modelAttributes = {
+		width: 'tableBorderWidth',
+		color: 'tableBorderColor',
+		style: 'tableBorderStyle'
+	};
+
 	schema.extend( 'table', {
-		allowAttributes: [ 'borderWidth', 'borderColor', 'borderStyle' ]
+		allowAttributes: Object.values( modelAttributes )
 	} );
-	upcastBorderStyles( conversion, 'table', defaultBorder );
-	downcastTableAttribute( conversion, { modelAttribute: 'tableBorderColor', styleName: 'border-color' } );
-	downcastTableAttribute( conversion, { modelAttribute: 'tableBorderStyle', styleName: 'border-style' } );
-	downcastTableAttribute( conversion, { modelAttribute: 'tableBorderWidth', styleName: 'border-width' } );
+
+	upcastBorderStyles( conversion, 'table', modelAttributes, defaultBorder );
+
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.color, styleName: 'border-color' } );
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.style, styleName: 'border-style' } );
+	downcastTableAttribute( conversion, { modelAttribute: modelAttributes.width, styleName: 'border-width' } );
 }
 
 // Enables the `'alignment'` attribute for table.
