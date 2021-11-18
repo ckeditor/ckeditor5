@@ -8,8 +8,6 @@ import Model from '../../../src/model/model';
 import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
 import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer';
 
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
-
 describe( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {
 		it( 'is a function', () => {
