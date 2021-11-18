@@ -189,9 +189,9 @@ Collects translation messages (arguments of the `t()` function) and context file
 
 The task may end with an error if one of the following conditions is met:
 
-* Found the "Unused context" error &ndash; entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
-* Found the "Context is duplicated for the id" error &ndash; some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewrite them.
-* Found the "Context for the message id is missing" error &ndash; entries specified in source files are not described in the `lang/contexts.json` file. They should be added.
+* Found the `Unused context` error &ndash; entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
+* Found the `Context is duplicated for the id` error &ndash; some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewrite them.
+* Found the `Context for the message id is missing` error &ndash; entries specified in source files are not described in the `lang/contexts.json` file. They should be added.
 
 Examples:
 
