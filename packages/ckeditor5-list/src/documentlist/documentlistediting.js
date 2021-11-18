@@ -87,8 +87,7 @@ export default class DocumentListEditing extends Plugin {
 
 		this.listenTo( editor.model.document, 'change:data', handleDataChange( editor.model, editor.editing ) );
 
-		// TODO
-		// editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
+		editor.model.on( 'insertContent', createModelIndentPasteFixer( editor.model ), { priority: 'high' } );
 
 		this._enableEnterHandling();
 	}
@@ -108,7 +107,7 @@ export default class DocumentListEditing extends Plugin {
 				const positionParent = position.parent;
 
 				if ( positionParent.hasAttribute( 'listItemId' ) && position.isAtEnd ) {
-					const lastListItemElement = getListItemElements( positionParent ).pop();
+					const lastListItemElement = getListItemElements( positionParent, editor.model ).pop();
 
 					if ( lastListItemElement == positionParent ) {
 						writer.setAttribute( 'listItemId', uid(), lastListItemElement );
@@ -398,4 +397,78 @@ function createViewListItemModelLength( mapper, schema ) {
 	}
 
 	return getViewListItemModelLength;
+}
+
+/**
+ * TODO
+ *
+ * A fixer for pasted content that includes list items.
+ *
+ * It fixes indentation of pasted list items so the pasted items match correctly to the context they are pasted into.
+ *
+ * Example:
+ *
+ *		<listItem listType="bulleted" listIndent=0>A</listItem>
+ *		<listItem listType="bulleted" listIndent=1>B^</listItem>
+ *		// At ^ paste:  <listItem listType="bulleted" listIndent=4>X</listItem>
+ *		//              <listItem listType="bulleted" listIndent=5>Y</listItem>
+ *		<listItem listType="bulleted" listIndent=2>C</listItem>
+ *
+ * Should become:
+ *
+ *		<listItem listType="bulleted" listIndent=0>A</listItem>
+ *		<listItem listType="bulleted" listIndent=1>BX</listItem>
+ *		<listItem listType="bulleted" listIndent=2>Y/listItem>
+ *		<listItem listType="bulleted" listIndent=2>C</listItem>
+ *
+ */
+function createModelIndentPasteFixer( model ) {
+	return ( evt, [ content, selectable ] ) => {
+		// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
+		// elements before it and there is no need to fix indents, because even if we insert that content into a list,
+		// that list will be broken.
+		// Note: we also need to handle singular elements because inserting item with indent 0 into 0,1,[],2
+		// would create incorrect model.
+		let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
+
+		let selection;
+
+		if ( !selectable ) {
+			selection = model.document.selection;
+		} else {
+			selection = model.createSelection( selectable );
+		}
+
+		if ( item && item.hasAttribute( 'listItemId' ) ) {
+			// Get a reference list item. Inserted list items will be fixed according to that item.
+			const pos = selection.getFirstPosition();
+			let refItem = null;
+
+			if ( pos.parent.hasAttribute( 'listItemId' ) ) {
+				refItem = pos.parent;
+			} else if ( pos.nodeBefore && pos.nodeBefore.hasAttribute( 'listItemId' ) ) {
+				refItem = pos.nodeBefore;
+			}
+
+			// If there is `refItem` it means that we do insert list items into an existing list.
+			if ( refItem ) {
+				// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
+				// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
+				// Indent of all those items has to be adjusted to reference item.
+				const indentChange = refItem.getAttribute( 'listIndent' );
+
+				// Fix only if there is anything to fix.
+				if ( indentChange > 0 ) {
+					model.change( writer => {
+						// Adjust indent of all "first" list items in inserted data.
+						while ( item && item.hasAttribute( 'listItemId' ) ) {
+							writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange, item );
+
+							item = item.nextSibling;
+						}
+					} );
+				}
+			}
+		}
+	};
 }

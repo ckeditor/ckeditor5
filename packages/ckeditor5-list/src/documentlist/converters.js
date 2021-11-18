@@ -32,8 +32,8 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 			// TODO do not convert if paragraph has any attributes other than those from lists
 
 			const listItemElements = [
-				...getListItemElements( data.item, 'backward' ),
-				...getListItemElements( data.item, 'forward' )
+				...getListItemElements( data.item, model, 'backward' ),
+				...getListItemElements( data.item, model, 'forward' )
 			];
 
 			if ( listItemElements.length > 1 ) {
@@ -143,7 +143,9 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
  */
 export function listItemUpcastConverter() {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+		const { writer, schema, consumable } = conversionApi;
+
+		if ( !consumable.consume( data.viewItem, { name: true } ) ) {
 			return;
 		}
 
@@ -155,27 +157,48 @@ export function listItemUpcastConverter() {
 
 		for ( const child of data.viewItem.getChildren() ) {
 			if ( child.name == 'ul' || child.name == 'ol' || child.name == 'li' ) {
-				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, conversionApi.writer );
+				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
 				modelCursor = conversionApi.convertItem( child, modelCursor ).modelCursor;
-				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, conversionApi.writer );
-			} else {
-				modelCursor = conversionApi.convertItem( child, modelCursor ).modelCursor;
+				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
+			}
+			else {
+				const conversionResult = conversionApi.convertItem( child, modelCursor );
+				const modelRange = conversionResult.modelRange;
+				const modelNode = modelRange && !modelRange.isCollapsed ? modelRange.start.nodeAfter : null;
+
+				// If the LI is empty or contains an inline nodes then we need to wrap it with a paragraph.
+				// This is needed only in the clipboard pipeline because there content won't get auto-paragraphed.
+				if ( !modelNode || !modelNode.parent.is( 'element', 'paragraph' ) && schema.isInline( modelNode ) ) {
+					modelCursor = enterAutoParagraph( modelRange, writer );
+				} else {
+					modelCursor = conversionResult.modelCursor;
+				}
 			}
 		}
 
-		modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, conversionApi.writer );
+		modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
 
-		data.modelRange = conversionApi.writer.createRange( data.modelCursor, modelCursor );
+		data.modelRange = writer.createRange( data.modelCursor, modelCursor );
 		data.modelCursor = modelCursor;
 
 		for ( const { item } of data.modelRange.getWalker( { shallow: true } ) ) {
-			if ( !item.hasAttribute( 'listItemId' ) && conversionApi.schema.checkAttribute( item, 'listItemId' ) ) {
-				conversionApi.writer.setAttribute( 'listItemId', id, item );
-				conversionApi.writer.setAttribute( 'listIndent', indent, item );
-				conversionApi.writer.setAttribute( 'listType', type, item );
+			if ( !item.hasAttribute( 'listItemId' ) && schema.checkAttribute( item, 'listItemId' ) ) {
+				writer.setAttribute( 'listItemId', id, item );
+				writer.setAttribute( 'listIndent', indent, item );
+				writer.setAttribute( 'listType', type, item );
 			}
 		}
 	};
+}
+
+// TODO
+function enterAutoParagraph( modelRange, writer ) {
+	const paragraph = writer.createElement( 'paragraph' );
+
+	writer.insert( paragraph, modelRange.end );
+	writer.move( modelRange, paragraph, 0 );
+
+	return writer.createPositionAt( paragraph, 'end' );
 }
 
 // TODO

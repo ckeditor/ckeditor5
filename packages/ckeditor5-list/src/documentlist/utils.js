@@ -139,12 +139,11 @@ export function getSiblingListItem( modelItem, options ) {
  * It means that values for `listIndent`, `listType`, `listStyle`, and `listItemId` for all items are equal.
  *
  * @param {module:engine/model/element~Element} listItem Starting list item element.
+ * @param {module:engine/model/model~Model} model The editor model.
  * @param {'forward'|'backward'} [direction='forward'] Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItemElements( listItem, direction = 'forward' ) {
-	const model = listItem.root.document.model;
-
+export function getListItemElements( listItem, model, direction = 'forward' ) {
 	const walkerOptions = {
 		ignoreElementEnd: true,
 		startPosition: model.createPositionBefore( listItem ),
