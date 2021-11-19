@@ -50,6 +50,14 @@ const env = {
 	isSafari: isSafari( userAgent ),
 
 	/**
+	 * Indicates the the application is running in iOS.
+	 *
+	 * @static
+	 * @type {Boolean}
+	 */
+	isiOS: isiOS( userAgent ),
+
+	/**
 	 * Indicates that the application is running on Android mobile device.
 	 *
 	 * @static
@@ -123,6 +131,17 @@ export function isGecko( userAgent ) {
  */
 export function isSafari( userAgent ) {
 	return userAgent.indexOf( ' applewebkit/' ) > -1 && userAgent.indexOf( 'chrome' ) === -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is running in iOS.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is running in iOS or not.
+ */
+export function isiOS( userAgent ) {
+	// "Request mobile site" || "Request desktop site".
+	return !!userAgent.match( /iphone|ipad/i ) || ( isMac( userAgent ) && navigator.maxTouchPoints > 0 );
 }
 
 /**
