@@ -65,8 +65,11 @@ export default class TableEditing extends Plugin {
 		const tableUtils = editor.plugins.get( TableUtils );
 
 		schema.register( 'table', {
-			inheritAllFrom: '$blockObject',
-			allowAttributes: [ 'headingRows', 'headingColumns' ]
+			allowWhere: '$block',
+			allowAttributes: [ 'headingRows', 'headingColumns' ],
+			allowAttributesOf: '$container',
+			isObject: true,
+			isBlock: true
 		} );
 
 		schema.register( 'tableRow', {

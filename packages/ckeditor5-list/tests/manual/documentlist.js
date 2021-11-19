@@ -50,6 +50,8 @@ ClassicEditor
 			CloudServices, SourceEditing, DocumentListEditing
 		],
 		toolbar: [
+			'sourceEditing',
+			'|',
 			'heading',
 			'|',
 			'bold', 'italic', 'link',
@@ -61,8 +63,6 @@ ClassicEditor
 			'alignment', 'outdent', 'indent',
 			'|',
 			'pageBreak', 'horizontalLine',
-			'|',
-			'sourceEditing',
 			'|',
 			'undo', 'redo'
 		],

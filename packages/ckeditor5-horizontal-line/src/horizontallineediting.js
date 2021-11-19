@@ -37,7 +37,9 @@ export default class HorizontalLineEditing extends Plugin {
 		const conversion = editor.conversion;
 
 		schema.register( 'horizontalLine', {
-			inheritAllFrom: '$blockObject'
+			isObject: true,
+			allowWhere: '$block',
+			allowAttributesOf: '$container'
 		} );
 
 		conversion.for( 'dataDowncast' ).elementToElement( {

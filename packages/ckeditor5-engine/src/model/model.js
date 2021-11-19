@@ -98,18 +98,12 @@ export default class Model {
 		} );
 
 		this.schema.register( '$container', {
-			allowChildren: [ '$block', '$container' ],
-			isContainer: true
+			allowChildren: [ '$block', '$container' ]
 		} );
 
 		this.schema.register( '$block', {
 			allowChildren: '$text',
-			isBlock: true
-		} );
-
-		this.schema.register( '$blockObject', {
-			allowWhere: '$block',
-			isObject: true,
+			allowAttributesOf: '$container',
 			isBlock: true
 		} );
 
