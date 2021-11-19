@@ -8,9 +8,12 @@ import {
 	createListItemElement,
 	getAllListItemElements,
 	getIndent,
-	getSiblingListItem
+	getSiblingListItem,
+	isListView,
+	isListItemView
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
+import { UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
  * @module list/documentlist/converters
@@ -165,7 +168,7 @@ export function listItemUpcastConverter() {
 		let modelCursor = data.modelCursor;
 
 		for ( const child of data.viewItem.getChildren() ) {
-			if ( child.name == 'ul' || child.name == 'ol' || child.name == 'li' ) {
+			if ( isListView( child ) || isListItemView( child ) ) {
 				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
 				modelCursor = conversionApi.convertItem( child, modelCursor ).modelCursor;
 				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
@@ -195,6 +198,30 @@ export function listItemUpcastConverter() {
 				writer.setAttribute( 'listItemId', id, item );
 				writer.setAttribute( 'listIndent', indent, item );
 				writer.setAttribute( 'listType', type, item );
+			}
+		}
+	};
+}
+
+/**
+ * TODO
+ *
+ * A view-to-model converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
+ * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element, however, also
+ * incorrect data can be cleared if the view was incorrect.
+ *
+ */
+export function listUpcastCleanList() {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+			return;
+		}
+
+		const viewWriter = new UpcastWriter( data.viewItem.document );
+
+		for ( const child of Array.from( data.viewItem.getChildren() ) ) {
+			if ( !isListItemView( child ) && !isListView( child ) ) {
+				viewWriter.remove( child );
 			}
 		}
 	};
@@ -251,7 +278,7 @@ function getListItemFillerOffset() {
 		}
 
 		// There is no content before a nested list so render a block filler just before the nested list.
-		if ( child.is( 'element', 'ul' ) || child.is( 'element', 'ol' ) ) {
+		if ( isListView( child ) ) {
 			return idx;
 		} else {
 			return null;

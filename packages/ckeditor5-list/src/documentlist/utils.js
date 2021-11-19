@@ -9,6 +9,26 @@ import { TreeWalker } from 'ckeditor5/src/engine';
  * @module list/documentlist/utils
  */
 
+/**
+ * Checks if view element is a list type (ul or ol).
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+*/
+export function isListView( viewElement ) {
+	return viewElement.is( 'element', 'ol' ) || viewElement.is( 'element', 'ul' );
+}
+
+/**
+ * Checks if view element is a list item (li).
+ *
+ * @param {module:engine/view/element~Element} viewElement
+ * @returns {Boolean}
+ */
+export function isListItemView( viewElement ) {
+	return viewElement.is( 'element', 'li' );
+}
+
 // Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
 //
 // Also, fixes non HTML compliant lists indents:

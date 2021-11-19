@@ -12,8 +12,8 @@ import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
 import { CKEditorError, uid } from 'ckeditor5/src/utils';
 
-import { listItemUpcastConverter, listItemDowncastConverter } from './converters';
-import { getAllListItemElementsByDetails, getListItemElements } from './utils';
+import { listItemUpcastConverter, listItemDowncastConverter, listUpcastCleanList } from './converters';
+import { getAllListItemElementsByDetails, getListItemElements, isListView } from './utils';
 
 /**
  * TODO
@@ -59,6 +59,8 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			dispatcher.on( 'element:li', listItemUpcastConverter() );
+			dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
+			dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 		} );
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
@@ -381,7 +383,7 @@ function createViewListItemModelLength( mapper, schema ) {
 
 		// First count model size of nested lists.
 		for ( const child of element.getChildren() ) {
-			if ( child.name == 'ul' || child.name == 'ol' ) {
+			if ( isListView( child ) ) {
 				for ( const item of child.getChildren() ) {
 					length += getViewListItemModelLength( item );
 				}
@@ -392,7 +394,7 @@ function createViewListItemModelLength( mapper, schema ) {
 
 		// Then add the size of block elements or in case of content directly in the LI add 1.
 		for ( const child of element.getChildren() ) {
-			if ( child.name != 'ul' && child.name != 'ol' ) {
+			if ( !isListView( child ) ) {
 				const modelElement = mapper.toModelElement( child );
 
 				// If the content is not mapped (attribute element or a text)
