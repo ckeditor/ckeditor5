@@ -135,10 +135,14 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 
 			currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
 
-			if ( currentListItem ) {
-				listItemId = currentListItem.getAttribute( 'listItemId' );
-				listType = currentListItem.getAttribute( 'listType' );
+			// There is no list item with smaller indent, this is most probably copied part of nested list
+			// so we don't need to try to wrap it further.
+			if ( !currentListItem ) {
+				break;
 			}
+
+			listItemId = currentListItem.getAttribute( 'listItemId' );
+			listType = currentListItem.getAttribute( 'listType' );
 		}
 	};
 }
