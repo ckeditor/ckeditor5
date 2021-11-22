@@ -62,6 +62,6 @@ const paragraph = writer.createContainerElement( 'p',
 
 #### Blocking script elements
 
-Also, starting from v32.0.0, any `<script>` element that would find its way to the editing layer of the editor (and the user interacting with it) will be filtered out (renamed to `<span data-ck-unsafe-element="script"></span>`) tdon.
+Also, starting from v32.0.0, any `<script>` element that would find its way to the editing layer of the editor (and the user interacting with it) will be filtered out (renamed to `<span data-ck-unsafe-element="script"></span>`).
 
 Please keep in mind that this mechanism will not change the output of the editor (e.g. the result of `editor.getData()` will include full `<script>...</script>` tags) and there is no way to opt out of it.
