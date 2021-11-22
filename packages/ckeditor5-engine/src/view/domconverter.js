@@ -1637,10 +1637,9 @@ function hasBlockParent( domNode, blockElements ) {
  */
 
 /**
- * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element in the
- * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
- * the users of CKEditor. To minimize the risk, the `<script>` element was renamed to a
- * `<span data-ck-unsafe-element="script"></span>`.
+ * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may disrupt the
+ * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} of the editor. To avoid this,
+ * the `<script>` element was renamed to `<span data-ck-unsafe-element="script"></span>`.
  *
  * @error domconverter-unsafe-element-detected
  * @param {module:engine/model/element~Element|HTMLElement} unsafeElement The editing view or DOM element
@@ -1648,13 +1647,12 @@ function hasBlockParent( domNode, blockElements ) {
  */
 
 /**
- * The {@link module:engine/view/domconverter~DomConverter} detected an attribute in the
- * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} that may pose a risk to
- * the users of CKEditor. To minimize the risk, the attribute was renamed to
- * `data-ck-unsafe-attribute-[original attribute name]`.
+ * The {@link module:engine/view/domconverter~DomConverter} detected an interactive attribute in the
+ * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline}. For the best
+ * editing experience, the attribute was renamed to `data-ck-unsafe-attribute-[original attribute name]`.
  *
  * If you are the author of the plugin that generated this attribute and you want it to be preserved
- * in the editing pipeline (e.g. because you know it is safe), you can configure this when creating the element
+ * in the editing pipeline, you can configure this when creating the element
  * using {@link module:engine/view/downcastwriter~DowncastWriter} during the
  * {@glink framework/guides/architecture/editing-engine#conversion model–view conversion}. Methods such as
  * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
