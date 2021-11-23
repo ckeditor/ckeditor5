@@ -1,6 +1,6 @@
 ---
 menu-title: Using package generator
-category: framework-guides
+category: framework-plugins
 order: 35
 modified_at: 2021-11-15
 ---

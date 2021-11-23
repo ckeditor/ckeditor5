@@ -1,5 +1,5 @@
 ---
-category: framework-guides
+category: framework-plugins
 order: 30
 ---
 
