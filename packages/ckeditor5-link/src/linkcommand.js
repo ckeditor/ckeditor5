@@ -148,7 +148,7 @@ export default class LinkCommand extends Command {
 	 * @param {String} uuid Link destination.
 	 * @param {Object} [manualDecoratorIds={}] The information about manual decorator attributes to be applied or removed upon execution.
 	 */
-	execute( uuid, manualDecoratorIds = {} ) {
+	execute( uuid, title, manualDecoratorIds = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		// Stores information about manual decorators to turn them on/off when command is applied.
@@ -198,7 +198,7 @@ export default class LinkCommand extends Command {
 						attributes.set( item, true );
 					} );
 
-					const { end: positionAfter } = model.insertContent( writer.createText( uuid, attributes ), position );
+					const { end: positionAfter } = model.insertContent( writer.createText( title, attributes ), position );
 
 					// Put the selection at the end of the inserted link.
 					// Using end of range returned from insertContent in case nodes with the same attributes got merged.
