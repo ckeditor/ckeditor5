@@ -41,6 +41,14 @@ describe( 'table properties', () => {
 
 				assertTableStyle( editor, null, 'float:right;' );
 			} );
+
+			it( 'Alignment command should be disabled when table is selected', () => {
+				model.change( writer => {
+					writer.setSelection( table, 'on' );
+				} );
+
+				expect( editor.commands.get( 'alignment' ).isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( 'Undo', () => {
