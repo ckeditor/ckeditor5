@@ -835,7 +835,8 @@ describe( 'table cell properties', () => {
 						.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
 							( evt, data, conversionApi ) => {
 								expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-							} ) );
+							}
+						) );
 
 					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'right', tableCell ) );
 				} );
@@ -845,7 +846,8 @@ describe( 'table cell properties', () => {
 						.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
 							( evt, data, conversionApi ) => {
 								conversionApi.consumable.consume( data.item, evt.name );
-							}, { priority: 'high' } ) );
+							}, { priority: 'high' }
+						) );
 
 					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'right', tableCell ) );
 
@@ -910,7 +912,8 @@ describe( 'table cell properties', () => {
 							.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
 								( evt, data, conversionApi ) => {
 									expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-								} ) );
+								}
+							) );
 
 						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'center', tableCell ) );
 					} );
@@ -920,7 +923,8 @@ describe( 'table cell properties', () => {
 							.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
 								( evt, data, conversionApi ) => {
 									conversionApi.consumable.consume( data.item, evt.name );
-								}, { priority: 'high' } ) );
+								}, { priority: 'high' }
+							) );
 
 						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'center', tableCell ) );
 
@@ -1025,7 +1029,8 @@ describe( 'table cell properties', () => {
 						.add( dispatcher => dispatcher.on( 'attribute:tableCellVerticalAlignment:tableCell',
 							( evt, data, conversionApi ) => {
 								expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-							} ) );
+							}
+						) );
 
 					model.change( writer => writer.setAttribute( 'tableCellVerticalAlignment', 'top', tableCell ) );
 				} );
