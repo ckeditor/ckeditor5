@@ -117,7 +117,7 @@ export default class TablePropertiesEditing extends Plugin {
 	}
 }
 
-// Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBrderWidth'` attributes for table.
+// Enables `tableBorderStyle'`, `tableBorderColor'` and `tableBorderWidth'` attributes for table.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/conversion/conversion~Conversion} conversion
