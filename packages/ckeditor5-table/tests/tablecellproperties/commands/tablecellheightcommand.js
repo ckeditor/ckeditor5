@@ -70,14 +70,14 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no height property', () => {
+					it( 'should be undefined if selected table cell has no tableCellHeight property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has height property', () => {
-						setData( model, modelTable( [ [ { height: '100px', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellHeight property', () => {
+						setData( model, modelTable( [ [ { tableCellHeight: '100px', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -91,14 +91,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { height: '100px', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellHeight: '100px', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cell have the "height" property', () => {
+					it( 'should be undefined if no table cell have the "tableCellHeight" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -113,45 +113,45 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "height" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellHeight" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, height: '100px' },
+								{ contents: '00', isSelected: true, tableCellHeight: '100px' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, height: '100px' }
+								{ contents: '11', isSelected: true, tableCellHeight: '100px' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "height" property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "tableCellHeight" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, height: '100px' },
-								{ contents: '01', isSelected: true, height: '23px' }
+								{ contents: '00', isSelected: true, tableCellHeight: '100px' },
+								{ contents: '01', isSelected: true, tableCellHeight: '23px' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, height: '100px' }
+								{ contents: '11', isSelected: true, tableCellHeight: '100px' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cell have the same "height" property value', () => {
+					it( 'should be set if all table cell have the same "tableCellHeight" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, height: '100px' },
-								{ contents: '01', isSelected: true, height: '100px' }
+								{ contents: '00', isSelected: true, tableCellHeight: '100px' },
+								{ contents: '01', isSelected: true, tableCellHeight: '100px' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, height: '100px' }
+								{ contents: '11', isSelected: true, tableCellHeight: '100px' }
 							]
 						] ) );
 

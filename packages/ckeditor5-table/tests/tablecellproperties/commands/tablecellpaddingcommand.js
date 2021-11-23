@@ -70,21 +70,21 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no padding property', () => {
+					it( 'should be undefined if selected table cell has no tableCellPadding property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has padding property (single string)', () => {
-						setData( model, modelTable( [ [ { padding: '2em', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellPadding property (single string)', () => {
+						setData( model, modelTable( [ [ { tableCellPadding: '2em', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
 
-					it( 'should be set if selected table cell has padding property object with same values', () => {
+					it( 'should be set if selected table cell has tableCellPadding property object with same values', () => {
 						setTableCellWithObjectAttributes( model, {
-							padding: {
+							tableCellPadding: {
 								top: '2em',
 								right: '2em',
 								bottom: '2em',
@@ -94,9 +94,9 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( '2em' );
 					} );
 
-					it( 'should be undefined if selected table cell has padding property object with different values', () => {
+					it( 'should be undefined if selected table cell has tableCellPadding property object with different values', () => {
 						setTableCellWithObjectAttributes( model, {
-							padding: {
+							tableCellPadding: {
 								top: '2em',
 								right: '1px',
 								bottom: '2em',
@@ -116,14 +116,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { padding: '2em', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellPadding: '2em', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cells have the "padding" property', () => {
+					it( 'should be undefined if no table cells have the "tableCellPadding" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -138,45 +138,45 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "padding" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellPadding" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, padding: '2em' },
+								{ contents: '00', isSelected: true, tableCellPadding: '2em' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, padding: '2em' }
+								{ contents: '11', isSelected: true, tableCellPadding: '2em' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "padding" property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "tableCellPadding" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, padding: '2em' },
-								{ contents: '01', isSelected: true, padding: '3em' }
+								{ contents: '00', isSelected: true, tableCellPadding: '2em' },
+								{ contents: '01', isSelected: true, tableCellPadding: '3em' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, padding: '2em' }
+								{ contents: '11', isSelected: true, tableCellPadding: '2em' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cells have the same "padding" property value', () => {
+					it( 'should be set if all table cells have the same "tableCellPadding" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, padding: '2em' },
-								{ contents: '01', isSelected: true, padding: '2em' }
+								{ contents: '00', isSelected: true, tableCellPadding: '2em' },
+								{ contents: '01', isSelected: true, tableCellPadding: '2em' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, padding: '2em' }
+								{ contents: '11', isSelected: true, tableCellPadding: '2em' }
 							]
 						] ) );
 
