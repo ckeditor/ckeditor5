@@ -10,8 +10,6 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-full' ), {
 		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig(),
-
 			items: [
 				'heading',
 				'|',
@@ -31,6 +29,11 @@ ClassicEditor
 				'undo',
 				'redo'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
 			toolbar: [

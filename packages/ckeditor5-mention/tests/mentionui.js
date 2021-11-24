@@ -23,7 +23,7 @@ import MentionsView from '../src/ui/mentionsview';
 import { assertCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'MentionUI', () => {
-	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView;
+	let editor, model, doc, editingView, mentionUI, editorElement, mentionsView, panelView, clock;
 
 	const staticConfig = {
 		feeds: [
@@ -37,12 +37,14 @@ describe( 'MentionUI', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
+		clock = sinon.useFakeTimers( { now: Date.now() } );
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 	} );
 
 	afterEach( () => {
 		sinon.restore();
+		clock.restore();
 		editorElement.remove();
 
 		if ( editor ) {
@@ -118,6 +120,14 @@ describe( 'MentionUI', () => {
 
 		it( 'should add MentionView to a panel', () => {
 			expect( editor.plugins.get( ContextualBalloon ).visibleView ).to.be.instanceof( MentionsView );
+		} );
+
+		it( 'should hide the contextual balloon when editor turns into a readonly mode', () => {
+			expect( panelView.isVisible ).to.be.true;
+
+			editor.isReadOnly = true;
+
+			expect( panelView.isVisible ).to.be.false;
 		} );
 	} );
 
@@ -196,25 +206,37 @@ describe( 'MentionUI', () => {
 					expect( caretSouthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_se',
-						top: 121
+						top: 121,
+						config: {
+							withArrow: false
+						}
 					} );
 
 					expect( caretSouthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_sw',
-						top: 121
+						top: 121,
+						config: {
+							withArrow: false
+						}
 					} );
 
 					expect( caretNorthEast( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 501,
 						name: 'caret_ne',
-						top: -53
+						top: -53,
+						config: {
+							withArrow: false
+						}
 					} );
 
 					expect( caretNorthWest( caretRect, balloonRect ) ).to.deep.equal( {
 						left: 301,
 						name: 'caret_nw',
-						top: -53
+						top: -53,
+						config: {
+							withArrow: false
+						}
 					} );
 				} );
 		} );
@@ -2168,6 +2190,82 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		} );
+
+		describe( 'overriding the number of visible mentions using config.mention.dropdownLimit', () => {
+			const longFeed = [
+				'@01', '@02', '@03', '@04', '@05', '@06', '@07', '@08', '@09', '@10',
+				'@11', '@12', '@13', '@16', '@17', '@18', '@17', '@18', '@19', '@20',
+				'@21', '@22', '@23', '@24', '@25', '@26', '@27', '@28', '@29', '@30'
+			];
+
+			const simpleArrayFeed = {
+				marker: '@',
+				feed: longFeed
+			};
+
+			const customFunctionFeed = {
+				marker: '@',
+				feed: () => {
+					return longFeed;
+				}
+			};
+
+			it( 'works with specific number in case of custom function feed', () => {
+				const mentionsLimit = 3;
+
+				return createClassicTestEditor( {
+					dropdownLimit: mentionsLimit,
+					feeds: [ customFunctionFeed ] } )
+					.then( () => {
+						setData( editor.model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( mentionsLimit );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the dropdownLimit value', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: 25,
+					feeds: [ simpleArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 25 );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the length of the feed provided', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: Infinity,
+					feeds: [ simpleArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( simpleArrayFeed.feed.length );
+					} );
+			} );
+		} );
 	} );
 
 	describe( 'execute', () => {
@@ -2253,14 +2351,13 @@ describe( 'MentionUI', () => {
 
 	function wait( timeout ) {
 		return () => new Promise( resolve => {
-			setTimeout( () => {
-				resolve();
-			}, timeout );
+			clock.tick( timeout );
+			resolve();
 		} );
 	}
 
-	function waitForDebounce() {
-		return wait( 180 )();
+	async function waitForDebounce() {
+		return await wait( 180 )();
 	}
 
 	function fireKeyDownEvent( options ) {

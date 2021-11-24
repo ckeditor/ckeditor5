@@ -39,8 +39,8 @@ export function upcastImageFigure( imageUtils ) {
 		// Find an image element inside the figure element.
 		const viewImage = imageUtils.findViewImgElement( data.viewItem );
 
-		// Do not convert if image element is absent, is missing src attribute or was already converted.
-		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
+		// Do not convert if image element is absent or was already converted.
+		if ( !viewImage || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
 			return;
 		}
 
@@ -54,6 +54,9 @@ export function upcastImageFigure( imageUtils ) {
 		if ( !modelImage ) {
 			return;
 		}
+
+		// Consume the figure to prevent other converters from processing it again.
+		conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'image' } );
 
 		// Convert rest of the figure element's children as an image children.
 		conversionApi.convertChildren( data.viewItem, modelImage );
@@ -136,12 +139,6 @@ export function upcastPicture( imageUtils ) {
 			data.modelCursor = conversionResult.modelCursor;
 
 			modelImage = first( conversionResult.modelRange.getItems() );
-
-			// It could be that the <img/> was broken (e.g. missing "src"). There's no point in converting
-			// <picture> any further around a broken <img/>.
-			if ( !modelImage ) {
-				return;
-			}
 		}
 
 		conversionApi.consumable.consume( pictureViewElement, { name: true } );

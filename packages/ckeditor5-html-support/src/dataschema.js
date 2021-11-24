@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { toArray } from 'ckeditor5/src/utils';
 import defaultConfig from './schemadefinitions';
+import { mergeWith } from 'lodash-es';
 
 /**
  * Holds representation of the extended HTML document type definitions to be used by the
@@ -94,6 +95,30 @@ export default class DataSchema extends Plugin {
 	}
 
 	/**
+	 * Updates schema definition describing block element with new properties.
+	 *
+	 * Creates new scheme if it doesn't exist.
+	 * Array properties are concatenated with original values.
+	 *
+	 * @param {module:html-support/dataschema~DataSchemaBlockElementDefinition} definition Definition update.
+	 */
+	extendBlockElement( definition ) {
+		this._extendDefinition( { ...definition, isBlock: true } );
+	}
+
+	/**
+	 * Updates schema definition describing inline element with new properties.
+	 *
+	 * Creates new scheme if it doesn't exist.
+	 * Array properties are concatenated with original values.
+	 *
+	 * @param {module:html-support/dataschema~DataSchemaInlineElementDefinition} definition Definition update.
+	 */
+	extendInlineElement( definition ) {
+		this._extendDefinition( { ...definition, isInline: true } );
+	}
+
+	/**
 	 * Returns all definitions matching the given view name.
 	 *
 	 * @param {String|RegExp} viewName
@@ -155,6 +180,25 @@ export default class DataSchema extends Plugin {
 			}
 		}
 	}
+
+	/**
+	 * Updates schema definition with new properties.
+	 *
+	 * Creates new scheme if it doesn't exist.
+	 * Array properties are concatenated with original values.
+	 *
+	 * @private
+	 * @param {module:html-support/dataschema~DataSchemaDefinition} definition Definition update.
+	 */
+	_extendDefinition( definition ) {
+		const currentDefinition = this._definitions.get( definition.model );
+
+		const mergedDefinition = mergeWith( {}, currentDefinition, definition, ( target, source ) => {
+			return Array.isArray( target ) ? target.concat( source ) : undefined;
+		} );
+
+		this._definitions.set( definition.model, mergedDefinition );
+	}
 }
 
 // Test view name against the given pattern.
@@ -203,7 +247,7 @@ function testViewName( pattern, viewName ) {
  *
  * @typedef {Object} module:html-support/dataschema~DataSchemaInlineElementDefinition
  * @property {module:engine/model/schema~AttributeProperties} [attributeProperties] Additional metadata describing the model attribute.
- * @property {Boolean} isInline Indicates that the definition descibes inline element.
+ * @property {Boolean} isInline Indicates that the definition describes inline element.
  * @property {Number} [priority] Element priority. Decides in what order elements are wrapped by
  * {@link module:engine/view/downcastwriter~DowncastWriter}.
  * Set by {@link module:html-support/dataschema~DataSchema#registerInlineElement} method.

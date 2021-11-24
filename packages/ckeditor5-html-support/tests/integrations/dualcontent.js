@@ -8,8 +8,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
-import GeneralHtmlSupport from '../src/generalhtmlsupport';
-import { getModelDataWithAttributes } from './_utils/utils';
+import GeneralHtmlSupport from '../../src/generalhtmlsupport';
+import { getModelDataWithAttributes } from '../_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 /* global document */

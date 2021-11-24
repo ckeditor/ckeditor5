@@ -227,8 +227,8 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			viewElement = writer.createRawElement( 'div', attributes, function( domElement ) {
-				domElement.innerHTML = mediaHtml;
+			viewElement = writer.createRawElement( 'div', attributes, ( domElement, domConverter ) => {
+				domConverter.setContentOf( domElement, mediaHtml );
 			} );
 		} else {
 			if ( this.url ) {

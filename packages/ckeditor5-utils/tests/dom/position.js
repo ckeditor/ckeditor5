@@ -5,7 +5,7 @@
 
 /* global document, window */
 
-import { getOptimalPosition } from '../../src/dom/position';
+import { getOptimalPosition, Position } from '../../src/dom/position';
 import Rect from '../../src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -97,6 +97,15 @@ const attachTopRight = ( targetRect, elementRect ) => ( {
 
 const attachNone = () => null;
 
+const attachWithoutArrow = () => ( {
+	top: 0,
+	left: 0,
+	name: 'arowless',
+	config: {
+		withArrow: false
+	}
+} );
+
 const allPositions = [
 	attachLeftBottom,
 	attachLeftTop,
@@ -131,6 +140,31 @@ describe( 'getOptimalPosition()', () => {
 		if ( limiter ) {
 			limiter.remove();
 		}
+	} );
+
+	it( 'output should be an instance of Position', () => {
+		setElementTargetPlayground();
+
+		const position = getOptimalPosition( {
+			element,
+			target: () => target,
+			positions: [ attachLeftBottom ]
+		} );
+
+		expect( position ).to.be.instanceOf( Position );
+	} );
+
+	it( 'should pass position config to the Position object', () => {
+		setElementTargetPlayground();
+
+		const position = getOptimalPosition( {
+			element,
+			target: () => target,
+			positions: [ attachWithoutArrow ]
+		} );
+
+		expect( position.config ).to.be.an( 'object' );
+		expect( position.config.withArrow ).to.be.false;
 	} );
 
 	it( 'should work when the target is a Function', () => {
@@ -688,8 +722,9 @@ describe( 'getOptimalPosition()', () => {
 
 function assertPosition( options, expected ) {
 	const position = getOptimalPosition( options );
+	const { top, left, name } = position;
 
-	expect( position ).to.deep.equal( expected );
+	expect( { top, left, name } ).to.deep.equal( expected );
 }
 
 function assertPositionName( options, expected ) {

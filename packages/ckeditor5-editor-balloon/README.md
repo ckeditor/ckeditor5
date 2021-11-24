@@ -9,7 +9,7 @@ The balloon editor implementation (Medium-like editor) for CKEditor 5.
 
 This package contains the [`BalloonEditor`](https://ckeditor.com/docs/ckeditor5/latest/api/module_editor-balloon_ballooneditor-BalloonEditor.html) class. Follow there to learn more about this type of editor and how to initialize it.
 
-This package contains the source version of the balloon editor. This editor implementation is also available in the [balloon build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon). Read more about [CKEditor 5 Builds](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html).
+This package contains the source version of the balloon editor. This editor implementation is also available in the [balloon build](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon). Read more about [CKEditor 5 builds](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html).
 
 ## Documentation
 

@@ -13,8 +13,12 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'heading', '|', 'fontSize', 'bulletedList', 'numberedList', 'undo', 'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		fontSize: {
 			options: [

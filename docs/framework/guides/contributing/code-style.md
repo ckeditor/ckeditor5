@@ -1,7 +1,7 @@
 ---
 category: framework-contributing
 order: 30
-modified_at: 2021-08-24
+modified_at: 2021-10-25
 ---
 
 # Code style
@@ -897,7 +897,50 @@ import { createImageViewElement } from '@ckeditor/ckeditor5-image/src/image/util
 
 To use the `createImageViewElement()` function, consider implementing a utils plugin that will expose the required function in the `ckeditor5-image` package.
 
+When importing a DLL package from another DLL package, an import statement must use the full name of the imported package instead of using the `ckeditor5` notation.
+
+👎&nbsp; Examples of incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
+
+import { Plugin } from 'ckeditor5/src/core';
+```
+
+👍&nbsp; Examples of correct code for this rule:
+
+```js
+// Assume we edit a file located in the path: `packages/ckeditor5-widget/src/widget.js`
+
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+```
+
 History of changes:
 
 * [Force importing using the `ckeditor5` package.](https://github.com/ckeditor/ckeditor5/issues/8581)
 * [Imports from the `ckeditor5` package must use the `src/` directory.](https://github.com/ckeditor/ckeditor5/issues/10030)
+* [Imports between DLL packages must use full names of packages.](https://github.com/ckeditor/ckeditor5/issues/10375)
+
+### Cross package imports: `ckeditor5-rules/no-cross-package-imports`
+
+It is allowed to import modules from other packages:
+
+```js
+import { toArray } from 'ckeditor5/src/utils';
+```
+
+However, some packages cannot import modules from CKEditor 5 as it could lead to code duplication and errors in runtime. Hence, the rule disables this kind of import.
+
+Currently, it applies to the `@ckeditor/ckeditor5-watchdog` package.
+
+👎&nbsp; Examples of an incorrect code for this rule:
+
+```js
+// Assume we edit a file located in the `packages/ckeditor5-watchdog/` directory.
+
+import { toArray } from 'ckeditor5/src/utils';
+import { toArray } from '@ckeditor/ckeditor5-utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
+```
+
+[History of the change.](https://github.com/ckeditor/ckeditor5/issues/9318)

@@ -19,6 +19,7 @@ export default class ReplaceCommand extends Command {
 	 * Creates a new `ReplaceCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state.
 	 */
 	constructor( editor, state ) {
 		super( editor );
@@ -29,7 +30,7 @@ export default class ReplaceCommand extends Command {
 		/**
 		 * The find and replace state object used for command operations.
 		 *
-		 * @private
+		 * @protected
 		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
 		 */
 		this._state = state;
@@ -40,12 +41,21 @@ export default class ReplaceCommand extends Command {
 	 *
 	 * @param {String} replacementText
 	 * @param {Object} result A single result from the find command.
+	 *
+	 * @fires module:core/command~Command#event:execute
 	 */
 	execute( replacementText, result ) {
 		const { model } = this.editor;
 
 		model.change( writer => {
 			const range = result.marker.getRange();
+
+			// Don't replace a result (marker) that found its way into the $graveyard (e.g. removed by collaborators).
+			if ( range.root.rootName === '$graveyard' ) {
+				this._state.results.remove( result );
+
+				return;
+			}
 
 			let textAttributes = {};
 

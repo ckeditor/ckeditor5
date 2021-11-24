@@ -20,7 +20,8 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Instances of registered commands can be retrieved from {@link module:core/editor/editor~Editor#commands `editor.commands`}.
  * The easiest way to execute a command is through {@link module:core/editor/editor~Editor#execute `editor.execute()`}.
  *
- * By default commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode.
+ * By default, commands are disabled when the editor is in {@link module:core/editor/editor~Editor#isReadOnly read-only} mode
+ * but commands with the {@link module:core/command~Command#affectsData `affectsData`} flag set to `false` will not be disabled.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -97,6 +98,21 @@ export default class Command {
 		this.set( 'isEnabled', false );
 
 		/**
+		 * A flag indicating whether a command execution changes the editor data or not.
+		 *
+		 * Commands with `affectsData` set to `false` will not be automatically disabled in
+		 * the {@link module:core/editor/editor~Editor#isReadOnly read-only mode} and
+		 * {@glink features/read-only#related-features other editor modes} with restricted user write permissions.
+		 *
+		 * **Note:** You do not have to set it for your every command. It is `true` by default.
+		 *
+		 * @readonly
+		 * @default true
+		 * @member {Boolean} #affectsData
+		 */
+		this.affectsData = true;
+
+		/**
 		 * Holds identifiers for {@link #forceDisabled} mechanism.
 		 *
 		 * @type {Set.<String>}
@@ -119,7 +135,7 @@ export default class Command {
 
 		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value ) {
+			if ( value && this.affectsData ) {
 				this.forceDisabled( 'readOnlyMode' );
 			} else {
 				this.clearForceDisabled( 'readOnlyMode' );

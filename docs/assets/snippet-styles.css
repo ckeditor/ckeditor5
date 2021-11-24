@@ -4,7 +4,7 @@
 
 :root {
 	/* This custom property is read by the JS and passed to editor configurations
-	as config.toolbar.viewportTopOffset. */
+	as config.ui.viewportOffset.top. */
 	--ck-snippet-viewport-top-offset: 100
 }
 
@@ -218,10 +218,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 
 .live-snippet .image img {
 	margin: 0 auto;
-}
-
-.live-snippet blockquote p:first-of-type {
-	margin-bottom: 1.5rem;
 }
 
 /* https://github.com/ckeditor/ckeditor5/issues/899 */

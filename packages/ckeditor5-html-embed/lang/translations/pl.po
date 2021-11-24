@@ -22,7 +22,7 @@ msgstr "Wstaw kod HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr ""
+msgstr "Kod HTML"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
@@ -42,4 +42,4 @@ msgstr "Podgląd nie jest dostępny"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr ""
+msgstr "Brak kodu"

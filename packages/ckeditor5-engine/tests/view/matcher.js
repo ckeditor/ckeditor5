@@ -649,7 +649,10 @@ describe( 'Matcher', () => {
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
-		it( 'should match element expanded styles when CSS shorthand is used', () => {
+		// With current way the style reducers work, this test is passing when it shouldn't.
+		// The problem is described in https://github.com/ckeditor/ckeditor5/issues/10399.
+		// Until the proper fix is ready, this test should be skipped.
+		it.skip( 'should match element expanded styles when CSS shorthand is used', () => {
 			const pattern = {
 				styles: {
 					'border-left': /.*/
@@ -964,6 +967,82 @@ describe( 'Matcher', () => {
 			expect( result[ 1 ].match.classes[ 0 ] ).to.equal( 'red-background' );
 
 			expect( matcher.matchAll( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match classes when using global flag in matcher pattern', () => {
+			const pattern = { classes: /foo/g };
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'p' );
+
+			el1._addClass( 'foobar' );
+			el2._addClass( 'foobaz' );
+
+			const result = matcher.matchAll( el1, el2 );
+
+			expect( result ).to.be.an( 'array' );
+			expect( result.length ).to.equal( 2 );
+
+			expect( result[ 0 ] ).to.have.property( 'pattern' ).that.is.equal( pattern );
+			expect( result[ 0 ] ).to.have.property( 'match' ).that.is.an( 'object' );
+			expect( result[ 0 ].match ).to.have.property( 'classes' ).that.is.an( 'array' );
+			expect( result[ 0 ].match.classes[ 0 ] ).to.equal( 'foobar' );
+
+			expect( result[ 1 ] ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result[ 1 ] ).to.have.property( 'pattern' ).that.is.equal( pattern );
+			expect( result[ 1 ] ).to.have.property( 'match' ).that.is.an( 'object' );
+			expect( result[ 1 ].match ).to.have.property( 'classes' ).that.is.an( 'array' );
+			expect( result[ 1 ].match.classes[ 0 ] ).to.equal( 'foobaz' );
+		} );
+
+		it( 'should match many classes on single element when using global flag in matcher pattern', () => {
+			const pattern = { classes: /foo/g };
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p' );
+
+			el1._addClass( 'foobar' );
+			el1._addClass( 'foobaz' );
+
+			const result = matcher.matchAll( el1 );
+
+			expect( result ).to.be.an( 'array' );
+			expect( result.length ).to.equal( 1 );
+
+			expect( result[ 0 ] ).to.have.property( 'pattern' ).that.is.equal( pattern );
+			expect( result[ 0 ] ).to.have.property( 'match' ).that.is.an( 'object' );
+			expect( result[ 0 ].match ).to.have.property( 'classes' ).that.is.an( 'array' );
+			expect( result[ 0 ].match.classes[ 0 ] ).to.equal( 'foobar' );
+			expect( result[ 0 ].match.classes[ 1 ] ).to.equal( 'foobaz' );
+		} );
+
+		it( 'should match attributes when using global flag in matcher pattern', () => {
+			const pattern = {
+				attributes: {
+					'data-attribute': /foo/g
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( document, 'p' );
+			const el2 = new Element( document, 'p' );
+
+			el1._setAttribute( 'data-attribute', 'foobar' );
+			el2._setAttribute( 'data-attribute', 'foobaz' );
+
+			const result = matcher.matchAll( el1, el2 );
+
+			expect( result ).to.be.an( 'array' );
+			expect( result.length ).to.equal( 2 );
+
+			expect( result[ 0 ] ).to.have.property( 'pattern' ).that.is.equal( pattern );
+			expect( result[ 0 ] ).to.have.property( 'match' ).that.is.an( 'object' );
+			expect( result[ 0 ].match ).to.have.property( 'attributes' ).that.is.an( 'array' );
+			expect( result[ 0 ].match.attributes[ 0 ] ).to.equal( 'data-attribute' );
+
+			expect( result[ 1 ] ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result[ 1 ] ).to.have.property( 'pattern' ).that.is.equal( pattern );
+			expect( result[ 1 ] ).to.have.property( 'match' ).that.is.an( 'object' );
+			expect( result[ 1 ].match ).to.have.property( 'attributes' ).that.is.an( 'array' );
+			expect( result[ 1 ].match.attributes[ 0 ] ).to.equal( 'data-attribute' );
 		} );
 	} );
 

@@ -7,10 +7,6 @@
  * @module widget/utils
  */
 
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
-
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
@@ -124,7 +120,7 @@ export function toWidget( element, writer, options = {} ) {
 		addSelectionHandle( element, writer );
 	}
 
-	setHighlightHandling( element, writer, addHighlight, removeHighlight );
+	setHighlightHandling( element, writer );
 
 	return element;
 }
@@ -171,10 +167,10 @@ function removeHighlight( element, descriptor, writer ) {
  *
  * @param {module:engine/view/element~Element} element
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {Function} add
- * @param {Function} remove
+ * @param {Function} [add]
+ * @param {Function} [remove]
  */
-export function setHighlightHandling( element, writer, add, remove ) {
+export function setHighlightHandling( element, writer, add = addHighlight, remove = removeHighlight ) {
 	const stack = new HighlightStack();
 
 	stack.on( 'change:top', ( evt, data ) => {
@@ -227,6 +223,7 @@ export function getLabel( element ) {
  * otherwise sets it to `false`,
  * * adds the `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * adds the `ck-editor__nested-editable_focused` CSS class when the editable is focused and removes it when it is blurred.
+ * * implements the {@link ~setHighlightHandling view highlight on widget's editable}.
  *
  * Similarly to {@link ~toWidget `toWidget()`} this function should be used in `editingDowncast` only and it is usually
  * used together with {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`}.
@@ -277,6 +274,8 @@ export function toWidgetEditable( editable, writer ) {
 			writer.removeClass( 'ck-editor__nested-editable_focused', editable );
 		}
 	} );
+
+	setHighlightHandling( editable, writer );
 
 	return editable;
 }
@@ -393,65 +392,6 @@ export function viewToModelPositionOutsideModelElement( model, viewElementMatche
 		const modelParent = mapper.toModelElement( viewParent );
 
 		data.modelPosition = model.createPositionAt( modelParent, viewPosition.isAtStart ? 'before' : 'after' );
-	};
-}
-
-/**
- * A positioning function passed to the {@link module:utils/dom/position~getOptimalPosition} helper as a last resort
- * when attaching {@link  module:ui/panel/balloon/balloonpanelview~BalloonPanelView balloon UI} to widgets.
- * It comes in handy when a widget is longer than the visual viewport of the web browser and/or upper/lower boundaries
- * of a widget are off screen because of the web page scroll.
- *
- *	                                       ┌─┄┄┄┄┄┄┄┄┄Widget┄┄┄┄┄┄┄┄┄┐
- *	                                       ┊                         ┊
- *	┌────────────Viewport───────────┐   ┌──╁─────────Viewport────────╁──┐
- *	│  ┏━━━━━━━━━━Widget━━━━━━━━━┓  │   │  ┃            ^            ┃  │
- *	│  ┃            ^            ┃  │   │  ┃   ╭───────/ \───────╮   ┃  │
- *	│  ┃   ╭───────/ \───────╮   ┃  │   │  ┃   │     Balloon     │   ┃  │
- *	│  ┃   │     Balloon     │   ┃  │   │  ┃   ╰─────────────────╯   ┃  │
- *	│  ┃   ╰─────────────────╯   ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	│  ┃                         ┃  │   │  ┃                         ┃  │
- *	└──╀─────────────────────────╀──┘   └──╀─────────────────────────╀──┘
- *	   ┊                         ┊         ┊                         ┊
- *	   ┊                         ┊         └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
- *	   ┊                         ┊
- *	   └┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┘
- *
- * **Note**: Works best if used together with
- * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions default `BalloonPanelView` positions}
- * like `northArrowSouth` and `southArrowNorth`; the transition between these two and this position is smooth.
- *
- * @param {module:utils/dom/rect~Rect} widgetRect A rect of the widget.
- * @param {module:utils/dom/rect~Rect} balloonRect A rect of the balloon.
- * @returns {module:utils/dom/position~Position|null}
- */
-export function centeredBalloonPositionForLongWidgets( widgetRect, balloonRect ) {
-	const viewportRect = new Rect( global.window );
-	const viewportWidgetInsersectionRect = viewportRect.getIntersection( widgetRect );
-
-	const balloonTotalHeight = balloonRect.height + BalloonPanelView.arrowVerticalOffset;
-
-	// If there is enough space above or below the widget then this position should not be used.
-	if ( widgetRect.top - balloonTotalHeight > viewportRect.top || widgetRect.bottom + balloonTotalHeight < viewportRect.bottom ) {
-		return null;
-	}
-
-	// Because this is a last resort positioning, to keep things simple we're not playing with positions of the arrow
-	// like, for instance, "south west" or whatever. Just try to keep the balloon in the middle of the visible area of
-	// the widget for as long as it is possible. If the widgets becomes invisible (because cropped by the viewport),
-	// just... place the balloon in the middle of it (because why not?).
-	const targetRect = viewportWidgetInsersectionRect || widgetRect;
-	const left = targetRect.left + targetRect.width / 2 - balloonRect.width / 2;
-
-	return {
-		top: Math.max( widgetRect.top, 0 ) + BalloonPanelView.arrowVerticalOffset,
-		left,
-		name: 'arrow_n'
 	};
 }
 

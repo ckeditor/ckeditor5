@@ -126,6 +126,8 @@ describe( 'Styles utils', () => {
 				'orange',
 				// CSS Level 3
 				'cyan', 'azure', 'wheat',
+				// CSS Level 3 System Colors
+				'windowtext',
 				// CSS Level 4
 				'rebeccapurple'
 			], isColor );

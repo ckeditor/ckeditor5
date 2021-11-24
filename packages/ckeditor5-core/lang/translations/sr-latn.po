@@ -26,7 +26,7 @@ msgstr "Otkloni boju"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
-msgstr ""
+msgstr "Vrati podrazumevano"
 
 msgctxt "Label for the Save button."
 msgid "Save"
@@ -36,6 +36,6 @@ msgctxt "Label of a toolbar button which reveals more toolbar items."
 msgid "Show more items"
 msgstr "Prikaži još stavki"
 
-msgctxt "Label for a ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or Search result '5 of 20'."
+msgctxt "Label for an ‘X of Y’ status of a typical next/previous navigation. For instance, ‘Page 5 of 20’ or 'Search result 5 of 20'."
 msgid "%0 of %1"
 msgstr "%0 of %1"

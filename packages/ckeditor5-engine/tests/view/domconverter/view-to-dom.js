@@ -215,6 +215,65 @@ describe( 'DomConverter', () => {
 			expect( converter.mapDomToView( domComment ) ).to.equal( viewComment );
 		} );
 
+		describe( 'options.renderingMode = editing', () => {
+			it( 'should filter DOM event handlers', () => {
+				const viewImg = new ViewElement( viewDocument, 'img' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { onclick: 'bar' } );
+
+				viewP._appendChild( viewImg );
+				viewP._appendChild( viewText );
+
+				const domImg = document.createElement( 'img' );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				converter.experimentalRenderingMode = true;
+				converter.bindElements( domImg, viewImg );
+
+				const domP = converter.viewToDom( viewP, document );
+
+				expect( domP ).to.be.an.instanceof( HTMLElement );
+				expect( domP.tagName ).to.equal( 'P' );
+				expect( domP.attributes.length ).to.equal( 0 );
+
+				expect( domP.childNodes.length ).to.equal( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'IMG' );
+				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+
+				expect( converter.mapDomToView( domP ) ).not.to.equal( viewP );
+				expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
+			} );
+
+			it( 'should replace script with span and add special data attribute', () => {
+				const viewScript = new ViewElement( viewDocument, 'script' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
+
+				viewP._appendChild( viewScript );
+				viewP._appendChild( viewText );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+				converter.experimentalRenderingMode = true;
+
+				const domP = converter.viewToDom( viewP, document );
+
+				expect( domP ).to.be.an.instanceof( HTMLElement );
+				expect( domP.tagName ).to.equal( 'P' );
+				expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
+				expect( domP.attributes.length ).to.equal( 1 );
+
+				expect( domP.childNodes.length ).to.equal( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-hidden' ) ).to.equal( 'script' );
+				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			} );
+		} );
+
 		describe( 'it should convert spaces to &nbsp;', () => {
 			it( 'at the beginning of each container element', () => {
 				const viewDiv = new ViewContainerElement( viewDocument, 'div', null, [
