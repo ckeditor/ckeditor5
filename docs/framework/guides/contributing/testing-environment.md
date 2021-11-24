@@ -54,7 +54,7 @@ Our testing environment allows for some custom `Chai` assertions. There is no ne
 
 #### equalMarkup
 
-Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` form Chai assertion library, this assertion formats the markup before showing a diff. This assertion can be used to test HTML strings and string containing serialized model.
+Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
 
 This assertion will pass:
 
@@ -80,8 +80,7 @@ Asserts that the target has an attribute with the given key name. See {@link mod
 expect( selection ).to.have.attribute( 'linkHref' );
 ```
 
-When optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`.
-See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
+When optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
 
 ```js
 expect( selection ).to.have.attribute( 'linkHref', 'example.com' );
