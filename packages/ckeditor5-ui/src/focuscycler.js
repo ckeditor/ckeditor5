@@ -288,5 +288,5 @@ export default class FocusCycler {
 // @param {module:ui/view~View} view A view to be checked.
 // @returns {Boolean}
 function isFocusable( view ) {
-	return !!( view.focus && global.window.getComputedStyle( view.element ).display != 'none' );
+	return !!( view.focus && view.element.offsetParent && global.window.getComputedStyle( view.element ).display != 'none' );
 }

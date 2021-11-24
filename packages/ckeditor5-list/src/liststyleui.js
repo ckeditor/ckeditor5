@@ -8,7 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import { ButtonView, SplitButtonView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
+import { ButtonView, SplitButtonView, createDropdown } from 'ckeditor5/src/ui';
+
+import ListPropertiesView from './ui/listpropertiesview';
 
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../theme/icons/numberedlist.svg';
@@ -51,7 +53,7 @@ export default class ListStyleUI extends Plugin {
 			parentCommandName: 'bulletedList',
 			buttonLabel: t( 'Bulleted List' ),
 			buttonIcon: bulletedListIcon,
-			toolbarAriaLabel: t( 'Bulleted list styles toolbar' ),
+			styleGridAriaLabel: t( 'Bulleted list styles toolbar' ),
 			styleDefinitions: [
 				{
 					label: t( 'Toggle the disc list style' ),
@@ -79,7 +81,7 @@ export default class ListStyleUI extends Plugin {
 			parentCommandName: 'numberedList',
 			buttonLabel: t( 'Numbered List' ),
 			buttonIcon: numberedListIcon,
-			toolbarAriaLabel: t( 'Numbered list styles toolbar' ),
+			styleGridAriaLabel: t( 'Numbered list styles toolbar' ),
 			styleDefinitions: [
 				{
 					label: t( 'Toggle the decimal list style' ),
@@ -131,10 +133,10 @@ export default class ListStyleUI extends Plugin {
 // the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
 // @param {String} options.buttonLabel Label of the main part of the split button.
 // @param {String} options.buttonIcon The SVG string of an icon for the main part of the split button.
-// @param {String} options.toolbarAriaLabel The ARIA label for the toolbar in the split button dropdown.
+// @param {String} options.styleGridAriaLabel The ARIA label for the styles grid in the split button dropdown.
 // @param {Object} options.styleDefinitions Definitions of the style buttons.
 // @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
-function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, buttonIcon, toolbarAriaLabel, styleDefinitions } ) {
+function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, buttonIcon, styleGridAriaLabel, styleDefinitions } ) {
 	const parentCommand = editor.commands.get( parentCommandName );
 	const listStyleCommand = editor.commands.get( 'listStyle' );
 
@@ -143,12 +145,14 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 	return locale => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const splitButtonView = dropdownView.buttonView;
+		const enabledProperties = Object.fromEntries( editor.config.get( 'list.properties' ).map( key => [ key, true ] ) );
+		const isNumberedListDropdown = parentCommandName == 'numberedList';
+		const shouldIncludeStyles = isNumberedListDropdown ? !!enabledProperties.styles : true;
+		const shouldRenderNumberedListProperties = isNumberedListDropdown && ( enabledProperties.startIndex || enabledProperties.reversed );
 		const styleButtonCreator = getStyleButtonCreator( { editor, parentCommandName, listStyleCommand } );
-
-		addToolbarToDropdown( dropdownView, styleDefinitions.map( styleButtonCreator ) );
+		const styleButtonViews = shouldIncludeStyles ? styleDefinitions.map( styleButtonCreator ) : null;
 
 		dropdownView.bind( 'isEnabled' ).to( parentCommand );
-		dropdownView.toolbarView.ariaLabel = toolbarAriaLabel;
 		dropdownView.class = 'ck-list-styles-dropdown';
 
 		splitButtonView.on( 'execute', () => {
@@ -164,6 +168,18 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 		} );
 
 		splitButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
+
+		const listPropertiesView = new ListPropertiesView( locale, {
+			styleGridAriaLabel,
+			enabledProperties,
+			styleButtonViews,
+			shouldRenderNumberedListProperties
+		} );
+
+		// Make sure applying styles closes the dropdown.
+		listPropertiesView.delegate( 'execute' ).to( dropdownView );
+
+		dropdownView.panelView.children.add( listPropertiesView );
 
 		return dropdownView;
 	};
