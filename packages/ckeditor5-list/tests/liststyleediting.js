@@ -245,20 +245,6 @@ describe( 'ListStyleEditing', () => {
 					'</ul>'
 				);
 			} );
-
-			it( 'should not allow to set the `listStyle` attribute in to-do list item', () => {
-				setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
-
-				const listItem = model.document.getRoot().getChild( 0 );
-
-				expect( listItem.hasAttribute( 'listItem' ) ).to.be.false;
-
-				model.change( writer => {
-					writer.setAttribute( 'listType', 'foo', listItem );
-				} );
-
-				expect( listItem.hasAttribute( 'listItem' ) ).to.be.false;
-			} );
 		} );
 
 		describe( 'view to model', () => {
@@ -1163,6 +1149,20 @@ describe( 'ListStyleEditing', () => {
 					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
 					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 				);
+			} );
+
+			it( 'should not allow to set the `listStyle` attribute in to-do list item', () => {
+				setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
+
+				const listItem = model.document.getRoot().getChild( 0 );
+
+				expect( listItem.hasAttribute( 'listStyle' ) ).to.be.false;
+
+				model.change( writer => {
+					writer.setAttribute( 'listStyle', 'foo', listItem );
+				} );
+
+				expect( listItem.hasAttribute( 'listStyle' ) ).to.be.false;
 			} );
 		} );
 
