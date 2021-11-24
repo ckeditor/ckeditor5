@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 20
+modified_at: 2021-11-24
 ---
 
 # Testing environment
@@ -52,7 +53,7 @@ yarn run test -cw --files=basic-styles/bold*.js
 
 Our testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
 
-#### equalMarkup
+#### `equalMarkup`
 
 Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
 
@@ -72,7 +73,7 @@ expect(
 );
 ```
 
-#### attribute
+#### `attribute`
 
 Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~DocumentSelection#hasAttribute hasAttribute}.
 
