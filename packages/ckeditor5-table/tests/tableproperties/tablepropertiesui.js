@@ -199,7 +199,7 @@ describe( 'table properties', () => {
 					tablePropertiesView.backgroundColor = 'red';
 
 					expect( getModelData( editor.model ) ).to.equal(
-						'<table backgroundColor="red" borderStyle="dotted">' +
+						'<table tableBackgroundColor="red" tableBorderStyle="dotted">' +
 							'<tableRow>' +
 								'<tableCell>' +
 									'<paragraph>[]foo</paragraph>' +

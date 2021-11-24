@@ -40,7 +40,7 @@ export default class TableCellHeightCommand extends TableCellPropertyCommand {
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'height', defaultValue );
+		super( editor, 'tableCellHeight', defaultValue );
 	}
 
 	/**

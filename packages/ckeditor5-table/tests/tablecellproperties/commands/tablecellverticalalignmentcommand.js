@@ -69,14 +69,14 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no verticalAlignment property', () => {
+					it( 'should be undefined if selected table cell has no tableCellVerticalAlignment property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has verticalAlignment property', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellVerticalAlignment property', () => {
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( 'bottom' );
 					} );
@@ -90,14 +90,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( 'bottom' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cells have the "verticalAlignment" property', () => {
+					it( 'should be undefined if no table cells have the "tableCellVerticalAlignment" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -112,45 +112,46 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "verticalAlignment" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellVerticalAlignment" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
+								{ contents: '00', isSelected: true, tableCellVerticalAlignment: 'bottom' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+								{ contents: '11', isSelected: true, tableCellVerticalAlignment: 'bottom' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "verticalAlignment" property value', () => {
+					it( `should be undefined if one of selected table cells has
+						a different "tableCellVerticalAlignment" property value`, () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
-								{ contents: '01', isSelected: true, verticalAlignment: 'top' }
+								{ contents: '00', isSelected: true, tableCellVerticalAlignment: 'bottom' },
+								{ contents: '01', isSelected: true, tableCellVerticalAlignment: 'top' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+								{ contents: '11', isSelected: true, tableCellVerticalAlignment: 'bottom' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cells have the same "verticalAlignment" property value', () => {
+					it( 'should be set if all table cells have the same "tableCellVerticalAlignment" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
-								{ contents: '01', isSelected: true, verticalAlignment: 'bottom' }
+								{ contents: '00', isSelected: true, tableCellVerticalAlignment: 'bottom' },
+								{ contents: '01', isSelected: true, tableCellVerticalAlignment: 'bottom' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+								{ contents: '11', isSelected: true, tableCellVerticalAlignment: 'bottom' }
 							]
 						] ) );
 
@@ -170,7 +171,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'collapsed selection', () => {
-					it( 'should set selected table cell verticalAlignment to a passed value', () => {
+					it( 'should set selected table cell tableCellVerticalAlignment to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 						command.execute( { value: 'top' } );
@@ -178,16 +179,16 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'vertical-align:top;' );
 					} );
 
-					it( 'should change selected table cell verticalAlignment to a passed value', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+					it( 'should change selected table cell tableCellVerticalAlignment to a passed value', () => {
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: 'top' } );
 
 						assertTableCellStyle( editor, 'vertical-align:top;' );
 					} );
 
-					it( 'should remove verticalAlignment from a selected table cell if no value is passed', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellVerticalAlignment from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -196,7 +197,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should set selected table cell verticalAlignment to a passed value', () => {
+					it( 'should set selected table cell tableCellVerticalAlignment to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'top' } );
@@ -204,7 +205,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'vertical-align:top;' );
 					} );
 
-					it( 'should change selected table cell verticalAlignment to a passed value', () => {
+					it( 'should change selected table cell tableCellVerticalAlignment to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'top' } );
@@ -212,7 +213,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'vertical-align:top;' );
 					} );
 
-					it( 'should remove verticalAlignment from a selected table cell if no value is passed', () => {
+					it( 'should remove tableCellVerticalAlignment from a selected table cell if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
@@ -229,7 +230,7 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should set the "verticalAlignment" attribute value of selected table cells', () => {
+					it( 'should set the "tableCellVerticalAlignment" attribute value of selected table cells', () => {
 						command.execute( { value: 'top' } );
 
 						expect( editor.getData() ).to.equalMarkup( viewTable( [
@@ -238,10 +239,10 @@ describe( 'table cell properties', () => {
 						] ) );
 					} );
 
-					it( 'should remove "verticalAlignment" from selected table cells if no value is passed', () => {
+					it( 'should remove "tableCellVerticalAlignment" from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, verticalAlignment: 'top' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, verticalAlignment: 'top' } ]
+							[ { contents: '00', isSelected: true, tableCellVerticalAlignment: 'top' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellVerticalAlignment: 'top' } ]
 						] ) );
 
 						command.execute();
@@ -273,8 +274,8 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has the default verticalAlignment property', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+					it( 'should be undefined if selected table cell has the default tableCellVerticalAlignment property', () => {
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -282,7 +283,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined is selection contains the default value', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -290,17 +291,17 @@ describe( 'table cell properties', () => {
 
 				describe( 'multi-cell selection', () => {
 					it(
-						'should be undefined if all table cells have the same "verticalAlignment" property ' +
+						'should be undefined if all table cells have the same "tableCellVerticalAlignment" property ' +
 						'value which is the default value',
 						() => {
 							setData( model, modelTable( [
 								[
-									{ contents: '00', isSelected: true, verticalAlignment: 'bottom' },
-									{ contents: '01', isSelected: true, verticalAlignment: 'bottom' }
+									{ contents: '00', isSelected: true, tableCellVerticalAlignment: 'bottom' },
+									{ contents: '01', isSelected: true, tableCellVerticalAlignment: 'bottom' }
 								],
 								[
 									'10',
-									{ contents: '11', isSelected: true, verticalAlignment: 'bottom' }
+									{ contents: '11', isSelected: true, tableCellVerticalAlignment: 'bottom' }
 								]
 							] ) );
 
@@ -312,8 +313,8 @@ describe( 'table cell properties', () => {
 
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should remove verticalAlignment from a selected table cell if the default value is passed', () => {
-						setData( model, modelTable( [ [ { verticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellVerticalAlignment from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellVerticalAlignment: 'bottom', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: 'bottom' } );
 
@@ -322,7 +323,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should remove verticalAlignment from a selected table cell if the default value is passed', () => {
+					it( 'should remove tableCellVerticalAlignment from a selected table cell if the default value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: 'bottom' } );
@@ -332,10 +333,10 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should remove "verticalAlignment" from selected table cells if the default value is passed', () => {
+					it( 'should remove "tableCellVerticalAlignment" from selected table cells if the default value is passed', () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, verticalAlignment: 'top' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, verticalAlignment: 'top' } ]
+							[ { contents: '00', isSelected: true, tableCellVerticalAlignment: 'top' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellVerticalAlignment: 'top' } ]
 						] ) );
 
 						command.execute( { value: 'bottom' } );

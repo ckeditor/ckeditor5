@@ -3876,11 +3876,11 @@ describe( 'table clipboard', () => {
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
-			expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
-			expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
-			expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#ba7' );
-			expect( tableCell.getAttribute( 'width' ) ).to.equal( '1337px' );
+			expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
+			expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
+			expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
+			expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#ba7' );
+			expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '1337px' );
 		} );
 
 		it( 'discards table properties', async () => {
@@ -3972,9 +3972,9 @@ describe( 'table clipboard', () => {
 			const tableModelData = modelTable( [
 				[ {
 					contents: '<paragraph>Test</paragraph>',
-					borderColor: color,
-					borderStyle: style,
-					borderWidth: width
+					tableCellBorderColor: color,
+					tableCellBorderStyle: style,
+					tableCellBorderWidth: width
 				} ]
 			] );
 
