@@ -37,9 +37,17 @@ describe( 'table properties', () => {
 			} );
 
 			it( 'should properly downcast table with Alignment plugin enabled', () => {
-				model.change( writer => writer.setAttribute( 'alignment', 'right', table ) );
+				model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
 
 				assertTableStyle( editor, null, 'float:right;' );
+			} );
+
+			it( 'Alignment command should be disabled when table is selected', () => {
+				model.change( writer => {
+					writer.setSelection( table, 'on' );
+				} );
+
+				expect( editor.commands.get( 'alignment' ).isEnabled ).to.be.false;
 			} );
 		} );
 
@@ -66,18 +74,18 @@ describe( 'table properties', () => {
 
 				editor.execute( 'tableCellBackgroundColor', { value: 'green' } );
 
-				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'red' );
-				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.equal( 'green' );
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'red' );
+				expect( firstCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( 'green' );
 
 				editor.execute( 'undo' );
 
-				expect( table.getAttribute( 'backgroundColor' ) ).to.equal( 'red' );
-				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.equal( 'red' );
+				expect( firstCell.getAttribute( 'tableCellBackgroundColor' ) ).to.be.undefined;
 
 				editor.execute( 'undo' );
 
-				expect( table.getAttribute( 'backgroundColor' ) ).to.be.undefined;
-				expect( firstCell.getAttribute( 'backgroundColor' ) ).to.be.undefined;
+				expect( table.getAttribute( 'tableBackgroundColor' ) ).to.be.undefined;
+				expect( firstCell.getAttribute( 'tableCellBackgroundColor' ) ).to.be.undefined;
 			} );
 		} );
 

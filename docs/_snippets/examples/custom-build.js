@@ -40,12 +40,12 @@ ClassicEditor
 		toolbar: {
 			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlight', '|', 'undo', 'redo' ]
 		},
+		cloudServices: CS_CONFIG,
 		ui: {
 			viewportOffset: {
 				top: window.getViewportTopOffsetConfig()
 			}
-		},
-		cloudServices: CS_CONFIG
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

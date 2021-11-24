@@ -49,6 +49,7 @@
 		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
+		"latest/features/pagination.html": "latest/features/pagination/pagination.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
@@ -246,8 +247,7 @@
 							"name": "Annotations",
 							"id": "features-annotations",
 							"slug": "annotations",
-							"order": 400,
-							"badges": [ "premium" ]
+							"order": 400
 						}
 					]
 				},

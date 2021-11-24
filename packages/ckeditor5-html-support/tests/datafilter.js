@@ -198,7 +198,7 @@ describe( 'DataFilter', () => {
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<video class="html-object-embed__content">' +
-							'<source src="https://example.com/video.mp4" type="video/mp4">' +
+							'<source src="https://example.com/video.mp4" type="video/mp4" data-ck-unsafe-attribute-onclick="action()">' +
 							'Your browser does not support the video tag.' +
 						'</video>' +
 					'</span>' +

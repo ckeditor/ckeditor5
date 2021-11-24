@@ -32,7 +32,7 @@ export default class TableBorderColorCommand extends TablePropertyCommand {
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'borderColor', defaultValue );
+		super( editor, 'tableBorderColor', defaultValue );
 	}
 
 	/**
