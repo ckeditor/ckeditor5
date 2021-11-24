@@ -30,7 +30,10 @@ describe( 'ListStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListStyleEditing, UndoEditing ]
+					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					list: {
+						properties: { styles: true, startIndex: false, reversed: false }
+					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -50,6 +53,14 @@ describe( 'ListStyleEditing', () => {
 		describe( 'schema rules', () => {
 			it( 'should allow set `listStyle` on the `listItem`', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.true;
+			} );
+
+			it( 'should not allow set `listReversed` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.false;
+			} );
+
+			it( 'should not allow set `listStart` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.false;
 			} );
 		} );
 
@@ -1687,6 +1698,41 @@ describe( 'ListStyleEditing', () => {
 						);
 					} );
 				} );
+			} );
+		} );
+	} );
+
+	describe( 'listReversed', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					list: {
+						properties: { styles: false, startIndex: false, reversed: true }
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					view = editor.editing.view;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		describe( 'schema rules', () => {
+			it( 'should not allow set `listStyle` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.false;
+			} );
+
+			it( 'should not allow set `listReversed` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.true;
+			} );
+
+			it( 'should not allow set `listStart` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.false;
 			} );
 		} );
 	} );
