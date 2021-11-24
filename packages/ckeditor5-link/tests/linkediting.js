@@ -26,8 +26,6 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isLinkElement } from '../src/utils';
 import { env } from 'ckeditor5/src/utils';
 
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
-
 /* global document, window */
 
 describe( 'LinkEditing', () => {

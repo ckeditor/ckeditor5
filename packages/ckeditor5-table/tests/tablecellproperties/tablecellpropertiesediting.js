@@ -20,7 +20,6 @@ import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tabl
 import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils';
 
 describe( 'table cell properties', () => {
@@ -573,8 +572,8 @@ describe( 'table cell properties', () => {
 							writer.removeAttribute( 'tableCellBorderWidth', tableCell );
 						} );
 
-						assertEqualMarkup(
-							editor.getData(),
+						expect(
+							editor.getData() ).to.equalMarkup(
 							'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 						);
 					} );
@@ -1203,8 +1202,8 @@ describe( 'table cell properties', () => {
 				it( 'should downcast tableCellWidth attribute', () => {
 					model.change( writer => writer.setAttribute( 'tableCellWidth', '20px', tableCell ) );
 
-					assertEqualMarkup(
-						editor.getData(),
+					expect(
+						editor.getData() ).to.equalMarkup(
 						'<figure class="table"><table><tbody><tr><td style="width:20px;">foo</td></tr></tbody></table></figure>'
 					);
 				} );
@@ -1284,8 +1283,8 @@ describe( 'table cell properties', () => {
 				it( 'should downcast tableCellHeight attribute', () => {
 					model.change( writer => writer.setAttribute( 'tableCellHeight', '20px', tableCell ) );
 
-					assertEqualMarkup(
-						editor.getData(),
+					expect(
+						editor.getData() ).to.equalMarkup(
 						'<figure class="table"><table><tbody><tr><td style="height:20px;">foo</td></tr></tbody></table></figure>'
 					);
 				} );
