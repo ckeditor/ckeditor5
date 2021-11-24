@@ -64,6 +64,7 @@ export default class ImageInlineEditing extends Plugin {
 			isObject: true,
 			isInline: true,
 			allowWhere: '$text',
+			allowAttributesOf: '$text',
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 

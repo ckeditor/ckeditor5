@@ -44,6 +44,9 @@ export function upcastImageFigure( imageUtils ) {
 			return;
 		}
 
+		// Consume the figure to prevent other converters from processing it again.
+		conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'image' } );
+
 		// Convert view image to model image.
 		const conversionResult = conversionApi.convertItem( viewImage, data.modelCursor );
 
@@ -52,11 +55,11 @@ export function upcastImageFigure( imageUtils ) {
 
 		// When image wasn't successfully converted then finish conversion.
 		if ( !modelImage ) {
+			// Revert consumed figure so other features can convert it.
+			conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'image' } );
+
 			return;
 		}
-
-		// Consume the figure to prevent other converters from processing it again.
-		conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'image' } );
 
 		// Convert rest of the figure element's children as an image children.
 		conversionApi.convertChildren( data.viewItem, modelImage );

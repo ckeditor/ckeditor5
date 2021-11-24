@@ -10,13 +10,14 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import { env, global } from '@ckeditor/ckeditor5-utils';
 
 const toPx = toUnit( 'px' );
 
@@ -300,7 +301,7 @@ export default class BalloonToolbar extends Plugin {
 					return rangeRects[ rangeRects.length - 1 ];
 				}
 			},
-			positions: getBalloonPositions( isBackward )
+			positions: this._getBalloonPositions( isBackward )
 		};
 	}
 
@@ -345,39 +346,51 @@ export default class BalloonToolbar extends Plugin {
 	 * @protected
 	 * @event _selectionChangeDebounced
 	 */
-}
 
-// Returns toolbar positions for the given direction of the selection.
-//
-// @private
-// @param {Boolean} isBackward
-// @returns {Array.<module:utils/dom/position~Position>}
-function getBalloonPositions( isBackward ) {
-	const defaultPositions = BalloonPanelView.defaultPositions;
+	/**
+	 * Returns toolbar positions for the given direction of the selection.
+	 *
+	 * @private
+	 * @param {Boolean} isBackward
+	 * @returns {Array.<module:utils/dom/position~Position>}
+	 */
+	_getBalloonPositions( isBackward ) {
+		const isSafariIniOS = env.isSafari && env.isiOS;
 
-	return isBackward ? [
-		defaultPositions.northWestArrowSouth,
-		defaultPositions.northWestArrowSouthWest,
-		defaultPositions.northWestArrowSouthEast,
-		defaultPositions.northWestArrowSouthMiddleEast,
-		defaultPositions.northWestArrowSouthMiddleWest,
-		defaultPositions.southWestArrowNorth,
-		defaultPositions.southWestArrowNorthWest,
-		defaultPositions.southWestArrowNorthEast,
-		defaultPositions.southWestArrowNorthMiddleWest,
-		defaultPositions.southWestArrowNorthMiddleEast
-	] : [
-		defaultPositions.southEastArrowNorth,
-		defaultPositions.southEastArrowNorthEast,
-		defaultPositions.southEastArrowNorthWest,
-		defaultPositions.southEastArrowNorthMiddleEast,
-		defaultPositions.southEastArrowNorthMiddleWest,
-		defaultPositions.northEastArrowSouth,
-		defaultPositions.northEastArrowSouthEast,
-		defaultPositions.northEastArrowSouthWest,
-		defaultPositions.northEastArrowSouthMiddleEast,
-		defaultPositions.northEastArrowSouthMiddleWest
-	];
+		// https://github.com/ckeditor/ckeditor5/issues/7707
+		const positions = isSafariIniOS ? generatePositions( {
+			// 20px when zoomed out. Less then 20px when zoomed in; the "radius" of the native selection handle gets
+			// smaller as the user zooms in. No less than the default v-offset, though.
+			verticalOffset: Math.max(
+				BalloonPanelView.arrowVerticalOffset,
+				Math.round( 20 / global.window.visualViewport.scale )
+			)
+		} ) : BalloonPanelView.defaultPositions;
+
+		return isBackward ? [
+			positions.northWestArrowSouth,
+			positions.northWestArrowSouthWest,
+			positions.northWestArrowSouthEast,
+			positions.northWestArrowSouthMiddleEast,
+			positions.northWestArrowSouthMiddleWest,
+			positions.southWestArrowNorth,
+			positions.southWestArrowNorthWest,
+			positions.southWestArrowNorthEast,
+			positions.southWestArrowNorthMiddleWest,
+			positions.southWestArrowNorthMiddleEast
+		] : [
+			positions.southEastArrowNorth,
+			positions.southEastArrowNorthEast,
+			positions.southEastArrowNorthWest,
+			positions.southEastArrowNorthMiddleEast,
+			positions.southEastArrowNorthMiddleWest,
+			positions.northEastArrowSouth,
+			positions.northEastArrowSouthEast,
+			positions.northEastArrowSouthWest,
+			positions.northEastArrowSouthMiddleEast,
+			positions.northEastArrowSouthMiddleWest
+		];
+	}
 }
 
 // Returns "true" when the selection has multiple ranges and each range contains a selectable element

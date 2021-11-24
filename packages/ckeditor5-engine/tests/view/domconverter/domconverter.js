@@ -10,6 +10,7 @@ import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import ViewUIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
+import DowncastWriter from '../../../src/view/downcastwriter';
 import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
@@ -443,11 +444,16 @@ describe( 'DomConverter', () => {
 			converter.experimentalRenderingMode = false;
 		} );
 
-		it( 'should allow all in for data pipeline', () => {
+		it( 'should allow all in data pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.false;
+
+			// Make sure it's rendered in the editing mode.
+			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
 
 			converter.renderingMode = 'data';
 
@@ -455,6 +461,15 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.true;
+		} );
+
+		it( 'should accept all Base64-encoded content', () => {
+			// Notice, that the Base64 string has a word starting with `on` and ending with `=` which could lead to false positives.
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/jpeg;base64,bAr+onZm9vonFy=' ) ).to.be.true;
 		} );
 
 		it( 'should reject certain attributes in the editing pipeline', () => {
@@ -469,10 +484,11 @@ describe( 'DomConverter', () => {
 			expect( converter.shouldRenderAttribute( 'ONCLICK', 'anything' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'JAVASCRIPT:something' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', '<SCRIPT>something</SCRIPT>' ) ).to.be.false;
-			expect( converter.shouldRenderAttribute( 'anything', 'something</SCRIPT>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'srcdoc', '<SCRIPT>something</SCRIPT>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'srcdoc', 'something</SCRIPT>' ) ).to.be.false;
 		} );
 	} );
 
@@ -526,13 +542,13 @@ describe( 'DomConverter', () => {
 					{
 						html: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:text/html">' +
 							'bar' +
 							'</span>' +
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:text/html">' +
 							'bar' +
 							'</span>' +
 							'</div>'
@@ -540,13 +556,27 @@ describe( 'DomConverter', () => {
 					{
 						html: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'<iframe class="foo-class" style="border:1px solid blue" data-foo="bar" srcdoc="<script>baz</script>">' +
+							'bar' +
+							'</iframe>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<iframe class="foo-class" style="border:1px solid blue" data-foo="bar" srcdoc="<script>baz</script>">' +
+							'bar' +
+							'</iframe>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>'
@@ -580,7 +610,7 @@ describe( 'DomConverter', () => {
 				converter.experimentalRenderingMode = false;
 			} );
 
-			it( 'should remove certain attributes', () => {
+			it( 'should replace certain unsafe attributes', () => {
 				const element = document.createElement( 'p' );
 
 				const testCases = [
@@ -593,8 +623,11 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-onclick="foobar">bar' +
 							'</span>' +
 							'</div>'
 					},
@@ -607,35 +640,58 @@ describe( 'DomConverter', () => {
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-value="javascript:baz">bar' +
 							'</span>' +
 							'</div>'
 					},
 					{
 						html: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:text/html">' +
 							'bar' +
 							'</span>' +
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
-							'bar' +
+							'<span ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-value="data:text/html">bar' +
 							'</span>' +
 							'</div>'
 					},
 					{
 						html: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'<iframe class="foo-class" style="border:1px solid blue" data-foo="bar" srcdoc="<script>baz</script>">' +
+							'bar' +
+							'</iframe>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<iframe ' +
+								'class="foo-class" ' +
+								'style="border:1px solid blue" ' +
+								'data-foo="bar" ' +
+								'data-ck-unsafe-attribute-srcdoc="<script>baz</script>">bar' +
+							'</iframe>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>',
 						expected: '<div data-foo="bar">' +
 							'foo' +
-							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" contenteditable="false">' +
 							'bar' +
 							'</span>' +
 							'</div>'
@@ -656,9 +712,152 @@ describe( 'DomConverter', () => {
 				converter.setContentOf( element, html );
 
 				expect( element.innerHTML ).to.equal(
-					'<div>foo<span data-ck-hidden="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+					'<div>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'setDomElementAttribute()', () => {
+		let writer;
+
+		beforeEach( () => {
+			writer = new DowncastWriter( viewDocument );
+			converter = new DomConverter( viewDocument, {
+				renderingMode: 'editing'
+			} );
+
+			converter.experimentalRenderingMode = true;
+		} );
+
+		afterEach( () => {
+			converter.experimentalRenderingMode = false;
+		} );
+
+		it( 'should set the plain value of an attribute', () => {
+			const domElement = document.createElement( 'p' );
+
+			converter.setDomElementAttribute( domElement, 'foo', 'bar' );
+
+			expect( domElement.outerHTML ).to.equal( '<p foo="bar"></p>' );
+		} );
+
+		it( 'should not remove while overriding it\'s value (the plain value of an attribute)', () => {
+			const domElement = document.createElement( 'p' );
+
+			domElement.setAttribute( 'foo', '123' );
+
+			const spy = sinon.spy( domElement, 'removeAttribute' );
+
+			converter.setDomElementAttribute( domElement, 'foo', 'bar' );
+
+			expect( domElement.outerHTML ).to.equal( '<p foo="bar"></p>' );
+			expect( spy.callCount ).to.equal( 0 );
+		} );
+
+		it( 'should render the prefixed value of an attribute if considered unsafe', () => {
+			const domElement = document.createElement( 'p' );
+
+			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
+
+			expect( domElement.outerHTML ).to.equal( '<p data-ck-unsafe-attribute-onclick="bar"></p>' );
+		} );
+
+		it( 'should not remove while overriding it\'s value (the value considered unsafe)', () => {
+			const domElement = document.createElement( 'p' );
+
+			domElement.setAttribute( 'data-ck-unsafe-attribute-onclick', '123' );
+
+			const spy = sinon.spy( domElement, 'removeAttribute' );
+
+			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
+
+			expect( domElement.outerHTML ).to.equal( '<p data-ck-unsafe-attribute-onclick="bar"></p>' );
+			expect( spy.callCount ).to.equal( 0 );
+		} );
+
+		it( 'should render the plain attribute if unsafe but declaratively permitted on the related view element', () => {
+			const viewElement = writer.createContainerElement( 'p', {}, { renderUnsafeAttributes: [ 'onclick' ] } );
+			viewElement.getFillerOffset = () => null;
+
+			const domElement = converter.viewToDom( viewElement, document );
+
+			converter.setDomElementAttribute( domElement, 'onclick', 'bar', viewElement );
+
+			expect( domElement.outerHTML ).to.equal( '<p onclick="bar"></p>' );
+		} );
+
+		it( 'should render the prefixed value if the previous value was safe but the new one is unsafe (avoiding duplication)', () => {
+			const domElement = document.createElement( 'img' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/png,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img src="data:image/png,foo">' );
+		} );
+
+		it( 'should not render the prefixed value if the previous value was unsafe but the new one is safe (avoiding duplication)', () => {
+			const domElement = document.createElement( 'img' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/png,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img src="data:image/png,foo">' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+		} );
+	} );
+
+	describe( 'removeDomElementAttribute()', () => {
+		beforeEach( () => {
+			converter.experimentalRenderingMode = true;
+		} );
+
+		afterEach( () => {
+			converter.experimentalRenderingMode = false;
+		} );
+
+		it( 'should remove the plain attribute value', () => {
+			const domElement = document.createElement( 'img' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/png,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img src="data:image/png,foo">' );
+
+			converter.removeDomElementAttribute( domElement, 'src' );
+			expect( domElement.outerHTML ).to.equal( '<img>' );
+		} );
+
+		it( 'should also remove the unsafe (prefixed) attribute value together with the safe value', () => {
+			const domElement = document.createElement( 'img' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+
+			converter.removeDomElementAttribute( domElement, 'src' );
+			expect( domElement.outerHTML ).to.equal( '<img>' );
+		} );
+
+		it( 'should skip removing the (replacement) attribute representing the unsafe <script> tag', () => {
+			const domElement = document.createElement( 'p' );
+			const html = 'foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script>';
+
+			converter.setContentOf( domElement, html );
+
+			expect( domElement.outerHTML ).to.equal(
+				'<p>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+			);
+
+			converter.removeDomElementAttribute( domElement.lastChild, 'data-ck-unsafe-element' );
+
+			expect( domElement.outerHTML ).to.equal(
+				'<p>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+			);
+
+			converter.removeDomElementAttribute( domElement.lastChild, 'class' );
+
+			expect( domElement.outerHTML ).to.equal(
+				'<p>foo<span data-ck-unsafe-element="script" style="foo-style" data-foo="bar">bar</span></p>'
+			);
 		} );
 	} );
 } );

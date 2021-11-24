@@ -32,7 +32,7 @@ export default class TableCellBorderColorCommand extends TableCellPropertyComman
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'borderColor', defaultValue );
+		super( editor, 'tableCellBorderColor', defaultValue );
 	}
 
 	/**

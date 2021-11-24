@@ -21,7 +21,6 @@ import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -1338,7 +1337,7 @@ describe( 'ListEditing', () => {
 			function testList( string, expectedString = null ) {
 				return () => {
 					editor.setData( string );
-					assertEqualMarkup( editor.getData(), expectedString || string );
+					expect( editor.getData() ).to.equalMarkup( expectedString || string );
 				};
 			}
 
@@ -1969,7 +1968,7 @@ describe( 'ListEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">2</listItem>' +
 						'<paragraph>bar</paragraph>';
 
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), expectedModelData );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
 				} );
 
 				it( 'should properly listIndent when list nested in other block', () => {
@@ -2027,7 +2026,7 @@ describe( 'ListEditing', () => {
 						'<listItem listIndent="0" listType="bulleted">f</listItem>' +
 						'<listItem listIndent="0" listType="bulleted">g</listItem>';
 
-					assertEqualMarkup( getModelData( model, { withoutSelection: true } ), expectedModelData );
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
 				} );
 			} );
 		} );

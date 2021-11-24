@@ -65,7 +65,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has backgroundColor property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -79,7 +79,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -106,7 +106,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table backgroundColor to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						command.execute( { value: '#f00' } );
 
@@ -114,7 +114,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove backgroundColor from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						command.execute();
 
@@ -169,13 +169,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'red' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'red' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has backgroundColor property other than the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -183,13 +183,13 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { backgroundColor: 'red' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'red' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has backgroundColor property other than the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -199,7 +199,7 @@ describe( 'table properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove backgroundColor from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						command.execute( { value: 'red' } );
 
@@ -209,7 +209,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove backgroundColor from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ], { backgroundColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBackgroundColor: 'blue' } ) );
 
 						command.execute( { value: 'red' } );
 
