@@ -1735,5 +1735,145 @@ describe( 'ListStyleEditing', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.false;
 			} );
 		} );
+
+		describe( 'command', () => {
+			it.skip( 'should register listStyle command', () => {
+				const command = editor.commands.get( 'listStyle' );
+
+				expect( command ).to.be.instanceOf( ListStyleCommand );
+			} );
+		} );
+
+		describe( 'conversion in data pipeline', () => {
+			describe( 'model to data', () => {
+				it.skip( 'should convert single list (type: numbered, reversed: true)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
+				} );
+
+				it.skip( 'should convert single list (type: numbered, reversed: false)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+				} );
+
+				it.skip( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 3</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol>' +
+							'<li>Foo 1' +
+								'<ol reversed="reversed">' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>Foo 2</li>' +
+							'<li>Foo 3</li>' +
+						'</ol>'
+					);
+				} );
+
+				it.skip( 'should convert nested numbered lists (main: reversed, nested: non-reversed)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 3</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol reversed="reversed>' +
+							'<li>Foo 1' +
+								'<ol">' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>Foo 2</li>' +
+							'<li>Foo 3</li>' +
+						'</ol>'
+					);
+				} );
+
+				it.skip( 'should convert nested mixed lists (ul>ol, main: square, nested: reversed)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Foo 3</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ul">' +
+							'<li>Foo 1' +
+								'<ol reversed="reversed">' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>Foo 2</li>' +
+							'<li>Foo 3</li>' +
+						'</ul>'
+					);
+				} );
+
+				it.skip( 'should produce nested lists (different `listIndent` attribute)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol reversed="reversed">' +
+							'<li>Foo 1</li>' +
+							'<li>Foo 2' +
+								'<ol reversed="reversed">' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it.skip( 'should produce two different lists (different `listReversed` attribute)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar 1</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar 2</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol reversed="reversed">' +
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ol>' +
+						'<ol>' +
+							'<li>Bar 1</li>' +
+							'<li>Bar 2</li>' +
+						'</ol>'
+					);
+				} );
+			} );
+		} );
 	} );
 } );
