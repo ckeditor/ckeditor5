@@ -60,7 +60,7 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 			null;
 
 		// But verify if this is a range for the same element (in case the original element was removed).
-		viewElement = viewRange && viewRange.containsRange( writer.createRangeOn( viewElement ) ) ?
+		viewElement = viewRange && viewRange.containsRange( writer.createRangeOn( viewElement ), true ) ?
 			viewRange.getContainedElement() :
 			null;
 
