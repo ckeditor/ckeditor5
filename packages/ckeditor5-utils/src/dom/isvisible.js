@@ -14,5 +14,5 @@
  * @returns {Boolean}
  */
 export default function isVisible( element ) {
-	return element && element.getClientRects().length;
+	return !!( element && element.getClientRects().length );
 }
