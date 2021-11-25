@@ -55,6 +55,20 @@ export default class ListStyleEditing extends Plugin {
 		editor.commands.add( 'listReversed', new Command( editor ) );
 		editor.commands.add( 'listStart', new Command( editor ) );
 
+		editor.commands.get( 'listReversed' ).isEnabled = true;
+		editor.commands.get( 'listReversed' ).value = false;
+		editor.commands.get( 'listReversed' ).execute = () => {
+			editor.commands.get( 'listReversed' ).value = !editor.commands.get( 'listReversed' ).value;
+			// console.log( 'listReversed#value', editor.commands.get( 'listReversed' ).value );
+		};
+
+		editor.commands.get( 'listStart' ).isEnabled = true;
+		editor.commands.get( 'listStart' ).value = 1;
+		editor.commands.get( 'listStart' ).execute = value => {
+			editor.commands.get( 'listStart' ).value = value;
+			// console.log( 'listStart#value', editor.commands.get( 'listStart' ).value );
+		};
+
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
 		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor ) );
 		this.listenTo( editor.commands.get( 'outdentList' ), '_executeCleanup', fixListAfterOutdentListCommand( editor ) );

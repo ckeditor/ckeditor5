@@ -53,9 +53,10 @@
 		padding-right: 0;
 		padding-bottom: 0;
 
-		&:active {
+		&:active, &:hover {
 			box-shadow: none;
 			border-color: transparent;
+			background: none;
 		}
 	}
 }

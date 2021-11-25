@@ -33,7 +33,7 @@ export default class ListPropertiesView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale, { shouldRenderNumberedListProperties, enabledProperties, styleButtonViews, styleGridAriaLabel } ) {
+	constructor( locale, { numberedListPropertyCommands, enabledProperties, styleButtonViews, styleGridAriaLabel } ) {
 		super( locale );
 
 		const t = locale.t;
@@ -125,16 +125,16 @@ export default class ListPropertiesView extends View {
 			cssClasses.push( 'ck-list-properties_without-styles' );
 		}
 
-		if ( shouldRenderNumberedListProperties ) {
+		if ( numberedListPropertyCommands ) {
 			const numberedPropertiesFields = [];
 
 			if ( enabledProperties.startIndex ) {
-				this.startIndexFieldView = this._createStartIndexField();
+				this.startIndexFieldView = this._createStartIndexField( numberedListPropertyCommands );
 				numberedPropertiesFields.push( this.startIndexFieldView );
 			}
 
 			if ( enabledProperties.reversed ) {
-				this.reversedFieldView = this._createReversedField();
+				this.reversedFieldView = this._createReversedField( numberedListPropertyCommands );
 				numberedPropertiesFields.push( this.reversedFieldView );
 			}
 
@@ -183,6 +183,23 @@ export default class ListPropertiesView extends View {
 		if ( this.startIndexFieldView ) {
 			this.focusables.add( this.startIndexFieldView );
 			this.focusTracker.add( this.startIndexFieldView.element );
+
+			// Intercept the `selectstart` event, which is blocked by default because of the default behavior
+			// of the DropdownView#panelView.
+			// TODO: blocking `selectstart` in the #panelView should be configurable per–drop–down instance.
+			this.listenTo( this.startIndexFieldView.element, 'selectstart', ( evt, domEvt ) => {
+				domEvt.stopPropagation();
+			}, { priority: 'high' } );
+
+			const stopPropagation = data => data.stopPropagation();
+
+			// Since the form is in the dropdown panel which is a child of the toolbar, the toolbar's
+			// keystroke handler would take over the key management in the input. We need to prevent
+			// this ASAP. Otherwise, the basic caret movement using the arrow keys will be impossible.
+			this.keystrokes.set( 'arrowright', stopPropagation );
+			this.keystrokes.set( 'arrowleft', stopPropagation );
+			this.keystrokes.set( 'arrowup', stopPropagation );
+			this.keystrokes.set( 'arrowdown', stopPropagation );
 		}
 
 		if ( this.reversedFieldView ) {
@@ -244,7 +261,7 @@ export default class ListPropertiesView extends View {
 	 *
 	 * @returns
 	 */
-	_createStartIndexField() {
+	_createStartIndexField( { listStartCommand } ) {
 		const t = this.locale.t;
 		const startIndexFieldView = new LabeledFieldView( this.locale, createLabeledInputNumber );
 
@@ -260,6 +277,22 @@ export default class ListPropertiesView extends View {
 			inputMode: 'numeric'
 		} );
 
+		startIndexFieldView.bind( 'isEnabled' ).to( listStartCommand );
+		startIndexFieldView.fieldView.bind( 'value' ).to( listStartCommand );
+		startIndexFieldView.fieldView.on( 'input', () => {
+			const value = startIndexFieldView.fieldView.element.value;
+
+			if ( value !== '' ) {
+				const parsedValue = Number.parseInt( value );
+
+				if ( parsedValue < 1 ) {
+					startIndexFieldView.errorText = t( 'Start index must be greater than 0.' );
+				} else {
+					this.fire( 'listStart', parsedValue );
+				}
+			}
+		} );
+
 		return startIndexFieldView;
 	}
 
@@ -268,7 +301,7 @@ export default class ListPropertiesView extends View {
 	 *
 	 * @returns
 	 */
-	_createReversedField() {
+	_createReversedField( { listReversedCommand } ) {
 		const t = this.locale.t;
 		const reversedButtonView = new SwitchButtonView( this.locale );
 
@@ -277,6 +310,10 @@ export default class ListPropertiesView extends View {
 			label: t( 'Reversed order' ),
 			class: 'ck-numbered-list-properties-reversed-order'
 		} );
+
+		reversedButtonView.bind( 'isEnabled' ).to( listReversedCommand );
+		reversedButtonView.bind( 'isOn' ).to( listReversedCommand, 'value' );
+		reversedButtonView.delegate( 'execute' ).to( this, 'listReversed' );
 
 		return reversedButtonView;
 	}
