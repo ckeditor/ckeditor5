@@ -13,7 +13,6 @@
   "main": "src/index.js",
   "dependencies": {
     "ckeditor5": "^31.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^31.0.0",
     "@ckeditor/ckeditor5-ui": "^31.0.0"
   },
   "devDependencies": {
@@ -34,6 +33,7 @@
     "@ckeditor/ckeditor5-paragraph": "^31.0.0",
     "@ckeditor/ckeditor5-remove-format": "^31.0.0",
     "@ckeditor/ckeditor5-table": "^31.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^31.0.0",
     "@ckeditor/ckeditor5-typing": "^31.0.0",
     "@ckeditor/ckeditor5-undo": "^31.0.0",
     "@ckeditor/ckeditor5-utils": "^31.0.0",

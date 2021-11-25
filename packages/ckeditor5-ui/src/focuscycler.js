@@ -7,7 +7,7 @@
  * @module ui/focuscycler
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 /**
  * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a
@@ -288,5 +288,5 @@ export default class FocusCycler {
 // @param {module:ui/view~View} view A view to be checked.
 // @returns {Boolean}
 function isFocusable( view ) {
-	return !!( view.focus && view.element.offsetParent && global.window.getComputedStyle( view.element ).display != 'none' );
+	return !!( view.focus && isVisible( view.element ) );
 }

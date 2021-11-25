@@ -51,10 +51,33 @@ export default class ListPropertiesView extends View {
 		this.children = this.createCollection();
 
 		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @member {TODO}
+		 */
+		this.stylesView = null;
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @member {TODO}
+		 */
+		this.startIndexFieldView = null;
+
+		/**
+		 * TODO
+		 *
+		 * @readonly
+		 * @member {TODO}
+		 */
+		this.reversedFieldView = null;
+
+		/**
 		 * Tracks information about the DOM focus in the view.
 		 *
 		 * @readonly
-		 * @protected
 		 * @member {module:utils/focustracker~FocusTracker}
 		 */
 		this.focusTracker = new FocusTracker();
@@ -63,7 +86,6 @@ export default class ListPropertiesView extends View {
 		 * An instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
 		 *
 		 * @readonly
-		 * @protected
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
 		 */
 		this.keystrokes = new KeystrokeHandler();
@@ -72,7 +94,6 @@ export default class ListPropertiesView extends View {
 		 * A collection of views that can be focused in the view.
 		 *
 		 * @readonly
-		 * @protected
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.focusables = new ViewCollection();
@@ -235,7 +256,8 @@ export default class ListPropertiesView extends View {
 		startIndexFieldView.fieldView.set( {
 			min: 1,
 			step: 1,
-			value: 1
+			value: 1,
+			inputMode: 'numeric'
 		} );
 
 		return startIndexFieldView;
@@ -273,7 +295,8 @@ function createLabeledInputNumber( labeledFieldView, viewUid, statusUid ) {
 
 	inputView.set( {
 		id: viewUid,
-		ariaDescribedById: statusUid
+		ariaDescribedById: statusUid,
+		inputMode: 'numeric'
 	} );
 
 	inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );

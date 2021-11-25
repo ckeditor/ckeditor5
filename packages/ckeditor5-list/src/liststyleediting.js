@@ -7,7 +7,7 @@
  * @module list/liststyleediting
  */
 
-import { Plugin } from 'ckeditor5/src/core';
+import { Plugin, Command } from 'ckeditor5/src/core';
 import ListEditing from './listediting';
 import ListStyleCommand from './liststylecommand';
 import { getSiblingListItem, getSiblingNodes } from './utils';
@@ -52,6 +52,8 @@ export default class ListStyleEditing extends Plugin {
 		} );
 
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+		editor.commands.add( 'listReversed', new Command( editor ) );
+		editor.commands.add( 'listStart', new Command( editor ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
 		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor ) );
