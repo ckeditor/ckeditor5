@@ -7,9 +7,20 @@
  * @module TODO
  */
 
-import { View, ViewCollection, FocusCycler } from 'ckeditor5/src/ui';
-import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
-import NumberedListPropertiesView from './numberedlistpropertiesview';
+import {
+	View,
+	ViewCollection,
+	FocusCycler,
+	SwitchButtonView,
+	LabeledFieldView
+} from 'ckeditor5/src/ui';
+import {
+	FocusTracker,
+	KeystrokeHandler
+} from 'ckeditor5/src/utils';
+
+import InputNumberView from './inputnumberview';
+import CollapsibleView from './collapsibleview';
 
 import '../../theme/listproperties.css';
 
@@ -25,6 +36,7 @@ export default class ListPropertiesView extends View {
 	constructor( locale, { shouldRenderNumberedListProperties, enabledProperties, styleButtonViews, styleGridAriaLabel } ) {
 		super( locale );
 
+		const t = locale.t;
 		const cssClasses = [
 			'ck',
 			'ck-list-properties'
@@ -88,14 +100,36 @@ export default class ListPropertiesView extends View {
 		if ( styleButtonViews ) {
 			this.stylesView = this._createStylesView( styleButtonViews, styleGridAriaLabel );
 			this.children.add( this.stylesView );
+		} else {
+			cssClasses.push( 'ck-list-properties_without-styles' );
 		}
 
 		if ( shouldRenderNumberedListProperties ) {
-			this.numberedPropertiesView = new NumberedListPropertiesView( locale, {
-				enabledProperties,
-				renderAsCollapsible: !!enabledProperties.styles
-			} );
-			this.children.add( this.numberedPropertiesView );
+			const numberedPropertiesFields = [];
+
+			if ( enabledProperties.startIndex ) {
+				this.startIndexFieldView = this._createStartIndexField();
+				numberedPropertiesFields.push( this.startIndexFieldView );
+			}
+
+			if ( enabledProperties.reversed ) {
+				this.reversedFieldView = this._createReversedField();
+				numberedPropertiesFields.push( this.reversedFieldView );
+			}
+
+			// When there are some style buttons, pack the numbered list properties into a collapsible to separate them.
+			if ( styleButtonViews ) {
+				const collapsibleView = new CollapsibleView( locale, numberedPropertiesFields );
+
+				collapsibleView.set( {
+					label: t( 'List properties' ),
+					isCollapsed: true
+				} );
+
+				this.children.add( collapsibleView );
+			} else {
+				this.children.addMany( numberedPropertiesFields );
+			}
 
 			cssClasses.push( 'ck-list-properties_with-numbered-properties' );
 		}
@@ -125,14 +159,14 @@ export default class ListPropertiesView extends View {
 			}
 		}
 
-		if ( this.numberedPropertiesView ) {
-			for ( const fieldView of this.numberedPropertiesView.focusables ) {
-				// Register the view as focusable.
-				this.focusables.add( fieldView );
+		if ( this.startIndexFieldView ) {
+			this.focusables.add( this.startIndexFieldView );
+			this.focusTracker.add( this.startIndexFieldView.element );
+		}
 
-				// Register the view in the focus tracker.
-				this.focusTracker.add( fieldView.element );
-			}
+		if ( this.reversedFieldView ) {
+			this.focusables.add( this.reversedFieldView );
+			this.focusTracker.add( this.reversedFieldView.element );
 		}
 
 		// Start listening for the keystrokes coming from #element.
@@ -183,4 +217,75 @@ export default class ListPropertiesView extends View {
 
 		return stylesView;
 	}
+
+	/**
+	 * TODO
+	 *
+	 * @returns
+	 */
+	_createStartIndexField() {
+		const t = this.locale.t;
+		const startIndexFieldView = new LabeledFieldView( this.locale, createLabeledInputNumber );
+
+		startIndexFieldView.set( {
+			label: t( 'Start at' ),
+			class: 'ck-numbered-list-properties-start-index'
+		} );
+
+		startIndexFieldView.fieldView.set( {
+			min: 1,
+			step: 1,
+			value: 1
+		} );
+
+		return startIndexFieldView;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @returns
+	 */
+	_createReversedField() {
+		const t = this.locale.t;
+		const reversedButtonView = new SwitchButtonView( this.locale );
+
+		reversedButtonView.set( {
+			withText: true,
+			label: t( 'Reversed order' ),
+			class: 'ck-numbered-list-properties-reversed-order'
+		} );
+
+		return reversedButtonView;
+	}
+}
+
+/**
+ * TODO
+ *
+ * @param {*} labeledFieldView
+ * @param {*} viewUid
+ * @param {*} statusUid
+ * @returns
+ */
+function createLabeledInputNumber( labeledFieldView, viewUid, statusUid ) {
+	const inputView = new InputNumberView( labeledFieldView.locale );
+
+	inputView.set( {
+		id: viewUid,
+		ariaDescribedById: statusUid
+	} );
+
+	inputView.bind( 'isReadOnly' ).to( labeledFieldView, 'isEnabled', value => !value );
+	inputView.bind( 'hasError' ).to( labeledFieldView, 'errorText', value => !!value );
+
+	inputView.on( 'input', () => {
+		// UX: Make the error text disappear and disable the error indicator as the user
+		// starts fixing the errors.
+		labeledFieldView.errorText = null;
+	} );
+
+	labeledFieldView.bind( 'isEmpty', 'isFocused', 'placeholder' ).to( inputView );
+
+	return inputView;
 }
