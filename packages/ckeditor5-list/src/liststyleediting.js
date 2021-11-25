@@ -46,7 +46,7 @@ export default class ListStyleEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'list', {
-			properties: {
+			numberedProperties: {
 				styles: true,
 				startIndex: false,
 				reversed: false
@@ -61,20 +61,12 @@ export default class ListStyleEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
+		const enabledAttributes = editor.config.get( 'list.numberedProperties' );
+		const strategies = createAttributeStrategies( enabledAttributes );
+
 		// Extend schema.
-		const properties = editor.config.get( 'list.properties' );
-		const allowAttributes = [];
-
-		if ( properties.styles ) {
-			allowAttributes.push( 'listStyle' );
-		}
-
-		if ( properties.reversed ) {
-			allowAttributes.push( 'listReversed' );
-		}
-
 		model.schema.extend( 'listItem', {
-			allowAttributes
+			allowAttributes: strategies.map( s => s.attributeName )
 		} );
 
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
@@ -91,7 +83,7 @@ export default class ListStyleEditing extends Plugin {
 
 		// Set up conversion.
 		editor.conversion.for( 'upcast' ).add( upcastListItemStyle() );
-		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute() );
+		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute( strategies ) );
 
 		// Handle merging two separated lists into the single one.
 		this._mergeListStyleAttributeWhileMergingLists();
@@ -230,6 +222,46 @@ export default class ListStyleEditing extends Plugin {
 	}
 }
 
+// TODO: docs
+function createAttributeStrategies( enabledAttributes ) {
+	const result = [];
+
+	if ( enabledAttributes.styles ) {
+		result.push( {
+			attributeName: 'listStyle',
+
+			// TODO: docs
+			// Updates or removes the `list-style-type` from the `element`.
+			//
+			// @param {module:engine/view/downcastwriter~DowncastWriter} writer
+			// @param {String} listStyle
+			// @param {module:engine/view/element~Element} element
+			setAttributeOnDowncast( writer, listStyle, element ) {
+				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
+					writer.setStyle( 'list-style-type', listStyle, element );
+				} else {
+					writer.removeStyle( 'list-style-type', element );
+				}
+			}
+		} );
+	}
+
+	if ( enabledAttributes.reversed ) {
+		result.push( {
+			attributeName: 'listReversed',
+			setAttributeOnDowncast( writer, listReversed, element ) {
+				if ( listReversed ) {
+					writer.setAttribute( 'reversed', 'reversed', element );
+				} else {
+					writer.removeAttribute( 'reversed', element );
+				}
+			}
+		} );
+	}
+
+	return result;
+}
+
 // Returns a converter that consumes the `style` attribute and searches for the `list-style-type` definition.
 // If not found, the `"default"` value will be used.
 //
@@ -255,29 +287,31 @@ function upcastListItemStyle() {
 
 // Returns a converter that adds the `list-style-type` definition as a value for the `style` attribute.
 // The `"default"` value is removed and not present in the view/data.
+// TODO: param
 //
 // @returns {Function}
-function downcastListStyleAttribute() {
+function downcastListStyleAttribute( attributeStrategies ) {
 	return dispatcher => {
-		dispatcher.on( 'attribute:listStyle:listItem', ( evt, data, conversionApi ) => {
-			const viewWriter = conversionApi.writer;
-			const currentElement = data.item;
+		for ( const strategy of attributeStrategies ) {
+			dispatcher.on( `attribute:${ strategy.attributeName }:listItem`, ( evt, data, conversionApi ) => {
+				const viewWriter = conversionApi.writer;
+				const currentElement = data.item;
 
-			const previousElement = getSiblingListItem( currentElement.previousSibling, {
-				sameIndent: true,
-				listIndent: currentElement.getAttribute( 'listIndent' ),
-				direction: 'backward'
-			} );
+				const previousElement = getSiblingListItem( currentElement.previousSibling, {
+					sameIndent: true,
+					listIndent: currentElement.getAttribute( 'listIndent' ),
+					direction: 'backward'
+				} );
 
-			const viewItem = conversionApi.mapper.toViewElement( currentElement );
+				const viewItem = conversionApi.mapper.toViewElement( currentElement );
 
-			// A case when elements represent different lists. We need to separate their container.
-			if ( !areRepresentingSameList( currentElement, previousElement ) ) {
-				viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
-			}
-
-			setListStyle( viewWriter, data.attributeNewValue, viewItem.parent );
-		}, { priority: 'low' } );
+				// A case when elements represent different lists. We need to separate their container.
+				if ( !areRepresentingSameList( currentElement, previousElement ) ) {
+					viewWriter.breakContainer( viewWriter.createPositionBefore( viewItem ) );
+				}
+				strategy.setAttributeOnDowncast( viewWriter, data.attributeNewValue, viewItem.parent );
+			}, { priority: 'low' } );
+		}
 	};
 
 	// Checks whether specified list items belong to the same list.
@@ -289,20 +323,8 @@ function downcastListStyleAttribute() {
 		return listItem2 &&
 			listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
 			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
-			listItem1.getAttribute( 'listStyle' ) === listItem2.getAttribute( 'listStyle' );
-	}
-
-	// Updates or removes the `list-style-type` from the `element`.
-	//
-	// @param {module:engine/view/downcastwriter~DowncastWriter} writer
-	// @param {String} listStyle
-	// @param {module:engine/view/element~Element} element
-	function setListStyle( writer, listStyle, element ) {
-		if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
-			writer.setStyle( 'list-style-type', listStyle, element );
-		} else {
-			writer.removeStyle( 'list-style-type', element );
-		}
+			listItem1.getAttribute( 'listStyle' ) === listItem2.getAttribute( 'listStyle' ) &&
+			listItem1.getAttribute( 'listReversed' ) === listItem2.getAttribute( 'listReversed' );
 	}
 }
 

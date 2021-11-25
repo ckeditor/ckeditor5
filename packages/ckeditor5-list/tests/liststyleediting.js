@@ -26,13 +26,15 @@ describe( 'ListStyleEditing', () => {
 		expect( ListStyleEditing.pluginName ).to.equal( 'ListStyleEditing' );
 	} );
 
+	// TODO: default config
+
 	describe( 'listStyle', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
 					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
 					list: {
-						properties: { styles: true, startIndex: false, reversed: false }
+						numberedProperties: { styles: true, startIndex: false, reversed: false }
 					}
 				} )
 				.then( newEditor => {
@@ -77,7 +79,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: bulleted)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal( '<ul><li>Foo</li><li>Bar</li></ul>' );
@@ -86,7 +88,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: numbered)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listType="numbered">Bar</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
@@ -95,7 +97,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: bulleted, style: default)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
+						'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal( '<ul><li>Foo</li><li>Bar</li></ul>' );
@@ -104,7 +106,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: numbered, style: default)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="default">Foo</listItem>' +
-					'<listItem listIndent="0" listType="numbered" listStyle="default">Bar</listItem>'
+						'<listItem listIndent="0" listType="numbered" listStyle="default">Bar</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
@@ -113,7 +115,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
@@ -122,7 +124,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: numbered, style: upper-alpha)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Foo</listItem>' +
-					'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Bar</listItem>'
+						'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Bar</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal( '<ol style="list-style-type:upper-alpha;"><li>Foo</li><li>Bar</li></ol>' );
@@ -131,10 +133,10 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
+						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal(
@@ -154,10 +156,10 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert nested numbered lists (main: decimal-leading-zero, nested: lower-latin)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 1</listItem>' +
-					'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 1</listItem>' +
-					'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 2</listItem>' +
-					'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 2</listItem>' +
-					'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 3</listItem>'
+						'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 3</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal(
@@ -177,10 +179,10 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert nested mixed lists (ul>ol, main: square, nested: lower-roman)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 1</listItem>' +
-					'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 1</listItem>' +
-					'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 3</listItem>'
+						'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 3</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal(
@@ -200,9 +202,9 @@ describe( 'ListStyleEditing', () => {
 				it( 'should produce nested lists (different `listIndent` attribute)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 1</listItem>' +
-					'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
-					'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 1</listItem>' +
-					'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 2</listItem>'
+						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 2</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal(
@@ -221,40 +223,40 @@ describe( 'ListStyleEditing', () => {
 				it( 'should produce two different lists (different `listType` attribute)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 1</listItem>' +
-					'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 2</listItem>'
+						'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 2</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal(
 						'<ol style="list-style-type:decimal;">' +
-						'<li>Foo 1</li>' +
-						'<li>Foo 2</li>' +
-					'</ol>' +
-					'<ul style="list-style-type:disc;">' +
-						'<li>Bar 1</li>' +
-						'<li>Bar 2</li>' +
-					'</ul>'
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ol>' +
+						'<ul style="list-style-type:disc;">' +
+							'<li>Bar 1</li>' +
+							'<li>Bar 2</li>' +
+						'</ul>'
 					);
 				} );
 
 				it( 'should produce two different lists (different `listStyle` attribute)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 1</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 1</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 2</listItem>'
+						'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 1</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 2</listItem>'
 					);
 
 					expect( editor.getData() ).to.equal(
 						'<ul style="list-style-type:disc;">' +
-						'<li>Foo 1</li>' +
-						'<li>Foo 2</li>' +
-					'</ul>' +
-					'<ul style="list-style-type:circle;">' +
-						'<li>Bar 1</li>' +
-						'<li>Bar 2</li>' +
-					'</ul>'
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ul>' +
+						'<ul style="list-style-type:circle;">' +
+							'<li>Bar 1</li>' +
+							'<li>Bar 2</li>' +
+						'</ul>'
 					);
 				} );
 			} );
@@ -265,7 +267,7 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
@@ -274,7 +276,7 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="default" listType="numbered">Bar</listItem>'
 					);
 				} );
 
@@ -283,7 +285,7 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
@@ -292,48 +294,48 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>'
 					);
 				} );
 
 				it( 'should convert nested and mixed lists', () => {
 					editor.setData(
 						'<ol style="list-style-type:upper-alpha;">' +
-						'<li>OL 1</li>' +
-						'<li>OL 2' +
-							'<ul style="list-style-type:circle;">' +
-								'<li>UL 1</li>' +
-								'<li>UL 2</li>' +
-							'</ul>' +
-						'</li>' +
-						'<li>OL 3</li>' +
-					'</ol>'
+							'<li>OL 1</li>' +
+							'<li>OL 2' +
+								'<ul style="list-style-type:circle;">' +
+									'<li>UL 1</li>' +
+									'<li>UL 2</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>OL 3</li>' +
+						'</ol>'
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 1</listItem>' +
-					'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 2</listItem>' +
-					'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 1</listItem>' +
-					'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 2</listItem>' +
-					'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 3</listItem>'
+						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 2</listItem>' +
+						'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 1</listItem>' +
+						'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 2</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 3</listItem>'
 					);
 				} );
 
 				it( 'should convert when the list is in the middle of the content', () => {
 					editor.setData(
 						'<p>Paragraph.</p>' +
-					'<ol style="list-style-type:upper-alpha;">' +
-						'<li>Foo</li>' +
-						'<li>Bar</li>' +
-					'</ol>' +
-					'<p>Paragraph.</p>'
+						'<ol style="list-style-type:upper-alpha;">' +
+							'<li>Foo</li>' +
+							'<li>Bar</li>' +
+						'</ol>' +
+						'<p>Paragraph.</p>'
 					);
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 						'<paragraph>Paragraph.</paragraph>' +
-					'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>' +
-					'<paragraph>Paragraph.</paragraph>'
+						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>' +
+						'<paragraph>Paragraph.</paragraph>'
 					);
 				} );
 
@@ -383,7 +385,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: bulleted, style: default)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
+						'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -394,7 +396,7 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
@@ -405,58 +407,58 @@ describe( 'ListStyleEditing', () => {
 				it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 2</listItem>' +
-					'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
+						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul style="list-style-type:circle">' +
-						'<li>Foo 1' +
-							'<ul style="list-style-type:disc">' +
-								'<li>Bar 1</li>' +
-								'<li>Bar 2</li>' +
-							'</ul>' +
-						'</li>' +
-						'<li>Foo 2</li>' +
-						'<li>Foo 3</li>' +
-					'</ul>'
+							'<li>Foo 1' +
+								'<ul style="list-style-type:disc">' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>Foo 2</li>' +
+							'<li>Foo 3</li>' +
+						'</ul>'
 					);
 				} );
 
 				// See: #8081.
 				it( 'should convert properly nested list styles', () => {
-				// ■ Level 0
-				//     ▶ Level 0.1
-				//         ○ Level 0.1.1
-				//     ▶ Level 0.2
-				//         ○ Level 0.2.1
+					// ■ Level 0
+					//     ▶ Level 0.1
+					//         ○ Level 0.1.1
+					//     ▶ Level 0.2
+					//         ○ Level 0.2.1
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted" listStyle="default">Level 0</listItem>' +
-					'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.1</listItem>' +
-					'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.1.1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.2</listItem>' +
-					'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.2.1</listItem>'
+						'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.1</listItem>' +
+						'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.1.1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.2</listItem>' +
+						'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.2.1</listItem>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 						'<ul>' +
-						'<li>Level 0' +
-							'<ul>' +
-								'<li>Level 0.1' +
-									'<ul style="list-style-type:circle">' +
-										'<li>Level 0.1.1</li>' +
-									'</ul>' +
-								'</li>' +
-								'<li>Level 0.2' +
-									'<ul style="list-style-type:circle">' +
-										'<li>Level 0.2.1</li>' +
-									'</ul>' +
-								'</li>' +
-							'</ul>' +
-						'</li>' +
-					'</ul>'
+							'<li>Level 0' +
+								'<ul>' +
+									'<li>Level 0.1' +
+										'<ul style="list-style-type:circle">' +
+											'<li>Level 0.1.1</li>' +
+										'</ul>' +
+									'</li>' +
+									'<li>Level 0.2' +
+										'<ul style="list-style-type:circle">' +
+											'<li>Level 0.2.1</li>' +
+										'</ul>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
 					);
 				} );
 			} );
@@ -467,48 +469,48 @@ describe( 'ListStyleEditing', () => {
 				it( 'should inherit the list style attribute when merging the same kind of lists (from top, merge a single item)', () => {
 					setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					editor.execute( 'bulletedList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
 				it( 'should inherit the list style attribute when merging the same kind of lists (from top, merge a few items)', () => {
 					setModelData( model,
 						'<paragraph>[Foo Bar 1.</paragraph>' +
-					'<paragraph>Foo Bar 2.]</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<paragraph>Foo Bar 2.]</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					editor.execute( 'bulletedList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo Bar 1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar 2.]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar 2.]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
 				it( 'should not inherit anything if there is no list below the inserted list', () => {
 					setModelData( model,
 						'<paragraph>Foo Bar 1.[]</paragraph>' +
-					'<paragraph>Foo Bar 2.</paragraph>'
+						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 
 					editor.execute( 'bulletedList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar 1.[]</listItem>' +
-					'<paragraph>Foo Bar 2.</paragraph>'
+						'<paragraph>Foo Bar 2.</paragraph>'
 					);
 				} );
 
@@ -529,16 +531,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<paragraph>Foo Bar.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
 						);
 
 						editor.execute( 'bulletedList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
+							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>'
 						);
 					} );
 
@@ -547,16 +549,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
-						'<paragraph>Foo Bar.[]</paragraph>'
+							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
+							'<paragraph>Foo Bar.[]</paragraph>'
 						);
 
 						editor.execute( 'bulletedList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
-						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 					}
 				);
@@ -566,16 +568,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-					'<paragraph>Foo Bar.[]</paragraph>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<paragraph>Foo Bar.[]</paragraph>'
 						);
 
 						editor.execute( 'bulletedList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 					} );
 
@@ -584,18 +586,18 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-						'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
-						'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
-						'<paragraph>Foo Bar.[]</paragraph>'
+							'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
+							'<paragraph>Foo Bar.[]</paragraph>'
 						);
 
 						editor.execute( 'bulletedList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-						'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
-						'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="1" listStyle="square" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="2" listStyle="disc" listType="bulleted">Foo Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 					}
 				);
@@ -605,16 +607,16 @@ describe( 'ListStyleEditing', () => {
 				it( 'should inherit the list style attribute when the modified list is the same kind of the list as next sibling', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					editor.execute( 'bulletedList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
@@ -623,16 +625,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="default" listType="numbered">Foo Bar.[]</listItem>'
 						);
 
 						editor.execute( 'bulletedList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 					} );
 
@@ -641,16 +643,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 						);
 
 						editor.execute( 'listStyle', { type: 'disc' } );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 						);
 					} );
 
@@ -659,16 +661,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 
 						editor.execute( 'listStyle', { type: 'disc' } );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-						'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 					}
 				);
@@ -678,36 +680,36 @@ describe( 'ListStyleEditing', () => {
 				it( 'should restore the default value for the list style attribute when indenting a single item', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 
 					editor.execute( 'indentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 				} );
 
 				it( 'should restore the default value for the list style attribute when indenting a few items', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.]</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.]</listItem>'
 					);
 
 					editor.execute( 'indentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">3.]</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">3.]</listItem>'
 					);
 				} );
 
@@ -716,18 +718,18 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 						);
 
 						editor.execute( 'indentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 						);
 					}
 				);
@@ -737,18 +739,18 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 						);
 
 						editor.execute( 'indentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="1" listStyle="disc" listType="bulleted">3.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="1" listStyle="disc" listType="bulleted">3.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 						);
 					}
 				);
@@ -756,18 +758,18 @@ describe( 'ListStyleEditing', () => {
 				it( 'should copy the value for the list style attribute when indenting a single item into a nested list', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 					);
 
 					editor.execute( 'indentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 					);
 				} );
 
@@ -777,18 +779,18 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.[]</listItem>'
+							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.[]</listItem>'
 						);
 
 						editor.execute( 'indentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
-						'<listItem listIndent="1" listStyle="disc" listType="bulleted">4.[]</listItem>'
+							'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
+							'<listItem listIndent="1" listStyle="disc" listType="bulleted">4.[]</listItem>'
 						);
 					}
 				);
@@ -796,16 +798,16 @@ describe( 'ListStyleEditing', () => {
 				it( 'should inherit the list style attribute from nested list if the `listType` is other than indenting element', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
 					);
 
 					editor.execute( 'indentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">3.[]</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">3.[]</listItem>'
 					);
 				} );
 
@@ -813,14 +815,14 @@ describe( 'ListStyleEditing', () => {
 				it( 'should not throw when indenting a list without any other content in the editor', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="default" listType="bulleted">[]</listItem>'
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">[]</listItem>'
 					);
 
 					editor.execute( 'indentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">[]</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">[]</listItem>'
 					);
 				} );
 			} );
@@ -829,48 +831,48 @@ describe( 'ListStyleEditing', () => {
 				it( 'should inherit the list style attribute from parent list (change the first nested item)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 				} );
 
 				it( 'should inherit the list style attribute from parent list (change the second nested item)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">3.[]</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.[]</listItem>'
 					);
 				} );
 
 				it( 'should inherit the list style attribute from parent list (modifying nested lists)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
-					'<listItem listIndent="2" listStyle="square" listType="bulleted">3.]</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">[2.</listItem>' +
+						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.]</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
-					'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[2.</listItem>' +
+						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>'
 					);
 				} );
 
@@ -879,18 +881,18 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">[1.</listItem>' +
-						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 						);
 
 						editor.execute( 'outdentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<paragraph>[1.</paragraph>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="1" listStyle="square" listType="bulleted">3.]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">4.</listItem>'
 						);
 					}
 				);
@@ -900,20 +902,20 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
-						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
-						'<listItem listIndent="3" listStyle="disc" listType="bulleted">4.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">5.</listItem>'
+							'<listItem listIndent="1" listStyle="default" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
+							'<listItem listIndent="3" listStyle="disc" listType="bulleted">4.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">5.</listItem>'
 						);
 
 						editor.execute( 'outdentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<paragraph>1.[]</paragraph>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
-						'<listItem listIndent="2" listStyle="disc" listType="bulleted">4.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">5.</listItem>'
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
+							'<listItem listIndent="2" listStyle="disc" listType="bulleted">4.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">5.</listItem>'
 						);
 					}
 				);
@@ -921,34 +923,34 @@ describe( 'ListStyleEditing', () => {
 				it( 'should not inherit the list style if outdented the only one item in the list', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
-					'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>'
 					);
 				} );
 
 				it( 'should not inherit the list style if outdented the only one item in the list (a paragraph below the list)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.[]</listItem>' +
-					'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
-					'<paragraph>Foo</paragraph>'
+						'<listItem listIndent="1" listStyle="disc" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="2" listStyle="square" listType="bulleted">3.</listItem>' +
+						'<paragraph>Foo</paragraph>'
 					);
 
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>1.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
-					'<paragraph>Foo</paragraph>'
+						'<listItem listIndent="0" listStyle="disc" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="square" listType="bulleted">3.</listItem>' +
+						'<paragraph>Foo</paragraph>'
 					);
 				} );
 
@@ -957,16 +959,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 						);
 
 						editor.execute( 'outdentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 						);
 					} );
 
@@ -987,10 +989,10 @@ describe( 'ListStyleEditing', () => {
 				it( 'should use the same batch for indenting a list and updating `listType` attribute', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 
 					editor.execute( 'indentList' );
@@ -998,18 +1000,18 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">1A.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2B.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 				} );
 
 				it( 'should use the same batch for outdenting a list and updating `listType` attribute', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
@@ -1017,8 +1019,8 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 					);
 				} );
 			} );
@@ -1052,24 +1054,24 @@ describe( 'ListStyleEditing', () => {
 				// ■ 2.
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>' +
-					'<paragraph>[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 					);
 
 					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ul style="list-style-type:circle">' +
-						'<li>1.</li>' +
-						'<li>2.</li>' +
-						'<li>3.</li>' +
-					'</ul>' +
-					'<p></p>' +
-					'<ul style="list-style-type:square">' +
-						'<li>1.</li>' +
-						'<li>2.</li>' +
-					'</ul>'
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+							'<li>3.</li>' +
+						'</ul>' +
+						'<p></p>' +
+						'<ul style="list-style-type:square">' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+						'</ul>'
 					);
 
 					// After removing the paragraph.
@@ -1082,12 +1084,12 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
 						'<ul style="list-style-type:circle">' +
-						'<li>1.</li>' +
-						'<li>2.</li>' +
-						'<li>3.</li>' +
-						'<li>1.</li>' +
-						'<li>2.</li>' +
-					'</ul>'
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+							'<li>3.</li>' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+						'</ul>'
 					);
 
 					// After undo.
@@ -1101,15 +1103,15 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
 						'<ul style="list-style-type:circle">' +
-						'<li>1.</li>' +
-						'<li>2.</li>' +
-						'<li>3.</li>' +
-					'</ul>' +
-					'<p></p>' +
-					'<ul style="list-style-type:square">' +
-						'<li>1.</li>' +
-						'<li>2.</li>' +
-					'</ul>'
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+							'<li>3.</li>' +
+						'</ul>' +
+						'<p></p>' +
+						'<ul style="list-style-type:square">' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+						'</ul>'
 					);
 				} );
 			} );
@@ -1160,16 +1162,16 @@ describe( 'ListStyleEditing', () => {
 				it( 'should  not inherit the list style attribute when inserting a todo list item', () => {
 					setModelData( model,
 						'<paragraph>Foo Bar.[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					editor.execute( 'todoList' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
@@ -1209,69 +1211,69 @@ describe( 'ListStyleEditing', () => {
 				it( 'should not do anything while removing a letter inside a listItem', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
-					'<paragraph></paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2[]</listItem>' +
-					'<paragraph></paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2[]</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 				} );
 
 				it( 'should not do anything if there is a non-listItem before the removed content', () => {
 					setModelData( model,
 						'<paragraph>Foo</paragraph>' +
-					'<paragraph>[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>Foo[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 				} );
 
 				it( 'should not do anything if there is a non-listItem after the removed content', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
-					'<paragraph>[]</paragraph>' +
-					'<paragraph>Foo</paragraph>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<paragraph>Foo</paragraph>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
-					'<paragraph>Foo</paragraph>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>' +
+						'<paragraph>Foo</paragraph>'
 					);
 				} );
 
 				it( 'should not do anything if there is no element after the removed content', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
-					'<paragraph>[]</paragraph>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
+						'<paragraph>[]</paragraph>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>'
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.[]</listItem>'
 					);
 				} );
 
@@ -1280,19 +1282,19 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-						'<paragraph>[]</paragraph>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+							'<paragraph>[]</paragraph>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 						);
 
 						editor.execute( 'delete' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 						);
 					}
 				);
@@ -1300,23 +1302,23 @@ describe( 'ListStyleEditing', () => {
 				it( 'should read the `listStyle` attribute from the most outer list', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
-					'<listItem listIndent="2" listStyle="default" listType="numbered">2.1.1</listItem>' +
-					'<paragraph>[]</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
+						'<listItem listIndent="2" listStyle="default" listType="numbered">2.1.1</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
-					'<listItem listIndent="2" listStyle="default" listType="numbered">2.1.1[]</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
+						'<listItem listIndent="2" listStyle="default" listType="numbered">2.1.1[]</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 					);
 				} );
 
@@ -1326,19 +1328,19 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-						'<paragraph>[]</paragraph>' +
-						'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+							'<paragraph>[]</paragraph>' +
+							'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.</listItem>'
 						);
 
 						editor.execute( 'delete' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="decimal" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.</listItem>'
 						);
 					}
 				);
@@ -1348,20 +1350,20 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
-						'<paragraph>Foo</paragraph>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 						);
 
 						editor.execute( 'delete' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">[]</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">[]</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 						);
 					}
 				);
@@ -1371,20 +1373,20 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
-						'<paragraph>Foo</paragraph>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">[3.</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 						);
 
 						editor.execute( 'input', { text: 'Foo' } );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">Foo[]</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">Foo[]</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>'
 						);
 					}
 				);
@@ -1394,20 +1396,20 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">[333.</listItem>' +
-						'<paragraph>Foo</paragraph>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1]11.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">[333.</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1]11.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 						);
 
 						editor.execute( 'delete' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="square" listType="bulleted">111.</listItem>' +
-						'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">[]11.</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+							'<listItem listIndent="0" listStyle="square" listType="bulleted">222.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">[]11.</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 						);
 					}
 				);
@@ -1415,11 +1417,11 @@ describe( 'ListStyleEditing', () => {
 				it( 'should not do anything while typing in a list item', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
-					'<paragraph></paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.[]</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 
 					const modelChangeStub = sinon.stub( model, 'change' ).callThrough();
@@ -1431,11 +1433,11 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2. Foo[]</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
-					'<paragraph></paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2. Foo[]</listItem>' +
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">3.</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>'
 					);
 				} );
 
@@ -1443,38 +1445,38 @@ describe( 'ListStyleEditing', () => {
 				it( 'should not crash when removing a content between intended lists', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[bb</listItem>' +
-					'<listItem listIndent="2" listStyle="default" listType="bulleted">cc]cc</listItem>' +
-					'<listItem listIndent="3" listStyle="default" listType="bulleted">dddd</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[bb</listItem>' +
+						'<listItem listIndent="2" listStyle="default" listType="bulleted">cc]cc</listItem>' +
+						'<listItem listIndent="3" listStyle="default" listType="bulleted">dddd</listItem>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
-					'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[]cc</listItem>' +
-					'<listItem listIndent="2" listStyle="default" listType="bulleted">dddd</listItem>'
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">bb[]cc</listItem>' +
+						'<listItem listIndent="2" listStyle="default" listType="bulleted">dddd</listItem>'
 					);
 				} );
 
 				it( 'should read the `listStyle` attribute from the most outer selected list while removing content between lists', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
-					'<listItem listIndent="2" listStyle="lower-latin" listType="numbered">2.1.1[foo</listItem>' +
-					'<paragraph>Foo</paragraph>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="1" listStyle="circle" listType="bulleted">bar]2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
+						'<listItem listIndent="2" listStyle="lower-latin" listType="numbered">2.1.1[foo</listItem>' +
+						'<paragraph>Foo</paragraph>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="1" listStyle="circle" listType="bulleted">bar]2.</listItem>'
 					);
 
 					editor.execute( 'delete' );
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="square" listType="bulleted">1.</listItem>' +
-					'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
-					'<listItem listIndent="2" listStyle="lower-latin" listType="numbered">2.1.1[]2.</listItem>'
+						'<listItem listIndent="0" listStyle="square" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.1.</listItem>' +
+						'<listItem listIndent="2" listStyle="lower-latin" listType="numbered">2.1.1[]2.</listItem>'
 					);
 				} );
 
@@ -1516,104 +1518,104 @@ describe( 'ListStyleEditing', () => {
 				it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					pasteHtml( editor,
 						'<ul style="list-style-type: square">' +
-						'<li>Foo 1</li>' +
-						'<li>Foo 2</li>' +
-					'</ul>'
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ul>'
 					);
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					pasteHtml( editor,
 						'<ul style="list-style-type: square">' +
-						'<li>Foo 1</li>' +
-						'<li>Foo 2</li>' +
-					'</ul>'
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ul>'
 					);
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
 				it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo 1.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2.</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 3.]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo 1.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2.</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 3.]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					pasteHtml( editor,
 						'<ul style="list-style-type: square">' +
-						'<li>Foo 1</li>' +
-						'<li>Foo 2</li>' +
-					'</ul>'
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ul>'
 					);
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 1</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo 2[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
 				it( 'should do nothing when pasting the similar list', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					pasteHtml( editor,
 						'<ol style="list-style-type: decimal">' +
-						'<li>Foo</li>' +
-					'</ol>'
+							'<li>Foo</li>' +
+						'</ol>'
 					);
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">Foo[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
 				it( 'should replace the entire list if selected', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo Bar]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="decimal" listType="numbered">[Foo Bar]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 
 					pasteHtml( editor,
@@ -1624,8 +1626,8 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-					'<listItem listIndent="1" listStyle="square" listType="bulleted">Foo[]</listItem>' +
-					'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						'<listItem listIndent="1" listStyle="square" listType="bulleted">Foo[]</listItem>' +
+						'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
 					);
 				} );
 
@@ -1674,8 +1676,8 @@ describe( 'ListStyleEditing', () => {
 					it( 'should not throw if a children mutation was fired over colorized text', () => {
 						editor.setData(
 							'<ul>' +
-							'<li><span style="color:hsl(30, 75%, 60%);">helllo</span></li>' +
-						'</ul>'
+								'<li><span style="color:hsl(30, 75%, 60%);">helllo</span></li>' +
+							'</ul>'
 						);
 
 						const viewRoot = view.document.getRoot();
@@ -1708,7 +1710,7 @@ describe( 'ListStyleEditing', () => {
 				.create( {
 					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
 					list: {
-						properties: { styles: false, startIndex: false, reversed: true }
+						numberedProperties: { styles: false, startIndex: false, reversed: true }
 					}
 				} )
 				.then( newEditor => {
@@ -1727,7 +1729,7 @@ describe( 'ListStyleEditing', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.false;
 			} );
 
-			it( 'should not allow set `listReversed` on the `listItem`', () => {
+			it( 'should allow set `listReversed` on the `listItem`', () => {
 				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.true;
 			} );
 
@@ -1737,6 +1739,7 @@ describe( 'ListStyleEditing', () => {
 		} );
 
 		describe( 'command', () => {
+			// TODO
 			it.skip( 'should register listStyle command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
@@ -1746,7 +1749,7 @@ describe( 'ListStyleEditing', () => {
 
 		describe( 'conversion in data pipeline', () => {
 			describe( 'model to data', () => {
-				it.skip( 'should convert single list (type: numbered, reversed: true)', () => {
+				it( 'should convert single list (type: numbered, reversed: true)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
@@ -1755,7 +1758,7 @@ describe( 'ListStyleEditing', () => {
 					expect( editor.getData() ).to.equal( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
-				it.skip( 'should convert single list (type: numbered, reversed: false)', () => {
+				it( 'should convert single list (type: numbered, reversed: false)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
@@ -1764,7 +1767,7 @@ describe( 'ListStyleEditing', () => {
 					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
 				} );
 
-				it.skip( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
+				it( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
@@ -1787,7 +1790,7 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should convert nested numbered lists (main: reversed, nested: non-reversed)', () => {
+				it( 'should convert nested numbered lists (main: reversed, nested: non-reversed)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 1</listItem>' +
@@ -1797,9 +1800,9 @@ describe( 'ListStyleEditing', () => {
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<ol reversed="reversed>' +
+						'<ol reversed="reversed">' +
 							'<li>Foo 1' +
-								'<ol">' +
+								'<ol>' +
 									'<li>Bar 1</li>' +
 									'<li>Bar 2</li>' +
 								'</ol>' +
@@ -1810,7 +1813,7 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should convert nested mixed lists (ul>ol, main: square, nested: reversed)', () => {
+				it( 'should convert nested mixed lists (ul>ol, main: square, nested: reversed)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo 1</listItem>' +
 						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
@@ -1820,7 +1823,7 @@ describe( 'ListStyleEditing', () => {
 					);
 
 					expect( editor.getData() ).to.equal(
-						'<ul">' +
+						'<ul>' +
 							'<li>Foo 1' +
 								'<ol reversed="reversed">' +
 									'<li>Bar 1</li>' +
@@ -1833,7 +1836,7 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should produce nested lists (different `listIndent` attribute)', () => {
+				it( 'should produce nested lists (different `listIndent` attribute)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
@@ -1854,7 +1857,7 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should produce two different lists (different `listReversed` attribute)', () => {
+				it( 'should produce two different lists (different `listReversed` attribute)', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
 						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
