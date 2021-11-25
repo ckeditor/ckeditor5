@@ -141,6 +141,15 @@ function handleDataChange( model, editing ) {
 			const changedListItem = position.nodeBefore;
 			const followingListItem = position.nodeAfter;
 
+			if ( entry.type == 'attribute' && entry.attributeKey == 'listItemId' ) {
+				const item = changedListItem;
+
+				if ( entry.attributeNewValue === null || entry.attributeOldValue === null ) {
+					editing.reconvertItem( item );
+					// @if CK_DEBUG // console.log( 'Refresh item (no list)', item.childCount ? item.getChild( 0 ).data : item );
+				}
+			}
+
 			if ( !changedListItem || !changedListItem.is( 'element' ) || !changedListItem.hasAttribute( 'listItemId' ) ) {
 				continue;
 			}
@@ -163,13 +172,14 @@ function handleDataChange( model, editing ) {
 				if ( viewElement ) {
 					if ( items.length == 1 && !viewElement.is( 'element', 'span' ) ) {
 						editing.reconvertItem( item );
-						// @if CK_DEBUG // console.log( 'Refresh item', item.childCount ? item.getChild( 0 ).data : item );
+						// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
 					} else if ( items.length > 1 && viewElement.is( 'element', 'span' ) ) {
 						editing.reconvertItem( item );
-						// @if CK_DEBUG // console.log( 'Refresh item', item.childCount ? item.getChild( 0 ).data : item );
+						// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
 					}
 				}
 			}
+
 			// TODO refresh bogus in case some list entries got merged (id change) or on indentation change.
 
 			// Reconvert following items that require re-wrapping with LIs and ULs.

@@ -53,9 +53,12 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
 		let viewElement = mapper.toViewElement( listItem );
 		let viewRange;
 
+		const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
+
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		viewRange = viewElement ?
+		// Also, verify if the element is still in the same root.
+		viewRange = viewElement && viewElement.root == viewPosition.root ?
 			mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed() :
 			null;
 

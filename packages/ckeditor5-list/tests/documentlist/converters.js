@@ -1390,7 +1390,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 			} );
 
-			describe.only( 'change type', () => {
+			describe( 'change type', () => {
 				it( 'change first list item', () => {
 					testChangeTypeX(
 						'<paragraph>p</paragraph>' +
@@ -1407,7 +1407,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
-				} )
+				} );
 
 				it( 'change middle list item', () => {
 					testChangeTypeX(
@@ -1534,150 +1534,190 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 			} );
 
-			describe( 'rename from list item', () => {
-				testRenameFromListItem(
-					'rename first list item',
+			describe( 'rename list item element', () => {
+				it( 'rename first list item', () => {
+					testRenameElement(
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
 
-					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
-					'<listItem listIndent="0" listType="bulleted">b</listItem>',
+						'<ul>' +
+							'<li><h2>a</h2></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<p>a</p>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'</ul>'
-				);
+				it( 'rename middle list item', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
 
-				testRenameFromListItem(
-					'rename middle list item',
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><h2>b</h2></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-					'<listItem listIndent="0" listType="bulleted">c</listItem>',
+				it( 'rename last list item', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]',
 
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>b</p>' +
-					'<ul>' +
-					'<li>c</li>' +
-					'</ul>'
-				);
-
-				testRenameFromListItem(
-					'rename last list item',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]',
-
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>b</p>'
-				);
-
-				testRenameFromListItem(
-					'rename only list item',
-
-					'<paragraph>p</paragraph>' +
-					'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
-					'<paragraph>p</paragraph>',
-
-					'<p>p</p>' +
-					'<p>x</p>' +
-					'<p>p</p>'
-				);
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><h2>b</h2></li>' +
+						'</ul>'
+					);
+				} );
 			} );
 
-			describe( 'rename to list item (with attribute change)', () => {
-				testRenameToListItem(
-					'only paragraph', 0,
+			describe( 'remove list item attributes', () => {
+				it( 'rename first list item', () => {
+					testRemoveListAttributes(
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
 
-					'[<paragraph>a</paragraph>]',
+						'<p>a</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>'
-				);
+				it( 'rename middle list item', () => {
+					testRemoveListAttributes(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
 
-				testRenameToListItem(
-					'paragraph between paragraphs', 0,
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>b</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<paragraph>x</paragraph>' +
-					'[<paragraph>a</paragraph>]' +
-					'<paragraph>x</paragraph>',
+				it( 'rename last list item', () => {
+					testRemoveListAttributes(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]',
 
-					'<p>x</p>' +
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>x</p>'
-				);
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>b</p>'
+					);
+				} );
 
-				testRenameToListItem(
-					'element before list of same type', 0,
+				it( 'rename only list item', () => {
+					testRemoveListAttributes(
+						'<paragraph>p</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">x</paragraph>]' +
+						'<paragraph>p</paragraph>',
 
-					'[<paragraph>x</paragraph>]' +
-					'<listItem listIndent="0" listType="bulleted">a</listItem>',
+						'<p>p</p>' +
+						'<p>x</p>' +
+						'<p>p</p>'
+					);
+				} );
+			} );
 
-					'<ul>' +
-					'<li>x</li>' +
-					'<li>a</li>' +
-					'</ul>'
-				);
+			describe( 'set list item attributes', () => {
+				it( 'only paragraph', () => {
+					testSetListItemAttributes( 0,
+						'[<paragraph>a</paragraph>]',
 
-				testRenameToListItem(
-					'element after list of same type', 0,
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<paragraph>x</paragraph>]',
+				it( 'paragraph between paragraphs', () => {
+					testSetListItemAttributes( 0,
+						'<paragraph>x</paragraph>' +
+						'[<paragraph>a</paragraph>]' +
+						'<paragraph>x</paragraph>',
 
-					'<ul>' +
-					'<li>a</li>' +
-					'<li>x</li>' +
-					'</ul>'
-				);
+						'<p>x</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>x</p>'
+					);
+				} );
 
-				testRenameToListItem(
-					'element before list of different type', 0,
+				it( 'element before list of same type', () => {
+					testSetListItemAttributes( 0,
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
 
-					'[<paragraph>x</paragraph>]' +
-					'<listItem listIndent="0" listType="numbered">a</listItem>',
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>x</li>' +
-					'</ul>' +
-					'<ol>' +
-					'<li>a</li>' +
-					'</ol>'
-				);
+				it( 'element after list of same type', () => {
+					testSetListItemAttributes( 0,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph>x</paragraph>]',
 
-				testRenameToListItem(
-					'element after list of different type', 0,
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<listItem listIndent="0" listType="numbered">a</listItem>' +
-					'[<paragraph>x</paragraph>]',
+				it( 'element before list of different type', () => {
+					testSetListItemAttributes( 0,
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>',
 
-					'<ol>' +
-					'<li>a</li>' +
-					'</ol>' +
-					'<ul>' +
-					'<li>x</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+						'</ul>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ol>'
+					);
+				} );
 
-				testRenameToListItem(
-					'element between lists of same type', 0,
+				it( 'element after list of different type', () => {
+					testSetListItemAttributes( 0,
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
+						'[<paragraph>x</paragraph>]',
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<paragraph>x</paragraph>]' +
-					'<listItem listIndent="0" listType="bulleted">b</listItem>',
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>a</li>' +
-					'<li>x</li>' +
-					'<li>b</li>' +
-					'</ul>'
-				);
+				it( 'element between lists of same type', () => {
+					testSetListItemAttributes( 0,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+				} );
 			} );
 
 			describe( 'move', () => {
@@ -4438,31 +4478,48 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testRenameFromListItem( testName, input, output, testUndo = true ) {
+	function testRenameFromListItem() {
+	}
+
+	function testRenameElement( input, output, testUndo = true ) {
 		const actionCallback = selection => {
 			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
-				writer.rename( element, 'paragraph' );
+				writer.rename( element, 'heading1' );
+			} );
+		};
+
+		_test( input, output, actionCallback, testUndo );
+	}
+
+	function testRemoveListAttributes( input, output, testUndo = true ) {
+		const actionCallback = selection => {
+			const element = selection.getFirstPosition().nodeAfter;
+
+			model.change( writer => {
+				writer.removeAttribute( 'listItemId', element );
 				writer.removeAttribute( 'listType', element );
 				writer.removeAttribute( 'listIndent', element );
 			} );
 		};
 
-		// _test( testName, input, output, actionCallback, testUndo );
+		_test( input, output, actionCallback, testUndo );
 	}
 
-	function testRenameToListItem( testName, newIndent, input, output ) {
+	function testRenameToListItem() {
+	}
+
+	function testSetListItemAttributes( newIndent, input, output ) {
 		const actionCallback = selection => {
 			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
-				writer.setAttributes( { listType: 'bulleted', listIndent: newIndent }, element );
-				writer.rename( element, 'listItem' );
+				writer.setAttributes( { listType: 'bulleted', listIndent: newIndent, listItemId: 'x' }, element );
 			} );
 		};
 
-		// _test( testName, input, output, actionCallback );
+		_test( input, output, actionCallback );
 	}
 
 	function testChangeIndent( testName, newIndent, input, output ) {
