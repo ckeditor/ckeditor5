@@ -91,7 +91,7 @@ module.exports = function createHtmlOutputMarkup() {
 			} = packageMetadata.package;
 
 			const sourceFileLink = !isExternalPackage && !isThirdPartyPackage ?
-				`<a href="https://github.com/ckeditor/ckeditor5/blob/master/packages/${ packageName }/ckeditor5-metadata.json">` +
+				`<a href="https://github.com/ckeditor/ckeditor5/blob/stable/packages/${ packageName }/ckeditor5-metadata.json">` +
 					sourceFileMarkup +
 				'</a>' :
 				sourceFileMarkup;
@@ -119,7 +119,7 @@ module.exports = function createHtmlOutputMarkup() {
 };
 
 /**
- * Reads and parses all package metadata files, that match the glob pattern. The returned array is sorted alphabetically by package name.
+ * Reads and parses all package metadata files that match the glob pattern. The returned array is sorted alphabetically by package name.
  *
  * @returns {Array.<ParsedFile>}
  */
