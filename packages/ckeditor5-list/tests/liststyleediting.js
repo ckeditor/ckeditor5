@@ -1877,6 +1877,122 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 			} );
+
+			describe( 'view to model', () => {
+				it.skip( 'should convert single list (type: bulleted)', () => {
+					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+				} );
+
+				it.skip( 'should convert single list (type: numbered, reversed: false)', () => {
+					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" lisetReversed="false" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" lisetReversed="false" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it.skip( 'should convert single list (type: numbered, reversed: true)', () => {
+					editor.setData( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it.skip( 'should convert single list (type: numbered, reversed: true) (key-only)', () => {
+					editor.setData( '<ol reversed><li>Foo</li><li>Bar</li></ol>' );
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it.skip( 'should convert nested and mixed lists', () => {
+					editor.setData(
+						'<ol reversed="reversed">' +
+							'<li>OL 1</li>' +
+							'<li>OL 2' +
+								'<ul>' +
+									'<li>UL 1</li>' +
+									'<li>UL 2</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>OL 3</li>' +
+						'</ol>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 1</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 2</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">UL 1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">UL 2</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">OL 3</listItem>'
+					);
+				} );
+
+				it.skip( 'should convert when the list is in the middle of the content', () => {
+					editor.setData(
+						'<p>Paragraph.</p>' +
+						'<ol reversed="reversed">' +
+							'<li>Foo</li>' +
+							'<li>Bar</li>' +
+						'</ol>' +
+						'<p>Paragraph.</p>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<paragraph>Paragraph.</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
+						'<paragraph>Paragraph.</paragraph>'
+					);
+				} );
+
+				// See: #8262.
+				describe( 'list conversion with surrounding text nodes', () => {
+					let editor;
+
+					beforeEach( () => {
+						return VirtualTestEditor
+							.create( {
+								plugins: [ Paragraph, ListStyleEditing ]
+							} )
+							.then( newEditor => {
+								editor = newEditor;
+							} );
+					} );
+
+					afterEach( () => {
+						return editor.destroy();
+					} );
+
+					it( 'should convert a list if raw text is before the list', () => {
+						editor.setData( 'Foo<ol><li>Foo</li></ol>' );
+
+						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol>' );
+					} );
+
+					it( 'should convert a list if raw text is after the list', () => {
+						editor.setData( '<ol><li>Foo</li></ol>Foo' );
+
+						expect( editor.getData() ).to.equal( '<ol><li>Foo</li></ol><p>Foo</p>' );
+					} );
+
+					it( 'should convert a list if it is surrender by two text nodes', () => {
+						editor.setData( 'Foo<ol><li>Foo</li></ol>Foo' );
+
+						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol><p>Foo</p>' );
+					} );
+				} );
+			} );
 		} );
 	} );
 } );
