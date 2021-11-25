@@ -194,10 +194,6 @@
       "packages/*",
       "external/*",
       "external/*/packages/*",
-      "external/*/external/*",
-      "external/*/external/*/packages/*",
-      "external/*/external/*/packages/**/vendor/ckeditor5",
-      "external/*/external/*/packages/**/frontend",
       "."
     ],
     "nohoist": [
