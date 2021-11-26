@@ -2274,6 +2274,106 @@ describe( 'ListStyleEditing', () => {
 					}
 				);
 			} );
+
+			describe( 'modifying "listType" attribute', () => {
+				it( 'should inherit the reversed attribute when the modified list is the same kind of the list as next sibling', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it(
+					'should inherit the reversed attribute when the modified list is the same kind of the list as previous sibling',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
+						);
+					}
+				);
+
+				it.skip(
+					'should not inherit the reversed attribute when the modified list already has defined it (next sibling check)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						);
+
+						// TODO
+						// editor.execute( 'listStyle', { type: 'disc' } );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
+						);
+					} );
+
+				it.skip(
+					'should not inherit the reversed attribute when the modified list already has defined it (previous sibling check)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+						);
+
+						// TODO
+						// editor.execute( 'listStyle', { type: 'disc' } );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
+						);
+					}
+				);
+
+				it( 'should remove the reversed attribute when changing `listType` to `bulleted`', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
+					);
+
+					editor.execute( 'bulletedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+				} );
+
+				it( 'should add default reversed attribute when changing `listType` to `numbered`', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
+					);
+				} );
+			} );
 		} );
 	} );
 } );

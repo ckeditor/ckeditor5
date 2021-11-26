@@ -562,12 +562,14 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 		}
 
 		for ( const strategy of attributeStrategies ) {
+			const attributeName = strategy.attributeName;
+
 			for ( const item of insertedListItems ) {
 				if ( !strategy.appliesToListItem( item ) ) {
+					writer.removeAttribute( attributeName, item );
+
 					continue;
 				}
-
-				const attributeName = strategy.attributeName;
 
 				if ( !item.hasAttribute( attributeName ) ) {
 					if ( shouldInheritListType( existingListItem, item, strategy ) ) {
