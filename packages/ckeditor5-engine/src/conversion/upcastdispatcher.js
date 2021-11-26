@@ -315,7 +315,7 @@ export default class UpcastDispatcher {
 	 * @private
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#updateConversionResult
 	 */
-	_updateConversionResult( modelElement, data ) {
+	_updateConversionResult( modelElement, data, options = {} ) {
 		const parts = this._getSplitParts( modelElement );
 
 		const writer = this.conversionApi.writer;
@@ -342,6 +342,10 @@ export default class UpcastDispatcher {
 			// Otherwise just continue after inserted element.
 
 			data.modelCursor = data.modelRange.end;
+		}
+
+		if ( options.keepSplitPart ) {
+			this._splitParts.delete( modelElement );
 		}
 	}
 

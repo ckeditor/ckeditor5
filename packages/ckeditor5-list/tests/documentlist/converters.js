@@ -58,7 +58,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 	} );
 
 	describe( 'flat lists', () => {
-		describe( 'setting data', () => {
+		describe.only( 'setting data', () => {
 			it( 'single item', () => {
 				testData(
 					'<ul><li>x</li></ul>',
@@ -360,6 +360,30 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'<p>text</p>' +
 						'<ul>' +
 							'<li>foo</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'inside the list with multiple blocks', () => {
+					testData(
+						'<ul>' +
+							'<li>' +
+								'foo' +
+								'<p>bar</p>' +
+								'baz' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">bar</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">baz</paragraph>',
+
+						'<ul>' +
+							'<li>' +
+								'<p>foo</p>' +
+								'<p>bar</p>' +
+								'<p>baz</p>' +
+							'</li>' +
 						'</ul>'
 					);
 				} );
@@ -1932,7 +1956,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 	} );
 
 	describe( 'nested lists', () => {
-		describe( 'setting data', () => {
+		describe.only( 'setting data', () => {
 			describe( 'non HTML compliant list fixing', () => {
 				it( 'ul in ul', () => {
 					testData(
@@ -2691,6 +2715,119 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'</ul>' +
 					'<p>bar</p>'
 				);
+			} );
+
+			describe( 'auto-paragraphing', () => {
+				it( 'empty outer list', () => {
+					testData(
+						'<ul>' +
+							'<li>' +
+								'<ul>' +
+									'<li>foo</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">foo</paragraph>',
+
+						'<ul>' +
+							'<li>' +
+								'&nbsp;' +
+								'<ul>' +
+									'<li>foo</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+					);
+				} );
+
+				it( 'empty inner list', () => {
+					testData(
+						'<ul>' +
+							'<li>foo' +
+								'<ul>' +
+									'<li></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted"></paragraph>',
+
+						'<ul>' +
+							'<li>' +
+								'foo' +
+								'<ul>' +
+									'<li>&nbsp;</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+					);
+				} );
+
+				it( 'empty inner and outer list', () => {
+					testData(
+						'foo' +
+						'<ul>' +
+							'<li>' +
+								'<ul>' +
+									'<li></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph>foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted"></paragraph>',
+
+						'<p>foo</p>' +
+						'<ul>' +
+							'<li>' +
+								'&nbsp;' +
+								'<ul>' +
+									'<li>&nbsp;</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+					);
+				} );
+
+				it( 'multiple blocks', () => {
+					testData(
+						'a' +
+						'<ul>' +
+							'<li>' +
+								'b' +
+								'<ul>' +
+									'<li>' +
+									'c' +
+									'</li>' +
+								'</ul>' +
+								'd' +
+							'</li>' +
+						'</ul>' +
+						'e',
+
+						'<paragraph>a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">d</paragraph>' +
+						'<paragraph>e</paragraph>',
+
+						'<p>a</p>' +
+						'<ul>' +
+							'<li>' +
+								'<p>b</p>' +
+								'<ul>' +
+									'<li>c</li>' +
+								'</ul>' +
+								'<p>d</p>' +
+							'</li>' +
+						'</ul>' +
+						'<p>e</p>'
+					);
+				} );
 			} );
 
 			describe( 'model tests for nested lists', () => {

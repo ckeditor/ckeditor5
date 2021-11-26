@@ -160,42 +160,24 @@ export function listItemUpcastConverter() {
 	return ( evt, data, conversionApi ) => {
 		const { writer, schema, consumable } = conversionApi;
 
-		if ( !consumable.consume( data.viewItem, { name: true } ) ) {
+		if ( !consumable.test( data.viewItem, { name: true } ) ) {
 			return;
 		}
+
+		const modelElement = writer.createElement( 'paragraph' );
+
+		if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
+			return;
+		}
+
+		conversionApi.consumable.consume( data.viewItem, { name: true } );
+		conversionApi.convertChildren( data.viewItem, modelElement );
+		conversionApi.updateConversionResult( modelElement, data, { keepSplitPart: true } );
+		// TODO the above keeps the split paragraph even if it should not (upcasting <ul><li><p>x</p></li></ul> vs <ul><li>x</li></ul>)
 
 		const id = uid();
 		const indent = getIndent( data.viewItem );
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
-
-		const rangeStart = escapeAutoParagraph( data.modelCursor, schema, writer );
-		let modelCursor = rangeStart;
-
-		for ( const child of data.viewItem.getChildren() ) {
-			if ( isListView( child ) || isListItemView( child ) ) {
-				modelCursor = escapeAutoParagraph( modelCursor, schema, writer );
-				modelCursor = conversionApi.convertItem( child, modelCursor ).modelCursor;
-				modelCursor = escapeAutoParagraph( modelCursor, schema, writer );
-			}
-			else {
-				const conversionResult = conversionApi.convertItem( child, modelCursor );
-				const modelRange = conversionResult.modelRange;
-				const modelNode = modelRange && !modelRange.isCollapsed ? modelRange.start.nodeAfter : null;
-
-				// If the LI is empty or contains an inline nodes then we need to wrap it with a paragraph.
-				// This is needed only in the clipboard pipeline because there content won't get auto-paragraphed.
-				if ( !modelNode || !modelNode.parent.is( 'element', 'paragraph' ) && schema.isInline( modelNode ) ) {
-					modelCursor = enterAutoParagraph( modelRange, writer );
-				} else {
-					modelCursor = conversionResult.modelCursor;
-				}
-			}
-		}
-
-		modelCursor = escapeAutoParagraph( modelCursor, schema, writer );
-
-		data.modelRange = writer.createRange( rangeStart, modelCursor );
-		data.modelCursor = modelCursor;
 
 		for ( const { item } of data.modelRange.getWalker( { shallow: true } ) ) {
 			if ( !item.hasAttribute( 'listItemId' ) && schema.checkAttribute( item, 'listItemId' ) ) {
@@ -229,25 +211,6 @@ export function listUpcastCleanList() {
 			}
 		}
 	};
-}
-
-// TODO
-function enterAutoParagraph( modelRange, writer ) {
-	const paragraph = writer.createElement( 'paragraph' );
-
-	writer.insert( paragraph, modelRange.end );
-	writer.move( modelRange, paragraph, 0 );
-
-	return writer.createPositionAt( paragraph, 'end' );
-}
-
-// TODO
-function escapeAutoParagraph( position, schema, writer ) {
-	if ( !schema.checkChild( position, '$block' ) ) {
-		return writer.createPositionAfter( position.parent );
-	}
-
-	return position;
 }
 
 // TODO
