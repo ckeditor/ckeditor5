@@ -79,10 +79,10 @@ export default class ListStyleEditing extends Plugin {
 		this.listenTo( editor.commands.get( 'numberedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
 
 		// Register a post-fixer that ensures that the `listStyle` attribute is specified in each `listItem` element.
-		model.document.registerPostFixer( fixListStyleAttributeOnListItemElements( editor ) );
+		model.document.registerPostFixer( fixListAttributesOnListItemElements( editor, strategies ) );
 
 		// Set up conversion.
-		editor.conversion.for( 'upcast' ).add( upcastListItemStyle() );
+		editor.conversion.for( 'upcast' ).add( upcastListItemAttributes( strategies ) );
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute( strategies ) );
 
 		// Handle merging two separated lists into the single one.
@@ -230,6 +230,14 @@ function createAttributeStrategies( enabledAttributes ) {
 		result.push( {
 			attributeName: 'listStyle',
 
+			hasDefaultValue( value ) {
+				return value === DEFAULT_LIST_TYPE;
+			},
+
+			appliesToListItem() {
+				return true;
+			},
+
 			// TODO: docs
 			// Updates or removes the `list-style-type` from the `element`.
 			//
@@ -242,6 +250,10 @@ function createAttributeStrategies( enabledAttributes ) {
 				} else {
 					writer.removeStyle( 'list-style-type', element );
 				}
+			},
+
+			getAttributeOnUpcast( listParent ) {
+				return listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
 			}
 		} );
 	}
@@ -249,12 +261,25 @@ function createAttributeStrategies( enabledAttributes ) {
 	if ( enabledAttributes.reversed ) {
 		result.push( {
 			attributeName: 'listReversed',
+
+			hasDefaultValue( value ) {
+				return !value;
+			},
+
+			appliesToListItem( item ) {
+				return item.getAttribute( 'listType' ) == 'numbered';
+			},
+
 			setAttributeOnDowncast( writer, listReversed, element ) {
 				if ( listReversed ) {
 					writer.setAttribute( 'reversed', 'reversed', element );
 				} else {
 					writer.removeAttribute( 'reversed', element );
 				}
+			},
+
+			getAttributeOnUpcast( listParent ) {
+				return listParent.hasAttribute( 'reversed' );
 			}
 		} );
 	}
@@ -266,7 +291,7 @@ function createAttributeStrategies( enabledAttributes ) {
 // If not found, the `"default"` value will be used.
 //
 // @returns {Function}
-function upcastListItemStyle() {
+function upcastListItemAttributes( attributeStrategies ) {
 	return dispatcher => {
 		dispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 			const listParent = data.viewItem.parent;
@@ -277,10 +302,14 @@ function upcastListItemStyle() {
 				return;
 			}
 
-			const listStyle = listParent.getStyle( 'list-style-type' ) || DEFAULT_LIST_TYPE;
 			const listItem = data.modelRange.start.nodeAfter || data.modelRange.end.nodeBefore;
 
-			conversionApi.writer.setAttribute( 'listStyle', listStyle, listItem );
+			for ( const strategy of attributeStrategies ) {
+				if ( strategy.appliesToListItem( listItem ) ) {
+					const listStyle = strategy.getAttributeOnUpcast( listParent );
+					conversionApi.writer.setAttribute( strategy.attributeName, listStyle, listItem );
+				}
+			}
 		}, { priority: 'low' } );
 	};
 }
@@ -491,7 +520,7 @@ function fixListAfterOutdentListCommand( editor ) {
 //
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
-function fixListStyleAttributeOnListItemElements( editor ) {
+function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 	return writer => {
 		let wasFixed = false;
 
@@ -538,39 +567,48 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 			}
 		}
 
-		for ( const item of insertedListItems ) {
-			if ( !item.hasAttribute( 'listStyle' ) ) {
-				if ( shouldInheritListType( existingListItem, item ) ) {
-					writer.setAttribute( 'listStyle', existingListItem.getAttribute( 'listStyle' ), item );
-				} else {
-					writer.setAttribute( 'listStyle', DEFAULT_LIST_TYPE, item );
+		for ( const strategy of attributeStrategies ) {
+			for ( const item of insertedListItems ) {
+				if ( !strategy.appliesToListItem( item ) ) {
+					continue;
 				}
-				wasFixed = true;
-			} else {
-				// Adjust the `listStyle` attribute for inserted (pasted) items. See #8160.
-				//
-				// ■ List item 1. // [listStyle="square", listType="bulleted"]
-				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
-				//     ○ [] (selection is here)
-				//
-				// Then, pasting a list with different attributes (listStyle, listType):
-				//
-				// 1. First. // [listStyle="decimal", listType="numbered"]
-				// 2. Second // [listStyle="decimal", listType="numbered"]
-				//
-				// The `listType` attribute will be corrected by the `ListEditing` converters.
-				// We need to adjust the `listStyle` attribute. Expected structure:
-				//
-				// ■ List item 1. // [listStyle="square", listType="bulleted"]
-				//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
-				//     ○ First. // [listStyle="circle", listType="bulleted"]
-				//     ○ Second // [listStyle="circle", listType="bulleted"]
-				const previousSibling = item.previousSibling;
 
-				if ( shouldInheritListTypeFromPreviousItem( previousSibling, item ) ) {
-					writer.setAttribute( 'listStyle', previousSibling.getAttribute( 'listStyle' ), item );
+				const attributeName = strategy.attributeName;
 
+				if ( !item.hasAttribute( attributeName ) ) {
+					if ( shouldInheritListType( existingListItem, item, strategy ) ) {
+						writer.setAttribute( attributeName, existingListItem.getAttribute( attributeName ), item );
+					} else {
+						writer.setAttribute( attributeName, DEFAULT_LIST_TYPE, item );
+					}
 					wasFixed = true;
+				} else {
+					// Adjust the `listStyle`, `listReversed` and `listStart`
+					// attributes for inserted (pasted) items. See #8160.
+					//
+					// ■ List item 1. // [listStyle="square", listType="bulleted"]
+					//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+					//     ○ [] (selection is here)
+					//
+					// Then, pasting a list with different attributes (listStyle, listType):
+					//
+					// 1. First. // [listStyle="decimal", listType="numbered"]
+					// 2. Second // [listStyle="decimal", listType="numbered"]
+					//
+					// The `listType` attribute will be corrected by the `ListEditing` converters.
+					// We need to adjust the `listStyle` attribute. Expected structure:
+					//
+					// ■ List item 1. // [listStyle="square", listType="bulleted"]
+					//     ○ List item 1.1. // [listStyle="circle", listType="bulleted"]
+					//     ○ First. // [listStyle="circle", listType="bulleted"]
+					//     ○ Second // [listStyle="circle", listType="bulleted"]
+					const previousSibling = item.previousSibling;
+
+					if ( shouldInheritListTypeFromPreviousItem( previousSibling, item, strategy.attributeName ) ) {
+						writer.setAttribute( attributeName, previousSibling.getAttribute( attributeName ), item );
+
+						wasFixed = true;
+					}
 				}
 			}
 		}
@@ -587,18 +625,18 @@ function fixListStyleAttributeOnListItemElements( editor ) {
 // @param {module:engine/model/element~Element|null} baseItem
 // @param {module:engine/model/element~Element} itemToChange
 // @returns {Boolean}
-function shouldInheritListType( baseItem, itemToChange ) {
+function shouldInheritListType( baseItem, itemToChange, attributeStrategy ) {
 	if ( !baseItem ) {
 		return false;
 	}
 
-	const baseListStyle = baseItem.getAttribute( 'listStyle' );
+	const baseListAttribute = baseItem.getAttribute( attributeStrategy.attributeName );
 
-	if ( !baseListStyle ) {
+	if ( !baseListAttribute ) {
 		return false;
 	}
 
-	if ( baseListStyle === DEFAULT_LIST_TYPE ) {
+	if ( attributeStrategy.hasDefaultValue( baseListAttribute ) ) {
 		return false;
 	}
 
@@ -617,7 +655,7 @@ function shouldInheritListType( baseItem, itemToChange ) {
 // @param {module:engine/model/element~Element|null} previousItem
 // @param {module:engine/model/element~Element} itemToChange
 // @returns {Boolean}
-function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange ) {
+function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange, attributeName ) {
 	if ( !previousItem || !previousItem.is( 'element', 'listItem' ) ) {
 		return false;
 	}
@@ -632,9 +670,9 @@ function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange ) {
 		return false;
 	}
 
-	const previousItemListStyle = previousItem.getAttribute( 'listStyle' );
+	const previousItemListAttribute = previousItem.getAttribute( attributeName );
 
-	if ( !previousItemListStyle || previousItemListStyle === itemToChange.getAttribute( 'listStyle' ) ) {
+	if ( !previousItemListAttribute || previousItemListAttribute === itemToChange.getAttribute( attributeName ) ) {
 		return false;
 	}
 

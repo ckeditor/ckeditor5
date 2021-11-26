@@ -1879,7 +1879,7 @@ describe( 'ListStyleEditing', () => {
 			} );
 
 			describe( 'view to model', () => {
-				it.skip( 'should convert single list (type: bulleted)', () => {
+				it( 'should convert single list (type: bulleted)', () => {
 					editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -1888,16 +1888,16 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should convert single list (type: numbered, reversed: false)', () => {
+				it( 'should convert single list (type: numbered, reversed: false)', () => {
 					editor.setData( '<ol><li>Foo</li><li>Bar</li></ol>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-						'<listItem listIndent="0" lisetReversed="false" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" lisetReversed="false" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
 					);
 				} );
 
-				it.skip( 'should convert single list (type: numbered, reversed: true)', () => {
+				it( 'should convert single list (type: numbered, reversed: true)', () => {
 					editor.setData( '<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -1906,7 +1906,7 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should convert single list (type: numbered, reversed: true) (key-only)', () => {
+				it( 'should convert single list (type: numbered, reversed: true) (attribute without value)', () => {
 					editor.setData( '<ol reversed><li>Foo</li><li>Bar</li></ol>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
@@ -1915,9 +1915,9 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should convert nested and mixed lists', () => {
+				it( 'should convert nested and mixed lists', () => {
 					editor.setData(
-						'<ol reversed="reversed">' +
+						'<ol reversed>' +
 							'<li>OL 1</li>' +
 							'<li>OL 2' +
 								'<ul>' +
@@ -1938,7 +1938,7 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it.skip( 'should convert when the list is in the middle of the content', () => {
+				it( 'should convert when the list is in the middle of the content', () => {
 					editor.setData(
 						'<p>Paragraph.</p>' +
 						'<ol reversed="reversed">' +
@@ -1991,6 +1991,89 @@ describe( 'ListStyleEditing', () => {
 
 						expect( editor.getData() ).to.equal( '<p>Foo</p><ol><li>Foo</li></ol><p>Foo</p>' );
 					} );
+				} );
+			} );
+		} );
+
+		describe( 'conversion in editing pipeline', () => {
+			describe( 'model to view', () => {
+				it( 'should convert single list (type: bulleted)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<ul><li>Foo</li><li>Bar</li></ul>'
+					);
+				} );
+
+				it( 'should convert single list (type: numbered, reversed: true)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Bar</listItem>'
+					);
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<ol reversed="reversed"><li>Foo</li><li>Bar</li></ol>'
+					);
+				} );
+
+				it( 'should convert single list (type: numbered, reversed: false)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Bar</listItem>'
+					);
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<ol><li>Foo</li><li>Bar</li></ol>'
+					);
+				} );
+
+				it( 'should convert nested numbered lists (main: non-reversed, nested: reversed)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="true">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="false">Foo 3</listItem>'
+					);
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<ol>' +
+							'<li>Foo 1' +
+								'<ol reversed="reversed">' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>Foo 2</li>' +
+							'<li>Foo 3</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'should convert nested numbered lists (main: reversed, nested: non-reversed)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 1</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listReversed="false">Bar 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 2</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listReversed="true">Foo 3</listItem>'
+					);
+
+					expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
+						'<ol reversed="reversed">' +
+							'<li>Foo 1' +
+								'<ol>' +
+									'<li>Bar 1</li>' +
+									'<li>Bar 2</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>Foo 2</li>' +
+							'<li>Foo 3</li>' +
+						'</ol>'
+					);
 				} );
 			} );
 		} );
