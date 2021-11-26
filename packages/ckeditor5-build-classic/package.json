@@ -35,6 +35,7 @@
     "@ckeditor/ckeditor5-easy-image": "^31.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^31.0.0",
     "@ckeditor/ckeditor5-essentials": "^31.0.0",
+    "@ckeditor/ckeditor5-font": "^31.0.0",
     "@ckeditor/ckeditor5-heading": "^31.0.0",
     "@ckeditor/ckeditor5-image": "^31.0.0",
     "@ckeditor/ckeditor5-indent": "^31.0.0",
@@ -43,6 +44,7 @@
     "@ckeditor/ckeditor5-media-embed": "^31.0.0",
     "@ckeditor/ckeditor5-paragraph": "^31.0.0",
     "@ckeditor/ckeditor5-paste-from-office": "^31.0.0",
+    "@ckeditor/ckeditor5-special-characters": "^31.0.0",
     "@ckeditor/ckeditor5-table": "^31.0.0",
     "@ckeditor/ckeditor5-typing": "^31.0.0"
   },
