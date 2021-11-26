@@ -4807,8 +4807,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 	function testData( input, modelData, output = input ) {
 		editor.setData( input );
 
-		expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
 		expect( editor.getData(), 'output data' ).to.equal( output );
+		expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
 	}
 
 	function testInsert() {

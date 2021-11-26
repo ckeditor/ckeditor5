@@ -158,32 +158,29 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } =
  */
 export function listItemUpcastConverter() {
 	return ( evt, data, conversionApi ) => {
-		const { writer, schema, consumable } = conversionApi;
+		const { writer, schema } = conversionApi;
 
-		if ( !consumable.test( data.viewItem, { name: true } ) ) {
+		if ( !data.modelRange ) {
 			return;
 		}
-
-		const modelElement = writer.createElement( 'paragraph' );
-
-		if ( !conversionApi.safeInsert( modelElement, data.modelCursor ) ) {
-			return;
-		}
-
-		conversionApi.consumable.consume( data.viewItem, { name: true } );
-		conversionApi.convertChildren( data.viewItem, modelElement );
-		conversionApi.updateConversionResult( modelElement, data, { keepSplitPart: true } );
-		// TODO the above keeps the split paragraph even if it should not (upcasting <ul><li><p>x</p></li></ul> vs <ul><li>x</li></ul>)
 
 		const id = uid();
 		const indent = getIndent( data.viewItem );
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 
-		for ( const { item } of data.modelRange.getWalker( { shallow: true } ) ) {
+		const items = Array.from( data.modelRange.getWalker( { shallow: true } ) ).map( ( { item } ) => item );
+
+		for ( const item of items ) {
 			if ( !item.hasAttribute( 'listItemId' ) && schema.checkAttribute( item, 'listItemId' ) ) {
 				writer.setAttribute( 'listItemId', id, item );
 				writer.setAttribute( 'listIndent', indent, item );
 				writer.setAttribute( 'listType', type, item );
+			}
+		}
+
+		if ( items.length > 1 ) {
+			if ( items[ 1 ].getAttribute( 'listItemId' ) != id ) {
+				conversionApi.keepEmptyElement( items[ 0 ] );
 			}
 		}
 	};

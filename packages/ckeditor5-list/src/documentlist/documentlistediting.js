@@ -57,11 +57,13 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.data.mapper.registerViewToModelLength( 'li', createViewListItemModelLength( editor.data.mapper, editor.model.schema ) );
 
-		editor.conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on( 'element:li', listItemUpcastConverter() );
-			dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
-			dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
-		} );
+		editor.conversion.for( 'upcast' )
+			.elementToElement( { view: 'li', model: 'paragraph' } )
+			.add( dispatcher => {
+				dispatcher.on( 'element:li', listItemUpcastConverter() );
+				dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
+				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
+			} );
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
 			const attributes = [ 'listItemId', 'listType', 'listIndent' ];

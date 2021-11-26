@@ -170,6 +170,7 @@ export default class UpcastDispatcher {
 		// Advanced API - use only if custom position handling is needed.
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 		this.conversionApi.getSplitParts = this._getSplitParts.bind( this );
+		this.conversionApi.keepEmptyElement = this._keepEmptyElement.bind( this );
 	}
 
 	/**
@@ -315,7 +316,7 @@ export default class UpcastDispatcher {
 	 * @private
 	 * @see module:engine/conversion/upcastdispatcher~UpcastConversionApi#updateConversionResult
 	 */
-	_updateConversionResult( modelElement, data, options = {} ) {
+	_updateConversionResult( modelElement, data ) {
 		const parts = this._getSplitParts( modelElement );
 
 		const writer = this.conversionApi.writer;
@@ -342,10 +343,6 @@ export default class UpcastDispatcher {
 			// Otherwise just continue after inserted element.
 
 			data.modelCursor = data.modelRange.end;
-		}
-
-		if ( options.keepSplitPart ) {
-			this._splitParts.delete( modelElement );
 		}
 	}
 
@@ -456,6 +453,14 @@ export default class UpcastDispatcher {
 		}
 
 		return parts;
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_keepEmptyElement( element ) {
+		this._splitParts.delete( element );
 	}
 
 	/**
