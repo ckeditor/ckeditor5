@@ -129,23 +129,19 @@ describe( 'ListStyleUI', () => {
 				} );
 			} );
 
-			describe( 'toolbar with style buttons', () => {
-				let toolbarView;
+			describe( 'grid with style buttons', () => {
+				let stylesView;
 
 				beforeEach( () => {
-					toolbarView = bulletedListDropdown.toolbarView;
-				} );
-
-				it( 'should be in the dropdown panel', () => {
-					expect( bulletedListDropdown.panelView.children.get( 0 ) ).to.equal( toolbarView );
+					stylesView = bulletedListDropdown.panelView.children.get( 0 ).stylesView;
 				} );
 
 				it( 'should have a proper ARIA label', () => {
-					expect( toolbarView.ariaLabel ).to.equal( 'Bulleted list styles toolbar' );
+					expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Bulleted list styles toolbar' );
 				} );
 
 				it( 'should bring the "disc" list style button', () => {
-					const buttonView = toolbarView.items.get( 0 );
+					const buttonView = stylesView.children.get( 0 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
 					expect( buttonView.tooltip ).to.equal( 'Disc' );
@@ -153,7 +149,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "circle" list style button', () => {
-					const buttonView = toolbarView.items.get( 1 );
+					const buttonView = stylesView.children.get( 1 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
 					expect( buttonView.tooltip ).to.equal( 'Circle' );
@@ -161,7 +157,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "square" list style button', () => {
-					const buttonView = toolbarView.items.get( 2 );
+					const buttonView = stylesView.children.get( 2 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the square list style' );
 					expect( buttonView.tooltip ).to.equal( 'Square' );
@@ -173,7 +169,7 @@ describe( 'ListStyleUI', () => {
 
 					beforeEach( () => {
 						// "circle"
-						styleButtonView = toolbarView.items.get( 1 );
+						styleButtonView = stylesView.children.get( 1 );
 
 						sinon.spy( editor, 'execute' );
 						sinon.spy( editor.editing.view, 'focus' );
@@ -326,23 +322,19 @@ describe( 'ListStyleUI', () => {
 				} );
 			} );
 
-			describe( 'toolbar with style buttons', () => {
-				let toolbarView;
+			describe( 'grid with style buttons', () => {
+				let stylesView;
 
 				beforeEach( () => {
-					toolbarView = numberedListDropdown.toolbarView;
-				} );
-
-				it( 'should be in the dropdown panel', () => {
-					expect( numberedListDropdown.panelView.children.get( 0 ) ).to.equal( toolbarView );
+					stylesView = numberedListDropdown.panelView.children.get( 0 ).stylesView;
 				} );
 
 				it( 'should have a proper ARIA label', () => {
-					expect( toolbarView.ariaLabel ).to.equal( 'Numbered list styles toolbar' );
+					expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Numbered list styles toolbar' );
 				} );
 
 				it( 'should bring the "decimal" list style button', () => {
-					const buttonView = toolbarView.items.get( 0 );
+					const buttonView = stylesView.children.get( 0 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
 					expect( buttonView.tooltip ).to.equal( 'Decimal' );
@@ -350,7 +342,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "decimal-leading-zero" list style button', () => {
-					const buttonView = toolbarView.items.get( 1 );
+					const buttonView = stylesView.children.get( 1 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
 					expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
@@ -358,7 +350,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "lower-roman" list style button', () => {
-					const buttonView = toolbarView.items.get( 2 );
+					const buttonView = stylesView.children.get( 2 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
 					expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
@@ -366,7 +358,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "upper-roman" list style button', () => {
-					const buttonView = toolbarView.items.get( 3 );
+					const buttonView = stylesView.children.get( 3 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
 					expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
@@ -374,7 +366,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "lower–latin" list style button', () => {
-					const buttonView = toolbarView.items.get( 4 );
+					const buttonView = stylesView.children.get( 4 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
 					expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
@@ -382,7 +374,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "upper–latin" list style button', () => {
-					const buttonView = toolbarView.items.get( 5 );
+					const buttonView = stylesView.children.get( 5 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
 					expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
@@ -394,7 +386,7 @@ describe( 'ListStyleUI', () => {
 
 					beforeEach( () => {
 						// "decimal-leading-zero""
-						styleButtonView = toolbarView.items.get( 1 );
+						styleButtonView = stylesView.children.get( 1 );
 
 						sinon.spy( editor, 'execute' );
 						sinon.spy( editor.editing.view, 'focus' );

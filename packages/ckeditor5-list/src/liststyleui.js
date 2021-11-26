@@ -149,7 +149,7 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 	// @returns {module:ui/dropdown/dropdownview~DropdownView}
 	return locale => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
-		const splitButtonView = dropdownView.buttonView;
+		const buttonView = dropdownView.buttonView;
 		const shouldRenderNumberedListPropertyFields = isNumberedListDropdown &&
 			( enabledProperties.startIndex || enabledProperties.reversed );
 		let numberedListPropertyCommands;
@@ -164,19 +164,20 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 		dropdownView.bind( 'isEnabled' ).to( parentCommand );
 		dropdownView.class = 'ck-list-styles-dropdown';
 
-		splitButtonView.on( 'listStyle', () => {
+		// Main button was clicked.
+		buttonView.on( 'execute', () => {
 			editor.execute( parentCommandName );
 			editor.editing.view.focus();
 		} );
 
-		splitButtonView.set( {
+		buttonView.set( {
 			label: buttonLabel,
 			icon: buttonIcon,
 			tooltip: true,
 			isToggleable: true
 		} );
 
-		splitButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
+		buttonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
 
 		const listPropertiesView = new ListPropertiesView( locale, {
 			styleGridAriaLabel,
