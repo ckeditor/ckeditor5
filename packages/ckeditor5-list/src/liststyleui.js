@@ -140,7 +140,7 @@ function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, button
 	const parentCommand = editor.commands.get( parentCommandName );
 	const listStyleCommand = editor.commands.get( 'listStyle' );
 	const styleButtonCreator = getStyleButtonCreator( { editor, parentCommandName, listStyleCommand } );
-	const enabledProperties = Object.fromEntries( editor.config.get( 'list.properties' ).map( key => [ key, true ] ) );
+	const enabledProperties = Object.fromEntries( editor.config.get( 'list.numberedProperties' ).map( key => [ key, true ] ) );
 	const isNumberedListDropdown = parentCommandName == 'numberedList';
 	const shouldIncludeStyles = isNumberedListDropdown ? !!enabledProperties.styles : true;
 	const styleButtonViews = shouldIncludeStyles ? styleDefinitions.map( styleButtonCreator ) : null;

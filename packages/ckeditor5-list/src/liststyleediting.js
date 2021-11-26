@@ -51,6 +51,8 @@ export default class ListStyleEditing extends Plugin {
 			allowAttributes: [ 'listStyle' ]
 		} );
 
+		editor.config.define( 'list.numberedProperties', [ 'styles', 'startIndex', 'reversed' ] );
+
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 		editor.commands.add( 'listReversed', new Command( editor ) );
 		editor.commands.add( 'listStart', new Command( editor ) );
