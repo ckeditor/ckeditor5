@@ -229,10 +229,7 @@ function createAttributeStrategies( enabledAttributes ) {
 	if ( enabledAttributes.styles ) {
 		result.push( {
 			attributeName: 'listStyle',
-
-			hasDefaultValue( value ) {
-				return value === DEFAULT_LIST_TYPE;
-			},
+			defaultValue: DEFAULT_LIST_TYPE,
 
 			appliesToListItem() {
 				return true;
@@ -261,10 +258,7 @@ function createAttributeStrategies( enabledAttributes ) {
 	if ( enabledAttributes.reversed ) {
 		result.push( {
 			attributeName: 'listReversed',
-
-			hasDefaultValue( value ) {
-				return !value;
-			},
+			defaultValue: false,
 
 			appliesToListItem( item ) {
 				return item.getAttribute( 'listType' ) == 'numbered';
@@ -579,7 +573,7 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 					if ( shouldInheritListType( existingListItem, item, strategy ) ) {
 						writer.setAttribute( attributeName, existingListItem.getAttribute( attributeName ), item );
 					} else {
-						writer.setAttribute( attributeName, DEFAULT_LIST_TYPE, item );
+						writer.setAttribute( attributeName, strategy.defaultValue, item );
 					}
 					wasFixed = true;
 				} else {
@@ -636,7 +630,7 @@ function shouldInheritListType( baseItem, itemToChange, attributeStrategy ) {
 		return false;
 	}
 
-	if ( attributeStrategy.hasDefaultValue( baseListAttribute ) ) {
+	if ( baseListAttribute == attributeStrategy.defaultValue ) {
 		return false;
 	}
 

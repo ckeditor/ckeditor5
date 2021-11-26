@@ -2077,5 +2077,203 @@ describe( 'ListStyleEditing', () => {
 				} );
 			} );
 		} );
+
+		describe( 'integrations', () => {
+			describe( 'merging a list into a reversed list', () => {
+				it(
+					'should inherit the reversed attribute ' +
+					'when merging the same kind of lists (from top, merge a single item, reversed: true)',
+					() => {
+						setModelData( model,
+							'<paragraph>Foo Bar.[]</paragraph>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should inherit the reversed attribute ' +
+					'when merging the same kind of lists (from top, merge a single item, reversed: false)',
+					() => {
+						setModelData( model,
+							'<paragraph>Foo Bar.[]</paragraph>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should inherit the reversed attribute ' +
+					'when merging the same kind of lists (from top, merge a single item, bulleted)',
+					() => {
+						setModelData( model,
+							'<paragraph>Foo Bar.[]</paragraph>' +
+							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+						);
+
+						editor.execute( 'bulletedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+						);
+					}
+				);
+
+				it( 'should inherit the reversed attribute when merging the same kind of lists (from top, merge a few items)', () => {
+					setModelData( model,
+						'<paragraph>[Foo Bar 1.</paragraph>' +
+						'<paragraph>Foo Bar 2.]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">[Foo Bar 1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar 2.]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should not inherit anything if there is no list below the inserted list (numbered)', () => {
+					setModelData( model,
+						'<paragraph>Foo Bar 1.[]</paragraph>' +
+						'<paragraph>Foo Bar 2.</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar 1.[]</listItem>' +
+						'<paragraph>Foo Bar 2.</paragraph>'
+					);
+				} );
+
+				it( 'should not inherit anything if there is no list below the inserted list (bulleted)', () => {
+					setModelData( model,
+						'<paragraph>Foo Bar 1.[]</paragraph>' +
+						'<paragraph>Foo Bar 2.</paragraph>'
+					);
+
+					editor.execute( 'bulletedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo Bar 1.[]</listItem>' +
+						'<paragraph>Foo Bar 2.</paragraph>'
+					);
+				} );
+
+				it( 'should not inherit anything if replacing the entire content with a list', () => {
+					setModelData( model,
+						'<paragraph>Foo Bar 1.[]</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar 1.[]</listItem>'
+					);
+				} );
+
+				it(
+					'should not inherit the reversed attribute when merging different kind of lists (from top, merge a single item)',
+					() => {
+						setModelData( model,
+							'<paragraph>Foo Bar.[]</paragraph>' +
+							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+						);
+					} );
+
+				it(
+					'should not inherit the reversed attribute when merging different kind of lists (from bottom, merge a single item)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
+							'<paragraph>Foo Bar.[]</paragraph>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">Bar</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should inherit the reversed attribute when merging the same kind of lists (from bottom, merge a single item)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
+							'<paragraph>Foo Bar.[]</paragraph>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
+						);
+					} );
+
+				it(
+					'should inherit the reversed attribute from listIndent=0 element when merging the same kind of lists (from bottom)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">Bar</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">Foo Bar</listItem>' +
+							'<paragraph>Foo Bar.[]</paragraph>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">Bar</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">Foo Bar</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
+						);
+					}
+				);
+			} );
+		} );
 	} );
 } );
