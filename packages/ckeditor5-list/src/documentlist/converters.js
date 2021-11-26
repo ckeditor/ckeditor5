@@ -168,13 +168,14 @@ export function listItemUpcastConverter() {
 		const indent = getIndent( data.viewItem );
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 
-		let modelCursor = data.modelCursor;
+		const rangeStart = escapeAutoParagraph( data.modelCursor, schema, writer );
+		let modelCursor = rangeStart;
 
 		for ( const child of data.viewItem.getChildren() ) {
 			if ( isListView( child ) || isListItemView( child ) ) {
-				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
+				modelCursor = escapeAutoParagraph( modelCursor, schema, writer );
 				modelCursor = conversionApi.convertItem( child, modelCursor ).modelCursor;
-				modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
+				modelCursor = escapeAutoParagraph( modelCursor, schema, writer );
 			}
 			else {
 				const conversionResult = conversionApi.convertItem( child, modelCursor );
@@ -191,9 +192,9 @@ export function listItemUpcastConverter() {
 			}
 		}
 
-		modelCursor = escapeAutoParagraph( modelCursor, data.modelCursor, writer );
+		modelCursor = escapeAutoParagraph( modelCursor, schema, writer );
 
-		data.modelRange = writer.createRange( data.modelCursor, modelCursor );
+		data.modelRange = writer.createRange( rangeStart, modelCursor );
 		data.modelCursor = modelCursor;
 
 		for ( const { item } of data.modelRange.getWalker( { shallow: true } ) ) {
@@ -241,12 +242,12 @@ function enterAutoParagraph( modelRange, writer ) {
 }
 
 // TODO
-function escapeAutoParagraph( nextPosition, modelCursor, writer ) {
-	if ( nextPosition.path.length > modelCursor.path.length ) {
-		return writer.createPositionAfter( nextPosition.parent );
+function escapeAutoParagraph( position, schema, writer ) {
+	if ( !schema.checkChild( position, '$block' ) ) {
+		return writer.createPositionAfter( position.parent );
 	}
 
-	return nextPosition;
+	return position;
 }
 
 // TODO

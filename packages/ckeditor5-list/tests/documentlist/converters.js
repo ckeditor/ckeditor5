@@ -278,6 +278,93 @@ describe.only( 'DocumentListEditing - converters', () => {
 				);
 			} );
 
+			describe( 'auto-paragraphing', () => {
+				it( 'before and inside the list', () => {
+					testData(
+						'text' +
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>',
+
+						'<paragraph>text</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>',
+
+						'<p>text</p>' +
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'before the list', () => {
+					testData(
+						'text' +
+						'<ul>' +
+							'<li><p>foo</p></li>' +
+						'</ul>',
+
+						'<paragraph>text</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>',
+
+						'<p>text</p>' +
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'after and inside the list', () => {
+					testData(
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>' +
+						'text',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+						'<paragraph>text</paragraph>',
+
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>' +
+						'<p>text</p>'
+					);
+				} );
+
+				it( 'after the list', () => {
+					testData(
+						'<ul>' +
+							'<li><p>foo</p></li>' +
+						'</ul>' +
+						'text',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+						'<paragraph>text</paragraph>',
+
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>' +
+						'<p>text</p>'
+					);
+				} );
+
+				it( 'inside the list', () => {
+					testData(
+						'<p>text</p>' +
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>',
+
+						'<paragraph>text</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>',
+
+						'<p>text</p>' +
+						'<ul>' +
+							'<li>foo</li>' +
+						'</ul>'
+					);
+				} );
+			} );
+
 			describe( 'block elements inside list items', () => {
 				describe( 'single block', () => {
 					it( 'single item', () => {
@@ -1181,7 +1268,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 			} );
 		} );
 
-		describe.only( 'convert changes', () => {
+		describe( 'convert changes', () => {
 			describe( 'insert', () => {
 				it( 'list item at the beginning of same list type', () => {
 					testInsertX(
@@ -1721,728 +1808,890 @@ describe.only( 'DocumentListEditing - converters', () => {
 			} );
 
 			describe( 'move', () => {
-				testMove(
-					'list item inside same list',
+				it( 'list item inside same list', () => {
+					testMoveX(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">c</paragraph>',
 
-					'<paragraph>p</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-					'<listItem listIndent="0" listType="bulleted">c</listItem>',
+						4, // Move after last item.
 
-					4, // Move after last item.
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<p>p</p>' +
-					'<ul>' +
-					'<li>a</li>' +
-					'<li>c</li>' +
-					'<li>b</li>' +
-					'</ul>'
-				);
+				it( 'out list item from list', () => {
+					testMoveX(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph>p</paragraph>',
 
-				testMove(
-					'out list item from list',
+						4, // Move after second paragraph.
 
-					'<paragraph>p</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-					'<paragraph>p</paragraph>',
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					4, // Move after second paragraph.
+				it( 'the only list item', () => {
+					testMoveX(
+						'<paragraph>p</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+						'<paragraph>p</paragraph>',
 
-					'<p>p</p>' +
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>p</p>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'</ul>'
-				);
+						3, // Move after second paragraph.
 
-				testMove(
-					'the only list item',
+						'<p>p</p>' +
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<paragraph>p</paragraph>' +
-					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
-					'<paragraph>p</paragraph>',
+				it( 'list item between two lists of same type', () => {
+					testMoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>',
 
-					3, // Move after second paragraph.
+						4, // Move between list item "c" and list item "d'.
 
-					'<p>p</p>' +
-					'<p>p</p>' +
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+						'</ul>'
+					);
+				} );
 
-				testMove(
-					'list item between two lists of same type',
+				it( 'list item between two lists of different type', () => {
+					testMoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="numbered">c</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="numbered">d</paragraph>',
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-					'<paragraph>p</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">d</listItem>',
+						4, // Move between list item "c" and list item "d'.
 
-					4, // Move between list item "c" and list item "d'.
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>p</p>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+						'</ol>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>p</p>' +
-					'<ul>' +
-					'<li>c</li>' +
-					'<li>b</li>' +
-					'<li>d</li>' +
-					'</ul>'
-				);
+				it( 'element between list items', () => {
+					testMoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+						'[<paragraph>p</paragraph>]',
 
-				testMove(
-					'list item between two lists of different type',
+						1, // Move between list item "a" and list item "b'.
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-					'<paragraph>p</paragraph>' +
-					'<listItem listIndent="0" listType="numbered">c</listItem>' +
-					'<listItem listIndent="0" listType="numbered">d</listItem>',
-
-					4, // Move between list item "c" and list item "d'.
-
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>p</p>' +
-					'<ol>' +
-					'<li>c</li>' +
-					'</ol>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'</ul>' +
-					'<ol>' +
-					'<li>d</li>' +
-					'</ol>'
-				);
-
-				testMove(
-					'element between list items',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-					'[<paragraph>p</paragraph>]',
-
-					1, // Move between list item "a" and list item "b'.
-
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<p>p</p>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+				} );
 			} );
 		} );
 	} );
 
 	describe( 'nested lists', () => {
 		describe( 'setting data', () => {
-			function testList( string, expectedString = null ) {
-				return () => {
-					editor.setData( string );
-					expect( editor.getData() ).to.equalMarkup( expectedString || string );
-				};
-			}
-
 			describe( 'non HTML compliant list fixing', () => {
-				it( 'ul in ul', testList(
-					'<ul>' +
-					'<ul>' +
-					'<li>1.1</li>' +
-					'</ul>' +
-					'</ul>',
-					'<ul>' +
-					'<li>1.1</li>' +
-					'</ul>'
-				) );
+				it( 'ul in ul', () => {
+					testData(
+						'<ul>' +
+							'<ul>' +
+								'<li>1.1</li>' +
+							'</ul>' +
+						'</ul>',
 
-				it( 'ul in ol', testList(
-					'<ol>' +
-					'<ul>' +
-					'<li>1.1</li>' +
-					'</ul>' +
-					'</ol>',
-					'<ul>' +
-					'<li>1.1</li>' +
-					'</ul>'
-				) );
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>',
 
-				it( 'ul in ul (previous sibling is li)', testList(
-					'<ul>' +
-					'<li>1</li>' +
-					'<ul>' +
-					'<li>2.1</li>' +
-					'</ul>' +
-					'</ul>',
-					'<ul>' +
-					'<li>1' +
-					'<ul>' +
-					'<li>2.1</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				) );
+						'<ul>' +
+							'<li>1.1</li>' +
+						'</ul>'
+					);
+				} );
 
-				it( 'ul in deeply nested ul - base index > 0 #1', testList(
-					'<ul>' +
-					'<li>1.1</li>' +
-					'<li>1.2' +
-					'<ul>' +
-					'<ul>' +
-					'<ul>' +
-					'<ul>' +
-					'<li>2.1</li>' +
-					'</ul>' +
-					'</ul>' +
-					'</ul>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>',
-					'<ul>' +
-					'<li>1.1</li>' +
-					'<li>1.2' +
-					'<ul>' +
-					'<li>2.1</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				) );
+				it( 'ul in ol', () => {
+					testData(
+						'<ol>' +
+							'<ul>' +
+								'<li>1.1</li>' +
+							'</ul>' +
+						'</ol>',
 
-				it( 'ul in deeply nested ul - base index > 0 #2', testList(
-					'<ul>' +
-					'<li>1.1</li>' +
-					'<li>1.2' +
-					'<ul>' +
-					'<li>2.1</li>' +
-					'<ul>' +
-					'<ul>' +
-					'<ul>' +
-					'<li>3.1</li>' +
-					'</ul>' +
-					'</ul>' +
-					'</ul>' +
-					'<li>2.2</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>',
-					'<ul>' +
-					'<li>1.1</li>' +
-					'<li>1.2' +
-					'<ul>' +
-					'<li>2.1' +
-					'<ul>' +
-					'<li>3.1</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>2.2</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				) );
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>',
 
-				it( 'ul in deeply nested ul inside li', testList(
-					'<ul>' +
-					'<li>A' +
-					'<ul>' +
-					'<ul>' +
-					'<ul>' +
-					'<ul>' +
-					'<li>B</li>' +
-					'</ul>' +
-					'</ul>' +
-					'</ul>' +
-					'<li>C</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>',
-					'<ul>' +
-					'<li>A' +
-					'<ul>' +
-					'<li>B</li>' +
-					'<li>C</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				) );
+						'<ul>' +
+							'<li>1.1</li>' +
+						'</ul>'
+					);
+				} );
 
-				it( 'ul in deeply nested ul/ol', testList(
-					'<ul>' +
-					'<li>A' +
-					'<ol>' +
-					'<ul>' +
-					'<ol>' +
-					'<ul>' +
-					'<li>B</li>' +
-					'</ul>' +
-					'</ol>' +
-					'</ul>' +
-					'<li>C</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>',
-					'<ul>' +
-					'<li>A' +
-					'<ul>' +
-					'<li>B</li>' +
-					'<li>C</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				) );
+				it( 'ul in ul (previous sibling is li)', () => {
+					testData(
+						'<ul>' +
+							'<li>1</li>' +
+							'<ul>' +
+								'<li>2.1</li>' +
+							'</ul>' +
+						'</ul>',
 
-				it( 'ul in ul (complex case)', testList(
-					'<ol>' +
-					'<li>1</li>' +
-					'<ul>' +
-					'<li>A</li>' +
-					'<ol>' +
-					'<li>1</li>' +
-					'</ol>' +
-					'</ul>' +
-					'<li>2</li>' +
-					'<li>3</li>' +
-					'<ul>' +
-					'<li>A</li>' +
-					'<li>B</li>' +
-					'</ul>' +
-					'</ol>' +
-					'<ul>' +
-					'<li>A</li>' +
-					'<ol>' +
-					'<li>1</li>' +
-					'<li>2</li>' +
-					'</ol>' +
-					'</ul>',
-					'<ol>' +
-					'<li>1' +
-					'<ul>' +
-					'<li>A' +
-					'<ol>' +
-					'<li>1</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>2</li>' +
-					'<li>3' +
-					'<ul>' +
-					'<li>A</li>' +
-					'<li>B</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ol>' +
-					'<ul>' +
-					'<li>A' +
-					'<ol>' +
-					'<li>1</li>' +
-					'<li>2</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>'
-				) );
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">2.1</paragraph>',
 
-				it( 'ol in ol (deep structure)', testList(
-					'<ol>' +
-					'<li>A1</li>' +
-					'<ol>' +
-					'<ol>' +
-					'<ol>' +
-					'<ol>' +
-					'<ol>' +
-					'<ol>' +
-					'<ol>' +
-					'<li>B8</li>' +
-					'</ol>' +
-					'</ol>' +
-					'</ol>' +
-					'</ol>' +
-					'</ol>' +
-					'<li>C3</li>' +
-					'<ol>' +
-					'<li>D4</li>' +
-					'</ol>' +
-					'</ol>' +
-					'<li>E2</li>' +
-					'</ol>' +
-					'</ol>',
-					'<ol>' +
-					'<li>A1' +
-					'<ol>' +
-					'<li>B8</li>' +
-					'<li>C3' +
-					'<ol>' +
-					'<li>D4</li>' +
-					'</ol>' +
-					'</li>' +
-					'<li>E2</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ol>'
-				) );
+						'<ul>' +
+							'<li>1' +
+								'<ul>' +
+									'<li>2.1</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-				it( 'block elements wrapping nested ul', testList(
-					'text before' +
-					'<ul>' +
-					'<li>' +
-					'text' +
-					'<div>' +
-					'<ul>' +
-					'<li>inner text</li>' +
-					'</ul>' +
-					'</div>' +
-					'</li>' +
-					'</ul>',
-					'<p>text before</p>' +
-					'<ul>' +
-					'<li>' +
-					'text' +
-					'<ul>' +
-					'<li>inner text</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				) );
+				it( 'ul in deeply nested ul - base index > 0 #1', () => {
+					testData(
+						'<ul>' +
+							'<li>1.1</li>' +
+							'<li>1.2' +
+								'<ul>' +
+									'<ul>' +
+										'<ul>' +
+											'<ul>' +
+												'<li>2.1</li>' +
+											'</ul>' +
+										'</ul>' +
+									'</ul>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
 
-				it( 'block elements wrapping nested ul - invalid blocks', testList(
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<table>' +
-					'<tr>' +
-					'<td>' +
-					'<div>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>c' +
-					'<ul>' +
-					'<li>' +
-					'd' +
-					'<table>' +
-					'<tr>' +
-					'<td>' +
-					'e' +
-					'</td>' +
-					'</tr>' +
-					'</table>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'</div>' +
-					'</td>' +
-					'</tr>' +
-					'</table>' +
-					'f' +
-					'</li>' +
-					'<li>g</li>' +
-					'</ul>',
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>' +
-					'<figure class="table">' +
-					'<table>' +
-					'<tbody>' +
-					'<tr>' +
-					'<td>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>c<ul>' +
-					'<li>d</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'<figure class="table">' +
-					'<table>' +
-					'<tbody>' +
-					'<tr>' +
-					'<td>e</td>' +
-					'</tr>' +
-					'</tbody>' +
-					'</table>' +
-					'</figure>' +
-					'</td>' +
-					'</tr>' +
-					'</tbody>' +
-					'</table>' +
-					'</figure>' +
-					'<ul>' +
-					'<li>f</li>' +
-					'<li>g</li>' +
-					'</ul>'
-				) );
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1.2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">2.1</paragraph>',
 
-				it( 'deeply nested block elements wrapping nested ul', testList(
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<div>' +
-					'<div>' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>c' +
-					'<ul>' +
-					'<li>d' +
-					'<div>' +
-					'<ul>' +
-					'<li>e</li>' +
-					'</ul>' +
-					'</div>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'</div>' +
-					'</div>' +
-					'f' +
-					'</li>' +
-					'<li>g</li>' +
-					'</ul>' +
-					'</ul>',
-					'<ul>' +
-					'<li>a' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>c' +
-					'<ul>' +
-					'<li>d' +
-					'<ul>' +
-					'<li>e</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>f</li>' +
-					'<li>g</li>' +
-					'</ul>'
-				) );
+						'<ul>' +
+							'<li>1.1</li>' +
+							'<li>1.2' +
+								'<ul>' +
+									'<li>2.1</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'ul in deeply nested ul - base index > 0 #2', () => {
+					testData(
+						'<ul>' +
+							'<li>1.1</li>' +
+							'<li>1.2' +
+								'<ul>' +
+									'<li>2.1</li>' +
+									'<ul>' +
+										'<ul>' +
+											'<ul>' +
+												'<li>3.1</li>' +
+											'</ul>' +
+										'</ul>' +
+									'</ul>' +
+									'<li>2.2</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1.2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">2.1</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">3.1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted">2.2</paragraph>',
+
+						'<ul>' +
+							'<li>1.1</li>' +
+							'<li>1.2' +
+								'<ul>' +
+									'<li>2.1' +
+										'<ul>' +
+											'<li>3.1</li>' +
+										'</ul>' +
+									'</li>' +
+									'<li>2.2</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'ul in deeply nested ul inside li', () => {
+					testData(
+						'<ul>' +
+							'<li>A' +
+								'<ul>' +
+									'<ul>' +
+										'<ul>' +
+											'<ul>' +
+												'<li>B</li>' +
+											'</ul>' +
+										'</ul>' +
+									'</ul>' +
+									'<li>C</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">B</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">C</paragraph>',
+
+						'<ul>' +
+							'<li>A' +
+								'<ul>' +
+									'<li>B</li>' +
+									'<li>C</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'ul in deeply nested ul/ol', () => {
+					testData(
+						'<ul>' +
+							'<li>A' +
+								'<ol>' +
+									'<ul>' +
+										'<ol>' +
+											'<ul>' +
+												'<li>B</li>' +
+											'</ul>' +
+										'</ol>' +
+									'</ul>' +
+									'<li>C</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">B</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">C</paragraph>',
+
+						'<ul>' +
+							'<li>A' +
+								'<ul>' +
+									'<li>B</li>' +
+									'<li>C</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'ul in ul (complex case)', () => {
+					testData(
+						'<ol>' +
+							'<li>1</li>' +
+							'<ul>' +
+								'<li>A</li>' +
+								'<ol>' +
+									'<li>1</li>' +
+								'</ol>' +
+							'</ul>' +
+							'<li>2</li>' +
+							'<li>3</li>' +
+							'<ul>' +
+								'<li>A</li>' +
+								'<li>B</li>' +
+							'</ul>' +
+						'</ol>' +
+						'<ul>' +
+							'<li>A</li>' +
+							'<ol>' +
+								'<li>1</li>' +
+								'<li>2</li>' +
+							'</ol>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="numbered">1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="numbered">2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="numbered">3</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000005" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted">B</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000007" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="numbered">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="numbered">2</paragraph>',
+
+						'<ol>' +
+							'<li>1' +
+								'<ul>' +
+									'<li>A' +
+										'<ol>' +
+											'<li>1</li>' +
+										'</ol>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>2</li>' +
+							'<li>3' +
+								'<ul>' +
+									'<li>A</li>' +
+									'<li>B</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li>A' +
+								'<ol>' +
+									'<li>1</li>' +
+									'<li>2</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'ol in ol (deep structure)', () => {
+					testData(
+						'<ol>' +
+							'<li>A1</li>' +
+							'<ol>' +
+								'<ol>' +
+									'<ol>' +
+										'<ol>' +
+											'<ol>' +
+												'<ol>' +
+													'<ol>' +
+														'<li>B8</li>' +
+													'</ol>' +
+												'</ol>' +
+											'</ol>' +
+										'</ol>' +
+									'</ol>' +
+									'<li>C3</li>' +
+									'<ol>' +
+										'<li>D4</li>' +
+									'</ol>' +
+								'</ol>' +
+								'<li>E2</li>' +
+							'</ol>' +
+						'</ol>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">A1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">B8</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="numbered">C3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="numbered">D4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="numbered">E2</paragraph>',
+
+						'<ol>' +
+							'<li>A1' +
+								'<ol>' +
+									'<li>B8</li>' +
+									'<li>C3' +
+										'<ol>' +
+											'<li>D4</li>' +
+										'</ol>' +
+									'</li>' +
+									'<li>E2</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'block elements wrapping nested ul', () => {
+					testData(
+						'text before' +
+						'<ul>' +
+							'<li>' +
+								'text' +
+								'<div>' +
+									'<ul>' +
+										'<li>inner</li>' +
+									'</ul>' +
+								'</div>' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph>text before</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">text</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">inner</paragraph>',
+
+						'<p>text before</p>' +
+						'<ul>' +
+							'<li>' +
+								'text' +
+								'<ul>' +
+									'<li>inner</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'block elements wrapping nested ul - invalid blocks', () => {
+					testData(
+						'<ul>' +
+							'<li>' +
+								'a' +
+								'<table>' +
+									'<tr>' +
+										'<td>' +
+											'<div>' +
+												'<ul>' +
+													'<li>b</li>' +
+													'<li>c' +
+														'<ul>' +
+															'<li>' +
+																'd' +
+																'<table>' +
+																	'<tr>' +
+																		'<td>' +
+																			'e' +
+																		'</td>' +
+																	'</tr>' +
+																'</table>' +
+															'</li>' +
+														'</ul>' +
+													'</li>' +
+												'</ul>' +
+											'</div>' +
+										'</td>' +
+									'</tr>' +
+								'</table>' +
+								'f' +
+							'</li>' +
+							'<li>g</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
+						'<table listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+										'b' +
+										// TODO !!!
+										'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+											'c' +
+										'</paragraph>' +
+										'd' +
+									'</paragraph>' +
+									'<table listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+										'<tableRow>' +
+											'<tableCell>' +
+												'<paragraph>e</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
+								'</tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">f</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">g</paragraph>',
+
+						'<ul>' +
+						'<li>a</li>' +
+						'</ul>' +
+						'<figure class="table">' +
+						'<table>' +
+						'<tbody>' +
+						'<tr>' +
+						'<td>' +
+						'<ul>' +
+						'<li>b</li>' +
+						'<li>c<ul>' +
+						'<li>d</li>' +
+						'</ul>' +
+						'</li>' +
+						'</ul>' +
+						'<figure class="table">' +
+						'<table>' +
+						'<tbody>' +
+						'<tr>' +
+						'<td>e</td>' +
+						'</tr>' +
+						'</tbody>' +
+						'</table>' +
+						'</figure>' +
+						'</td>' +
+						'</tr>' +
+						'</tbody>' +
+						'</table>' +
+						'</figure>' +
+						'<ul>' +
+						'<li>f</li>' +
+						'<li>g</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'deeply nested block elements wrapping nested ul', () => {
+					testData(
+						'<ul>' +
+							'<li>' +
+								'a' +
+								'<div>' +
+									'<div>' +
+										'<ul>' +
+											'<li>b</li>' +
+											'<li>c' +
+												'<ul>' +
+													'<li>d' +
+														'<div>' +
+															'<ul>' +
+																'<li>e</li>' +
+															'</ul>' +
+														'</div>' +
+													'</li>' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</div>' +
+								'</div>' +
+								'f' +
+							'</li>' +
+							'<li>g</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+							'b' +
+							// TODO !!!
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">c</paragraph>' +
+							'd' +
+						'</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">e</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">f</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000005" listType="bulleted">g</paragraph>',
+
+						'<ul>' +
+						'<li>a' +
+						'<ul>' +
+						'<li>b</li>' +
+						'<li>c' +
+						'<ul>' +
+						'<li>d' +
+						'<ul>' +
+						'<li>e</li>' +
+						'</ul>' +
+						'</li>' +
+						'</ul>' +
+						'</li>' +
+						'</ul>' +
+						'</li>' +
+						'<li>f</li>' +
+						'<li>g</li>' +
+						'</ul>'
+					);
+				} );
 			} );
 
-			it( 'bullet list simple structure', testList(
-				'<p>foo</p>' +
-				'<ul>' +
-				'<li>' +
-				'1' +
-				'<ul>' +
-				'<li>1.1</li>' +
-				'</ul>' +
-				'</li>' +
-				'</ul>' +
-				'<p>bar</p>'
-			) );
+			it( 'bullet list simple structure', () => {
+				testData(
+					'<p>foo</p>' +
+					'<ul>' +
+						'<li>' +
+							'1' +
+							'<ul>' +
+								'<li>1.1</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>' +
+					'<p>bar</p>',
 
-			it( 'bullet list deep structure', testList(
-				'<p>foo</p>' +
-				'<ul>' +
-				'<li>' +
-				'1' +
-				'<ul>' +
-				'<li>' +
-				'1.1' +
-				'<ul><li>1.1.1</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
-				'</li>' +
-				'<li>' +
-				'1.2' +
-				'<ul><li>1.2.1</li></ul>' +
-				'</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>2</li>' +
-				'<li>' +
-				'3' +
-				'<ul>' +
-				'<li>' +
-				'3.1' +
-				'<ul>' +
-				'<li>' +
-				'3.1.1' +
-				'<ul><li>3.1.1.1</li></ul>' +
-				'</li>' +
-				'<li>3.1.2</li>' +
-				'</ul>' +
-				'</li>' +
-				'</ul>' +
-				'</li>' +
-				'</ul>' +
-				'<p>bar</p>'
-			) );
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
 
-			it( 'mixed lists deep structure', testList(
-				'<p>foo</p>' +
-				'<ul>' +
-				'<li>' +
-				'1' +
-				'<ul>' +
-				'<li>' +
-				'1.1' +
-				'<ul><li>1.1.1</li><li>1.1.2</li></ul>' +
-				'<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
-				'</li>' +
-				'<li>' +
-				'1.2' +
-				'<ul><li>1.2.1</li></ul>' +
-				'</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>2</li>' +
-				'<li>' +
-				'3' +
-				'<ol>' +
-				'<li>' +
-				'3.1' +
-				'<ul>' +
-				'<li>' +
-				'3.1.1' +
-				'<ol><li>3.1.1.1</li></ol>' +
-				'<ul><li>3.1.1.2</li></ul>' +
-				'</li>' +
-				'<li>3.1.2</li>' +
-				'</ul>' +
-				'</li>' +
-				'</ol>' +
-				'<ul>' +
-				'<li>3.2</li>' +
-				'<li>3.3</li>' +
-				'</ul>' +
-				'</li>' +
-				'</ul>' +
-				'<p>bar</p>',
+			it( 'bullet list deep structure', () => {
+				testData(
+					'<p>foo</p>' +
+					'<ul>' +
+						'<li>' +
+							'1' +
+							'<ul>' +
+								'<li>' +
+									'1.1' +
+									'<ul><li>1.1.1</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
+								'</li>' +
+								'<li>' +
+									'1.2' +
+									'<ul><li>1.2.1</li></ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>2</li>' +
+						'<li>' +
+							'3' +
+							'<ul>' +
+								'<li>' +
+									'3.1' +
+									'<ul>' +
+										'<li>' +
+											'3.1.1' +
+											'<ul><li>3.1.1.1</li></ul>' +
+										'</li>' +
+										'<li>3.1.2</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>' +
+					'<p>bar</p>',
 
-				'<p>foo</p>' +
-				'<ul>' +
-				'<li>' +
-				'1' +
-				'<ul>' +
-				'<li>' +
-				'1.1' +
-				'<ul><li>1.1.1</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
-				'</li>' +
-				'<li>' +
-				'1.2' +
-				'<ul><li>1.2.1</li></ul>' +
-				'</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>2</li>' +
-				'<li>' +
-				'3' +
-				'<ol>' +
-				'<li>' +
-				'3.1' +
-				'<ul>' +
-				'<li>' +
-				'3.1.1' +
-				'<ol><li>3.1.1.1</li><li>3.1.1.2</li></ol>' +
-				'</li>' +
-				'<li>3.1.2</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>3.2</li>' +
-				'<li>3.3</li>' +
-				'</ol>' +
-				'</li>' +
-				'</ul>' +
-				'<p>bar</p>'
-			) );
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1.3</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.1.4</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted">1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000007" listType="bulleted">1.2.1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">3</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="bulleted">3.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1.1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000d" listType="bulleted">3.1.2</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
 
-			it( 'mixed lists deep structure, white spaces, incorrect content, empty items', testList(
-				'<p>foo</p>' +
-				'<ul>' +
-				'	xxx' +
-				'	<li>' +
-				'		1' +
-				'		<ul>' +
-				'			xxx' +
-				'			<li>' +
-				'				<ul><li></li><li>1.1.2</li></ul>' +
-				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>.
-				'			</li>' +
-				'			<li>' +
-				'				<ul><li>1.2.1</li></ul>' +
-				'			</li>' +
-				'			xxx' +
-				'		</ul>' +
-				'	</li>' +
-				'	<li>2</li>' +
-				'	<li>' +
-				'		<ol>' +
-				'			<p>xxx</p>' +
-				'			<li>' +
-				'				3<strong>.</strong>1' +							// Test multiple text nodes in <li>.
-				'				<ul>' +
-				'					<li>' +
-				'						3.1.1' +
-				'						<ol><li>3.1.1.1</li></ol>' +
-				'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>.
-				'					</li>' +
-				'					<li>3.1.2</li>' +
-				'				</ul>' +
-				'			</li>' +
-				'		</ol>' +
-				'		<p>xxx</p>' +
-				'		<ul>' +													// Since <p> gets removed, this will become <ol>.
-				'			<li>3.2</li>' +
-				'			<li>3.3</li>' +
-				'		</ul>' +
-				'	</li>' +
-				'	<p>xxx</p>' +
-				'</ul>' +
-				'<p>bar</p>',
+			it( 'mixed lists deep structure', () => {
+				testData(
+					'<p>foo</p>' +
+					'<ul>' +
+						'<li>' +
+							'1' +
+							'<ul>' +
+								'<li>' +
+									'1.1' +
+									'<ul><li>1.1.1</li><li>1.1.2</li></ul>' +
+									'<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
+								'</li>' +
+								'<li>' +
+									'1.2' +
+									'<ul><li>1.2.1</li></ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>2</li>' +
+						'<li>' +
+							'3' +
+							'<ol>' +
+								'<li>' +
+									'3.1' +
+									'<ul>' +
+										'<li>' +
+											'3.1.1' +
+											'<ol><li>3.1.1.1</li></ol>' +
+											'<ul><li>3.1.1.2</li></ul>' +
+										'</li>' +
+										'<li>3.1.2</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ol>' +
+							'<ul>' +
+								'<li>3.2</li>' +
+								'<li>3.3</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ul>' +
+					'<p>bar</p>',
 
-				'<p>foo</p>' +
-				'<ul>' +
-				'<li>' +
-				'1' +
-				'<ul>' +
-				'<li>' +
-				'&nbsp;' +
-				'<ul>' +
-				'<li>&nbsp;</li>' +
-				'<li>1.1.2</li>' +
-				'<li>1.1.3</li>' +
-				'<li>1.1.4</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>' +
-				'&nbsp;' +
-				'<ul><li>1.2.1</li></ul>' +
-				'</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>2</li>' +
-				'<li>' +
-				'&nbsp;' +
-				'<ol>' +
-				'<li>' +
-				'3<strong>.</strong>1' +
-				'<ul>' +
-				'<li>' +
-				'3.1.1' +
-				'<ol>' +
-				'<li>3.1.1.1</li>' +
-				'<li>3.1.1.2</li>' +
-				'</ol>' +
-				'</li>' +
-				'<li>3.1.2</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>3.2</li>' +
-				'<li>3.3</li>' +
-				'</ol>' +
-				'</li>' +
-				'</ul>' +
-				'<p>bar</p>'
-			) );
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1.3</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.1.4</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted">1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000007" listType="bulleted">1.2.1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">3</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="numbered">3.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000c" listType="numbered">3.1.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000d" listType="numbered">3.1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000e" listType="bulleted">3.1.2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000f" listType="numbered">3.2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000010" listType="numbered">3.3</paragraph>' +
+					'<paragraph>bar</paragraph>',
+
+					'<p>foo</p>' +
+					'<ul>' +
+						'<li>' +
+							'1' +
+							'<ul>' +
+								'<li>' +
+									'1.1' +
+									'<ul><li>1.1.1</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
+								'</li>' +
+								'<li>' +
+									'1.2' +
+									'<ul><li>1.2.1</li></ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>2</li>' +
+						'<li>' +
+							'3' +
+							'<ol>' +
+								'<li>' +
+									'3.1' +
+									'<ul>' +
+										'<li>' +
+											'3.1.1' +
+											'<ol><li>3.1.1.1</li><li>3.1.1.2</li></ol>' +
+										'</li>' +
+										'<li>3.1.2</li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>3.2</li>' +
+								'<li>3.3</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>' +
+					'<p>bar</p>'
+				);
+			} );
+
+			it( 'mixed lists deep structure, white spaces, incorrect content, empty items', () => {
+				testData(
+					'<p>foo</p>' +
+					'<ul>' +
+					'	xxx' +
+					'	<li>' +
+					'		1' +
+					'		<ul>' +
+					'			xxx' +
+					'			<li>' +
+					'				<ul><li></li><li>1.1.2</li></ul>' +
+					'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>.
+					'			</li>' +
+					'			<li>' +
+					'				<ul><li>1.2.1</li></ul>' +
+					'			</li>' +
+					'			xxx' +
+					'		</ul>' +
+					'	</li>' +
+					'	<li>2</li>' +
+					'	<li>' +
+					'		<ol>' +
+					'			<p>xxx</p>' +
+					'			<li>' +
+					'				3<strong>.</strong>1' +							// Test multiple text nodes in <li>.
+					'				<ul>' +
+					'					<li>' +
+					'						3.1.1' +
+					'						<ol><li>3.1.1.1</li></ol>' +
+					'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>.
+					'					</li>' +
+					'					<li>3.1.2</li>' +
+					'				</ul>' +
+					'			</li>' +
+					'		</ol>' +
+					'		<p>xxx</p>' +
+					'		<ul>' +													// Since <p> gets removed, this will become <ol>.
+					'			<li>3.2</li>' +
+					'			<li>3.3</li>' +
+					'		</ul>' +
+					'	</li>' +
+					'	<p>xxx</p>' +
+					'</ul>' +
+					'<p>bar</p>',
+
+					'',
+
+					'<p>foo</p>' +
+					'<ul>' +
+					'<li>' +
+					'1' +
+					'<ul>' +
+					'<li>' +
+					'&nbsp;' +
+					'<ul>' +
+					'<li>&nbsp;</li>' +
+					'<li>1.1.2</li>' +
+					'<li>1.1.3</li>' +
+					'<li>1.1.4</li>' +
+					'</ul>' +
+					'</li>' +
+					'<li>' +
+					'&nbsp;' +
+					'<ul><li>1.2.1</li></ul>' +
+					'</li>' +
+					'</ul>' +
+					'</li>' +
+					'<li>2</li>' +
+					'<li>' +
+					'&nbsp;' +
+					'<ol>' +
+					'<li>' +
+					'3<strong>.</strong>1' +
+					'<ul>' +
+					'<li>' +
+					'3.1.1' +
+					'<ol>' +
+					'<li>3.1.1.1</li>' +
+					'<li>3.1.1.2</li>' +
+					'</ol>' +
+					'</li>' +
+					'<li>3.1.2</li>' +
+					'</ul>' +
+					'</li>' +
+					'<li>3.2</li>' +
+					'<li>3.3</li>' +
+					'</ol>' +
+					'</li>' +
+					'</ul>' +
+					'<p>bar</p>'
+				);
+			} );
 
 			describe( 'model tests for nested lists', () => {
 				it( 'should properly set listIndent and listType', () => {
@@ -4421,8 +4670,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 	function testData( input, modelData, output = input ) {
 		editor.setData( input );
 
-		expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
-		expect( editor.getData(), 'output data' ).to.equalMarkup( output );
+		expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
+		expect( editor.getData(), 'output data' ).to.equal( output );
 	}
 
 	function testInsert() {
@@ -4532,7 +4781,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 		// _test( testName, input, output, actionCallback );
 	}
 
-	function testMove( testName, input, rootOffset, output, testUndo = true ) {
+	function testMove() {
+	}
+
+	function testMoveX( input, rootOffset, output, testUndo = true ) {
 		const actionCallback = selection => {
 			model.change( writer => {
 				const targetPosition = writer.createPositionAt( modelRoot, rootOffset );
@@ -4541,7 +4793,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 			} );
 		};
 
-		// _test( testName, input, output, actionCallback, testUndo );
+		_test( input, output, actionCallback, testUndo );
 	}
 
 	function _test( input, output, actionCallback, testUndo ) {
