@@ -3005,110 +3005,261 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 				editor.setData(
 					'<ul>' +
-					'<li>a</li>' +
-					'<li>' +
-					'bbb' +
-					'<ol>' +
-					'<li>c</li>' +
-					'<li>d</li>' +
-					'<li>e</li>' +
-					'<li>' +
-					'<ul>' +
-					'<li>g</li>' +
-					'<li>h</li>' +
-					'<li>i</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>j</li>' +
-					'</ol>' +
-					'</li>' +
-					'<li>k</li>' +
+						'<li><p>a</p></li>' +
+						'<li>' +
+							'<p>bbb</p>' +
+							'<ol>' +
+								'<li><p>c</p></li>' +
+								'<li><p>d</p></li>' +
+								'<li><p>e</p></li>' +
+								'<li>' +
+									'<p></p>' +
+									'<ul>' +
+										'<li><p>g</p></li>' +
+										'<li><p>h</p></li>' +
+										'<li><p>i</p></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li><p>j</p></li>' +
+							'</ol>' +
+						'</li>' +
+						'<li><p>k</p></li>' +
 					'</ul>'
 				);
 			} );
 
 			/*
-				<listItem listIndent=0 listType="bulleted">a</listItem>
-				<listItem listIndent=0 listType="bulleted">bbb</listItem>
-				<listItem listIndent=1 listType="numbered">c</listItem>
-				<listItem listIndent=1 listType="numbered">d</listItem>
-				<listItem listIndent=1 listType="numbered">e</listItem>
-				<listItem listIndent=1 listType="numbered"></listItem>
-				<listItem listIndent=2 listType="bulleted">g</listItem>
-				<listItem listIndent=2 listType="bulleted">h</listItem>
-				<listItem listIndent=2 listType="bullered">i</listItem>
-				<listItem listIndent=1 listType="numbered">j</listItem>
-				<listItem listIndent=0 listType="bulleted">k</listItem>
+				<paragraph listIndent=0 listType="bulleted">a</paragraph>
+				<paragraph listIndent=0 listType="bulleted">bbb</paragraph>
+				<paragraph listIndent=1 listType="numbered">c</paragraph>
+				<paragraph listIndent=1 listType="numbered">d</paragraph>
+				<paragraph listIndent=1 listType="numbered">e</paragraph>
+				<paragraph listIndent=1 listType="numbered"></paragraph>
+				<paragraph listIndent=2 listType="bulleted">g</paragraph>
+				<paragraph listIndent=2 listType="bulleted">h</paragraph>
+				<paragraph listIndent=2 listType="bullered">i</paragraph>
+				<paragraph listIndent=1 listType="numbered">j</paragraph>
+				<paragraph listIndent=0 listType="bulleted">k</paragraph>
 			 */
 
 			describe( 'view to model', () => {
-				function testList( testName, viewPath, modelPath ) {
-					it( testName, () => {
-						const viewPos = getViewPosition( viewRoot, viewPath, view );
-						const modelPos = mapper.toModelPosition( viewPos );
+				function testList( viewPath, modelPath ) {
+					const viewPos = getViewPosition( viewRoot, viewPath, view );
+					const modelPos = mapper.toModelPosition( viewPos );
 
-						expect( modelPos.root ).to.equal( modelRoot );
-						expect( modelPos.path ).to.deep.equal( modelPath );
-					} );
+					expect( modelPos.root ).to.equal( modelRoot );
+					expect( modelPos.path ).to.deep.equal( modelPath );
 				}
 
-				testList( 'before ul#1',		[ 0 ],					[ 0 ] );	// --> before listItem "a"
-				testList( 'before li "a"',		[ 0, 0 ],				[ 0 ] );	// --> before listItem "a"
-				testList( 'before "a"',			[ 0, 0, 0 ],			[ 0, 0 ] );	// --> beginning of listItem "a"
-				testList( 'after "a"',			[ 0, 0, 1 ],			[ 0, 1 ] );	// --> end of listItem "a"
-				testList( 'before li "bbb"',	[ 0, 1 ],				[ 1 ] );	// --> before listItem "bbb"
-				testList( 'before "bbb"',		[ 0, 1, 0 ],			[ 1, 0 ] );	// --> beginning of listItem "bbb"
-				testList( 'after "bbb"',		[ 0, 1, 1 ],			[ 1, 3 ] );	// --> end of listItem "bbb"
-				testList( 'before li "c"',		[ 0, 1, 1, 0 ],			[ 2 ] );	// --> before listItem "c"
-				testList( 'before "c"',			[ 0, 1, 1, 0, 0 ],		[ 2, 0 ] );	// --> beginning of listItem "c"
-				testList( 'after "c"',			[ 0, 1, 1, 0, 1 ],		[ 2, 1 ] );	// --> end of listItem "c"
-				testList( 'before li "d"',		[ 0, 1, 1, 1 ],			[ 3 ] );	// --> before listItem "d"
-				testList( 'before li "e"',		[ 0, 1, 1, 2 ],			[ 4 ] );	// --> before listItem "e"
-				testList( 'before "empty" li',	[ 0, 1, 1, 3 ],			[ 5 ] );	// --> before "empty" listItem
-				testList( 'before ul#2',		[ 0, 1, 1, 3, 0 ],		[ 5, 0 ] ); // --> inside "empty" listItem
-				testList( 'before li "g"',		[ 0, 1, 1, 3, 0, 0 ],	[ 6 ] );	// --> before listItem "g"
-				testList( 'before li "h"',		[ 0, 1, 1, 3, 0, 1 ],	[ 7 ] );	// --> before listItem "h"
-				testList( 'before li "i"',		[ 0, 1, 1, 3, 0, 2 ],	[ 8 ] );	// --> before listItem "i"
-				testList( 'after li "i"',		[ 0, 1, 1, 3, 0, 3 ],	[ 9 ] );	// --> before listItem "j"
-				testList( 'after ul#2',			[ 0, 1, 1, 3, 1 ],		[ 9 ] );	// --> before listItem "j"
-				testList( 'before li "j"',		[ 0, 1, 1, 4 ],			[ 9 ] );	// --> before listItem "j"
-				testList( 'after li "j"',		[ 0, 1, 1, 5 ],			[ 10 ] );	// --> before listItem "k"
-				testList( 'end of li "bbb"',	[ 0, 1, 2 ],			[ 10 ] );	// --> before listItem "k"
-				testList( 'before li "k"',		[ 0, 2 ],				[ 10 ] );	// --> before listItem "k"
-				testList( 'after li "k"',		[ 0, 3 ],				[ 11 ] );	// --> after listItem "k"
-				testList( 'after ul',			[ 1 ],					[ 11 ] );	// --> after listItem "k"
+				it( 'before ul#1 --> before listItem "a"', () => {
+					testList( [ 0 ], [ 0 ] );
+				} );
+
+				it( 'before li "a" --> before listItem "a"', () => {
+					testList( [ 0, 0 ], [ 0 ] );
+				} );
+
+				it( 'before "a" paragraph --> beginning of listItem "a"', () => {
+					testList( [ 0, 0, 0 ], [ 0 ] );
+				} );
+
+				it( 'before "a" --> beginning of listItem "a"', () => {
+					testList( [ 0, 0, 0, 0 ], [ 0, 0 ] );
+				} );
+
+				it( 'after "a" --> end of listItem "a"', () => {
+					testList( [ 0, 0, 0, 1 ], [ 0, 1 ] );
+				} );
+
+				it( 'after "a" paragraph --> end of listItem "a"', () => {
+					testList( [ 0, 0, 1 ], [ 1 ] );
+				} );
+
+				it( 'before li "bbb" --> before listItem "bbb"', () => {
+					testList( [ 0, 1 ], [ 1 ] );
+				} );
+
+				it( 'before "bbb" paragraph --> beginning of listItem "bbb"', () => {
+					testList( [ 0, 1, 0 ], [ 1 ] );
+				} );
+
+				it( 'before "bbb" --> beginning of listItem "bbb"', () => {
+					testList( [ 0, 1, 0, 0 ], [ 1, 0 ] );
+				} );
+
+				it( 'after "bbb" --> end of listItem "bbb"', () => {
+					testList( [ 0, 1, 0, 1 ], [ 1, 3 ] );
+				} );
+
+				it( 'after "bbb" paragraph --> end of listItem "bbb"', () => {
+					testList( [ 0, 1, 1 ], [ 2 ] );
+				} );
+
+				it( 'before li "c" --> before listItem "c"', () => {
+					testList( [ 0, 1, 1, 0 ], [ 2 ] );
+				} );
+
+				it( 'before "c" paragraph --> beginning of listItem "c"', () => {
+					testList( [ 0, 1, 1, 0, 0 ], [ 2 ] );
+				} );
+
+				it( 'before "c" --> beginning of listItem "c"', () => {
+					testList( [ 0, 1, 1, 0, 0, 0 ], [ 2, 0 ] );
+				} );
+
+				it( 'after "c" --> end of listItem "c"', () => {
+					testList( [ 0, 1, 1, 0, 0, 1 ], [ 2, 1 ] );
+				} );
+
+				it( 'after "c" paragraph --> end of listItem "c"', () => {
+					testList( [ 0, 1, 1, 0, 1 ], [ 3 ] );
+				} );
+
+				it( 'before li "d" --> before listItem "d"', () => {
+					testList( [ 0, 1, 1, 1 ], [ 3 ] );
+				} );
+
+				it( 'before li "e" --> before listItem "e"', () => {
+					testList( [ 0, 1, 1, 2 ], [ 4 ] );
+				} );
+
+				it( 'before "empty" li --> before "empty" listItem', () => {
+					testList( [ 0, 1, 1, 3 ], [ 5 ] );
+				} );
+
+				it( 'before ul#2 --> inside "empty" listItem', () => {
+					testList( [ 0, 1, 1, 3, 0, 0 ], [ 5, 0 ] );
+				} );
+
+				it( 'before li "g" --> before listItem "g"', () => {
+					testList( [ 0, 1, 1, 3, 1, 0, 0 ], [ 6 ] );
+				} );
+
+				it( 'before li "h" --> before listItem "h"', () => {
+					testList( [ 0, 1, 1, 3, 1, 1 ], [ 7 ] );
+				} );
+
+				it( 'before li "i" --> before listItem "i"', () => {
+					testList( [ 0, 1, 1, 3, 1, 2 ], [ 8 ] );
+				} );
+
+				it( 'after li "i" --> before listItem "j"', () => {
+					testList( [ 0, 1, 1, 3, 1, 3 ], [ 9 ] );
+				} );
+
+				it( 'after ul#2 --> before listItem "j"', () => {
+					testList( [ 0, 1, 1, 3, 2 ], [ 9 ] );
+				} );
+
+				it( 'before li "j" --> before listItem "j"', () => {
+					testList( [ 0, 1, 1, 4 ], [ 9 ] );
+				} );
+
+				it( 'after li "j" --> before listItem "k"', () => {
+					testList( [ 0, 1, 1, 5 ], [ 10 ] );
+				} );
+
+				it( 'end of li "bbb" --> before listItem "k"', () => {
+					testList( [ 0, 1, 2 ], [ 10 ] );
+				} );
+
+				it( 'before li "k" --> before listItem "k"', () => {
+					testList( [ 0, 2 ], [ 10 ] );
+				} );
+
+				it( 'after li "k" --> after listItem "k"', () => {
+					testList( [ 0, 3 ], [ 11 ] );
+				} );
+
+				it( 'after ul --> after listItem "k"', () => {
+					testList( [ 1 ], [ 11 ] );
+				} );
 			} );
 
 			describe( 'model to view', () => {
-				function testList( testName, modelPath, viewPath ) {
-					it( testName, () => {
-						const modelPos = model.createPositionFromPath( modelRoot, modelPath );
-						const viewPos = mapper.toViewPosition( modelPos );
+				function testList( modelPath, viewPath ) {
+					const modelPos = model.createPositionFromPath( modelRoot, modelPath );
+					const viewPos = mapper.toViewPosition( modelPos );
 
-						expect( viewPos.root ).to.equal( viewRoot );
-						expect( getViewPath( viewPos ) ).to.deep.equal( viewPath );
-					} );
+					expect( viewPos.root ).to.equal( viewRoot );
+					expect( getViewPath( viewPos ) ).to.deep.equal( viewPath );
 				}
 
-				testList( 'before listItem "a"',			[ 0 ],		[ 0 ] );				// --> before ul
-				testList( 'beginning of listItem "a"',		[ 0, 0 ],	[ 0, 0, 0, 0 ] );		// --> beginning of "a" text node
-				testList( 'end of listItem "a"',			[ 0, 1 ],	[ 0, 0, 0, 1 ] );		// --> end of "a" text node
-				testList( 'before listItem "bbb"',			[ 1 ],		[ 0, 1 ] );				// --> before li "bbb"
-				testList( 'beginning of listItem "bbb"',	[ 1, 0 ],	[ 0, 1, 0, 0 ] );		// --> beginning of "bbb" text node
-				testList( 'end of listItem "bbb"',			[ 1, 3 ],	[ 0, 1, 0, 3 ] );		// --> end of "bbb" text node
-				testList( 'before listItem "c"',			[ 2 ],		[ 0, 1, 1, 0 ] );		// --> before li "c"
-				testList( 'beginning of listItem "c"',		[ 2, 0 ],	[ 0, 1, 1, 0, 0, 0 ] );	// --> beginning of "c" text node
-				testList( 'end of listItem "c"',			[ 2, 1 ],	[ 0, 1, 1, 0, 0, 1 ] );	// --> end of "c" text node
-				testList( 'before listItem "d"',			[ 3 ],		[ 0, 1, 1, 1 ] );		// --> before li "d"
-				testList( 'before listItem "e"',			[ 4 ],		[ 0, 1, 1, 2 ] );		// --> before li "e"
-				testList( 'before "empty" listItem',		[ 5 ],		[ 0, 1, 1, 3 ] );		// --> before "empty" li
-				testList( 'inside "empty" listItem',		[ 5, 0 ],	[ 0, 1, 1, 3, 0 ] );	// --> before ul
-				testList( 'before listItem "g"',			[ 6 ],		[ 0, 1, 1, 3, 0, 0 ] );	// --> before li "g"
-				testList( 'before listItem "h"',			[ 7 ],		[ 0, 1, 1, 3, 0, 1 ] );	// --> before li "h"
-				testList( 'before listItem "i"',			[ 8 ],		[ 0, 1, 1, 3, 0, 2 ] );	// --> before li "i"
-				testList( 'before listItem "j"',			[ 9 ],		[ 0, 1, 1, 4 ] );		// --> before li "j"
-				testList( 'before listItem "k"',			[ 10 ],		[ 0, 2 ] );				// --> before li "k"
-				testList( 'after listItem "k"',				[ 11 ],		[ 1 ] );				// --> after ul
+				it( 'before listItem "a" --> before ul', () => {
+					testList( [ 0 ], [ 0 ] );
+				} );
+
+				it( 'beginning of listItem "a" --> beginning of "a" text node', () => {
+					testList( [ 0, 0 ], [ 0, 0, 0, 0, 0 ] );
+				} );
+
+				it( 'end of listItem "a" --> end of "a" text node', () => {
+					testList( [ 0, 1 ], [ 0, 0, 0, 0, 1 ] );
+				} );
+
+				it( 'before listItem "bbb" --> before li "bbb"', () => {
+					testList( [ 1 ], [ 0, 1 ] );
+				} );
+
+				it( 'beginning of listItem "bbb" --> beginning of "bbb" text node', () => {
+					testList( [ 1, 0 ], [ 0, 1, 0, 0, 0 ] );
+				} );
+
+				it( 'end of listItem "bbb" --> end of "bbb" text node', () => {
+					testList( [ 1, 3 ], [ 0, 1, 0, 0, 3 ] );
+				} );
+
+				it( 'before listItem "c" --> before li "c"', () => {
+					testList( [ 2 ], [ 0, 1, 1 ] );
+				} );
+
+				it( 'beginning of listItem "c" --> beginning of "c" text node', () => {
+					testList( [ 2, 0 ], [ 0, 1, 1, 0, 0, 0, 0 ] );
+				} );
+
+				it( 'end of listItem "c" --> end of "c" text node', () => {
+					testList( [ 2, 1 ], [ 0, 1, 1, 0, 0, 0, 1 ] );
+				} );
+
+				it( 'before listItem "d" --> before li "d"', () => {
+					testList( [ 3 ], [ 0, 1, 1, 1 ] );
+				} );
+
+				it( 'before listItem "e" --> before li "e"', () => {
+					testList( [ 4 ], [ 0, 1, 1, 2 ] );
+				} );
+
+				it( 'before "empty" listItem --> before "empty" li', () => {
+					testList( [ 5 ], [ 0, 1, 1, 3 ] );
+				} );
+
+				it( 'inside "empty" listItem --> before ul', () => {
+					testList( [ 5, 0 ], [ 0, 1, 1, 3, 0, 0 ] );
+				} );
+
+				it( 'before listItem "g" --> before li "g"', () => {
+					testList( [ 6 ], [ 0, 1, 1, 3, 1 ] );
+				} );
+
+				it( 'before listItem "h" --> before li "h"', () => {
+					testList( [ 7 ], [ 0, 1, 1, 3, 1, 1 ] );
+				} );
+
+				it( 'before listItem "i" --> before li "i"', () => {
+					testList( [ 8 ], [ 0, 1, 1, 3, 1, 2 ] );
+				} );
+
+				it( 'before listItem "j" --> before li "j"', () => {
+					testList( [ 9 ], [ 0, 1, 1, 4 ] );
+				} );
+
+				it( 'before listItem "k" --> before li "k"', () => {
+					testList( [ 10 ], [ 0, 2 ] );
+				} );
+
+				it( 'after listItem "k" --> after ul', () => {
+					testList( [ 11 ], [ 1 ] );
+				} );
 			} );
 		} );
 
