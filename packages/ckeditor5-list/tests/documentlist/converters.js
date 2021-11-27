@@ -58,7 +58,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 	} );
 
 	describe( 'flat lists', () => {
-		describe.only( 'setting data', () => {
+		describe( 'setting data', () => {
 			it( 'single item', () => {
 				testData(
 					'<ul><li>x</li></ul>',
@@ -427,8 +427,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">Bar</paragraph>',
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">Foo</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="numbered">Bar</paragraph>',
 
 							'<ul>' +
 								'<li>' +
@@ -522,10 +522,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ol>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">123</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">456</paragraph>' +
-							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">Foo</heading1>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">Bar</paragraph>'
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">123</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">456</paragraph>' +
+							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</heading1>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">Bar</paragraph>'
 						);
 					} );
 
@@ -544,10 +544,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ol>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">123</paragraph>' +
-							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">Foo</heading1>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">Bar</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">456</paragraph>'
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">123</paragraph>' +
+							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</heading1>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">Bar</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">456</paragraph>'
 						);
 					} );
 				} );
@@ -633,8 +633,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">Bar</paragraph>',
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">Foo</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="numbered">Bar</paragraph>',
 
 							'<ul>' +
 								'<li>' +
@@ -662,10 +662,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ol>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Foo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Bar</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">123</paragraph>' +
-							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">456</heading1>',
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Foo</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Bar</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">123</paragraph>' +
+							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">456</heading1>',
 
 							'<ol>' +
 								'<li>' +
@@ -701,10 +701,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ol>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Foo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Bar</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">123</paragraph>' +
-							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">456</heading1>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Foo</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Bar</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">123</paragraph>' +
+							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">456</heading1>' +
 							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="numbered">abc</paragraph>' +
 							'<heading1 listIndent="0" listItemId="e00000000000000000000000000000002" listType="numbered">def</heading1>',
 
@@ -811,8 +811,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Bar</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">Foo</paragraph>',
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">Bar</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="numbered">Foo</paragraph>',
 
 							'<ul>' +
 								'<li>' +
@@ -840,10 +840,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ol>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Foo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Bar</paragraph>' +
-							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">123</heading1>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">456</paragraph>',
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Foo</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Bar</paragraph>' +
+							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">123</heading1>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">456</paragraph>',
 
 							'<ol>' +
 								'<li>' +
@@ -879,10 +879,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ol>',
 
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Foo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">Bar</paragraph>' +
-							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">123</heading1>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">456</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Foo</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="numbered">Bar</paragraph>' +
+							'<heading1 listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">123</heading1>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">456</paragraph>' +
 							'<heading1 listIndent="0" listItemId="e00000000000000000000000000000002" listType="numbered">abc</heading1>' +
 							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="numbered">def</paragraph>',
 
@@ -1100,12 +1100,12 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</paragraph>' +
 							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Bar</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">Baz</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">123</paragraph>' +
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">456</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="numbered">ABC</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="numbered">DEF</paragraph>' +
-							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="numbered">GHI</paragraph>',
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">Baz</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">123</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">456</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">ABC</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">DEF</paragraph>' +
+							'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="numbered">GHI</paragraph>',
 
 							'<ul>' +
 								'<li>' +
@@ -1956,7 +1956,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 	} );
 
 	describe( 'nested lists', () => {
-		describe.only( 'setting data', () => {
+		describe( 'setting data', () => {
 			describe( 'non HTML compliant list fixing', () => {
 				it( 'ul in ul', () => {
 					testData(
@@ -2030,8 +2030,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'</ul>',
 
 						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1.2</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">2.1</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">1.2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">2.1</paragraph>',
 
 						'<ul>' +
 							'<li>1.1</li>' +
@@ -2064,10 +2064,10 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'</ul>',
 
 						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1.2</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">2.1</paragraph>' +
-						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">3.1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted">2.2</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">1.2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">2.1</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">3.1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">2.2</paragraph>',
 
 						'<ul>' +
 							'<li>1.1</li>' +
@@ -2102,9 +2102,9 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'</li>' +
 						'</ul>',
 
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">A</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">B</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">C</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">B</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">C</paragraph>',
 
 						'<ul>' +
 							'<li>A' +
@@ -2134,9 +2134,9 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'</li>' +
 						'</ul>',
 
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">A</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">B</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">C</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">A</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">B</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">C</paragraph>',
 
 						'<ul>' +
 							'<li>A' +
@@ -2277,8 +2277,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'</ul>',
 
 						'<paragraph>text before</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">text</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">inner</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">text</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">inner</paragraph>',
 
 						'<p>text before</p>' +
 						'<ul>' +
@@ -2327,19 +2327,20 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'<li>g</li>' +
 						'</ul>',
 
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
-						'<table listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">a</paragraph>' +
+						'<table listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
 										'b' +
-										// TODO !!!
-										'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
-											'c' +
-										'</paragraph>' +
+									'</paragraph>' +
+									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+										'c' +
+									'</paragraph>' +
+									'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
 										'd' +
 									'</paragraph>' +
-									'<table listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+									'<table listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>e</paragraph>' +
@@ -2349,41 +2350,39 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">f</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">f</paragraph>' +
 						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">g</paragraph>',
 
 						'<ul>' +
-						'<li>a</li>' +
-						'</ul>' +
-						'<figure class="table">' +
-						'<table>' +
-						'<tbody>' +
-						'<tr>' +
-						'<td>' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c<ul>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'<figure class="table">' +
-						'<table>' +
-						'<tbody>' +
-						'<tr>' +
-						'<td>e</td>' +
-						'</tr>' +
-						'</tbody>' +
-						'</table>' +
-						'</figure>' +
-						'</td>' +
-						'</tr>' +
-						'</tbody>' +
-						'</table>' +
-						'</figure>' +
-						'<ul>' +
-						'<li>f</li>' +
-						'<li>g</li>' +
+							'<li>' +
+								'<p>a</p>' +
+								'<figure class="table">' +
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td>' +
+													'<ul>' +
+														'<li>b</li>' +
+														'<li>' +
+															'c' +
+															'<ul>' +
+																'<li>' +
+																	'<p>d</p>' +
+																	'<figure class="table">' +
+																		'<table><tbody><tr><td>e</td></tr></tbody></table>' +
+																	'</figure>' +
+																'</li>' +
+															'</ul>' +
+														'</li>' +
+													'</ul>' +
+												'</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</figure>' +
+								'<p>f</p>' +
+							'</li>' +
+							'<li>g</li>' +
 						'</ul>'
 					);
 				} );
@@ -2416,34 +2415,32 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'<li>g</li>' +
 						'</ul>',
 
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
-							'b' +
-							// TODO !!!
-							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">c</paragraph>' +
-							'd' +
-						'</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">e</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">f</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">d</paragraph>' +
+						'<paragraph listIndent="3" listItemId="e00000000000000000000000000000001" listType="bulleted">e</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">f</paragraph>' +
 						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000005" listType="bulleted">g</paragraph>',
 
 						'<ul>' +
-						'<li>a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c' +
-						'<ul>' +
-						'<li>d' +
-						'<ul>' +
-						'<li>e</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>f</li>' +
-						'<li>g</li>' +
+							'<li>' +
+								'<p>a</p>' +
+								'<ul>' +
+									'<li>b</li>' +
+									'<li>c' +
+										'<ul>' +
+											'<li>d' +
+												'<ul>' +
+													'<li>e</li>' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</li>' +
+								'</ul>' +
+								'<p>f</p>' +
+							'</li>' +
+							'<li>g</li>' +
 						'</ul>'
 					);
 				} );
@@ -2463,8 +2460,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'<p>bar</p>',
 
 					'<paragraph>foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -2506,20 +2503,20 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'<p>bar</p>',
 
 					'<paragraph>foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1.3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.1.4</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000007" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.3</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.4</paragraph>' +
 					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted">1.2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000007" listType="bulleted">1.2.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.2.1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="bulleted">3.1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
-					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1.1.1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000d" listType="bulleted">3.1.2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e0000000000000000000000000000000d" listType="bulleted">3</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000a" listType="bulleted">3.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e00000000000000000000000000000009" listType="bulleted">3.1.1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.2</paragraph>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -2567,23 +2564,23 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'<p>bar</p>',
 
 					'<paragraph>foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1.3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.1.4</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000007" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.3</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.4</paragraph>' +
 					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted">1.2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000007" listType="bulleted">1.2.1</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.2.1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="numbered">3.1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">3</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000d" listType="numbered">3.1</paragraph>' +
 					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
-					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000c" listType="numbered">3.1.1.1</paragraph>' +
-					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000d" listType="numbered">3.1.1.2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000e" listType="bulleted">3.1.2</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000f" listType="numbered">3.2</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000010" listType="numbered">3.3</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e00000000000000000000000000000009" listType="numbered">3.1.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000a" listType="numbered">3.1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1.2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000e" listType="numbered">3.2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000f" listType="numbered">3.3</paragraph>' +
 					'<paragraph>bar</paragraph>',
 
 					'<p>foo</p>' +
@@ -2635,7 +2632,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'			xxx' +
 					'			<li>' +
 					'				<ul><li></li><li>1.1.2</li></ul>' +
-					'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>.
+					'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>. TODO should not
 					'			</li>' +
 					'			<li>' +
 					'				<ul><li>1.2.1</li></ul>' +
@@ -2653,14 +2650,14 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'					<li>' +
 					'						3.1.1' +
 					'						<ol><li>3.1.1.1</li></ol>' +
-					'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>.
+					'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>. TODO should nor
 					'					</li>' +
 					'					<li>3.1.2</li>' +
 					'				</ul>' +
 					'			</li>' +
 					'		</ol>' +
 					'		<p>xxx</p>' +
-					'		<ul>' +													// Since <p> gets removed, this will become <ol>.
+					'		<ul>' +
 					'			<li>3.2</li>' +
 					'			<li>3.3</li>' +
 					'		</ul>' +
@@ -2669,49 +2666,62 @@ describe.only( 'DocumentListEditing - converters', () => {
 					'</ul>' +
 					'<p>bar</p>',
 
-					'',
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000007" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted"></paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.3</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.4</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted"></paragraph>' +
+					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.2.1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted"></paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000d" listType="numbered">' +
+						'3<$text bold="true">.</$text>1' +
+					'</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e00000000000000000000000000000009" listType="numbered">3.1.1.1</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000a" listType="numbered">3.1.1.2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1.2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">xxx</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000e" listType="bulleted">3.2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000f" listType="bulleted">3.3</paragraph>' +
+					'<paragraph>bar</paragraph>',
 
 					'<p>foo</p>' +
 					'<ul>' +
-					'<li>' +
-					'1' +
-					'<ul>' +
-					'<li>' +
-					'&nbsp;' +
-					'<ul>' +
-					'<li>&nbsp;</li>' +
-					'<li>1.1.2</li>' +
-					'<li>1.1.3</li>' +
-					'<li>1.1.4</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>' +
-					'&nbsp;' +
-					'<ul><li>1.2.1</li></ul>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>2</li>' +
-					'<li>' +
-					'&nbsp;' +
-					'<ol>' +
-					'<li>' +
-					'3<strong>.</strong>1' +
-					'<ul>' +
-					'<li>' +
-					'3.1.1' +
-					'<ol>' +
-					'<li>3.1.1.1</li>' +
-					'<li>3.1.1.2</li>' +
-					'</ol>' +
-					'</li>' +
-					'<li>3.1.2</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>3.2</li>' +
-					'<li>3.3</li>' +
-					'</ol>' +
-					'</li>' +
+						'<li>' +
+							'1' +
+							'<ul>' +
+								'<li>' +
+									'&nbsp;' +
+									'<ul><li>&nbsp;</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
+								'</li>' +
+								'<li>' +
+									'&nbsp;' +
+									'<ul><li>1.2.1</li></ul>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>2</li>' +
+						'<li>' +
+							'<p>&nbsp;</p>' +
+							'<ol>' +
+								'<li>' +
+									'3<strong>.</strong>1' +
+									'<ul>' +
+										'<li>' +
+											'3.1.1' +
+											'<ol><li>3.1.1.1</li><li>3.1.1.2</li></ol>' +
+										'</li>' +
+										'<li>3.1.2</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ol>' +
+							'<p>xxx</p>' +
+							'<ul><li>3.2</li><li>3.3</li></ul>' +
+						'</li>' +
 					'</ul>' +
 					'<p>bar</p>'
 				);
@@ -2728,8 +2738,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'</li>' +
 						'</ul>',
 
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">foo</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted"></paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>',
 
 						'<ul>' +
 							'<li>' +
@@ -2752,8 +2762,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'</li>' +
 						'</ul>',
 
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted"></paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">foo</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>',
 
 						'<ul>' +
 							'<li>' +
@@ -2778,8 +2788,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'</ul>',
 
 						'<paragraph>foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted"></paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted"></paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>',
 
 						'<p>foo</p>' +
 						'<ul>' +
@@ -2810,9 +2820,9 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'e',
 
 						'<paragraph>a</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">c</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">d</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">d</paragraph>' +
 						'<paragraph>e</paragraph>',
 
 						'<p>a</p>' +
@@ -2833,98 +2843,156 @@ describe.only( 'DocumentListEditing - converters', () => {
 			describe( 'model tests for nested lists', () => {
 				it( 'should properly set listIndent and listType', () => {
 					// <ol> in the middle will be fixed by postfixer to bulleted list.
-					editor.setData(
+					// TODO is this expected?
+					testData(
 						'<p>foo</p>' +
 						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>1.1</li>' +
+							'<li>' +
+								'1' +
+								'<ul>' +
+									'<li>1.1</li>' +
+								'</ul>' +
+								'<ol>' +
+									'<li>' +
+										'1.2' +
+										'<ol>' +
+											'<li>1.2.1</li>' +
+										'</ol>' +
+									'</li>' +
+									'<li>1.3</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>2</li>' +
 						'</ul>' +
-						'<ol>' +
-						'<li>' +
-						'1.2' +
-						'<ol>' +
-						'<li>1.2.1</li>' +
-						'</ol>' +
-						'</li>' +
-						'<li>1.3</li>' +
-						'</ol>' +
-						'</li>' +
-						'<li>2</li>' +
+						'<p>bar</p>',
+
+						'<paragraph>foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">1.2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="numbered">1.2.1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">1.3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000005" listType="bulleted">2</paragraph>' +
+						'<paragraph>bar</paragraph>',
+
+						'<p>foo</p>' +
+						'<ul>' +
+							'<li>' +
+								'1' +
+								'<ul>' +
+									'<li>1.1</li>' +
+									'<li>' +
+										'1.2' +
+										'<ol>' +
+											'<li>1.2.1</li>' +
+										'</ol>' +
+									'</li>' +
+									'<li>1.3</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>2</li>' +
 						'</ul>' +
 						'<p>bar</p>'
 					);
-
-					const expectedModelData =
-						'<paragraph>foo</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.2</listItem>' +
-						'<listItem listIndent="2" listType="numbered">1.2.1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.3</listItem>' +
-						'<listItem listIndent="0" listType="bulleted">2</listItem>' +
-						'<paragraph>bar</paragraph>';
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
 				} );
 
 				it( 'should properly listIndent when list nested in other block', () => {
-					editor.setData(
+					testData(
 						'<ul>' +
-						'<li>' +
-						'a' +
-						'<table>' +
-						'<tr>' +
-						'<td>' +
-						'<div>' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c' +
-						'<ul>' +
-						'<li>' +
-						'd' +
-						'<table>' +
-						'<tr>' +
-						'<td>e</td>' +
-						'</tr>' +
+							'<li>' +
+								'a' +
+								'<table>' +
+									'<tr>' +
+										'<td>' +
+											'<div>' +
+												'<ul>' +
+													'<li>b</li>' +
+													'<li>c' +
+														'<ul>' +
+															'<li>' +
+																'd' +
+																'<table>' +
+																	'<tr>' +
+																		'<td>e</td>' +
+																	'</tr>' +
+																'</table>' +
+															'</li>' +
+														'</ul>' +
+													'</li>' +
+												'</ul>' +
+											'</div>' +
+										'</td>' +
+									'</tr>' +
+								'</table>' +
+								'f' +
+							'</li>' +
+							'<li>g</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">a</paragraph>' +
+						'<table listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
+							'<tableRow>' +
+								'<tableCell>' +
+									'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
+										'b' +
+									'</paragraph>' +
+									'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+										'c' +
+									'</paragraph>' +
+									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
+										'd' +
+									'</paragraph>' +
+									'<table listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
+										'<tableRow>' +
+											'<tableCell>' +
+												'<paragraph>e</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
+								'</tableCell>' +
+							'</tableRow>' +
 						'</table>' +
-						'</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'</div>' +
-						'</td>' +
-						'</tr>' +
-						'</table>' +
-						'f' +
-						'</li>' +
-						'<li>g</li>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">f</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">g</paragraph>',
+
+						'<ul>' +
+							'<li>' +
+								'<p>a</p>' +
+								'<figure class="table">' +
+									'<table>' +
+										'<tbody>' +
+											'<tr>' +
+												'<td>' +
+													'<ul>' +
+														'<li>b</li>' +
+														'<li>' +
+															'c' +
+															'<ul>' +
+																'<li>' +
+																	'<p>d</p>' +
+																	'<figure class="table">' +
+																		'<table>' +
+																			'<tbody>' +
+																				'<tr>' +
+																					'<td>e</td>' +
+																				'</tr>' +
+																			'</tbody>' +
+																		'</table>' +
+																	'</figure>' +
+																'</li>' +
+															'</ul>' +
+														'</li>' +
+													'</ul>' +
+												'</td>' +
+											'</tr>' +
+										'</tbody>' +
+									'</table>' +
+								'</figure>' +
+								'<p>f</p>' +
+							'</li>' +
+							'<li>g</li>' +
 						'</ul>'
 					);
-
-					const expectedModelData =
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<table>' +
-						'<tableRow>' +
-						'<tableCell>' +
-						'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-						'<listItem listIndent="0" listType="bulleted">c</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-						'<table>' +
-						'<tableRow>' +
-						'<tableCell>' +
-						'<paragraph>e</paragraph>' +
-						'</tableCell>' +
-						'</tableRow>' +
-						'</table>' +
-						'</tableCell>' +
-						'</tableRow>' +
-						'</table>' +
-						'<listItem listIndent="0" listType="bulleted">f</listItem>' +
-						'<listItem listIndent="0" listType="bulleted">g</listItem>';
-
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModelData );
 				} );
 			} );
 		} );

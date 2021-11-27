@@ -64,9 +64,9 @@ export function getIndent( listItem ) {
 
 	while ( parent ) {
 		// Each LI in the tree will result in an increased indent for HTML compliant lists.
-		if ( parent.is( 'element', 'li' ) ) {
+		if ( isListItemView( parent ) ) {
 			indent++;
-		} else if ( parent.is( 'element', 'ul' ) || parent.is( 'element', 'ol' ) ) {
+		} else {
 			// If however the list is nested in other list we should check previous sibling of any of the list elements...
 			const previousSibling = parent.previousSibling;
 
@@ -76,11 +76,9 @@ export function getIndent( listItem ) {
 			//		|-> LI (parent LIs: 0)            |-> LI         (indent: 0)
 			//		|-> OL                                |-> OL
 			//		    |-> LI (parent LIs: 0)                |-> LI (indent: 1)
-			if ( previousSibling && previousSibling.is( 'element', 'li' ) ) {
+			if ( previousSibling && isListItemView( previousSibling ) ) {
 				indent++;
 			}
-		} else {
-			break;
 		}
 
 		parent = parent.parent;
@@ -101,7 +99,7 @@ export function getIndent( listItem ) {
 export function createListElement( writer, indent, type, id ) {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
 	return writer.createAttributeElement( type == 'numbered' ? 'ol' : 'ul', null, {
-		priority: 2 * indent - 100,
+		priority: 2 * indent / 100 - 100,
 		id
 	} );
 }
@@ -117,7 +115,7 @@ export function createListElement( writer, indent, type, id ) {
 export function createListItemElement( writer, indent, id ) {
 	// Negative priorities so that restricted editing attribute won't wrap list items.
 	return writer.createAttributeElement( 'li', null, {
-		priority: ( 2 * indent + 1 ) - 100,
+		priority: ( 2 * indent + 1 ) / 100 - 100,
 		id
 	} );
 }

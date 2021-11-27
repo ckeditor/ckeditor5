@@ -248,6 +248,7 @@ export function modelChangePostFixer( model, writer ) {
 	let applied = false;
 
 	// TODO this should also fix listItemId attribute values
+	// TODO this should listIndent so the list starts at 0
 
 	for ( const entry of changes ) {
 		if ( entry.type == 'insert' && entry.attributes.has( 'listItemId' ) ) {

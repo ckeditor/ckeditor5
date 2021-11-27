@@ -164,22 +164,31 @@ export function listItemUpcastConverter() {
 			return;
 		}
 
-		const id = uid();
-		const indent = getIndent( data.viewItem );
-		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
+		const attributes = {
+			listItemId: uid(),
+			listIndent: getIndent( data.viewItem ),
+			listType: data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted'
+		};
 
-		const items = Array.from( data.modelRange.getWalker( { shallow: true } ) ).map( ( { item } ) => item );
+		const items = Array.from( data.modelRange.getItems( { shallow: true } ) );
 
 		for ( const item of items ) {
 			if ( !item.hasAttribute( 'listItemId' ) && schema.checkAttribute( item, 'listItemId' ) ) {
-				writer.setAttribute( 'listItemId', id, item );
-				writer.setAttribute( 'listIndent', indent, item );
-				writer.setAttribute( 'listType', type, item );
+				writer.setAttributes( attributes, item );
 			}
 		}
 
 		if ( items.length > 1 ) {
-			if ( items[ 1 ].getAttribute( 'listItemId' ) != id ) {
+			// Make sure that list item that contain only nested list will preserve paragraph for itself:
+			// 	<ul>
+			// 		<li>
+			//			<p></p>  <-- this one must be kept
+			// 			<ul>
+			// 				<li></li>
+			// 			</ul>
+			//		</li>
+			//	</ul>
+			if ( items[ 1 ].getAttribute( 'listItemId' ) != attributes.listItemId ) {
 				conversionApi.keepEmptyElement( items[ 0 ] );
 			}
 		}
