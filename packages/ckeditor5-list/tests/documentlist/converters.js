@@ -3266,161 +3266,161 @@ describe.only( 'DocumentListEditing - converters', () => {
 		describe( 'convert changes', () => {
 			describe( 'insert', () => {
 				describe( 'same list type', () => {
-					testInsert(
-						'after smaller indent',
+					it( 'after smaller indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">x</paragraph>]',
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">x</listItem>]',
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+					it( 'after smaller indent, before same indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1</paragraph>',
 
-					testInsert(
-						'after smaller indent, before same indent',
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">x</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
+					it( 'after smaller indent, before smaller indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>',
 
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>x</li>' +
-						'<li>1.1</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li><span class="ck-list-bogus-paragraph">2</span></li>' +
+							'</ul>'
+						);
+					} );
 
-					testInsert(
-						'after smaller indent, before smaller indent',
+					it( 'after same indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="bulleted">x</paragraph>]',
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">x</listItem>]' +
-						'<listItem listIndent="0" listType="bulleted">2</listItem>',
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>2</li>' +
-						'</ul>'
-					);
+					it( 'after same indent, before bigger indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1</paragraph>',
 
-					testInsert(
-						'after same indent',
+							'<p>p</p>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">1</span></li>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">x</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">x</listItem>]',
+					it( 'after bigger indent, before bigger indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="c" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">1.2</paragraph>',
 
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>1.1</li>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">x</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.2</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testInsert(
-						'after same indent, before bigger indent',
+					it( 'list items with too big indent', () => {
+						testInsertX(
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="4" listItemId="c" listType="bulleted">x</paragraph>' +
+							'<paragraph listIndent="5" listItemId="d" listType="bulleted">x</paragraph>' +
+							'<paragraph listIndent="4" listItemId="e" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="f" listType="bulleted">c</paragraph>',
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
-
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>1</li>' +
-						'<li>' +
-						'x' +
-						'<ul>' +
-						'<li>1.1</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
-
-					testInsert(
-						'after bigger indent, before bigger indent',
-
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-						'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">1.2</listItem>',
-
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>1.1</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>' +
-						'x' +
-						'<ul>' +
-						'<li>1.2</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
-
-					testInsert(
-						'list items with too big indent',
-
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="4" listType="bulleted">x</listItem>' + // This indent should be fixed by post fixer.
-						'<listItem listIndent="5" listType="bulleted">x</listItem>' + // This indent should be fixed by post fixer.
-						'<listItem listIndent="4" listType="bulleted">x</listItem>]' + // This indent should be fixed by post fixer.
-						'<listItem listIndent="1" listType="bulleted">c</listItem>',
-
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>' +
-						'b' +
-						'<ul>' +
-						'<li>' +
-						'x' +
-						'<ul>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>c</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li>' +
+											'<span class="ck-list-bogus-paragraph">b</span>' +
+											'<ul>' +
+												'<li>' +
+													'<span class="ck-list-bogus-paragraph">x</span>' +
+													'<ul>' +
+														'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+													'</ul>' +
+												'</li>' +
+												'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+											'</ul>' +
+										'</li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 				} );
 
 				describe( 'different list type', () => {
