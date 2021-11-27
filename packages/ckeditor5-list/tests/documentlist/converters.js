@@ -3424,444 +3424,444 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				describe( 'different list type', () => {
-					testInsert(
-						'after smaller indent, before same indent',
+					it( 'after smaller indent, before same indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="numbered">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1</paragraph>',
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'[<listItem listIndent="1" listType="numbered">x</listItem>]' + // This type should be fixed by post fixer.
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ol>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+									'</ol>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-						'<p>p</p>' +
+					it( 'after same indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="numbered">x</paragraph>]',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
+
+					it( 'after same indent, before bigger indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="numbered">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">1</span></li>' +
+							'</ul>' +
+							'<ol>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">x</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ol>'
+						);
+					} );
+
+					it( 'after bigger indent, before bigger indent', () => {
+						testInsertX(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="c" listType="numbered">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">1.2</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+							'<ol>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">x</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">1.2</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ol>'
+						);
+					} );
+
+					it( 'after bigger indent, in nested list, different type', () => {
+						testInsertX(
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="d" listType="numbered">x</paragraph>]',
+
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li>' +
+											'<span class="ck-list-bogus-paragraph">b</span>' +
+											'<ul>' +
+												'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+											'</ul>' +
+										'</li>' +
+										'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
+				} );
+
+				// This case is pretty complex but it tests various edge cases concerning splitting lists.
+				it( 'element between nested list items - complex', () => {
+					testInsertX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="numbered">d</paragraph>' +
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="3" listItemId="e" listType="numbered">e</paragraph>' +
+						'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
+						'<paragraph listIndent="3" listItemId="g" listType="bulleted">g</paragraph>' +
+						'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+						'<paragraph listIndent="2" listItemId="i" listType="numbered">i</paragraph>' +
+						'<paragraph listIndent="0" listItemId="j" listType="numbered">j</paragraph>' +
+						'<paragraph>p</paragraph>',
+
 						'<ul>' +
-						'<li>' +
-						'1' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">b</span>' +
+										'<ul>' +
+											'<li>' +
+												'<span class="ck-list-bogus-paragraph">c</span>' +
+												'<ol>' +
+													'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+												'</ol>' +
+											'</li>' +
+										'</ul>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+						'<p>x</p>' +
 						'<ol>' +
-						'<li>x</li>' +
-						'<li>1.1</li>' +
+							'<li><span class="ck-list-bogus-paragraph">e</span></li>' +
 						'</ol>' +
-						'</li>' +
-						'</ul>'
-					);
-
-					testInsert(
-						'after same indent',
-
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-						'[<listItem listIndent="1" listType="numbered">x</listItem>]', // This type should be fixed by post fixer.
-
-						'<p>p</p>' +
 						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>1.1</li>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
-
-					testInsert(
-						'after same indent, before bigger indent',
-
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'[<listItem listIndent="0" listType="numbered">x</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
-
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>1</li>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">f</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">g</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">h</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">i</span></li>' +
+								'</ol>' +
+							'</li>' +
 						'</ul>' +
 						'<ol>' +
-						'<li>' +
-						'x' +
-						'<ul>' +
-						'<li>1.1</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ol>'
+							'<li><span class="ck-list-bogus-paragraph">j</span></li>' +
+						'</ol>' +
+						'<p>p</p>',
+
+						false
 					);
+				} );
 
-					testInsert(
-						'after bigger indent, before bigger indent',
+				it( 'element before indent "hole"', () => {
+					testInsertX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">1.1.1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">2</paragraph>',
 
-						'<paragraph>p</paragraph>' +
-						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-						'[<listItem listIndent="0" listType="numbered">x</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">1.2</listItem>',
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">1</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>' +
+						'<p>x</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">1.1.1</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">2</span></li>' +
+						'</ul>',
 
-						'<p>p</p>' +
-						'<ul>' +
-						'<li>' +
-						'1' +
-						'<ul>' +
-						'<li>1.1</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'<ol>' +
-						'<li>' +
-						'x' +
-						'<ul>' +
-						'<li>1.2</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ol>'
+						false
 					);
+				} );
 
-					testInsert(
-						'after bigger indent, in nested list, different type',
-
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-						'[<listItem listIndent="1" listType="numbered">x</listItem>]', // This type should be fixed by post fixer.
+				it( 'two list items with mismatched types inserted in one batch', () => {
+					_test(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>[]',
 
 						'<ul>' +
-						'<li>' +
-						'a' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>',
+
+						() => {
+							const item1 = '<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>';
+							const item2 = '<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
+
+							model.change( writer => {
+								writer.append( parseModel( item1, model.schema ), modelRoot );
+								writer.append( parseModel( item2, model.schema ), modelRoot );
+							} );
+						}
+					);
+				} );
+			} );
+
+			describe( 'remove', () => {
+				it( 'the first nested item', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
+
 						'<ul>' +
-						'<li>' +
-						'b' +
-						'<ul>' +
-						'<li>c</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>x</li>' +
-						'</ul>' +
-						'</li>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+								'</ul>' +
+							'</li>' +
 						'</ul>'
 					);
 				} );
 
-				// This case is pretty complex but it tests various edge cases concerning splitting lists.
-				testInsert(
-					'element between nested list items - complex',
+				it( 'nested item from the middle', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-					'<listItem listIndent="3" listType="numbered">d</listItem>' +
-					'[<paragraph>x</paragraph>]' +
-					'<listItem listIndent="3" listType="numbered">e</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="2" listType="bulleted">f</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="3" listType="bulleted">g</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="1" listType="bulleted">h</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="2" listType="numbered">i</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="0" listType="numbered">j</listItem>' + // This indent should be fixed by post fixer.
-					'<paragraph>p</paragraph>',
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>' +
-					'b' +
-					'<ul>' +
-					'<li>' +
-					'c' +
-					'<ol>' +
-					'<li>d</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'<p>x</p>' +
-					'<ol>' +
-					'<li>e</li>' +
-					'</ol>' +
-					'<ul>' +
-					'<li>' +
-					'f' +
-					'<ul>' +
-					'<li>g</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>' +
-					'h' +
-					'<ol>' +
-					'<li>i</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>' +
-					'<ol>' +
-					'<li>j</li>' +
-					'</ol>' +
-					'<p>p</p>',
+				it( 'the last nested item', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]',
 
-					false
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-				testInsert(
-					'element before indent "hole"',
+				it( 'the only nested item', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">c</paragraph>]',
 
-					'<listItem listIndent="0" listType="bulleted">1</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
-					'[<paragraph>x</paragraph>]' +
-					'<listItem listIndent="2" listType="bulleted">1.1.1</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="0" listType="bulleted">2</listItem>',
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>' +
-					'1' +
-					'<ul>' +
-					'<li>1.1</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>' +
-					'<p>x</p>' +
-					'<ul>' +
-					'<li>1.1.1</li>' +
-					'<li>2</li>' +
-					'</ul>',
+				it( 'list item that separates two nested lists of same type', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="d" listType="numbered">d</paragraph>',
 
-					false
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-				// _test(
-				// 	'two list items with mismatched types inserted in one batch',
-				//
-				// 	'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				// 	'<listItem listIndent="1" listType="bulleted">b</listItem>[]',
-				//
-				// 	'<ul>' +
-				// 	'<li>' +
-				// 	'a' +
-				// 	'<ul>' +
-				// 	'<li>b</li>' +
-				// 	'<li>c</li>' +
-				// 	'<li>d</li>' +
-				// 	'</ul>' +
-				// 	'</li>' +
-				// 	'</ul>',
-				//
-				// 	() => {
-				// 		const item1 = '<listItem listIndent="1" listType="numbered">c</listItem>';
-				// 		const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
-				//
-				// 		model.change( writer => {
-				// 			writer.append( parseModel( item1, model.schema ), modelRoot );
-				// 			writer.append( parseModel( item2, model.schema ), modelRoot );
-				// 		} );
-				// 	}
-				// );
-			} );
+				it( 'list item that separates two nested lists of different type', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>', // This type should be fixed by post fixer.
 
-			describe( 'remove', () => {
-				testRemove(
-					'the first nested item',
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">c</listItem>',
+				it( 'item that has nested lists, previous item has same indent', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>c</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-				testRemove(
-					'nested item from the middle',
+				it( 'item that has nested lists, previous item has smaller indent', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>',
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">d</listItem>',
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>d</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
+				it( 'item that has nested lists, previous item has bigger indent by 1', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="numbered">e</paragraph>',
 
-				testRemove(
-					'the last nested item',
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">d</span>' +
+										'<ol>' +
+											'<li><span class="ck-list-bogus-paragraph">e</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
+				it( 'item that has nested lists, previous item has bigger indent by 2', () => {
+					testRemoveX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>',
 
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>b</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">b</span>' +
+										'<ul>' +
+											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'</ul>' +
+									'</li>' +
+									'<li><span class="ck-list-bogus-paragraph">e</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
-				testRemove(
-					'the only nested item',
+				it( 'first list item that has nested list', () => {
+					testRemoveX(
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>',
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
-
-					'<ul>' +
-					'<li>a</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'list item that separates two nested lists of same type',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="numbered">b</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
-					'<listItem listIndent="1" listType="numbered">d</listItem>',
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ol>' +
-					'<li>b</li>' +
-					'<li>d</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'list item that separates two nested lists of different type',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="numbered">b</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">d</listItem>', // This type should be fixed by post fixer.
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ol>' +
-					'<li>b</li>' +
-					'<li>d</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'item that has nested lists, previous item has same indent',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">d</listItem>',
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>c</li>' +
-					'<li>d</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'item that has nested lists, previous item has smaller indent',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
-					'<listItem listIndent="2" listType="bulleted">c</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="2" listType="bulleted">d</listItem>', // This indent should be fixed by post fixer.
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>c</li>' +
-					'<li>d</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'item that has nested lists, previous item has bigger indent by 1',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-					'<listItem listIndent="2" listType="numbered">e</listItem>',
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>' +
-					'd' +
-					'<ol>' +
-					'<li>e</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'item that has nested lists, previous item has bigger indent by 2',
-
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-					'[<listItem listIndent="0" listType="bulleted">d</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">e</listItem>',
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>' +
-					'b' +
-					'<ul>' +
-					'<li>c</li>' +
-					'</ul>' +
-					'</li>' +
-					'<li>e</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
-
-				testRemove(
-					'first list item that has nested list',
-
-					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem listIndent="2" listType="bulleted">c</listItem>', // This indent should be fixed by post fixer.
-
-					'<ul>' +
-					'<li>' +
-					'b' +
-					'<ul>' +
-					'<li>c</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">b</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 			} );
 
 			describe( 'change type', () => {
@@ -5030,9 +5030,6 @@ describe.only( 'DocumentListEditing - converters', () => {
 		expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
 	}
 
-	function testInsert() {
-	}
-
 	function testInsertX( input, output, testUndo = true ) {
 		// Cut out inserted element that is between '[' and ']' characters.
 		const selStart = input.indexOf( '[' ) + 1;
@@ -5050,7 +5047,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( modelInput, output, actionCallback, testUndo );
 	}
 
-	function testRemove() {
+	function testRemove( name ) {
+		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testRemoveX( input, output ) {
@@ -5063,7 +5061,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testChangeType() {
+	function testChangeType( name) {
+		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testChangeTypeX( input, output ) {
@@ -5083,7 +5082,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testRenameFromListItem() {
+	function testRenameFromListItem( name ) {
+		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testRenameElement( input, output, testUndo = true ) {
@@ -5112,7 +5112,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback, testUndo );
 	}
 
-	function testRenameToListItem() {
+	function testRenameToListItem( name ) {
+		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testSetListItemAttributes( newIndent, input, output ) {
@@ -5127,17 +5128,22 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testChangeIndent( testName, newIndent, input, output ) {
+	function testChangeIndent( name ) {
+		it( name, () => { expect( false ).to.be.true; } );
+	}
+
+	function testChangeIndentX( newIndent, input, output ) {
 		const actionCallback = selection => {
 			model.change( writer => {
 				writer.setAttribute( 'listIndent', newIndent, selection.getFirstRange() );
 			} );
 		};
 
-		// _test( testName, input, output, actionCallback );
+		_test( input, output, actionCallback );
 	}
 
-	function testMove() {
+	function testMove( name ) {
+		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testMoveX( input, rootOffset, output, testUndo = true ) {
