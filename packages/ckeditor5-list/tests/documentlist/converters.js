@@ -3744,7 +3744,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
-						'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>', // This type should be fixed by post fixer.
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
 						'<ul>' +
 							'<li>' +
@@ -3865,397 +3865,435 @@ describe.only( 'DocumentListEditing - converters', () => {
 			} );
 
 			describe( 'change type', () => {
-				testChangeType(
-					'list item that has nested items',
+				it( 'list item that has nested items', () => {
+					testChangeTypeX(
+						'[<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
 
-					'[<listItem listIndent="0" listType="numbered">a</listItem>]' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">c</listItem>',
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ul>' +
-					'<li>b</li>' +
-					'<li>c</li>' +
-					'</ul>' +
-					'</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 
 				// The change will be "prevented" by post fixer.
-				testChangeType(
-					'list item that is a nested item',
+				it( 'list item that is a nested item', () => {
+					testChangeTypeX(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
+						'[<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>]' +
+						'<paragraph listIndent="1" listItemId="d" listType="numbered">d</paragraph>',
 
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="numbered">b</listItem>' +
-					'[<listItem listIndent="1" listType="numbered">c</listItem>]' +
-					'<listItem listIndent="1" listType="numbered">d</listItem>',
-
-					'<ul>' +
-					'<li>' +
-					'a' +
-					'<ol>' +
-					'<li>b</li>' +
-					'<li>c</li>' +
-					'<li>d</li>' +
-					'</ol>' +
-					'</li>' +
-					'</ul>'
-				);
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
 			} );
 
 			describe( 'change indent', () => {
 				describe( 'same list type', () => {
-					testChangeIndent(
-						'indent last item of flat list', 1,
+					it( 'indent last item of flat list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="0" listType="bulleted">b</listItem>]',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'indent middle item of flat list', 1,
+					it( 'indent middle item of flat list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-						'<listItem listIndent="0" listType="bulleted">c</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>c</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'indent last item in nested list', 2,
+					it( 'indent last item in nested list', () => {
+						testChangeIndentX(
+							2,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>' +
-						'b' +
-						'<ul>' +
-						'<li>c</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li>' +
+											'<span class="ck-list-bogus-paragraph">b</span>' +
+											'<ul>' +
+												'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+											'</ul>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'indent middle item in nested list', 2,
+					it( 'indent middle item in nested list', () => {
+						testChangeIndentX(
+							2,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>' +
-						'b' +
-						'<ul>' +
-						'<li>c</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li>' +
+											'<span class="ck-list-bogus-paragraph">b</span>' +
+											'<ul>' +
+												'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+											'</ul>' +
+										'</li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
 					// Keep in mind that this test is different than "executing command on item that has nested list".
 					// A command is automatically indenting nested items so the hierarchy is preserved.
 					// Here we test conversion and the change is simple changing indent of one item.
 					// This may be true also for other tests in this suite, keep this in mind.
-					testChangeIndent(
-						'indent item that has nested list', 1,
+					it( 'indent item that has nested list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">c</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'indent item that in view is a next sibling of item that has nested list', 1,
+					it( 'indent item that in view is a next sibling of item that has nested list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent the first item of nested list', 0,
+					it( 'outdent the first item of nested list', () => {
+						testChangeIndentX(
+							0,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>a</li>' +
-						'<li>' +
-						'b' +
-						'<ul>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">b</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent item from the middle of nested list', 0,
+					it( 'outdent item from the middle of nested list', () => {
+						testChangeIndentX(
+							0,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>' +
-						'c' +
-						'<ul>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">c</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent the last item of nested list', 0,
+					it( 'outdent the last item of nested list', () => {
+						testChangeIndentX(
+							0,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>c</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent the only item of nested list', 1,
+					it( 'outdent the only item of nested list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent item by two', 0,
+					it( 'outdent item by two', () => {
+						testChangeIndentX(
+							0,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
-						'<listItem listIndent="0" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>]' +
+							'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'</ul>' +
-						'</li>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ul>' +
+								'</li>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+								'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+							'</ul>'
+						);
+					} );
 				} );
 
 				describe( 'different list type', () => {
-					testChangeIndent(
-						'indent middle item of flat list', 1,
+					it( 'indent middle item of flat list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="0" listType="numbered">b</listItem>]' +
-						'<listItem listIndent="0" listType="bulleted">c</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="numbered">b</paragraph>]' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ol>' +
-						'<li>b</li>' +
-						'</ol>' +
-						'</li>' +
-						'<li>c</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ol>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ol>' +
+								'</li>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'indent item that has nested list', 1,
+					it( 'indent item that has nested list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="0" listType="numbered">b</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">c</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="numbered">b</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ol>' +
-						'<li>b</li>' +
-						'<li>c</li>' +
-						'</ol>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ol>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+									'</ol>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'indent item that in view is a next sibling of item that has nested list #1', 1,
+					it( 'indent item that in view is a next sibling of item that has nested list #1', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="0" listType="numbered">c</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="c" listType="numbered">c</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent the first item of nested list', 0,
+					it( 'outdent the first item of nested list', () => {
+						testChangeIndentX(
+							0,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>a</li>' +
-						'<li>' +
-						'b' +
-						'<ul>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">b</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent the only item of nested list', 1,
+					it( 'outdent the only item of nested list', () => {
+						testChangeIndentX(
+							1,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
-						'<listItem listIndent="1" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'<li>c</li>' +
-						'<li>d</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+					} );
 
-					testChangeIndent(
-						'outdent item by two', 0,
+					it( 'outdent item by two', () => {
+						testChangeIndentX(
+							0,
 
-						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-						'[<listItem listIndent="2" listType="numbered">c</listItem>]' +
-						'<listItem listIndent="0" listType="bulleted">d</listItem>',
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+							'[<paragraph listIndent="2" listItemId="c" listType="numbered">c</paragraph>]' +
+							'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>',
 
-						'<ul>' +
-						'<li>' +
-						'a' +
-						'<ul>' +
-						'<li>b</li>' +
-						'</ul>' +
-						'</li>' +
-						'</ul>' +
-						'<ol>' +
-						'<li>c</li>' +
-						'</ol>' +
-						'<ul>' +
-						'<li>d</li>' +
-						'</ul>'
-					);
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">a</span>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>' +
+							'<ol>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ol>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+							'</ul>'
+						);
+					} );
 				} );
 			} );
 
-			describe( 'rename from list item', () => {
+			describe( 'rename list item element', () => {
+
+			} );
+
+			describe( 'remove list item attributes', () => {
 				testRenameFromListItem(
 					'rename nested item from the middle #1',
 
@@ -4409,7 +4447,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				);
 			} );
 
-			describe( 'rename to list item (with attribute change)', () => {
+			describe( 'set list item attributes', () => {
 				testRenameToListItem(
 					'element into first item in nested list', 1,
 
@@ -5047,10 +5085,6 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( modelInput, output, actionCallback, testUndo );
 	}
 
-	function testRemove( name ) {
-		it( name, () => { expect( false ).to.be.true; } );
-	}
-
 	function testRemoveX( input, output ) {
 		const actionCallback = selection => {
 			model.change( writer => {
@@ -5059,10 +5093,6 @@ describe.only( 'DocumentListEditing - converters', () => {
 		};
 
 		_test( input, output, actionCallback );
-	}
-
-	function testChangeType( name) {
-		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testChangeTypeX( input, output ) {
@@ -5126,10 +5156,6 @@ describe.only( 'DocumentListEditing - converters', () => {
 		};
 
 		_test( input, output, actionCallback );
-	}
-
-	function testChangeIndent( name ) {
-		it( name, () => { expect( false ).to.be.true; } );
 	}
 
 	function testChangeIndentX( newIndent, input, output ) {
