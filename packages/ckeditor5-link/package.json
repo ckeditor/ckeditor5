@@ -1,6 +1,6 @@
 {
   "name": "@mitodl/ckeditor5-resource-link",
-  "version": "29.2.1",
+  "version": "31.0.0",
   "description": "MITODL fork of CKEditor 5 link feature.",
   "public": true,
   "keywords": [
