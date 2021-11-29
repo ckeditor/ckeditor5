@@ -250,32 +250,30 @@ export function modelChangePostFixer( model, writer ) {
 	// TODO this should also fix listItemId attribute values
 
 	for ( const entry of changes ) {
-		if ( entry.type == 'insert' ) {
+		if ( entry.type == 'insert' && entry.name != '$text' ) {
+			const item = entry.position.nodeAfter;
+
+			// Remove attributes in case of renamed element.
+			if ( !model.schema.checkAttribute( item, 'listItemId' ) ) {
+				for ( const attributeName of Array.from( item.getAttributeKeys() ) ) {
+					if ( attributeName.startsWith( 'list' ) ) {
+						writer.removeAttribute( attributeName, item );
+
+						applied = true;
+					}
+				}
+			}
+
 			// Insert of a list item.
 			if ( entry.attributes.has( 'listItemId' ) ) {
 				_addListToFix( entry.position );
 			}
 			// Insert of a non-list item.
-			else if ( !entry.attributes.has( 'listItemId' ) ) {
-				if ( entry.name != '$text' ) {
-					// In case of renamed element.
-					const item = entry.position.nodeAfter;
-
-					for ( const attributeName of [ 'listIndent', 'listType', 'listStyle' ] ) {
-						if ( item.hasAttribute( attributeName ) ) {
-							writer.removeAttribute( attributeName, item );
-
-							applied = true;
-						}
-					}
-				}
-
+			else {
 				_addListToFix( entry.position.getShiftedBy( entry.length ) );
 			}
 
 			// Check if there is no nested list.
-			const item = entry.position.nodeAfter;
-
 			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item ) ) {
 				if ( innerItem.is( 'element' ) && innerItem.hasAttribute( 'listItemId' ) ) {
 					_addListToFix( previousPosition );

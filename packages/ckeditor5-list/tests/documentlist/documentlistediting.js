@@ -18,8 +18,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import stubUid from './_utils/uid';
+import prepareTest from './_utils/prepare-test';
 
 describe( 'DocumentListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
@@ -37,6 +37,19 @@ describe( 'DocumentListEditing', () => {
 		modelRoot = modelDoc.getRoot();
 
 		view = editor.editing.view;
+
+		model.schema.extend( 'paragraph', {
+			allowAttributes: 'foo'
+		} );
+
+		model.schema.register( 'nonListable', {
+			allowWhere: '$block',
+			allowContentOf: '$block',
+			inheritTypesFrom: '$block',
+			allowAttributes: 'foo'
+		} );
+
+		editor.conversion.elementToElement( { model: 'nonListable', view: 'div' } );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => {} );
@@ -73,471 +86,145 @@ describe( 'DocumentListEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).to.be.false;
 	} );
 
-	// describe.skip( 'commands', () => {
-	// 	it( 'should register bulleted list command', () => {
-	// 		const command = editor.commands.get( 'bulletedList' );
-	//
-	// 		expect( command ).to.be.instanceOf( ListCommand );
-	// 		expect( command ).to.have.property( 'type', 'bulleted' );
-	// 	} );
-	//
-	// 	it( 'should register numbered list command', () => {
-	// 		const command = editor.commands.get( 'numberedList' );
-	//
-	// 		expect( command ).to.be.instanceOf( ListCommand );
-	// 		expect( command ).to.have.property( 'type', 'numbered' );
-	// 	} );
-	//
-	// 	it( 'should register indent list command', () => {
-	// 		const command = editor.commands.get( 'indentList' );
-	//
-	// 		expect( command ).to.be.instanceOf( IndentCommand );
-	// 	} );
-	//
-	// 	it( 'should register outdent list command', () => {
-	// 		const command = editor.commands.get( 'outdentList' );
-	//
-	// 		expect( command ).to.be.instanceOf( IndentCommand );
-	// 	} );
-	//
-	// 	it( 'should add indent list command to indent command', () => {
-	// 		return VirtualTestEditor
-	// 			.create( {
-	// 				plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
-	// 			} )
-	// 			.then( newEditor => {
-	// 				editor = newEditor;
-	// 			} )
-	// 			.then( () => {
-	// 				const indentListCommand = editor.commands.get( 'indentList' );
-	// 				const indentCommand = editor.commands.get( 'indent' );
-	//
-	// 				const spy = sinon.spy( indentListCommand, 'execute' );
-	//
-	// 				indentListCommand.isEnabled = true;
-	// 				indentCommand.execute();
-	//
-	// 				sinon.assert.calledOnce( spy );
-	// 			} );
-	// 	} );
-	//
-	// 	it( 'should add outdent list command to outdent command', () => {
-	// 		return VirtualTestEditor
-	// 			.create( {
-	// 				plugins: [ Paragraph, IndentEditing, ListEditing, IndentEditing ]
-	// 			} )
-	// 			.then( newEditor => {
-	// 				editor = newEditor;
-	// 			} )
-	// 			.then( () => {
-	// 				const outdentListCommand = editor.commands.get( 'outdentList' );
-	// 				const outdentCommand = editor.commands.get( 'outdent' );
-	//
-	// 				const spy = sinon.spy( outdentListCommand, 'execute' );
-	//
-	// 				outdentListCommand.isEnabled = true;
-	// 				outdentCommand.execute();
-	//
-	// 				sinon.assert.calledOnce( spy );
-	// 			} );
-	// 	} );
-	// } );
-
-	describe( 'enter key handling callback', () => {
-		it.skip( 'should execute outdentList command on enter key in empty list', () => {
-			const domEvtDataStub = { preventDefault() {} };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]</listItem>' );
-
-			editor.editing.view.document.fire( 'enter', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-		} );
-
-		it.skip( 'should not execute outdentList command on enter key in non-empty list', () => {
-			const domEvtDataStub = { preventDefault() {} };
-
-			const enterCommandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
-			const outdentCommandExecuteSpy = sinon.stub( editor.commands.get( 'outdentList' ), 'execute' );
-
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
-
-			editor.editing.view.document.fire( 'enter', domEvtDataStub );
-
-			sinon.assert.calledOnce( enterCommandExecuteSpy );
-			sinon.assert.notCalled( outdentCommandExecuteSpy );
-		} );
-	} );
-
-	describe.skip( 'delete key handling callback', () => {
-		it( 'should execute outdentList command on backspace key in first item of list (first node in root)', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-		} );
-
-		it( 'should execute outdentList command on backspace key in first item of list (after a paragraph)', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<paragraph>foo</paragraph><listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-		} );
-
-		it( 'should not execute outdentList command on delete key in first item of list', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'forward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'deleteForward' );
-		} );
-
-		it( 'should not execute outdentList command when selection is not collapsed', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[fo]o</listItem>' );
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
-		} );
-
-		it( 'should not execute outdentList command if not in list item', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<paragraph>[]foo</paragraph>' );
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
-		} );
-
-		it( 'should not execute outdentList command if not in first list item', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData(
-				model,
-				'<listItem listType="bulleted" listIndent="0">foo</listItem><listItem listType="bulleted" listIndent="0">[]foo</listItem>'
-			);
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
-		} );
-
-		it( 'should not execute outdentList command when selection is not on first position', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">fo[]o</listItem>' );
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
-		} );
-
-		it( 'should outdent list when previous element is nested in block quote', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData(
-				model,
-				'<blockQuote><paragraph>x</paragraph></blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem>'
-			);
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-		} );
-
-		it( 'should outdent list when list is nested in block quote', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData(
-				model,
-				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem></blockQuote>'
-			);
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-		} );
-
-		it( 'should outdent empty list when list is nested in block quote', () => {
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData(
-				model,
-				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]</listItem></blockQuote>'
-			);
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-		} );
-
-		it( 'should not outdent list when the selection is in an element nested inside a list item', () => {
-			model.schema.register( 'listItemSub', { allowIn: 'listItem', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'listItemSub' } );
-			editor.conversion.elementToElement( { model: 'listItemSub', view: 'listItemSub' } );
-
-			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
-
-			sinon.spy( editor, 'execute' );
-
-			setModelData( model,
-				'<paragraph>foo</paragraph>' +
-				'<listItem listType="bulleted" listIndent="0"><listItemSub>[]foo</listItemSub></listItem>'
-			);
-
-			editor.editing.view.document.fire( 'delete', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWith( editor.execute, 'delete' );
-		} );
-	} );
-
-	describe.skip( 'tab key handling callback', () => {
-		let domEvtDataStub;
-
-		beforeEach( () => {
-			domEvtDataStub = {
-				keyCode: getCode( 'Tab' ),
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			};
-
-			sinon.spy( editor, 'execute' );
-		} );
-
-		afterEach( () => {
-			editor.execute.restore();
-		} );
-
-		it( 'should execute indentList command on tab key', () => {
-			setModelData(
-				model,
-				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
-				'<listItem listType="bulleted" listIndent="0">[]bar</listItem>'
-			);
-
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-		} );
-
-		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
-			domEvtDataStub.keyCode += getCode( 'Shift' );
-
-			setModelData(
-				model,
-				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">[]bar</listItem>'
-			);
-
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
-
-			sinon.assert.calledOnce( editor.execute );
-			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
-			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
-			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-		} );
-
-		it( 'should not indent if command is disabled', () => {
-			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
-
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
-
-			expect( editor.execute.called ).to.be.false;
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-		} );
-
-		it( 'should not indent or outdent if alt+tab is pressed', () => {
-			domEvtDataStub.keyCode += getCode( 'alt' );
-
-			setModelData(
-				model,
-				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
-				'<listItem listType="bulleted" listIndent="0">[]bar</listItem>'
-			);
-
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
-
-			expect( editor.execute.called ).to.be.false;
-			sinon.assert.notCalled( domEvtDataStub.preventDefault );
-			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-		} );
-	} );
-
 	describe( 'post fixer', () => {
 		describe( 'insert', () => {
 			function testList( input, inserted, output ) {
-				return () => {
-					// Wrap all changes in one block to avoid post-fixing the selection
-					// (which may be incorret) in the meantime.
-					model.change( () => {
-						setModelData( model, input );
+				const selection = prepareTest( model, input );
 
-						model.change( writer => {
-							writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
-						} );
+				model.change( () => {
+					model.change( writer => {
+						writer.insert( parseModel( inserted, model.schema ), selection.getFirstPosition() );
 					} );
+				} );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-				};
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
-			it( 'element before nested list', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[]' +
-				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
-				'<listItem listIndent="3" listType="bulleted">f</listItem>',
+			it( 'element before nested list', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[]' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e" listType="bulleted">f</paragraph>',
 
-				'<paragraph>x</paragraph>',
+					'<paragraph>x</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<paragraph>x</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">e</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">f</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">f</paragraph>'
+				);
+			} );
 
-			it( 'list item before nested list', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[]' +
-				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
-				'<listItem listIndent="3" listType="bulleted">f</listItem>',
+			it( 'list item before nested list', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[]' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e" listType="bulleted">f</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">x</listItem>',
+					'<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">f</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e" listType="bulleted">f</paragraph>'
+				);
+			} );
 
-			it( 'multiple list items with too big indent', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[]' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>',
+			it( 'multiple list items with too big indent', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[]' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
 
-				'<listItem listIndent="4" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="5" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="4" listType="bulleted">x</listItem>',
+					'<paragraph listIndent="4" listItemId="x1" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="5" listItemId="x2" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="4" listItemId="x3" listType="bulleted">x</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="3" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="x1" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="3" listItemId="x2" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="2" listItemId="x3" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
+				);
+			} );
 
-			it( 'item with different type - top level list', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-				'[]' +
-				'<listItem listIndent="0" listType="bulleted">c</listItem>',
+			it( 'item with different type - top level list', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[]' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
 
-				'<listItem listIndent="0" listType="numbered">x</listItem>',
+					'<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="0" listType="numbered">x</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">c</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>'
+				);
+			} );
 
-			it( 'multiple items with different type - nested list', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[]' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>',
+			it( 'multiple items with different type - nested list', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[]' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>',
 
-				'<listItem listIndent="1" listType="numbered">x</listItem>' +
-				'<listItem listIndent="2" listType="numbered">x</listItem>',
+					'<paragraph listIndent="1" listItemId="x1" listType="numbered">x</paragraph>' +
+					'<paragraph listIndent="2" listItemId="x2" listType="numbered">x</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">x</listItem>' +
-				'<listItem listIndent="2" listType="numbered">x</listItem>' +
-				'<listItem listIndent="2" listType="numbered">c</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="x1" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="2" listItemId="x2" listType="numbered">x</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="numbered">c</paragraph>'
+				);
+			} );
 
-			it( 'item with different type, in nested list, after nested list', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-				'[]',
+			it( 'item with different type, in nested list, after nested list', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+					'[]',
 
-				'<listItem listIndent="1" listType="numbered">x</listItem>',
+					'<paragraph listIndent="1" listItemId="x" listType="numbered">x</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">x</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="x" listType="bulleted">x</paragraph>'
+				);
+			} );
 
 			it( 'two list items with mismatched types inserted in one batch', () => {
 				const input =
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>';
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>';
 
 				const output =
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">d</listItem>';
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
 				setModelData( model, input );
 
-				const item1 = '<listItem listIndent="1" listType="numbered">c</listItem>';
-				const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
+				const item1 = '<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>';
+				const item2 = '<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
 				model.change( writer => {
 					writer.append( parseModel( item1, model.schema ), modelRoot );
@@ -550,226 +237,307 @@ describe( 'DocumentListEditing', () => {
 
 		describe( 'remove', () => {
 			function testList( input, output ) {
-				return () => {
-					model.change( writer => {
-						setModelData( model, input );
+				const selection = prepareTest( model, input );
 
-						writer.remove( modelDoc.selection.getFirstRange() );
-					} );
+				model.change( writer => {
+					writer.remove( selection.getFirstRange() );
+				} );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-				};
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
-			it( 'first list item', testList(
-				'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>',
+			it( 'first list item', () => {
+				testList(
+					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
+				);
+			} );
 
-			it( 'first list item of nested list', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="3" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">f</listItem>',
+			it( 'first list item of nested list', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="3" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">f</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>'
+				);
+			} );
 
-			it( 'selection over two different nested lists of same indent', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="numbered">e</listItem>]' +
-				'<listItem listIndent="1" listType="numbered">f</listItem>',
+			it( 'selection over two different nested lists of same indent', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>]' +
+					'<paragraph listIndent="1" listItemId="f" listType="numbered">f</paragraph>',
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">f</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'move', () => {
 			function testList( input, offset, output ) {
-				return () => {
-					model.change( writer => {
-						setModelData( model, input );
+				const selection = prepareTest( model, input );
 
-						const targetPosition = writer.createPositionAt( modelRoot, offset );
+				model.change( writer => {
+					const targetPosition = writer.createPositionAt( modelRoot, offset );
 
-						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
-					} );
+					writer.move( selection.getFirstRange(), targetPosition );
+				} );
 
-					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
-				};
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			}
 
-			it( 'nested list item out of list structure', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'[<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>]' +
-				'<listItem listIndent="3" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="4" listType="bulleted">e</listItem>' +
-				'<paragraph>x</paragraph>',
+			it( 'nested list item out of list structure', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>]' +
+					'<paragraph listIndent="3" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="4" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph>x</paragraph>',
 
-				6,
+					6,
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
-				'<paragraph>x</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
+				);
+			} );
 
-			it( 'list items between lists', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[<listItem listIndent="2" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="3" listType="bulleted">d</listItem>]' +
-				'<listItem listIndent="4" listType="bulleted">e</listItem>' +
-				'<paragraph>x</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">f</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">g</listItem>',
+			it( 'list items between lists', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="3" listItemId="d" listType="bulleted">d</paragraph>]' +
+					'<paragraph listIndent="4" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>',
 
-				7,
+					7,
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
-				'<paragraph>x</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">f</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">g</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>'
+				);
+			} );
 
-			it( 'element in between nested list items', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="3" listType="bulleted">d</listItem>' +
-				'[<paragraph>x</paragraph>]',
+			it( 'element in between nested list items', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="3" listItemId="d" listType="bulleted">d</paragraph>' +
+					'[<paragraph>x</paragraph>]',
 
-				2,
+					2,
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<paragraph>x</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">d</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>'
+				);
+			} );
 
-			it( 'multiple nested list items of different types #1 - fix at start', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="numbered">e</listItem>]' +
-				'<listItem listIndent="1" listType="numbered">f</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
-				'<listItem listIndent="1" listType="numbered">h</listItem>' +
-				'<listItem listIndent="1" listType="numbered">i</listItem>',
+			it( 'multiple nested list items of different types #1 - fix at start', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>]' +
+					'<paragraph listIndent="1" listItemId="f" listType="numbered">f</paragraph>' +
+					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="1" listItemId="h" listType="numbered">h</paragraph>' +
+					'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>',
 
-				8,
+					8,
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">f</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
-				'<listItem listIndent="1" listType="numbered">h</listItem>' +
-				'<listItem listIndent="1" listType="numbered">c</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="numbered">e</listItem>' +
-				'<listItem listIndent="1" listType="numbered">i</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="1" listItemId="h" listType="numbered">h</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>' +
+					'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>'
+				);
+			} );
 
-			it( 'multiple nested list items of different types #2 - fix at end', testList(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="numbered">e</listItem>]' +
-				'<listItem listIndent="1" listType="numbered">f</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">h</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">i</listItem>',
+			it( 'multiple nested list items of different types #2 - fix at end', () => {
+				testList(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>]' +
+					'<paragraph listIndent="1" listItemId="f" listType="numbered">f</paragraph>' +
+					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+					'<paragraph listIndent="1" listItemId="i" listType="bulleted">i</paragraph>',
 
-				8,
+					8,
 
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">f</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">h</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-				'<listItem listIndent="1" listType="numbered">e</listItem>' +
-				'<listItem listIndent="1" listType="numbered">i</listItem>'
-			) );
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>' +
+					'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>'
+				);
+			} );
 
 			// #78.
-			it( 'move out of container', testList(
-				'<blockQuote>' +
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-				'[<listItem listIndent="2" listType="bulleted">e</listItem>]' +
-				'</blockQuote>',
+			it( 'move out of container', () => {
+				testList(
+					'<blockQuote>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>' +
+					'[<paragraph listIndent="2" listItemId="e" listType="bulleted">e</paragraph>]' +
+					'</blockQuote>',
 
-				0,
+					0,
 
-				'<listItem listIndent="0" listType="bulleted">e</listItem>' +
-				'<blockQuote>' +
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-				'</blockQuote>'
-			) );
+					'<paragraph listIndent="0" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<blockQuote>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>' +
+					'</blockQuote>'
+				);
+			} );
 		} );
 
 		describe( 'rename', () => {
-			it( 'rename nested item', () => {
+			it( 'to element that does not allow list attributes', () => {
 				const modelBefore =
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
-					'<listItem listIndent="2" listType="bulleted">d</listItem>' +
-					'<listItem listIndent="3" listType="bulleted">e</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">f</listItem>' +
-					'<listItem listIndent="2" listType="bulleted">g</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">h</listItem>' +
-					'<listItem listIndent="2" listType="bulleted">i</listItem>';
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph listIndent="2" listItemId="c" listType="bulleted" foo="123">c</paragraph>]' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="2" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+					'<paragraph listIndent="2" listItemId="i" listType="bulleted">i</paragraph>';
 
 				const expectedModel =
-					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
-					'<paragraph>c</paragraph>' +
-					'<listItem listIndent="0" listType="bulleted">d</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">e</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">f</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">g</listItem>' +
-					'<listItem listIndent="0" listType="bulleted">h</listItem>' +
-					'<listItem listIndent="1" listType="bulleted">i</listItem>';
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<nonListable foo="123">c</nonListable>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="0" listItemId="h" listType="bulleted">h</paragraph>' +
+					'<paragraph listIndent="1" listItemId="i" listType="bulleted">i</paragraph>';
+
+				const selection = prepareTest( model, modelBefore );
 
 				model.change( writer => {
-					setModelData( model, modelBefore );
+					writer.rename( selection.getFirstPosition().nodeAfter, 'nonListable' );
+				} );
 
-					const element = modelDoc.selection.getFirstPosition().nodeAfter;
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+			} );
+		} );
 
-					writer.rename( element, 'paragraph' );
+		describe( 'changing list attributes', () => {
+			it( 'remove list attributes', () => {
+				const modelBefore =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>]' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="3" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="2" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+					'<paragraph listIndent="2" listItemId="i" listType="bulleted">i</paragraph>';
+
+				const expectedModel =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph>c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>' +
+					'<paragraph listIndent="0" listItemId="h" listType="bulleted">h</paragraph>' +
+					'<paragraph listIndent="1" listItemId="i" listType="bulleted">i</paragraph>';
+
+				const selection = prepareTest( model, modelBefore );
+				const element = selection.getFirstPosition().nodeAfter;
+
+				model.change( writer => {
+					writer.removeAttribute( 'listItemId', element );
+					writer.removeAttribute( 'listIndent', element );
+					writer.removeAttribute( 'listType', element );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+			} );
+
+			it( 'add list attributes', () => {
+				const modelBefore =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'[<paragraph>c</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>';
+
+				const expectedModel =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>';
+
+				const selection = prepareTest( model, modelBefore );
+				const element = selection.getFirstPosition().nodeAfter;
+
+				model.change( writer => {
+					writer.setAttribute( 'listItemId', 'c', element );
+					writer.setAttribute( 'listIndent', 2, element );
+					writer.setAttribute( 'listType', 'bulleted', element );
+					writer.setAttribute( 'listIndent', 2, element.nextSibling );
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
@@ -1170,5 +938,8 @@ describe( 'DocumentListEditing', () => {
 				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
+	} );
+
+	describe( 'refreshing items on data change', () => {
 	} );
 } );

@@ -21,8 +21,9 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import stubUid from './_utils/uid';
+import prepareTest from './_utils/prepare-test';
 
-describe.only( 'DocumentListEditing - converters', () => {
+describe( 'DocumentListEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
 	testUtils.createSinonSandbox();
@@ -5257,39 +5258,6 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			expect( getModelData( model ), 'after redo' ).to.equal( modelAfter );
 			expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equal( viewAfter );
-		}
-
-		function prepareTest( model, input ) {
-			const modelRoot = model.document.getRoot( 'main' );
-
-			// Parse data string to model.
-			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
-
-			// Retrieve DocumentFragment and Selection from parsed model.
-			const modelDocumentFragment = parsedResult.model;
-			const selection = parsedResult.selection;
-
-			// Ensure no undo step is generated.
-			model.enqueueChange( 'transparent', writer => {
-				// Replace existing model in document by new one.
-				writer.remove( writer.createRangeIn( modelRoot ) );
-				writer.insert( modelDocumentFragment, modelRoot );
-
-				// Clean up previous document selection.
-				writer.setSelection( null );
-				writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
-			} );
-
-			const ranges = [];
-
-			for ( const range of selection.getRanges() ) {
-				const start = model.createPositionFromPath( modelRoot, range.start.path );
-				const end = model.createPositionFromPath( modelRoot, range.end.path );
-
-				ranges.push( model.createRange( start, end ) );
-			}
-
-			return model.createSelection( ranges );
 		}
 	}
 } );
