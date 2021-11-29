@@ -4780,48 +4780,20 @@ describe.only( 'DocumentListEditing - converters', () => {
 	} );
 
 	describe( 'other', () => {
-		it( 'model insert converter should not fire if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attribute:listType' );
-				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
-			}, { priority: 'highest' } );
-
-			editor.conversion.for( 'downcast' )
-				.elementToElement( { model: 'listItem', view: 'p', converterPriority: 'highest' } );
-
-			// Paragraph is needed, otherwise selection throws.
-			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
-
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><p>y</p>' );
-		} );
-
-		it( 'model remove converter should be possible to overwrite', () => {
-			editor.editing.downcastDispatcher.on( 'remove:listItem', evt => {
-				evt.stop();
-			}, { priority: 'highest' } );
-
-			// Paragraph is needed to prevent autoparagraphing of empty editor.
-			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted"></listItem>' );
-
-			model.change( writer => {
-				writer.remove( modelRoot.getChild( 1 ) );
-			} );
-
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><ul><li></li></ul>' );
-		} );
-
 		it( 'model change type converter should not fire if change was already consumed', () => {
 			editor.editing.downcastDispatcher.on( 'attribute:listType', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:listType' );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<listItem listIndent="0" listType="bulleted"></listItem>' );
+			setModelData( model, '<paragraph listIndent="0" listItemId="a" listType="bulleted"></paragraph>' );
 
 			model.change( writer => {
 				writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul><li><span class="ck-list-bogus-paragraph"></span></li></ul>'
+			);
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
@@ -4829,16 +4801,21 @@ describe.only( 'DocumentListEditing - converters', () => {
 				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
 			}, { priority: 'highest' } );
 
-			setModelData(
-				model,
-				'<listItem listIndent="0" listType="bulleted">a</listItem><listItem listIndent="0" listType="bulleted">b</listItem>'
+			setModelData( model,
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>'
 			);
 
 			model.change( writer => {
 				writer.setAttribute( 'listIndent', 1, modelRoot.getChild( 1 ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+				'</ul>'
+			);
 		} );
 
 		it( 'view li converter should not fire if change was already consumed', () => {
@@ -4869,20 +4846,27 @@ describe.only( 'DocumentListEditing - converters', () => {
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
 		} );
 
-		// This test tests the fix in `injectViewList` helper.
-		it( 'ul and ol should not be inserted before ui element - injectViewList()', () => {
-			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+		it( 'ul and ol should not be inserted before ui element - change indent of the second list item', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>Foo</li>' +
+					'<li>Bar</li>' +
+				'</ul>'
+			);
 
-			// Append ui element at the end of first <li>.
+			// Append ui element at the end of first <li> (inside the bogus paragraph).
 			view.change( writer => {
-				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 );
+				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-				const uiElement = writer.createUIElement( 'span' );
-				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
+				writer.insert( writer.createPositionAt( firstChild, 'end' ), writer.createUIElement( 'span' ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">Foo<span></span></span></li>' +
+					'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+				'</ul>'
+			);
 
 			model.change( writer => {
 				// Change indent of the second list item.
@@ -4890,24 +4874,51 @@ describe.only( 'DocumentListEditing - converters', () => {
 			} );
 
 			// Check if the new <ul> was added at correct position.
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span><ul><li>Bar</li></ul></li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">Foo<span></span></span>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 
-		// This test tests the fix in `hoistNestedLists` helper.
-		it( 'ul and ol should not be inserted before ui element - hoistNestedLists()', () => {
-			editor.setData( '<ul><li>Foo</li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+		it( 'ul and ol should not be inserted before ui element - remove second list item', () => {
+			editor.setData(
+				'<ul>' +
+					'<li>Foo</li>' +
+					'<li>' +
+						'Bar' +
+						'<ul>' +
+							'<li>Xxx</li>' +
+							'<li>Yyy</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
 
-			// Append ui element at the end of first <li>.
+			// Append ui element at the end of first <li> (inside the bogus paragraph).
 			view.change( writer => {
-				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 );
+				const firstChild = viewDoc.getRoot().getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-				const uiElement = writer.createUIElement( 'span' );
-				writer.insert( writer.createPositionAt( firstChild, 'end' ), uiElement );
+				writer.insert( writer.createPositionAt( firstChild, 'end' ), writer.createUIElement( 'span' ) );
 			} );
 
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li><span class="ck-list-bogus-paragraph">Foo<span></span></span></li>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">Bar</span>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">Xxx</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Yyy</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
 
 			model.change( writer => {
 				// Remove second list item. Expect that its sub-list will be moved to first list item.
@@ -4915,8 +4926,17 @@ describe.only( 'DocumentListEditing - converters', () => {
 			} );
 
 			// Check if the <ul> was added at correct position.
-			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+				'<ul>' +
+					'<li>' +
+						'<span class="ck-list-bogus-paragraph">Foo<span></span></span>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">Xxx</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Yyy</span></li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
 		} );
 
 		describe( 'remove converter should properly handle ui elements', () => {
@@ -4924,6 +4944,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			beforeEach( () => {
 				editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
+
 				liFoo = modelRoot.getChild( 0 );
 				liBar = modelRoot.getChild( 1 );
 			} );
@@ -4938,13 +4959,17 @@ describe.only( 'DocumentListEditing - converters', () => {
 					writer.remove( liFoo );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<span></span><ul><li>Bar</li></ul>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<span></span>' +
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+					'</ul>'
+				);
 			} );
 
 			it( 'ui element before first <li>', () => {
 				view.change( writer => {
-					// Append ui element before <ul>.
+					// Append ui element before <ll>.
 					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 0 ), writer.createUIElement( 'span' ) );
 				} );
 
@@ -4952,13 +4977,17 @@ describe.only( 'DocumentListEditing - converters', () => {
 					writer.remove( liFoo );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<ul><span></span><li>Bar</li></ul>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<ul>' +
+						'<span></span>' +
+						'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+					'</ul>'
+				);
 			} );
 
 			it( 'ui element in the middle of list', () => {
 				view.change( writer => {
-					// Append ui element before <ul>.
+					// Append ui element after <li>.
 					writer.insert( writer.createPositionAt( viewRoot.getChild( 0 ), 'end' ), writer.createUIElement( 'span' ) );
 				} );
 
@@ -4966,8 +4995,12 @@ describe.only( 'DocumentListEditing - converters', () => {
 					writer.remove( liBar );
 				} );
 
-				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
-					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+					'<ul>' +
+						'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+						'<span></span>' +
+					'</ul>'
+				);
 			} );
 		} );
 	} );
@@ -4997,17 +5030,17 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			editor.setData(
 				'<div>' +
-				'abc' +
-				'<ul>' +
-				'<li>foo</li>' +
-				'</ul>' +
-				'def' +
+					'abc' +
+					'<ul>' +
+						'<li>foo</li>' +
+					'</ul>' +
+					'def' +
 				'</div>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
-				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
 				'<div>def</div>'
 			);
 		} );
@@ -5018,16 +5051,16 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			editor.setData(
 				'<div>' +
-				'abc' +
-				'<ul>' +
-				'<li>foo</li>' +
-				'</ul>' +
+					'abc' +
+					'<ul>' +
+						'<li>foo</li>' +
+					'</ul>' +
 				'</div>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
-				'<listItem listIndent="0" listType="bulleted">foo</listItem>'
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>'
 			);
 		} );
 
@@ -5037,15 +5070,15 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			editor.setData(
 				'<div>' +
-				'<ul>' +
-				'<li>foo</li>' +
-				'</ul>' +
-				'def' +
+					'<ul>' +
+						'<li>foo</li>' +
+					'</ul>' +
+					'def' +
 				'</div>'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
 				'<div>def</div>'
 			);
 		} );
@@ -5054,15 +5087,15 @@ describe.only( 'DocumentListEditing - converters', () => {
 		it( 'should correctly set data.modelCursor', () => {
 			editor.setData(
 				'<ul>' +
-				'<li>a</li>' +
-				'<li>b</li>' +
+					'<li>a</li>' +
+					'<li>b</li>' +
 				'</ul>' +
 				'c'
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">b</paragraph>' +
 				'<paragraph>c</paragraph>'
 			);
 		} );
