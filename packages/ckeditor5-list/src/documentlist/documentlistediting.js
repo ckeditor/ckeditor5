@@ -248,40 +248,51 @@ export function modelChangePostFixer( model, writer ) {
 	let applied = false;
 
 	// TODO this should also fix listItemId attribute values
-	// TODO this should listIndent so the list starts at 0
 
 	for ( const entry of changes ) {
-		if ( entry.type == 'insert' && entry.attributes.has( 'listItemId' ) ) {
-			_addListToFix( entry.position );
-		} else if ( entry.type == 'insert' && !entry.attributes.has( 'listItemId' ) ) {
-			if ( entry.name != '$text' ) {
-				// In case of renamed element.
-				const item = entry.position.nodeAfter;
+		if ( entry.type == 'insert' ) {
+			// Insert of a list item.
+			if ( entry.attributes.has( 'listItemId' ) ) {
+				_addListToFix( entry.position );
+			}
+			// Insert of a non-list item.
+			else if ( !entry.attributes.has( 'listItemId' ) ) {
+				if ( entry.name != '$text' ) {
+					// In case of renamed element.
+					const item = entry.position.nodeAfter;
 
-				for ( const attributeName of [ 'listIndent', 'listType', 'listStyle' ] ) {
-					if ( item.hasAttribute( attributeName ) ) {
-						writer.removeAttribute( attributeName, item );
+					for ( const attributeName of [ 'listIndent', 'listType', 'listStyle' ] ) {
+						if ( item.hasAttribute( attributeName ) ) {
+							writer.removeAttribute( attributeName, item );
 
-						applied = true;
+							applied = true;
+						}
 					}
 				}
 
-				for ( const { item: innerItem, previousPosition } of model.createRangeIn( item ) ) {
-					if ( innerItem.is( 'element' ) && innerItem.hasAttribute( 'listItemId' ) ) {
-						_addListToFix( previousPosition );
-					}
-				}
+				_addListToFix( entry.position.getShiftedBy( entry.length ) );
 			}
 
-			const posAfter = entry.position.getShiftedBy( entry.length );
+			// Check if there is no nested list.
+			const item = entry.position.nodeAfter;
 
-			_addListToFix( posAfter );
-		} else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
+			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item ) ) {
+				if ( innerItem.is( 'element' ) && innerItem.hasAttribute( 'listItemId' ) ) {
+					_addListToFix( previousPosition );
+				}
+			}
+		}
+		// Removed list item.
+		else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
 			_addListToFix( entry.position );
-		} else if ( entry.type == 'attribute' && entry.attributeKey == 'listIndent' ) {
-			_addListToFix( entry.range.start );
-		} else if ( entry.type == 'attribute' && entry.attributeKey == 'listType' ) {
-			_addListToFix( entry.range.start );
+		}
+		// Changed list item indent or type.
+		else if ( entry.type == 'attribute' && [ 'listIndent', 'listType' ].includes( entry.attributeKey ) ) {
+			if ( entry.attributeNewValue === null ) {
+				_addListToFix( entry.range.start.getShiftedBy( 1 ) );
+			} else {
+				_addListToFix( entry.range.start );
+			}
 		}
 	}
 

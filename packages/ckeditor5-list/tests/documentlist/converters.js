@@ -1295,7 +1295,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 		describe( 'convert changes', () => {
 			describe( 'insert', () => {
 				it( 'list item at the beginning of same list type', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
@@ -1309,7 +1309,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item in the middle of same list type', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>]' +
@@ -1325,7 +1325,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item at the end of same list type', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>]',
@@ -1339,7 +1339,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item at the beginning of different list type', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
@@ -1355,7 +1355,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item in the middle of different list type', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>]' +
@@ -1375,7 +1375,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item at the end of different list type', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="x" listType="numbered">x</paragraph>]',
@@ -1391,7 +1391,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'element between list items', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph>x</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
@@ -1409,7 +1409,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			describe( 'remove', () => {
 				it( 'remove the first list item', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -1424,7 +1424,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'remove list item from the middle', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
@@ -1439,7 +1439,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'remove the last list item', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -1454,7 +1454,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'remove the only list item', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">x</paragraph>]' +
 						'<paragraph>p</paragraph>',
@@ -1465,7 +1465,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'remove element from between lists of same type', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph>x</paragraph>]' +
@@ -1482,7 +1482,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'remove element from between lists of different type', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph>x</paragraph>]' +
@@ -1503,7 +1503,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			describe( 'change type', () => {
 				it( 'change first list item', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -1521,7 +1521,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change middle list item', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
@@ -1541,7 +1541,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change last list item', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -1559,7 +1559,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change only list item', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
 						'<paragraph>p</paragraph>',
@@ -1573,7 +1573,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change element at the edge of two different lists #1', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -1591,7 +1591,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change element at the edge of two different lists #2', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -1609,7 +1609,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change multiple elements #1', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -1629,7 +1629,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'change multiple elements #2', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -1833,7 +1833,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			describe( 'move', () => {
 				it( 'list item inside same list', () => {
-					testMoveX(
+					testMove(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
@@ -1851,7 +1851,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'out list item from list', () => {
-					testMoveX(
+					testMove(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
@@ -1871,7 +1871,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'the only list item', () => {
-					testMoveX(
+					testMove(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
 						'<paragraph>p</paragraph>',
@@ -1887,7 +1887,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item between two lists of same type', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
 						'<paragraph>p</paragraph>' +
@@ -1909,7 +1909,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item between two lists of different type', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
 						'<paragraph>p</paragraph>' +
@@ -1935,7 +1935,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'element between list items', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph>p</paragraph>]',
@@ -2331,16 +2331,16 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'<table listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">' +
 							'<tableRow>' +
 								'<tableCell>' +
-									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
+									'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
 										'b' +
 									'</paragraph>' +
-									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+									'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
 										'c' +
 									'</paragraph>' +
-									'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
+									'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
 										'd' +
 									'</paragraph>' +
-									'<table listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
+									'<table listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">' +
 										'<tableRow>' +
 											'<tableCell>' +
 												'<paragraph>e</paragraph>' +
@@ -3267,7 +3267,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 			describe( 'insert', () => {
 				describe( 'same list type', () => {
 					it( 'after smaller indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">x</paragraph>]',
@@ -3285,7 +3285,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after smaller indent, before same indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">x</paragraph>]' +
@@ -3305,7 +3305,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after smaller indent, before smaller indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">x</paragraph>]' +
@@ -3325,7 +3325,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after same indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
@@ -3345,7 +3345,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after same indent, before bigger indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'[<paragraph listIndent="0" listItemId="b" listType="bulleted">x</paragraph>]' +
@@ -3365,7 +3365,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after bigger indent, before bigger indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
@@ -3391,7 +3391,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'list items with too big indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 							'[<paragraph listIndent="4" listItemId="c" listType="bulleted">x</paragraph>' +
@@ -3425,7 +3425,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 				describe( 'different list type', () => {
 					it( 'after smaller indent, before same indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'[<paragraph listIndent="1" listItemId="b" listType="numbered">x</paragraph>]' +
@@ -3445,7 +3445,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after same indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
@@ -3465,7 +3465,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after same indent, before bigger indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'[<paragraph listIndent="0" listItemId="b" listType="numbered">x</paragraph>]' +
@@ -3487,7 +3487,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after bigger indent, before bigger indent', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph>p</paragraph>' +
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
@@ -3515,7 +3515,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'after bigger indent, in nested list, different type', () => {
-						testInsertX(
+						testInsert(
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 							'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 							'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -3541,7 +3541,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 				// This case is pretty complex but it tests various edge cases concerning splitting lists.
 				it( 'element between nested list items - complex', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -3594,14 +3594,12 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'<ol>' +
 							'<li><span class="ck-list-bogus-paragraph">j</span></li>' +
 						'</ol>' +
-						'<p>p</p>',
-
-						false
+						'<p>p</p>'
 					);
 				} );
 
 				it( 'element before indent "hole"', () => {
-					testInsertX(
+					testInsert(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
 						'[<paragraph>x</paragraph>]' +
@@ -3620,9 +3618,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">1.1.1</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">2</span></li>' +
-						'</ul>',
-
-						false
+						'</ul>'
 					);
 				} );
 
@@ -3657,7 +3653,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			describe( 'remove', () => {
 				it( 'the first nested item', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
 						'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
@@ -3674,7 +3670,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'nested item from the middle', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -3693,7 +3689,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'the last nested item', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>]',
@@ -3710,7 +3706,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'the only nested item', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">c</paragraph>]',
 
@@ -3721,7 +3717,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item that separates two nested lists of same type', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -3740,7 +3736,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'list item that separates two nested lists of different type', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -3759,7 +3755,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'item that has nested lists, previous item has same indent', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
 						'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -3778,7 +3774,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'item that has nested lists, previous item has smaller indent', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -3797,7 +3793,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'item that has nested lists, previous item has bigger indent by 1', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -3822,7 +3818,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'item that has nested lists, previous item has bigger indent by 2', () => {
-					testRemoveX(
+					testRemove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -3847,7 +3843,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'first list item that has nested list', () => {
-					testRemoveX(
+					testRemove(
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>',
@@ -3866,7 +3862,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 			describe( 'change type', () => {
 				it( 'list item that has nested items', () => {
-					testChangeTypeX(
+					testChangeType(
 						'[<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>]' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
@@ -3885,7 +3881,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 				// The change will be "prevented" by post fixer.
 				it( 'list item that is a nested item', () => {
-					testChangeTypeX(
+					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="numbered">b</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>]' +
@@ -3908,7 +3904,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 			describe( 'change indent', () => {
 				describe( 'same list type', () => {
 					it( 'indent last item of flat list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -3926,7 +3922,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'indent middle item of flat list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -3946,7 +3942,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'indent last item in nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							2,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -3970,7 +3966,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'indent middle item in nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							2,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4000,7 +3996,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					// Here we test conversion and the change is simple changing indent of one item.
 					// This may be true also for other tests in this suite, keep this in mind.
 					it( 'indent item that has nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4020,7 +4016,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'indent item that in view is a next sibling of item that has nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4042,7 +4038,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent the first item of nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							0,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4064,7 +4060,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent item from the middle of nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							0,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4090,7 +4086,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent the last item of nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							0,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4110,7 +4106,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent the only item of nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4132,7 +4128,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent item by two', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							0,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4156,7 +4152,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 
 				describe( 'different list type', () => {
 					it( 'indent middle item of flat list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4176,7 +4172,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'indent item that has nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4196,7 +4192,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'indent item that in view is a next sibling of item that has nested list #1', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4218,7 +4214,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent the first item of nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							0,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4240,7 +4236,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent the only item of nested list', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							1,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4262,7 +4258,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 					} );
 
 					it( 'outdent item by two', () => {
-						testChangeIndentX(
+						testChangeIndent(
 							0,
 
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -4347,9 +4343,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 						'<p>c</p>' +
 						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
-						'</ul>',
-
-						false
+						'</ul>'
 					);
 				} );
 
@@ -4411,9 +4405,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 									'<li><span class="ck-list-bogus-paragraph">m</span></li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>',
-
-						false
+						'</ul>'
 					);
 				} );
 
@@ -4465,9 +4457,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 									'</li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>',
-
-						false
+						'</ul>'
 					);
 				} );
 
@@ -4553,7 +4543,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 			describe( 'move', () => {
 				// Since move is in fact remove + insert and does not event have its own converter, only a few cases will be tested here.
 				it( 'out nested list items', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>]' +
@@ -4589,7 +4579,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'nested list items between lists of same type', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -4633,7 +4623,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'nested list items between lists of different type', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -4672,14 +4662,12 @@ describe.only( 'DocumentListEditing - converters', () => {
 									'<li><span class="ck-list-bogus-paragraph">g</span></li>' +
 								'</ul>' +
 							'</li>' +
-						'</ol>',
-
-						false
+						'</ol>'
 					);
 				} );
 
 				it( 'element between nested list', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -4704,14 +4692,12 @@ describe.only( 'DocumentListEditing - converters', () => {
 									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 								'</ul>' +
 							'</li>' +
-						'</ul>',
-
-						false
+						'</ul>'
 					);
 				} );
 
 				it( 'multiple nested list items of different types #1 - fix at start', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -4751,7 +4737,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 
 				it( 'multiple nested list items of different types #2 - fix at end', () => {
-					testMoveX(
+					testMove(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 						'[<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -5111,7 +5097,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 		expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
 	}
 
-	function testInsertX( input, output, testUndo = true ) {
+	function testInsert( input, output, testUndo = true ) {
 		// Cut out inserted element that is between '[' and ']' characters.
 		const selStart = input.indexOf( '[' ) + 1;
 		const selEnd = input.indexOf( ']' );
@@ -5128,7 +5114,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( modelInput, output, actionCallback, testUndo );
 	}
 
-	function testRemoveX( input, output ) {
+	function testRemove( input, output ) {
 		const actionCallback = selection => {
 			model.change( writer => {
 				writer.remove( selection.getFirstRange() );
@@ -5138,7 +5124,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testChangeTypeX( input, output ) {
+	function testChangeType( input, output ) {
 		const actionCallback = selection => {
 			const element = selection.getFirstPosition().nodeAfter;
 			const newType = element.getAttribute( 'listType' ) == 'numbered' ? 'bulleted' : 'numbered';
@@ -5193,7 +5179,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testChangeIndentX( newIndent, input, output ) {
+	function testChangeIndent( newIndent, input, output ) {
 		const actionCallback = selection => {
 			model.change( writer => {
 				writer.setAttribute( 'listIndent', newIndent, selection.getFirstRange() );
@@ -5203,11 +5189,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 		_test( input, output, actionCallback );
 	}
 
-	function testMove( name ) {
-		it( name, () => { expect( false ).to.be.true; } );
-	}
-
-	function testMoveX( input, rootOffset, output, testUndo = true ) {
+	function testMove( input, rootOffset, output, testUndo = true ) {
 		const actionCallback = selection => {
 			model.change( writer => {
 				const targetPosition = writer.createPositionAt( modelRoot, rootOffset );

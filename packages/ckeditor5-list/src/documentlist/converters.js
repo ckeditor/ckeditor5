@@ -164,13 +164,17 @@ export function listItemUpcastConverter() {
 			return;
 		}
 
+		const items = Array.from( data.modelRange.getItems( { shallow: true } ) );
+
+		if ( !items.length ) {
+			return;
+		}
+
 		const attributes = {
 			listItemId: uid(),
 			listIndent: getIndent( data.viewItem ),
 			listType: data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted'
 		};
-
-		const items = Array.from( data.modelRange.getItems( { shallow: true } ) );
 
 		for ( const item of items ) {
 			if ( !item.hasAttribute( 'listItemId' ) && schema.checkAttribute( item, 'listItemId' ) ) {
