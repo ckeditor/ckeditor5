@@ -12,7 +12,7 @@ import InputView from '../input/inputview';
 /**
  * The text input view class.
  *
- * @extends module:ui/view~View
+ * @extends module:ui/input/inputview~InputView
  */
 export default class InputTextView extends InputView {
 	/**

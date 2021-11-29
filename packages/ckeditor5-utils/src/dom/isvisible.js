@@ -8,11 +8,18 @@
  */
 
 /**
- * Checks if the element is visible in DOM (no `display: block`, no ancestor with `display: none`).
+ * Checks if the element is visible to the user in DOM:
+ *
+ * * connected to the root of the document,
+ * * has no `display: none`,
+ * * has no ancestors with `display: none`.
+ *
+ * **Note**: This helper does not check whether the element is hidden by cropping, overflow, etc..
+ * To check that, use {@link module:utils/dom/rect~Rect} instead.
  *
  * @param {HTMLElement} element
  * @returns {Boolean}
  */
 export default function isVisible( element ) {
-	return !!( element && element.getClientRects().length );
+	return !!( element && element.getClientRects && element.getClientRects().length );
 }

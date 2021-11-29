@@ -4,11 +4,10 @@
  */
 
 /**
- * @module TODO
+ * @module list/ui/collapsibleview
  */
 
 import { View, ButtonView } from 'ckeditor5/src/ui';
-import { FocusTracker } from 'ckeditor5/src/utils';
 
 // eslint-disable-next-line ckeditor5-rules/ckeditor-imports
 import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
@@ -16,36 +15,53 @@ import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow
 import '../../theme/collapsible.css';
 
 /**
- * TODO
+ * A collapsible UI component. Consists of a labeled button and a container which can be collapsed
+ * by clicking the button. The collapsible container can be a host to other UI views.
  *
+ * @protected
  * @extends module:ui/view~View
  */
 export default class CollapsibleView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the collapsible view.
+	 *
+	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param {Array.<module:ui/view~View>} [childViews] An optional array of initial child views to be inserted
+	 * into the collapsible.
 	 */
 	constructor( locale, childViews ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
+		const t = locale.t;
 
 		/**
-		 * TODO
+		 * `true` when the container with {@link #children} is collapsed. `false` otherwise.
+		 *
+		 * @observable
+		 * @member {Boolean}
 		 */
 		this.set( 'isCollapsed', false );
 
 		/**
-		 * TODO
+		 * The text label of the {@link #buttonView}.
+		 *
+		 * @observable
+		 * @member {String}
+		 * @default 'Show more'
 		 */
-		this.set( 'label' );
+		this.set( 'label', t( 'Show more' ) );
 
 		/**
-		 * TODO
+		 * The main button that, when clicked, collapses or expands the container with {@link #children}.
+		 *
+		 * @readonly
+		 * @member {module:ui/button/buttonview~ButtonView} #buttonView
 		 */
 		this.buttonView = this._createButtonView();
 
 		/**
-		 * A collection of the child views.
+		 * A collection of the child views that can be collapsed by clicking the {@link #buttonView}.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -53,16 +69,13 @@ export default class CollapsibleView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * Tracks information about the DOM focus in the collapsible.
+		 * The id of the label inside the {@link #buttonView} that describes the collapsible
+		 * container for assistive technologies. Set after the button was {@link #render rendered}.
 		 *
+		 * @private
 		 * @readonly
-		 * @protected
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
-		 * TODO
+		 * @observable
+		 * @member {String}
 		 */
 		this.set( '_collapsibleAriaLabelUid' );
 
@@ -98,6 +111,9 @@ export default class CollapsibleView extends View {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	render() {
 		super.render();
 
@@ -105,9 +121,9 @@ export default class CollapsibleView extends View {
 	}
 
 	/**
-	 * TODO
+	 * Creates the main {@link #buttonView} of the collapsible.
 	 *
-	 * @returns
+	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	_createButtonView() {
 		const buttonView = new ButtonView( this.locale );

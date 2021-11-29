@@ -39,6 +39,18 @@ describe( 'InputView', () => {
 			expect( view.isEmpty ).to.be.true;
 		} );
 
+		it( 'should set the #hasError observable property', () => {
+			expect( view.hasError ).to.be.false;
+		} );
+
+		it( 'should set the #isReadOnly observable property', () => {
+			expect( view.isReadOnly ).to.be.false;
+		} );
+
+		it( 'should set the #inputMode observable property', () => {
+			expect( view.inputMode ).to.equal( 'text' );
+		} );
+
 		it( 'should create an instance of FocusTracker under #focusTracker property', () => {
 			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
@@ -121,6 +133,16 @@ describe( 'InputView', () => {
 				view.isReadOnly = true;
 
 				expect( view.element.readOnly ).to.true;
+			} );
+		} );
+
+		describe( 'inputmode attribute', () => {
+			it( 'should react on view#inputMode', () => {
+				expect( view.element.getAttribute( 'inputmode' ) ).to.equal( 'text' );
+
+				view.inputMode = 'numeric';
+
+				expect( view.element.getAttribute( 'inputmode' ) ).to.equal( 'numeric' );
 			} );
 		} );
 

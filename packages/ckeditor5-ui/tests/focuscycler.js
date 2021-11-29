@@ -75,6 +75,29 @@ describe( 'FocusCycler', () => {
 
 			expect( cycler.first ).to.be.null;
 		} );
+
+		it( 'should ignore items with an element detached from DOM', () => {
+			focusables = new ViewCollection( [ focusable( { isDetached: true } ), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+		} );
+
+		it( 'should ignore items with display: none', () => {
+			focusables = new ViewCollection( [ focusable( { display: 'none' } ), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+		} );
+
+		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
+			focusables = new ViewCollection( [ focusable( { hiddenParent: true } ), focusable() ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( cycler.first ).to.equal( focusables.get( 1 ) );
+
+			focusables.get( 0 ).element.parentNode.remove();
+		} );
 	} );
 
 	describe( 'last()', () => {
@@ -94,6 +117,29 @@ describe( 'FocusCycler', () => {
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			expect( cycler.last ).to.be.null;
+		} );
+
+		it( 'should ignore items with an element detached from DOM', () => {
+			focusables = new ViewCollection( [ focusable(), focusable( { isDetached: true } ) ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( cycler.last ).to.equal( focusables.get( 0 ) );
+		} );
+
+		it( 'should ignore items with display: none', () => {
+			focusables = new ViewCollection( [ focusable(), focusable( { display: 'none' } ) ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( cycler.last ).to.equal( focusables.get( 0 ) );
+		} );
+
+		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
+			focusables = new ViewCollection( [ focusable(), focusable( { hiddenParent: true } ) ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			expect( cycler.last ).to.equal( focusables.get( 0 ) );
+
+			focusables.get( 1 ).element.parentNode.remove();
 		} );
 	} );
 
@@ -141,10 +187,8 @@ describe( 'FocusCycler', () => {
 
 		it( 'should ignore items with an element detached from DOM', () => {
 			const visibleFocusableA = focusable();
+			const inVisibleFocusable = focusable( { isDetached: true } );
 			const visibleFocusableB = focusable();
-			const inVisibleFocusable = focusable();
-
-			inVisibleFocusable.element.remove();
 
 			focusables = new ViewCollection( [ visibleFocusableA, inVisibleFocusable, visibleFocusableB ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
@@ -155,15 +199,24 @@ describe( 'FocusCycler', () => {
 			expect( cycler.next ).to.equal( visibleFocusableB );
 		} );
 
-		it( 'should ignore items with an element under an invisible ancestor', () => {
+		it( 'should ignore items with display: none', () => {
+			const visibleFocusableA = focusable();
+			const inVisibleFocusable = focusable( { display: 'none' } );
+			const visibleFocusableB = focusable();
+
+			focusables = new ViewCollection( [ visibleFocusableA, inVisibleFocusable, visibleFocusableB ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			focusTracker.focusedElement = focusables.get( 0 ).element;
+
+			expect( cycler.first ).to.equal( focusables.get( 0 ) );
+			expect( cycler.next ).to.equal( visibleFocusableB );
+		} );
+
+		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
 			const visibleFocusableA = focusable();
 			const visibleFocusableB = focusable();
-			const inVisibleFocusable = focusable();
-
-			const invisibleParent = document.createElement( 'div' );
-			invisibleParent.style.display = 'none';
-			invisibleParent.appendChild( inVisibleFocusable.element );
-			document.body.appendChild( invisibleParent );
+			const inVisibleFocusable = focusable( { hiddenParent: true } );
 
 			focusables = new ViewCollection( [ visibleFocusableA, inVisibleFocusable, visibleFocusableB ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
@@ -173,7 +226,7 @@ describe( 'FocusCycler', () => {
 			expect( cycler.first ).to.equal( focusables.get( 0 ) );
 			expect( cycler.next ).to.equal( visibleFocusableB );
 
-			invisibleParent.remove();
+			inVisibleFocusable.element.parentNode.remove();
 		} );
 	} );
 
@@ -221,10 +274,8 @@ describe( 'FocusCycler', () => {
 
 		it( 'should ignore items with an element detached from DOM', () => {
 			const visibleFocusableA = focusable();
+			const inVisibleFocusable = focusable( { isDetached: true } );
 			const visibleFocusableB = focusable();
-			const inVisibleFocusable = focusable();
-
-			inVisibleFocusable.element.remove();
 
 			focusables = new ViewCollection( [ visibleFocusableA, inVisibleFocusable, visibleFocusableB ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
@@ -235,15 +286,24 @@ describe( 'FocusCycler', () => {
 			expect( cycler.previous ).to.equal( visibleFocusableA );
 		} );
 
-		it( 'should ignore items with an element under an invisible ancestor', () => {
+		it( 'should ignore items with display: none', () => {
+			const visibleFocusableA = focusable();
+			const inVisibleFocusable = focusable( { display: 'none' } );
+			const visibleFocusableB = focusable();
+
+			focusables = new ViewCollection( [ visibleFocusableA, inVisibleFocusable, visibleFocusableB ] );
+			cycler = new FocusCycler( { focusables, focusTracker } );
+
+			focusTracker.focusedElement = focusables.get( 2 ).element;
+
+			expect( cycler.first ).to.equal( focusables.get( 0 ) );
+			expect( cycler.previous ).to.equal( visibleFocusableA );
+		} );
+
+		it( 'should ignore items with an element belonging to an invisible ancestor', () => {
 			const visibleFocusableA = focusable();
 			const visibleFocusableB = focusable();
-			const inVisibleFocusable = focusable();
-
-			const invisibleParent = document.createElement( 'div' );
-			invisibleParent.style.display = 'none';
-			invisibleParent.appendChild( inVisibleFocusable.element );
-			document.body.appendChild( invisibleParent );
+			const inVisibleFocusable = focusable( { hiddenParent: true } );
 
 			focusables = new ViewCollection( [ visibleFocusableA, inVisibleFocusable, visibleFocusableB ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
@@ -253,7 +313,7 @@ describe( 'FocusCycler', () => {
 			expect( cycler.first ).to.equal( focusables.get( 0 ) );
 			expect( cycler.next ).to.equal( visibleFocusableA );
 
-			invisibleParent.remove();
+			inVisibleFocusable.element.parentNode.remove();
 		} );
 	} );
 
@@ -285,7 +345,7 @@ describe( 'FocusCycler', () => {
 		it( 'ignores invisible items', () => {
 			const item = focusable();
 
-			focusables = new ViewCollection( [ nonFocusable(), focusable( true ), item ] );
+			focusables = new ViewCollection( [ nonFocusable(), focusable( { display: 'none' } ), item ] );
 			cycler = new FocusCycler( { focusables, focusTracker } );
 
 			cycler.focusFirst();
@@ -438,19 +498,26 @@ describe( 'FocusCycler', () => {
 	} );
 } );
 
-function nonFocusable( isHidden ) {
+function nonFocusable( { display = 'block', isDetached = false, hiddenParent = false } = {} ) {
 	const view = new View();
 	view.element = document.createElement( 'div' );
 	view.element.setAttribute( 'focus-cycler-test-element', true );
-	view.element.style.display = isHidden ? 'none' : 'block';
+	view.element.style.display = display;
 
-	document.body.appendChild( view.element );
+	if ( hiddenParent ) {
+		const invisibleParent = document.createElement( 'div' );
+		invisibleParent.style.display = 'none';
+		invisibleParent.appendChild( view.element );
+		document.body.appendChild( invisibleParent );
+	} else if ( !isDetached ) {
+		document.body.appendChild( view.element );
+	}
 
 	return view;
 }
 
-function focusable( isHidden ) {
-	const view = nonFocusable( isHidden );
+function focusable( ...args ) {
+	const view = nonFocusable( ...args );
 
 	view.focus = sinon.spy();
 
