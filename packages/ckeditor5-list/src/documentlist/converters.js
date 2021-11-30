@@ -10,7 +10,8 @@ import {
 	getIndent,
 	getSiblingListItem,
 	isListView,
-	isListItemView
+	isListItemView,
+	getAllListItemElementsByDetails
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
@@ -221,6 +222,146 @@ export function listUpcastCleanList() {
 			}
 		}
 	};
+}
+
+// TODO
+export function reconvertItemsOnDataChange( model, editing ) {
+	return () => {
+		const changes = model.document.differ.getChanges();
+
+		for ( const entry of changes ) {
+			let position = null;
+
+			if ( entry.type == 'insert' && entry.attributes.has( 'listItemId' ) ) {
+				position = entry.position.getShiftedBy( entry.length );
+			} else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
+				position = entry.position;
+			} else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
+				position = entry.range.start.getShiftedBy( 1 );
+			}
+
+			if ( !position ) {
+				continue;
+			}
+
+			const changedListItem = position.nodeBefore;
+			const followingListItem = position.nodeAfter;
+
+			if ( entry.type == 'attribute' && entry.attributeKey == 'listItemId' ) {
+				const item = changedListItem;
+
+				if ( entry.attributeNewValue === null || entry.attributeOldValue === null ) {
+					editing.reconvertItem( item );
+					// @if CK_DEBUG // console.log( 'Refresh item (no list)', item.childCount ? item.getChild( 0 ).data : item );
+				}
+			}
+
+			if ( !changedListItem || !changedListItem.is( 'element' ) || !changedListItem.hasAttribute( 'listItemId' ) ) {
+				continue;
+			}
+
+			if ( !followingListItem || !followingListItem.is( 'element' ) || !followingListItem.hasAttribute( 'listItemId' ) ) {
+				continue;
+			}
+
+			// Reconvert bogus vs not bogus paragraph.
+			if ( entry.type == 'remove' || entry.type == 'insert' ) {
+				const items = getAllListItemElementsByDetails(
+					entry.attributes.get( 'listItemId' ),
+					entry.attributes.get( 'listIndent' ),
+					position
+				);
+
+				const item = items.length ? items[ 0 ] : null;
+				const viewElement = item ? editing.mapper.toViewElement( item ) : null;
+
+				if ( viewElement ) {
+					if ( items.length == 1 && !viewElement.is( 'element', 'span' ) ) {
+						editing.reconvertItem( item );
+						// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
+					} else if ( items.length > 1 && viewElement.is( 'element', 'span' ) ) {
+						editing.reconvertItem( item );
+						// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
+					}
+				}
+			}
+
+			// TODO refresh bogus in case some list entries got merged (id change) or on indentation change.
+
+			// Reconvert following items that require re-wrapping with LIs and ULs.
+			let indent;
+
+			if ( entry.type == 'remove' ) {
+				indent = entry.attributes.get( 'listIndent' );
+			} else if ( entry.type == 'attribute' && entry.attributeKey == 'listIndent' ) {
+				indent = Math.min( changedListItem.getAttribute( 'listIndent' ), entry.attributeOldValue );
+			} else {
+				indent = changedListItem.getAttribute( 'listIndent' );
+			}
+
+			for (
+				let currentNode = followingListItem;
+				currentNode && currentNode.is( 'element' ) && currentNode.hasAttribute( 'listItemId' );
+				currentNode = currentNode.nextSibling
+			) {
+				if ( currentNode.getAttribute( 'listIndent' ) <= indent ) {
+					break;
+				}
+
+				if ( !editing.mapper.toViewElement( currentNode ) ) {
+					continue;
+				}
+
+				editing.reconvertItem( currentNode );
+				// @if CK_DEBUG // console.log( 'Refresh item', currentNode.childCount ? currentNode.getChild( 0 ).data : currentNode );
+			}
+		}
+	};
+}
+
+// TODO
+export function listItemViewToModelLengthMapper( mapper, schema ) {
+	function getViewListItemModelLength( element ) {
+		let length = 0;
+
+		// First count model size of nested lists.
+		for ( const child of element.getChildren() ) {
+			if ( isListView( child ) ) {
+				for ( const item of child.getChildren() ) {
+					length += getViewListItemModelLength( item );
+				}
+			}
+		}
+
+		let hasBlocks = false;
+
+		// Then add the size of block elements or in case of content directly in the LI add 1.
+		for ( const child of element.getChildren() ) {
+			if ( !isListView( child ) ) {
+				const modelElement = mapper.toModelElement( child );
+
+				// If the content is not mapped (attribute element or a text)
+				// or is inline then this is a content directly in the LI.
+				if ( !modelElement || schema.isInline( modelElement ) ) {
+					return length + 1;
+				}
+
+				// There are some blocks in LI so count their model length.
+				length += mapper.getModelLength( child );
+				hasBlocks = true;
+			}
+		}
+
+		// If the LI was empty or contained only nested lists.
+		if ( !hasBlocks ) {
+			length += 1;
+		}
+
+		// Return model length or 1 for a single empty LI.
+		return length;
+	}
+
+	return getViewListItemModelLength;
 }
 
 // TODO

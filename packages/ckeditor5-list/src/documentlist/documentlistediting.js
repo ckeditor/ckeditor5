@@ -12,8 +12,14 @@ import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
 import { CKEditorError, uid } from 'ckeditor5/src/utils';
 
-import { listItemUpcastConverter, listItemDowncastConverter, listUpcastCleanList } from './converters';
-import { getAllListItemElementsByDetails, getListItemElements, isListView } from './utils';
+import {
+	listItemUpcastConverter,
+	listItemDowncastConverter,
+	listUpcastCleanList,
+	reconvertItemsOnDataChange,
+	listItemViewToModelLengthMapper
+} from './converters';
+import { getListItemElements } from './utils';
 
 /**
  * TODO
@@ -40,6 +46,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const model = editor.model;
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -51,11 +58,11 @@ export default class DocumentListEditing extends Plugin {
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
 
-		editor.model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		model.schema.extend( '$container', {
+			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
+		} );
 
-		editor.model.document.registerPostFixer( writer => modelChangePostFixer( editor.model, writer ) );
-
-		editor.data.mapper.registerViewToModelLength( 'li', createViewListItemModelLength( editor.data.mapper, editor.model.schema ) );
+		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer ) );
 
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
@@ -67,7 +74,7 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
 			const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-			const converter = listItemDowncastConverter( attributes, editor.model );
+			const converter = listItemDowncastConverter( attributes, model );
 
 			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
 
@@ -78,7 +85,7 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
 			const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-			const converter = listItemDowncastConverter( attributes, editor.model, { dataPipeline: true } );
+			const converter = listItemDowncastConverter( attributes, model, { dataPipeline: true } );
 
 			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
 
@@ -87,9 +94,10 @@ export default class DocumentListEditing extends Plugin {
 			}
 		} );
 
-		this.listenTo( editor.model.document, 'change:data', handleDataChange( editor.model, editor.editing ) );
+		editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
+		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
 
-		editor.model.on( 'insertContent', createModelIndentPasteFixer( editor.model ), { priority: 'high' } );
+		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		this._enableEnterHandling();
 	}
@@ -118,101 +126,6 @@ export default class DocumentListEditing extends Plugin {
 			} );
 		}
 	}
-}
-
-// TODO
-function handleDataChange( model, editing ) {
-	return () => {
-		const changes = model.document.differ.getChanges();
-
-		for ( const entry of changes ) {
-			let position = null;
-
-			if ( entry.type == 'insert' && entry.attributes.has( 'listItemId' ) ) {
-				position = entry.position.getShiftedBy( entry.length );
-			} else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				position = entry.position;
-			} else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
-				position = entry.range.start.getShiftedBy( 1 );
-			}
-
-			if ( !position ) {
-				continue;
-			}
-
-			const changedListItem = position.nodeBefore;
-			const followingListItem = position.nodeAfter;
-
-			if ( entry.type == 'attribute' && entry.attributeKey == 'listItemId' ) {
-				const item = changedListItem;
-
-				if ( entry.attributeNewValue === null || entry.attributeOldValue === null ) {
-					editing.reconvertItem( item );
-					// @if CK_DEBUG // console.log( 'Refresh item (no list)', item.childCount ? item.getChild( 0 ).data : item );
-				}
-			}
-
-			if ( !changedListItem || !changedListItem.is( 'element' ) || !changedListItem.hasAttribute( 'listItemId' ) ) {
-				continue;
-			}
-
-			if ( !followingListItem || !followingListItem.is( 'element' ) || !followingListItem.hasAttribute( 'listItemId' ) ) {
-				continue;
-			}
-
-			// Reconvert bogus vs not bogus paragraph.
-			if ( entry.type == 'remove' || entry.type == 'insert' ) {
-				const items = getAllListItemElementsByDetails(
-					entry.attributes.get( 'listItemId' ),
-					entry.attributes.get( 'listIndent' ),
-					position
-				);
-
-				const item = items.length ? items[ 0 ] : null;
-				const viewElement = item ? editing.mapper.toViewElement( item ) : null;
-
-				if ( viewElement ) {
-					if ( items.length == 1 && !viewElement.is( 'element', 'span' ) ) {
-						editing.reconvertItem( item );
-						// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
-					} else if ( items.length > 1 && viewElement.is( 'element', 'span' ) ) {
-						editing.reconvertItem( item );
-						// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
-					}
-				}
-			}
-
-			// TODO refresh bogus in case some list entries got merged (id change) or on indentation change.
-
-			// Reconvert following items that require re-wrapping with LIs and ULs.
-			let indent;
-
-			if ( entry.type == 'remove' ) {
-				indent = entry.attributes.get( 'listIndent' );
-			} else if ( entry.type == 'attribute' && entry.attributeKey == 'listIndent' ) {
-				indent = Math.min( changedListItem.getAttribute( 'listIndent' ), entry.attributeOldValue );
-			} else {
-				indent = changedListItem.getAttribute( 'listIndent' );
-			}
-
-			for (
-				let currentNode = followingListItem;
-				currentNode && currentNode.is( 'element' ) && currentNode.hasAttribute( 'listItemId' );
-				currentNode = currentNode.nextSibling
-			) {
-				if ( currentNode.getAttribute( 'listIndent' ) <= indent ) {
-					break;
-				}
-
-				if ( !editing.mapper.toViewElement( currentNode ) ) {
-					continue;
-				}
-
-				editing.reconvertItem( currentNode );
-				// @if CK_DEBUG // console.log( 'Refresh item', currentNode.childCount ? currentNode.getChild( 0 ).data : currentNode );
-			}
-		}
-	};
 }
 
 /**
@@ -396,51 +309,6 @@ export function modelChangePostFixer( model, writer ) {
 			item = item.nextSibling;
 		}
 	}
-}
-
-// TODO
-function createViewListItemModelLength( mapper, schema ) {
-	function getViewListItemModelLength( element ) {
-		let length = 0;
-
-		// First count model size of nested lists.
-		for ( const child of element.getChildren() ) {
-			if ( isListView( child ) ) {
-				for ( const item of child.getChildren() ) {
-					length += getViewListItemModelLength( item );
-				}
-			}
-		}
-
-		let hasBlocks = false;
-
-		// Then add the size of block elements or in case of content directly in the LI add 1.
-		for ( const child of element.getChildren() ) {
-			if ( !isListView( child ) ) {
-				const modelElement = mapper.toModelElement( child );
-
-				// If the content is not mapped (attribute element or a text)
-				// or is inline then this is a content directly in the LI.
-				if ( !modelElement || schema.isInline( modelElement ) ) {
-					return length + 1;
-				}
-
-				// There are some blocks in LI so count their model length.
-				length += mapper.getModelLength( child );
-				hasBlocks = true;
-			}
-		}
-
-		// If the LI was empty or contained only nested lists.
-		if ( !hasBlocks ) {
-			length += 1;
-		}
-
-		// Return model length or 1 for a single empty LI.
-		return length;
-	}
-
-	return getViewListItemModelLength;
 }
 
 /**
