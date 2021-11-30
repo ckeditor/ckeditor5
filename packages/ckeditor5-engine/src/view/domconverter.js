@@ -241,7 +241,7 @@ export default class DomConverter {
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
-	 * @param {String} elementName Element name in lower case
+	 * @param {String} elementName Element name in lower case.
 	 * @returns {Boolean}
 	 */
 	shouldRenderAttribute( attributeKey, attributeValue, elementName ) {
