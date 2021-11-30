@@ -18,10 +18,15 @@ import ViewDocument from '../../../src/view/document';
 import DowncastWriter from '../../../src/view/downcastwriter';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 
-import { parse } from '../../../src/dev-utils/view';
+import { parse, getData as getViewData } from '../../../src/dev-utils/view';
+import { setData as setModelData } from '../../../src/dev-utils/model';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
@@ -397,6 +402,131 @@ describe( 'DomConverter', () => {
 						'<p onclick="foo" data-ck-unsafe-attribute-onkeydown="bar">foo</p>'
 					);
 				} );
+			} );
+
+			describe( 'DOM elements with included script ', () => {
+				const svgBase64 = 'data:image/svg+xml;base64,' + global.window.btoa( `<svg xmlns="http://www.w3.org/2000/svg">
+							<image href="x" onerror="alert(1)" />
+							</svg>` );
+
+				const svgEncoded = 'data:image/svg+xml;utf8,' + encodeURIComponent( `<svg xmlns="http://www.w3.org/2000/svg">
+							<image href="x" onerror="alert(1)" />
+							</svg>` );
+
+				let editor, editorElement, alertStub;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					editor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph ]
+					} );
+
+					editor.model.schema.register( 'fakeImg', {
+						allowAttributes: [ 'src' ],
+						allowWhere: '$text',
+						isInline: true
+					} );
+
+					editor.conversion.for( 'downcast' ).elementToElement( {
+						model: 'fakeImg',
+						view: ( modelElement, { writer } ) => writer.createEmptyElement( 'img', {
+							src: modelElement.getAttribute( 'src' ),
+							srcset: modelElement.getAttribute( 'src' )
+						} )
+					} );
+
+					editor.model.schema.register( 'fakePicture', {
+						allowAttributes: [ 'srcset', 'media' ],
+						allowWhere: '$text',
+						isInline: true
+					} );
+
+					editor.conversion.for( 'downcast' ).elementToElement( {
+						model: 'fakePicture',
+						view: ( modelElement, { writer } ) => {
+							const picture = writer.createContainerElement( 'picture' );
+							const source = writer.createEmptyElement( 'source', {
+								srcset: modelElement.getAttribute( 'srcset' ),
+								media: modelElement.getAttribute( 'media' )
+							} );
+							const image = writer.createEmptyElement( 'img', {
+								src: modelElement.getAttribute( 'srcset' )
+							} );
+
+							writer.insert( writer.createPositionAt( picture, 0 ), image );
+							writer.insert( writer.createPositionAt( picture, 0 ), source );
+
+							return picture;
+						}
+					} );
+
+					alertStub = testUtils.sinon.stub( global.window, 'alert' );
+				} );
+
+				afterEach( () => {
+					editorElement.remove();
+					return editor.destroy();
+				} );
+
+				it( 'script included in SVG encoded as base64 should not be executed when set on src attribute of img element', () => {
+					setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>' +
+							`<img src="${ svgBase64 }" srcset="${ svgBase64 }"></img>` +
+						'</p>'
+					);
+					expect( alertStub.callCount ).to.equal( 0 );
+				} );
+
+				it( 'script included in encoded SVG should not be executed when set on src attribute of img element', () => {
+					setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>' +
+							`<img src="${ svgEncoded }" srcset="${ svgEncoded }"></img>` +
+						'</p>'
+					);
+					expect( alertStub.callCount ).to.equal( 0 );
+				} );
+
+				it( 'script included in SVG encoded as base64 should not be executed when set on srcset attribute of source element',
+					() => {
+						setModelData( editor.model,
+							`<paragraph><fakePicture srcset='${ svgBase64 }' media="(min-width: 10px)"></fakePicture></paragraph>`
+						);
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+							'<p>' +
+								'<picture>' +
+									`<source media="(min-width: 10px)" srcset="${ svgBase64 }"></source>` +
+									`<img src="${ svgBase64 }"></img>` +
+								'</picture>' +
+							'</p>'
+						);
+						expect( alertStub.callCount ).to.equal( 0 );
+					}
+				);
+
+				it( 'script included in encoded SVG should not be executed when set on srcset attribute of source element',
+					() => {
+						setModelData( editor.model,
+							`<paragraph><fakePicture srcset='${ svgEncoded }' media="(min-width: 10px)"></fakePicture></paragraph>`
+						);
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+							'<p>' +
+								'<picture>' +
+									`<source media="(min-width: 10px)" srcset="${ svgEncoded }"></source>` +
+									`<img src="${ svgEncoded }"></img>` +
+								'</picture>' +
+							'</p>'
+						);
+						expect( alertStub.callCount ).to.equal( 0 );
+					}
+				);
 			} );
 		} );
 
