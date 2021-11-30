@@ -4,8 +4,8 @@
  */
 
 import CollapsibleView from '../../src/ui/collapsibleview';
-import { ButtonView, ViewCollection } from '@ckeditor/ckeditor5-ui';
 
+import { ButtonView, ViewCollection } from '@ckeditor/ckeditor5-ui';
 import dropdownArrowIcon from '@ckeditor/ckeditor5-ui/theme/icons/dropdown-arrow.svg';
 
 describe( 'CollapsibleView', () => {

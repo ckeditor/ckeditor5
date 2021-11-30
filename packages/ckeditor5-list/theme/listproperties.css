@@ -42,12 +42,12 @@
 		}
 	}
 
-	& .ck.ck-numbered-list-properties-start-index .ck-input {
+	& .ck.ck-numbered-list-properties__start-index .ck-input {
 		min-width: auto;
 		width: 100%;
 	}
 
-	& .ck.ck-numbered-list-properties-reversed-order {
+	& .ck.ck-numbered-list-properties__reversed-order {
 		background: transparent;
 		padding-left: 0;
 		padding-right: 0;

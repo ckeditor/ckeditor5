@@ -63,7 +63,11 @@ ClassicEditor
 	.create( document.querySelector( '#editor-a' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'styles', 'startIndex', 'reversed' ]
+			numberedProperties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
 		}
 	} )
 	.catch( err => {
@@ -74,7 +78,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor-b' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'styles', 'startIndex' ]
+			numberedProperties: {
+				styles: true,
+				startIndex: true
+			}
 		}
 	} )
 	.catch( err => {
@@ -85,7 +92,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor-c' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'styles', 'reversed' ]
+			numberedProperties: {
+				styles: true,
+				reversed: true
+			}
 		}
 	} )
 	.catch( err => {
@@ -98,7 +108,10 @@ ClassicEditor
 	.create( document.querySelector( '#editor-d' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'startIndex', 'reversed' ]
+			numberedProperties: {
+				startIndex: true,
+				reversed: true
+			}
 		}
 	} )
 	.catch( err => {
@@ -109,7 +122,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor-e' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'startIndex' ]
+			numberedProperties: {
+				startIndex: true
+			}
 		}
 	} )
 	.catch( err => {
@@ -120,7 +135,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor-f' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'reversed' ]
+			numberedProperties: {
+				reversed: true
+			}
 		}
 	} )
 	.catch( err => {
@@ -133,7 +150,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor-g' ), {
 		...config,
 		list: {
-			numberedProperties: [ 'styles' ]
+			numberedProperties: {
+				styles: true
+			}
 		}
 	} )
 	.catch( err => {
