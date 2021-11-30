@@ -110,6 +110,12 @@ export default class Autosave extends Plugin {
 		this._lastDocumentVersion = editor.model.document.version;
 
 		/**
+		 * @type {Promise}
+		 * @private
+		 */
+		this._savePromise = null;
+
+		/**
 		 * DOM emitter.
 		 *
 		 * @private
@@ -200,11 +206,16 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Calls autosave plugin callback and cancels any delayed callbacks that may have been already triggered.
+	 * Calls autosave callback immediately if there are any changes to save.
 	 */
 	save() {
-		this._debouncedSave.cancel();
-		this._save();
+		if ( this.state !== 'synchronized' ) {
+			this._debouncedSave.cancel();
+
+			return this._save();
+		}
+
+		return Promise.resolve();
 	}
 
 	/**
@@ -224,12 +235,16 @@ export default class Autosave extends Plugin {
 	 * @private
 	 */
 	_save() {
+		if ( this._savePromise ) {
+			return this._savePromise;
+		}
+
 		this.state = 'saving';
 		this._lastDocumentVersion = this.editor.model.document.version;
 
 		// Wait one promise cycle to be sure that save callbacks are not called
 		// inside a conversion or when the editor's state changes.
-		Promise.resolve()
+		this._savePromise = Promise.resolve()
 			.then( () => Promise.all(
 				this._saveCallbacks.map( cb => cb( this.editor ) )
 			) )
@@ -248,13 +263,22 @@ export default class Autosave extends Plugin {
 			.then( () => {
 				if ( this.editor.model.document.version > this._lastDocumentVersion ) {
 					this.state = 'waiting';
+
 					this._debouncedSave();
 				} else {
 					this.state = 'synchronized';
-					this._pendingActions.remove( this._action );
-					this._action = null;
+
+					if ( this._action ) {
+						this._pendingActions.remove( this._action );
+						this._action = null;
+					}
 				}
+			} ).
+			finally( () => {
+				this._savePromise = null;
 			} );
+
+		return this._savePromise;
 	}
 
 	/**
