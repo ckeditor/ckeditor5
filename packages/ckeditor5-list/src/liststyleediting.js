@@ -72,8 +72,8 @@ export default class ListStyleEditing extends Plugin {
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
-		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor ) );
-		this.listenTo( editor.commands.get( 'outdentList' ), '_executeCleanup', fixListAfterOutdentListCommand( editor ) );
+		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor, strategies ) );
+		this.listenTo( editor.commands.get( 'outdentList' ), '_executeCleanup', fixListAfterOutdentListCommand( editor, strategies ) );
 
 		this.listenTo( editor.commands.get( 'bulletedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
 		this.listenTo( editor.commands.get( 'numberedList' ), '_executeCleanup', restoreDefaultListStyle( editor ) );
@@ -351,7 +351,7 @@ function downcastListStyleAttribute( attributeStrategies ) {
 	}
 }
 
-// When indenting list, nested list should clear its value for the `listStyle` attribute or inherit from nested lists.
+// When indenting list, nested list should clear its value for the attributes or inherit from nested lists.
 //
 // ■ List item 1.
 // ■ List item 2.[]
@@ -364,10 +364,9 @@ function downcastListStyleAttribute( attributeStrategies ) {
 //
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
-function fixListAfterIndentListCommand( editor ) {
+// TODO: param
+function fixListAfterIndentListCommand( editor, attributeStrategies ) {
 	return ( evt, changedItems ) => {
-		let valueToSet;
-
 		const root = changedItems[ 0 ];
 		const rootIndent = root.getAttribute( 'listIndent' );
 
@@ -381,26 +380,31 @@ function fixListAfterIndentListCommand( editor ) {
 		// ■ List item 4.
 		//
 		// List items: `2` and `3` should be adjusted.
-		if ( root.previousSibling.getAttribute( 'listIndent' ) + 1 === rootIndent ) {
-			// valueToSet = root.previousSibling.getAttribute( 'listStyle' ) || DEFAULT_LIST_TYPE;
-			valueToSet = DEFAULT_LIST_TYPE;
-		} else {
-			const previousSibling = getSiblingListItem( root.previousSibling, {
+		let previousSibling = null;
+
+		if ( root.previousSibling.getAttribute( 'listIndent' ) + 1 !== rootIndent ) {
+			previousSibling = getSiblingListItem( root.previousSibling, {
 				sameIndent: true, direction: 'backward', listIndent: rootIndent
 			} );
-
-			valueToSet = previousSibling.getAttribute( 'listStyle' );
 		}
 
 		editor.model.change( writer => {
 			for ( const item of itemsToUpdate ) {
-				writer.setAttribute( 'listStyle', valueToSet, item );
+				for ( const strategy of attributeStrategies ) {
+					if ( strategy.appliesToListItem( item ) ) {
+						const valueToSet = previousSibling == null ?
+							strategy.defaultValue :
+							previousSibling.getAttribute( strategy.attributeName );
+
+						writer.setAttribute( strategy.attributeName, valueToSet, item );
+					}
+				}
 			}
 		} );
 	};
 }
 
-// When outdenting a list, a nested list should copy its value for the `listStyle` attribute
+// When outdenting a list, a nested list should copy attribute values
 // from the previous sibling list item including the same value for the `listIndent` value.
 //
 // ■ List item 1.
@@ -414,8 +418,9 @@ function fixListAfterIndentListCommand( editor ) {
 // ■ List item 3.
 //
 // @param {module:core/editor/editor~Editor} editor
+// TODO
 // @returns {Function}
-function fixListAfterOutdentListCommand( editor ) {
+function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 	return ( evt, changedItems ) => {
 		changedItems = changedItems.reverse().filter( item => item.is( 'element', 'listItem' ) );
 
@@ -474,12 +479,22 @@ function fixListAfterOutdentListCommand( editor ) {
 			const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === indent );
 
 			for ( const item of itemsToUpdate ) {
-				writer.setAttribute( 'listStyle', listItem.getAttribute( 'listStyle' ), item );
+				// writer.setAttribute( 'listStyle', listItem.getAttribute( 'listStyle' ), item );
+
+				for ( const strategy of attributeStrategies ) {
+					if ( strategy.appliesToListItem( item ) ) {
+						const attributeName = strategy.attributeName;
+						const valueToSet = listItem.getAttribute( attributeName );
+
+						writer.setAttribute( attributeName, valueToSet, item );
+					}
+				}
 			}
 		} );
 	};
 }
 
+// TODO: docs
 // Each `listItem` element must have specified the `listStyle` attribute.
 // This post-fixer checks whether inserted elements `listItem` elements should inherit the `listStyle` value from
 // their sibling nodes or should use the default value.

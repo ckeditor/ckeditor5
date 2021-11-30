@@ -959,16 +959,16 @@ describe( 'ListStyleEditing', () => {
 					() => {
 						setModelData( model,
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+							'<listItem listIndent="1" listStyle="decimal" listType="numbered">2.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 						);
 
 						editor.execute( 'outdentList' );
 
 						expect( getModelData( model ) ).to.equal(
 							'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>' +
-						'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.[]</listItem>' +
-						'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
+							'<listItem listIndent="0" listStyle="decimal" listType="numbered">2.[]</listItem>' +
+							'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
 						);
 					} );
 
@@ -2371,6 +2371,340 @@ describe( 'ListStyleEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>'
+					);
+				} );
+			} );
+
+			describe( 'indenting lists', () => {
+				it( 'should restore the default value of the reversed attribute when indenting a single item', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+
+					editor.execute( 'indentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+				} );
+
+				it( 'should restore the default value of the reversed attribute when indenting a few items', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">[2.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.]</listItem>'
+					);
+
+					editor.execute( 'indentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">[2.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">3.]</listItem>'
+					);
+				} );
+
+				it(
+					'should copy the value of the reversed attribute when indenting a single item into a nested list (default value)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">3.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">4.</listItem>'
+						);
+
+						editor.execute( 'indentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">3.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">4.</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should copy the value of the reversed attribute when indenting a single item into a nested list (changed value)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">3.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">4.</listItem>'
+						);
+
+						editor.execute( 'indentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">3.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">4.</listItem>'
+						);
+					}
+				);
+
+				it( 'should set default value of the reversed attribute when indenting a single item into a nested list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">3.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">4.</listItem>'
+					);
+
+					editor.execute( 'indentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="2" listReversed="true" listType="numbered">3.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">4.</listItem>'
+					);
+				} );
+
+				it(
+					'should copy the value of the reversed attribute when indenting a single item into a nested list ' +
+					'(many nested lists check)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">4.[]</listItem>'
+						);
+
+						editor.execute( 'indentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">4.[]</listItem>'
+						);
+					}
+				);
+
+				it( 'should inherit the reversed attribute from nested list if the `listType` is other than indenting element', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
+					);
+
+					editor.execute( 'indentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">3.[]</listItem>'
+					);
+				} );
+			} );
+
+			describe( 'outdenting lists', () => {
+				it( 'should inherit the reversed attribute from parent list (change the first nested item)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+				} );
+
+				it( 'should inherit the reversed attribute from parent list (change the second nested item)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">3.[]</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.[]</listItem>'
+					);
+				} );
+
+				it( 'should inherit the reversed attribute from parent list (modifying nested lists)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">[2.</listItem>' +
+						'<listItem listIndent="2" listReversed="true" listType="numbered">3.]</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">[2.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">3.]</listItem>'
+					);
+				} );
+
+				it(
+					'should inherit the reversed attribute from parent list (outdenting many items, including the first one in the list)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">[1.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">3.]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">4.</listItem>'
+						);
+
+						editor.execute( 'outdentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<paragraph>[1.</paragraph>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">3.]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">4.</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should inherit the reversed attribute from parent list (outdenting the first item that is a parent for next list)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="2" listReversed="true" listType="numbered">3.</listItem>' +
+							'<listItem listIndent="3" listReversed="false" listType="numbered">4.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">5.</listItem>'
+						);
+
+						editor.execute( 'outdentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<paragraph>1.[]</paragraph>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">3.</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">4.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">5.</listItem>'
+						);
+					}
+				);
+
+				it( 'should not inherit the reversed if outdented the only one item in the list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>1.[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>'
+					);
+				} );
+
+				it( 'should not inherit the reversed if outdented the only one item in the list (a paragraph below the list)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
+						'<paragraph>Foo</paragraph>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>1.[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>' +
+						'<paragraph>Foo</paragraph>'
+					);
+				} );
+
+				it(
+					'should not inherit the reversed attribute from parent list if the `listType` is other than outdenting element',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">2.[]</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
+						);
+
+						editor.execute( 'outdentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">3.</listItem>'
+						);
+					} );
+
+				it( 'should not do anything if there is no list after outdenting', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>1.[]</paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'indent/outdent + undo', () => {
+				it( 'should use the same batch for indenting a list and updating `listType` attribute', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+
+					editor.execute( 'indentList' );
+					editor.execute( 'undo' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">1A.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2B.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+				} );
+
+				it( 'should use the same batch for outdenting a list and updating `listType` attribute', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+					editor.execute( 'undo' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
 					);
 				} );
 			} );
