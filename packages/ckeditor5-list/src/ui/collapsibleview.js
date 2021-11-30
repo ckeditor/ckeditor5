@@ -33,7 +33,6 @@ export default class CollapsibleView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
-		const t = locale.t;
 
 		/**
 		 * `true` when the container with {@link #children} is collapsed. `false` otherwise.
@@ -50,7 +49,7 @@ export default class CollapsibleView extends View {
 		 * @member {String} #label
 		 * @default 'Show more'
 		 */
-		this.set( 'label', t( 'Show more' ) );
+		this.set( 'label', '' );
 
 		/**
 		 * The main button that, when clicked, collapses or expands the container with {@link #children}.

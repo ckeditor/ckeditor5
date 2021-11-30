@@ -77,14 +77,14 @@ describe( 'CollapsibleView', () => {
 		} );
 
 		it( 'should have #label with default value', () => {
-			expect( view.label ).to.equal( 'Show more' );
+			expect( view.label ).to.equal( '' );
 		} );
 	} );
 
 	describe( 'DOM bindings', () => {
 		describe( 'button label', () => {
 			it( 'should react on view#label', () => {
-				expect( view.buttonView.element.innerText ).to.equal( 'Show more' );
+				expect( view.buttonView.element.innerText ).to.equal( '' );
 
 				view.label = 'Foo';
 
