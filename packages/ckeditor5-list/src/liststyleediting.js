@@ -79,8 +79,8 @@ export default class ListStyleEditing extends Plugin {
 
 		editor.commands.get( 'listStart' ).isEnabled = true;
 		editor.commands.get( 'listStart' ).value = 1;
-		editor.commands.get( 'listStart' ).execute = value => {
-			editor.commands.get( 'listStart' ).value = value;
+		editor.commands.get( 'listStart' ).execute = ( { startIndex } ) => {
+			editor.commands.get( 'listStart' ).value = startIndex;
 			// console.log( 'listStart#value', editor.commands.get( 'listStart' ).value );
 		};
 

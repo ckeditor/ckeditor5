@@ -109,7 +109,7 @@ export default class InputView extends View {
 		 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc..
 		 *
 		 * @observable
-		 * @member {Boolean}
+		 * @member {Boolean} #inputMode
 		 * @default 'text'
 		 */
 		this.set( 'inputMode', 'text' );

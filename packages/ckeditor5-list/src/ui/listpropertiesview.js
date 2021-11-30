@@ -68,7 +68,7 @@ export default class ListPropertiesView extends View {
 		this.stylesView = null;
 
 		/**
-		 * A labeled field allowing the user to set the start index of the list.
+		 * A labeled number field allowing the user to set the start index of the list.
 		 *
 		 * **Note**: Only present when the view represents **numbered** list properties.
 		 *
@@ -78,7 +78,7 @@ export default class ListPropertiesView extends View {
 		this.startIndexFieldView = null;
 
 		/**
-		 * A field allowing the user to make the edited list reversed.
+		 * A switch button allowing the user to make the edited list reversed.
 		 *
 		 * **Note**: Only present when the view represents **numbered** list properties.
 		 *
@@ -327,7 +327,7 @@ export default class ListPropertiesView extends View {
 				if ( parsedValue < 1 ) {
 					startIndexFieldView.errorText = t( 'Start index must be greater than 0.' );
 				} else {
-					this.fire( 'listStart', parsedValue );
+					this.fire( 'listStart', { startIndex: parsedValue } );
 				}
 			}
 		} );
@@ -356,4 +356,18 @@ export default class ListPropertiesView extends View {
 
 		return reversedButtonView;
 	}
+
+	/**
+	 * Fired when the list start index value has changed via {@link #startIndexFieldView}.
+	 *
+	 * @event listStart
+	 * @param {Object} data
+	 * @param {Number} data.startIndex The new start index of the list.
+	 */
+
+	/**
+	 * Fired when the list order has changed (reversed) via {@link #reversedSwitchButtonView}.
+	 *
+	 * @event listReversed
+	 */
 }

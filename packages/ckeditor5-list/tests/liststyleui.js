@@ -603,10 +603,10 @@ describe( 'ListStyleUI', () => {
 				it( 'should execute the list start command when the list property view fires #listStart', () => {
 					const spy = sinon.spy( editor, 'execute' );
 
-					listPropertiesView.fire( 'listStart', 1234 );
+					listPropertiesView.fire( 'listStart', { startIndex: 1234 } );
 
 					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy, 'listStart', 1234 );
+					sinon.assert.calledWithExactly( spy, 'listStart', { startIndex: 1234 } );
 				} );
 			} );
 

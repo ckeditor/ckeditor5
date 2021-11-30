@@ -123,6 +123,7 @@ export default class CollapsibleView extends View {
 	/**
 	 * Creates the main {@link #buttonView} of the collapsible.
 	 *
+	 * @private
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	_createButtonView() {

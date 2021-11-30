@@ -33,7 +33,7 @@ export default class InputNumberView extends InputView {
 		 *
 		 * @observable
 		 * @default undefined
-		 * @member {Number}
+		 * @member {Number} #min
 		 */
 		this.set( 'min', min );
 
@@ -42,7 +42,7 @@ export default class InputNumberView extends InputView {
 		 *
 		 * @observable
 		 * @default undefined
-		 * @member {Number}
+		 * @member {Number} #max
 		 */
 		this.set( 'max', max );
 
@@ -51,7 +51,7 @@ export default class InputNumberView extends InputView {
 		 *
 		 * @observable
 		 * @default undefined
-		 * @member {Number}
+		 * @member {Number} #step
 		 */
 		this.set( 'step', step );
 
