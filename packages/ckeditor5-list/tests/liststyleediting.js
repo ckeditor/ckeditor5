@@ -1031,7 +1031,10 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ]
+							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
+							list: {
+								numberedProperties: { styles: true, startIndex: false, reversed: false }
+							}
 						} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -2705,6 +2708,100 @@ describe( 'ListStyleEditing', () => {
 						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
 						'<listItem listIndent="1" listReversed="false" listType="numbered">2.[]</listItem>' +
 						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>'
+					);
+				} );
+			} );
+
+			describe( 'delete + undo', () => {
+				let editor, model, view;
+
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
+							list: {
+								numberedProperties: { styles: false, startIndex: false, reversed: true }
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+							view = editor.editing.view;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				// See: #7930.
+				it( 'should restore proper reversed attribute after undo merging lists', () => {
+				// ○ 1.
+				// ○ 2.
+				// ○ 3.
+				// <paragraph>
+				// ■ 1.
+				// ■ 2.
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">3.</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+					);
+
+					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+						'<ol>' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+							'<li>3.</li>' +
+						'</ol>' +
+						'<p></p>' +
+						'<ol reversed="reversed">' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+						'</ol>'
+					);
+
+					// After removing the paragraph.
+					// ○ 1.
+					// ○ 2.
+					// ○ 3.
+					// ○ 1.
+					// ○ 2.
+					editor.execute( 'delete' );
+
+					expect( getViewData( view, { withoutSelection: true } ), 'executing delete' ).to.equal(
+						'<ol>' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+							'<li>3.</li>' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+						'</ol>'
+					);
+
+					// After undo.
+					// ○ 1.
+					// ○ 2.
+					// ○ 3.
+					// <paragraph>
+					// ■ 1.
+					// ■ 2.
+					editor.execute( 'undo' );
+
+					expect( getViewData( view, { withoutSelection: true } ), 'initial data' ).to.equal(
+						'<ol>' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+							'<li>3.</li>' +
+						'</ol>' +
+						'<p></p>' +
+						'<ol reversed="reversed">' +
+							'<li>1.</li>' +
+							'<li>2.</li>' +
+						'</ol>'
 					);
 				} );
 			} );

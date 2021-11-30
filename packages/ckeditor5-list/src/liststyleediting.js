@@ -86,7 +86,7 @@ export default class ListStyleEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).add( downcastListStyleAttribute( strategies ) );
 
 		// Handle merging two separated lists into the single one.
-		this._mergeListStyleAttributeWhileMergingLists();
+		this._mergeListStyleAttributeWhileMergingLists( strategies );
 	}
 
 	/**
@@ -106,7 +106,8 @@ export default class ListStyleEditing extends Plugin {
 	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} checks whether two lists will be merged into a single one
 	 * after deleting the content.
 	 *
-	 * The purpose of this action is to adjust the `listStyle` value for the list that was merged.
+	 * The purpose of this action is to adjust the `listStyle`, `listReversed` and `listStart` values
+	 * for the list that was merged.
 	 *
 	 * Consider the following model's content:
 	 *
@@ -128,12 +129,12 @@ export default class ListStyleEditing extends Plugin {
 	 *
 	 * @private
 	 */
-	_mergeListStyleAttributeWhileMergingLists() {
+	_mergeListStyleAttributeWhileMergingLists( attributeStrategies ) {
 		const editor = this.editor;
 		const model = editor.model;
 
 		// First the outer-most`listItem` in the first list reference.
-		// If found, the lists should be merged and this `listItem` provides the `listStyle` attribute
+		// If found, the lists should be merged and this `listItem` provides the attribute
 		// and it is also a starting point when searching for items in the second list.
 		let firstMostOuterItem;
 
@@ -213,7 +214,14 @@ export default class ListStyleEditing extends Plugin {
 				];
 
 				for ( const listItem of items ) {
-					writer.setAttribute( 'listStyle', firstMostOuterItem.getAttribute( 'listStyle' ), listItem );
+					for ( const strategy of attributeStrategies ) {
+						if ( strategy.appliesToListItem( listItem ) ) {
+							const attributeName = strategy.attributeName;
+							const value = firstMostOuterItem.getAttribute( attributeName );
+
+							writer.setAttribute( attributeName, value, listItem );
+						}
+					}
 				}
 			} );
 
