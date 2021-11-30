@@ -273,7 +273,7 @@ export default class DomConverter {
 			return true;
 		}
 
-		if ( attributeValue.match( /^\s*javascript:|data:(image\/svg|text\/x?html)/i ) ) {
+		if ( attributeValue.match( /^\s*(javascript:|data:(image\/svg|text\/x?html))/i ) ) {
 			return false;
 		}
 

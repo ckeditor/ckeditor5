@@ -438,8 +438,12 @@ describe( 'DomConverter', () => {
 	describe( 'shouldRenderAttribute()', () => {
 		it( 'should allow all in data pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '   javascript:something' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', ' data:image/svg,foo' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '   data:text/html,foo' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.false;
@@ -447,16 +451,24 @@ describe( 'DomConverter', () => {
 			// Make sure it's rendered in the editing mode.
 			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
 
+			// It should not filter out the attribute that do not match URI.
+			expect( converter.shouldRenderAttribute( 'anything', 'foobar data:text/html,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'foobar javascript:something' ) ).to.be.true;
+
 			converter.renderingMode = 'data';
 
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '   javascript:something' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', ' data:image/svg,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '   data:text/html,foo' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.true;
+
+			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
 		} );
 
 		it( 'should allow SVG in src attribute of img element', () => {
