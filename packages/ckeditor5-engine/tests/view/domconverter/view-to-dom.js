@@ -438,7 +438,7 @@ describe( 'DomConverter', () => {
 					} );
 
 					editor.model.schema.register( 'fakePicture', {
-						allowAttributes: [ 'srcset' ],
+						allowAttributes: [ 'srcset', 'media' ],
 						allowWhere: '$text',
 						isInline: true
 					} );
@@ -490,7 +490,6 @@ describe( 'DomConverter', () => {
 						'</p>'
 					);
 					expect( alertStub.callCount ).to.equal( 0 );
-					console.log( editor.getData() );
 				} );
 
 				it( 'script included in SVG encoded as base64 should not be executed when set on srcset attribute of source element',
