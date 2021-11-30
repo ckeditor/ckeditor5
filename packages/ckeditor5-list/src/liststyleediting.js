@@ -42,6 +42,21 @@ export default class ListStyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	constructor( editor ) {
+		super( editor );
+
+		editor.config.define( 'list', {
+			numberedProperties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
@@ -50,8 +65,6 @@ export default class ListStyleEditing extends Plugin {
 		model.schema.extend( 'listItem', {
 			allowAttributes: [ 'listStyle' ]
 		} );
-
-		editor.config.define( 'list.numberedProperties', [ 'styles', 'startIndex', 'reversed' ] );
 
 		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 		editor.commands.add( 'listReversed', new Command( editor ) );

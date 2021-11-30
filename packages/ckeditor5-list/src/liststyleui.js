@@ -48,7 +48,7 @@ export default class ListStyleUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.locale.t;
 
-		editor.ui.componentFactory.add( 'bulletedList', getSplitButtonCreator( {
+		editor.ui.componentFactory.add( 'bulletedList', getDropdownViewCreator( {
 			editor,
 			parentCommandName: 'bulletedList',
 			buttonLabel: t( 'Bulleted List' ),
@@ -76,7 +76,7 @@ export default class ListStyleUI extends Plugin {
 			]
 		} ) );
 
-		editor.ui.componentFactory.add( 'numberedList', getSplitButtonCreator( {
+		editor.ui.componentFactory.add( 'numberedList', getDropdownViewCreator( {
 			editor,
 			parentCommandName: 'numberedList',
 			buttonLabel: t( 'Numbered List' ),
@@ -136,63 +136,39 @@ export default class ListStyleUI extends Plugin {
 // @param {String} options.styleGridAriaLabel The ARIA label for the styles grid in the split button dropdown.
 // @param {Object} options.styleDefinitions Definitions of the style buttons.
 // @returns {Function} A function that can be passed straight into {@link module:ui/componentfactory~ComponentFactory#add}.
-function getSplitButtonCreator( { editor, parentCommandName, buttonLabel, buttonIcon, styleGridAriaLabel, styleDefinitions } ) {
+function getDropdownViewCreator( { editor, parentCommandName, buttonLabel, buttonIcon, styleGridAriaLabel, styleDefinitions } ) {
 	const parentCommand = editor.commands.get( parentCommandName );
-	const listStyleCommand = editor.commands.get( 'listStyle' );
-	const styleButtonCreator = getStyleButtonCreator( { editor, parentCommandName, listStyleCommand } );
-	const enabledProperties = Object.fromEntries( editor.config.get( 'list.numberedProperties' ).map( key => [ key, true ] ) );
-	const isNumberedListDropdown = parentCommandName == 'numberedList';
-	const shouldIncludeStyles = isNumberedListDropdown ? !!enabledProperties.styles : true;
-	const styleButtonViews = shouldIncludeStyles ? styleDefinitions.map( styleButtonCreator ) : null;
 
 	// @param {module:utils/locale~Locale} locale
 	// @returns {module:ui/dropdown/dropdownview~DropdownView}
 	return locale => {
 		const dropdownView = createDropdown( locale, SplitButtonView );
-		const buttonView = dropdownView.buttonView;
-		const shouldRenderNumberedListPropertyFields = isNumberedListDropdown &&
-			( enabledProperties.startIndex || enabledProperties.reversed );
-		let numberedListPropertyCommands;
-
-		if ( shouldRenderNumberedListPropertyFields ) {
-			numberedListPropertyCommands = {
-				listStartCommand: editor.commands.get( 'listStart' ),
-				listReversedCommand: editor.commands.get( 'listReversed' )
-			};
-		}
+		const mainButtonView = dropdownView.buttonView;
 
 		dropdownView.bind( 'isEnabled' ).to( parentCommand );
 		dropdownView.class = 'ck-list-styles-dropdown';
 
 		// Main button was clicked.
-		buttonView.on( 'execute', () => {
+		mainButtonView.on( 'execute', () => {
 			editor.execute( parentCommandName );
 			editor.editing.view.focus();
 		} );
 
-		buttonView.set( {
+		mainButtonView.set( {
 			label: buttonLabel,
 			icon: buttonIcon,
 			tooltip: true,
 			isToggleable: true
 		} );
 
-		buttonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
+		mainButtonView.bind( 'isOn' ).to( parentCommand, 'value', value => !!value );
 
-		const listPropertiesView = new ListPropertiesView( locale, {
+		const listPropertiesView = createListPropertiesView( {
+			editor,
+			dropdownView,
+			parentCommandName,
 			styleGridAriaLabel,
-			enabledProperties,
-			styleButtonViews,
-			numberedListPropertyCommands
-		} );
-
-		// Make sure applying styles closes the dropdown.
-		listPropertiesView.delegate( 'execute' ).to( dropdownView );
-		listPropertiesView.on( 'listReversed', () => {
-			editor.execute( 'listReversed' );
-		} );
-		listPropertiesView.on( 'listStart', ( evt, data ) => {
-			editor.execute( 'listStart', data );
+			styleDefinitions
 		} );
 
 		dropdownView.panelView.children.add( listPropertiesView );
@@ -254,4 +230,58 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 
 		return button;
 	};
+}
+
+// A helper that creates the properties view for the individual style dropdown.
+//
+// @param {Object} options
+// @param {module:core/editor/editor~Editor} options.editor Editor instance.
+// @param {module:ui/dropdown/dropdownview~DropdownView} options.dropdownView Styles dropdown view that hosts the properties view.
+// @param {'bulletedList'|'numberedList'} options.parentCommandName The name of the higher-order editor command associated with
+// the set of particular list styles (e.g. "bulletedList" for "disc", "circle", and "square" styles).
+// @param {Object} options.styleDefinitions Definitions of the style buttons.
+// @param {String} options.styleGridAriaLabel An assistive technologies label set on the grid of styles (if the grid is rendered).
+// @returns {module:list/ui/listpropertiesview~ListPropertiesView}
+function createListPropertiesView( {
+	editor,
+	dropdownView,
+	parentCommandName,
+	styleDefinitions,
+	styleGridAriaLabel
+} ) {
+	const locale = editor.locale;
+	const listStyleCommand = editor.commands.get( 'listStyle' );
+	const enabledProperties = parentCommandName == 'numberedList' ? editor.config.get( 'list.numberedProperties' ) : { styles: true };
+	const styleButtonCreator = getStyleButtonCreator( {
+		editor,
+		parentCommandName,
+		listStyleCommand
+	} );
+	const styleButtonViews = enabledProperties.styles ? styleDefinitions.map( styleButtonCreator ) : null;
+	const listPropertiesView = new ListPropertiesView( locale, {
+		styleGridAriaLabel,
+		enabledProperties,
+		styleButtonViews
+	} );
+
+	if ( enabledProperties.startIndex ) {
+		const listStartCommand = editor.commands.get( 'listStart' );
+
+		listPropertiesView.startIndexFieldView.bind( 'isEnabled' ).to( listStartCommand );
+		listPropertiesView.startIndexFieldView.fieldView.bind( 'value' ).to( listStartCommand );
+		listPropertiesView.on( 'listStart', ( evt, data ) => editor.execute( 'listStart', data ) );
+	}
+
+	if ( enabledProperties.reversed ) {
+		const listReversedCommand = editor.commands.get( 'listReversed' );
+
+		listPropertiesView.reversedSwitchButtonView.bind( 'isEnabled' ).to( listReversedCommand );
+		listPropertiesView.reversedSwitchButtonView.bind( 'isOn' ).to( listReversedCommand, 'value' );
+		listPropertiesView.on( 'listReversed', () => editor.execute( 'listReversed' ) );
+	}
+
+	// Make sure applying styles closes the dropdown.
+	listPropertiesView.delegate( 'execute' ).to( dropdownView );
+
+	return listPropertiesView;
 }
