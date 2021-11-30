@@ -1126,7 +1126,10 @@ describe( 'ListStyleEditing', () => {
 					return VirtualTestEditor
 						.create( {
 						// TodoListEditing is at the end by design. Check `ListStyleEditing.afterInit()` call.
-							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ]
+							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+							list: {
+								numberedProperties: { styles: true, startIndex: false, reversed: false }
+							}
 						} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -2803,6 +2806,82 @@ describe( 'ListStyleEditing', () => {
 							'<li>2.</li>' +
 						'</ol>'
 					);
+				} );
+			} );
+
+			describe( 'todo list', () => {
+				let editor, model;
+
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+							list: {
+								numberedProperties: { styles: false, startIndex: false, reversed: true }
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should not add the `listReversed` attribute while creating a todo list', () => {
+					setModelData( model, '<paragraph>Foo[]</paragraph>' );
+
+					editor.execute( 'todoList' );
+
+					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+				} );
+
+				it( 'should not add the `listReversed` attribute while switching the list type', () => {
+					setModelData( model, '<listItem listIndent="0" listType="bulleted">Foo[]</listItem>' );
+
+					editor.execute( 'todoList' );
+
+					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+				} );
+
+				it( 'should remove the `listReversed` attribute while switching the list type that uses the list style feature', () => {
+					setModelData( model, '<listItem listIndent="0" listReversed="true" listType="numbered">Foo[]</listItem>' );
+
+					editor.execute( 'todoList' );
+
+					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+				} );
+
+				it( 'should not inherit the `listReversed` attribute when inserting a todo list item', () => {
+					setModelData( model,
+						'<paragraph>Foo Bar.[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+
+					editor.execute( 'todoList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="todo">Foo Bar.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should not allow to set the `listReversed` attribute in to-do list item', () => {
+					setModelData( model, '<listItem listIndent="0" listType="todo">Foo</listItem>' );
+
+					const listItem = model.document.getRoot().getChild( 0 );
+
+					expect( listItem.hasAttribute( 'listReversed' ) ).to.be.false;
+
+					model.change( writer => {
+						writer.setAttribute( 'listReversed', true, listItem );
+					} );
+
+					expect( listItem.hasAttribute( 'listReversed' ) ).to.be.false;
 				} );
 			} );
 		} );

@@ -707,7 +707,10 @@ function removeListStyleAttributeFromTodoList( editor ) {
 		const todoListItems = getChangedListItems( editor.model.document.differ.getChanges() )
 			.filter( item => {
 				// Handle the todo lists only. The rest is handled in another post-fixer.
-				return item.getAttribute( 'listType' ) === 'todo' && item.hasAttribute( 'listStyle' );
+				return item.getAttribute( 'listType' ) === 'todo' && (
+					item.hasAttribute( 'listStyle' ) ||
+					item.hasAttribute( 'listReversed' )
+				);
 			} );
 
 		if ( !todoListItems.length ) {
@@ -716,6 +719,7 @@ function removeListStyleAttributeFromTodoList( editor ) {
 
 		for ( const item of todoListItems ) {
 			writer.removeAttribute( 'listStyle', item );
+			writer.removeAttribute( 'listReversed', item );
 		}
 
 		return true;
