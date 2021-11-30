@@ -80,7 +80,8 @@ ClassicEditor
 		list: {
 			numberedProperties: {
 				styles: true,
-				startIndex: true
+				startIndex: true,
+				reversed: false
 			}
 		}
 	} )
@@ -94,6 +95,7 @@ ClassicEditor
 		list: {
 			numberedProperties: {
 				styles: true,
+				startIndex: false,
 				reversed: true
 			}
 		}
@@ -109,6 +111,7 @@ ClassicEditor
 		...config,
 		list: {
 			numberedProperties: {
+				styles: false,
 				startIndex: true,
 				reversed: true
 			}
@@ -123,7 +126,9 @@ ClassicEditor
 		...config,
 		list: {
 			numberedProperties: {
-				startIndex: true
+				styles: false,
+				startIndex: true,
+				reversed: false
 			}
 		}
 	} )
@@ -136,6 +141,8 @@ ClassicEditor
 		...config,
 		list: {
 			numberedProperties: {
+				styles: false,
+				startIndex: false,
 				reversed: true
 			}
 		}
@@ -151,7 +158,9 @@ ClassicEditor
 		...config,
 		list: {
 			numberedProperties: {
-				styles: true
+				styles: true,
+				startIndex: false,
+				reversed: false
 			}
 		}
 	} )
