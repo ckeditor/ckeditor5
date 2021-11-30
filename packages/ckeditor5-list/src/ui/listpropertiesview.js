@@ -171,6 +171,12 @@ export default class ListPropertiesView extends View {
 				// Register the view in the focus tracker.
 				this.focusTracker.add( styleButtonView.element );
 			}
+
+			// Register the collapsible toggle button to the focus system.
+			if ( this.startIndexFieldView || this.reversedSwitchButtonView ) {
+				this.focusables.add( this.children.last.buttonView );
+				this.focusTracker.add( this.children.last.buttonView.element );
+			}
 		}
 
 		if ( this.startIndexFieldView ) {

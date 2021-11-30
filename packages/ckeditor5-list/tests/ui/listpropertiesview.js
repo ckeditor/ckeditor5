@@ -265,6 +265,7 @@ describe( 'ListPropertiesView', () => {
 					expect( view.focusables.map( f => f ) ).to.have.members( [
 						view.stylesView.children.first,
 						view.stylesView.children.last,
+						view.children.last.buttonView,
 						view.startIndexFieldView,
 						view.reversedSwitchButtonView
 					] );
@@ -290,8 +291,9 @@ describe( 'ListPropertiesView', () => {
 
 					sinon.assert.calledWithExactly( spy.getCall( 0 ), view.stylesView.children.first.element );
 					sinon.assert.calledWithExactly( spy.getCall( 1 ), view.stylesView.children.last.element );
-					sinon.assert.calledWithExactly( spy.getCall( 2 ), view.startIndexFieldView.element );
-					sinon.assert.calledWithExactly( spy.getCall( 3 ), view.reversedSwitchButtonView.element );
+					sinon.assert.calledWithExactly( spy.getCall( 2 ), view.children.last.buttonView.element );
+					sinon.assert.calledWithExactly( spy.getCall( 3 ), view.startIndexFieldView.element );
+					sinon.assert.calledWithExactly( spy.getCall( 4 ), view.reversedSwitchButtonView.element );
 
 					view.destroy();
 				} );
@@ -514,8 +516,8 @@ describe( 'ListPropertiesView', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should focus the last style button when numbered list properies are collapsed', () => {
-			const spy = sinon.spy( view.children.first.children.last, 'focus' );
+		it( 'should focus the collapse button when numbered list properies are collapsed', () => {
+			const spy = sinon.spy( view.children.last.buttonView, 'focus' );
 
 			view.children.last.isCollapsed = true;
 			view.focusLast();

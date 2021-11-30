@@ -51,7 +51,7 @@
 		background: transparent;
 		padding-left: 0;
 		padding-right: 0;
-		padding-bottom: 0;
+		margin-bottom: calc(-1 * var(--ck-spacing-tiny));
 
 		&:active, &:hover {
 			box-shadow: none;

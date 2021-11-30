@@ -28,6 +28,8 @@ export default class InputNumberView extends InputView {
 	constructor( locale, { min, max, step } = {} ) {
 		super( locale );
 
+		const bind = this.bindTemplate;
+
 		/**
 		 * The value of the `min` DOM attribute (the lowest accepted value) set on the {@link #element}.
 		 *
@@ -54,8 +56,6 @@ export default class InputNumberView extends InputView {
 		 * @member {Number} #step
 		 */
 		this.set( 'step', step );
-
-		const bind = this.bindTemplate;
 
 		this.extendTemplate( {
 			attributes: {
