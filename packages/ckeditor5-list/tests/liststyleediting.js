@@ -1509,7 +1509,10 @@ describe( 'ListStyleEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ]
+							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
+							list: {
+								numberedProperties: { styles: true, startIndex: false, reversed: false }
+							}
 						} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -1629,8 +1632,8 @@ describe( 'ListStyleEditing', () => {
 
 					pasteHtml( editor,
 						'<ul style="list-style-type: square">' +
-						'<li>Foo</li>' +
-					'</ul>'
+							'<li>Foo</li>' +
+						'</ul>'
 					);
 
 					expect( getModelData( model ) ).to.equal(
@@ -2288,16 +2291,16 @@ describe( 'ListStyleEditing', () => {
 				it( 'should inherit the reversed attribute when the modified list is the same kind of the list as next sibling', () => {
 					setModelData( model,
 						'<listItem listIndent="0" listType="bulleted">Foo Bar.[]</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
 					);
 
 					editor.execute( 'numberedList' );
 
 					expect( getModelData( model ) ).to.equal(
-						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
-						'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>'
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo Bar.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
 					);
 				} );
 
@@ -3191,6 +3194,168 @@ describe( 'ListStyleEditing', () => {
 							text: character
 						} );
 					} );
+				}
+			} );
+
+			// #8160
+			describe( 'pasting a list into another list', () => {
+				let element;
+
+				beforeEach( () => {
+					element = document.createElement( 'div' );
+					document.body.append( element );
+
+					return ClassicTestEditor
+						.create( element, {
+							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
+							list: {
+								numberedProperties: { styles: false, startIndex: false, reversed: true }
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy()
+						.then( () => {
+							element.remove();
+						} );
+				} );
+
+				it( 'should inherit attributes from the previous sibling element (collapsed selection)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">[]</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
+					);
+
+					pasteHtml( editor,
+						'<ol>' +
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ol>'
+					);
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 2[]</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">Bar</listItem>'
+					);
+				} );
+
+				it( 'should inherit attributes from the previous sibling element (non-collapsed selection)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">[Foo]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+
+					pasteHtml( editor,
+						'<ul>' +
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ul>'
+					);
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 2[]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+				} );
+
+				it( 'should inherit attributes from the previous sibling element (non-collapsed selection over a few elements)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">[Foo 1.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 2.</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 3.]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+
+					pasteHtml( editor,
+						'<ul>' +
+							'<li>Foo 1</li>' +
+							'<li>Foo 2</li>' +
+						'</ul>'
+					);
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 1</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo 2[]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+				} );
+
+				it( 'should do nothing when pasting the similar list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">[]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+
+					pasteHtml( editor,
+						'<ol reversed="reversed">' +
+							'<li>Foo</li>' +
+						'</ol>'
+					);
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo Bar</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listType="numbered">Foo[]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+				} );
+
+				it( 'should replace the entire list if selected', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">[Foo Bar]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+
+					pasteHtml( editor,
+						'<ol>' +
+							'<li>Foo</li>' +
+						'</ol>'
+					);
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">Foo[]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
+					);
+				} );
+
+				function pasteHtml( editor, html ) {
+					editor.editing.view.document.fire( 'paste', {
+						dataTransfer: createDataTransfer( { 'text/html': html } ),
+						stopPropagation() {},
+						preventDefault() {}
+					} );
+				}
+
+				function createDataTransfer( data ) {
+					return {
+						getData( type ) {
+							return data[ type ];
+						},
+						setData() {}
+					};
 				}
 			} );
 		} );

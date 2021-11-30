@@ -487,8 +487,6 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 			const itemsToUpdate = changedItems.filter( item => item.getAttribute( 'listIndent' ) === indent );
 
 			for ( const item of itemsToUpdate ) {
-				// writer.setAttribute( 'listStyle', listItem.getAttribute( 'listStyle' ), item );
-
 				for ( const strategy of attributeStrategies ) {
 					if ( strategy.appliesToListItem( item ) ) {
 						const attributeName = strategy.attributeName;
