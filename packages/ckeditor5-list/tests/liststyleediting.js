@@ -1202,7 +1202,10 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing ]
+							plugins: [ Paragraph, ListStyleEditing, Typing ],
+							list: {
+								numberedProperties: { styles: true, startIndex: false, reversed: false }
+							}
 						} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -2883,6 +2886,312 @@ describe( 'ListStyleEditing', () => {
 
 					expect( listItem.hasAttribute( 'listReversed' ) ).to.be.false;
 				} );
+			} );
+
+			describe( 'removing content between two lists', () => {
+				let editor, model;
+
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, ListStyleEditing, Typing ],
+							list: {
+								numberedProperties: { styles: false, startIndex: false, reversed: true }
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should not do anything while removing a letter inside a listItem', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2[]</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+					);
+				} );
+
+				it( 'should not do anything if there is a non-listItem before the removed content', () => {
+					setModelData( model,
+						'<paragraph>Foo</paragraph>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>Foo[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+					);
+				} );
+
+				it( 'should not do anything if there is a non-listItem after the removed content', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<paragraph>Foo</paragraph>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.[]</listItem>' +
+						'<paragraph>Foo</paragraph>'
+					);
+				} );
+
+				it( 'should not do anything if there is no element after the removed content', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+						'<paragraph>[]</paragraph>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>'
+					);
+				} );
+
+				it(
+					'should modify the the `listReversed` attribute for the merged (second) list when removing content between those lists',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<paragraph>[]</paragraph>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+						);
+
+						editor.execute( 'delete' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+						);
+					}
+				);
+
+				it( 'should read the `listReversed` attribute from the most outer list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listType="numbered">2.1.1</listItem>' +
+						'<paragraph>[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listType="numbered">2.1.1[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+					);
+				} );
+
+				it(
+					'should not modify the the `listReversed` attribute for the merged (second) list ' +
+					'if merging different `listType` attribute',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">2.</listItem>' +
+							'<paragraph>[]</paragraph>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+						);
+
+						editor.execute( 'delete' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+							'<listItem listIndent="0" listType="bulleted">2.[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should modify the the `listReversed` attribute for the merged (second) list when removing content from both lists',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">[3.</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.]</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+						);
+
+						editor.execute( 'delete' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should modify the the `listReversed` attribute for the merged (second) list when typing over content from both lists',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">[3.</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.]</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+						);
+
+						editor.execute( 'input', { text: 'Foo' } );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo[]</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>'
+						);
+					}
+				);
+
+				it(
+					'should not modify the the `listReversed` if lists were not merged but the content was partially removed',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">111.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">222.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">[333.</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1]11.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+						);
+
+						editor.execute( 'delete' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listType="numbered">111.</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">222.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">[]11.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+						);
+					}
+				);
+
+				it( 'should not do anything while typing in a list item', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2.[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+					);
+
+					const modelChangeStub = sinon.stub( model, 'change' ).callThrough();
+
+					simulateTyping( ' Foo' );
+
+					// Each character calls `editor.model.change()`.
+					expect( modelChangeStub.callCount ).to.equal( 4 );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">2. Foo[]</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">3.</listItem>' +
+						'<paragraph></paragraph>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>'
+					);
+				} );
+
+				// See: #8073.
+				it( 'should not crash when removing a content between intended lists', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="false" listType="numbered">aaaa</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">bb[bb</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listType="numbered">cc]cc</listItem>' +
+						'<listItem listIndent="3" listReversed="false" listType="numbered">dddd</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listType="numbered">aaaa</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listType="numbered">bb[]cc</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listType="numbered">dddd</listItem>'
+					);
+				} );
+
+				it(
+					'should read the `listReversed` attribute from the most outer selected list while removing content between lists',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
+							'<listItem listIndent="2" listReversed="true" listType="numbered">2.1.1[foo</listItem>' +
+							'<paragraph>Foo</paragraph>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">bar]2.</listItem>'
+						);
+
+						editor.execute( 'delete' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="false" listType="numbered">1.</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">2.1.</listItem>' +
+							'<listItem listIndent="2" listReversed="true" listType="numbered">2.1.1[]2.</listItem>'
+						);
+					}
+				);
+
+				function simulateTyping( text ) {
+				// While typing, every character is an atomic change.
+					text.split( '' ).forEach( character => {
+						editor.execute( 'input', {
+							text: character
+						} );
+					} );
+				}
 			} );
 		} );
 	} );
