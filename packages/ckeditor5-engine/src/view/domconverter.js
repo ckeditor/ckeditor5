@@ -241,9 +241,10 @@ export default class DomConverter {
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
+	 * @param {String} elementName Element name in lower case
 	 * @returns {Boolean}
 	 */
-	shouldRenderAttribute( attributeKey, attributeValue ) {
+	shouldRenderAttribute( attributeKey, attributeValue, elementName ) {
 		if ( this.renderingMode === 'data' ) {
 			return true;
 		}
@@ -259,6 +260,17 @@ export default class DomConverter {
 			attributeValue.match( /\bon\S+\s*=|javascript:|<\s*\/*script/i )
 		) {
 			return false;
+		}
+
+		if (
+			elementName === 'img' &&
+			( attributeKey === 'src' || attributeKey === 'srcset' )
+		) {
+			return true;
+		}
+
+		if ( elementName === 'source' && attributeKey === 'srcset' ) {
+			return true;
 		}
 
 		if ( attributeValue.match( /^\s*javascript:|data:(image\/svg|text\/x?html)/i ) ) {
@@ -419,7 +431,7 @@ export default class DomConverter {
 	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
 	 */
 	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
-		const shouldRenderAttribute = this.shouldRenderAttribute( key, value ) ||
+		const shouldRenderAttribute = this.shouldRenderAttribute( key, value, domElement.tagName.toLowerCase() ) ||
 			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
 
 		if ( !shouldRenderAttribute ) {
