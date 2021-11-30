@@ -319,16 +319,17 @@ export default class ListPropertiesView extends View {
 		} );
 
 		startIndexFieldView.fieldView.on( 'input', () => {
-			const value = startIndexFieldView.fieldView.element.value;
+			const inputElement = startIndexFieldView.fieldView.element;
+			const startIndex = inputElement.valueAsNumber;
 
-			if ( value !== '' ) {
-				const parsedValue = Number.parseInt( value );
+			if ( Number.isNaN( startIndex ) ) {
+				return;
+			}
 
-				if ( parsedValue < 1 ) {
-					startIndexFieldView.errorText = t( 'Start index must be greater than 0.' );
-				} else {
-					this.fire( 'listStart', { startIndex: parsedValue } );
-				}
+			if ( !inputElement.checkValidity() ) {
+				startIndexFieldView.errorText = t( 'Start index must be greater than 0.' );
+			} else {
+				this.fire( 'listStart', { startIndex } );
 			}
 		} );
 

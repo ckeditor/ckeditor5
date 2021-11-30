@@ -39,7 +39,7 @@ export default class CollapsibleView extends View {
 		 * `true` when the container with {@link #children} is collapsed. `false` otherwise.
 		 *
 		 * @observable
-		 * @member {Boolean}
+		 * @member {Boolean} #isCollapsed
 		 */
 		this.set( 'isCollapsed', false );
 
@@ -47,7 +47,7 @@ export default class CollapsibleView extends View {
 		 * The text label of the {@link #buttonView}.
 		 *
 		 * @observable
-		 * @member {String}
+		 * @member {String} #label
 		 * @default 'Show more'
 		 */
 		this.set( 'label', t( 'Show more' ) );
@@ -64,7 +64,7 @@ export default class CollapsibleView extends View {
 		 * A collection of the child views that can be collapsed by clicking the {@link #buttonView}.
 		 *
 		 * @readonly
-		 * @member {module:ui/viewcollection~ViewCollection}
+		 * @member {module:ui/viewcollection~ViewCollection} #children
 		 */
 		this.children = this.createCollection();
 
@@ -75,7 +75,7 @@ export default class CollapsibleView extends View {
 		 * @private
 		 * @readonly
 		 * @observable
-		 * @member {String}
+		 * @member {String} #_collapsibleAriaLabelUid
 		 */
 		this.set( '_collapsibleAriaLabelUid' );
 
