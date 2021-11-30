@@ -8,7 +8,6 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import MergeCellsCommand from '../../src/commands/mergecellscommand';
 import { modelTable } from '../_utils/utils';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import TableSelection from '../../src/tableselection';
 import TableEditing from '../../src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -323,7 +322,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[00</paragraph><paragraph>01]</paragraph>' } ],
 				[ '10', '11' ]
 			] ) );
@@ -341,7 +340,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ '<paragraph>[00</paragraph><paragraph>01]</paragraph>' ]
 			] ) );
 		} );
@@ -360,7 +359,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ {
 					colspan: 3,
@@ -384,7 +383,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ {
 					colspan: 3,
@@ -409,7 +408,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02', '03' ],
 				[ '10', {
 					colspan: 2,
@@ -449,7 +448,7 @@ describe( 'MergeCellsCommand', () => {
 			// +----+----+----+----+
 			// | 20 | 21 | 22 | 23 |
 			// +----+----+----+----+
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ {
 					colspan: 3,
 					rowspan: 2,
@@ -474,7 +473,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[]</paragraph>' } ],
 				[ '10', '11' ]
 			] ) );
@@ -490,7 +489,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ],
 				[ '10', '11' ]
 			] ) );
@@ -506,7 +505,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '<paragraph>[foo]</paragraph>' } ],
 				[ '10', '11' ]
 			] ) );
@@ -528,7 +527,7 @@ describe( 'MergeCellsCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ), modelTable( [
+			expect( getData( model ) ).to.equalMarkup( modelTable( [
 				[ { colspan: 2, contents: '<block>[</block><block>]</block>' } ],
 				[ '10', '11' ]
 			] ) );
@@ -550,7 +549,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[
 						'<paragraph>[00</paragraph><paragraph>10</paragraph><paragraph>20]</paragraph>'
 					]
@@ -571,7 +570,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[
 						'<paragraph>[00</paragraph><paragraph>10]</paragraph>'
 					],
@@ -623,7 +622,7 @@ describe( 'MergeCellsCommand', () => {
 				// +----+----+ <-- heading rows
 				// | 50 | 51 |
 				// +----+----+
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', { contents, rowspan: 3 } ],
 					[ '20' ],
 					[ '30' ],
@@ -669,7 +668,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[
 						{ rowspan: 2, contents: '<paragraph>[00</paragraph><paragraph>10</paragraph><paragraph>20]</paragraph>' },
 						'01',
@@ -694,7 +693,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '00', { rowspan: 2, contents: '01' } ],
 					[ '10' ],
 					[
@@ -721,7 +720,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[
 						'<paragraph>[00</paragraph><paragraph>01</paragraph><paragraph>02</paragraph>' +
 						'<paragraph>10</paragraph><paragraph>11</paragraph><paragraph>12</paragraph>' +
@@ -744,7 +743,7 @@ describe( 'MergeCellsCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[
 						'<paragraph>[00</paragraph><paragraph>01</paragraph>' +
 						'<paragraph>10</paragraph><paragraph>11</paragraph>' +

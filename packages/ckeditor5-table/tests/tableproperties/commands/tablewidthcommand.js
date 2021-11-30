@@ -65,7 +65,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has width property', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -79,7 +79,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -162,7 +162,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table width to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
 						command.execute( { value: '25px' } );
 
@@ -170,7 +170,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove width from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
 						command.execute();
 
@@ -225,13 +225,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { width: '300px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '300px' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has width property other than the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -239,13 +239,13 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { width: '300px' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '300px' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has width property other than the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableWidth: '100px' } ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -255,7 +255,7 @@ describe( 'table properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove width from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableWidth: '100px' } ) );
 
 						command.execute( { value: '300px' } );
 
@@ -265,7 +265,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove width from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ], { width: '100px' } ) );
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableWidth: '100px' } ) );
 
 						command.execute( { value: '300px' } );
 

@@ -660,6 +660,20 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
+			it( 'skips command execution on "enter" when search phrase input is dirty', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					target: view._replaceInputView.fieldView.element
+				};
+
+				const spy = sinon.spy( view._replaceButtonView, 'fire' );
+
+				view.isDirty = true;
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.notCalled( spy );
+			} );
+
 			it( 'ignores "shift+enter" when pressed somewhere else', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.enter,
