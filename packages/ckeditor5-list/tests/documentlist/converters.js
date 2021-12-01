@@ -23,8 +23,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import stubUid from './_utils/uid';
 import prepareTest from './_utils/prepare-test';
 
-describe( 'DocumentListEditing - converters', () => {
-	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
+describe.only( 'DocumentListEditing - converters', () => {
+	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot, reconvertSpy;
 
 	testUtils.createSinonSandbox();
 
@@ -1307,6 +1307,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item in the middle of same list type', () => {
@@ -1323,6 +1325,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item at the end of same list type', () => {
@@ -1337,6 +1341,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item at the beginning of different list type', () => {
@@ -1353,6 +1359,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item in the middle of different list type', () => {
@@ -1373,6 +1381,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item at the end of different list type', () => {
@@ -1389,6 +1399,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
 						'</ol>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'element between list items', () => {
@@ -1405,6 +1417,116 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'list item that is not a paragraph', () => {
+					testInsert(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<heading1 listIndent="0" listItemId="x" listType="bulleted">x</heading1>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><h2>x</h2></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'new block at the start of list item', () => {
+					testInsert(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li>' +
+								'<p>x</p>' +
+								'<p>b</p>' +
+							'</li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				} );
+
+				it( 'new block at the end of list item', () => {
+					testInsert(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li>' +
+								'<p>a</p>' +
+								'<p>x</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				} );
+
+				it( 'new block at the middle of list item', () => {
+					testInsert(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="x" listType="bulleted">x1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="x" listType="bulleted">x2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li>' +
+								'<p>x1</p>' +
+								'<p>x</p>' +
+								'<p>x2</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'new list item in the middle of list item', () => {
+					testInsert(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="x" listType="bulleted">x1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="y" listType="bulleted">y</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="x" listType="bulleted">x2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">x1</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">y</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">x2</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 2 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+					expect( reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
 				} );
 			} );
 
@@ -1422,6 +1544,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'remove list item from the middle', () => {
@@ -1437,6 +1561,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'remove the last list item', () => {
@@ -1452,6 +1578,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'remove the only list item', () => {
@@ -1463,6 +1591,8 @@ describe( 'DocumentListEditing - converters', () => {
 						'<p>p</p>' +
 						'<p>p</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'remove element from between lists of same type', () => {
@@ -1480,6 +1610,8 @@ describe( 'DocumentListEditing - converters', () => {
 						'</ul>' +
 						'<p>p</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'remove element from between lists of different type', () => {
@@ -1499,6 +1631,63 @@ describe( 'DocumentListEditing - converters', () => {
 						'</ol>' +
 						'<p>p</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'remove the first block of a list item', () => {
+					testRemove(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				} );
+
+				it( 'remove the last block of a list item', () => {
+					testRemove(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a1</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				} );
+
+				it( 'remove the middke block of a list item', () => {
+					testRemove(
+						'<paragraph>p</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a3</paragraph>',
+
+						'<p>p</p>' +
+						'<ul>' +
+							'<li>' +
+								'<p>a1</p>' +
+								'<p>a3</p>' +
+							'</li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 			} );
 
@@ -1519,6 +1708,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'change middle list item', () => {
@@ -1539,6 +1730,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'change last list item', () => {
@@ -1557,6 +1750,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ol>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'change only list item', () => {
@@ -1571,6 +1766,8 @@ describe( 'DocumentListEditing - converters', () => {
 						'</ol>' +
 						'<p>p</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'change element at the edge of two different lists #1', () => {
@@ -1589,6 +1786,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 						'</ol>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'change element at the edge of two different lists #2', () => {
@@ -1607,9 +1806,11 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'change multiple elements #1', () => {
+				it( 'change multiple elements - to other type', () => {
 					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -1627,9 +1828,11 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'change multiple elements #2', () => {
+				it( 'change multiple elements - to same type', () => {
 					testChangeType(
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -1643,6 +1846,83 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 						'</ol>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'change of the first block of a list item', () => {
+					testChangeType(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 2 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+					expect( reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				} );
+
+				it( 'change of the last block of a list item', () => {
+					testChangeType(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+						'</ul>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 2 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+					expect( reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+				} );
+
+				it( 'change of the middle block of a list item', () => {
+					testChangeType(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b1</span></li>' +
+						'</ul>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">b2</span></li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b3</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 3 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+					expect( reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
+					expect( reconvertSpy.thirdCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
 				} );
 			} );
 
@@ -1657,6 +1937,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'rename middle list item', () => {
@@ -1671,6 +1953,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'rename last list item', () => {
@@ -1683,11 +1967,137 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><h2>b</h2></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename first list item to paragraph', () => {
+					testRenameElement(
+						'[<heading1 listIndent="0" listItemId="a" listType="bulleted">a</heading1>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename middle list item to paragraph', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b</heading1>]' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename last list item to paragraph', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b</heading1>]',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename first block of list item', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li>' +
+								'<h2>b1</h2>' +
+								'<p>b2</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename last block of list item', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li>' +
+								'<p>b1</p>' +
+								'<h2>b2</h2>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename first block of list item to paragraph', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b1</heading1>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li>' +
+								'<p>b1</p>' +
+								'<p>b2</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'rename last block of list item to paragraph', () => {
+					testRenameElement(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b1</paragraph>' +
+						'[<heading1 listIndent="0" listItemId="b" listType="bulleted">b2</heading1>]' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li>' +
+								'<p>b1</p>' +
+								'<p>b2</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 			} );
 
 			describe( 'remove list item attributes', () => {
-				it( 'rename first list item', () => {
+				it( 'first list item', () => {
 					testRemoveListAttributes(
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
@@ -1697,9 +2107,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 				} );
 
-				it( 'rename middle list item', () => {
+				it( 'middle list item', () => {
 					testRemoveListAttributes(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]' +
@@ -1713,9 +2126,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
 
-				it( 'rename last list item', () => {
+				it( 'last list item', () => {
 					testRemoveListAttributes(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>]',
@@ -1725,9 +2141,12 @@ describe( 'DocumentListEditing - converters', () => {
 						'</ul>' +
 						'<p>b</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
 
-				it( 'rename only list item', () => {
+				it( 'only list item', () => {
 					testRemoveListAttributes(
 						'<paragraph>p</paragraph>' +
 						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">x</paragraph>]' +
@@ -1737,10 +2156,78 @@ describe( 'DocumentListEditing - converters', () => {
 						'<p>x</p>' +
 						'<p>p</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				} );
+
+				it( 'on non paragraph', () => {
+					testRemoveListAttributes(
+						'[<heading1 listIndent="0" listItemId="a" listType="bulleted">a</heading1>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<h2>a</h2>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				} );
+
+				it( 'first block of list item', () => {
+					testRemoveListAttributes(
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>',
+
+						'<p>a1</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a2</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				} );
+
+				it( 'last block of list item', () => {
+					testRemoveListAttributes(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>]',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a1</span></li>' +
+						'</ul>' +
+						'<p>a2</p>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				} );
+
+				it( 'middle block of list item', () => {
+					testRemoveListAttributes(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a1</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a2</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a3</paragraph>',
+
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a1</span></li>' +
+						'</ul>' +
+						'<p>a2</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a2</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 2 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
 				} );
 			} );
 
-			describe( 'set list item attributes', () => {
+			describe.only( 'set list item attributes', () => {
 				it( 'only paragraph', () => {
 					testSetListItemAttributes( 0,
 						'[<paragraph>a</paragraph>]',
@@ -1749,9 +2236,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 				} );
 
-				it( 'paragraph between paragraphs', () => {
+				it( 'on paragraph between paragraphs', () => {
 					testSetListItemAttributes( 0,
 						'<paragraph>x</paragraph>' +
 						'[<paragraph>a</paragraph>]' +
@@ -1763,9 +2253,12 @@ describe( 'DocumentListEditing - converters', () => {
 						'</ul>' +
 						'<p>x</p>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
 
-				it( 'element before list of same type', () => {
+				it( 'on element before list of same type', () => {
 					testSetListItemAttributes( 0,
 						'[<paragraph>x</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
@@ -1775,9 +2268,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 				} );
 
-				it( 'element after list of same type', () => {
+				it( 'on element after list of same type', () => {
 					testSetListItemAttributes( 0,
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph>x</paragraph>]',
@@ -1787,9 +2283,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
 
-				it( 'element before list of different type', () => {
+				it( 'on element before list of different type', () => {
 					testSetListItemAttributes( 0,
 						'[<paragraph>x</paragraph>]' +
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>',
@@ -1801,9 +2300,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ol>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
 				} );
 
-				it( 'element after list of different type', () => {
+				it( 'on element after list of different type', () => {
 					testSetListItemAttributes( 0,
 						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>' +
 						'[<paragraph>x</paragraph>]',
@@ -1815,9 +2317,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
 
-				it( 'element between lists of same type', () => {
+				it( 'on element between lists of same type', () => {
 					testSetListItemAttributes( 0,
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'[<paragraph>x</paragraph>]' +
@@ -1829,7 +2334,12 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
+
+				// TODO multi block list item
 			} );
 
 			describe( 'move', () => {
@@ -1849,6 +2359,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'out list item from list', () => {
@@ -1869,6 +2381,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'the only list item', () => {
@@ -1885,6 +2399,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item between two lists of same type', () => {
@@ -1907,6 +2423,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'list item between two lists of different type', () => {
@@ -1933,6 +2451,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 						'</ol>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
 				it( 'element between list items', () => {
@@ -1951,6 +2471,8 @@ describe( 'DocumentListEditing - converters', () => {
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>'
 					);
+
+					expect( reconvertSpy.callCount ).to.equal( 0 );
 				} );
 			} );
 		} );
@@ -5006,6 +5528,9 @@ describe( 'DocumentListEditing - converters', () => {
 		} );
 	} );
 
+	describe( 'refreshing items on data change', () => {
+	} );
+
 	describe( 'schema checking and parent splitting', () => {
 		beforeEach( () => {
 			// Since this part of test tests only view->model conversion editing pipeline is not necessary.
@@ -5180,7 +5705,7 @@ describe( 'DocumentListEditing - converters', () => {
 			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
-				writer.rename( element, 'heading1' );
+				writer.rename( element, element.name == 'paragraph' ? 'heading1' : 'paragraph' );
 			} );
 		};
 
@@ -5241,7 +5766,9 @@ describe( 'DocumentListEditing - converters', () => {
 		const modelBefore = getModelData( model );
 		const viewBefore = getViewData( view, { withoutSelection: true } );
 
+		reconvertSpy = sinon.spy( editor.editing, 'reconvertItem' );
 		actionCallback( callbackSelection );
+		reconvertSpy.restore();
 
 		expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 

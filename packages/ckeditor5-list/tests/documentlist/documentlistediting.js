@@ -939,7 +939,4 @@ describe( 'DocumentListEditing', () => {
 			);
 		} );
 	} );
-
-	describe( 'refreshing items on data change', () => {
-	} );
 } );

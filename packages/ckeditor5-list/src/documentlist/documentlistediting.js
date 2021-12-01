@@ -13,11 +13,11 @@ import { Delete } from 'ckeditor5/src/typing';
 import { CKEditorError, uid } from 'ckeditor5/src/utils';
 
 import {
-	listItemUpcastConverter,
 	listItemDowncastConverter,
+	listItemUpcastConverter,
+	listItemViewToModelLengthMapper,
 	listUpcastCleanList,
-	reconvertItemsOnDataChange,
-	listItemViewToModelLengthMapper
+	reconvertItemsOnDataChange
 } from './converters';
 import { getListItemElements } from './utils';
 
@@ -64,42 +64,46 @@ export default class DocumentListEditing extends Plugin {
 
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer ) );
 
+		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
+
+		this._setupConversion();
+		this._enableEnterHandling();
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const model = editor.model;
+		const attributes = [ 'listItemId', 'listType', 'listIndent' ];
+
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
 			.add( dispatcher => {
+				const cleanListConverter = listUpcastCleanList();
+
 				dispatcher.on( 'element:li', listItemUpcastConverter() );
-				dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
-				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
+				dispatcher.on( 'element:ul', cleanListConverter, { priority: 'high' } );
+				dispatcher.on( 'element:ol', cleanListConverter, { priority: 'high' } );
 			} );
 
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-			const converter = listItemDowncastConverter( attributes, model );
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => downcastConverters( dispatcher ) );
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher => downcastConverters( dispatcher, { dataPipeline: true } ) );
+
+		function downcastConverters( dispatcher, options = {} ) {
+			const converter = listItemDowncastConverter( attributes, model, options );
 
 			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
 
 			for ( const attributeName of attributes ) {
 				dispatcher.on( `attribute:${ attributeName }`, converter );
 			}
-		} );
-
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
-			const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-			const converter = listItemDowncastConverter( attributes, model, { dataPipeline: true } );
-
-			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
-
-			for ( const attributeName of attributes ) {
-				dispatcher.on( `attribute:${ attributeName }`, converter );
-			}
-		} );
+		}
 
 		editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
-
-		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
-
-		this._enableEnterHandling();
 	}
 
 	/**

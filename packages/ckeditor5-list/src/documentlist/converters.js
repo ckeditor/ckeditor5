@@ -23,140 +23,6 @@ import { UpcastWriter } from 'ckeditor5/src/engine';
 /**
  * TODO
  */
-export function listItemDowncastConverter( attributes, model, { dataPipeline } = {} ) {
-	const consumer = createAttributesConsumer( attributes );
-
-	return ( evt, data, conversionApi ) => {
-		const { writer, mapper, consumable } = conversionApi;
-
-		// Do not convert paragraph if it should get converted by the default converters.
-		if ( evt.name == 'insert:paragraph' ) {
-			if ( !data.item.hasAttribute( 'listItemId' ) ) {
-				return;
-			}
-
-			// TODO do not convert if paragraph has any attributes other than those from lists
-
-			const listItemElements = getAllListItemElements( data.item, model );
-
-			if ( listItemElements.length > 1 ) {
-				return;
-			}
-		}
-
-		const listItem = data.item;
-
-		// Consume attributes on the converted items.
-		if ( !consumer( listItem, consumable ) ) {
-			return;
-		}
-
-		let viewElement = mapper.toViewElement( listItem );
-		let viewRange;
-
-		const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
-
-		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		// Also, verify if the element is still in the same root.
-		viewRange = viewElement && viewElement.root == viewPosition.root ?
-			mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed() :
-			null;
-
-		// But verify if this is a range for the same element (in case the original element was removed).
-		viewElement = viewRange && viewRange.containsRange( writer.createRangeOn( viewElement ), true ) ?
-			viewRange.getContainedElement() :
-			null;
-
-		if ( viewElement ) {
-			// First, unwrap the item from current list wrappers.
-			let attributeElement = viewElement.parent;
-
-			while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
-				const parentElement = attributeElement.parent;
-
-				// Make a clone of an attribute element that only includes properties of generic list (i.e., without list styles).
-				const element = writer.createAttributeElement( attributeElement.name, null, {
-					priority: attributeElement.priority,
-					id: attributeElement.id
-				} );
-
-				writer.unwrap( writer.createRangeOn( viewElement ), element );
-
-				attributeElement = parentElement;
-			}
-
-			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-			viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
-		}
-		else if ( evt.name == 'insert:paragraph' ) {
-			if ( !consumable.consume( data.item, evt.name ) ) {
-				return;
-			}
-
-			const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
-			const viewPosition = mapper.toViewPosition( data.range.start );
-
-			mapper.bindElements( data.item, paragraphElement );
-			writer.insert( viewPosition, paragraphElement );
-
-			conversionApi.convertChildren( data.item );
-
-			if ( dataPipeline ) {
-				// Unwrap paragraph content from bogus paragraph.
-				viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
-
-				writer.remove( paragraphElement );
-				mapper.unbindViewElement( paragraphElement );
-			} else {
-				viewRange = writer.createRangeOn( paragraphElement );
-			}
-		}
-
-		// Then wrap them with the new list wrappers.
-		const listItemIndent = listItem.getAttribute( 'listIndent' );
-
-		if ( listItemIndent === null ) {
-			return;
-		}
-
-		let listItemId = listItem.getAttribute( 'listItemId' );
-		let listType = listItem.getAttribute( 'listType' );
-		let currentListItem = listItem;
-
-		for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-			const listItemViewElement = createListItemElement( writer, indent, listItemId );
-			const listViewElement = createListElement( writer, indent, listType );
-
-			if ( dataPipeline ) {
-				listItemViewElement.getFillerOffset = getListItemFillerOffset;
-			}
-
-			viewRange = writer.wrap( viewRange, listItemViewElement );
-			viewRange = writer.wrap( viewRange, listViewElement );
-
-			if ( indent == 0 ) {
-				break;
-			}
-
-			currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
-
-			// There is no list item with smaller indent, this is most probably copied part of nested list
-			// so we don't need to try to wrap it further.
-			if ( !currentListItem ) {
-				break;
-			}
-
-			listItemId = currentListItem.getAttribute( 'listItemId' );
-			listType = currentListItem.getAttribute( 'listType' );
-		}
-	};
-}
-
-/**
- * TODO
- */
 export function listItemUpcastConverter() {
 	return ( evt, data, conversionApi ) => {
 		const { writer, schema } = conversionApi;
@@ -228,6 +94,7 @@ export function listUpcastCleanList() {
 export function reconvertItemsOnDataChange( model, editing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
+		const itemsToRefresh = new Set();
 
 		for ( const entry of changes ) {
 			let position = null;
@@ -251,16 +118,16 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				const item = changedListItem;
 
 				if ( entry.attributeNewValue === null || entry.attributeOldValue === null ) {
-					editing.reconvertItem( item );
+					itemsToRefresh.add( item );
 					// @if CK_DEBUG // console.log( 'Refresh item (no list)', item.childCount ? item.getChild( 0 ).data : item );
 				}
 			}
 
-			if ( !changedListItem || !changedListItem.is( 'element' ) || !changedListItem.hasAttribute( 'listItemId' ) ) {
+			if ( !changedListItem || !changedListItem.hasAttribute( 'listItemId' ) ) {
 				continue;
 			}
 
-			if ( !followingListItem || !followingListItem.is( 'element' ) || !followingListItem.hasAttribute( 'listItemId' ) ) {
+			if ( !followingListItem || !followingListItem.hasAttribute( 'listItemId' ) ) {
 				continue;
 			}
 
@@ -276,11 +143,11 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				const viewElement = item ? editing.mapper.toViewElement( item ) : null;
 
 				if ( viewElement ) {
-					if ( items.length == 1 && !viewElement.is( 'element', 'span' ) ) {
-						editing.reconvertItem( item );
+					if ( items.length == 1 && viewElement.is( 'element', 'p' ) ) {
+						itemsToRefresh.add( item );
 						// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
 					} else if ( items.length > 1 && viewElement.is( 'element', 'span' ) ) {
-						editing.reconvertItem( item );
+						itemsToRefresh.add( item );
 						// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
 					}
 				}
@@ -312,9 +179,13 @@ export function reconvertItemsOnDataChange( model, editing ) {
 					continue;
 				}
 
-				editing.reconvertItem( currentNode );
+				itemsToRefresh.add( currentNode );
 				// @if CK_DEBUG // console.log( 'Refresh item', currentNode.childCount ? currentNode.getChild( 0 ).data : currentNode );
 			}
+		}
+
+		for ( const item of itemsToRefresh ) {
+			editing.reconvertItem( item );
 		}
 	};
 }
@@ -364,6 +235,164 @@ export function listItemViewToModelLengthMapper( mapper, schema ) {
 	return getViewListItemModelLength;
 }
 
+/**
+ * TODO
+ */
+export function listItemDowncastConverter( attributes, model, { dataPipeline } ) {
+	const consumer = createAttributesConsumer( attributes );
+
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper, consumable } = conversionApi;
+
+		// Do not convert paragraph if it should get converted by the default converters.
+		if ( evt.name == 'insert:paragraph' && !shouldUseBogusParagraph( data.item, model ) ) {
+			return;
+		}
+
+		const listItem = data.item;
+
+		// Consume attributes on the converted items.
+		if ( !consumer( listItem, consumable ) ) {
+			return;
+		}
+
+		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+		let { viewElement, viewRange } = findMappedViewElementAndRange( listItem, mapper, model, writer );
+
+		if ( viewElement ) {
+			// First, unwrap the item from current list wrappers.
+			unwrapListItemBlock( viewElement, writer );
+
+			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+			viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+		}
+
+		// Convert the bogus paragraph (if wasn't already skipped at the beginning of this function).
+		if ( evt.name == 'insert:paragraph' ) {
+			viewRange = convertBogusParagraph( data, conversionApi, { dataPipeline } );
+		}
+
+		// Then wrap them with the new list wrappers.
+		wrapListItemBlock( listItem, viewRange, writer, { dataPipeline } );
+	};
+}
+
+// TODO
+function findMappedViewElementAndRange( listItem, mapper, model, viewWriter ) {
+	const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
+	let viewElement = mapper.toViewElement( listItem );
+	let viewRange = null;
+
+	// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+	// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+	// Also, verify if the element is still in the same root.
+	if ( viewElement && viewElement.root == viewPosition.root ) {
+		viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+	}
+
+	// But verify if this is a range for the same element (in case the original element was removed).
+	if ( viewRange && viewRange.containsRange( viewWriter.createRangeOn( viewElement ), true ) ) {
+		viewElement = viewRange.getContainedElement();
+	} else {
+		viewElement = null;
+	}
+
+	return {
+		viewElement,
+		viewRange
+	};
+}
+
+// TODO
+function unwrapListItemBlock( viewElement, viewWriter ) {
+	let attributeElement = viewElement.parent;
+
+	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
+		const parentElement = attributeElement.parent;
+
+		// Make a clone of an attribute element that only includes properties of generic list (i.e., without list styles).
+		const element = viewWriter.createAttributeElement( attributeElement.name, null, {
+			priority: attributeElement.priority,
+			id: attributeElement.id
+		} );
+
+		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), element );
+
+		attributeElement = parentElement;
+	}
+}
+
+// TODO
+function wrapListItemBlock( listItem, viewRange, writer, { dataPipeline } ) {
+	if ( !listItem.hasAttribute( 'listIndent' ) ) {
+		return;
+	}
+
+	const listItemIndent = listItem.getAttribute( 'listIndent' );
+	let listItemId = listItem.getAttribute( 'listItemId' );
+	let listType = listItem.getAttribute( 'listType' );
+
+	let currentListItem = listItem;
+
+	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
+		const listItemViewElement = createListItemElement( writer, indent, listItemId );
+		const listViewElement = createListElement( writer, indent, listType );
+
+		if ( dataPipeline ) {
+			listItemViewElement.getFillerOffset = getListItemFillerOffset;
+		}
+
+		viewRange = writer.wrap( viewRange, listItemViewElement );
+		viewRange = writer.wrap( viewRange, listViewElement );
+
+		if ( indent == 0 ) {
+			break;
+		}
+
+		currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
+
+		// There is no list item with smaller indent, this is most probably copied part of nested list
+		// so we don't need to try to wrap it further.
+		if ( !currentListItem ) {
+			break;
+		}
+
+		listItemId = currentListItem.getAttribute( 'listItemId' );
+		listType = currentListItem.getAttribute( 'listType' );
+	}
+}
+
+// TODO
+function convertBogusParagraph( data, conversionApi, { dataPipeline } ) {
+	const { consumable, writer, mapper } = conversionApi;
+
+	if ( !consumable.consume( data.item, 'insert:paragraph' ) ) {
+		return;
+	}
+
+	const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
+	const viewPosition = mapper.toViewPosition( data.range.start );
+
+	mapper.bindElements( data.item, paragraphElement );
+	writer.insert( viewPosition, paragraphElement );
+
+	conversionApi.convertChildren( data.item );
+
+	if ( !dataPipeline ) {
+		return writer.createRangeOn( paragraphElement );
+	}
+
+	// Unwrap paragraph content from bogus paragraph.
+	const viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
+
+	writer.remove( paragraphElement );
+	mapper.unbindViewElement( paragraphElement );
+
+	return viewRange;
+}
+
 // TODO
 function createAttributesConsumer( attributes ) {
 	return ( node, consumable, options = {} ) => {
@@ -405,4 +434,21 @@ function getListItemFillerOffset() {
 
 	// Render block filler at the end of element (after all ui elements).
 	return this.childCount;
+}
+
+// TODO
+function shouldUseBogusParagraph( element, model ) {
+	if ( !element.hasAttribute( 'listItemId' ) ) {
+		return false;
+	}
+
+	// TODO do not convert if paragraph has any attributes other than those from lists
+
+	const listItemElements = getAllListItemElements( element, model );
+
+	if ( listItemElements.length > 1 ) {
+		return false;
+	}
+
+	return true;
 }
