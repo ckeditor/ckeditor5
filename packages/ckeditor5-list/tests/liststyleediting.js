@@ -26,7 +26,31 @@ describe( 'ListStyleEditing', () => {
 		expect( ListStyleEditing.pluginName ).to.equal( 'ListStyleEditing' );
 	} );
 
-	// TODO: default config
+	describe( 'config', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ ListStyleEditing ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		it( 'should have default values', () => {
+			expect( editor.config.get( 'list' ) ).to.deep.equal( {
+				numberedProperties: {
+					styles: true,
+					startIndex: false,
+					reversed: false
+				}
+			} );
+		} );
+	} );
 
 	describe( 'listStyle', () => {
 		beforeEach( () => {
