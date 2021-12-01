@@ -258,11 +258,11 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } )
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		let { viewElement, viewRange } = findMappedViewElementAndRange( listItem, mapper, model, writer );
+		let viewRange = findMappedViewRange( listItem, mapper, model, writer );
 
-		if ( viewElement ) {
+		if ( viewRange ) {
 			// First, unwrap the item from current list wrappers.
-			unwrapListItemBlock( viewElement, writer );
+			unwrapListItemBlock( viewRange.getContainedElement(), writer );
 
 			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
@@ -280,29 +280,30 @@ export function listItemDowncastConverter( attributes, model, { dataPipeline } )
 }
 
 // TODO
-function findMappedViewElementAndRange( listItem, mapper, model, viewWriter ) {
+function findMappedViewRange( listItem, mapper, model, viewWriter ) {
 	const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
-	let viewElement = mapper.toViewElement( listItem );
-	let viewRange = null;
+	const viewElement = mapper.toViewElement( listItem );
+
+	// There is no mapping for a given model element.
+	if ( !viewElement ) {
+		return null;
+	}
+
+	// Verify if the element is still in the same root (it could be removed).
+	if ( viewElement.root != viewPosition.root ) {
+		return null;
+	}
 
 	// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 	// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-	// Also, verify if the element is still in the same root.
-	if ( viewElement && viewElement.root == viewPosition.root ) {
-		viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+	const viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+
+	// Verify if this is a range for the same element (in case the original element was removed).
+	if ( !viewRange.containsRange( viewWriter.createRangeOn( viewElement ), true ) ) {
+		return null;
 	}
 
-	// But verify if this is a range for the same element (in case the original element was removed).
-	if ( viewRange && viewRange.containsRange( viewWriter.createRangeOn( viewElement ), true ) ) {
-		viewElement = viewRange.getContainedElement();
-	} else {
-		viewElement = null;
-	}
-
-	return {
-		viewElement,
-		viewRange
-	};
+	return viewRange;
 }
 
 // TODO

@@ -88,6 +88,66 @@ describe.only( 'DocumentListEditing - converters', () => {
 				);
 			} );
 
+			it( 'single multi-block item', () => {
+				testData(
+					'<ul>' +
+						'<li>' +
+							'<p>a</p>' +
+							'<p>b</p>' +
+						'</li>' +
+					'</ul>',
+
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>'
+				);
+			} );
+
+			it( 'multiple multi-block items', () => {
+				testData(
+					'<ul>' +
+						'<li>' +
+							'<p>a</p>' +
+							'<p>b</p>' +
+						'</li>' +
+						'<li>' +
+							'<p>c</p>' +
+							'<p>d</p>' +
+						'</li>' +
+					'</ul>',
+
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">d</paragraph>'
+				);
+			} );
+
+			it( 'multiple multi-block items (more than 2)', () => {
+				testData(
+					'<ul>' +
+						'<li>' +
+							'<p>a</p>' +
+							'<p>b</p>' +
+							'<p>c</p>' +
+						'</li>' +
+						'<li>' +
+							'<p>d</p>' +
+							'<p>e</p>' +
+							'<p>f</p>' +
+							'<p>g</p>' +
+						'</li>' +
+					'</ul>',
+
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">d</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">e</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">g</paragraph>'
+				);
+			} );
+
 			it( 'multiple items with leading space in first', () => {
 				testData(
 					'<ul>' +
@@ -2227,7 +2287,7 @@ describe.only( 'DocumentListEditing - converters', () => {
 				} );
 			} );
 
-			describe.only( 'set list item attributes', () => {
+			describe( 'set list item attributes', () => {
 				it( 'only paragraph', () => {
 					testSetListItemAttributes( 0,
 						'[<paragraph>a</paragraph>]',
@@ -2339,7 +2399,43 @@ describe.only( 'DocumentListEditing - converters', () => {
 					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				} );
 
-				// TODO multi block list item
+				it( 'before list item with the same id', () => {
+					testSetListItemAttributes( 0,
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="x" listType="bulleted">a</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<ul>' +
+							'<li>' +
+								'<p>x</p>' +
+								'<p>a</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+				} );
+
+				it( 'after list item with the same id', () => {
+					testSetListItemAttributes( 0,
+						'<paragraph listIndent="0" listItemId="x" listType="bulleted">a</paragraph>' +
+						'[<paragraph>x</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>',
+
+						'<ul>' +
+							'<li>' +
+								'<p>a</p>' +
+								'<p>x</p>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>'
+					);
+
+					expect( reconvertSpy.callCount ).to.equal( 1 );
+					expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				} );
 			} );
 
 			describe( 'move', () => {
