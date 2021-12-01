@@ -12,18 +12,18 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
-"Language: es\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Uzbek (https://www.transifex.com/ckeditor/teams/11143/uz/)\n"
+"Language: uz\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "The label used by assistive technologies describing a toolbar attached to a widget."
 msgid "Widget toolbar"
-msgstr "Barra de herramientas del widget"
+msgstr "Vidjet asboblar paneli"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph before a block."
 msgid "Insert paragraph before block"
-msgstr "Insertar párrafo antes del bloque"
+msgstr "Blokdan oldin paragrafni kiritish"
 
 msgctxt "The title displayed when a mouse is over a button that inserts a paragraph after a block."
 msgid "Insert paragraph after block"
-msgstr "Insertar párrafo después del bloque"
+msgstr "Вblokdan keyin paragraf qo'yish"

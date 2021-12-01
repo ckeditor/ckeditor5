@@ -12,14 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Inserir bloco de código"
-
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Texto sem formatação"
+msgctxt "A label describing an HTML object widget."
+msgid "HTML object"
+msgstr "Objeto HTML"

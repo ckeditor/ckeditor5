@@ -12,34 +12,34 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the HTML embed feature."
 msgid "Insert HTML"
-msgstr "Inserir HTML"
+msgstr "輸入HTML"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr "Trecho HTML"
+msgstr "HTML標籤"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr "Cole o HTML puro aqui"
+msgstr "在此貼上純HTML"
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"
-msgstr "Editar código"
+msgstr "編輯HTML"
 
 msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
 msgid "Save changes"
-msgstr "Salvar alterações"
+msgstr "儲存變更"
 
 msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
 msgid "No preview available"
-msgstr "Nenhuma visualização disponível"
+msgstr "無法顯示預覽"
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr "Trecho sem conteúdo"
+msgstr "HTML標籤中無內容"

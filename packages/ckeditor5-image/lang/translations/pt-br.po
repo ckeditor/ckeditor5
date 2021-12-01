@@ -22,15 +22,15 @@ msgstr "Ferramenta de imagem"
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Texto ao redor"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
-msgstr ""
+msgstr "Quebrar texto"
 
 msgctxt "The label for the image style button that places the image inside the line of text."
 msgid "In line"
-msgstr ""
+msgstr "Na linha"
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
@@ -110,4 +110,4 @@ msgstr "Inserir imagem via URL"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "Atualizar URL da imagem"

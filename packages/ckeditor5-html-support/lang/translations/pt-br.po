@@ -16,10 +16,6 @@ msgstr ""
 "Language: pt_BR\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Inserir bloco de código"
-
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Texto sem formatação"
+msgctxt "A label describing an HTML object widget."
+msgid "HTML object"
+msgstr "Objeto HTML"

@@ -12,14 +12,14 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Uzbek (https://www.transifex.com/ckeditor/teams/11143/uz/)\n"
+"Language: uz\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Inserir bloco de código"
+msgctxt "Toolbar button tooltip for the increase indentation feature."
+msgid "Increase indent"
+msgstr "chekinishni oshirish"
 
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Texto sem formatação"
+msgctxt "Toolbar button tooltip for the decrease indentation feature."
+msgid "Decrease indent"
+msgstr "chekinishni kamaytirish"

@@ -12,34 +12,34 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Uzbek (https://www.transifex.com/ckeditor/teams/11143/uz/)\n"
+"Language: uz\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 msgctxt "Toolbar button tooltip for the HTML embed feature."
 msgid "Insert HTML"
-msgstr "Inserir HTML"
+msgstr "HTML kiritish"
 
 msgctxt "The HTML snippet."
 msgid "HTML snippet"
-msgstr "Trecho HTML"
+msgstr "HTML snippet"
 
 msgctxt "A placeholder that will be displayed in the raw HTML textarea field."
 msgid "Paste raw HTML here..."
-msgstr "Cole o HTML puro aqui"
+msgstr "HTML kodini shu yerga joylashtiring..."
 
 msgctxt "A label of a button that switches the HTML embed to the source editing mode."
 msgid "Edit source"
-msgstr "Editar código"
+msgstr "Kodni o'zgartirish"
 
 msgctxt "A label of a button that saves the HTML embed content and navigates back to the preview."
 msgid "Save changes"
-msgstr "Salvar alterações"
+msgstr "O'zgarishlarni saqlash"
 
 msgctxt "An information displayed in the HTML embed preview if the content is not previewable."
 msgid "No preview available"
-msgstr "Nenhuma visualização disponível"
+msgstr ""
 
 msgctxt "An information displayed in the HTML embed preview if the HTML snippet has no content."
 msgid "Empty snippet content"
-msgstr "Trecho sem conteúdo"
+msgstr ""

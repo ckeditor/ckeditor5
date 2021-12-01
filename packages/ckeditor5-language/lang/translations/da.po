@@ -12,14 +12,18 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Portuguese (Brazil) (https://www.transifex.com/ckeditor/teams/11143/pt_BR/)\n"
-"Language: pt_BR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language-Team: Danish (https://www.transifex.com/ckeditor/teams/11143/da/)\n"
+"Language: da\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "A label of the button that allows inserting a new code block into the editor content."
-msgid "Insert code block"
-msgstr "Inserir bloco de código"
+msgctxt "Toolbar button tooltip for the text part language feature."
+msgid "Language"
+msgstr "Sprog"
 
-msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
-msgid "Plain text"
-msgstr "Texto sem formatação"
+msgctxt "Default label for the text part language dropdown."
+msgid "Choose language"
+msgstr "Vælg sprog"
+
+msgctxt "The label of the remove language option for the text part language dropdown."
+msgid "Remove language"
+msgstr "Fjern sprog"
