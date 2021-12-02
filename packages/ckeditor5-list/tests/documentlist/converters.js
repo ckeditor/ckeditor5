@@ -3209,6 +3209,32 @@ describe.only( 'DocumentListEditing - converters', () => {
 				);
 			} );
 
+			it( 'bullet list simple structure multiple blocks per item', () => {
+				testData(
+					'<p>foo</p>' +
+					'<ul>' +
+						'<li>' +
+							'<p>1</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1.1a</p>' +
+									'<p>1.1b</p>' +
+								'</li>' +
+							'</ul>' +
+							'<p>1a</p>' +
+						'</li>' +
+					'</ul>' +
+					'<p>bar</p>',
+
+					'<paragraph>foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">1a</paragraph>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
 			it( 'bullet list deep structure', () => {
 				testData(
 					'<p>foo</p>' +
@@ -4025,6 +4051,34 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>'
 						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
+					} );
+
+					it( 'after smaller indent (multi block)', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">xa</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">xb</paragraph>]',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1a</p>' +
+									'<p>1b</p>' +
+									'<ul>' +
+										'<li>' +
+											'<p>xa</p>' +
+											'<p>xb</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
 					} );
 
 					it( 'after smaller indent, before same indent', () => {
@@ -4045,6 +4099,40 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>'
 						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
+					} );
+
+					it( 'after smaller indent, before same indent (multi block)', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">xa</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">xb</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1b</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1a</p>' +
+									'<p>1b</p>' +
+									'<ul>' +
+										'<li>' +
+											'<p>xa</p>' +
+											'<p>xb</p>' +
+										'</li>' +
+										'<li>' +
+											'<p>1.1a</p>' +
+											'<p>1.1b</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
 					} );
 
 					it( 'after smaller indent, before smaller indent', () => {
@@ -4065,6 +4153,40 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'<li><span class="ck-list-bogus-paragraph">2</span></li>' +
 							'</ul>'
 						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
+					} );
+
+					it( 'after smaller indent, before smaller indent (multi block)', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="b" listType="bulleted">xa</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">xb</paragraph>]' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">2a</paragraph>' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">2b</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1a</p>' +
+									'<p>1b</p>' +
+									'<ul>' +
+										'<li>' +
+											'<p>xa</p>' +
+											'<p>xb</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>' +
+									'<p>2a</p>' +
+									'<p>2b</p>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
 					} );
 
 					it( 'after same indent', () => {
@@ -4085,6 +4207,40 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>'
 						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
+					} );
+
+					it( 'after same indent (multi block)', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1b</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1b</paragraph>' +
+							'[<paragraph listIndent="1" listItemId="c" listType="bulleted">xa</paragraph>' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">xb</paragraph>]',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1a</p>' +
+									'<p>1b</p>' +
+									'<ul>' +
+										'<li>' +
+											'<p>1.1a</p>' +
+											'<p>1.1b</p>' +
+										'</li>' +
+										'<li>' +
+											'<p>xa</p>' +
+											'<p>xb</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 0 );
 					} );
 
 					it( 'after same indent, before bigger indent', () => {
@@ -4105,6 +4261,43 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>'
 						);
+
+						expect( reconvertSpy.callCount ).to.equal( 1 );
+						expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+					} );
+
+					it( 'after same indent, before bigger indent (multi block)', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1b</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="b" listType="bulleted">xa</paragraph>' +
+							'<paragraph listIndent="0" listItemId="b" listType="bulleted">xb</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1a</paragraph>' +
+							'<paragraph listIndent="1" listItemId="c" listType="bulleted">1.1b</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1a</p>' +
+									'<p>1b</p>' +
+								'</li>' +
+								'<li>' +
+									'<p>xa</p>' +
+									'<p>xb</p>' +
+									'<ul>' +
+										'<li>' +
+											'<p>1.1a</p>' +
+											'<p>1.1b</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 2 );
+						expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 5 ) );
+						expect( reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 6 ) );
 					} );
 
 					it( 'after bigger indent, before bigger indent', () => {
@@ -4131,6 +4324,49 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>'
 						);
+
+						expect( reconvertSpy.callCount ).to.equal( 1 );
+						expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 4 ) )
+					} );
+
+					it( 'after bigger indent, before bigger indent( multi block)', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">1.1</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="c" listType="bulleted">x</paragraph>' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">1.2</paragraph>' +
+							'<paragraph listIndent="1" listItemId="d" listType="bulleted">1.2</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<span class="ck-list-bogus-paragraph">1</span>' +
+									'<ul>' +
+										'<li>' +
+											'<p>1.1</p>' +
+											'<p>1.1</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+								'<li>' +
+									'<p>x</p>' +
+									'<p>x</p>' +
+									'<ul>' +
+										'<li>' +
+											'<p>1.2</p>' +
+											'<p>1.2</p>' +
+										'</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 2 );
+						expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 6 ) );
+						expect( reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 7 ) );
 					} );
 
 					it( 'list items with too big indent', () => {
@@ -4163,6 +4399,29 @@ describe.only( 'DocumentListEditing - converters', () => {
 								'</li>' +
 							'</ul>'
 						);
+					} );
+
+					it( 'additional block before bigger indent', () => {
+						testInsert(
+							'<paragraph>p</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+							'[<paragraph listIndent="0" listItemId="a" listType="bulleted">x</paragraph>]' +
+							'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>',
+
+							'<p>p</p>' +
+							'<ul>' +
+								'<li>' +
+									'<p>1</p>' +
+									'<p>x</p>' +
+									'<ul>' +
+										'<li><span class="ck-list-bogus-paragraph">2</span></li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>'
+						);
+
+						expect( reconvertSpy.callCount ).to.equal( 1 );
+						expect( reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 					} );
 				} );
 
