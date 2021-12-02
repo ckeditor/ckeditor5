@@ -20,6 +20,8 @@ import { debounce } from 'lodash-es';
  * {@link module:engine/view/document~Document#event:selectionChange} event only if a selection change was the only change in the document
  * and the DOM selection is different then the view selection.
  *
+ * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
+ *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
@@ -78,7 +80,25 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 
+		/**
+		 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
+		 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
+		 * possible infinite selection loop.
+		 *
+		 * @private
+		 * @member {Number} #_clearInfiniteLoopInterval
+		 */
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
+
+		/**
+		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
+		 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
+		 * after a certain period of time (debounced, postponed by each selectionchange event).
+		 *
+		 * @private
+		 * @method #_documentIsSelectingInactivityTimeoutDebounced
+		 */
+		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
 		/**
 		 * Private property to check if the code does not enter infinite loop.
@@ -95,13 +115,39 @@ export default class SelectionObserver extends Observer {
 	observe( domElement ) {
 		const domDocument = domElement.ownerDocument;
 
-		// Add listener once per each document.
+		const startDocumentIsSelecting = () => {
+			this.document.isSelecting = true;
+
+			// Let's activate the safety timeout each time the document enters the "is selecting" state.
+			this._documentIsSelectingInactivityTimeoutDebounced();
+		};
+
+		const endDocumentIsSelecting = () => {
+			this.document.isSelecting = false;
+
+			// The safety timeout can be canceled when the document leaves the "is selecting" state.
+			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
+		};
+
+		// The document has the "is selecting" state while the user keeps making (extending) the selection
+		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
+		// the mouse button or interrupted the process by pressing or releasing any key.
+		this.listenTo( domElement, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
+
+		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
 
+		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
+
+			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
+			// using their mouse).
+			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
 
 		this._documents.add( domDocument );
@@ -115,6 +161,7 @@ export default class SelectionObserver extends Observer {
 
 		clearInterval( this._clearInfiniteLoopInterval );
 		this._fireSelectionChangeDoneDebounced.cancel();
+		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
 	/**

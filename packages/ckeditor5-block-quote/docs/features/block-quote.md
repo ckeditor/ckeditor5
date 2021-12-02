@@ -2,16 +2,31 @@
 category: features
 menu-title: Block quote
 ---
+{@snippet features/block-quote-source}
 
 # Block quote
 
-The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. This provides an attractive way to draw the readers' attention to selected parts of text. It also helps organize the content in a structured, elegant way and to manage the flow better.
+The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easily include block quotations or pull quotes in the rich-text content. A block quote may be used to refer to what other authors said, support your idea or present different points of view that may not necessarily be in line with the document you write, but should be included.
+
+The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
 
 ## Demo
 
-Use the editor below to see the block quote plugin in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
+Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Insert block quote} in the editor below to see the feature in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
 
 {@snippet features/block-quote}
+
+## Nested block quotes
+
+Starting from version 27.1.0, CKEditor 5 will properly display a block quote nested in another block quote. This sort of structure is indispensable in email editors or discussion forums. The ability to cite previous messages and preserve a correct quotation structure is often crucial to maintain the flow of communication. Nested block quotes may also prove useful for scientific or academic papers, but articles citing sources and referring to previous writing would often use it, too.
+
+Support for nested block quotes is provided as backward compatibility for loading pre-existing content, for example created in CKEditor 4. Additionally, pasting content with nested block quotes is supported. You can also nest a block quote in another block quote using the {@link features/drag-drop drag and drop} mechanism &mdash; just select an existing block quote and drag it into another.
+
+{@snippet features/nested-block-quote}
+
+<info-box>
+	If you would want to block the possibility to nest block quotes in your editor, refer to the {@link features/block-quote#disallow-nesting-block-quotes Disallow nesting block quotes} section to learn how to disable this functionality.
+</info-box>
 
 ## Related features
 
@@ -46,6 +61,39 @@ ClassicEditor
 
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
+
+## Configuration
+
+### Disallow nesting block quotes
+
+By default, the editor supports inserting a block quote into another block quote.
+
+In order to disallow nesting block quotes, you need to register an additional schema rule. It needs to be added before the data is loaded into the editor, hence it is best to implement it as a plugin:
+
+```js
+function DisallowNestingBlockQuotes( editor ) {
+	editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+		if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
+			return false;
+		}
+	} );
+}
+
+// Pass it via config.extraPlugins or config.plugins:
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		extraPlugins: [ DisallowNestingBlockQuotes ],
+
+		// The rest of the configuration.
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+<info-box>
+	Check the {@link framework/guides/creating-simple-plugin plugin development guide} if you need more information about the technical side of this solution.
 </info-box>
 
 ## Common API

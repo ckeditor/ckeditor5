@@ -25,7 +25,7 @@ export default class StylesMap {
 		 * Keeps an internal representation of styles map. Normalized styles are kept as object tree to allow unified modification and
 		 * value access model using lodash's get, set, unset, etc methods.
 		 *
-		 * When no style processor rules are defined the it acts as simple key-value storage.
+		 * When no style processor rules are defined it acts as simple key-value storage.
 		 *
 		 * @private
 		 * @type {Object}
@@ -44,7 +44,7 @@ export default class StylesMap {
 	/**
 	 * Returns true if style map has no styles set.
 	 *
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get isEmpty() {
 		const entries = Object.entries( this._styles );
@@ -350,13 +350,26 @@ export default class StylesMap {
 	}
 
 	/**
-	 * Returns style property names as they would appear when using {@link #toString `#toString()`}.
+	 * Returns all style properties names as they would appear when using {@link #toString `#toString()`}.
 	 *
+	 * When `expand` is set to true and there's a shorthand style property set, it will also return all equivalent styles:
+	 *
+	 * 		stylesMap.setTo( 'margin: 1em' )
+	 *
+	 * will be expanded to:
+	 *
+	 * 		[ 'margin', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left' ]
+	 *
+	 * @param {Boolean} [expand=false] Expand shorthand style properties and all return equivalent style representations.
 	 * @returns {Array.<String>}
 	 */
-	getStyleNames() {
+	getStyleNames( expand = false ) {
 		if ( this.isEmpty ) {
 			return [];
+		}
+
+		if ( expand ) {
+			return this._styleProcessor.getStyleNames( this._styles );
 		}
 
 		const entries = this._getStylesEntries();
@@ -540,7 +553,6 @@ export class StylesProcessor {
 	 *
 	 * **Note**: To define reducer callbacks use {@link #setReducer}.
 	 *
-	 * @param {String} name
 	 * @param {String} name Name of style property.
 	 * @param {Object} styles Object holding normalized styles.
 	 * @returns {Array.<module:engine/view/stylesmap~PropertyDescriptor>}
@@ -560,6 +572,34 @@ export class StylesProcessor {
 		}
 
 		return [ [ name, normalizedValue ] ];
+	}
+
+	/**
+	 * Return all style properties. Also expand shorthand properties (e.g. `margin`, `background`) if respective extractor is available.
+	 *
+	 * @param {Object} styles Object holding normalized styles.
+	 * @returns {Array.<String>}
+	 */
+	getStyleNames( styles ) {
+		// Find all extractable styles that have a value.
+		const expandedStyleNames = Array.from( this._consumables.keys() ).filter( name => {
+			const style = this.getNormalized( name, styles );
+
+			if ( style && typeof style == 'object' ) {
+				return Object.keys( style ).length;
+			}
+
+			return style;
+		} );
+
+		// For simple styles (for example `color`) we don't have a map of those styles
+		// but they are 1 to 1 with normalized object keys.
+		const styleNamesKeysSet = new Set( [
+			...expandedStyleNames,
+			...Object.keys( styles )
+		] );
+
+		return Array.from( styleNamesKeysSet.values() );
 	}
 
 	/**

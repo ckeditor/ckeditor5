@@ -10,6 +10,7 @@ import DragDrop from '../src/dragdrop';
 import PastePlainText from '../src/pasteplaintext';
 
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import WidgetToolbarRepository from '@ckeditor/ckeditor5-widget/src/widgettoolbarrepository';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -769,6 +770,38 @@ describe( 'Drag and Drop', () => {
 				expect( spyClipboardOutput.notCalled ).to.be.true;
 			} );
 
+			it( 'should not start dragging if the editable would be dragged itself', () => {
+				setModelData( model, '<table><tableRow><tableCell><paragraph>[foo]bar</paragraph></tableCell></tableRow></table>' );
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardOutput = sinon.spy();
+				const spyPreventDefault = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+
+				const modelElement = root.getNodeByPath( [ 0, 0, 0 ] );
+				const eventData = prepareEventData( model.createPositionAt( modelElement.getChild( 0 ), 3 ) );
+				eventData.target = mapper.toViewElement( modelElement );
+				eventData.domTarget = domConverter.mapViewToDom( eventData.target );
+
+				expect( eventData.target.is( 'editableElement', 'td' ) ).to.be.true;
+
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					preventDefault: spyPreventDefault,
+					stopPropagation: () => {
+					}
+				} );
+
+				expect( spyPreventDefault.called ).to.be.true;
+				expect( spyClipboardOutput.notCalled ).to.be.true;
+			} );
+
 			it( 'should mark allowed effect as "copy" if the editor is read-only', () => {
 				setModelData( model, '<paragraph>[foo]bar</paragraph>' );
 
@@ -781,7 +814,7 @@ describe( 'Drag and Drop', () => {
 
 				fireDragStart( dataTransferMock );
 
-				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.true;
+				expect( viewDocument.getRoot().hasAttribute( 'draggable' ) ).to.be.false;
 				expect( dataTransferMock.effectAllowed ).to.equal( 'copy' );
 			} );
 
@@ -848,6 +881,55 @@ describe( 'Drag and Drop', () => {
 					'<paragraph>foo</paragraph>' +
 					'[<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>]' +
 					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should start dragging by grabbing the widget selection handle (in read only mode)', () => {
+				setModelData( model,
+					'<paragraph>[]foobar</paragraph>' +
+					'<table><tableRow><tableCell><paragraph>abc</paragraph></tableCell></tableRow></table>'
+				);
+
+				editor.isReadOnly = true;
+
+				const dataTransferMock = createDataTransfer();
+				const spyClipboardOutput = sinon.spy();
+
+				viewDocument.on( 'clipboardOutput', ( event, data ) => spyClipboardOutput( data ) );
+
+				const domNode = view.getDomRoot().querySelector( '.ck-widget__selection-handle' );
+				const widgetViewElement = viewDocument.getRoot().getChild( 1 );
+				const selectionHandleElement = widgetViewElement.getChild( 0 );
+
+				expect( selectionHandleElement.hasClass( 'ck-widget__selection-handle' ) ).to.be.true;
+
+				const eventData = {
+					domTarget: domNode,
+					target: selectionHandleElement,
+					domEvent: {}
+				};
+
+				viewDocument.fire( 'mousedown', {
+					...eventData
+				} );
+
+				viewDocument.fire( 'dragstart', {
+					...eventData,
+					dataTransfer: dataTransferMock,
+					stopPropagation: () => {}
+				} );
+
+				expect( dataTransferMock.getData( 'text/html' ) ).to.equal(
+					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
+				);
+
+				expect( widgetViewElement.getAttribute( 'draggable' ) ).to.equal( 'true' );
+
+				expect( spyClipboardOutput.called ).to.be.true;
+				expect( spyClipboardOutput.firstCall.firstArg.method ).to.equal( 'dragstart' );
+				expect( spyClipboardOutput.firstCall.firstArg.dataTransfer ).to.equal( dataTransferMock );
+				expect( stringifyView( spyClipboardOutput.firstCall.firstArg.content ) ).to.equal(
+					'<figure class="table"><table><tbody><tr><td>abc</td></tr></tbody></table></figure>'
 				);
 			} );
 
@@ -1674,6 +1756,107 @@ describe( 'Drag and Drop', () => {
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
 				expect( data.targetRanges.length ).to.equal( 1 );
 				expect( data.targetRanges[ 0 ].isEqual( view.createRangeOn( viewDocument.getRoot().getChild( 1 ) ) ) ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'integration with the WidgetToolbarRepository plugin', () => {
+		let editor, widgetToolbarRepository, editorElement, viewDocument;
+
+		beforeEach( () => {
+			editorElement = document.createElement( 'div' );
+			document.body.appendChild( editorElement );
+
+			return ClassicTestEditor
+				.create( editorElement, {
+					plugins: [ Paragraph, WidgetToolbarRepository, DragDrop, HorizontalLine ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					viewDocument = editor.editing.view.document;
+					widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+
+					editor.setData( '<p></p>' );
+				} );
+		} );
+
+		afterEach( () => {
+			editorElement.remove();
+
+			return editor.destroy();
+		} );
+
+		describe( 'WidgetToolbarRepository#isEnabled', () => {
+			it( 'is enabled by default', () => {
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is enabled when starts dragging the text node', () => {
+				setModelData( editor.model, '<paragraph>[Foo.]</paragraph><horizontalLine></horizontalLine>' );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					dataTransfer: createDataTransfer( {} )
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is disabled when starts dragging the widget', () => {
+				setModelData( editor.model, '<paragraph>Foo.</paragraph>[<horizontalLine></horizontalLine>]' );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 1 ),
+					dataTransfer: createDataTransfer( {} )
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+			} );
+
+			it( 'is enabled when ends dragging (drop in the editable)', () => {
+				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+				viewDocument.fire( 'drop', {
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer,
+					method: 'drop'
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
+			} );
+
+			it( 'is enabled when ends dragging (drop outside the editable)', () => {
+				setModelData( editor.model, '[<horizontalLine></horizontalLine>]' );
+
+				const dataTransfer = createDataTransfer( {} );
+
+				viewDocument.fire( 'dragstart', {
+					preventDefault: sinon.spy(),
+					target: viewDocument.getRoot().getChild( 0 ),
+					dataTransfer
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.false;
+
+				viewDocument.fire( 'dragend', {
+					preventDefault: sinon.spy(),
+					dataTransfer
+				} );
+
+				expect( widgetToolbarRepository.isEnabled ).to.be.true;
 			} );
 		} );
 	} );

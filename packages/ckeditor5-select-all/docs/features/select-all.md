@@ -5,16 +5,16 @@ category: features
 
 {@snippet features/build-select-all-source}
 
-The {@link module:select-all/selectall~SelectAll} feature allows selecting the entire content of the WYSIWYG editor using the <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> keystroke or the toolbar button. It is mostly useful when you need to copy all the content to another document or want to clear the editor area easily.
+The {@link module:select-all/selectall~SelectAll} feature allows selecting the entire content of the WYSIWYG editor using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or the toolbar button. It is mostly useful when you need to copy all the content to another document or want to clear the editor area easily.
 
 ## Demo
 
-Press <kbd>Ctrl/⌘</kbd>+<kbd>A</kbd> or use the toolbar button to select the entire content of the editor.
+Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@icon @ckeditor/ckeditor5-select-all/theme/icons/select-all.svg Select all} to select the entire content of the editor.
 
 {@snippet features/select-all}
 
 <info-box>
-	When the selection is inside the {@link features/image#image-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies, for instance, when the selection is inside a table cell or any self–contained (nested) editable region in the content.
+	When the selection is inside the {@link features/images-captions image caption}, it will only expand to the boundaries of the caption. Use the keystroke or the toolbar button again to include more content until the entire content of the editor is selected. The same rule applies, for instance, when the selection is inside a table cell or any self–contained (nested) editable region in the content.
 </info-box>
 
 ## Related features

@@ -10,15 +10,15 @@ order: 10
 
 # Advanced conversion concepts &mdash; attributes
 
-This guide extends the {@link framework/guides/architecture/editing-engine introduction to CKEditor 5 editing engine architecture}. Therefore, we highly recommend reading the former guide first.
+This guide extends the {@link framework/guides/architecture/editing-engine Introduction to CKEditor 5 editing engine architecture guide}, which we highly recommend reading first. Also, the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials explain the basics of conversion with examples, hence reading them is recommended as well.
 
-In this guide you will dive deeper into some of the conversion concepts.
+In this guide we will dive deeper into some of the conversion concepts.
 
 ## Inline and block content
 
 Generally speaking, there are two main types of content in the editor view and data output: inline and block.
 
-The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, inline elements do not structure the data. Instead, they format some text in a specific (visual and semantical) way. These elements are a characteristic of a text. For instance, you could say that some part of the text is bold, or is linked, etc. This concept has its reflection in the model of the rich-text editor where `<a>` or `<strong>` are not represented as elements. Instead, they are the attributes of the text.
+The inline content means elements like `<strong>`, `<a>` or `<span>`. Unlike `<p>`, `<blockquote>` or `<div>`, the inline elements do not structure the data. Instead, they format some text in a specific (visual and semantical) way. These elements are a characteristic of a text. For instance, you could say that some part of the text is bold, or is linked, etc. This concept has its reflection in the model of the rich-text editor where `<a>` or `<strong>` are not represented as elements. Instead, they are the attributes of the text.
 
 For example &mdash; in the model, you might have a `<paragraph>` element with the "Foo bar" text, where "bar" has the `bold` attribute set to `true`. A pseudo–code of this *model* data structure could look as follows:
 

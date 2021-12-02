@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Autoformat",
+			"className": "Autoformat",
+			"description": "Enables a set of predefined autoformatting actions. It allows for formatting text by typing sequences like **bold this**.",
+			"docs": "features/autoformat.html",
+			"path": "src/autoformat.js"
+		}
+	]
+}

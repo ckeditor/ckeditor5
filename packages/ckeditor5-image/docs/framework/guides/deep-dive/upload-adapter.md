@@ -372,6 +372,22 @@ xhr.addEventListener( 'load', () => {
 } );
 ```
 
+### Passing additional data to the response
+
+There is a chance you might need to pass some data from the server to provide additional data to some features. In order to do that, you need to wrap all URLs in the `urls` property and pass additional data in the top level of the object.
+
+For image uploading, you can later retrieve the data in the {@link module:image/imageupload/imageuploadediting~ImageUploadEditing#event:uploadComplete `uploadComplete`} event, which allows setting new attributes and overriding the existing ones on the model image based on the data just after the image is uploaded.
+
+```js
+{
+	urls: {
+		default: 'http://example.com/images/image–default-size.png',
+		// Optional different sizes of images.
+	},
+	customProperty: 'foo'
+}
+```
+
 ### Activating a custom upload adapter
 
 Having implemented the adapter, you must figure out how to enable it in the WYSIWYG editor. The good news is that it is pretty easy, and you do not need to {@link builds/guides/development/custom-builds rebuild the editor} to do that!
@@ -533,7 +549,7 @@ ClassicEditor
 
 ## What's next?
 
-Check out the comprehensive {@link features/image-upload Image upload overview} to learn more about different ways of uploading images in CKEditor 5. See the {@link features/image Image feature} guide to find out more about handling images in CKEditor 5.
+Check out the comprehensive {@link features/image-upload image upload overview} guide to learn more about different ways of uploading images in CKEditor 5. See the {@link features/images-overview image feature} guide to find out more about handling images in CKEditor 5.
 
 <style>
 .custom-adapter td:first-child {

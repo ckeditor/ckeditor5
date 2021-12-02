@@ -7,36 +7,21 @@
  * @module table
  */
 
-import Table from './table';
-import TableEditing from './tableediting';
-import TableUI from './tableui';
-import TableToolbar from './tabletoolbar';
-import TableCellProperties from './tablecellproperties';
-import TableCellPropertiesEditing from './tablecellproperties/tablecellpropertiesediting';
-import TableCellPropertiesUI from './tablecellproperties/tablecellpropertiesui';
-import TableProperties from './tableproperties';
-import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
-import TablePropertiesUI from './tableproperties/tablepropertiesui';
-import TableClipboard from './tableclipboard';
-import TableMouse from './tablemouse';
-import TableKeyboard from './tablekeyboard';
-import TableSelection from './tableselection';
-import TableUtils from './tableutils';
-
-export default {
-	Table,
-	TableEditing,
-	TableUI,
-	TableToolbar,
-	TableCellProperties,
-	TableCellPropertiesEditing,
-	TableCellPropertiesUI,
-	TableProperties,
-	TablePropertiesEditing,
-	TablePropertiesUI,
-	TableMouse,
-	TableClipboard,
-	TableKeyboard,
-	TableSelection,
-	TableUtils
-};
+export { default as Table } from './table';
+export { default as TableEditing } from './tableediting';
+export { default as TableUI } from './tableui';
+export { default as TableToolbar } from './tabletoolbar';
+export { default as TableCellProperties } from './tablecellproperties';
+export { default as TableCellPropertiesEditing } from './tablecellproperties/tablecellpropertiesediting';
+export { default as TableCellPropertiesUI } from './tablecellproperties/tablecellpropertiesui';
+export { default as TableProperties } from './tableproperties';
+export { default as TablePropertiesEditing } from './tableproperties/tablepropertiesediting';
+export { default as TablePropertiesUI } from './tableproperties/tablepropertiesui';
+export { default as TableCaption } from './tablecaption';
+export { default as TableCaptionEditing } from './tablecaption/tablecaptionediting';
+export { default as TableCaptionUI } from './tablecaption/tablecaptionui';
+export { default as TableClipboard } from './tableclipboard';
+export { default as TableMouse } from './tablemouse';
+export { default as TableKeyboard } from './tablekeyboard';
+export { default as TableSelection } from './tableselection';
+export { default as TableUtils } from './tableutils';

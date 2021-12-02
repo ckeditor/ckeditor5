@@ -4,6 +4,7 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Image from '../src/image';
 import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
@@ -24,7 +25,7 @@ describe( 'Image', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Image ]
+				plugins: [ Image, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -58,96 +59,152 @@ describe( 'Image', () => {
 	} );
 
 	describe( 'selection', () => {
-		it( 'should create fake selection', () => {
-			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
+		describe( 'for block images', () => {
+			it( 'should create fake selection', () => {
+				setModelData( model, '[<imageBlock alt="alt text" src="/assets/sample.png"></imageBlock>]' );
 
-			expect( getViewData( view ) ).to.equal(
-				'[<figure class="' +
-					'ck-widget ' +
-					'ck-widget_selected image" contenteditable="false"' +
-				'>' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</figure>]'
-			);
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="' +
+						'ck-widget ' +
+						'ck-widget_selected image" contenteditable="false"' +
+					'>' +
+						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>]'
+				);
 
-			expect( viewDocument.selection.isFake ).to.be.true;
-			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
-		} );
-
-		it( 'should create proper fake selection label when alt attribute is empty', () => {
-			setModelData( model, '[<image src="/assets/sample.png" alt=""></image>]' );
-
-			expect( getViewData( view ) ).to.equal(
-				'[<figure class="' +
-					'ck-widget ' +
-					'ck-widget_selected image" contenteditable="false"' +
-				'>' +
-					'<img alt="" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</figure>]'
-			);
-
-			expect( viewDocument.selection.isFake ).to.be.true;
-			expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
-		} );
-
-		it( 'should remove selected class from previously selected element', () => {
-			setModelData( model,
-				'[<image src="/assets/sample.png" alt="alt text"></image>]' +
-				'<image src="/assets/sample.png" alt="alt text"></image>'
-			);
-
-			expect( getViewData( view ) ).to.equal(
-				'[<figure class="' +
-					'ck-widget ' +
-					'ck-widget_selected image" contenteditable="false"' +
-				'>' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</figure>]' +
-				'<figure class="' +
-					'ck-widget ' +
-					'image" contenteditable="false"' +
-				'>' +
-					'<img alt="alt text" src="/assets/sample.png"></img>' +
-					'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</figure>'
-			);
-
-			model.change( writer => {
-				const secondImage = document.getRoot().getChild( 1 );
-				writer.setSelection( writer.createRangeOn( secondImage ) );
+				expect( viewDocument.selection.isFake ).to.be.true;
+				expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
 			} );
 
-			expect( getViewData( view ) ).to.equal(
-				'<figure class="' +
-				'ck-widget ' +
-				'image" contenteditable="false"' +
-				'>' +
-				'<img alt="alt text" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</figure>' +
-				'[<figure class="' +
-				'ck-widget ' +
-				'ck-widget_selected image" contenteditable="false"' +
-				'>' +
-				'<img alt="alt text" src="/assets/sample.png"></img>' +
-				'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
-				'</figure>]'
-			);
-		} );
-	} );
+			it( 'should create proper fake selection label when alt attribute is empty', () => {
+				setModelData( model, '[<imageBlock src="/assets/sample.png" alt=""></imageBlock>]' );
 
-	describe( 'isImageWidget()', () => {
-		it( 'should expose isImageWidget() utility', () => {
-			expect( editor.plugins.get( 'Image' ) ).to.respondTo( 'isImageWidget' );
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="' +
+						'ck-widget ' +
+						'ck-widget_selected image" contenteditable="false"' +
+					'>' +
+						'<img alt="" src="/assets/sample.png"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>]'
+				);
+
+				expect( viewDocument.selection.isFake ).to.be.true;
+				expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
+			} );
+
+			it( 'should remove selected class from previously selected element', () => {
+				setModelData( model,
+					'[<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>]' +
+					'<imageBlock src="/assets/sample.png" alt="alt text"></imageBlock>'
+				);
+
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="' +
+						'ck-widget ' +
+						'ck-widget_selected image" contenteditable="false"' +
+					'>' +
+						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>]' +
+					'<figure class="' +
+						'ck-widget ' +
+						'image" contenteditable="false"' +
+					'>' +
+						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					const secondImage = document.getRoot().getChild( 1 );
+					writer.setSelection( writer.createRangeOn( secondImage ) );
+				} );
+
+				expect( getViewData( view ) ).to.equal(
+					'<figure class="' +
+						'ck-widget ' +
+						'image" contenteditable="false"' +
+					'>' +
+						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>' +
+					'[<figure class="' +
+						'ck-widget ' +
+						'ck-widget_selected image" contenteditable="false"' +
+					'>' +
+						'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'<div class="ck ck-reset_all ck-widget__type-around"></div>' +
+					'</figure>]'
+				);
+			} );
 		} );
 
-		it( 'should return true for elements marked with toImageWidget()', () => {
-			setModelData( model, '[<image alt="alt text" src="/assets/sample.png"></image>]' );
-			const element = viewDocument.getRoot().getChild( 0 );
-			expect( editor.plugins.get( 'Image' ).isImageWidget( element ) ).to.be.true;
+		describe( 'for inline images', () => {
+			it( 'should create fake selection', () => {
+				setModelData( model, '<paragraph>[<imageInline alt="alt text" src="/assets/sample.png"></imageInline>]</paragraph>' );
+
+				expect( getViewData( view ) ).to.equal(
+					'<p>[' +
+						'<span class="ck-widget ck-widget_selected image-inline" contenteditable="false">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</span>' +
+					']</p>'
+				);
+
+				expect( viewDocument.selection.isFake ).to.be.true;
+				expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'alt text image widget' );
+			} );
+
+			it( 'should create proper fake selection label when alt attribute is empty', () => {
+				setModelData( model, '<paragraph>[<imageInline src="/assets/sample.png" alt=""></imageInline>]</paragraph>' );
+
+				expect( getViewData( view ) ).to.equal(
+					'<p>[' +
+						'<span class="ck-widget ck-widget_selected image-inline" contenteditable="false">' +
+							'<img alt="" src="/assets/sample.png"></img>' +
+						'</span>' +
+					']</p>'
+				);
+
+				expect( viewDocument.selection.isFake ).to.be.true;
+				expect( viewDocument.selection.fakeSelectionLabel ).to.equal( 'image widget' );
+			} );
+
+			it( 'should remove selected class from previously selected element', () => {
+				setModelData( model,
+					'<paragraph>[<imageInline src="/assets/sample.png" alt="alt text"></imageInline>]' +
+					'<imageInline src="/assets/sample.png" alt="alt text"></imageInline></paragraph>'
+				);
+
+				expect( getViewData( view ) ).to.equal(
+					'<p>[' +
+						'<span class="ck-widget ck-widget_selected image-inline" contenteditable="false">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</span>]' +
+						'<span class="ck-widget image-inline" contenteditable="false">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</span>' +
+					'</p>'
+				);
+
+				model.change( writer => {
+					const secondImage = document.getRoot().getChild( 0 ).getChild( 1 );
+					writer.setSelection( writer.createRangeOn( secondImage ) );
+				} );
+
+				expect( getViewData( view ) ).to.equal(
+					'<p>' +
+						'<span class="ck-widget image-inline" contenteditable="false">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</span>' +
+						'[<span class="ck-widget ck-widget_selected image-inline" contenteditable="false">' +
+							'<img alt="alt text" src="/assets/sample.png"></img>' +
+						'</span>' +
+					']</p>'
+				);
+			} );
 		} );
 	} );
 } );

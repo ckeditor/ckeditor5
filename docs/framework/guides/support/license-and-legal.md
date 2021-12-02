@@ -18,7 +18,7 @@ Licensed under the terms of [GNU General Public License Version 2 or later](http
 
 Where not otherwise indicated, all CKEditor 5 Framework content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
 
-The {@link features/image-upload#easy-image Easy Image} feature present in {@link builds/index CKEditor 5 Builds} integrates with [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services), if configured to do so. CKEditor Cloud Services is an external "Software as a Service" solution, delivered with its own license terms and conditions.
+The {@link features/image-upload#easy-image Easy Image} feature present in {@link builds/index CKEditor 5 builds} integrates with [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services), if configured to do so. CKEditor Cloud Services is an external "Software as a Service" solution, delivered with its own license terms and conditions.
 
 ## Trademarks
 

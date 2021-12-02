@@ -187,6 +187,23 @@ describe( 'BalloonEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
+			return BalloonEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
+			} );
+		} );
+
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
 			BalloonEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
@@ -313,9 +330,10 @@ describe( 'BalloonEditor', () => {
 
 					const schema = editor.model.schema;
 
-					schema.register( 'heading' );
-					schema.extend( 'heading', { allowIn: '$root' } );
-					schema.extend( '$text', { allowIn: 'heading' } );
+					schema.register( 'heading', {
+						allowIn: '$root',
+						allowChildren: '$text'
+					} );
 
 					editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
 					editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );
@@ -355,7 +373,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

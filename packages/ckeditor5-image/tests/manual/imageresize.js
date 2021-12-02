@@ -29,12 +29,7 @@ const commonConfig = {
 	toolbar: [ 'heading', '|', 'bold', 'italic', 'link',
 		'bulletedList', 'numberedList', 'blockQuote', 'insertTable', 'undo', 'redo', 'outdent', 'indent' ],
 	image: {
-		toolbar: [ 'imageStyle:alignLeft', 'imageStyle:alignCenter', 'imageStyle:alignRight', '|', 'resizeImage' ],
-		styles: [
-			'alignLeft',
-			'alignCenter',
-			'alignRight'
-		]
+		toolbar: [ 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|', 'toggleImageCaption', 'resizeImage' ]
 	},
 	table: {
 		contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],

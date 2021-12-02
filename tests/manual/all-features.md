@@ -40,6 +40,10 @@ The "previews in view" mode is enabled, which means that previews should be visi
 
 **Paste from Office** - Copy & paste some content from Word.
 
+**Text part language** - There are 2 paragraphs with applied language: Spanish with left-to-right direction and Arabic with right-to-left direction. Both should have italic style. Play with the selection and the language dropdown.
+
+**HTML comments** - There are 10 comments in this section: from `C1` to `C10`. Open the source editing mode (or just call the `editor.getData()`) and verify that they are present.
+
 ---
 
 ## Action buttons
@@ -62,3 +66,4 @@ Wordcount plugin logs into the console number of characters and words in the edi
 - Mention plugin is configured with an array of feed: `[ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ],`
 - ImageUpload uses EasyImage
 - Styles for printing preview are served by official docs
+- The `SourceEditing` plugin should be disabled if there is at least one pending action.

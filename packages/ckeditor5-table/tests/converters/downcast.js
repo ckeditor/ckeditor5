@@ -8,7 +8,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { modelTable, viewTable } from '../_utils/utils';
 
@@ -43,7 +43,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -477,6 +477,8 @@ describe( 'downcast converters', () => {
 
 					writer.insertElement( 'tableCell', row, 'end' );
 					writer.insertElement( 'tableCell', row, 'end' );
+
+					writer.setAttribute( 'headingRows', 3, table );
 				} );
 
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
@@ -558,12 +560,12 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -693,10 +695,10 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -725,7 +727,7 @@ describe( 'downcast converters', () => {
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 					[ { isHeading: true, contents: '00' }, '01' ],
 					[ { isHeading: true, contents: '10' }, '11' ]
-				], { headingColumns: 1, asWidget: true } ) );
+				], { asWidget: true } ) );
 			} );
 
 			it( 'should work for changing heading columns to a bigger number', () => {
@@ -761,7 +763,7 @@ describe( 'downcast converters', () => {
 				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
 					[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
 					[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
-				], { headingColumns: 3, asWidget: true } ) );
+				], { asWidget: true } ) );
 			} );
 
 			it( 'should work for removing heading columns', () => {
@@ -798,7 +800,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -864,7 +866,7 @@ describe( 'downcast converters', () => {
 							'<thead>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
@@ -1030,6 +1032,114 @@ describe( 'downcast converters', () => {
 				], { headingRows: 2, asWidget: true } ) );
 			} );
 
+			it( 'should reorder rows with header correctly - up direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 1 ) ),
+						writer.createPositionAt( table, 0 )
+					);
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with header correctly - down direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 0 ) ),
+						writer.createPositionAt( table, 2 )
+					);
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder columns with header correctly - left direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					for ( const tableRow of table.getChildren() ) {
+						writer.move(
+							writer.createRangeOn( tableRow.getChild( 1 ) ),
+							writer.createPositionAt( tableRow, 0 )
+						);
+					}
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '01', '00', '02' ],
+					[ '11', '10', '12' ]
+				], { headingColumns: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '01' }, '00', '02' ],
+					[ { isHeading: true, contents: '11' }, '10', '12' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should reorder columns with header correctly - right direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					for ( const tableRow of table.getChildren() ) {
+						writer.move(
+							writer.createRangeOn( tableRow.getChild( 0 ) ),
+							writer.createPositionAt( tableRow, 2 )
+						);
+					}
+				} );
+
+				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+					[ '01', '00', '02' ],
+					[ '11', '10', '12' ]
+				], { headingColumns: 1 } ) );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+					[ { isHeading: true, contents: '01' }, '00', '02' ],
+					[ { isHeading: true, contents: '11' }, '10', '12' ]
+				], { asWidget: true } ) );
+			} );
+
 			it( 'should create renamed cell as a widget', () => {
 				setModelData( model, modelTable( [ [ '00' ] ] ) );
 
@@ -1046,7 +1156,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1107,10 +1217,10 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">01</span>' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1138,10 +1248,10 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">10</span>' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">11</span>' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1171,10 +1281,10 @@ describe( 'downcast converters', () => {
 							'<thead>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">10</span>' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</th>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">11</span>' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
@@ -1204,10 +1314,10 @@ describe( 'downcast converters', () => {
 							'<thead>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">01</span>' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
@@ -1239,21 +1349,21 @@ describe( 'downcast converters', () => {
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
 										'colspan="2" contenteditable="true" rowspan="2">' +
-										'<span style="display:inline-block">10</span>' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">12</span>' +
+										'<span class="ck-table-bogus-paragraph">12</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">13</span>' +
+										'<span class="ck-table-bogus-paragraph">13</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">22</span>' +
+										'<span class="ck-table-bogus-paragraph">22</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">23</span>' +
+										'<span class="ck-table-bogus-paragraph">23</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1283,10 +1393,10 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">10</span>' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">11</span>' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1314,10 +1424,10 @@ describe( 'downcast converters', () => {
 							'<thead>' +
 								'<tr>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</th>' +
 									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">01</span>' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
 									'</th>' +
 								'</tr>' +
 							'</thead>' +
@@ -1361,7 +1471,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1380,7 +1490,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1417,12 +1527,12 @@ describe( 'downcast converters', () => {
 						'<tbody>' +
 							'<tr>' +
 								'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-									'<span style="display:inline-block">00</span>' +
+									'<span class="ck-table-bogus-paragraph">00</span>' +
 								'</td>' +
 							'</tr>' +
 							'<tr>' +
 								'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-									'<span style="display:inline-block"></span>' +
+									'<span class="ck-table-bogus-paragraph"></span>' +
 								'</td>' +
 							'</tr>' +
 						'</tbody>' +
@@ -1441,12 +1551,12 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1481,10 +1591,10 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1503,10 +1613,10 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block"></span>' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1618,7 +1728,7 @@ describe( 'downcast converters', () => {
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow marker user-marker"' +
 										' contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1637,7 +1747,7 @@ describe( 'downcast converters', () => {
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span style="display:inline-block">00</span>' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -1647,15 +1757,117 @@ describe( 'downcast converters', () => {
 			} );
 		} );
 
-		function markerConversion( conversion, extraClasses = null ) {
+		describe( 'attributes in highlight descriptor', () => {
+			beforeEach( async () => {
+				editor = await VirtualTestEditor.create( { plugins: [ Paragraph, TableEditing ] } );
+
+				model = editor.model;
+				root = model.document.getRoot( 'main' );
+				view = editor.editing.view;
+
+				markerConversion( editor.conversion, [], { 'data-foo': 'bar', 'data-abc': 'xyz' } );
+			} );
+
+			it( 'should apply attributes on tableCell - on inserting a table', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 0 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+
+					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable highlight-yellow"' +
+										' contenteditable="true" data-abc="xyz" data-foo="bar">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should preserve attributes on tableCell - when changing heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+					writer.addMarker( 'marker:yellow', {
+						range: writer.createRangeOn( cell ),
+						usingOperation: false
+					} );
+				} );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 3, table );
+				} );
+
+				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
+				const viewElement = editor.editing.mapper.toViewElement( cell );
+
+				expect( viewElement.getAttribute( 'data-foo' ) ).to.equal( 'bar' );
+				expect( viewElement.getAttribute( 'data-abc' ) ).to.equal( 'xyz' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker:yellow' );
+				} );
+
+				expect( viewElement.hasAttribute( 'data-foo' ) ).to.be.false;
+				expect( viewElement.hasAttribute( 'data-abc' ) ).to.be.false;
+			} );
+		} );
+
+		function markerConversion( conversion, extraClasses = null, extraAttributes ) {
 			conversion.for( 'editingDowncast' ).markerToHighlight( {
 				model: 'marker',
 				view: data => {
 					const className = 'highlight-' + data.markerName.split( ':' )[ 1 ];
+					const descriptor = {};
 
-					return {
-						classes: extraClasses ? [ ...extraClasses, className ] : className
-					};
+					descriptor.classes = extraClasses ? [ ...extraClasses, className ] : className;
+
+					if ( extraAttributes ) {
+						descriptor.attributes = extraAttributes;
+					}
+
+					return descriptor;
 				}
 			} );
 		}

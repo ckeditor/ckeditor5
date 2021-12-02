@@ -9,24 +9,25 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-link' ), {
-		removePlugins: [ 'ImageResize', 'AutoImage' ],
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		removePlugins: [ 'AutoImage' ],
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
 			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side',
+				'linkImage',
 				'|',
-				'imageTextAlternative',
-				'|',
-				'linkImage'
+				'imageStyle:inline',
+				'imageStyle:block',
+				'imageStyle:side'
 			]
 		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
-		window.editorResize = editor;
+		window.editorLinks = editor;
 	} )
 	.catch( err => {
 		console.error( err );

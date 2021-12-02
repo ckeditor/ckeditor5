@@ -24,7 +24,7 @@ describe( 'LinkCommand', () => {
 					allowAttributes: [ 'linkHref', 'bold' ]
 				} );
 
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			} );
 	} );
 
@@ -48,7 +48,7 @@ describe( 'LinkCommand', () => {
 
 		describe( 'when selection is collapsed', () => {
 			it( 'should be true if characters with the attribute can be placed at caret position', () => {
-				setData( model, '<p>f[]oo</p>' );
+				setData( model, '<paragraph>f[]oo</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
@@ -60,7 +60,7 @@ describe( 'LinkCommand', () => {
 
 		describe( 'when selection is not collapsed', () => {
 			it( 'should be true if there is at least one node in selection that can have the attribute', () => {
-				setData( model, '<p>[foo]</p>' );
+				setData( model, '<paragraph>[foo]</paragraph>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
@@ -69,36 +69,40 @@ describe( 'LinkCommand', () => {
 				expect( command.isEnabled ).to.be.false;
 			} );
 
-			describe( 'for images', () => {
+			describe( 'for linkable block elements', () => {
 				beforeEach( () => {
-					model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+					model.schema.register( 'linkableBlock', {
+						isBlock: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
 				} );
 
-				it( 'should be true when an image is selected', () => {
-					setData( model, '[<image linkHref="foo"></image>]' );
+				it( 'should be true when a linkable is selected', () => {
+					setData( model, '[<linkableBlock linkHref="foo"></linkableBlock>]' );
 
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be true when an image and a text are selected', () => {
-					setData( model, '[<image linkHref="foo"></image>Foo]' );
+				it( 'should be true when a linkable and a text are selected', () => {
+					setData( model, '[<linkableBlock linkHref="foo"></linkableBlock>Foo]' );
 
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be true when a text and an image are selected', () => {
-					setData( model, '[Foo<image linkHref="foo"></image>]' );
+				it( 'should be true when a text and a linkable are selected', () => {
+					setData( model, '[Foo<linkableBlock linkHref="foo"></linkableBlock>]' );
 
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be true when two images are selected', () => {
-					setData( model, '[<image linkHref="foo"></image><image linkHref="foo"></image>]' );
+				it( 'should be true when two linkables are selected', () => {
+					setData( model, '[<linkableBlock linkHref="foo"></linkableBlock><linkableBlock linkHref="foo"></linkableBlock>]' );
 
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be false when a fake image is selected', () => {
+				it( 'should be false when a fake linkable is selected', () => {
 					model.schema.register( 'fake', { isBlock: true, allowWhere: '$text' } );
 
 					setData( model, '[<fake></fake>]' );
@@ -106,14 +110,65 @@ describe( 'LinkCommand', () => {
 					expect( command.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false if an image does not accept the `linkHref` attribute in given context', () => {
+				it( 'should be false if a linkable does not accept the `linkHref` attribute in given context', () => {
 					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-						if ( ctx.endsWith( '$root image' ) && attributeName == 'linkHref' ) {
+						if ( ctx.endsWith( '$root linkableBlock' ) && attributeName == 'linkHref' ) {
 							return false;
 						}
 					} );
 
-					setData( model, '[<image></image>]' );
+					setData( model, '[<linkableBlock></linkableBlock>]' );
+
+					expect( command.isEnabled ).to.be.false;
+				} );
+			} );
+
+			describe( 'for linkable inline elements', () => {
+				beforeEach( () => {
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+				} );
+
+				it( 'should be true when a linkable is selected', () => {
+					setData( model, '<paragraph>foo [<linkableInline linkHref="foo"></linkableInline>]</paragraph>' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when a linkable and a text are selected', () => {
+					setData( model, '<paragraph>foo [<linkableInline linkHref="foo"></linkableInline>bar]</paragraph>' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when a text and a linkable are selected', () => {
+					setData( model, '<paragraph>[foo<linkableInline linkHref="foo"></linkableInline>]</paragraph>' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be true when two linkables are selected', () => {
+					setData( model,
+						'<paragraph>' +
+							'foo ' +
+							'[<linkableInline linkHref="foo"></linkableInline><linkableInline linkHref="foo"></linkableInline>]' +
+						'</paragraph>' );
+
+					expect( command.isEnabled ).to.be.true;
+				} );
+
+				it( 'should be false if a linkable does not accept the `linkHref` attribute in given context', () => {
+					model.schema.addAttributeCheck( ( ctx, attributeName ) => {
+						if ( ctx.endsWith( 'linkableInline' ) && attributeName == 'linkHref' ) {
+							return false;
+						}
+					} );
+
+					setData( model, '<paragraph>[<linkableInline></linkableInline>]</paragraph>' );
 
 					expect( command.isEnabled ).to.be.false;
 				} );
@@ -150,35 +205,80 @@ describe( 'LinkCommand', () => {
 			} );
 		} );
 
-		describe( 'for images', () => {
+		describe( 'for linkable block elements', () => {
 			beforeEach( () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+				model.schema.register( 'linkableBlock', {
+					isBlock: true,
+					allowWhere: '$text',
+					allowAttributes: [ 'linkHref' ]
+				} );
 			} );
 
-			it( 'should read the value from a selected image', () => {
-				setData( model, '[<image linkHref="foo"></image>]' );
+			it( 'should read the value from a selected linkable', () => {
+				setData( model, '[<linkableBlock linkHref="foo"></linkableBlock>]' );
 
 				expect( command.value ).to.be.equal( 'foo' );
 			} );
 
-			it( 'should read the value from a selected image and ignore a text node', () => {
-				setData( model, '[<image linkHref="foo"></image><p><$text linkHref="bar">bar</$text>]</p>' );
+			it( 'should read the value from a selected linkable and ignore a text node', () => {
+				setData( model,
+					'[<linkableBlock linkHref="foo"></linkableBlock>' +
+					'<paragraph><$text linkHref="bar">bar</$text>]</paragraph>'
+				);
 
 				expect( command.value ).to.be.equal( 'foo' );
 			} );
 
-			it( 'should read the value from a selected text node and ignore an image', () => {
-				setData( model, '<p>[<$text linkHref="bar">bar</$text></p><image linkHref="foo"></image>]' );
+			it( 'should read the value from a selected text node and ignore a linkable', () => {
+				setData( model,
+					'<paragraph>[<$text linkHref="bar">bar</$text></paragraph><linkableBlock linkHref="foo"></linkableBlock>]'
+				);
 
 				expect( command.value ).to.be.equal( 'bar' );
 			} );
 
-			it( 'should be undefined when a fake image is selected', () => {
+			it( 'should be undefined when a fake linkable is selected', () => {
 				model.schema.register( 'fake', { isBlock: true, allowWhere: '$text' } );
 
 				setData( model, '[<fake></fake>]' );
 
 				expect( command.value ).to.be.undefined;
+			} );
+		} );
+
+		describe( 'for linkable inline elements', () => {
+			beforeEach( () => {
+				model.schema.register( 'linkableInline', {
+					isObject: true,
+					isInline: true,
+					allowWhere: '$text',
+					allowAttributes: [ 'linkHref' ]
+				} );
+			} );
+
+			it( 'should read the value from a selected linkable', () => {
+				setData( model, '<paragraph>[<linkableInline linkHref="foo"></linkableInline>]</paragraph>' );
+
+				expect( command.value ).to.be.equal( 'foo' );
+			} );
+
+			// NOTE: The command value should most likely be "foo" but this requires a lot changes in refresh()
+			// because it relies on getSelectedElement()/getSelectedBlocks() and neither will return the inline widget
+			// in this case.
+			it( 'should not read the value from a selected linkable when a linked text follows it', () => {
+				setData( model,
+					'<paragraph>[<linkableInline linkHref="foo"></linkableInline><$text linkHref="bar">bar</$text>]</paragraph>'
+				);
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should read the value from a selected text node and ignore a linkable', () => {
+				setData( model,
+					'<paragraph>[<$text linkHref="bar">bar</$text><linkableInline linkHref="foo"></linkableInline>]</paragraph>'
+				);
+
+				expect( command.value ).to.be.equal( 'bar' );
 			} );
 		} );
 	} );
@@ -265,89 +365,192 @@ describe( 'LinkCommand', () => {
 			} );
 
 			it( 'should set `linkHref` attribute to selected text when text is split by $block element', () => {
-				setData( model, '<p>f[oo</p><p>ba]r</p>' );
-
-				expect( command.value ).to.be.undefined;
-
-				command.execute( 'url' );
-
-				expect( getData( model ) )
-					.to.equal( '<p>f[<$text linkHref="url">oo</$text></p><p><$text linkHref="url">ba</$text>]r</p>' );
-				expect( command.value ).to.equal( 'url' );
-			} );
-
-			it( 'should set `linkHref` attribute to allowed elements', () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
-
-				setData( model, '<p>f[oo<image></image>ba]r</p>' );
+				setData( model, '<paragraph>f[oo</paragraph><paragraph>ba]r</paragraph>' );
 
 				expect( command.value ).to.be.undefined;
 
 				command.execute( 'url' );
 
 				expect( getData( model ) ).to.equal(
-					'<p>f[<$text linkHref="url">oo</$text><image linkHref="url"></image><$text linkHref="url">ba</$text>]r</p>'
+					'<paragraph>f[<$text linkHref="url">oo</$text></paragraph><paragraph><$text linkHref="url">ba</$text>]r</paragraph>'
 				);
 				expect( command.value ).to.equal( 'url' );
 			} );
 
-			it( 'should set `linkHref` attribute to nested allowed elements', () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
-				model.schema.register( 'blockQuote', { allowWhere: '$block', allowContentOf: '$root' } );
+			describe( 'for block elements allowing linkHref', () => {
+				it( 'should set `linkHref` attribute to allowed elements', () => {
+					model.schema.register( 'linkableBlock', {
+						isBlock: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
 
-				setData( model, '<p>foo</p>[<blockQuote><image></image></blockQuote>]<p>bar</p>' );
+					setData( model, '<paragraph>f[oo<linkableBlock></linkableBlock>ba]r</paragraph>' );
 
-				command.execute( 'url' );
+					expect( command.value ).to.be.undefined;
 
-				expect( getData( model ) )
-					.to.equal( '<p>foo</p>[<blockQuote><image linkHref="url"></image></blockQuote>]<p>bar</p>' );
+					command.execute( 'url' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'f[<$text linkHref="url">oo</$text>' +
+							'<linkableBlock linkHref="url"></linkableBlock>' +
+							'<$text linkHref="url">ba</$text>]r' +
+						'</paragraph>'
+					);
+					expect( command.value ).to.equal( 'url' );
+				} );
+
+				it( 'should set `linkHref` attribute to nested allowed elements', () => {
+					model.schema.register( 'linkableBlock', {
+						isBlock: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+					model.schema.register( 'blockQuote', { allowWhere: '$block', allowContentOf: '$root' } );
+
+					setData( model,
+						'<paragraph>foo</paragraph>[<blockQuote><linkableBlock></linkableBlock></blockQuote>]<paragraph>bar</paragraph>'
+					);
+
+					command.execute( 'url' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+							'[<blockQuote><linkableBlock linkHref="url"></linkableBlock></blockQuote>]' +
+						'<paragraph>bar</paragraph>' );
+				} );
+
+				it( 'should set `linkHref` attribute to allowed elements on multi-selection', () => {
+					model.schema.register( 'linkableBlock', {
+						isBlock: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+
+					setData( model, '<paragraph>[<linkableBlock></linkableBlock>][<linkableBlock></linkableBlock>]</paragraph>' );
+
+					command.execute( 'url' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'[<linkableBlock linkHref="url"></linkableBlock>][<linkableBlock linkHref="url"></linkableBlock>]' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should set `linkHref` attribute to allowed elements and omit disallowed', () => {
+					model.schema.register( 'linkableBlock', {
+						isBlock: true,
+						allowWhere: '$text'
+					} );
+					model.schema.register( 'caption', { allowIn: 'linkableBlock' } );
+					model.schema.extend( '$text', { allowIn: 'caption' } );
+
+					setData( model, '<paragraph>f[oo<linkableBlock><caption>xxx</caption></linkableBlock>ba]r</paragraph>' );
+
+					command.execute( 'url' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'f[<$text linkHref="url">oo</$text>' +
+							'<linkableBlock><caption><$text linkHref="url">xxx</$text></caption></linkableBlock>' +
+							'<$text linkHref="url">ba</$text>]r' +
+						'</paragraph>'
+					);
+				} );
+
+				it( 'should set `linkHref` attribute to allowed elements and omit their children even if they accept the attribute', () => {
+					model.schema.register( 'linkableBlock', {
+						isBlock: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+					model.schema.register( 'caption', { allowIn: 'linkableBlock' } );
+					model.schema.extend( '$text', { allowIn: 'caption' } );
+
+					setData( model, '<paragraph>f[oo<linkableBlock><caption>xxx</caption></linkableBlock>ba]r</paragraph>' );
+
+					command.execute( 'url' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'f[<$text linkHref="url">oo</$text>' +
+							'<linkableBlock linkHref="url"><caption>xxx</caption></linkableBlock>' +
+							'<$text linkHref="url">ba</$text>]r' +
+						'</paragraph>'
+					);
+				} );
 			} );
 
-			it( 'should set `linkHref` attribute to allowed elements on multi-selection', () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
+			describe( 'for inline elements allowing linkHref', () => {
+				it( 'should set `linkHref` attribute to allowed elements', () => {
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
 
-				setData( model, '<p>[<image></image>][<image></image>]</p>' );
+					setData( model, '<paragraph>f[oo<linkableInline></linkableInline>ba]r</paragraph>' );
 
-				command.execute( 'url' );
+					expect( command.value ).to.be.undefined;
 
-				expect( getData( model ) )
-					.to.equal( '<p>[<image linkHref="url"></image>][<image linkHref="url"></image>]</p>' );
-			} );
+					command.execute( 'url' );
 
-			it( 'should set `linkHref` attribute to allowed elements and omit disallowed', () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text' } );
-				model.schema.register( 'caption', { allowIn: 'image' } );
-				model.schema.extend( '$text', { allowIn: 'caption' } );
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'f[<$text linkHref="url">oo</$text>' +
+							'<linkableInline linkHref="url"></linkableInline>' +
+							'<$text linkHref="url">ba</$text>]r' +
+						'</paragraph>'
+					);
 
-				setData( model, '<p>f[oo<image><caption>xxx</caption></image>ba]r</p>' );
+					expect( command.value ).to.equal( 'url' );
+				} );
 
-				command.execute( 'url' );
+				it( 'should set `linkHref` attribute to nested allowed elements', () => {
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
+					model.schema.register( 'blockQuote', { allowWhere: '$block', allowContentOf: '$root' } );
 
-				expect( getData( model ) ).to.equal(
-					'<p>' +
-						'f[<$text linkHref="url">oo</$text>' +
-						'<image><caption><$text linkHref="url">xxx</$text></caption></image>' +
-						'<$text linkHref="url">ba</$text>]r' +
-					'</p>'
-				);
-			} );
+					setData( model,
+						'<paragraph>foo</paragraph>' +
+							'[<blockQuote><linkableInline></linkableInline></blockQuote>]' +
+						'<paragraph>bar</paragraph>'
+					);
 
-			it( 'should set `linkHref` attribute to allowed elements and omit their children even if they accept the attribute', () => {
-				model.schema.register( 'image', { isBlock: true, allowWhere: '$text', allowAttributes: [ 'linkHref' ] } );
-				model.schema.register( 'caption', { allowIn: 'image' } );
-				model.schema.extend( '$text', { allowIn: 'caption' } );
+					command.execute( 'url' );
 
-				setData( model, '<p>f[oo<image><caption>xxx</caption></image>ba]r</p>' );
+					expect( getData( model ) ).to.equal(
+						'<paragraph>foo</paragraph>' +
+							'[<blockQuote><linkableInline linkHref="url"></linkableInline></blockQuote>]' +
+						'<paragraph>bar</paragraph>'
+					);
+				} );
 
-				command.execute( 'url' );
+				it( 'should set `linkHref` attribute to allowed elements on multi-selection', () => {
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref' ]
+					} );
 
-				expect( getData( model ) ).to.equal(
-					'<p>' +
-						'f[<$text linkHref="url">oo</$text>' +
-						'<image linkHref="url"><caption>xxx</caption></image>' +
-						'<$text linkHref="url">ba</$text>]r' +
-					'</p>'
-				);
+					setData( model, '<paragraph>[<linkableInline></linkableInline>][<linkableInline></linkableInline>]</paragraph>' );
+
+					command.execute( 'url' );
+
+					expect( getData( model ) ).to.equal(
+						'<paragraph>' +
+							'[<linkableInline linkHref="url"></linkableInline>][<linkableInline linkHref="url"></linkableInline>]' +
+						'</paragraph>'
+					);
+				} );
 			} );
 		} );
 
@@ -382,24 +585,24 @@ describe( 'LinkCommand', () => {
 
 			it( 'should not insert text with `linkHref` attribute when is not allowed in parent', () => {
 				model.schema.addAttributeCheck( ( ctx, attributeName ) => {
-					if ( ctx.endsWith( 'p $text' ) && attributeName == 'linkHref' ) {
+					if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'linkHref' ) {
 						return false;
 					}
 				} );
 
-				setData( model, '<p>foo[]bar</p>' );
+				setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				command.execute( 'url' );
 
-				expect( getData( model ) ).to.equal( '<p>foo[]bar</p>' );
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			it( 'should not insert text node if link is empty', () => {
-				setData( model, '<p>foo[]bar</p>' );
+				setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 				command.execute( '' );
 
-				expect( getData( model ) ).to.equal( '<p>foo[]bar</p>' );
+				expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5/issues/8210
@@ -452,14 +655,21 @@ describe( 'LinkCommand', () => {
 						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar', 'linkIsSth' ]
 					} );
 
-					model.schema.register( 'image', {
+					model.schema.register( 'linkableBlock', {
 						allowIn: '$root',
 						isObject: true,
 						isBlock: true,
 						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar', 'linkIsSth' ]
 					} );
 
-					model.schema.register( 'p', { inheritAllFrom: '$block' } );
+					model.schema.register( 'linkableInline', {
+						isObject: true,
+						isInline: true,
+						allowWhere: '$text',
+						allowAttributes: [ 'linkHref', 'linkIsFoo', 'linkIsBar', 'linkIsSth' ]
+					} );
+
+					model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				} );
 		} );
 
@@ -520,6 +730,27 @@ describe( 'LinkCommand', () => {
 				command.execute( 'url', { linkIsFoo: false, linkIsBar: false } );
 
 				expect( getData( model ) ).to.equal( 'foo[<$text linkHref="url">url</$text>]bar' );
+			} );
+
+			it( 'should insert additional attributes to a linkable block when it is created', () => {
+				setData( model, '[<linkableBlock></linkableBlock>]' );
+
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to
+					.equal( '[<linkableBlock linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true"></linkableBlock>]' );
+			} );
+
+			it( 'should insert additional attributes to a linkable inline element when it is created', () => {
+				setData( model, '<paragraph>foo[<linkableInline></linkableInline>]bar</paragraph>' );
+
+				command.execute( 'url', { linkIsFoo: true, linkIsBar: true, linkIsSth: true } );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>' +
+						'foo[<linkableInline linkHref="url" linkIsBar="true" linkIsFoo="true" linkIsSth="true"></linkableInline>]bar' +
+					'</paragraph>'
+				);
 			} );
 		} );
 
@@ -585,8 +816,15 @@ describe( 'LinkCommand', () => {
 				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
 			} );
 
-			it( 'obtain current values from the image element', () => {
-				setData( model, '[<image linkHref="url" linkIsBar="true"></image>]' );
+			it( 'obtain current values from the linkable block element', () => {
+				setData( model, '[<linkableBlock linkHref="url" linkIsBar="true"></linkableBlock>]' );
+
+				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.undefined;
+				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;
+			} );
+
+			it( 'obtain current values from the linkable inline element', () => {
+				setData( model, '<paragraph>[<linkableInline linkHref="url" linkIsBar="true"></linkableInline>]</paragraph>' );
 
 				expect( command._getDecoratorStateFromModel( 'linkIsFoo' ) ).to.be.undefined;
 				expect( command._getDecoratorStateFromModel( 'linkIsBar' ) ).to.be.true;

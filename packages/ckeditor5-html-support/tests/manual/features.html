@@ -1,0 +1,123 @@
+<head>
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
+	<style>
+		td {
+			padding: .4em;
+		}
+		a[name][id] {
+			color: blue;
+			text-decoration: underline;
+		}
+		mark[data-mark] {
+			font-weight: 600;
+			text-decoration: underline;
+		}
+		.text-italic {
+			font-style: italic;
+		}
+	</style>
+</head>
+<div style="display: flex">
+	<div style="width: 40%; margin-right: 20px">
+		<div id="editor">
+			<p style="color:blue;">Feature paragraph</p>
+
+			<h2 style="color:green">Feature heading1</h2>
+			<h3 style="color:green">Feature heading2</h3>
+			<h4 style="color:green">Feature heading3</h4>
+
+			<p><strong style="color:blue;">Feature bold</strong></p>
+			<p><i style="color:blue;">Feature italic</i></p>
+			<p><s style="color:blue;">Feature strike</s></p>
+			<p><u style="color:blue;">Feature underline</u></p>
+			<p><code style="color:blue;">Feature code</code></p>
+			<p><sub style="color:blue;">Feature subscript</sub></p>
+			<p><sup style="color:blue;">Feature superscript</sup></p>
+
+			<p><a style="color:green;" href="https://example.com">Link feature</a></p>
+			<p><a name="anchor" id="anchor">Anchor (name, ID only)</a></p>
+
+			<p><mark class="marker-yellow" data-mark>Mark feature</mark></p>
+
+			<p><span class="text-big text-italic" style="background-color:hsl(60, 75%, 60%);color:hsl(240, 75%, 60%);font-family:'Courier New', Courier, monospace;border:1px solid black">Font feature</span></p>
+
+			<ul style="background:blue;">
+				<li style="color:yellow;">Bulleted List feature</li>
+				<li style="color:yellow;">Bulleted List feature</li>
+				<li style="color:yellow;">Bulleted List feature</li>
+			</ul>
+
+			<ol style="background:blue;">
+				<li style="color:yellow;">Numbered List feature</li>
+				<li style="color:yellow;">Numbered List feature</li>
+				<li style="color:yellow;">Numbered List feature</li>
+			</ol>
+
+			<ul class="todo-list" style="background:blue;">
+				<li style="color:yellow;">
+					<label class="todo-list__label">
+						<input type="checkbox" disabled="disabled">
+						<span class="todo-list__label__description">Todo List feature</span>
+					</label>
+				</li>
+				<li style="color:yellow;">
+					<label class="todo-list__label">
+						<input type="checkbox" disabled="disabled">
+						<span class="todo-list__label__description">Todo List feature</span>
+					</label>
+				</li>
+				<li style="color:yellow;">
+					<label class="todo-list__label">
+						<input type="checkbox" disabled="disabled">
+						<span class="todo-list__label__description">Todo List feature</span>
+					</label>
+				</li>
+			</ul>
+
+			<blockquote style="color:blue;"><p>Blockquote Feature</p></blockquote>
+
+			<figure style="border: 1px solid blue;" class="image">
+				<img src="sample.jpg" style="border: 1px solid red;" alt="bar">
+				<figcaption style="background:yellow;">Caption</figcaption>
+			</figure>
+
+			<pre style="background:blue;"><code style="color:yellow;" class="language-plaintext">Code Block</code></pre>
+
+			<table style="background:blue;">
+				<thead style="background:green;">
+					<tr>
+						<th style="color:red;">h1</th>
+						<th style="color:red;">h2</th>
+						<th style="color:red;">h3</th>
+					</tr>
+				</thead>
+				<tbody style="background:violet;">
+					<tr>
+						<td style="color:yellow;">1.1</td>
+						<td style="color:yellow;">1.2</td>
+						<td style="color:yellow;">1.3</td>
+					</tr>
+					<tr style="color:yellow;">
+						<td>2.1</td>
+						<td>2.2</td>
+						<td>2.3</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<oembed data-bar url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>
+
+			<div style="border: 1px solid blue" class="raw-html-embed">HTML snippet</div>
+
+			<div data-foo class="page-break" style="page-break-after:always;"><span style="display:none;">&nbsp;</span></div>
+		</div>
+	</div>
+
+	<div style="width: 40%">
+		<h1 style="margin:12px 0 0 0; padding:0 0 5px 0; font-size: 18px; border-bottom: solid 1px grey">Source content:</h1>
+		<div id="preview"></div>
+	</div>
+</div>
+<script>
+	document.getElementById( 'preview' ).innerHTML = document.getElementById( 'editor' ).innerHTML;
+</script>

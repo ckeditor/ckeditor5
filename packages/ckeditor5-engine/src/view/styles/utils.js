@@ -36,6 +36,11 @@ const COLOR_NAMES = new Set( [
 	'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon',
 	'sandybrown', 'seagreen', 'seashell', 'sienna', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow',
 	'springgreen', 'steelblue', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'whitesmoke', 'yellowgreen',
+	// CSS Color Module Level 3 (System Colors)
+	'activeborder', 'activecaption', 'appworkspace', 'background', 'buttonface', 'buttonhighlight', 'buttonshadow',
+	'buttontext', 'captiontext', 'graytext', 'highlight', 'highlighttext', 'inactiveborder', 'inactivecaption',
+	'inactivecaptiontext', 'infobackground', 'infotext', 'menu', 'menutext', 'scrollbar', 'threeddarkshadow',
+	'threedface', 'threedhighlight', 'threedlightshadow', 'threedshadow', 'window', 'windowframe', 'windowtext',
 	// CSS Color Module Level 4
 	'rebeccapurple',
 	// Keywords
@@ -220,7 +225,7 @@ export function getBoxSidesValueReducer( styleShorthand ) {
  *		// will return '1px 1px 2px'
  *
  * @param {module:engine/view/stylesmap~BoxSides} styleShorthand
- * @returns {Function}
+ * @returns {String}
  */
 export function getBoxSidesShorthandValue( { top, right, bottom, left } ) {
 	const out = [];

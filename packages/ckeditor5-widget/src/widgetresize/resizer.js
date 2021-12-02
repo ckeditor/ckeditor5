@@ -7,7 +7,6 @@
  * @module widget/widgetresize/resizer
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
@@ -16,6 +15,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import ResizeState from './resizerstate';
+import SizeView from './sizeview';
 
 /**
  * Represents a resizer for a single resizable object.
@@ -41,7 +41,7 @@ export default class Resizer {
 		 *
 		 * @protected
 		 * @readonly
-		 * @member {module:widget/widgetresize/resizer~SizeView} #_sizeUI
+		 * @member {module:widget/widgetresize/sizeview~SizeView} #_sizeView
 		 */
 
 		/**
@@ -51,17 +51,6 @@ export default class Resizer {
 		 * @type {module:widget/widgetresize~ResizerOptions}
 		 */
 		this._options = options;
-
-		/**
-		 * Container of the entire resize UI.
-		 *
-		 * Note that this property is initialized only after the element bound with the resizer is drawn
-		 * so it will be a `null` when uninitialized.
-		 *
-		 * @private
-		 * @type {HTMLElement|null}
-		 */
-		this._domResizerWrapper = null;
 
 		/**
 		 * A wrapper that is controlled by the resizer. This is usually a widget element.
@@ -123,8 +112,6 @@ export default class Resizer {
 				that._appendHandles( domElement );
 				that._appendSizeUI( domElement );
 
-				that._domResizerWrapper = domElement;
-
 				that.on( 'change:isEnabled', ( evt, propName, newValue ) => {
 					domElement.style.display = newValue ? '' : 'none';
 				} );
@@ -153,7 +140,7 @@ export default class Resizer {
 	begin( domResizeHandle ) {
 		this.state = new ResizeState( this._options );
 
-		this._sizeUI.bindToState( this._options, this.state );
+		this._sizeView._bindToState( this._options, this.state );
 
 		this._initialViewWidth = this._options.viewElement.getStyle( 'width' );
 
@@ -307,8 +294,7 @@ export default class Resizer {
 	 * @protected
 	 */
 	_cleanup() {
-		this._sizeUI.dismiss();
-		this._sizeUI.isVisible = false;
+		this._sizeView._dismiss();
 
 		const editingView = this._options.editor.editing.view;
 
@@ -421,6 +407,19 @@ export default class Resizer {
 	}
 
 	/**
+	 * DOM container of the entire resize UI.
+	 *
+	 * Note that this property will have a value only after the element bound with the resizer is rendered
+	 * (otherwise `null`).
+	 *
+	 * @private
+	 * @member {HTMLElement|null}
+	 */
+	get _domResizerWrapper() {
+		return this._options.editor.editing.view.domConverter.mapViewToDom( this._viewResizerWrapper );
+	}
+
+	/**
 	 * Renders the resize handles in the DOM.
 	 *
 	 * @private
@@ -440,20 +439,18 @@ export default class Resizer {
 	}
 
 	/**
-	 * Sets up the {@link #_sizeUI} property and adds it to the passed `domElement`.
+	 * Sets up the {@link #_sizeView} property and adds it to the passed `domElement`.
 	 *
 	 * @private
 	 * @param {HTMLElement} domElement
 	 */
 	_appendSizeUI( domElement ) {
-		const sizeUI = new SizeView();
+		this._sizeView = new SizeView();
 
 		// Make sure icon#element is rendered before passing to appendChild().
-		sizeUI.render();
+		this._sizeView.render();
 
-		this._sizeUI = sizeUI;
-
-		domElement.appendChild( sizeUI.element );
+		domElement.appendChild( this._sizeView.element );
 	}
 
 	/**
@@ -474,61 +471,6 @@ export default class Resizer {
 }
 
 mix( Resizer, ObservableMixin );
-
-/**
- * A view displaying the proposed new element size during the resizing.
- *
- * @extends {module:ui/view~View}
- */
-class SizeView extends View {
-	constructor() {
-		super();
-
-		const bind = this.bindTemplate;
-
-		this.setTemplate( {
-			tag: 'div',
-			attributes: {
-				class: [
-					'ck',
-					'ck-size-view',
-					bind.to( 'activeHandlePosition', value => value ? `ck-orientation-${ value }` : '' )
-				],
-				style: {
-					display: bind.if( 'isVisible', 'none', visible => !visible )
-				}
-			},
-			children: [ {
-				text: bind.to( 'label' )
-			} ]
-		} );
-	}
-
-	bindToState( options, resizerState ) {
-		this.bind( 'isVisible' ).to( resizerState, 'proposedWidth', resizerState, 'proposedHeight', ( width, height ) =>
-			width !== null && height !== null );
-
-		this.bind( 'label' ).to(
-			resizerState, 'proposedHandleHostWidth',
-			resizerState, 'proposedHandleHostHeight',
-			resizerState, 'proposedWidthPercents',
-			( width, height, widthPercents ) => {
-				if ( options.unit === 'px' ) {
-					return `${ width }×${ height }`;
-				} else {
-					return `${ widthPercents }%`;
-				}
-			}
-		);
-
-		this.bind( 'activeHandlePosition' ).to( resizerState );
-	}
-
-	dismiss() {
-		this.unbind();
-		this.isVisible = false;
-	}
-}
 
 // @private
 // @param {String} resizerPosition Expected resizer position like `"top-left"`, `"bottom-right"`.

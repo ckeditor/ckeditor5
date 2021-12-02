@@ -17,8 +17,10 @@ ClassicEditor
 				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
 			]
 		},
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

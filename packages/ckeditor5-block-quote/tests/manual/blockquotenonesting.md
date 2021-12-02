@@ -1,0 +1,2 @@
+* The nested block quote present in the data should be "unnested" ("unwrapped") on data load. All block quotes (the top level block quote and all nested ones) should be converted to siblings in editor's root.
+* It should not be possible to insert a block quote into another block quote as a direct child in any way (UI, paste, d&d, etc.). It is allowed to have nested block quotes indirectly, i.e. a block quote inside a table, which is inside another block quote.

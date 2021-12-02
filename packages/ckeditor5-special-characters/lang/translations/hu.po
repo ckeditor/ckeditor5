@@ -970,7 +970,7 @@ msgstr ""
 
 msgctxt "A label for the \"inverted question mark\" symbol."
 msgid "Inverted question mark"
-msgstr ""
+msgstr "Fordított kérdőjel"
 
 msgctxt "A label for the \"two dot leader\" symbol."
 msgid "Two dot leader"
@@ -1010,7 +1010,7 @@ msgstr ""
 
 msgctxt "A label for the \"copyright sign\" symbol."
 msgid "Copyright sign"
-msgstr ""
+msgstr "Copyright jele"
 
 msgctxt "A label for the \"registered sign\" symbol."
 msgid "Registered sign"

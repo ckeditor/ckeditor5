@@ -88,8 +88,9 @@ export default class MediaRegistry {
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {String} url The URL to be translated into a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderMediaPreview]
-	 * @param {String} [options.renderForEditingView]
+	 * @param {String} [options.elementName]
+	 * @param {Boolean} [options.renderMediaPreview]
+	 * @param {Boolean} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
 	getMediaViewElement( writer, url, options ) {
@@ -206,8 +207,9 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderMediaPreview]
-	 * @param {String} [options.renderForEditingView]
+	 * @param {String} [options.elementName]
+	 * @param {Boolean} [options.renderMediaPreview]
+	 * @param {Boolean} [options.renderForEditingView]
 	 * @returns {module:engine/view/element~Element}
 	 */
 	getViewElement( writer, options ) {
@@ -225,15 +227,15 @@ class Media {
 
 			const mediaHtml = this._getPreviewHtml( options );
 
-			viewElement = writer.createRawElement( 'div', attributes, function( domElement ) {
-				domElement.innerHTML = mediaHtml;
+			viewElement = writer.createRawElement( 'div', attributes, ( domElement, domConverter ) => {
+				domConverter.setContentOf( domElement, mediaHtml );
 			} );
 		} else {
 			if ( this.url ) {
 				attributes.url = this.url;
 			}
 
-			viewElement = writer.createEmptyElement( 'oembed', attributes );
+			viewElement = writer.createEmptyElement( options.elementName, attributes );
 		}
 
 		writer.setCustomProperty( 'media-content', true, viewElement );
@@ -246,7 +248,7 @@ class Media {
 	 *
 	 * @param {module:engine/view/downcastwriter~DowncastWriter} writer The view writer used to produce a view element.
 	 * @param {Object} options
-	 * @param {String} [options.renderForEditingView]
+	 * @param {Boolean} [options.renderForEditingView]
 	 * @returns {String}
 	 */
 	_getPreviewHtml( options ) {

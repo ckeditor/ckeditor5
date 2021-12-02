@@ -2,8 +2,8 @@ CKEditor 5 utilities
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-utils.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-utils/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-utils?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 Various utilities used by CKEditor 5 and its features. This is a sort of  CKEditor 5's standard library.
 

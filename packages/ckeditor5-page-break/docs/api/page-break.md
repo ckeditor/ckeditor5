@@ -10,11 +10,11 @@ This package implements the page break feature for CKEditor 5.
 
 ## Demo
 
-Check out the {@link features/page-break#demo demo in the Page break feature} guide.
+Check out the {@link features/page-break#demo demo in the page break feature guide}.
 
 ## Documentation
 
-See the {@link features/page-break Page break feature} guide and the {@link module:page-break/pagebreak~PageBreak} plugin documentation.
+See the {@link features/page-break page break feature guide} and the {@link module:page-break/pagebreak~PageBreak} plugin documentation.
 
 ## Installation
 

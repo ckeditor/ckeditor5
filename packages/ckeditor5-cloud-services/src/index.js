@@ -7,10 +7,5 @@
  * @module cloud-services
  */
 
-import CloudServices from './cloudservices';
-import CloudServicesCore from './cloudservicescore';
-
-export default {
-	CloudServices,
-	CloudServicesCore
-};
+export { default as CloudServices } from './cloudservices';
+export { default as CloudServicesCore } from './cloudservicescore';

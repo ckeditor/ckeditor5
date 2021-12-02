@@ -98,7 +98,7 @@ export default class DocumentSelection {
 	 * Returns true if selection instance is marked as `fake`.
 	 *
 	 * @see #_setTo
-	 * @returns {Boolean}
+	 * @type {Boolean}
 	 */
 	get isFake() {
 		return this._selection.isFake;
@@ -108,7 +108,7 @@ export default class DocumentSelection {
 	 * Returns fake selection label.
 	 *
 	 * @see #_setTo
-	 * @returns {String}
+	 * @type {String}
 	 */
 	get fakeSelectionLabel() {
 		return this._selection.fakeSelectionLabel;

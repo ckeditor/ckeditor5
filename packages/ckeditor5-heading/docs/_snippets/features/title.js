@@ -15,6 +15,11 @@ BaloonBlockEditor.builtinPlugins.push( Title );
 BaloonBlockEditor
 	.create( document.querySelector( '#snippet-title' ), {
 		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
 		blockToolbar: [
 			'bulletedList',
 			'numberedList',
@@ -32,23 +37,29 @@ BaloonBlockEditor
 		window.editor = editor;
 
 		const titlePlugin = editor.plugins.get( 'Title' );
-		const titleConsole = new Console( document.querySelector( '.title-console__title' ) );
-		const bodyConsole = new Console( document.querySelector( '.title-console__body' ) );
-		const dataConsole = new Console( document.querySelector( '.title-console__data' ) );
+		const titleConsole = new Console( document.querySelector( '.title-console__title' ), 'plaintext' );
+		const bodyConsole = new Console( document.querySelector( '.title-console__body' ), 'html' );
+		const dataConsole = new Console( document.querySelector( '.title-console__data' ), 'html' );
 
 		editor.model.document.on( 'change:data', () => {
 			titleConsole.update( titlePlugin.getTitle() );
 			bodyConsole.update( titlePlugin.getBody() );
 			dataConsole.update( editor.getData() );
 		} );
+
+		// Load data.
+		titleConsole.update( '' );
+		bodyConsole.update( '<p>&nbsp;</p>' );
+		dataConsole.update( '<p>&nbsp;</p>' );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
 
 class Console {
-	constructor( element ) {
+	constructor( element, language ) {
 		this.element = element;
+		this.language = language;
 		this.consoleUpdates = 0;
 		this.previousData = '';
 	}
@@ -59,13 +70,15 @@ class Console {
 		}
 
 		this.previousData = data;
-
 		const element = this.element;
 
 		this.consoleUpdates++;
 
 		element.classList.add( 'updated' );
-		element.textContent = `'${ data }'`;
+
+		const content = window.Prism.highlight( data, window.Prism.languages[ this.language ], this.language );
+
+		element.innerHTML = `'${ content }'`;
 
 		setTimeout( () => {
 			if ( --this.consoleUpdates == 0 ) {

@@ -25,9 +25,11 @@ export default class ColorInputView extends View {
 	 *
 	 * @param {module:utils/locale~Locale} locale The locale instance.
 	 * @param {Object} options The input options.
-	 * @param {module:ui/colorgrid/colorgrid~ColorDefinition} options.colorDefinitions The colors to be displayed
+	 * @param {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>} options.colorDefinitions The colors to be displayed
 	 * in the palette inside the input's dropdown.
 	 * @param {Number} options.columns The number of columns in which the colors will be displayed.
+	 * @param {String} [options.defaultColorValue] If specified, the color input view will replace the "Remove color" button with
+	 * the "Restore default" button. Instead of clearing the input field, the default color value will be set.
 	 */
 	constructor( locale, options ) {
 		super( locale );
@@ -96,7 +98,7 @@ export default class ColorInputView extends View {
 		 * some error, it helps screen readers read the error text.
 		 *
 		 * @observable
-		 * @member {Boolean} #ariaDescribedById
+		 * @member {String} #ariaDescribedById
 		 */
 		this.set( 'ariaDescribedById' );
 
@@ -113,7 +115,7 @@ export default class ColorInputView extends View {
 		 * @protected
 		 * @member {module:ui/dropdown/dropdown~DropdownView}
 		 */
-		this._dropdownView = this._createDropdownView( locale );
+		this._dropdownView = this._createDropdownView();
 
 		/**
 		 * An instance of the input allowing the user to type a color value.
@@ -121,7 +123,7 @@ export default class ColorInputView extends View {
 		 * @protected
 		 * @member {module:ui/inputtext/inputtextview~InputTextView}
 		 */
-		this._inputView = this._createInputTextView( locale );
+		this._inputView = this._createInputTextView();
 
 		/**
 		 * The flag that indicates whether the user is still typing.
@@ -173,7 +175,7 @@ export default class ColorInputView extends View {
 		const colorGrid = this._createColorGrid( locale );
 		const dropdown = createDropdown( locale );
 		const colorPreview = new View();
-		const removeColorButton = this._createRemoveColorButton( locale );
+		const removeColorButton = this._createRemoveColorButton();
 
 		colorPreview.setTemplate( {
 			tag: 'span',
@@ -263,13 +265,15 @@ export default class ColorInputView extends View {
 		const locale = this.locale;
 		const t = locale.t;
 		const removeColorButton = new ButtonView( locale );
+		const defaultColor = this.options.defaultColorValue || '';
+		const removeColorButtonLabel = defaultColor ? t( 'Restore default' ) : t( 'Remove color' );
 
 		removeColorButton.class = 'ck-input-color__remove-color';
 		removeColorButton.withText = true;
 		removeColorButton.icon = icons.eraser;
-		removeColorButton.label = t( 'Remove color' );
+		removeColorButton.label = removeColorButtonLabel;
 		removeColorButton.on( 'execute', () => {
-			this.value = '';
+			this.value = defaultColor;
 			this._dropdownView.isOpen = false;
 			this.fire( 'input' );
 		} );

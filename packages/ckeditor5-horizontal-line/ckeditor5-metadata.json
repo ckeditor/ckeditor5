@@ -1,0 +1,23 @@
+{
+	"plugins": [
+		{
+			"name": "Horizontal line",
+			"className": "HorizontalLine",
+			"description": "Allows for inserting horizontal lines into your content. These help the authors separate and group document sections.",
+			"docs": "features/horizontal-line.html",
+			"path": "src/horizontalline.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "horizontalLine",
+					"iconPath": "theme/icons/horizontalline.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "hr"
+				}
+			]
+		}
+	]
+}

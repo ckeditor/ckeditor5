@@ -6,9 +6,15 @@
 .ck-image-upload-complete-icon {
 	display: block;
 	position: absolute;
-	top: 10px;
-	right: 10px;
+
+	/*
+	 * Smaller images should have the icon closer to the border.
+	 * Match the icon position with the linked image indicator brought by the link image feature.
+	 */
+	top: min(var(--ck-spacing-medium), 6%);
+	right: min(var(--ck-spacing-medium), 6%);
 	border-radius: 50%;
+	z-index: 1;
 
 	&::after {
 		content: "";

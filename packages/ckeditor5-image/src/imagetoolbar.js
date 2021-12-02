@@ -9,13 +9,13 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import { WidgetToolbarRepository } from 'ckeditor5/src/widget';
-
-import { getSelectedImageWidget } from './image/utils';
+import ImageUtils from './imageutils';
+import { isObject } from 'lodash-es';
 
 /**
  * The image toolbar plugin. It creates and manages the image toolbar (the toolbar displayed when an image is selected).
  *
- * For a detailed overview, check the {@glink features/image#image-contextual-toolbar image contextual toolbar} documentation.
+ * For an overview, check the {@glink features/images/images-overview#image-contextual-toolbar image contextual toolbar} documentation.
  *
  * Instances of toolbar components (e.g. buttons) are created using the editor's
  * {@link module:ui/componentfactory~ComponentFactory component factory}
@@ -30,7 +30,7 @@ export default class ImageToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetToolbarRepository ];
+		return [ WidgetToolbarRepository, ImageUtils ];
 	}
 
 	/**
@@ -47,11 +47,12 @@ export default class ImageToolbar extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const widgetToolbarRepository = editor.plugins.get( WidgetToolbarRepository );
+		const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 		widgetToolbarRepository.register( 'image', {
 			ariaLabel: t( 'Image toolbar' ),
-			items: editor.config.get( 'image.toolbar' ) || [],
-			getRelatedElement: getSelectedImageWidget
+			items: normalizeDeclarativeConfig( editor.config.get( 'image.toolbar' ) || [] ),
+			getRelatedElement: selection => imageUtils.getClosestSelectedImageWidget( selection )
 		} );
 	}
 }
@@ -64,18 +65,39 @@ export default class ImageToolbar extends Plugin {
  *
  * * {@link module:image/imagestyle~ImageStyle} (with a default configuration),
  * * {@link module:image/imagetextalternative~ImageTextAlternative},
+ * * {@link module:image/imagecaption~ImageCaption},
  *
- * three toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
- * `'imageStyle:full'`, `'imageStyle:side'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
+ * the following toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
+ * * `'imageTextAlternative'`,
+ * * `'toggleImageCaption'`,
+ * * {@link module:image/image~ImageConfig#styles buttons provided by the `ImageStyle` plugin},
+ * * {@link module:image/imagestyle/utils~DEFAULT_DROPDOWN_DEFINITIONS drop-downs provided by the `ImageStyle` plugin},
+ *
+ * so you can configure the toolbar like this:
  *
  *		const imageConfig = {
- *			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+ *			toolbar: [
+ *	 			'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', '|',
+ *				'toggleImageCaption', 'imageTextAlternative'
+ *			]
  *		};
  *
- * Of course, the same buttons can also be used in the
- * {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
+ * Besides that, the `ImageStyle` plugin allows to define a
+ * {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition custom drop-down} while configuring the toolbar.
+ *
+ * The same items can also be used in the {@link module:core/editor/editorconfig~EditorConfig#toolbar main editor toolbar}.
  *
  * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
  * @member {Array.<String>} module:image/image~ImageConfig#toolbar
  */
+
+// Convert the dropdown definitions to their keys registered in the ComponentFactory.
+// The registration precess should be handled by the plugin which handles the UI of a particular feature.
+//
+// @param {Array.<String|module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition>} config
+//
+// @returns {Array.<String>}
+function normalizeDeclarativeConfig( config ) {
+	return config.map( item => isObject( item ) ? item.name : item );
+}

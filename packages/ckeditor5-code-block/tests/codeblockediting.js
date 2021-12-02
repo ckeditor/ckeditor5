@@ -12,6 +12,7 @@ import OutdentCodeBlockCommand from '../src/outdentcodeblockcommand';
 
 import AlignmentEditing from '@ckeditor/ckeditor5-alignment/src/alignmentediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -123,8 +124,21 @@ describe( 'CodeBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root' ], 'codeBlock' ) ).to.be.true;
 	} );
 
-	it( 'disallows for codeBlock in the other codeBlock', () => {
+	it( 'disallows codeBlock in the other codeBlock', () => {
 		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'codeBlock' ) ).to.be.false;
+	} );
+
+	it( 'disallows object elements in codeBlock', () => {
+		// Fake "inline-widget".
+		model.schema.register( 'inline-widget', {
+			inheritAllFrom: '$block',
+			// Allow to be a child of the `codeBlock` element.
+			allowIn: 'codeBlock',
+			// And mark as an object.
+			isObject: true
+		} );
+
+		expect( model.schema.checkChild( [ '$root', 'codeBlock' ], 'inline-widget' ) ).to.be.false;
 	} );
 
 	it( 'allows only for $text in codeBlock', () => {
@@ -245,8 +259,11 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should execute enter command when pressing enter in an element nested inside a codeBlock', () => {
-			model.schema.register( 'codeBlockSub', { allowIn: 'codeBlock', isInline: true } );
-			model.schema.extend( '$text', { allowIn: 'codeBlockSub' } );
+			model.schema.register( 'codeBlockSub', {
+				allowIn: 'codeBlock',
+				allowChildren: '$text',
+				isInline: true
+			} );
 			editor.conversion.elementToElement( { model: 'codeBlockSub', view: 'codeBlockSub' } );
 
 			const enterCommand = editor.commands.get( 'enter' );
@@ -377,7 +394,7 @@ describe( 'CodeBlockEditing', () => {
 
 		describe( 'leaving block using the enter key', () => {
 			describe( 'leaving the block end', () => {
-				it( 'should leave the block when pressed twice at the end', () => {
+				it( 'should leave the block when pressed three times at the end', () => {
 					const spy = sinon.spy( editor.editing.view, 'scrollToTheSelection' );
 
 					setModelData( model, '<codeBlock language="css">foo[]</codeBlock>' );
@@ -390,6 +407,11 @@ describe( 'CodeBlockEditing', () => {
 					viewDoc.fire( 'enter', getEvent() );
 
 					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
 						'<codeBlock language="css">foo</codeBlock>' +
 						'<paragraph>[]</paragraph>'
 					);
@@ -398,14 +420,17 @@ describe( 'CodeBlockEditing', () => {
 
 					editor.execute( 'undo' );
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+						'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+
+					editor.execute( 'undo' );
+					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
 
 					editor.execute( 'undo' );
 					expect( getModelData( model ) ).to.equal( '<codeBlock language="css">foo[]</codeBlock>' );
 				} );
 
 				it( 'should not leave the block when the selection is not collapsed', () => {
-					setModelData( model, '<codeBlock language="css">f[oo<softBreak></softBreak>]</codeBlock>' );
+					setModelData( model, '<codeBlock language="css">f[oo<softBreak></softBreak><softBreak></softBreak>]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
 
@@ -413,7 +438,7 @@ describe( 'CodeBlockEditing', () => {
 						'<codeBlock language="css">f<softBreak></softBreak>[]</codeBlock>' );
 				} );
 
-				it( 'should not leave the block when pressed twice when in the middle of the code', () => {
+				it( 'should not leave the block when pressed three times when in the middle of the code', () => {
 					setModelData( model, '<codeBlock language="css">fo[]o</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
@@ -425,9 +450,16 @@ describe( 'CodeBlockEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<codeBlock language="css">fo<softBreak></softBreak><softBreak></softBreak>[]o</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">' +
+						'fo<softBreak></softBreak><softBreak></softBreak><softBreak></softBreak>[]o' +
+						'</codeBlock>' );
 				} );
 
-				it( 'should not leave the block when pressed twice at the beginning of the code', () => {
+				it( 'should not leave the block when pressed three times at the beginning of the code', () => {
 					setModelData( model, '<codeBlock language="css">[]foo</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent() );
@@ -439,23 +471,49 @@ describe( 'CodeBlockEditing', () => {
 
 					expect( getModelData( model ) ).to.equal(
 						'<codeBlock language="css"><softBreak></softBreak><softBreak></softBreak>[]foo</codeBlock>' );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">' +
+						'<softBreak></softBreak><softBreak></softBreak><softBreak></softBreak>[]foo' +
+						'</codeBlock>' );
 				} );
 
-				it( 'should not leave the block when pressed shift+enter twice at the end of the code', () => {
-					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+				it( 'should not leave the block when pressed shift+enter three times at the end of the code', () => {
+					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					viewDoc.fire( 'enter', getEvent( { isSoft: true } ) );
 
 					expect( getModelData( model ) ).to.equal(
-						'<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+						'<codeBlock language="css">' +
+						'foo<softBreak></softBreak><softBreak></softBreak><softBreak></softBreak>[]' +
+						'</codeBlock>' );
 				} );
 
-				it( 'should clean up the last line if has white–space characters only', () => {
-					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak>[]</codeBlock>' );
+				it( 'should clean up the last two lines if the last one has white-space characters only', () => {
+					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
 
 					model.change( writer => {
-						// <codeBlock language="css">foo<softBreak></softBreak>  []</codeBlock>
+						// <codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>  []</codeBlock>
+						writer.insertText( '  ', model.document.getRoot().getChild( 0 ), 5 );
+					} );
+
+					viewDoc.fire( 'enter', getEvent() );
+
+					expect( getModelData( model ) ).to.equal(
+						'<codeBlock language="css">foo</codeBlock><paragraph>[]</paragraph>' );
+				} );
+
+				it( 'should clean up the last two lines if both have white-space characters only', () => {
+					setModelData( model, '<codeBlock language="css">foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>' );
+
+					model.change( writer => {
+						// <codeBlock language="css">foo<softBreak></softBreak>  <softBreak></softBreak>[]</codeBlock>
 						writer.insertText( '  ', model.document.getRoot().getChild( 0 ), 4 );
+
+						// <codeBlock language="css">foo<softBreak></softBreak>  <softBreak></softBreak>  []</codeBlock>
+						writer.insertText( '  ', model.document.getRoot().getChild( 0 ), 7 );
 					} );
 
 					viewDoc.fire( 'enter', getEvent() );
@@ -734,6 +792,26 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'should convert markers inside pre > code', () => {
+			editor.conversion.for( 'editingDowncast' ).markerToElement( { view: 'group', model: 'group' } );
+
+			setModelData( model,
+				'<codeBlock language="plaintext">[]Foo</codeBlock>'
+			);
+
+			model.change( writer => {
+				const range = model.createRangeIn( model.document.getRoot().getChild( 0 ) );
+
+				writer.addMarker( 'group', { range, usingOperation: false } );
+			} );
+
+			expect( getViewData( view ) ).to.equal(
+				'<pre data-language="Plain text" spellcheck="false">' +
+					'<code class="language-plaintext">[]<group></group>Foo<group></group></code>' +
+				'</pre>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline m -> v conversion ', () => {
@@ -866,6 +944,50 @@ describe( 'CodeBlockEditing', () => {
 					return editor.destroy();
 				} );
 		} );
+
+		it( 'should convert markers inside pre > code', () => {
+			editor.conversion.for( 'downcast' ).markerToData( { model: 'group' } );
+
+			setModelData( model,
+				'<codeBlock language="plaintext">[]Foo</codeBlock>'
+			);
+
+			model.change( writer => {
+				const range = model.createRangeIn( model.document.getRoot().getChild( 0 ) );
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<pre>' +
+					'<code class="language-plaintext">' +
+						'<group-start name="foo:bar:baz"></group-start>Foo<group-end name="foo:bar:baz"></group-end>' +
+					'</code>' +
+				'</pre>'
+			);
+		} );
+
+		it( 'should convert markers on a code block', () => {
+			editor.conversion.for( 'downcast' ).markerToData( { model: 'group' } );
+
+			setModelData( model,
+				'<codeBlock language="plaintext">[]Foo</codeBlock>'
+			);
+
+			model.change( writer => {
+				const range = model.createRangeOn( model.document.getRoot().getChild( 0 ) );
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expect( editor.getData() ).to.equal(
+				'<pre>' +
+					'<code class="language-plaintext" data-group-end-after="foo:bar:baz" data-group-start-before="foo:bar:baz">' +
+						'Foo' +
+					'</code>' +
+				'</pre>'
+			);
+		} );
 	} );
 
 	describe( 'data pipeline v -> m conversion ', () => {
@@ -948,8 +1070,75 @@ describe( 'CodeBlockEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]<div><p>Foo\'s&"bar"</p></div></codeBlock>' );
 		} );
 
-		it( 'should be overridable', () => {
+		it( 'should preserve markers inside pre > code', () => {
+			editor.conversion.for( 'upcast' ).dataToMarker( { view: 'group' } );
+
+			editor.setData(
+				'<pre>' +
+					'<code>' +
+						'<pre>' +
+							'<group-start name="foo:id"></group-start>' +
+							'<code>Bar</code>' +
+							'<group-end name="foo:id"></group-end>' +
+						'</pre>' +
+					'</code>' +
+				'</pre>'
+			);
+
+			expect( model.markers.has( 'group:foo:id' ) ).to.be.true;
+
+			const marker = model.markers.get( 'group:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0, 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 0, 3 ] );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Bar</codeBlock>' );
+		} );
+
+		it( 'should preserve markers on a code block', () => {
+			editor.conversion.for( 'upcast' ).dataToMarker( { view: 'group' } );
+
+			editor.setData(
+				'<pre>' +
+					'<code class="language-plaintext" data-group-end-after="foo:id" data-group-start-before="foo:id">' +
+						'Foo' +
+					'</code>' +
+				'</pre>'
+			);
+
+			expect( model.markers.has( 'group:foo:id' ) ).to.be.true;
+
+			const marker = model.markers.get( 'group:foo:id' );
+
+			expect( marker.getStart().path ).to.deep.equal( [ 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1 ] );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock language="plaintext">[]Foo</codeBlock>' );
+		} );
+
+		it( 'should be overridable (pre)', () => {
 			editor.data.upcastDispatcher.on( 'element:pre', ( evt, data, api ) => {
+				const modelItem = api.writer.createElement( 'codeBlock' );
+
+				api.writer.appendText( 'Hello World!', modelItem );
+				api.writer.insert( modelItem, data.modelCursor );
+				api.consumable.consume( data.viewItem, { name: true } );
+
+				data.modelCursor = api.writer.createPositionAfter( modelItem );
+				data.modelRange = api.writer.createRangeOn( modelItem );
+			}, { priority: 'high' } );
+
+			editor.setData( '<pre><code>Foo Bar</code></pre>' );
+
+			expect( getModelData( model ) ).to.equal( '<codeBlock>[]Hello World!</codeBlock>' );
+		} );
+
+		it( 'should be overridable (code)', () => {
+			editor.data.upcastDispatcher.on( 'element:code', ( evt, data, api ) => {
+				if ( !data.viewItem.parent.is( 'element', 'pre' ) ) {
+					return;
+				}
+
 				const modelItem = api.writer.createElement( 'codeBlock' );
 
 				api.writer.appendText( 'Hello World!', modelItem );
@@ -987,10 +1176,8 @@ describe( 'CodeBlockEditing', () => {
 			editor.setData( `<pre><code>foo</code></pre>
 				<pre><code>bar</code></pre>` );
 
-			// Note: The empty <paragraph> in between should not be here. It's a conversion/auto–paragraphing bug.
 			expect( getModelData( model ) ).to.equal(
 				'<codeBlock language="plaintext">[]foo</codeBlock>' +
-				'<paragraph> </paragraph>' +
 				'<codeBlock language="plaintext">bar</codeBlock>' );
 		} );
 
@@ -1005,6 +1192,26 @@ describe( 'CodeBlockEditing', () => {
 			editor.data.set( { title: '<pre><code>foo</code></pre>' } );
 
 			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+		} );
+
+		it( 'should not conflict with code attribute conversion', async () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			const editor = await ClassicTestEditor.create( element, {
+				plugins: [ CodeEditing, CodeBlockEditing, Paragraph ]
+			} );
+
+			editor.setData( '<pre><code>foobar</code></pre>' );
+
+			expect( getModelData( editor.model ) ).to.equal( '<codeBlock language="plaintext">[]foobar</codeBlock>' );
+
+			editor.setData( '<code>foobar</code>' );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text code="true">[]foobar</$text></paragraph>' );
+
+			await editor.destroy();
+			element.remove();
 		} );
 
 		describe( 'config.codeBlock.languages', () => {

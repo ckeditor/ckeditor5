@@ -205,6 +205,18 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			return ClassicEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				editor.destroy();
+			} );
+		} );
+
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
 			ClassicEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
@@ -348,7 +360,7 @@ describe( 'ClassicEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

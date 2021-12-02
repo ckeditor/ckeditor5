@@ -20,7 +20,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import normalizeToolbarConfig from './normalizetoolbarconfig';
-import { icons } from 'ckeditor5/src/core';
+import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -171,16 +171,19 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
+
+		const isRtl = locale.uiLanguageDirection === 'rtl';
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this.focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate toolbar items backwards using the arrow[left,up] keys.
-				focusPrevious: [ 'arrowleft', 'arrowup' ],
+				focusPrevious: [ isRtl ? 'arrowright' : 'arrowleft', 'arrowup' ],
 
 				// Navigate toolbar items forwards using the arrow[right,down] keys.
-				focusNext: [ 'arrowright', 'arrowdown' ]
+				focusNext: [ isRtl ? 'arrowleft' : 'arrowright', 'arrowdown' ]
 			}
 		} );
 
@@ -932,7 +935,7 @@ class DynamicGrouping {
 			label: t( 'Show more items' ),
 			tooltip: true,
 			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
-			icon: icons.threeVerticalDots
+			icon: threeVerticalDots
 		} );
 
 		// 1:1 pass–through binding.

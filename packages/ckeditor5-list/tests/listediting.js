@@ -429,7 +429,10 @@ describe( 'ListEditing', () => {
 			}
 
 			testList( 'single item', '<ul><li>x</li></ul>' );
+			testList( 'single item with spaces', '<ul><li>&nbsp;x&nbsp;</li></ul>' );
 			testList( 'multiple items', '<ul><li>a</li><li>b</li><li>c</li></ul>' );
+			testList( 'multiple items with leading space in first', '<ul><li>&nbsp;a</li><li>b</li><li>c</li></ul>' );
+			testList( 'multiple items with trailing space in last', '<ul><li>a</li><li>b</li><li>c&nbsp;</li></ul>' );
 			testList( 'items and text', '<p>xxx</p><ul><li>a</li><li>b</li></ul><p>yyy</p><ul><li>c</li><li>d</li></ul>' );
 			testList( 'numbered list', '<ol><li>a</li><li>b</li></ol>' );
 			testList( 'mixed list and content #1', '<p>xxx</p><ul><li>a</li><li>b</li></ul><ol><li>c</li><li>d</li></ol><p>yyy</p>' );
@@ -1646,7 +1649,15 @@ describe( 'ListEditing', () => {
 										'</ul>' +
 										'</li>' +
 										'</ul>' +
-										'<p>e</p>' +
+										'<figure class="table">' +
+											'<table>' +
+												'<tbody>' +
+													'<tr>' +
+														'<td>e</td>' +
+													'</tr>' +
+												'</tbody>' +
+											'</table>' +
+										'</figure>' +
 									'</td>' +
 								'</tr>' +
 							'</tbody>' +
@@ -2003,7 +2014,13 @@ describe( 'ListEditing', () => {
 									'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 									'<listItem listIndent="0" listType="bulleted">c</listItem>' +
 									'<listItem listIndent="1" listType="bulleted">d</listItem>' +
-									'<paragraph>e</paragraph>' +
+									'<table>' +
+										'<tableRow>' +
+											'<tableCell>' +
+											'<paragraph>e</paragraph>' +
+											'</tableCell>' +
+										'</tableRow>' +
+									'</table>' +
 								'</tableCell>' +
 							'</tableRow>' +
 						'</table>' +

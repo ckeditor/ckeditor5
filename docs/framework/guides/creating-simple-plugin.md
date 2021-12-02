@@ -13,7 +13,7 @@ This guide will show you how to create a simple rich-text editor plugin for CKEd
 
 CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from the {@link module:core/plugin~Plugin base `Plugin` class}. However, you can also write simple constructor functions. This guide uses the former method.
 
-The plugin that you will write will use a part of the {@link features/image image feature} and will add a simple UI to it &mdash; an "Insert image" button that will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
+The plugin that you will write will use a part of the {@link features/images-overview image feature} and will add a simple UI to it &mdash; an "Insert image" button that will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
 
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
@@ -172,7 +172,7 @@ class InsertImage extends Plugin {
 				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
-					const imageElement = writer.createElement( 'image', {
+					const imageElement = writer.createElement( 'imageBlock', {
 						src: imageUrl
 					} );
 
@@ -194,9 +194,9 @@ If you refresh the page, you should now be able to insert new images into the co
 The image is fully functional. You can undo inserting by pressing <kbd>Ctrl</kbd>+<kbd>Z</kbd> and the image is always inserted as a block element (the paragraph that contains the selection is automatically split). This is all handled by the CKEditor 5 engine.
 
 <info-box>
-	As you can see, by clicking the button you are inserting an `<image src="...">` element into the model. The image feature is represented in the model as `<image>`, while in the view (i.e. the virtual DOM) and in the real DOM it is rendered as `<figure class="image"><img src="..."></figure>`.
+	As you can see, by clicking the button you are inserting an `<imageBlock src="...">` element into the model. The image feature is represented in the model as `<imageBlock>`, while in the view (i.e. the virtual DOM) and in the real DOM it is rendered as `<figure class="image"><img src="..."></figure>`.
 
-	The `<image>` to `<figure><img></figure>` transformation is called "conversion" and it requires a separate guide. However, as you can see in this example, it is a powerful mechanism because it allows non-1:1 mappings.
+	The `<imageBlock>` to `<figure><img></figure>` transformation is called "conversion" and it requires a separate guide. However, as you can see in this example, it is a powerful mechanism because it allows non-1:1 mappings.
 </info-box>
 
 Congratulations! You have just created your first CKEditor 5 plugin!
@@ -261,7 +261,7 @@ class InsertImage extends Plugin {
 				const imageUrl = prompt( 'Image URL' );
 
 				editor.model.change( writer => {
-					const imageElement = writer.createElement( 'image', {
+					const imageElement = writer.createElement( 'imageBlock', {
 						src: imageUrl
 					} );
 
@@ -295,4 +295,6 @@ If you would like to read more tutorials, check out the following one:
 * {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget}
 * {@link framework/guides/tutorials/implementing-an-inline-widget Implementing an inline widget}
 
-If you are more into reading about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture}.
+If you want to read more about the CKEditor 5 architecture, check out the {@link framework/guides/architecture/intro Introduction to CKEditor 5 architecture} guide.
+
+If you want your plugin to be easily integrated by other developers, learn about the {@link framework/guides/contributing/package-metadata package metadata file} that can be added to your package.

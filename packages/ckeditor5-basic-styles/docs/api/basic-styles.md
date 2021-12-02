@@ -10,11 +10,11 @@ This package contains features allowing to apply basic text formatting such as b
 
 ## Demo
 
-Check out the {@link features/basic-styles#demo demo in the Basic styles feature} guide.
+Check out the {@link features/basic-styles#demo demo in the basic styles feature guide}.
 
 ## Documentation
 
-See the {@link features/basic-styles Basic styles feature} guide.
+See the {@link features/basic-styles basic styles feature guide}.
 
 You can also check out the following plugins:
 

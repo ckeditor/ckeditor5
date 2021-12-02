@@ -43,9 +43,7 @@ ClassicEditor
 			decorators: {
 				addGreenLink: {
 					mode: 'automatic',
-					attributes: {
-						class: 'my-green-link'
-					}
+					classes: 'my-green-link'
 				}
 			}
 		}
@@ -277,7 +275,7 @@ ClassicEditor
 
 ## Adding extra attributes to elements contained in a figure
 
-The {@link features/image image} and {@link features/table table} features wrap view elements (`<img>` for image and `<table>` for table, respectively) in a `<figure>` element. During the downcast conversion, the model element is mapped to `<figure>` and not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lose information about the element that the attribute should be set on.
+The {@link features/images-overview image} and {@link features/table table} features wrap view elements (`<img>` for image and `<table>` for table, respectively) in a `<figure>` element. During the downcast conversion, the model element is mapped to `<figure>` and not the inner element. In such cases the default `conversion.attributeToAttribute()` conversion helpers could lose information about the element that the attribute should be set on.
 
 To overcome this limitation it is sufficient to write a custom converter that adds custom attributes to elements already converted by base features. The key point is to add these converters with a lower priority than the base converters so they will be called after the base ones.
 
@@ -307,13 +305,15 @@ class CustomFigureAttributes {
 		const editor = this.editor;
 
 		// Define on which elements the CSS classes should be preserved:
-		setupCustomClassConversion( 'img', 'image', editor );
+		setupCustomClassConversion( 'img', 'imageBlock', editor );
+		setupCustomClassConversion( 'img', 'imageInline', editor );
 		setupCustomClassConversion( 'table', 'table', editor );
 
 		editor.conversion.for( 'upcast' ).add( upcastCustomClasses( 'figure' ), { priority: 'low' } );
 
 		// Define custom attributes that should be preserved.
-		setupCustomAttributeConversion( 'img', 'image', 'id', editor );
+		setupCustomAttributeConversion( 'img', 'imageBlock', 'id', editor );
+		setupCustomAttributeConversion( 'img', 'imageInline', 'id', editor );
 		setupCustomAttributeConversion( 'table', 'table', 'id', editor );
 	}
 }

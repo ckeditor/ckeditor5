@@ -1,0 +1,30 @@
+{
+	"plugins": [
+		{
+			"name": "MathType",
+			"className": "MathType",
+			"description": "A mathematical and science formula editor with classical and handwriting input modes. Use it to create math equations or chemical formulas inside your content. MathType is a commercial solution delivered by our partner, Wiris.",
+			"docs": "features/math-equations.html",
+			"path": "src/plugin.js",
+			"uiComponents": [
+				{
+					"type": "Button",
+					"name": "MathType",
+					"iconPath": "theme/icons/formula.svg"
+				},
+				{
+					"type": "Button",
+					"name": "ChemType",
+					"iconPath": "theme/icons/chem.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "*",
+					"attributes": "*",
+					"_comment": "For a complete list of available MathML element and attribute names, visit [MDN Web Docs for MathML](https://developer.mozilla.org/en-US/docs/Web/MathML)."
+				}
+			]
+		}
+	]
+}

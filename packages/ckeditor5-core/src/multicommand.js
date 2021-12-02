@@ -63,7 +63,7 @@ export default class MultiCommand extends Command {
 	execute( ...args ) {
 		const command = this._getFirstEnabledCommand();
 
-		return command.execute( args );
+		return command != null && command.execute( args );
 	}
 
 	/**

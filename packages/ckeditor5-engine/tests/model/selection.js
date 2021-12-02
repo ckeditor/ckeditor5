@@ -952,10 +952,10 @@ describe( 'Selection', () => {
 			model.schema.extend( 'blockquote', { allowIn: '$root' } );
 			model.schema.extend( '$block', { allowIn: 'blockquote' } );
 
-			model.schema.register( 'image', {
-				allowIn: [ '$root', '$block' ]
+			model.schema.register( 'imageBlock', {
+				allowIn: [ '$root', '$block' ],
+				allowChildren: '$text'
 			} );
-			model.schema.extend( '$text', { allowIn: 'image' } );
 
 			// Special block which can contain another blocks.
 			model.schema.register( 'nestedBlock', { inheritAllFrom: '$block' } );
@@ -1020,7 +1020,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns only blocks', () => {
-			setData( model, '<p>[a</p><image>b</image><p>c]</p>' );
+			setData( model, '<p>[a</p><imageBlock>b</imageBlock><p>c]</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#c' ] );
 		} );
@@ -1047,13 +1047,13 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'returns an empty array if none of the selected elements is a block', () => {
-			setData( model, '<p>a</p><image>[a</image><image>b]</image><p>b</p>' );
+			setData( model, '<p>a</p><imageBlock>[a</imageBlock><imageBlock>b]</imageBlock><p>b</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
 
 		it( 'returns an empty array if the selected element is not a block', () => {
-			setData( model, '<p>a</p><image>[]a</image><p>b</p>' );
+			setData( model, '<p>a</p><imageBlock>[]a</imageBlock><p>b</p>' );
 
 			expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.be.empty;
 		} );
@@ -1160,14 +1160,14 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'returns the last block if at least one of its child nodes is selected', () => {
-				setData( model, '<p>[a</p><p>b</p><p><image></image>]c</p>' );
+				setData( model, '<p>[a</p><p>b</p><p><imageBlock></imageBlock>]c</p>' );
 
 				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
 			} );
 
 			// I needed these last 2 cases to justify the use of isTouching() instead of simple `offset == 0` check.
 			it( 'returns the last block if at least one of its child nodes is selected (end in an inline element)', () => {
-				setData( model, '<p>[a</p><p>b</p><p><image>x]</image>c</p>' );
+				setData( model, '<p>[a</p><p>b</p><p><imageBlock>x]</imageBlock>c</p>' );
 
 				expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b', 'p#c' ] );
 			} );
@@ -1176,7 +1176,7 @@ describe( 'Selection', () => {
 				'does not return the last block if at least one of its child nodes is selected ' +
 				'(end in an inline element, no content selected)',
 				() => {
-					setData( model, '<p>[a</p><p>b</p><p><image>]x</image>c</p>' );
+					setData( model, '<p>[a</p><p>b</p><p><imageBlock>]x</imageBlock>c</p>' );
 
 					expect( stringifyBlocks( doc.selection.getSelectedBlocks() ) ).to.deep.equal( [ 'p#a', 'p#b' ] );
 				}

@@ -39,9 +39,6 @@ import { getShorthandValues, getBoxSidesValueReducer, getBoxSidesValues, isLengt
  *			}
  *		};
  *
- * The `border` value is reduced to a 4 values for each box edge (even if they could be further reduces to a single
- * `border:<width> <style> <color>` style.
- *
  * @param {module:engine/view/stylesmap~StylesProcessor} stylesProcessor
  */
 export function addBorderRules( stylesProcessor ) {
@@ -102,7 +99,7 @@ export function addBorderRules( stylesProcessor ) {
 	stylesProcessor.setReducer( 'border-right', getBorderPositionReducer( 'right' ) );
 	stylesProcessor.setReducer( 'border-bottom', getBorderPositionReducer( 'bottom' ) );
 	stylesProcessor.setReducer( 'border-left', getBorderPositionReducer( 'left' ) );
-	stylesProcessor.setReducer( 'border', borderReducer );
+	stylesProcessor.setReducer( 'border', getBorderReducer() );
 
 	stylesProcessor.setStyleRelation( 'border', [
 		'border-color', 'border-style', 'border-width',
@@ -238,39 +235,128 @@ function normalizeBorderShorthand( string ) {
 	return result;
 }
 
-function borderReducer( value ) {
-	const reduced = [];
+// The border reducer factory.
+//
+// It tries to produce the most optimal output for the specified styles.
+//
+// For a border style:
+//
+//      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
+//
+// It will produce: `border-style: solid`.
+// For a border style and color:
+//
+//      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
+//      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
+//
+// It will produce: `border-color: #ff0; border-style: solid`.
+// If all border parameters are specified:
+//
+//      color: {top: "#ff0", bottom: "#ff0", right: "#ff0", left: "#ff0"}
+//      style: {top: "solid", bottom: "solid", right: "solid", left: "solid"}
+//      width: {top: "2px", bottom: "2px", right: "2px", left: "2px"}
+//
+// It will combine everything into a single property: `border: 2px solid #ff0`.
+//
+// The definitions are merged only if all border selectors have the same values.
+//
+// @returns {Function}
+function getBorderReducer() {
+	return value => {
+		const topStyles = extractBorderPosition( value, 'top' );
+		const rightStyles = extractBorderPosition( value, 'right' );
+		const bottomStyles = extractBorderPosition( value, 'bottom' );
+		const leftStyles = extractBorderPosition( value, 'left' );
 
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'top' ), 'top' ) );
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'right' ), 'right' ) );
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'bottom' ), 'bottom' ) );
-	reduced.push( ...reduceBorderPosition( extractBorderPosition( value, 'left' ), 'left' ) );
+		const borderStyles = [ topStyles, rightStyles, bottomStyles, leftStyles ];
 
-	return reduced;
+		const borderStylesByType = {
+			width: getReducedStyleValueForType( borderStyles, 'width' ),
+			style: getReducedStyleValueForType( borderStyles, 'style' ),
+			color: getReducedStyleValueForType( borderStyles, 'color' )
+		};
+
+		// Try reducing to a single `border:` property.
+		const reducedBorderStyle = reduceBorderPosition( borderStylesByType, 'all' );
+
+		if ( reducedBorderStyle.length ) {
+			return reducedBorderStyle;
+		}
+
+		// Try reducing to `border-style:`, `border-width:`, `border-color:` properties.
+		const reducedStyleTypes = Object.entries( borderStylesByType ).reduce( ( reducedStyleTypes, [ type, value ] ) => {
+			if ( value ) {
+				reducedStyleTypes.push( [ `border-${ type }`, value ] );
+
+				// Remove it from the full set to not include it in the most specific properties later.
+				borderStyles.forEach( style => ( style[ type ] = null ) );
+			}
+
+			return reducedStyleTypes;
+		}, [] );
+
+		// The reduced properties (by type) and all that remains that could not be reduced.
+		return [
+			...reducedStyleTypes,
+			...reduceBorderPosition( topStyles, 'top' ),
+			...reduceBorderPosition( rightStyles, 'right' ),
+			...reduceBorderPosition( bottomStyles, 'bottom' ),
+			...reduceBorderPosition( leftStyles, 'left' )
+		];
+	};
+
+	// @param {Array.<Object>} styles The array of objects with `style`, `color`, `width` properties.
+	// @param {'width'|'style'|'color'} type
+	function getReducedStyleValueForType( styles, type ) {
+		return styles
+			.map( style => style[ type ] )
+			.reduce( ( result, style ) => result == style ? result : null );
+	}
 }
 
 function getBorderPositionReducer( which ) {
 	return value => reduceBorderPosition( value, which );
 }
 
+// Returns an array with reduced border styles depending on the specified values.
+//
+// If all border properties (width, style, color) are specified, the returned selector will be
+// merged into a group: `border-*: [width] [style] [color]`.
+//
+// Otherwise, the specific definitions will be returned: `border-(width|style|color)-*: [value]`.
+//
+// @param {Object|null} value Styles if defined.
+// @param {'top'|'right'|'bottom'|'left'|'all'} which The border position.
+// @returns {Array}
 function reduceBorderPosition( value, which ) {
-	const reduced = [];
+	const borderTypes = [];
 
-	if ( value && value.width !== undefined ) {
-		reduced.push( value.width );
+	if ( value && value.width ) {
+		borderTypes.push( 'width' );
 	}
 
-	if ( value && value.style !== undefined ) {
-		reduced.push( value.style );
+	if ( value && value.style ) {
+		borderTypes.push( 'style' );
 	}
 
-	if ( value && value.color !== undefined ) {
-		reduced.push( value.color );
+	if ( value && value.color ) {
+		borderTypes.push( 'color' );
 	}
 
-	if ( reduced.length ) {
-		return [ [ `border-${ which }`, reduced.join( ' ' ) ] ];
+	if ( borderTypes.length == 3 ) {
+		const borderValue = borderTypes.map( item => value[ item ] ).join( ' ' );
+
+		return [
+			which == 'all' ? [ 'border', borderValue ] : [ `border-${ which }`, borderValue ]
+		];
 	}
 
-	return [];
+	// We are unable to reduce to a single `border:` property.
+	if ( which == 'all' ) {
+		return [];
+	}
+
+	return borderTypes.map( type => {
+		return [ `border-${ which }-${ type }`, value[ type ] ];
+	} );
 }

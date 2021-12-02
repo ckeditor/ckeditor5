@@ -6,6 +6,7 @@
 /* globals console */
 
 import EditingController from '../../src/controller/editingcontroller';
+import DataController from '../../src/controller/datacontroller';
 
 import Model from '../../src/model/model';
 import ModelElement from '../../src/model/element';
@@ -1610,7 +1611,7 @@ describe( 'DowncastHelpers', () => {
 		testUtils.createSinonSandbox();
 
 		beforeEach( () => {
-			downcastHelpers.elementToElement( { model: 'image', view: 'img' } );
+			downcastHelpers.elementToElement( { model: 'imageBlock', view: 'img' } );
 			downcastHelpers.elementToElement( {
 				model: 'paragraph',
 				view: ( modelItem, { writer } ) => writer.createContainerElement( 'p' )
@@ -1630,7 +1631,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src' } );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1647,7 +1648,7 @@ describe( 'DowncastHelpers', () => {
 			downcastHelpers.attributeToAttribute( { model: 'source', view: 'src', converterPriority: 'high' } );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1658,14 +1659,14 @@ describe( 'DowncastHelpers', () => {
 
 			downcastHelpers.attributeToAttribute( {
 				model: {
-					name: 'image',
+					name: 'imageBlock',
 					key: 'source'
 				},
 				view: 'src'
 			} );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
@@ -1804,7 +1805,7 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { styled: 'pull-out' }, modelRoot, 0 );
+				writer.insertElement( 'imageBlock', { styled: 'pull-out' }, modelRoot, 0 );
 			} );
 
 			expectResult( '<img class="styled-pull-out"></img>' );
@@ -2468,6 +2469,59 @@ describe( 'DowncastHelpers', () => {
 			expectResult( '<p>Foo</p>' );
 		} );
 
+		it( 'default conversion, document fragment, text', () => {
+			const dataController = new DataController( model, new StylesProcessor() );
+			downcastHelpers = new DowncastHelpers( [ dataController.downcastDispatcher ] );
+
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			let modelDocumentFragment;
+
+			model.change( writer => {
+				modelDocumentFragment = writer.createDocumentFragment();
+
+				writer.insertText( 'foobar', [], modelDocumentFragment, 0 );
+
+				const range = writer.createRange(
+					writer.createPositionFromPath( modelDocumentFragment, [ 2 ] ),
+					writer.createPositionFromPath( modelDocumentFragment, [ 5 ] )
+				);
+
+				modelDocumentFragment.markers.set( 'group:foo:bar', range );
+			} );
+
+			const expectedResult = 'fo<group-start name="foo:bar"></group-start>oba<group-end name="foo:bar"></group-end>r';
+
+			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+		} );
+
+		it( 'default conversion, document fragment, element', () => {
+			const dataController = new DataController( model, new StylesProcessor() );
+			downcastHelpers = new DowncastHelpers( [ dataController.downcastDispatcher ] );
+
+			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			let modelDocumentFragment;
+
+			model.change( writer => {
+				modelDocumentFragment = writer.createDocumentFragment();
+
+				writer.insertElement( 'paragraph', [], modelDocumentFragment, 0 );
+
+				const range = writer.createRange(
+					writer.createPositionFromPath( modelDocumentFragment, [ 0 ] ),
+					writer.createPositionFromPath( modelDocumentFragment, [ 1 ] )
+				);
+
+				modelDocumentFragment.markers.set( 'group:foo:bar', range );
+			} );
+
+			const expectedResult = '<p data-group-end-after="foo:bar" data-group-start-before="foo:bar">&nbsp;</p>';
+
+			expect( dataController.stringify( modelDocumentFragment ) ).to.equal( expectedResult );
+		} );
+
 		it( 'conversion callback, mixed, multiple markers, name', () => {
 			const customData = {
 				foo: 'bar',
@@ -2555,6 +2609,38 @@ describe( 'DowncastHelpers', () => {
 			} );
 
 			expectResult( '<p>Foo</p><p>Bar</p>' );
+		} );
+
+		// Fix for a bug that happens for soft breaks in code blocks.
+		// In that case, soft break model element is not converted to a view element.
+		it( 'default conversion, over model element not mapped to the view', () => {
+			downcastHelpers.markerToData( { model: 'group' } );
+
+			model.schema.register( 'customElement', { inheritAllFrom: '$block' } );
+
+			controller.downcastDispatcher.on( 'insert:customElement', ( evt, data, conversionApi ) => {
+				const viewText = conversionApi.writer.createText( 'A' );
+				const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+				conversionApi.writer.insert( viewPosition, viewText );
+			} );
+
+			// <paragraph> added so it can store selection, otherwise it throws.
+			setModelData( model, '<paragraph></paragraph><customElement></customElement>' );
+
+			model.change( writer => {
+				const range = writer.createRangeOn( root.getChild( 1 ) );
+
+				writer.addMarker( 'group:foo:bar:baz', { range, usingOperation: false } );
+			} );
+
+			expectResult( '<p></p><group-start name="foo:bar:baz"></group-start>A<group-end name="foo:bar:baz"></group-end>' );
+
+			model.change( writer => {
+				writer.removeMarker( 'group:foo:bar:baz' );
+			} );
+
+			expectResult( '<p></p>A' );
 		} );
 
 		it( 'can be overwritten using converterPriority', () => {
@@ -3427,6 +3513,15 @@ describe( 'downcast converters', () => {
 			expect( element.priority ).to.equal( 7 );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
 		} );
+
+		it( 'should pass priority 0', () => {
+			const descriptor = {
+				priority: 0
+			};
+			const element = createViewElementFromHighlightDescriptor( viewWriter, descriptor );
+
+			expect( element.priority ).to.equal( 0 );
+		} );
 	} );
 } );
 
@@ -3458,7 +3553,7 @@ describe( 'downcast selection converters', () => {
 		downcastHelpers.markerToHighlight( { model: 'marker', view: { classes: 'marker' }, converterPriority: 1 } );
 
 		// Default selection converters.
-		dispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+		dispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
 		dispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		dispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 	} );
@@ -3848,6 +3943,50 @@ describe( 'downcast selection converters', () => {
 					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
+				expect( viewSelection.rangeCount ).to.equal( 1 );
+
+				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
+				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
+			} );
+
+			it( 'should merge attribute elements from previous selection with overridden selection conversion', () => {
+				testSelection(
+					[ 3, 3 ],
+					'foobar',
+					'foo<strong>[]</strong>bar',
+					{ bold: 'true' }
+				);
+
+				const spy = sinon.spy();
+
+				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+					const selection = data.selection;
+
+					if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
+						return;
+					}
+
+					const viewRanges = [];
+
+					for ( const range of selection.getRanges() ) {
+						viewRanges.push( conversionApi.mapper.toViewRange( range ) );
+					}
+
+					conversionApi.writer.setSelection( viewRanges, { backward: selection.isBackward } );
+
+					spy();
+				} );
+
+				view.change( writer => {
+					const modelRange = model.createRange( model.createPositionAt( modelRoot, 1 ), model.createPositionAt( modelRoot, 1 ) );
+					model.change( writer => {
+						writer.setSelection( modelRange );
+					} );
+
+					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
+				} );
+
+				expect( spy.calledOnce ).to.be.true;
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
 				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );

@@ -108,7 +108,7 @@ describe( 'ImageInsertUI', () => {
 			it( 'should have "Update" label on submit button when URL input is already filled', () => {
 				const viewDocument = editor.editing.view.document;
 
-				editor.setData( '<figure><img src="/assets/sample.png" /></figure>' );
+				editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
 				editor.editing.view.change( writer => {
 					writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
@@ -190,7 +190,7 @@ describe( 'ImageInsertUI', () => {
 				it( 'should have "Update image URL" label on updating the image source URL', () => {
 					const viewDocument = editor.editing.view.document;
 
-					editor.setData( '<figure><img src="/assets/sample.png" /></figure>' );
+					editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
 
 					editor.editing.view.change( writer => {
 						writer.setSelection( viewDocument.getRoot().getChild( 0 ), 'on' );
@@ -225,7 +225,7 @@ describe( 'ImageInsertUI', () => {
 
 			const insertButtonView = dropdown.panelView.children.first.insertButtonView;
 
-			editor.setData( '<figure><img src="image-url-800w.jpg"' +
+			editor.setData( '<figure class="image"><img src="image-url-800w.jpg"' +
 			'srcset="image-url-480w.jpg 480w,image-url-800w.jpg 800w"' +
 			'sizes="(max-width: 600px) 480px,800px"' +
 			'alt="test-image"></figure>' );

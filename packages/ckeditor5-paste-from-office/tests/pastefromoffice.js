@@ -12,6 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
@@ -62,7 +63,13 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._parsedData ).to.have.property( 'body' );
+				expect( data._parsedData ).to.have.property( 'bodyString' );
+				expect( data._parsedData ).to.have.property( 'styles' );
+				expect( data._parsedData ).to.have.property( 'stylesString' );
+				expect( data._parsedData.body ).to.be.instanceOf( ViewDocumentFragment );
+
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -82,7 +89,9 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._parsedData ).to.be.undefined;
+
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -104,7 +113,9 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._parsedData ).to.be.undefined;
+
 				sinon.assert.notCalled( getDataSpy );
 			}
 		} );
@@ -120,7 +131,7 @@ describe( 'PasteFromOffice', () => {
 		};
 
 		if ( isTransformedWithPasteFromOffice ) {
-			data.isTransformedWithPasteFromOffice = true;
+			data._isTransformedWithPasteFromOffice = true;
 		}
 
 		return data;

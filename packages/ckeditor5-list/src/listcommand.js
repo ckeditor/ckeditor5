@@ -51,18 +51,23 @@ export default class ListCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
+	 * Executes the list command.
 	 *
-	 * @protected
+	 * @fires execute
+	 * @param {Object} [options] Command options.
+	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will try to convert the
+	 * selected items and potentially the neighbor elements to the proper list items. If set to `false` it will convert selected elements
+	 * to paragraphs. If not set, the command will toggle selected elements to list items or paragraphs, depending on the selection.
 	 */
-	execute() {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
 			.filter( block => checkCanBecomeListItem( block, model.schema ) );
 
 		// Whether we are turning off some items.
-		const turnOff = this.value === true;
+		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
+
 		// If we are turning off items, we are going to rename them to paragraphs.
 
 		model.change( writer => {

@@ -22,8 +22,12 @@ ClassicEditor
 				'alignment',
 				'undo',
 				'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		alignment: {
 			options: [ 'left', 'right' ]

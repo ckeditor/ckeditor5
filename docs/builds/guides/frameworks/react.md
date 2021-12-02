@@ -91,7 +91,7 @@ The editor event callbacks (`onChange`, `onBlur`, `onFocus`) receive two argumen
 
 ## Context feature
 
-The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the [context feature](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/context-and-collaboration-features.html) that is useful when used together with some [CKEditor 5 collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html).
+The [`@ckeditor/ckeditor5-react`](https://www.npmjs.com/package/@ckeditor/ckeditor5-react) package provides a ready-to-use component for the {@link features/context-and-collaboration-features context feature} that is useful when used together with some {@link features/collaboration CKEditor 5 collaboration features}.
 
 ```jsx
 // This sample assumes that the application is using a CKEditor 5 editor built from source.
@@ -237,7 +237,7 @@ export default App;
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate [collaboration plugins](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) in a React application is to build the editor from source including the collaboration plugins together with the React application.
+The easiest way to integrate {@link features/collaboration collaboration plugins} in a React application is to build the editor from source including the collaboration plugins together with the React application.
 
 For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in React applications:
 
@@ -324,6 +324,44 @@ class App extends Component {
 export default App;
 ```
 
+### The `JavaScript heap out of memory` error
+
+When building the application for the production using the `yarn build` command, it may produce an error related to the memory available on the build machine:
+
+```
+<--- Last few GCs --->
+
+[32550:0x110008000]    42721 ms: Scavenge (reduce) 4061.0 (4069.6) -> 4060.5 (4070.8) MB, 4.3 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
+[32550:0x110008000]    42726 ms: Scavenge (reduce) 4061.2 (4069.8) -> 4060.6 (4071.3) MB, 4.0 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
+[32550:0x110008000]    42730 ms: Scavenge (reduce) 4061.4 (4073.3) -> 4060.9 (4073.3) MB, 3.7 / 0.0 ms  (average mu = 0.358, current mu = 0.374) allocation failure
+
+<--- JS stacktrace --->
+
+FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+ 1: 0x1012e4da5 node::Abort() (.cold.1) [/usr/local/bin/node]
+```
+
+This issue has not been fixed yet, however, there is a workaround for this. Increasing the available memory for Node.js using the `--max_old_space_size` modifier should resolve the problem.
+
+```bash
+node --max_old_space_size=4096 node_modules/.bin/react-scripts build
+```
+
+The memory limit can be set globally as well:
+
+```bash
+# Save it in the `.bash_profile` file to avoid typing it after rebooting the machine.
+export NODE_OPTIONS="--max-old-space-size=4096"
+
+yarn build
+```
+
+It can also be set on-demand, per command call:
+
+```bash
+NODE_OPTIONS="--max-old-space-size=4096" yarn build
+```
+
 ## Integrating CKEditor 5 built from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
@@ -365,6 +403,8 @@ yarn add \
 	@ckeditor/ckeditor5-paragraph \
 	@ckeditor/ckeditor5-basic-styles
 ```
+
+Please note that all packages (excluding `@ckeditor/ckeditor5-dev-*` and `@ckeditor/ckeditor5-react`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
 
 #### Modifying the webpack configuration
 

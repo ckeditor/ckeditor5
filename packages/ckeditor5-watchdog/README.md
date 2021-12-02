@@ -2,14 +2,14 @@ CKEditor 5 watchdog feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-watchdog.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-watchdog)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-watchdog/status.svg)](https://david-dm.org/ckeditor/ckeditor5-watchdog)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-watchdog/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-watchdog?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the watchdog feature for CKEditor 5. It keeps a CKEditor 5 rich-text editor instance running.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-watchdog` package](https://ckeditor.com/docs/ckeditor5/latest/api/watchdog.html) page as well as the [Watchdog feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-watchdog` package](https://ckeditor.com/docs/ckeditor5/latest/api/watchdog.html) page as well as the [Watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

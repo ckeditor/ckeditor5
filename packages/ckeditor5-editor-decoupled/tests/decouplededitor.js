@@ -150,6 +150,18 @@ describe( 'DecoupledEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			return DecoupledEditor.create( document.createElement( 'div' ), {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				editor.destroy();
+			} );
+		} );
+
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
 		it( 'should throw when trying to create the editor using the same source element more than once', done => {
 			const sourceElement = document.createElement( 'div' );
@@ -402,7 +414,7 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

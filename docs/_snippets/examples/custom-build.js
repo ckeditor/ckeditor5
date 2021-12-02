@@ -38,10 +38,14 @@ ClassicEditor
 			CloudServices
 		],
 		toolbar: {
-			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlight', '|', 'undo', 'redo' ],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlight', '|', 'undo', 'redo' ]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

@@ -3,7 +3,7 @@ title: Markdown output
 category: features
 ---
 
-The {@link module:markdown-gfm/markdown~Markdown} plugin allows switching the default CKEditor 5 output from HTML to Markdown. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature, it allows for the full-fledged Markdown WYSIWYG editing experience.
+The {@link module:markdown-gfm/markdown~Markdown} plugin allows switching the default CKEditor 5 output from HTML to Markdown. This allows for producing lightweight text documents with a simple formatting syntax, widespread among the programming and development communities and popular in many environments (e.g. GitHub). Coupled with the {@link features/autoformat autoformatting} feature, it allows for the full-fledged Markdown WYSIWYG editing experience, as described in the ["CKEditor 5: the best open source Markdown editor"](https://ckeditor.com/blog/CKEditor-5-the-best-open-source-Markdown-editor/) blog post.
 
 Please remember that Markdown syntax is very simple and it does not cover all the rich-text features. Some features provided by CKEditor 5 will thus work as intended only when output to HTML as they have no Markdown equivalent.
 
@@ -22,9 +22,10 @@ The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. 
 
 Some other ways to output the edited content include:
 
-* [Export to Word](https://ckeditor.com/docs/ckeditor5/latest/features/export-word.html) &ndash; Generate editable `.docx` files out of your editor-created content.
-* [Export to PDF](https://ckeditor.com/docs/ckeditor5/latest/features/export-pdf.html) &ndash; Generate portable PDF files out of your editor-created content.
+* {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
+* {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
+* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 
 ## The Markdown data processor
 
@@ -91,7 +92,10 @@ ClassicEditor
 	This means that advanced formatting like list styles, table styles or page break markers will be stripped in the effecting data. These are not supported by Markdown and therefore cannot be converted from HTML to Markdown.
 </info-box>
 
-While the Markdown plugin is stable and ready to use, pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322). Feel free to upvote 👍&nbsp; this on GitHub if you would like to see this introduced.
+While the Markdown plugin is stable and ready to use, some issues are still being worked on. Feel free to upvote 👍&nbsp; these on GitHub if you would like to see this introduced.
+
+* Pasting Markdown-formatted content does not automatically convert the pasted syntax markers into properly formatted content. GitHub issues: [#2321](https://github.com/ckeditor/ckeditor5/issues/2321), [#2322](https://github.com/ckeditor/ckeditor5/issues/2322).
+* The Markdown code generated with the Markdown output feature will not properly render {@link features/table#nesting-tables nested tables}. GitHUb issue: [#9475](https://github.com/ckeditor/ckeditor5/issues/9475).
 
 ## Contribute
 

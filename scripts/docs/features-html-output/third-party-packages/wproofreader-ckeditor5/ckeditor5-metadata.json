@@ -1,0 +1,18 @@
+{
+	"plugins": [
+		{
+			"name": "WProofreader",
+			"className": "WProofreader",
+			"description": "WProofreader is a multi-language proofreading tool offering the “spell check as you type” functionality and a spell check dialog UI.",
+			"docs": "features/spelling-and-grammar-checking.html",
+			"path": "src/wproofreader.js",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "wproofreader",
+					"iconPath": "theme/icons/wproofreader.svg"
+				}
+			]
+		}
+	]
+}

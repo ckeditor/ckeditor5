@@ -17,7 +17,7 @@ export async function waitForAllImagesLoaded( editor ) {
 	const images = new Set();
 
 	for ( const curModel of root.getChildren() ) {
-		if ( curModel.is( 'element', 'image' ) ) {
+		if ( curModel.is( 'element', 'imageBlock' ) ) {
 			const imageView = editor.editing.mapper.toViewElement( curModel );
 			images.add( editingView.domConverter.viewToDom( imageView ).querySelector( 'img' ) );
 		}

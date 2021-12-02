@@ -3,16 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import HorizontalLine from './horizontalline';
-import HorizontalLineEditing from './horizontallineediting';
-import HorizontalLineUI from './horizontallineui';
-
 /**
  * @module horizontal-line
  */
 
-export default {
-	HorizontalLine,
-	HorizontalLineEditing,
-	HorizontalLineUI
-};
+export { default as HorizontalLine } from './horizontalline';
+export { default as HorizontalLineEditing } from './horizontallineediting';
+export { default as HorizontalLineUI } from './horizontallineui';

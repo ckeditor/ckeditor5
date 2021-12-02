@@ -10,7 +10,7 @@ import ViewEditable from '../../../src/view/editableelement';
 import ViewDocument from '../../../src/view/document';
 import ViewUIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
-import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
+import { BR_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { StylesProcessor } from '../../../src/view/stylesmap';
@@ -33,6 +33,14 @@ describe( 'DomConverter', () => {
 		it( 'should create converter with defined block mode filler', () => {
 			converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
 			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
+		} );
+
+		it( 'should create converter with proper default block mode filler - depending on the rendering mode', () => {
+			converter = new DomConverter( viewDocument, { renderingMode: 'data' } );
+			expect( converter.blockFillerMode ).to.equal( 'nbsp' );
+
+			converter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+			expect( converter.blockFillerMode ).to.equal( 'br' );
 		} );
 	} );
 
@@ -295,88 +303,107 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'isBlockFiller()', () => {
-		describe( 'mode "nbsp"', () => {
-			beforeEach( () => {
-				converter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+		const blockElements = new Set( [
+			'address', 'article', 'aside', 'blockquote', 'caption', 'center', 'dd', 'details', 'dir', 'div',
+			'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header',
+			'hgroup', 'legend', 'li', 'main', 'menu', 'nav', 'ol', 'p', 'pre', 'section', 'summary', 'table', 'tbody',
+			'td', 'tfoot', 'th', 'thead', 'tr', 'ul'
+		] );
+
+		for ( const mode of [ 'nbsp', 'markedNbsp' ] ) {
+			describe( 'mode "' + mode + '"', () => {
+				beforeEach( () => {
+					converter = new DomConverter( viewDocument, { blockFillerMode: mode } );
+				} );
+
+				for ( const elementName of blockElements ) {
+					describe( `<${ elementName }> context`, () => {
+						it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
+							const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+							const context = document.createElement( elementName );
+							context.appendChild( nbspFillerInstance );
+
+							expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
+						} );
+
+						it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
+							const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+							const context = document.createElement( elementName );
+							context.appendChild( nbspFillerInstance );
+							context.appendChild( document.createTextNode( 'a' ) );
+
+							expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+						} );
+
+						it( 'should return false if there are two nbsp fillers in a block element', () => {
+							const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+							const context = document.createElement( elementName );
+							context.appendChild( nbspFillerInstance );
+							context.appendChild( NBSP_FILLER( document ) ); // eslint-disable-line new-cap
+
+							expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+						} );
+
+						it( 'should return false for a normal <br> element', () => {
+							const context = document.createElement( elementName );
+							context.innerHTML = 'x<br>x';
+
+							expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
+						} );
+
+						// SPECIAL CASE (see ckeditor5#5564).
+						it( 'should return true for a <br> element which is the only child of its block parent', () => {
+							const context = document.createElement( elementName );
+							context.innerHTML = '<br>';
+
+							expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
+						} );
+					} );
+				}
+
+				it( 'should return false filler is placed in a non-block element', () => {
+					const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+					const context = document.createElement( 'span' );
+					context.appendChild( nbspFillerInstance );
+
+					expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
+				} );
+
+				it( 'should return false if the node is an instance of the BR block filler', () => {
+					const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
+
+					expect( converter.isBlockFiller( brFillerInstance ) ).to.be.false;
+				} );
+
+				it( 'should return false for inline filler', () => {
+					expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
+				} );
+
+				it( 'should return false for a <br> element which is the only child of its non-block parent', () => {
+					const context = document.createElement( 'span' );
+					context.innerHTML = '<br>';
+
+					expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+				} );
+
+				it( 'should return false for a <br> element which is followed by an nbsp', () => {
+					const context = document.createElement( 'span' );
+					context.innerHTML = '<br>&nbsp;';
+
+					expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
+				} );
+
+				it( 'should return true if the node is an instance of the marked nbsp block filler', () => {
+					const markedNbspFillerInstance = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
+
+					expect( converter.isBlockFiller( markedNbspFillerInstance ) ).to.be.true;
+				} );
 			} );
-
-			it( 'should return true if the node is an nbsp filler and is a single child of a block level element', () => {
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-
-				const context = document.createElement( 'div' );
-				context.appendChild( nbspFillerInstance );
-
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.true;
-			} );
-
-			it( 'should return false if the node is an nbsp filler and is not a single child of a block level element', () => {
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-
-				const context = document.createElement( 'div' );
-				context.appendChild( nbspFillerInstance );
-				context.appendChild( document.createTextNode( 'a' ) );
-
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-			} );
-
-			it( 'should return false if there are two nbsp fillers in a block element', () => {
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-
-				const context = document.createElement( 'div' );
-				context.appendChild( nbspFillerInstance );
-				context.appendChild( NBSP_FILLER( document ) ); // eslint-disable-line new-cap
-
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-			} );
-
-			it( 'should return false filler is placed in a non-block element', () => {
-				const nbspFillerInstance = NBSP_FILLER( document ); // eslint-disable-line new-cap
-
-				const context = document.createElement( 'span' );
-				context.appendChild( nbspFillerInstance );
-
-				expect( converter.isBlockFiller( nbspFillerInstance ) ).to.be.false;
-			} );
-
-			it( 'should return false if the node is an instance of the BR block filler', () => {
-				const brFillerInstance = BR_FILLER( document ); // eslint-disable-line new-cap
-
-				expect( converter.isBlockFiller( brFillerInstance ) ).to.be.false;
-			} );
-
-			it( 'should return false for inline filler', () => {
-				expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
-			} );
-
-			it( 'should return false for a normal <br> element', () => {
-				const context = document.createElement( 'div' );
-				context.innerHTML = 'x<br>x';
-
-				expect( converter.isBlockFiller( context.childNodes[ 1 ] ) ).to.be.false;
-			} );
-
-			// SPECIAL CASE (see ckeditor5#5564).
-			it( 'should return true for a <br> element which is the only child of its block parent', () => {
-				const context = document.createElement( 'div' );
-				context.innerHTML = '<br>';
-
-				expect( converter.isBlockFiller( context.firstChild ) ).to.be.true;
-			} );
-
-			it( 'should return false for a <br> element which is the only child of its non-block parent', () => {
-				const context = document.createElement( 'span' );
-				context.innerHTML = '<br>';
-
-				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
-			} );
-
-			it( 'should return false for a <br> element which is followed by an nbsp', () => {
-				const context = document.createElement( 'span' );
-				context.innerHTML = '<br>&nbsp;';
-
-				expect( converter.isBlockFiller( context.firstChild ) ).to.be.false;
-			} );
-		} );
+		}
 
 		describe( 'mode "br"', () => {
 			beforeEach( () => {
@@ -403,6 +430,234 @@ describe( 'DomConverter', () => {
 
 			it( 'should return false for inline filler', () => {
 				expect( converter.isBlockFiller( document.createTextNode( INLINE_FILLER ) ) ).to.be.false;
+			} );
+		} );
+	} );
+
+	describe( 'shouldRenderAttribute()', () => {
+		beforeEach( () => {
+			converter.experimentalRenderingMode = true;
+		} );
+
+		afterEach( () => {
+			converter.experimentalRenderingMode = false;
+		} );
+
+		it( 'should allow all in for data pipeline', () => {
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
+
+			converter.renderingMode = 'data';
+
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
+		} );
+
+		it( 'should reject certain attributes', () => {
+			expect( converter.shouldRenderAttribute( 'some-attribute', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'data-custom-attribute', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'class', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'style', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'value', 'data:image/jpeg' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'value', 'DATA:IMAGE/GIF' ) ).to.be.true;
+
+			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'ONCLICK', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'JAVASCRIPT:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '<SCRIPT>something</SCRIPT>' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'something</SCRIPT>' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'setContentOf()', () => {
+		describe( 'data pipeline', () => {
+			it( 'should set content as-is', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<span>bar</span></div>';
+
+				converter.renderingMode = 'data';
+
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal( html );
+			} );
+
+			it( 'should keep attributes', () => {
+				const element = document.createElement( 'p' );
+
+				converter.renderingMode = 'data';
+
+				const testCases = [
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					}
+				];
+
+				testCases.forEach( ( testCase, index ) => {
+					converter.setContentOf( element, testCase.html );
+
+					expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+				} );
+			} );
+
+			it( 'should keep script element', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script onclick="foo">bar</script></div>';
+
+				converter.renderingMode = 'data';
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal( '<div>foo<script onclick="foo">bar</script></div>' );
+			} );
+		} );
+
+		describe( 'editing pipeline', () => {
+			beforeEach( () => {
+				converter.experimentalRenderingMode = true;
+			} );
+
+			afterEach( () => {
+				converter.experimentalRenderingMode = false;
+			} );
+
+			it( 'should remove certain attributes', () => {
+				const element = document.createElement( 'p' );
+
+				const testCases = [
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" onclick="foobar">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="javascript:baz">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="data:application/html">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					},
+					{
+						html: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar" value="<script>baz</script>">' +
+							'bar' +
+							'</span>' +
+							'</div>',
+						expected: '<div data-foo="bar">' +
+							'foo' +
+							'<span class="foo-class" style="border:1px solid blue" data-foo="bar">' +
+							'bar' +
+							'</span>' +
+							'</div>'
+					}
+				];
+
+				testCases.forEach( ( testCase, index ) => {
+					converter.setContentOf( element, testCase.html );
+
+					expect( element.innerHTML, `Case #${ index }` ).to.equal( testCase.expected );
+				} );
+			} );
+
+			it( 'should replace a script element with a span', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
+
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal(
+					'<div>foo<span data-ck-hidden="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
+				);
 			} );
 		} );
 	} );

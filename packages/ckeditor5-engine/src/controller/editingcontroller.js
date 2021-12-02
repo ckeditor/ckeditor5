@@ -104,7 +104,7 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.
-		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 

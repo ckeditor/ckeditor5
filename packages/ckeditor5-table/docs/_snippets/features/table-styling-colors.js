@@ -107,11 +107,18 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [
-				'imageStyle:full',
+				'imageStyle:inline',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

@@ -7,12 +7,6 @@
  * @module remove-format
  */
 
-import RemoveFormat from './removeformat';
-import RemoveFormatEditing from './removeformatediting';
-import RemoveFormatUI from './removeformatui';
-
-export default {
-	RemoveFormat,
-	RemoveFormatEditing,
-	RemoveFormatUI
-};
+export { default as RemoveFormat } from './removeformat';
+export { default as RemoveFormatEditing } from './removeformatediting';
+export { default as RemoveFormatUI } from './removeformatui';

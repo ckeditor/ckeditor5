@@ -10,8 +10,8 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -117,8 +117,13 @@ describe( 'table clipboard', () => {
 				model.insertContent( tableToInsert, selectedTableCells );
 			} );
 
+			const tableModelData = modelTable( [
+				[ 'foo', 'foo' ],
+				[ 'foo', 'foo' ]
+			] );
+
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '', '', '02', '03' ],
+				[ tableModelData, '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -223,21 +228,24 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const table = viewTable( [
+			const tableToInsert = [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
-			] );
+			];
+
+			const tableViewData = viewTable( tableToInsert );
+			const tableModelData = modelTable( tableToInsert );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', `${ table }<p>foo</p>` );
+			data.dataTransfer.setData( 'text/html', `${ tableViewData }<p>foo</p>` );
 			viewDocument.fire( 'paste', data );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ 'foo', '', '02', '03' ],
+				[ tableModelData + '<paragraph>foo</paragraph>', '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -250,21 +258,24 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const table = viewTable( [
+			const tableToInsert = [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
-			] );
+			];
+
+			const tableViewData = viewTable( tableToInsert );
+			const tableModelData = modelTable( tableToInsert );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', `<p>foo</p>${ table }` );
+			data.dataTransfer.setData( 'text/html', `<p>foo</p>${ tableViewData }` );
 			viewDocument.fire( 'paste', data );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ 'foo', '', '02', '03' ],
+				[ '<paragraph>foo</paragraph>' + tableModelData, '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -277,21 +288,24 @@ describe( 'table clipboard', () => {
 				modelRoot.getNodeByPath( [ 0, 1, 1 ] )
 			);
 
-			const table = viewTable( [
+			const tableToInsert = [
 				[ 'aa', 'ab' ],
 				[ 'ba', 'bb' ]
-			] );
+			];
+
+			const tableViewData = viewTable( tableToInsert );
+			const tableModelData = modelTable( tableToInsert );
 
 			const data = {
 				dataTransfer: createDataTransfer(),
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			};
-			data.dataTransfer.setData( 'text/html', `${ table }${ table }` );
+			data.dataTransfer.setData( 'text/html', `${ tableViewData }${ tableViewData }` );
 			viewDocument.fire( 'paste', data );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '', '', '02', '03' ],
+				[ tableModelData + tableModelData, '', '02', '03' ],
 				[ '', '', '12', '13' ],
 				[ '20', '21', '22', '23' ],
 				[ '30', '31', '32', '33' ]
@@ -880,12 +894,12 @@ describe( 'table clipboard', () => {
 
 				it( 'should replace the table cells when selection is on the image inside the table cell', async () => {
 					await editor.destroy();
-					await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+					await createEditor( [ ImageBlockEditing, ImageCaptionEditing ] );
 
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
-						[ '20', '21', '[<image src="/assets/sample.png"><caption></caption></image>]' ]
+						[ '20', '21', '[<imageBlock src="/assets/sample.png"><caption></caption></imageBlock>]' ]
 					] ) );
 
 					pasteTable( [
@@ -903,12 +917,12 @@ describe( 'table clipboard', () => {
 
 				it( 'should replace the table cells when selection is in the image caption inside the table cell', async () => {
 					await editor.destroy();
-					await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+					await createEditor( [ ImageBlockEditing, ImageCaptionEditing ] );
 
 					setModelData( model, modelTable( [
 						[ '00', '01', '02' ],
 						[ '10', '11', '12' ],
-						[ '20', '21', '<image src="/assets/sample.png"><caption>fo[]o</caption></image>' ]
+						[ '20', '21', '<imageBlock src="/assets/sample.png"><caption>fo[]o</caption></imageBlock>' ]
 					] ) );
 
 					pasteTable( [
@@ -3777,7 +3791,7 @@ describe( 'table clipboard', () => {
 		} );
 
 		it( 'handles image in table cell', async () => {
-			await createEditor( [ ImageEditing, ImageCaptionEditing ] );
+			await createEditor( [ ImageBlockEditing, ImageCaptionEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -3796,14 +3810,14 @@ describe( 'table clipboard', () => {
 			] );
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '<image src="/assets/sample.png"><caption></caption></image>', 'ab', '02' ],
+				[ '<imageBlock src="/assets/sample.png"></imageBlock>', 'ab', '02' ],
 				[ 'ba', 'bb', '12' ],
 				[ '02', '21', '22' ]
 			] ) );
 		} );
 
 		it( 'handles mixed nested content in table cell', async () => {
-			await createEditor( [ ImageEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
+			await createEditor( [ ImageBlockEditing, ImageCaptionEditing, BlockQuoteEditing, HorizontalLineEditing, ListEditing ] );
 
 			setModelData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -3827,7 +3841,7 @@ describe( 'table clipboard', () => {
 
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
 				[
-					'<image src="/assets/sample.png"><caption></caption></image>' +
+					'<imageBlock src="/assets/sample.png"></imageBlock>' +
 					'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 					'<listItem listIndent="0" listType="bulleted">bar</listItem>' +
 					'<blockQuote>' +
@@ -3863,24 +3877,9 @@ describe( 'table clipboard', () => {
 
 			const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-			expect( tableCell.getAttribute( 'borderColor' ) ).to.deep.equal( {
-				top: '#f00',
-				right: '#f00',
-				bottom: '#f00',
-				left: '#f00'
-			} );
-			expect( tableCell.getAttribute( 'borderStyle' ) ).to.deep.equal( {
-				top: 'solid',
-				right: 'solid',
-				bottom: 'solid',
-				left: 'solid'
-			} );
-			expect( tableCell.getAttribute( 'borderWidth' ) ).to.deep.equal( {
-				top: '1px',
-				right: '1px',
-				bottom: '1px',
-				left: '1px'
-			} );
+			expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+			expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
+			expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
 			expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#ba7' );
 			expect( tableCell.getAttribute( 'width' ) ).to.equal( '1337px' );
 		} );
@@ -3942,8 +3941,12 @@ describe( 'table clipboard', () => {
 			] ) );
 		} );
 
-		it( 'should not blow up when pasting unsupported element in table', async () => {
+		it( 'should allow pasting table inside table cell with style', async () => {
 			await createEditor( [ TableCellPropertiesEditing ] );
+
+			const color = 'rgb(242, 242, 242)';
+			const style = 'solid';
+			const width = '2px';
 
 			pasteHtml( editor,
 				'<table>' +
@@ -3954,7 +3957,7 @@ describe( 'table clipboard', () => {
 									'<table>' +
 										'<tbody>' +
 											'<tr>' +
-												'<td style="border: 2px solid rgb(242, 242, 242);">' +
+												`<td style="border: ${ width } ${ style } ${ color };">` +
 													'<p>Test</p>' +
 												'</td>' +
 											'</tr>' +
@@ -3967,8 +3970,17 @@ describe( 'table clipboard', () => {
 				'</table>'
 			);
 
+			const tableModelData = modelTable( [
+				[ {
+					contents: '<paragraph>Test</paragraph>',
+					borderColor: color,
+					borderStyle: style,
+					borderWidth: width
+				} ]
+			] );
+
 			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-				[ '<paragraph>Test</paragraph>' ]
+				[ tableModelData ]
 			] ) );
 		} );
 	} );

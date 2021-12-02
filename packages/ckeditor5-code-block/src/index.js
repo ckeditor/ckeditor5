@@ -7,12 +7,6 @@
  * @module code-block
  */
 
-import CodeBlock from './codeblock';
-import CodeBlockEditing from './codeblockediting';
-import CodeBlockUI from './codeblockui';
-
-export default {
-	CodeBlock,
-	CodeBlockEditing,
-	CodeBlockUI
-};
+export { default as CodeBlock } from './codeblock';
+export { default as CodeBlockEditing } from './codeblockediting';
+export { default as CodeBlockUI } from './codeblockui';

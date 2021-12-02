@@ -66,7 +66,7 @@ This scenario allows you to fully control the building process of CKEditor. This
 	Similar results to what this method allows can be achieved by {@link builds/guides/development/custom-builds customizing an existing build} and integrating your custom build like in scenario 1. This will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want.
+First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. The `dependencies` (or `devDependencies`) section of `package.json` should look more or less like this:
 
@@ -265,9 +265,11 @@ ClassicEditor.defaultConfig = {
 	},
 	image: {
 		toolbar: [
-			'imageStyle:full',
+			'imageStyle:inline',
+			'imageStyle:block',
 			'imageStyle:side',
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},
@@ -351,9 +353,11 @@ ClassicEditor
 		],
 		image: {
 			toolbar: [
-				'imageStyle:full',
+				'imageStyle:inline',
+				'imageStyle:block',
 				'imageStyle:side',
 				'|',
+				'toggleImageCaption',
 				'imageTextAlternative'
 			]
 		}
@@ -377,7 +381,7 @@ Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
 
-	CKEditor 5 Builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
+	CKEditor 5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
 ### Option: Extracting CSS
@@ -437,7 +441,7 @@ Webpack will now create a separate file called `styles.css` which you will need 
 
 ### Option: Building to ES5 target
 
-CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
+CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 builds are also published in the original ES6 format.
 
 However, it may happen that your environment requires ES5. For instance, if you use tools like the original [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor 5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5 code.
 
@@ -459,7 +463,8 @@ Then, add this item to webpack [`module.rules`](https://webpack.js.org/configura
 module: {
 	rules: [
 		{
-			test: /ckeditor5-[^\/\\]+[\/\\].+\.js$/,
+			// Match files from the `ckeditor5` package but also `ckeditor5-*` packages.
+			test: /(ckeditor5(?:-[^\/\\]+)?)[\/\\].+\.js$/,
 			use: [
 				{
 					loader: 'babel-loader',

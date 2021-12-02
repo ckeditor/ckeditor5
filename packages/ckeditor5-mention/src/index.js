@@ -7,12 +7,6 @@
  * @module mention
  */
 
-import Mention from './mention';
-import MentionEditing from './mentionediting';
-import MentionUI from './mentionui';
-
-export default {
-	Mention,
-	MentionEditing,
-	MentionUI
-};
+export { default as Mention } from './mention';
+export { default as MentionEditing } from './mentionediting';
+export { default as MentionUI } from './mentionui';

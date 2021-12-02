@@ -7,6 +7,7 @@
  * @module table/tableutils
  */
 
+import { CKEditorError } from 'ckeditor5/src/utils';
 import { Plugin } from 'ckeditor5/src/core';
 
 import TableWalker from './tablewalker';
@@ -105,11 +106,11 @@ export default class TableUtils extends Plugin {
 		createEmptyRows( writer, table, 0, rows, columns );
 
 		if ( options.headingRows ) {
-			updateNumericAttribute( 'headingRows', options.headingRows, table, writer, 0 );
+			updateNumericAttribute( 'headingRows', Math.min( options.headingRows, rows ), table, writer, 0 );
 		}
 
 		if ( options.headingColumns ) {
-			updateNumericAttribute( 'headingColumns', options.headingColumns, table, writer, 0 );
+			updateNumericAttribute( 'headingColumns', Math.min( options.headingColumns, columns ), table, writer, 0 );
 		}
 
 		return table;
@@ -152,6 +153,19 @@ export default class TableUtils extends Plugin {
 
 		const rows = this.getRows( table );
 		const columns = this.getColumns( table );
+
+		if ( insertAt > rows ) {
+			/**
+			 * The `options.at` points at a row position that does not exist.
+			 *
+			 * @error tableutils-insertrows-insert-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-insertrows-insert-out-of-range',
+				this,
+				{ options }
+			);
+		}
 
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
@@ -261,6 +275,11 @@ export default class TableUtils extends Plugin {
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns === insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
+					// Ignore non-row elements inside the table (e.g. caption).
+					if ( !tableRow.is( 'element', 'tableRow' ) ) {
+						continue;
+					}
+
 					createCells( columnsToInsert, writer, writer.createPositionAt( tableRow, insertAt ? 'end' : 0 ) );
 				}
 
@@ -329,8 +348,22 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 
 		const rowsToRemove = options.rows || 1;
+		const rowCount = this.getRows( table );
 		const first = options.at;
 		const last = first + rowsToRemove - 1;
+
+		if ( last > rowCount - 1 ) {
+			/**
+			 * The `options.at` param must point at existing row and `options.rows` must not exceed the rows in the table.
+			 *
+			 * @error tableutils-removerows-row-index-out-of-range
+			 */
+			throw new CKEditorError(
+				'tableutils-removerows-row-index-out-of-range',
+				this,
+				{ table, options }
+			);
+		}
 
 		model.change( writer => {
 			// Removing rows from the table require that most calculations to be done prior to changing table structure.
@@ -718,6 +751,8 @@ export default class TableUtils extends Plugin {
 	 */
 	getColumns( table ) {
 		// Analyze first row only as all the rows should have the same width.
+		// Using the first row without checking if it's a tableRow because we expect
+		// that table will have only tableRow model elements at the beginning.
 		const row = table.getChild( 0 );
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
@@ -728,7 +763,7 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Returns the number of rows for a given table.
+	 * Returns the number of rows for a given table. Any other element present in the table model is omitted.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).getRows( table );
 	 *
@@ -736,8 +771,9 @@ export default class TableUtils extends Plugin {
 	 * @returns {Number}
 	 */
 	getRows( table ) {
-		// Simple row counting, not including rowspan due to #6427.
-		return table.childCount;
+		// Rowspan not included due to #6427.
+		return Array.from( table.getChildren() )
+			.reduce( ( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount, 0 );
 	}
 }
 

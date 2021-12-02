@@ -2,7 +2,7 @@
 
 The editor should be loaded with tables:
 
-1. A table with various table styles set.
+1. A table with various table styles set and with nested styled table in the last row.
 1. A "Table from Word" sample.
 1. A "Table from GDocs" sample.
 1. A "Table from GDocs" sample that has one cell with many styles set.

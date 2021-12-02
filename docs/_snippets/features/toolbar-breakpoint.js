@@ -23,11 +23,15 @@ ClassicEditor
 				'uploadImage', 'blockQuote', '|',
 				'undo', 'redo'
 			],
-			shouldNotGroupWhenFull: true,
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			shouldNotGroupWhenFull: true
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		codeBlock: {
 			languages: [

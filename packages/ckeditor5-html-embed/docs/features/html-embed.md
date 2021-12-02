@@ -28,7 +28,7 @@ It is recommended to use the {@link features/media-embed media embed} feature fo
 
 ## Demo
 
-Use the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
+Use the HTML embed toolbar button {@icon @ckeditor/ckeditor5-html-embed/theme/icons/html.svg HTML embed} in the editor below to see the plugin in action. Click the **"Preview editor data"** button below the editor to see a preview of the editor content, including the embedded HTML.
 
 {@snippet features/html-embed}
 
@@ -133,14 +133,19 @@ In addition to using a sanitizer, you can use the built-in browser mechanism cal
 
 The {@link module:html-embed/htmlembed~HtmlEmbed} plugin registers:
 * The UI button component (`'htmlEmbed'`).
-* The `'updateHtmlEmbed'` command implemented by {@link module:html-embed/updatehtmlembedcommand~UpdateHtmlEmbedCommand}.
-* The `'insertHtmlEmbed'` command implemented by {@link module:html-embed/inserthtmlembedcommand~InsertHtmlEmbedCommand}.
+* The `'htmlEmbed'` command implemented by {@link module:html-embed/htmlembedcommand~HtmlEmbedCommand}.
 
-Both commands can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
+The command can be executed using the {@link module:core/editor/editor~Editor#execute `editor.execute()`} method:
 
 ```js
-editor.execute( 'insertHtmlEmbed' );
-editor.execute( 'updateHtmlEmbed', '<p>HTML string</p>' );
+// Inserts an empty HTML embed.
+editor.execute( 'htmlEmbed' );
+
+// Inserts an HTML embed with some initial content.
+editor.execute( 'htmlEmbed', '<b>Initial content</b>.' );
+
+// Updates the content of a selected HTML embed.
+editor.execute( 'htmlEmbed', '<b>New content.</b>' );
 ```
 
 <info-box>

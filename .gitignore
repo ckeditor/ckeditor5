@@ -1,5 +1,4 @@
 node_modules/
-build/
 coverage/
 packages/*/node_modules/
 docs/api/output.json
@@ -16,3 +15,7 @@ yarn.lock
 mrgit.json
 
 .npmrc
+
+# build/
+# !packages/ckeditor5-build-*/build
+

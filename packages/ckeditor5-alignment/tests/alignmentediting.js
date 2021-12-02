@@ -72,7 +72,7 @@ describe( 'AlignmentEditing', () => {
 		} );
 
 		it( 'is disallowed on caption', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'image', 'caption' ], 'alignment' ) ).to.be.false;
+			expect( model.schema.checkAttribute( [ '$root', 'imageBlock', 'caption' ], 'alignment' ) ).to.be.false;
 		} );
 	} );
 
@@ -553,6 +553,78 @@ describe( 'AlignmentEditing', () => {
 
 				return newEditor.destroy();
 			} );
+		} );
+	} );
+
+	describe( 'deprecated `align` attribute', () => {
+		it( 'should support allowed `align` values in LTR content', () => {
+			const data = '<p align="left">A</p>' +
+				'<p align="center">B</p>' +
+				'<p align="right">C</p>' +
+				'<p align="justify">D</p>';
+
+			editor.setData( data );
+
+			const expectedModelData = '<paragraph>[]A</paragraph>' +
+				'<paragraph alignment="center">B</paragraph>' +
+				'<paragraph alignment="right">C</paragraph>' +
+				'<paragraph alignment="justify">D</paragraph>';
+
+			const expectedData = '<p>A</p>' +
+				'<p style="text-align:center;">B</p>' +
+				'<p style="text-align:right;">C</p>' +
+				'<p style="text-align:justify;">D</p>';
+
+			expect( getModelData( model ) ).to.equal( expectedModelData );
+			expect( editor.getData() ).to.equal( expectedData );
+		} );
+
+		it( 'should support allowed `align` values in RTL content', async () => {
+			const newEditor = await VirtualTestEditor
+				.create( {
+					language: {
+						content: 'ar'
+					},
+					plugins: [ AlignmentEditing, Paragraph ]
+				} );
+			const model = newEditor.model;
+			const data = '<p align="left">A</p>' +
+				'<p align="center">B</p>' +
+				'<p align="right">C</p>' +
+				'<p align="justify">D</p>';
+
+			newEditor.setData( data );
+
+			const expectedModelData = '<paragraph alignment="left">[]A</paragraph>' +
+				'<paragraph alignment="center">B</paragraph>' +
+				'<paragraph>C</paragraph>' +
+				'<paragraph alignment="justify">D</paragraph>';
+
+			const expectedData = '<p style="text-align:left;">A</p>' +
+				'<p style="text-align:center;">B</p>' +
+				'<p>C</p>' +
+				'<p style="text-align:justify;">D</p>';
+
+			expect( getModelData( model ) ).to.equal( expectedModelData );
+			expect( newEditor.getData() ).to.equal( expectedData );
+
+			return newEditor.destroy();
+		} );
+
+		it( 'should ignore invalid values', () => {
+			const data = '<p align="">A</p>' +
+				'<p align="not-valid">B</p>';
+
+			editor.setData( data );
+
+			const expectedModelData = '<paragraph>[]A</paragraph>' +
+				'<paragraph>B</paragraph>';
+
+			const expectedData = '<p>A</p>' +
+				'<p>B</p>';
+
+			expect( getModelData( model ) ).to.equal( expectedModelData );
+			expect( editor.getData() ).to.equal( expectedData );
 		} );
 	} );
 
