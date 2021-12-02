@@ -31,6 +31,6 @@ export default class TableCellHorizontalAlignmentCommand extends TableCellProper
 	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'horizontalAlignment', defaultValue );
+		super( editor, 'tableCellHorizontalAlignment', defaultValue );
 	}
 }

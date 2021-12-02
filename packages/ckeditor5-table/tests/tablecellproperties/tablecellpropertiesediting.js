@@ -20,7 +20,6 @@ import TableCellPaddingCommand from '../../src/tablecellproperties/commands/tabl
 import TableCellBackgroundColorCommand from '../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand';
 
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { assertTableCellStyle, assertTRBLAttribute } from '../_utils/utils';
 
 describe( 'table cell properties', () => {
@@ -89,9 +88,9 @@ describe( 'table cell properties', () => {
 
 		describe( 'border', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderColor' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderStyle' ) ).to.be.true;
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'borderWidth' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderColor' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderStyle' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBorderWidth' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -100,9 +99,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'solid' );
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'solid' );
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-color shorthand', () => {
@@ -110,7 +109,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.equal( '#f00' );
 				} );
 
 				it( 'should upcast border-style shorthand', () => {
@@ -118,7 +117,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.equal( 'ridge' );
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.equal( 'ridge' );
 				} );
 
 				it( 'should upcast border-width shorthand', () => {
@@ -126,7 +125,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.equal( '1px' );
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.equal( '1px' );
 				} );
 
 				it( 'should upcast border-top shorthand', () => {
@@ -134,9 +133,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, null, null );
 				} );
 
 				it( 'should upcast border-right shorthand', () => {
@@ -144,9 +143,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, '#f00', null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, 'solid', null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, '1px', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, '#f00', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, 'solid', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, '1px', null, null );
 				} );
 
 				it( 'should upcast border-bottom shorthand', () => {
@@ -154,9 +153,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, '#f00', null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, 'solid', null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, '1px', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, '#f00', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, 'solid', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, '1px', null );
 				} );
 
 				it( 'should upcast border-left shorthand', () => {
@@ -164,9 +163,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, null, '#f00' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, null, 'solid' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, null, '1px' );
 				} );
 
 				it( 'should upcast mixed shorthands', () => {
@@ -176,9 +175,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, 'ridge', null );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, '2em', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, 'rgba(255, 0, 0, 1)', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, 'ridge', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, '2em', null );
 				} );
 
 				it( 'should upcast border-top-* styles', () => {
@@ -188,9 +187,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', '#f00', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', 'solid', null, null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', '1px', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', '#f00', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', 'solid', null, null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', '1px', null, null, null );
 				} );
 
 				it( 'should upcast border-right-* styles', () => {
@@ -204,9 +203,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, '#f00', null, null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, 'solid', null, null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, '1px', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, '#f00', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, 'solid', null, null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, '1px', null, null );
 				} );
 
 				it( 'should upcast border-bottom-* styles', () => {
@@ -220,9 +219,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, '#f00', null );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, 'solid', null );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, '1px', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, '#f00', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, 'solid', null );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, '1px', null );
 				} );
 
 				it( 'should upcast border-left-* styles', () => {
@@ -236,9 +235,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'borderColor', null, null, null, '#f00' );
-					assertTRBLAttribute( tableCell, 'borderStyle', null, null, null, 'solid' );
-					assertTRBLAttribute( tableCell, 'borderWidth', null, null, null, '1px' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderColor', null, null, null, '#f00' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderStyle', null, null, null, 'solid' );
+					assertTRBLAttribute( tableCell, 'tableCellBorderWidth', null, null, null, '1px' );
 				} );
 
 				it( 'should allow to be overriden (only border-top consumed)', () => {
@@ -252,9 +251,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -275,28 +274,28 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item borderColor attribute', () => {
+				it( 'should consume converted item tableCellBorderColor attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderColor:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderColor:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'borderColor', '#f00', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', '#f00', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderColor:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderColor:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'borderColor', '#f00', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', '#f00', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast borderColor attribute (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderColor', {
+				it( 'should downcast tableCellBorderColor attribute (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', {
 						top: '#f00',
 						right: '#f00',
 						bottom: '#f00',
@@ -306,8 +305,8 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'border-color:#f00;' );
 				} );
 
-				it( 'should downcast borderColor attribute (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderColor', {
+				it( 'should downcast tableCellBorderColor attribute (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderColor', {
 						top: '#f00',
 						right: 'hsla(0, 100%, 50%, 0.5)',
 						bottom: 'deeppink',
@@ -322,28 +321,28 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should consume converted item borderStyle attribute', () => {
+				it( 'should consume converted item tableCellBorderStyle attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderStyle:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'borderStyle', 'ridge', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', 'ridge', tableCell ) );
 				} );
 
-				it( 'should be overridable for borderStyle', () => {
+				it( 'should be overridable for tableCellBorderStyle', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderStyle:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderStyle:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'borderStyle', 'ridge', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', 'ridge', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast borderStyle attribute (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderStyle', {
+				it( 'should downcast tableCellBorderStyle attribute (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', {
 						top: 'solid',
 						right: 'solid',
 						bottom: 'solid',
@@ -353,8 +352,8 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'border-style:solid;' );
 				} );
 
-				it( 'should downcast borderStyle attribute (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderStyle', {
+				it( 'should downcast tableCellBorderStyle attribute (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderStyle', {
 						top: 'solid',
 						right: 'ridge',
 						bottom: 'dotted',
@@ -369,28 +368,28 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should consume converted item borderWidth attribute', () => {
+				it( 'should consume converted item tableCellBorderWidth attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderWidth:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'borderWidth', '2px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', '2px', tableCell ) );
 				} );
 
-				it( 'should be overridable for borderWidth', () => {
+				it( 'should be overridable for tableCellBorderWidth', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:borderWidth:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBorderWidth:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'borderWidth', '2px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', '2px', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast borderWidth attribute (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderWidth', {
+				it( 'should downcast tableCellBorderWidth attribute (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', {
 						top: '42px',
 						right: '.1em',
 						bottom: '1337rem',
@@ -405,8 +404,8 @@ describe( 'table cell properties', () => {
 					);
 				} );
 
-				it( 'should downcast borderWidth attribute (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'borderWidth', {
+				it( 'should downcast tableCellBorderWidth attribute (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBorderWidth', {
 						top: '42px',
 						right: '42px',
 						bottom: '42px',
@@ -416,23 +415,24 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'border-width:42px;' );
 				} );
 
-				it( 'should downcast borderColor, borderStyle and borderWidth attributes together (same top, right, bottom, left)', () => {
+				it( `should downcast tableCellBorderColor, tableCellBorderStyle
+					and tableCellBorderWidth attributes together (same top, right, bottom, left)`, () => {
 					model.change( writer => {
-						writer.setAttribute( 'borderColor', {
+						writer.setAttribute( 'tableCellBorderColor', {
 							top: '#f00',
 							right: '#f00',
 							bottom: '#f00',
 							left: '#f00'
 						}, tableCell );
 
-						writer.setAttribute( 'borderStyle', {
+						writer.setAttribute( 'tableCellBorderStyle', {
 							top: 'solid',
 							right: 'solid',
 							bottom: 'solid',
 							left: 'solid'
 						}, tableCell );
 
-						writer.setAttribute( 'borderWidth', {
+						writer.setAttribute( 'tableCellBorderWidth', {
 							top: '42px',
 							right: '42px',
 							bottom: '42px',
@@ -444,24 +444,25 @@ describe( 'table cell properties', () => {
 				} );
 
 				it(
-					'should downcast borderColor, borderStyle and borderWidth attributes together (different top, right, bottom, left)',
+					`should downcast tableCellBorderColor, tableCellBorderStyle
+					and tableCellBorderWidth attributes together (different top, right, bottom, left)`,
 					() => {
 						model.change( writer => {
-							writer.setAttribute( 'borderColor', {
+							writer.setAttribute( 'tableCellBorderColor', {
 								top: '#f00',
 								right: 'hsla(0, 100%, 50%, 0.5)',
 								bottom: 'deeppink',
 								left: 'rgb(255, 0, 0)'
 							}, tableCell );
 
-							writer.setAttribute( 'borderStyle', {
+							writer.setAttribute( 'tableCellBorderStyle', {
 								top: 'solid',
 								right: 'ridge',
 								bottom: 'dotted',
 								left: 'dashed'
 							}, tableCell );
 
-							writer.setAttribute( 'borderWidth', {
+							writer.setAttribute( 'tableCellBorderWidth', {
 								top: '42px',
 								right: '.1em',
 								bottom: '1337rem',
@@ -481,21 +482,21 @@ describe( 'table cell properties', () => {
 				describe( 'change attribute', () => {
 					beforeEach( () => {
 						model.change( writer => {
-							writer.setAttribute( 'borderColor', {
+							writer.setAttribute( 'tableCellBorderColor', {
 								top: '#f00',
 								right: '#f00',
 								bottom: '#f00',
 								left: '#f00'
 							}, tableCell );
 
-							writer.setAttribute( 'borderStyle', {
+							writer.setAttribute( 'tableCellBorderStyle', {
 								top: 'solid',
 								right: 'solid',
 								bottom: 'solid',
 								left: 'solid'
 							}, tableCell );
 
-							writer.setAttribute( 'borderWidth', {
+							writer.setAttribute( 'tableCellBorderWidth', {
 								top: '42px',
 								right: '42px',
 								bottom: '42px',
@@ -504,8 +505,8 @@ describe( 'table cell properties', () => {
 						} );
 					} );
 
-					it( 'should downcast borderColor attribute change', () => {
-						model.change( writer => writer.setAttribute( 'borderColor', {
+					it( 'should downcast tableCellBorderColor attribute change', () => {
+						model.change( writer => writer.setAttribute( 'tableCellBorderColor', {
 							top: 'deeppink',
 							right: 'deeppink',
 							bottom: 'deeppink',
@@ -515,8 +516,8 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border:42px solid deeppink;' );
 					} );
 
-					it( 'should downcast borderStyle attribute change', () => {
-						model.change( writer => writer.setAttribute( 'borderStyle', {
+					it( 'should downcast tableCellBorderStyle attribute change', () => {
+						model.change( writer => writer.setAttribute( 'tableCellBorderStyle', {
 							top: 'ridge',
 							right: 'ridge',
 							bottom: 'ridge',
@@ -526,8 +527,8 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border:42px ridge #f00;' );
 					} );
 
-					it( 'should downcast borderWidth attribute change', () => {
-						model.change( writer => writer.setAttribute( 'borderWidth', {
+					it( 'should downcast tableCellBorderWidth attribute change', () => {
+						model.change( writer => writer.setAttribute( 'tableCellBorderWidth', {
 							top: 'thick',
 							right: 'thick',
 							bottom: 'thick',
@@ -537,8 +538,8 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border:thick solid #f00;' );
 					} );
 
-					it( 'should downcast borderColor attribute removal', () => {
-						model.change( writer => writer.removeAttribute( 'borderColor', tableCell ) );
+					it( 'should downcast tableCellBorderColor attribute removal', () => {
+						model.change( writer => writer.removeAttribute( 'tableCellBorderColor', tableCell ) );
 
 						assertTableCellStyle( editor,
 							'border-style:solid;' +
@@ -546,8 +547,8 @@ describe( 'table cell properties', () => {
 						);
 					} );
 
-					it( 'should downcast borderStyle attribute removal', () => {
-						model.change( writer => writer.removeAttribute( 'borderStyle', tableCell ) );
+					it( 'should downcast tableCellBorderStyle attribute removal', () => {
+						model.change( writer => writer.removeAttribute( 'tableCellBorderStyle', tableCell ) );
 
 						assertTableCellStyle( editor,
 							'border-color:#f00;' +
@@ -555,8 +556,8 @@ describe( 'table cell properties', () => {
 						);
 					} );
 
-					it( 'should downcast borderWidth attribute removal', () => {
-						model.change( writer => writer.removeAttribute( 'borderWidth', tableCell ) );
+					it( 'should downcast tableCellBorderWidth attribute removal', () => {
+						model.change( writer => writer.removeAttribute( 'tableCellBorderWidth', tableCell ) );
 
 						assertTableCellStyle( editor,
 							'border-color:#f00;' +
@@ -564,15 +565,15 @@ describe( 'table cell properties', () => {
 						);
 					} );
 
-					it( 'should downcast borderColor, borderStyle and borderWidth attributes removal', () => {
+					it( 'should downcast tableCellBorderColor, tableCellBorderStyle and tableCellBorderWidth attributes removal', () => {
 						model.change( writer => {
-							writer.removeAttribute( 'borderColor', tableCell );
-							writer.removeAttribute( 'borderStyle', tableCell );
-							writer.removeAttribute( 'borderWidth', tableCell );
+							writer.removeAttribute( 'tableCellBorderColor', tableCell );
+							writer.removeAttribute( 'tableCellBorderStyle', tableCell );
+							writer.removeAttribute( 'tableCellBorderWidth', tableCell );
 						} );
 
-						assertEqualMarkup(
-							editor.getData(),
+						expect(
+							editor.getData() ).to.equalMarkup(
 							'<figure class="table"><table><tbody><tr><td>foo</td></tr></tbody></table></figure>'
 						);
 					} );
@@ -582,7 +583,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'background color', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'backgroundColor' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellBackgroundColor' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -590,21 +591,21 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="background-color:#f00">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#f00' );
 				} );
 
-				it( 'should upcast from background shorthand', () => {
+				it( 'should upcast from tableCellBackgroundColor shorthand', () => {
 					editor.setData( '<table><tr><td style="background:#f00 center center">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( '#f00' );
+					expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( '#f00' );
 				} );
 
-				it( 'should upcast from background shorthand (rbg color value with spaces)', () => {
+				it( 'should upcast from tableCellBackgroundColor shorthand (rbg color value with spaces)', () => {
 					editor.setData( '<table><tr><td style="background:rgb(253, 253, 119) center center">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'backgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
+					expect( tableCell.getAttribute( 'tableCellBackgroundColor' ) ).to.equal( 'rgb(253, 253, 119)' );
 				} );
 			} );
 
@@ -625,46 +626,46 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item backgroundColor attribute', () => {
+				it( 'should consume converted item tableCellBackgroundColor attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:backgroundColor:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBackgroundColor:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:backgroundColor:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellBackgroundColor:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast backgroundColor', () => {
-					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+				it( 'should downcast tableCellBackgroundColor', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 
 					assertTableCellStyle( editor, 'background-color:#f00;' );
 				} );
 
-				it( 'should downcast backgroundColor removal', () => {
-					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+				it( 'should downcast tableCellBackgroundColor removal', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 
-					model.change( writer => writer.removeAttribute( 'backgroundColor', tableCell ) );
+					model.change( writer => writer.removeAttribute( 'tableCellBackgroundColor', tableCell ) );
 
 					assertTableCellStyle( editor );
 				} );
 
-				it( 'should downcast backgroundColor change', () => {
-					model.change( writer => writer.setAttribute( 'backgroundColor', '#f00', tableCell ) );
+				it( 'should downcast tableCellBackgroundColor change', () => {
+					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#f00', tableCell ) );
 
 					assertTableCellStyle( editor, 'background-color:#f00;' );
 
-					model.change( writer => writer.setAttribute( 'backgroundColor', '#ba7', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellBackgroundColor', '#ba7', tableCell ) );
 
 					assertTableCellStyle( editor, 'background-color:#ba7;' );
 				} );
@@ -673,7 +674,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'horizontal alignment', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'horizontalAlignment' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHorizontalAlignment' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -681,28 +682,28 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should upcast text-align:right style', () => {
 					editor.setData( '<table><tr><td style="text-align:right">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'right' );
 				} );
 
 				it( 'should not upcast text-align:center style', () => {
 					editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
 				} );
 
 				it( 'should upcast text-align:justify style', () => {
 					editor.setData( '<table><tr><td style="text-align:justify">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
 				} );
 
 				describe( 'the [align] attribute', () => {
@@ -710,28 +711,28 @@ describe( 'table cell properties', () => {
 						editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 					} );
 
 					it( 'should upcast the align=right attribute', () => {
 						editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'right' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'right' );
 					} );
 
 					it( 'should upcast the align=center attribute', () => {
 						editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
 					} );
 
 					it( 'should upcast the align=justify attribute', () => {
 						editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
 					} );
 				} );
 
@@ -755,28 +756,28 @@ describe( 'table cell properties', () => {
 						editor.setData( '<table><tr><td style="text-align:right">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 					} );
 
 					it( 'should upcast text-align:left style', () => {
 						editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'left' );
 					} );
 
 					it( 'should not upcast text-align:center style', () => {
 						editor.setData( '<table><tr><td style="text-align:center">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
 					} );
 
 					it( 'should upcast text-align:justify style', () => {
 						editor.setData( '<table><tr><td style="text-align:justify">foo</td></tr></table>' );
 						const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-						expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+						expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
 					} );
 
 					describe( 'the [align] attribute', () => {
@@ -784,28 +785,28 @@ describe( 'table cell properties', () => {
 							editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'left' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'left' );
 						} );
 
 						it( 'should not upcast the align=right attribute  (due to the default value of the property)', () => {
 							editor.setData( '<table><tr><td align="right">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 						} );
 
 						it( 'should upcast the align=center attribute', () => {
 							editor.setData( '<table><tr><td align="center">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'center' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'center' );
 						} );
 
 						it( 'should upcast the align=justify attribute', () => {
 							editor.setData( '<table><tr><td align="justify">foo</td></tr></table>' );
 							const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-							expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.equal( 'justify' );
+							expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.equal( 'justify' );
 						} );
 					} );
 				} );
@@ -828,46 +829,50 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item horizontalAlignment attribute', () => {
+				it( 'should consume converted item tableCellHorizontalAlignment attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:horizontalAlignment:tableCell', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-						} ) );
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
+							( evt, data, conversionApi ) => {
+								expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							}
+						) );
 
-					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'right', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'right', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:horizontalAlignment:tableCell', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, evt.name );
-						}, { priority: 'high' } ) );
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
+							( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.item, evt.name );
+							}, { priority: 'high' }
+						) );
 
-					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'right', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'right', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast horizontalAlignment=left', () => {
-					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'left', tableCell ) );
+				it( 'should downcast tableCellHorizontalAlignment=left', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'left', tableCell ) );
 
 					assertTableCellStyle( editor, 'text-align:left;' );
 				} );
 
-				it( 'should downcast horizontalAlignment=right', () => {
-					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'right', tableCell ) );
+				it( 'should downcast tableCellHorizontalAlignment=right', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'right', tableCell ) );
 
 					assertTableCellStyle( editor, 'text-align:right;' );
 				} );
 
-				it( 'should downcast horizontalAlignment=center', () => {
-					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'center', tableCell ) );
+				it( 'should downcast tableCellHorizontalAlignment=center', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'center', tableCell ) );
 
 					assertTableCellStyle( editor, 'text-align:center;' );
 				} );
 
-				it( 'should downcast horizontalAlignment=justify', () => {
-					model.change( writer => writer.setAttribute( 'horizontalAlignment', 'justify', tableCell ) );
+				it( 'should downcast tableCellHorizontalAlignment=justify', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'justify', tableCell ) );
 
 					assertTableCellStyle( editor, 'text-align:justify;' );
 				} );
@@ -901,46 +906,50 @@ describe( 'table cell properties', () => {
 						await editor.destroy();
 					} );
 
-					it( 'should consume converted item\'s horizontalAlignment attribute', () => {
+					it( 'should consume converted item\'s tableCellHorizontalAlignment attribute', () => {
 						editor.conversion.for( 'downcast' )
-							.add( dispatcher => dispatcher.on( 'attribute:horizontalAlignment:tableCell', ( evt, data, conversionApi ) => {
-								expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-							} ) );
+							.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
+								( evt, data, conversionApi ) => {
+									expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+								}
+							) );
 
-						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'center', tableCell ) );
+						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'center', tableCell ) );
 					} );
 
 					it( 'should be overridable', () => {
 						editor.conversion.for( 'downcast' )
-							.add( dispatcher => dispatcher.on( 'attribute:horizontalAlignment:tableCell', ( evt, data, conversionApi ) => {
-								conversionApi.consumable.consume( data.item, evt.name );
-							}, { priority: 'high' } ) );
+							.add( dispatcher => dispatcher.on( 'attribute:tableCellHorizontalAlignment:tableCell',
+								( evt, data, conversionApi ) => {
+									conversionApi.consumable.consume( data.item, evt.name );
+								}, { priority: 'high' }
+							) );
 
-						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'center', tableCell ) );
+						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'center', tableCell ) );
 
 						assertTableCellStyle( editor, '' );
 					} );
 
-					it( 'should not downcast horizontalAlignment=right', () => {
-						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'right', tableCell ) );
+					it( 'should downcast tableCellHorizontalAlignment=right', () => {
+						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'right', tableCell ) );
 
 						assertTableCellStyle( editor, 'text-align:right;' );
 					} );
 
-					it( 'should downcast horizontalAlignment=left', () => {
-						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'left', tableCell ) );
+					it( 'should downcast tableCellHorizontalAlignment=left', () => {
+						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'left', tableCell ) );
 
 						assertTableCellStyle( editor, 'text-align:left;' );
 					} );
 
-					it( 'should downcast horizontalAlignment=center', () => {
-						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'center', tableCell ) );
+					it( 'should downcast tableCellHorizontalAlignment=center', () => {
+						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'center', tableCell ) );
 
 						assertTableCellStyle( editor, 'text-align:center;' );
 					} );
 
-					it( 'should downcast horizontalAlignment=justify', () => {
-						model.change( writer => writer.setAttribute( 'horizontalAlignment', 'justify', tableCell ) );
+					it( 'should downcast tableCellHorizontalAlignment=justify', () => {
+						model.change( writer => writer.setAttribute( 'tableCellHorizontalAlignment', 'justify', tableCell ) );
 
 						assertTableCellStyle( editor, 'text-align:justify;' );
 					} );
@@ -950,7 +959,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'vertical alignment', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'verticalAlignment' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellVerticalAlignment' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -958,42 +967,42 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="vertical-align:top">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'top' );
 				} );
 
 				it( 'should upcast "bottom" vertical-align', () => {
 					editor.setData( '<table><tr><td style="vertical-align:bottom">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'bottom' );
 				} );
 
 				it( 'should not upcast "middle" vertical-align (due to the default value of the property)', () => {
 					editor.setData( '<table><tr><td style="vertical-align:middle">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should upcast "top" valign attribute', () => {
 					editor.setData( '<table><tr><td valign="top">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'top' );
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'top' );
 				} );
 
 				it( 'should upcast "bottom" valign attribute', () => {
 					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.equal( 'bottom' );
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.equal( 'bottom' );
 				} );
 
 				it( 'should not upcast "middle" valign attribute (due to the default value of the property)', () => {
 					editor.setData( '<table><tr><td valign="middle">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1014,28 +1023,31 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item verticalAlignment attribute', () => {
+				it( 'should consume converted item tableCellVerticalAlignment attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:verticalAlignment:tableCell', ( evt, data, conversionApi ) => {
-							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
-						} ) );
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellVerticalAlignment:tableCell',
+							( evt, data, conversionApi ) => {
+								expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
+							}
+						) );
 
-					model.change( writer => writer.setAttribute( 'verticalAlignment', 'top', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellVerticalAlignment', 'top', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:verticalAlignment:tableCell', ( evt, data, conversionApi ) => {
-							conversionApi.consumable.consume( data.item, evt.name );
-						}, { priority: 'high' } ) );
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellVerticalAlignment:tableCell',
+							( evt, data, conversionApi ) => {
+								conversionApi.consumable.consume( data.item, evt.name );
+							}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'verticalAlignment', 'top', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellVerticalAlignment', 'top', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast verticalAlignment', () => {
-					model.change( writer => writer.setAttribute( 'verticalAlignment', 'top', tableCell ) );
+				it( 'should downcast tableCellVerticalAlignment', () => {
+					model.change( writer => writer.setAttribute( 'tableCellVerticalAlignment', 'top', tableCell ) );
 
 					assertTableCellStyle( editor, 'vertical-align:top;' );
 				} );
@@ -1044,7 +1056,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'padding', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'padding' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellPadding' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1052,7 +1064,7 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="padding:2px 4em">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					assertTRBLAttribute( tableCell, 'padding', '2px', '4em' );
+					assertTRBLAttribute( tableCell, 'tableCellPadding', '2px', '4em' );
 				} );
 			} );
 
@@ -1073,28 +1085,28 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item borderColor attribute', () => {
+				it( 'should consume converted item tableCellBorderColor attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:padding:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellPadding:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'padding', '1px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellPadding', '1px', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:padding:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellPadding:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'padding', '1px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellPadding', '1px', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast padding (same top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'padding', {
+				it( 'should downcast tableCellPadding (same top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellPadding', {
 						top: '2px',
 						right: '2px',
 						bottom: '2px',
@@ -1104,8 +1116,8 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'padding:2px;' );
 				} );
 
-				it( 'should downcast padding (different top, right, bottom, left)', () => {
-					model.change( writer => writer.setAttribute( 'padding', {
+				it( 'should downcast tableCellPadding (different top, right, bottom, left)', () => {
+					model.change( writer => writer.setAttribute( 'tableCellPadding', {
 						top: '2px',
 						right: '3px',
 						bottom: '4px',
@@ -1115,20 +1127,20 @@ describe( 'table cell properties', () => {
 					assertTableCellStyle( editor, 'padding:2px 3px 4px 5px;' );
 				} );
 
-				it( 'should downcast padding removal', () => {
-					model.change( writer => writer.setAttribute( 'padding', '1337px', tableCell ) );
+				it( 'should downcast tableCellPadding removal', () => {
+					model.change( writer => writer.setAttribute( 'tableCellPadding', '1337px', tableCell ) );
 
-					model.change( writer => writer.removeAttribute( 'padding', tableCell ) );
+					model.change( writer => writer.removeAttribute( 'tableCellPadding', tableCell ) );
 
 					assertTableCellStyle( editor );
 				} );
 
-				it( 'should downcast padding change', () => {
-					model.change( writer => writer.setAttribute( 'padding', '1337px', tableCell ) );
+				it( 'should downcast tableCellPadding change', () => {
+					model.change( writer => writer.setAttribute( 'tableCellPadding', '1337px', tableCell ) );
 
 					assertTableCellStyle( editor, 'padding:1337px;' );
 
-					model.change( writer => writer.setAttribute( 'padding', '1410em', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellPadding', '1410em', tableCell ) );
 
 					assertTableCellStyle( editor, 'padding:1410em;' );
 				} );
@@ -1137,7 +1149,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'cell width', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'width' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellWidth' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1145,7 +1157,7 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="width:20px">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'width' ) ).to.equal( '20px' );
+					expect( tableCell.getAttribute( 'tableCellWidth' ) ).to.equal( '20px' );
 				} );
 			} );
 
@@ -1167,49 +1179,49 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item width attribute', () => {
+				it( 'should consume converted item tableCellWidth attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:width:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellWidth:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'width', '40px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellWidth', '40px', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:width:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellWidth:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'width', '40px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellWidth', '40px', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast width attribute', () => {
-					model.change( writer => writer.setAttribute( 'width', '20px', tableCell ) );
+				it( 'should downcast tableCellWidth attribute', () => {
+					model.change( writer => writer.setAttribute( 'tableCellWidth', '20px', tableCell ) );
 
-					assertEqualMarkup(
-						editor.getData(),
+					expect(
+						editor.getData() ).to.equalMarkup(
 						'<figure class="table"><table><tbody><tr><td style="width:20px;">foo</td></tr></tbody></table></figure>'
 					);
 				} );
 
-				it( 'should downcast width removal', () => {
-					model.change( writer => writer.setAttribute( 'width', '1337px', tableCell ) );
+				it( 'should downcast tableCellWidth removal', () => {
+					model.change( writer => writer.setAttribute( 'tableCellWidth', '1337px', tableCell ) );
 
-					model.change( writer => writer.removeAttribute( 'width', tableCell ) );
+					model.change( writer => writer.removeAttribute( 'tableCellWidth', tableCell ) );
 
 					assertTableCellStyle( editor );
 				} );
 
 				it( 'should downcast width change', () => {
-					model.change( writer => writer.setAttribute( 'width', '1337px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellWidth', '1337px', tableCell ) );
 
 					assertTableCellStyle( editor, 'width:1337px;' );
 
-					model.change( writer => writer.setAttribute( 'width', '1410em', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellWidth', '1410em', tableCell ) );
 
 					assertTableCellStyle( editor, 'width:1410em;' );
 				} );
@@ -1218,7 +1230,7 @@ describe( 'table cell properties', () => {
 
 		describe( 'cell height', () => {
 			it( 'should set proper schema rules', () => {
-				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'height' ) ).to.be.true;
+				expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'tableCellHeight' ) ).to.be.true;
 			} );
 
 			describe( 'upcast conversion', () => {
@@ -1226,7 +1238,7 @@ describe( 'table cell properties', () => {
 					editor.setData( '<table><tr><td style="height:20px">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'height' ) ).to.equal( '20px' );
+					expect( tableCell.getAttribute( 'tableCellHeight' ) ).to.equal( '20px' );
 				} );
 			} );
 
@@ -1248,49 +1260,49 @@ describe( 'table cell properties', () => {
 					tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 				} );
 
-				it( 'should consume converted item height attribute', () => {
+				it( 'should consume converted item tableCellHeight attribute', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:height:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellHeight:tableCell', ( evt, data, conversionApi ) => {
 							expect( conversionApi.consumable.consume( data.item, evt.name ) ).to.be.false;
 						} ) );
 
-					model.change( writer => writer.setAttribute( 'height', '40px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellHeight', '40px', tableCell ) );
 				} );
 
 				it( 'should be overridable', () => {
 					editor.conversion.for( 'downcast' )
-						.add( dispatcher => dispatcher.on( 'attribute:height:tableCell', ( evt, data, conversionApi ) => {
+						.add( dispatcher => dispatcher.on( 'attribute:tableCellHeight:tableCell', ( evt, data, conversionApi ) => {
 							conversionApi.consumable.consume( data.item, evt.name );
 						}, { priority: 'high' } ) );
 
-					model.change( writer => writer.setAttribute( 'height', '40px', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellHeight', '40px', tableCell ) );
 
 					assertTableCellStyle( editor, '' );
 				} );
 
-				it( 'should downcast height attribute', () => {
-					model.change( writer => writer.setAttribute( 'height', '20px', tableCell ) );
+				it( 'should downcast tableCellHeight attribute', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHeight', '20px', tableCell ) );
 
-					assertEqualMarkup(
-						editor.getData(),
+					expect(
+						editor.getData() ).to.equalMarkup(
 						'<figure class="table"><table><tbody><tr><td style="height:20px;">foo</td></tr></tbody></table></figure>'
 					);
 				} );
 
-				it( 'should downcast height removal', () => {
-					model.change( writer => writer.setAttribute( 'height', '1337px', tableCell ) );
+				it( 'should downcast tableCellHeight removal', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHeight', '1337px', tableCell ) );
 
-					model.change( writer => writer.removeAttribute( 'height', tableCell ) );
+					model.change( writer => writer.removeAttribute( 'tableCellHeight', tableCell ) );
 
 					assertTableCellStyle( editor );
 				} );
 
-				it( 'should downcast height change', () => {
-					model.change( writer => writer.setAttribute( 'height', '1337px', tableCell ) );
+				it( 'should downcast tableCellHeight change', () => {
+					model.change( writer => writer.setAttribute( 'tableCellHeight', '1337px', tableCell ) );
 
 					assertTableCellStyle( editor, 'height:1337px;' );
 
-					model.change( writer => writer.setAttribute( 'height', '1410em', tableCell ) );
+					model.change( writer => writer.setAttribute( 'tableCellHeight', '1410em', tableCell ) );
 
 					assertTableCellStyle( editor, 'height:1410em;' );
 				} );
@@ -1338,9 +1350,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border` values from <th>', () => {
@@ -1348,9 +1360,9 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-color` value from <td>', () => {
@@ -1358,7 +1370,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderColor' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderColor' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-style` value from <th>', () => {
@@ -1366,7 +1378,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderStyle' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderStyle' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-width` value from <td>', () => {
@@ -1374,7 +1386,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default `border-width` value from <th>', () => {
@@ -1382,7 +1394,7 @@ describe( 'table cell properties', () => {
 
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'borderWidth' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellBorderWidth' ) ).to.be.undefined;
 				} );
 			} );
 
@@ -1463,63 +1475,63 @@ describe( 'table cell properties', () => {
 				} );
 			} );
 
-			describe( 'horizontalAlignment', () => {
+			describe( 'tableCellHorizontalAlignment', () => {
 				it( 'should not upcast the default value from the style attribute (text-align:left) from <td>', () => {
 					editor.setData( '<table><tr><td style="text-align:left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default value from the style attribute (text-align:left) from <th>', () => {
 					editor.setData( '<table><tr><th style="text-align:left">foo</th></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default value from the align attribute (left) from <td>', () => {
 					editor.setData( '<table><tr><td align="left">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default value from the align attribute (left) from <th>', () => {
 					editor.setData( '<table><tr><th align="left">foo</th></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'horizontalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellHorizontalAlignment' ) ).to.be.undefined;
 				} );
 			} );
 
-			describe( 'verticalAlignment', () => {
+			describe( 'tableCellVerticalAlignment', () => {
 				it( 'should not upcast the default value from the style attribute (vertical-align:bottom;) from <td>', () => {
 					editor.setData( '<table><tr><td style="vertical-align:bottom;">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default value from the style attribute (vertical-align:bottom;) from <th>', () => {
 					editor.setData( '<table><tr><th style="vertical-align:bottom;">foo</th></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default value from the valign attribute (bottom) from <td>', () => {
 					editor.setData( '<table><tr><td valign="bottom">foo</td></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
 				} );
 
 				it( 'should not upcast the default value from the valign attribute (bottom) from <th>', () => {
 					editor.setData( '<table><tr><th valign="bottom">foo</th></tr></table>' );
 					const tableCell = model.document.getRoot().getNodeByPath( [ 0, 0, 0 ] );
 
-					expect( tableCell.getAttribute( 'verticalAlignment' ) ).to.be.undefined;
+					expect( tableCell.getAttribute( 'tableCellVerticalAlignment' ) ).to.be.undefined;
 				} );
 			} );
 		} );

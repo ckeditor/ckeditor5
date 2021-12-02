@@ -259,6 +259,8 @@ export default class ToolbarView extends View {
 	 */
 	destroy() {
 		this._behavior.destroy();
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 
 		return super.destroy();
 	}

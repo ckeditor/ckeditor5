@@ -11,7 +11,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import StandardEditingModeEditing from '../src/standardeditingmodeediting';
 import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
@@ -99,8 +98,8 @@ describe( 'StandardEditingModeEditing', () => {
 					'</paragraph>'
 				);
 
-				assertEqualMarkup( editor.getData(), expectedView );
-				assertEqualMarkup( getViewData( editor.editing.view, { withoutSelection: true } ), expectedView );
+				expect( editor.getData() ).to.equalMarkup( expectedView );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
 			} );
 		} );
 	} );

@@ -18,6 +18,7 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -454,6 +455,92 @@ describe( 'BalloonToolbar', () => {
 			const expectedWidth = toPx( new Rect( viewElement ).width * 0.9 );
 
 			expect( balloonToolbar.toolbarView.maxWidth ).to.equal( expectedWidth );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/7707
+		describe( 'on iOS (avoiding the clash with native selection handles)', () => {
+			let targetRect, balloonRect;
+
+			beforeEach( () => {
+				targetRect = new Rect( {
+					top: 200,
+					bottom: 400,
+					left: 50,
+					right: 100,
+					width: 0,
+					height: 0
+				} );
+
+				balloonRect = new Rect( {
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0,
+					width: 50,
+					height: 50
+				} );
+			} );
+
+			it( 'should attach the balloon farther away', () => {
+				setData( model, '<paragraph>b[a]r</paragraph>' );
+
+				balloonToolbar.show();
+
+				const defaultPositioningFunctions = balloonAddSpy.firstCall.args[ 0 ].position.positions;
+
+				balloonToolbar.hide();
+
+				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
+				balloonToolbar.show();
+
+				const iOSPositioningFuctions = balloonAddSpy.secondCall.args[ 0 ].position.positions;
+
+				defaultPositioningFunctions.forEach( ( defaultPositioningFunction, index ) => {
+					const defaultResult = defaultPositioningFunction( targetRect, balloonRect );
+					const iOSResult = iOSPositioningFuctions[ index ]( targetRect, balloonRect );
+
+					// Default non-iOS offset is 10px. On iOS it is 20px/1, which is 20px. The difference is 10px.
+					if ( defaultResult.name.match( /^arrow_n/ ) ) {
+						defaultResult.top += 10;
+					} else if ( defaultResult.name.match( /^arrow_s/ ) ) {
+						defaultResult.top -= 10;
+					}
+
+					expect( iOSResult ).to.deep.equal( defaultResult, index );
+				} );
+			} );
+
+			it( 'should change the distance depending on the scale of the visual viewport', () => {
+				setData( model, '<paragraph>b[a]r</paragraph>' );
+
+				balloonToolbar.show();
+
+				const defaultPositioningFunctions = balloonAddSpy.firstCall.args[ 0 ].position.positions;
+
+				balloonToolbar.hide();
+
+				testUtils.sinon.stub( global.window.visualViewport, 'scale' ).get( () => 0.5 );
+				testUtils.sinon.stub( env, 'isSafari' ).get( () => true );
+				testUtils.sinon.stub( env, 'isiOS' ).get( () => true );
+				balloonToolbar.show();
+
+				const iOSPositioningFuctions = balloonAddSpy.secondCall.args[ 0 ].position.positions;
+
+				defaultPositioningFunctions.forEach( ( defaultPositioningFunction, index ) => {
+					const defaultResult = defaultPositioningFunction( targetRect, balloonRect );
+					const iOSResult = iOSPositioningFuctions[ index ]( targetRect, balloonRect );
+
+					// Default non-iOS offset is 10px. On iOS it is 20px/0.5, which is 40px. The difference is 30px.
+					if ( defaultResult.name.match( /^arrow_n/ ) ) {
+						defaultResult.top += 30;
+					} else if ( defaultResult.name.match( /^arrow_s/ ) ) {
+						defaultResult.top -= 30;
+					}
+
+					expect( iOSResult ).to.deep.equal( defaultResult, index );
+				} );
+			} );
 		} );
 	} );
 

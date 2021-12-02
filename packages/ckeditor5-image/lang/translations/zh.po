@@ -98,16 +98,16 @@ msgstr "圖片縮放清單"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr ""
+msgstr "插入"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr ""
+msgstr "使用連結插入圖片"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr ""
+msgstr "更新圖片連結"
