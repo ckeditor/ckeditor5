@@ -25,6 +25,7 @@ export function formatHtml( input ) {
 	// The list is partially based on https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements that contains
 	// a full list of HTML block-level elements.
 	// A void element is an element that cannot have any child - https://html.spec.whatwg.org/multipage/syntax.html#void-elements.
+	// Note that <pre> element is not listed on this list to avoid breaking whitespace formatting.
 	const elementsToFormat = [
 		{ name: 'address', isVoid: false },
 		{ name: 'article', isVoid: false },
@@ -57,7 +58,6 @@ export function formatHtml( input ) {
 		{ name: 'nav', isVoid: false },
 		{ name: 'ol', isVoid: false },
 		{ name: 'p', isVoid: false },
-		{ name: 'pre', isVoid: false },
 		{ name: 'section', isVoid: false },
 		{ name: 'table', isVoid: false },
 		{ name: 'tbody', isVoid: false },

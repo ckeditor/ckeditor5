@@ -553,8 +553,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 					it( 'multiple blocks in a single list item', () => {
 						testData(
 							'<ul>' +
-							'<li><p>Foo</p><p>Bar</p></li>' +
-							'<li>abc</li>' +
+								'<li><p>Foo</p><p>Bar</p></li>' +
+								'<li>abc</li>' +
 							'</ul>',
 
 							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</paragraph>' +
@@ -562,8 +562,8 @@ describe.only( 'DocumentListEditing - converters', () => {
 							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">abc</paragraph>',
 
 							'<ul>' +
-							'<li><p>Foo</p><p>Bar</p></li>' +
-							'<li>abc</li>' +
+								'<li><p>Foo</p><p>Bar</p></li>' +
+								'<li>abc</li>' +
 							'</ul>'
 						);
 					} );
@@ -1206,6 +1206,130 @@ describe.only( 'DocumentListEditing - converters', () => {
 									'<p>Foo</p>' +
 									'<p>Bar</p>' +
 								'</li>' +
+							'</ul>'
+						);
+					} );
+				} );
+
+				describe( 'block that are not allowed in the list item', () => {
+					beforeEach( () => {
+						model.schema.addAttributeCheck( ( context, attributeName ) => {
+							if ( context.endsWith( 'heading1' ) && attributeName == 'listItemId' ) {
+								return false;
+							}
+						} );
+					} );
+
+					it( 'single block in list item', () => {
+						testData(
+							'<ul>' +
+								'<li>' +
+									'<h2>foo</h2>' +
+								'</li>' +
+							'</ul>',
+
+							'<heading1>foo</heading1>',
+
+							'<h2>foo</h2>'
+						);
+					} );
+
+					it( 'multiple blocks in list item', () => {
+						testData(
+							'<ul>' +
+								'<li>' +
+									'<h2>foo</h2>' +
+									'<h2>bar</h2>' +
+								'</li>' +
+							'</ul>',
+
+							'<heading1>foo</heading1>' +
+							'<heading1>bar</heading1>',
+
+							'<h2>foo</h2>' +
+							'<h2>bar</h2>'
+						);
+					} );
+
+					it( 'multiple mixed blocks in list item (first is outside the list)', () => {
+						testData(
+							'<ul>' +
+								'<li>' +
+									'<h2>foo</h2>' +
+									'<p>bar</p>' +
+								'</li>' +
+							'</ul>',
+
+							'<heading1>foo</heading1>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">bar</paragraph>',
+
+							'<h2>foo</h2>' +
+							'<ul>' +
+								'<li>bar</li>' +
+							'</ul>'
+						);
+					} );
+
+					it( 'multiple mixed blocks in list item (last is outside the list)', () => {
+						testData(
+							'<ul>' +
+								'<li>' +
+									'<p>foo</p>' +
+									'<h2>bar</h2>' +
+								'</li>' +
+							'</ul>',
+
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+							'<heading1>bar</heading1>',
+
+							'<ul>' +
+								'<li>foo</li>' +
+							'</ul>' +
+							'<h2>bar</h2>'
+						);
+					} );
+
+					it( 'multiple mixed blocks in list item (middle one is outside the list)', () => {
+						testData(
+							'<ul>' +
+								'<li>' +
+									'<p>foo</p>' +
+									'<h2>bar</h2>' +
+									'<p>baz</p>' +
+								'</li>' +
+							'</ul>',
+
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+							'<heading1>bar</heading1>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">baz</paragraph>',
+
+							'<ul>' +
+								'<li>foo</li>' +
+							'</ul>' +
+							'<h2>bar</h2>' +
+							'<ul>' +
+								'<li>baz</li>' +
+							'</ul>'
+						);
+					} );
+
+					it( 'before nested list aaa', () => {
+						testData(
+							'<ul>' +
+								'<li>' +
+									'<h2></h2>' +
+									'<ul>' +
+										'<li>x</li>' +
+									'</ul>' +
+								'</li>' +
+							'</ul>',
+
+							'<heading1></heading1>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">x</paragraph>',
+
+							'<h2>&nbsp;</h2>' +
+							'<ul>' +
+								'<li>x</li>' +
 							'</ul>'
 						);
 					} );
@@ -5445,6 +5569,20 @@ describe.only( 'DocumentListEditing - converters', () => {
 			editor.setData( '<p></p><ul><li></li></ul>' );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
+		} );
+
+		it( 'view li converter should not set list attributes if change was already consumed to some non listable element', () => {
+			model.schema.addAttributeCheck( ( context, attributeName ) => {
+				if ( context.endsWith( 'heading1' ) && attributeName == 'listItemId' ) {
+					return false;
+				}
+			} );
+
+			editor.conversion.for( 'upcast' ).elementToElement( { view: 'li', model: 'heading1', converterPriority: 'highest' } );
+
+			editor.setData( '<ul><li></li></ul>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<heading1></heading1>' );
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {

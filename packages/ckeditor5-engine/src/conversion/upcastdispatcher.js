@@ -155,6 +155,16 @@ export default class UpcastDispatcher {
 		this._modelCursor = null;
 
 		/**
+		 * The list of elements that were created during splitting but should not get removed on conversion end even if they are empty.
+		 *
+		 * After the conversion process the list is cleared.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/model/element~Element>}
+		 */
+		this._emptyElementsToKeep = new Set();
+
+		/**
 		 * An interface passed by the dispatcher to the event callbacks.
 		 *
 		 * @member {module:engine/conversion/upcastdispatcher~UpcastConversionApi}
@@ -230,6 +240,7 @@ export default class UpcastDispatcher {
 		// Clear split elements & parents lists.
 		this._splitParts.clear();
 		this._cursorParents.clear();
+		this._emptyElementsToKeep.clear();
 
 		// Clear conversion API.
 		this.conversionApi.writer = null;
@@ -456,11 +467,12 @@ export default class UpcastDispatcher {
 	}
 
 	/**
-	 * TODO
+	 * Mark an element that were created during splitting that it should not get removed on conversion end even if it's empty.
+	 *
 	 * @private
 	 */
 	_keepEmptyElement( element ) {
-		this._splitParts.delete( element );
+		this._emptyElementsToKeep.add( element );
 	}
 
 	/**
@@ -475,7 +487,7 @@ export default class UpcastDispatcher {
 		let anyRemoved = false;
 
 		for ( const element of this._splitParts.keys() ) {
-			if ( element.isEmpty ) {
+			if ( element.isEmpty && !this._emptyElementsToKeep.has( element ) ) {
 				this.conversionApi.writer.remove( element );
 				this._splitParts.delete( element );
 
@@ -767,6 +779,15 @@ function createContextTree( contextDefinition, writer ) {
  * @method #getSplitParts
  * @param {module:engine/model/element~Element} element
  * @returns {Array.<module:engine/model/element~Element>}
+ */
+
+/**
+ * Mark an element that was created during splitting that it should not get removed on conversion end even if it's empty.
+ *
+ * **Note:** This is an advanced method. For most cases you will not need to keep the split empty element.
+ *
+ * @method #keepEmptyElement
+ * @param {module:engine/model/element~Element} element
  */
 
 /**

@@ -31,7 +31,8 @@ export function listItemUpcastConverter() {
 			return;
 		}
 
-		const items = Array.from( data.modelRange.getItems( { shallow: true } ) );
+		const items = Array.from( data.modelRange.getItems( { shallow: true } ) )
+			.filter( item => schema.checkAttribute( item, 'listItemId' ) );
 
 		if ( !items.length ) {
 			return;
@@ -44,7 +45,8 @@ export function listItemUpcastConverter() {
 		};
 
 		for ( const item of items ) {
-			if ( !item.hasAttribute( 'listItemId' ) && schema.checkAttribute( item, 'listItemId' ) ) {
+			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
+			if ( !item.hasAttribute( 'listItemId' ) ) {
 				writer.setAttributes( attributes, item );
 			}
 		}
@@ -228,7 +230,6 @@ export function listItemViewToModelLengthMapper( mapper, schema ) {
 			length += 1;
 		}
 
-		// Return model length or 1 for a single empty LI.
 		return length;
 	}
 
@@ -238,49 +239,98 @@ export function listItemViewToModelLengthMapper( mapper, schema ) {
 /**
  * TODO
  */
-export function listItemDowncastConverter( attributes, model, { dataPipeline } ) {
+export function listItemDowncastConverter( attributes, model ) {
 	const consumer = createAttributesConsumer( attributes );
 
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 
-		// Do not convert paragraph if it should get converted by the default converters.
-		if ( evt.name == 'insert:paragraph' && !shouldUseBogusParagraph( data.item, model ) ) {
-			return;
-		}
-
 		const listItem = data.item;
 
-		// Consume attributes on the converted items.
+		// Test if attributes on the converted items are not consumed.
 		if ( !consumer( listItem, consumable ) ) {
 			return;
 		}
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		let viewRange = findMappedViewRange( listItem, mapper, model, writer );
+		const viewElement = findMappedViewElement( listItem, mapper, model, writer );
 
-		if ( viewRange ) {
-			// First, unwrap the item from current list wrappers.
-			unwrapListItemBlock( viewRange.getContainedElement(), writer );
-
-			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-			viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+		// Attributes are converted after the element itself so a view element should be there.
+		if ( !viewElement ) {
+			return;
 		}
 
-		// Convert the bogus paragraph (if wasn't already skipped at the beginning of this function).
-		if ( evt.name == 'insert:paragraph' ) {
-			viewRange = convertBogusParagraph( data, conversionApi, { dataPipeline } );
-		}
+		// Unwrap element from current list wrappers.
+		unwrapListItemBlock( viewElement, writer );
 
 		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, viewRange, writer, { dataPipeline } );
+		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), writer );
+	};
+}
+
+/**
+ * TODO
+ */
+export function listItemParagraphDowncastConverter( attributes, model, { dataPipeline } ) {
+	const consumer = createAttributesConsumer( attributes );
+
+	return ( evt, data, conversionApi ) => {
+		const { writer, mapper, consumable } = conversionApi;
+
+		const listItem = data.item;
+
+		// Test if attributes on the converted items are not consumed.
+		if ( !consumer( listItem, consumable, { preflight: true } ) ) {
+			return;
+		}
+
+		// Test the paragraph itself.
+		if ( !consumable.test( listItem, evt.name ) ) {
+			return;
+		}
+
+		// Convert only if a bogus paragraph should be used.
+		if ( !shouldUseBogusParagraph( listItem, model ) ) {
+			return;
+		}
+
+		// Test and consume the paragraph.
+		if ( !consumable.consume( listItem, evt.name ) ) {
+			return;
+		}
+
+		// Consume the attributes.
+		consumer( listItem, consumable );
+
+		const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
+		const viewPosition = mapper.toViewPosition( data.range.start );
+
+		mapper.bindElements( listItem, paragraphElement );
+		writer.insert( viewPosition, paragraphElement );
+
+		conversionApi.convertChildren( listItem );
+
+		// Find the range over the bogus paragraph (or just an inline content in the data pipeline).
+		let viewRange;
+
+		if ( !dataPipeline ) {
+			viewRange = writer.createRangeOn( paragraphElement );
+		} else {
+			// Unwrap paragraph content from bogus paragraph.
+			viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
+
+			writer.remove( paragraphElement );
+			mapper.unbindViewElement( paragraphElement );
+		}
+
+		// Then wrap it with the list wrappers.
+		wrapListItemBlock( listItem, viewRange, writer );
 	};
 }
 
 // TODO
-function findMappedViewRange( listItem, mapper, model, viewWriter ) {
+function findMappedViewElement( listItem, mapper, model, viewWriter ) {
 	const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
 	const viewElement = mapper.toViewElement( listItem );
 
@@ -296,14 +346,16 @@ function findMappedViewRange( listItem, mapper, model, viewWriter ) {
 
 	// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 	// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-	const viewRange = mapper.toViewRange( model.createRangeOn( listItem ) ).getTrimmed();
+	const modelElementRange = model.createRangeOn( listItem );
+	const viewElementRange = viewWriter.createRangeOn( viewElement );
+	const viewRange = mapper.toViewRange( modelElementRange ).getTrimmed();
 
 	// Verify if this is a range for the same element (in case the original element was removed).
-	if ( !viewRange.containsRange( viewWriter.createRangeOn( viewElement ), true ) ) {
+	if ( !viewRange.containsRange( viewElementRange, true ) ) {
 		return null;
 	}
 
-	return viewRange;
+	return viewRange.getContainedElement();
 }
 
 // TODO
@@ -326,7 +378,7 @@ function unwrapListItemBlock( viewElement, viewWriter ) {
 }
 
 // TODO
-function wrapListItemBlock( listItem, viewRange, writer, { dataPipeline } ) {
+function wrapListItemBlock( listItem, viewRange, writer ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
 	}
@@ -341,9 +393,7 @@ function wrapListItemBlock( listItem, viewRange, writer, { dataPipeline } ) {
 		const listItemViewElement = createListItemElement( writer, indent, listItemId );
 		const listViewElement = createListElement( writer, indent, listType );
 
-		if ( dataPipeline ) {
-			listItemViewElement.getFillerOffset = getListItemFillerOffset;
-		}
+		listItemViewElement.getFillerOffset = getListItemFillerOffset;
 
 		viewRange = writer.wrap( viewRange, listItemViewElement );
 		viewRange = writer.wrap( viewRange, listViewElement );
@@ -363,35 +413,6 @@ function wrapListItemBlock( listItem, viewRange, writer, { dataPipeline } ) {
 		listItemId = currentListItem.getAttribute( 'listItemId' );
 		listType = currentListItem.getAttribute( 'listType' );
 	}
-}
-
-// TODO
-function convertBogusParagraph( data, conversionApi, { dataPipeline } ) {
-	const { consumable, writer, mapper } = conversionApi;
-
-	if ( !consumable.consume( data.item, 'insert:paragraph' ) ) {
-		return;
-	}
-
-	const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
-	const viewPosition = mapper.toViewPosition( data.range.start );
-
-	mapper.bindElements( data.item, paragraphElement );
-	writer.insert( viewPosition, paragraphElement );
-
-	conversionApi.convertChildren( data.item );
-
-	if ( !dataPipeline ) {
-		return writer.createRangeOn( paragraphElement );
-	}
-
-	// Unwrap paragraph content from bogus paragraph.
-	const viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
-
-	writer.remove( paragraphElement );
-	mapper.unbindViewElement( paragraphElement );
-
-	return viewRange;
 }
 
 // TODO

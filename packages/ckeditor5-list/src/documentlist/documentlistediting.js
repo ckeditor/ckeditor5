@@ -14,6 +14,7 @@ import { CKEditorError, uid } from 'ckeditor5/src/utils';
 
 import {
 	listItemDowncastConverter,
+	listItemParagraphDowncastConverter,
 	listItemUpcastConverter,
 	listItemViewToModelLengthMapper,
 	listUpcastCleanList,
@@ -82,23 +83,19 @@ export default class DocumentListEditing extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
 			.add( dispatcher => {
-				const cleanListConverter = listUpcastCleanList();
-
 				dispatcher.on( 'element:li', listItemUpcastConverter() );
-				dispatcher.on( 'element:ul', cleanListConverter, { priority: 'high' } );
-				dispatcher.on( 'element:ol', cleanListConverter, { priority: 'high' } );
+				dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
+				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 			} );
 
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => downcastConverters( dispatcher ) );
 		editor.conversion.for( 'dataDowncast' ).add( dispatcher => downcastConverters( dispatcher, { dataPipeline: true } ) );
 
 		function downcastConverters( dispatcher, options = {} ) {
-			const converter = listItemDowncastConverter( attributes, model, options );
-
-			dispatcher.on( 'insert:paragraph', converter, { priority: 'high' } );
+			dispatcher.on( 'insert:paragraph', listItemParagraphDowncastConverter( attributes, model, options ), { priority: 'high' } );
 
 			for ( const attributeName of attributes ) {
-				dispatcher.on( `attribute:${ attributeName }`, converter );
+				dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
 			}
 		}
 
