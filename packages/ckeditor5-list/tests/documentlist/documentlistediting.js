@@ -18,8 +18,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { prepareTest } from './_utils/utils';
 import stubUid from './_utils/uid';
-import prepareTest from './_utils/prepare-test';
 
 describe( 'DocumentListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
