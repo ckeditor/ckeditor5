@@ -20,7 +20,7 @@ import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/mo
 import { setupTestHelpers } from './_utils/utils';
 import stubUid from './_utils/uid';
 
-describe( 'DocumentListEditing - converters - changes', () => {
+describe.only( 'DocumentListEditing - converters - changes', () => {
 	let editor, model, modelDoc, modelRoot, view, test;
 
 	testUtils.createSinonSandbox();
@@ -934,8 +934,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					'</ul>'
 				);
 
-				expect( test.reconvertSpy.callCount ).to.equal( 1 );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
+				expect( test.reconvertSpy.callCount ).to.equal( 0 );
 			} );
 
 			it( 'first block of list item', () => {
@@ -979,13 +978,13 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					'</ul>' +
 					'<p>a2</p>' +
 					'<ul>' +
-						'<li><span class="ck-list-bogus-paragraph">a2</span></li>' +
+						'<li><span class="ck-list-bogus-paragraph">a3</span></li>' +
 					'</ul>'
 				);
 
 				expect( test.reconvertSpy.callCount ).to.equal( 2 );
 				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 0 ) );
-				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 			} );
 		} );
 

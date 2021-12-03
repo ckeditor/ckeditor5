@@ -11,7 +11,7 @@ import {
 	getSiblingListItem,
 	isListView,
 	isListItemView,
-	getAllListItemElementsByDetails
+	getListItemElements
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
@@ -97,76 +97,105 @@ export function reconvertItemsOnDataChange( model, editing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = new Set();
+		const itemToListHead = new Map();
 
 		for ( const entry of changes ) {
-			let position = null;
+			if ( entry.type == 'insert' && entry.name != '$text' ) {
+				addListToCheck( entry.position );
 
-			if ( entry.type == 'insert' && entry.attributes.has( 'listItemId' ) ) {
-				position = entry.position.getShiftedBy( entry.length );
-			} else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				position = entry.position;
-			} else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
-				position = entry.range.start.getShiftedBy( 1 );
-			}
-
-			if ( !position ) {
-				continue;
-			}
-
-			const changedListItem = position.nodeBefore;
-			const followingListItem = position.nodeAfter;
-
-			if ( entry.type == 'attribute' && entry.attributeKey == 'listItemId' ) {
-				const item = changedListItem;
-
-				if ( entry.attributeNewValue === null || entry.attributeOldValue === null ) {
-					itemsToRefresh.add( item );
-					// @if CK_DEBUG // console.log( 'Refresh item (no list)', item.childCount ? item.getChild( 0 ).data : item );
+				// Insert of a non-list item.
+				if ( !entry.attributes.has( 'listItemId' ) ) {
+					addListToCheck( entry.position.getShiftedBy( entry.length ) );
+				} else {
+					refreshNestedList( entry.position.getShiftedBy( entry.length ), entry.attributes.get( 'listIndent' ) );
 				}
 			}
-
-			if ( !changedListItem || !changedListItem.hasAttribute( 'listItemId' ) ) {
-				continue;
+			// Removed list item.
+			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
+				addListToCheck( entry.position );
+				refreshNestedList( entry.position, entry.attributes.get( 'listIndent' ) );
 			}
+			// Changed list attribute.
+			else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
+				addListToCheck( entry.range.start );
 
-			if ( !followingListItem || !followingListItem.hasAttribute( 'listItemId' ) ) {
-				continue;
+				if ( entry.attributeNewValue === null ) {
+					addListToCheck( entry.range.start.getShiftedBy( 1 ) );
+					refreshItemIfNeeded( entry.range.start.nodeAfter, false );
+				}
+
+				if ( entry.attributeKey == 'listIndent' ) {
+					const item = entry.range.start.nodeAfter;
+
+					refreshNestedList(
+						entry.range.start.getShiftedBy( 1 ),
+						Math.min( item.getAttribute( 'listIndent' ), entry.attributeOldValue )
+					);
+				}
 			}
+		}
 
-			// Reconvert bogus vs not bogus paragraph.
-			if ( entry.type == 'remove' || entry.type == 'insert' ) {
-				const items = getAllListItemElementsByDetails(
-					entry.attributes.get( 'listItemId' ),
-					entry.attributes.get( 'listIndent' ),
-					position
-				);
+		for ( const listHead of itemToListHead.values() ) {
+			checkBogusParagraphs( listHead );
+		}
 
-				const item = items.length ? items[ 0 ] : null;
-				const viewElement = item ? editing.mapper.toViewElement( item ) : null;
+		for ( const item of itemsToRefresh ) {
+			editing.reconvertItem( item );
+		}
 
-				if ( viewElement ) {
-					if ( items.length == 1 && viewElement.is( 'element', 'p' ) ) {
-						itemsToRefresh.add( item );
-						// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
-					} else if ( items.length > 1 && viewElement.is( 'element', 'span' ) ) {
-						itemsToRefresh.add( item );
-						// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
+		function addListToCheck( position ) {
+			const previousNode = position.nodeBefore;
+
+			if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
+				const item = position.nodeAfter;
+
+				if ( item && item.hasAttribute( 'listItemId' ) ) {
+					itemToListHead.set( item, item );
+				}
+			} else {
+				let listHead = previousNode;
+
+				if ( itemToListHead.has( listHead ) ) {
+					return;
+				}
+
+				for (
+					// Cache previousSibling and reuse for performance reasons. See #6581.
+					let previousSibling = listHead.previousSibling;
+					previousSibling && previousSibling.hasAttribute( 'listItemId' );
+					previousSibling = listHead.previousSibling
+				) {
+					listHead = previousSibling;
+
+					if ( itemToListHead.has( listHead ) ) {
+						return;
 					}
 				}
+
+				itemToListHead.set( previousNode, listHead );
 			}
+		}
 
-			// TODO refresh bogus in case some list entries got merged (id change) or on indentation change.
+		function checkBogusParagraphs( item ) {
+			const visited = new Set();
 
-			// Reconvert following items that require re-wrapping with LIs and ULs.
-			let indent;
+			while ( item && item.hasAttribute( 'listItemId' ) ) {
+				if ( !visited.has( item ) ) {
+					const blocks = getListItemElements( item, model, 'forward' );
 
-			if ( entry.type == 'remove' ) {
-				indent = entry.attributes.get( 'listIndent' );
-			} else if ( entry.type == 'attribute' && entry.attributeKey == 'listIndent' ) {
-				indent = Math.min( changedListItem.getAttribute( 'listIndent' ), entry.attributeOldValue );
-			} else {
-				indent = changedListItem.getAttribute( 'listIndent' );
+					for ( const block of blocks ) {
+						visited.add( block );
+
+						refreshItemIfNeeded( block, blocks.length == 1 );
+					}
+				}
+
+				item = item.nextSibling;
 			}
+		}
+
+		function refreshNestedList( position, indent ) {
+			const followingListItem = position.nodeAfter;
 
 			for (
 				let currentNode = followingListItem;
@@ -186,8 +215,20 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			}
 		}
 
-		for ( const item of itemsToRefresh ) {
-			editing.reconvertItem( item );
+		function refreshItemIfNeeded( item, useBogus ) {
+			const viewElement = editing.mapper.toViewElement( item );
+
+			if ( !viewElement ) {
+				return;
+			}
+
+			if ( useBogus && viewElement.is( 'element', 'p' ) ) {
+				itemsToRefresh.add( item );
+				// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
+			} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
+				itemsToRefresh.add( item );
+				// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
+			}
 		}
 	};
 }

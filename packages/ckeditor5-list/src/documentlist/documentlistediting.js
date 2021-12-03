@@ -178,12 +178,10 @@ export function modelChangePostFixer( model, writer ) {
 				}
 			}
 
-			// Insert of a list item.
-			if ( entry.attributes.has( 'listItemId' ) ) {
-				_addListToFix( entry.position );
-			}
-			// Insert of a non-list item.
-			else {
+			_addListToFix( entry.position );
+
+			// Insert of a non-list item - check if there is a list after it.
+			if ( !entry.attributes.has( 'listItemId' ) ) {
 				_addListToFix( entry.position.getShiftedBy( entry.length ) );
 			}
 
@@ -200,10 +198,10 @@ export function modelChangePostFixer( model, writer ) {
 		}
 		// Changed list item indent or type.
 		else if ( entry.type == 'attribute' && [ 'listIndent', 'listType' ].includes( entry.attributeKey ) ) {
+			_addListToFix( entry.range.start );
+
 			if ( entry.attributeNewValue === null ) {
 				_addListToFix( entry.range.start.getShiftedBy( 1 ) );
-			} else {
-				_addListToFix( entry.range.start );
 			}
 		}
 	}
@@ -211,6 +209,7 @@ export function modelChangePostFixer( model, writer ) {
 	for ( const listHead of itemToListHead.values() ) {
 		_fixListIndents( listHead );
 		_fixListTypes( listHead );
+		_fixListItemIds( listHead );
 	}
 
 	return applied;
@@ -308,6 +307,36 @@ export function modelChangePostFixer( model, writer ) {
 
 			prev = item;
 			item = item.nextSibling;
+		}
+	}
+
+	function _fixListItemIds( item ) {
+		const visited = new Set();
+
+		for ( ; item && item.hasAttribute( 'listItemId' ); item = item.nextSibling ) {
+			if ( visited.has( item ) ) {
+				continue;
+			}
+
+			const blocks = getListItemElements( item, model, 'forward' );
+
+			let listType = item.getAttribute( 'listType' );
+			let listItemId = item.getAttribute( 'listItemId' );
+
+			for ( const block of blocks ) {
+				visited.add( block );
+
+				if ( block.getAttribute( 'listType' ) != listType ) {
+					listItemId = uid();
+					listType = block.getAttribute( 'listType' );
+				}
+
+				if ( block.getAttribute( 'listItemId' ) != listItemId ) {
+					writer.setAttribute( 'listItemId', listItemId, block );
+
+					applied = true;
+				}
+			}
 		}
 	}
 }
