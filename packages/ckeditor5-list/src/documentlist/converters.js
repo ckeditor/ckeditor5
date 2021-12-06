@@ -106,14 +106,11 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
 					addListToCheck( entry.position.getShiftedBy( entry.length ) );
-				} else {
-					refreshNestedList( entry.position.getShiftedBy( entry.length ), entry.attributes.get( 'listIndent' ) );
 				}
 			}
 			// Removed list item.
 			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
 				addListToCheck( entry.position );
-				refreshNestedList( entry.position, entry.attributes.get( 'listIndent' ) );
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
@@ -121,22 +118,13 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 				if ( entry.attributeNewValue === null ) {
 					addListToCheck( entry.range.start.getShiftedBy( 1 ) );
-					refreshItemIfNeeded( entry.range.start.nodeAfter, false );
-				}
-
-				if ( entry.attributeKey == 'listIndent' ) {
-					const item = entry.range.start.nodeAfter;
-
-					refreshNestedList(
-						entry.range.start.getShiftedBy( 1 ),
-						Math.min( item.getAttribute( 'listIndent' ), entry.attributeOldValue )
-					);
+					refreshItemParagraphIfNeeded( entry.range.start.nodeAfter, false );
 				}
 			}
 		}
 
 		for ( const listHead of itemToListHead.values() ) {
-			checkBogusParagraphs( listHead );
+			checkList( listHead );
 		}
 
 		for ( const item of itemsToRefresh ) {
@@ -144,6 +132,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 		}
 
 		function addListToCheck( position ) {
+			// TODO same code is used in post-fixer (extract it to some util)
 			const previousNode = position.nodeBefore;
 
 			if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
@@ -176,46 +165,42 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			}
 		}
 
-		function checkBogusParagraphs( item ) {
+		function checkList( item ) {
 			const visited = new Set();
-
-			while ( item && item.hasAttribute( 'listItemId' ) ) {
-				if ( !visited.has( item ) ) {
-					const blocks = getListItemElements( item, model, 'forward' );
-
-					for ( const block of blocks ) {
-						visited.add( block );
-
-						refreshItemIfNeeded( block, blocks.length == 1 );
-					}
-				}
-
-				item = item.nextSibling;
-			}
-		}
-
-		function refreshNestedList( position, indent ) {
-			const followingListItem = position.nodeAfter;
+			const stack = [];
 
 			for (
-				let currentNode = followingListItem;
-				currentNode && currentNode.is( 'element' ) && currentNode.hasAttribute( 'listItemId' );
-				currentNode = currentNode.nextSibling
+				let prev = null;
+				item && item.hasAttribute( 'listItemId' );
+				prev = item, item = item.nextSibling
 			) {
-				if ( currentNode.getAttribute( 'listIndent' ) <= indent ) {
-					break;
-				}
-
-				if ( !editing.mapper.toViewElement( currentNode ) ) {
+				if ( visited.has( item ) ) {
 					continue;
 				}
 
-				itemsToRefresh.add( currentNode );
-				// @if CK_DEBUG // console.log( 'Refresh item', currentNode.childCount ? currentNode.getChild( 0 ).data : currentNode );
+				const itemIndent = item.getAttribute( 'listIndent' );
+
+				if ( prev && itemIndent < prev.getAttribute( 'listIndent' ) ) {
+					stack.length = itemIndent + 1;
+				}
+
+				stack[ itemIndent ] = {
+					id: item.getAttribute( 'listItemId' ),
+					type: item.getAttribute( 'listType' )
+				};
+
+				const blocks = getListItemElements( item, model, 'forward' );
+
+				for ( const block of blocks ) {
+					visited.add( block );
+
+					refreshItemParagraphIfNeeded( block, blocks.length == 1 );
+					refreshItemWrappingIfNeeded( block, stack );
+				}
 			}
 		}
 
-		function refreshItemIfNeeded( item, useBogus ) {
+		function refreshItemParagraphIfNeeded( item, useBogus ) {
 			const viewElement = editing.mapper.toViewElement( item );
 
 			if ( !viewElement ) {
@@ -228,6 +213,51 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
 				itemsToRefresh.add( item );
 				// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
+			}
+		}
+
+		function refreshItemWrappingIfNeeded( item, stack ) {
+			const viewElement = editing.mapper.toViewElement( item );
+
+			if ( !viewElement ) {
+				return;
+			}
+
+			let stackIdx = stack.length - 1;
+
+			for (
+				let attributeElement = viewElement.parent;
+				attributeElement.is( 'attributeElement' );
+				attributeElement = attributeElement.parent
+			) {
+				if ( isListItemView( attributeElement ) ) {
+					// Ignore the closest list item mismatch because it's going to get converted by the change itself.
+					if ( stackIdx < stack.length - 1 && attributeElement.id != stack[ stackIdx ].id ) {
+						break;
+					}
+				} else if ( isListView( attributeElement ) ) {
+					const expectedElementName = stack[ stackIdx ].type == 'numbered' ? 'ol' : 'ul';
+
+					// Ignore the closest list item mismatch because it's going to get converted by the change itself.
+					if ( stackIdx < stack.length - 1 && attributeElement.name != expectedElementName ) {
+						break;
+					}
+
+					stackIdx--;
+				} else {
+					break;
+				}
+
+				// In case there is more wrapping elements in the view then it's expected.
+				// This does not need a refresh because it will get converted by the change itself.
+				if ( stackIdx < 0 ) {
+					break;
+				}
+			}
+
+			if ( stackIdx >= 0 && isListItemView( viewElement.parent ) ) {
+				itemsToRefresh.add( item );
+				// @if CK_DEBUG // console.log( 'Refresh item (re-wrap)', item.childCount && item.getChild( 0 ).data, item.startOffset );
 			}
 		}
 	};
@@ -371,14 +401,15 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 }
 
 // TODO
-function findMappedViewElement( listItem, mapper, model, viewWriter ) {
-	const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
+function findMappedViewElement( listItem, mapper, model, viewOrViewWriter ) {
 	const viewElement = mapper.toViewElement( listItem );
 
 	// There is no mapping for a given model element.
 	if ( !viewElement ) {
 		return null;
 	}
+
+	const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
 
 	// Verify if the element is still in the same root (it could be removed).
 	if ( viewElement.root != viewPosition.root ) {
@@ -388,7 +419,7 @@ function findMappedViewElement( listItem, mapper, model, viewWriter ) {
 	// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 	// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 	const modelElementRange = model.createRangeOn( listItem );
-	const viewElementRange = viewWriter.createRangeOn( viewElement );
+	const viewElementRange = viewOrViewWriter.createRangeOn( viewElement );
 	const viewRange = mapper.toViewRange( modelElementRange ).getTrimmed();
 
 	// Verify if this is a range for the same element (in case the original element was removed).
