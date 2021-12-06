@@ -168,6 +168,10 @@ module.exports = {
 };
 ```
 
+<info-box>
+    If you cannot use the latest webpack (when writing this guide, it is 5), the provided configuration will also work with webpack 4.
+</info-box>
+
 #### Webpack Encore
 
 If you use [Webpack Encore](https://github.com/symfony/webpack-encore), you can use the following configuration:
