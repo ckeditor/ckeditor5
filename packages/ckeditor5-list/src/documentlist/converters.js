@@ -98,6 +98,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = new Set();
 		const itemToListHead = new Map();
+		const changedItems = new Set();
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
@@ -106,6 +107,8 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
 					addListToCheck( entry.position.getShiftedBy( entry.length ) );
+				} else {
+					changedItems.add( entry.position.nodeAfter );
 				}
 			}
 			// Removed list item.
@@ -119,6 +122,8 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				if ( entry.attributeNewValue === null ) {
 					addListToCheck( entry.range.start.getShiftedBy( 1 ) );
 					refreshItemParagraphIfNeeded( entry.range.start.nodeAfter, false );
+				} else {
+					changedItems.add( entry.range.start.nodeAfter );
 				}
 			}
 		}
@@ -217,6 +222,11 @@ export function reconvertItemsOnDataChange( model, editing ) {
 		}
 
 		function refreshItemWrappingIfNeeded( item, stack ) {
+			// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
+			if ( changedItems.has( item ) ) {
+				return;
+			}
+
 			const viewElement = editing.mapper.toViewElement( item );
 
 			if ( !viewElement ) {
@@ -231,26 +241,18 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				attributeElement = attributeElement.parent
 			) {
 				if ( isListItemView( attributeElement ) ) {
-					// Ignore the closest list item mismatch because it's going to get converted by the change itself.
-					if ( stackIdx < stack.length - 1 && attributeElement.id != stack[ stackIdx ].id ) {
+					if ( attributeElement.id != stack[ stackIdx ].id ) {
 						break;
 					}
 				} else if ( isListView( attributeElement ) ) {
 					const expectedElementName = stack[ stackIdx ].type == 'numbered' ? 'ol' : 'ul';
 
-					// Ignore the closest list item mismatch because it's going to get converted by the change itself.
-					if ( stackIdx < stack.length - 1 && attributeElement.name != expectedElementName ) {
+					if ( attributeElement.name != expectedElementName ) {
 						break;
 					}
 
 					stackIdx--;
 				} else {
-					break;
-				}
-
-				// In case there is more wrapping elements in the view then it's expected.
-				// This does not need a refresh because it will get converted by the change itself.
-				if ( stackIdx < 0 ) {
 					break;
 				}
 			}
