@@ -1203,6 +1203,37 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				} );
 			} );
 
+			describe( 'with block not allowed inside a list', () => {
+				beforeEach( () => {
+					model.schema.register( 'splitBlock', { allowWhere: '$block', allowContentOf: '$block', isBlock: true } );
+					editor.conversion.elementToElement( { model: 'splitBlock', view: 'div' } );
+				} );
+
+				it( 'single item with inline block inline', () => {
+					test.data(
+						'<ul>' +
+							'<li>' +
+								'Foo' +
+								'<div>Bar</div>' +
+								'Baz' +
+							'</li>' +
+						'</ul>',
+
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</paragraph>' +
+						'<splitBlock>Bar</splitBlock>' +
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Baz</paragraph>',
+
+						'<ul>' +
+							'<li>Foo</li>' +
+						'</ul>' +
+						'<div>Bar</div>' +
+						'<ul>' +
+							'<li>Baz</li>' +
+						'</ul>'
+					);
+				} );
+			} );
+
 			describe( 'block that are not allowed in the list item', () => {
 				beforeEach( () => {
 					model.schema.addAttributeCheck( ( context, attributeName ) => {

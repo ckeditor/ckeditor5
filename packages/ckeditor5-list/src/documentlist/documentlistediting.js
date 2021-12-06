@@ -20,7 +20,7 @@ import {
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
 } from './converters';
-import { getListItemElements } from './utils';
+import { findAddListHeadToMap, getListItemElements } from './utils';
 
 /**
  * TODO
@@ -161,8 +161,6 @@ export function modelChangePostFixer( model, writer ) {
 
 	let applied = false;
 
-	// TODO this should also fix listItemId attribute values
-
 	for ( const entry of changes ) {
 		if ( entry.type == 'insert' && entry.name != '$text' ) {
 			const item = entry.position.nodeAfter;
@@ -178,80 +176,51 @@ export function modelChangePostFixer( model, writer ) {
 				}
 			}
 
-			_addListToFix( entry.position );
+			findAddListHeadToMap( entry.position, itemToListHead );
 
 			// Insert of a non-list item - check if there is a list after it.
 			if ( !entry.attributes.has( 'listItemId' ) ) {
-				_addListToFix( entry.position.getShiftedBy( entry.length ) );
+				findAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
 			}
 
 			// Check if there is no nested list.
 			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item ) ) {
 				if ( innerItem.is( 'element' ) && innerItem.hasAttribute( 'listItemId' ) ) {
-					_addListToFix( previousPosition );
+					findAddListHeadToMap( previousPosition, itemToListHead );
 				}
 			}
 		}
 		// Removed list item.
 		else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-			_addListToFix( entry.position );
+			findAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
 		else if ( entry.type == 'attribute' && [ 'listIndent', 'listType' ].includes( entry.attributeKey ) ) {
-			_addListToFix( entry.range.start );
+			findAddListHeadToMap( entry.range.start, itemToListHead );
 
 			if ( entry.attributeNewValue === null ) {
-				_addListToFix( entry.range.start.getShiftedBy( 1 ) );
+				findAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
 			}
 		}
 	}
 
 	for ( const listHead of itemToListHead.values() ) {
-		_fixListIndents( listHead );
-		_fixListTypes( listHead );
-		_fixListItemIds( listHead );
+		fixListIndents( listHead );
+		fixListTypes( listHead );
+		fixListItemIds( listHead );
 	}
 
 	return applied;
 
-	function _addListToFix( position ) {
-		const previousNode = position.nodeBefore;
-
-		if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
-			const item = position.nodeAfter;
-
-			if ( item && item.hasAttribute( 'listItemId' ) ) {
-				itemToListHead.set( item, item );
-			}
-		} else {
-			let listHead = previousNode;
-
-			if ( itemToListHead.has( listHead ) ) {
-				return;
-			}
-
-			for (
-				// Cache previousSibling and reuse for performance reasons. See #6581.
-				let previousSibling = listHead.previousSibling;
-				previousSibling && previousSibling.hasAttribute( 'listItemId' );
-				previousSibling = listHead.previousSibling
-			) {
-				listHead = previousSibling;
-
-				if ( itemToListHead.has( listHead ) ) {
-					return;
-				}
-			}
-
-			itemToListHead.set( previousNode, listHead );
-		}
-	}
-
-	function _fixListIndents( item ) {
+	function fixListIndents( item ) {
 		let maxIndent = 0;
 		let fixBy = null;
 
-		while ( item && item.hasAttribute( 'listItemId' ) ) {
+		for (
+			item;
+			item && item.hasAttribute( 'listItemId' );
+			item = item.nextSibling
+		) {
 			const itemIndent = item.getAttribute( 'listIndent' );
 
 			if ( itemIndent > maxIndent ) {
@@ -275,45 +244,50 @@ export function modelChangePostFixer( model, writer ) {
 				fixBy = null;
 				maxIndent = item.getAttribute( 'listIndent' ) + 1;
 			}
-
-			item = item.nextSibling;
 		}
 	}
 
-	function _fixListTypes( item ) {
-		let typesStack = [];
-		let prev = null;
+	function fixListTypes( item ) {
+		const typesStack = [];
 
-		while ( item && item.hasAttribute( 'listItemId' ) ) {
+		for (
+			let prev = null;
+			item && item.hasAttribute( 'listItemId' );
+			prev = item, item = item.nextSibling
+		) {
 			const itemIndent = item.getAttribute( 'listIndent' );
 
-			if ( prev && prev.getAttribute( 'listIndent' ) > itemIndent ) {
-				typesStack = typesStack.slice( 0, itemIndent + 1 );
+			if ( prev && itemIndent < prev.getAttribute( 'listIndent' ) ) {
+				typesStack.length = itemIndent + 1;
 			}
 
-			if ( itemIndent != 0 ) {
-				if ( typesStack[ itemIndent ] ) {
-					const type = typesStack[ itemIndent ];
+			// Allow different types of lists at the top level.
+			if ( itemIndent == 0 ) {
+				continue;
+			}
 
-					if ( item.getAttribute( 'listType' ) != type ) {
-						writer.setAttribute( 'listType', type, item );
+			if ( typesStack[ itemIndent ] ) {
+				const type = typesStack[ itemIndent ];
 
-						applied = true;
-					}
-				} else {
-					typesStack[ itemIndent ] = item.getAttribute( 'listType' );
+				if ( item.getAttribute( 'listType' ) != type ) {
+					writer.setAttribute( 'listType', type, item );
+
+					applied = true;
 				}
+			} else {
+				typesStack[ itemIndent ] = item.getAttribute( 'listType' );
 			}
-
-			prev = item;
-			item = item.nextSibling;
 		}
 	}
 
-	function _fixListItemIds( item ) {
+	function fixListItemIds( item ) {
 		const visited = new Set();
 
-		for ( ; item && item.hasAttribute( 'listItemId' ); item = item.nextSibling ) {
+		for (
+			item;
+			item && item.hasAttribute( 'listItemId' );
+			item = item.nextSibling
+		) {
 			if ( visited.has( item ) ) {
 				continue;
 			}

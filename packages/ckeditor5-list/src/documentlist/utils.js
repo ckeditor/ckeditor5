@@ -250,3 +250,37 @@ function getListItemElementsByDetails( listItemId, limitIndent, startPosition, d
 
 	return items;
 }
+
+// TODO
+export function findAddListHeadToMap( position, itemToListHead ) {
+	const previousNode = position.nodeBefore;
+
+	if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
+		const item = position.nodeAfter;
+
+		if ( item && item.hasAttribute( 'listItemId' ) ) {
+			itemToListHead.set( item, item );
+		}
+	} else {
+		let listHead = previousNode;
+
+		if ( itemToListHead.has( listHead ) ) {
+			return;
+		}
+
+		for (
+			// Cache previousSibling and reuse for performance reasons. See #6581.
+			let previousSibling = listHead.previousSibling;
+			previousSibling && previousSibling.hasAttribute( 'listItemId' );
+			previousSibling = listHead.previousSibling
+		) {
+			listHead = previousSibling;
+
+			if ( itemToListHead.has( listHead ) ) {
+				return;
+			}
+		}
+
+		itemToListHead.set( previousNode, listHead );
+	}
+}

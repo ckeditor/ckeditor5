@@ -11,7 +11,8 @@ import {
 	getSiblingListItem,
 	isListView,
 	isListItemView,
-	getListItemElements
+	getListItemElements,
+	findAddListHeadToMap
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
@@ -102,25 +103,25 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				addListToCheck( entry.position );
+				findAddListHeadToMap( entry.position, itemToListHead );
 
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
-					addListToCheck( entry.position.getShiftedBy( entry.length ) );
+					findAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
 				} else {
 					changedItems.add( entry.position.nodeAfter );
 				}
 			}
 			// Removed list item.
 			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				addListToCheck( entry.position );
+				findAddListHeadToMap( entry.position, itemToListHead );
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
-				addListToCheck( entry.range.start );
+				findAddListHeadToMap( entry.range.start, itemToListHead );
 
 				if ( entry.attributeNewValue === null ) {
-					addListToCheck( entry.range.start.getShiftedBy( 1 ) );
+					findAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
 					refreshItemParagraphIfNeeded( entry.range.start.nodeAfter, false );
 				} else {
 					changedItems.add( entry.range.start.nodeAfter );
@@ -134,40 +135,6 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 		for ( const item of itemsToRefresh ) {
 			editing.reconvertItem( item );
-		}
-
-		function addListToCheck( position ) {
-			// TODO same code is used in post-fixer (extract it to some util)
-			const previousNode = position.nodeBefore;
-
-			if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
-				const item = position.nodeAfter;
-
-				if ( item && item.hasAttribute( 'listItemId' ) ) {
-					itemToListHead.set( item, item );
-				}
-			} else {
-				let listHead = previousNode;
-
-				if ( itemToListHead.has( listHead ) ) {
-					return;
-				}
-
-				for (
-					// Cache previousSibling and reuse for performance reasons. See #6581.
-					let previousSibling = listHead.previousSibling;
-					previousSibling && previousSibling.hasAttribute( 'listItemId' );
-					previousSibling = listHead.previousSibling
-				) {
-					listHead = previousSibling;
-
-					if ( itemToListHead.has( listHead ) ) {
-						return;
-					}
-				}
-
-				itemToListHead.set( previousNode, listHead );
-			}
 		}
 
 		function checkList( item ) {

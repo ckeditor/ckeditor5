@@ -20,7 +20,7 @@ import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/mo
 import { setupTestHelpers } from './_utils/utils';
 import stubUid from './_utils/uid';
 
-describe.only( 'DocumentListEditing - converters - changes', () => {
+describe( 'DocumentListEditing - converters - changes', () => {
 	let editor, model, modelDoc, modelRoot, view, test;
 
 	testUtils.createSinonSandbox();
@@ -2141,6 +2141,33 @@ describe.only( 'DocumentListEditing - converters - changes', () => {
 							'</ol>' +
 						'</li>' +
 					'</ul>'
+				);
+			} );
+
+			it( 'changed list type at the same time as adding nested items', () => {
+				test.test(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>[]',
+
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">a</span>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ul>' +
+						'</li>' +
+					'</ol>',
+
+					() => {
+						const item1 = '<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>';
+						const item2 = '<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>';
+
+						model.change( writer => {
+							writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
+							writer.append( parseModel( item1, model.schema ), modelRoot );
+							writer.append( parseModel( item2, model.schema ), modelRoot );
+						} );
+					}
 				);
 			} );
 		} );

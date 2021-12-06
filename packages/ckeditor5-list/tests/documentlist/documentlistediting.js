@@ -548,38 +548,38 @@ describe( 'DocumentListEditing', () => {
 	describe( 'paste and insertContent integration', () => {
 		it( 'should be triggered on DataController#insertContent()', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			editor.model.insertContent(
 				parseModel(
-					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
-					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
+					'<paragraph listType="bulleted" listItemId="x" listIndent="0">X</paragraph>' +
+					'<paragraph listType="bulleted" listItemId="y" listIndent="1">Y</paragraph>',
 					model.schema
 				)
 			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
+				'<paragraph listIndent="2" listItemId="y" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should be triggered when selectable is passed', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			model.insertContent(
 				parseModel(
-					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
-					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
+					'<paragraph listType="bulleted" listItemId="x" listIndent="0">X</paragraph>' +
+					'<paragraph listType="bulleted" listItemId="y" listIndent="1">Y</paragraph>',
 					model.schema
 				),
 				model.createRange(
@@ -589,41 +589,41 @@ describe( 'DocumentListEditing', () => {
 			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">B[]X</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">Y</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B[]X</paragraph>' +
+				'<paragraph listIndent="2" listItemId="y" listType="bulleted">Y</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			model.change( writer => {
-				const listItem = writer.createElement( 'listItem', { listType: 'bulleted', listIndent: '0' } );
-				writer.insertText( 'X', listItem );
+				const paragraph = writer.createElement( 'paragraph', { listType: 'bulleted', listItemId: 'x', listIndent: '0' } );
+				writer.insertText( 'X', paragraph );
 
-				model.insertContent( listItem );
+				model.insertContent( paragraph );
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent() - case #69', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			model.change( writer => {
@@ -631,17 +631,17 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should fix indents of pasted list items', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -651,18 +651,18 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should not fix indents of list items that are separated by non-list element', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -672,20 +672,20 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
 				'<paragraph>Y</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="e0000000000000000000000000000000b" listType="bulleted">Z[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should co-work correctly with post fixer', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -695,21 +695,21 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
-		it( 'should work if items are pasted between listItem elements', () => {
+		it( 'should work if items are pasted between paragraph elements', () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
 			// (which may be incorret) in the meantime.
 			model.change( () => {
 				setModelData( model,
-					'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-					'<listItem listType="bulleted" listIndent="1">B</listItem>[]' +
-					'<listItem listType="bulleted" listIndent="2">C</listItem>'
+					'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+					'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>[]' +
+					'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 				);
 
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -720,18 +720,18 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="bulleted">X</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should create correct model when list items are pasted in top-level list', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -741,9 +741,9 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">AX</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">Y[]</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">B</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">AX</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>'
 			);
 		} );
 
@@ -761,7 +761,7 @@ describe( 'DocumentListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>AX</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
 				'<paragraph>B</paragraph>'
 			);
 		} );
@@ -782,8 +782,8 @@ describe( 'DocumentListEditing', () => {
 			model.change( () => {
 				setModelData( model,
 					'<paragraph>Foo</paragraph>' +
-					'<listItem listType="numbered" listIndent="0">A</listItem>' +
-					'<listItem listType="numbered" listIndent="1">B</listItem>' +
+					'<paragraph listType="numbered" listItemId="a" listIndent="0">A</paragraph>' +
+					'<paragraph listType="numbered" listItemId="b" listIndent="1">B</paragraph>' +
 					'[]' +
 					'<paragraph>Bar</paragraph>'
 				);
@@ -797,9 +797,9 @@ describe( 'DocumentListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
-				'<listItem listIndent="0" listType="numbered">A</listItem>' +
-				'<listItem listIndent="1" listType="numbered">B</listItem>' +
-				'<listItem listIndent="1" listType="numbered">X[]</listItem>' +
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="numbered">X[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
@@ -810,8 +810,8 @@ describe( 'DocumentListEditing', () => {
 			model.change( () => {
 				setModelData( model,
 					'<paragraph>Foo</paragraph>' +
-					'<listItem listType="numbered" listIndent="0">A</listItem>' +
-					'<listItem listType="numbered" listIndent="1">B</listItem>' +
+					'<paragraph listType="numbered" listItemId="a" listIndent="0">A</paragraph>' +
+					'<paragraph listType="numbered" listItemId="b" listIndent="1">B</paragraph>' +
 					'[]' +
 					'<paragraph>Bar</paragraph>'
 				);
@@ -825,19 +825,19 @@ describe( 'DocumentListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
-				'<listItem listIndent="0" listType="numbered">A</listItem>' +
-				'<listItem listIndent="1" listType="numbered">B</listItem>' +
-				'<listItem listIndent="1" listType="numbered">X</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
 
 		it( 'should handle block elements inside pasted list #1', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -847,20 +847,20 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
-				'<paragraph>Y</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Z[]</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should handle block elements inside pasted list #2', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -870,20 +870,20 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
-				'<paragraph>Y</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
-				'<listItem listIndent="0" listType="bulleted">B</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">AW</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">Y</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">Z[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		it( 'should handle block elements inside pasted list #3', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
 			const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -893,24 +893,24 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">AW</listItem>' +
-				'<paragraph>X</paragraph>' +
-				'<paragraph>Y</paragraph>' +
-				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">AW</paragraph>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
+				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">Y</paragraph>' +
+				'<paragraph listIndent="0" listItemId="e0000000000000000000000000000000a" listType="bulleted">Z[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-list/issues/126#issuecomment-518206743
-		it( 'should properly handle split of list items with non-standard converters', () => {
+		it.skip( 'should properly handle split of list items with non-standard converters', () => {
 			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B</listItem>' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">A[]</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="2">C</paragraph>'
 			);
 
-			editor.model.schema.register( 'splitBlock', { inheritAllFrom: '$block' } );
+			editor.model.schema.register( 'splitBlock', { allowWhere: '$block' } );
 
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'splitBlock', view: 'splitBlock' } );
 			editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:splitBlock', ( evt, data, conversionApi ) => {
@@ -918,6 +918,7 @@ describe( 'DocumentListEditing', () => {
 
 				// Use split to allowed parent logic to simulate a non-standard use of `modelCursor` after split.
 				const splitBlock = conversionApi.writer.createElement( 'splitBlock' );
+
 				conversionApi.safeInsert( splitBlock, data.modelCursor );
 
 				data.modelRange = conversionApi.writer.createRangeOn( splitBlock );
@@ -931,11 +932,11 @@ describe( 'DocumentListEditing', () => {
 			} );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<listItem listIndent="0" listType="bulleted">Aa</listItem>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">Aa</paragraph>' +
 				'<splitBlock></splitBlock>' +
-				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
-				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
-				'<listItem listIndent="2" listType="bulleted">C</listItem>'
+				'<paragraph listIndent="0" listItemId="e0000000TODO" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 			);
 		} );
 	} );
