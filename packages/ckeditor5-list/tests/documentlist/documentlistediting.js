@@ -13,13 +13,16 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { prepareTest } from './_utils/utils';
+
+import ListEditing from '../../src/list/listediting';
 import stubUid from './_utils/uid';
+import { prepareTest } from './_utils/utils';
 
 describe( 'DocumentListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
@@ -66,6 +69,20 @@ describe( 'DocumentListEditing', () => {
 
 	it( 'should be loaded', () => {
 		expect( editor.plugins.get( DocumentListEditing ) ).to.be.instanceOf( DocumentListEditing );
+	} );
+
+	it( 'should throw if loaded alongside ListEditing plugin', async () => {
+		let caughtError;
+
+		try {
+			await VirtualTestEditor.create( { plugins: [ DocumentListEditing, ListEditing ] } );
+		} catch ( error ) {
+			caughtError = error;
+		}
+
+		expect( caughtError ).to.instanceof( CKEditorError );
+		expect( caughtError.message )
+			.match( /^document-list-feature-conflict/ );
 	} );
 
 	it( 'should set proper schema rules', () => {
