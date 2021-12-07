@@ -49,10 +49,12 @@
 		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
+		"latest/features/pagination.html": "latest/features/pagination/pagination.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
-		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html"
+		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
+		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -173,7 +175,12 @@
 							"slug": "tutorials",
 							"order": 200
 						},
-
+						{
+							"name": "Developing custom plugins",
+							"id": "framework-plugins",
+							"slug": "plugins",
+							"order": 250
+						},
 						{
 							"name": "Deep dive",
 							"id": "framework-deep-dive",
@@ -219,24 +226,28 @@
 					"name": "Collaboration",
 					"id": "features-collaboration",
 					"slug": "collaboration",
+					"badges": [ "premium" ],
 					"categories": [
 						{
 							"name": "Comments",
 							"id": "features-comments",
 							"slug": "comments",
-							"order": 100
+							"order": 100,
+							"badges": [ "premium" ]
 						},
 						{
 							"name": "Track changes",
 							"id": "features-track-changes",
 							"slug": "track-changes",
-							"order": 200
+							"order": 200,
+							"badges": [ "premium" ]
 						},
 						{
 							"name": "Real-time collaboration",
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
-							"order": 300
+							"order": 300,
+							"badges": [ "premium" ]
 						},
 						{
 							"name": "Annotations",
@@ -267,7 +278,8 @@
 				{
 					"name": "Pagination",
 					"id": "features-pagination",
-					"slug": "pagination"
+					"slug": "pagination",
+					"badges": [ "premium" ]
 				},
 				{
 					"name": "Pasting",
@@ -277,7 +289,8 @@
 				{
 					"name": "Revision history",
 					"id": "features-revision-history",
-					"slug": "revision-history"
+					"slug": "revision-history",
+					"badges": [ "premium" ]
 				},
 				{
 					"name": "Toolbar",

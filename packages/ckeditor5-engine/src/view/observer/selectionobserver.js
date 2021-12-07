@@ -81,7 +81,7 @@ export default class SelectionObserver extends Observer {
 		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 
 		/**
-		 * When called, starts clearing the {@link #_loopbackCounter} counter in intervals of time. When the number of selection
+		 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
 		 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
 		 * possible infinite selection loop.
 		 *
@@ -92,7 +92,7 @@ export default class SelectionObserver extends Observer {
 
 		/**
 		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
-		 * correctly (for whatever the reason). It is a safeguard (paranoid check) that returns document to the normal state
+		 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
 		 * after a certain period of time (debounced, postponed by each selectionchange event).
 		 *
 		 * @private
@@ -115,11 +115,6 @@ export default class SelectionObserver extends Observer {
 	observe( domElement ) {
 		const domDocument = domElement.ownerDocument;
 
-		// Add listener once per each document.
-		if ( this._documents.has( domDocument ) ) {
-			return;
-		}
-
 		const startDocumentIsSelecting = () => {
 			this.document.isSelecting = true;
 
@@ -134,6 +129,19 @@ export default class SelectionObserver extends Observer {
 			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 		};
 
+		// The document has the "is selecting" state while the user keeps making (extending) the selection
+		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
+		// the mouse button or interrupted the process by pressing or releasing any key.
+		this.listenTo( domElement, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
+
+		// Add document-wide listeners only once. This method could be called for multiple editing roots.
+		if ( this._documents.has( domDocument ) ) {
+			return;
+		}
+
+		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
 		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
 			this._handleSelectionChange( domEvent, domDocument );
 
@@ -141,14 +149,6 @@ export default class SelectionObserver extends Observer {
 			// using their mouse).
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
-
-		// The document has the "is selecting" state while the user keeps making (extending) the selection
-		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
-		// the mouse button or interrupted the process by pressing or releasing any key.
-		this.listenTo( domDocument, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
 
 		this._documents.add( domDocument );
 	}

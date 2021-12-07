@@ -65,14 +65,14 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has borderWidth property (single string)', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '2em' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '2em' } ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
 
 					it( 'should be set if selected table has borderWidth property object with same values', () => {
 						setTableWithObjectAttributes( model, {
-							borderWidth: {
+							tableBorderWidth: {
 								top: '2em',
 								right: '2em',
 								bottom: '2em',
@@ -84,7 +84,7 @@ describe( 'table properties', () => {
 
 					it( 'should be undefined if selected table has borderWidth property object with different values', () => {
 						setTableWithObjectAttributes( model, {
-							borderWidth: {
+							tableBorderWidth: {
 								top: '2em',
 								right: '333px',
 								bottom: '2em',
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderWidth: '2em' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderWidth: '2em' } ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
@@ -187,7 +187,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table borderWidth to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '2em' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '2em' } ) );
 
 						command.execute( { value: '1px' } );
 
@@ -195,7 +195,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove borderWidth from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '2em' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '2em' } ) );
 
 						command.execute();
 
@@ -250,13 +250,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '3px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '3px' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has borderWidth property other than the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '1px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '1px' } ) );
 
 						expect( command.value ).to.equal( '1px' );
 					} );
@@ -264,13 +264,13 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderWidth: '3px' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderWidth: '3px' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has borderWidth property other than the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderWidth: '1px' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderWidth: '1px' } ) );
 
 						expect( command.value ).to.equal( '1px' );
 					} );
@@ -280,7 +280,7 @@ describe( 'table properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove borderWidth from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderWidth: '1px' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderWidth: '1px' } ) );
 
 						command.execute( { value: '3px' } );
 
@@ -290,7 +290,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove borderWidth from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ], { borderWidth: '1px' } ) );
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBorderWidth: '1px' } ) );
 
 						command.execute( { value: '3px' } );
 

@@ -50,6 +50,13 @@ export default class ReplaceCommand extends Command {
 		model.change( writer => {
 			const range = result.marker.getRange();
 
+			// Don't replace a result (marker) that found its way into the $graveyard (e.g. removed by collaborators).
+			if ( range.root.rootName === '$graveyard' ) {
+				this._state.results.remove( result );
+
+				return;
+			}
+
 			let textAttributes = {};
 
 			for ( const item of range.getItems() ) {

@@ -15,6 +15,11 @@ BaloonBlockEditor.builtinPlugins.push( Title );
 BaloonBlockEditor
 	.create( document.querySelector( '#snippet-title' ), {
 		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		},
 		blockToolbar: [
 			'bulletedList',
 			'numberedList',

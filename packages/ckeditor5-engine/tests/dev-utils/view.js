@@ -408,6 +408,7 @@ describe( 'view test utils', () => {
 		it( 'should stringify a RawElement', () => {
 			const span = new RawElement( viewDocument, 'span' );
 			const p = new ContainerElement( viewDocument, 'p', null, span );
+
 			expect( stringify( p, null, { showType: true } ) )
 				.to.equal( '<container:p><raw:span></raw:span></container:p>' );
 		} );
@@ -415,12 +416,8 @@ describe( 'view test utils', () => {
 		it( 'should not stringify the inner RawElement content (renderRawElements=false)', () => {
 			const span = new RawElement( viewDocument, 'span' );
 
-			span.render = function( domDocument ) {
-				const domElement = this.toDomElement( domDocument );
-
-				domElement.innerHTML = '<b>foo</b>';
-
-				return domElement;
+			span.render = function( domElement, domConverter ) {
+				domConverter.setContentOf( domElement, '<b>foo</b>' );
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );
@@ -431,8 +428,8 @@ describe( 'view test utils', () => {
 		it( 'should stringify a RawElement, (renderRawElements=true)', () => {
 			const span = new RawElement( viewDocument, 'span' );
 
-			span.render = function( domElement ) {
-				domElement.innerHTML = '<b>foo</b>';
+			span.render = function( domElement, domConverter ) {
+				domConverter.setContentOf( domElement, '<b>foo</b>' );
 			};
 
 			const p = new ContainerElement( viewDocument, 'p', null, span );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement */
+/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
 
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
@@ -3970,23 +3970,27 @@ describe( 'Renderer', () => {
 			}
 		} );
 
-		describe( 'script tag should not be executed', () => {
+		describe( 'filtering out unsafe content', () => {
 			let view, viewDoc, viewRoot, domRoot;
 
 			beforeEach( () => {
 				view = new View( new StylesProcessor() );
+
+				testUtils.sinon.stub( console, 'warn' )
+					.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+					.callsFake( () => {} );
+
+				console.warn
+					.withArgs( sinon.match( /^domconverter-unsafe-element-detected/ ) )
+					.callsFake( () => {} );
+
+				console.warn.callThrough();
+
 				viewDoc = view.document;
 				domRoot = document.createElement( 'div' );
 				document.body.appendChild( domRoot );
 				viewRoot = createViewRoot( viewDoc );
 				view.attachDomRoot( domRoot );
-
-				viewDocument = new ViewDocument( new StylesProcessor() );
-				selection = new DocumentSelection();
-				// Enable editing render mode.
-				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
-				renderer = new Renderer( domConverter, selection );
-				renderer.domDocuments.add( document );
 			} );
 
 			afterEach( () => {
@@ -3996,6 +4000,7 @@ describe( 'Renderer', () => {
 
 			it( 'should handle script tag rendering', () => {
 				window.spy = sinon.spy();
+
 				viewRoot._appendChild( parse( '<container:script>spy()</container:script>' ) );
 
 				renderer.markToSync( 'children', viewRoot );
@@ -4007,17 +4012,22 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should replace script element with span and custom data attribute', () => {
+				window.spy = sinon.spy();
+
 				setViewData( view,
 					'<container:script>spy()</container:script>'
 				);
 
 				view.forceRender();
 
+				expect( window.spy.calledOnce ).to.be.false;
 				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-hidden="script">spy()</span>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="script">spy()</span>' );
+
+				delete window.spy;
 			} );
 
-			it( 'should remove attributes that can affect editing pipeline', () => {
+			it( 'should rename attributes that can affect editing pipeline', () => {
 				setViewData( view,
 					'<container:p onclick="test">' +
 						'foo' +
@@ -4027,10 +4037,31 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="test">foo</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foo</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="test">foo</p>' );
 			} );
 
-			it( 'should remove attributes from the View that can are not present in the DOM', () => {
+			it( 'should rename attributes that can affect editing pipeline unless permitted when the element was created', () => {
+				view.change( writer => {
+					const containerElement = writer.createContainerElement( 'p', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, {
+						renderUnsafeAttributes: [ 'onclick' ]
+					} );
+
+					writer.insert( writer.createPositionAt( containerElement, 'start' ), writer.createText( 'baz' ) );
+					writer.insert( writer.createPositionAt( view.document.getRoot(), 'start' ), containerElement );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+					'<p data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</p>'
+				);
+			} );
+
+			it( 'should rename attributes that can not be rendered in the editing pipeline', () => {
 				setViewData( view,
 					'<container:p>' +
 						'bar' +
@@ -4046,7 +4077,7 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="foo">bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="foo">bar</p>' );
 			} );
 
 			it( 'should remove attributes not present in the DOM if the view node is just a script element', () => {
@@ -4066,27 +4097,8 @@ describe( 'Renderer', () => {
 
 				expect( getViewData( view ) ).to.equal( '<script>bar</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
-					'<span data-ck-hidden="script">bar</span>'
+					'<span data-ck-unsafe-element="script">bar</span>'
 				);
-			} );
-
-			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-hidden attribute', () => {
-				setViewData( view,
-					'<container:p data-ck-hidden="foo">' +
-						'bar' +
-					'</container:p>'
-				);
-
-				view.forceRender();
-
-				view.change( writer => {
-					writer.removeAttribute( 'data-ck-hidden', viewRoot.getChild( 0 ) );
-				} );
-
-				view.forceRender();
-
-				expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
 			} );
 		} );
 	} );
@@ -4264,6 +4276,7 @@ describe( 'Renderer', () => {
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/10562
+	// https://github.com/ckeditor/ckeditor5/issues/10723
 	describe( 'Blocking selection rendering while making selection in Blink (#10562)', () => {
 		describe( 'constructor()', () => {
 			let viewDocument, selection, domConverter, renderer;
@@ -4285,6 +4298,26 @@ describe( 'Renderer', () => {
 				renderer.isSelecting = false;
 
 				sinon.assert.calledOnce( renderSpy );
+			} );
+
+			it( 'should not call #render() as soon as the user stops selecting in Blink on Android', () => {
+				testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
+				testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+
+				viewDocument = new ViewDocument( new StylesProcessor() );
+				selection = new DocumentSelection();
+				domConverter = new DomConverter( viewDocument, { renderingMode: 'editing' } );
+				renderer = new Renderer( domConverter, selection );
+				renderer.domDocuments.add( document );
+
+				const renderSpy = sinon.spy( renderer, 'render' );
+
+				expect( renderer.isSelecting ).to.be.false;
+
+				renderer.isSelecting = true;
+				renderer.isSelecting = false;
+
+				sinon.assert.notCalled( renderSpy );
 			} );
 
 			it( 'should not call #render() as soon as the user stops selecting in browsers other than Blink', () => {
@@ -4332,7 +4365,7 @@ describe( 'Renderer', () => {
 				domRoot.remove();
 			} );
 
-			describe( 'in Blink', () => {
+			describe( 'in Blink (non-Android)', () => {
 				beforeEach( () => {
 					testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
 					renderer.isSelecting = false;
@@ -4508,6 +4541,120 @@ describe( 'Renderer', () => {
 				} );
 			} );
 
+			describe( 'in Blink (Android)', () => {
+				beforeEach( () => {
+					testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
+					testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+					renderer.isSelecting = false;
+				} );
+
+				it( 'should remove the inline filler despite the user making selection', () => {
+					const domSelection = document.getSelection();
+
+					const {
+						view: viewParagraph,
+						selection: viewSelection
+					} = parse( '<container:p>[]<attribute:b>foo</attribute:b></container:p>' );
+
+					viewRoot._appendChild( viewParagraph );
+					selection._setTo( viewSelection );
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #1: The first render() is to set the initial state of the editor.
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					let domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler was inserted <p>"FILLER{}"<b>foo</b></p>.
+					expect( domParagraph.childNodes.length ).to.equal( 2 );
+					expect( domParagraph.childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+					expect( domParagraph.childNodes[ 1 ].outerHTML ).to.equal( '<b>foo</b>' );
+
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ] );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #2: Now we're moving the selection somewhere else while isSelecting = true.
+					// Then comes the second render().
+					// * In Blink, the filler should stay:                    <p>"FILLER{}"<b>foo</b></p>
+					// * But in other browsers, it should disappear:          <p><b>foo</b></p>
+					renderer.isSelecting = true;
+
+					// <p><b>f{o}o</b></p>.
+					selection._setTo(
+						ViewRange._createFromParentsAndOffsets(
+							viewParagraph.getChild( 0 ).getChild( 0 ), 1,
+							viewParagraph.getChild( 0 ).getChild( 0 ), 2
+						)
+					);
+					renderer.render();
+
+					domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler is gone <p><b>f{o}o</b></p>.
+					expect( domParagraph.childNodes.length ).to.equal( 1 );
+					expect( domParagraph.childNodes[ 0 ].outerHTML ).to.equal( '<b>foo</b>' );
+
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+				} );
+
+				it( 'should add the inline filler despite the user making selection', () => {
+					const domSelection = document.getSelection();
+
+					const {
+						view: viewParagraph,
+						selection: viewSelection
+					} = parse( '<container:p><attribute:b>f{o}o</attribute:b></container:p>' );
+
+					viewRoot._appendChild( viewParagraph );
+					selection._setTo( viewSelection );
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #1: The first render() is to set the initial state of the editor.
+					renderer.markToSync( 'children', viewRoot );
+					renderer.render();
+
+					let domParagraph = domRoot.childNodes[ 0 ];
+
+					// There is no filler <p><b>f{o}o</b></p>.
+					expect( domParagraph.childNodes.length ).to.equal( 1 );
+					expect( domParagraph.childNodes[ 0 ].outerHTML ).to.equal( '<b>foo</b>' );
+
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+					// -----------------------------------------------------------------------------------------------
+					// STEP #2: Now we're moving the selection to a problematic place before <b></b> while isSelecting = true.
+					// Then comes the second render().
+					// * In Blink, nothing should happen:                     <p><b>f{o}o</b></p>
+					// * But in other browsers, the filler should show up:    <p>"FILLER{}"<b>foo</b></p>
+					renderer.isSelecting = true;
+					selection._setTo( viewParagraph, 0 );
+					renderer.render();
+
+					domParagraph = domRoot.childNodes[ 0 ];
+
+					// The filler was inserted <p>"FILLER{}"<b>foo</b></p> despite isSelecting = true.
+					expect( domParagraph.childNodes.length ).to.equal( 2 );
+					expect( domParagraph.childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+					expect( domParagraph.childNodes[ 1 ].outerHTML ).to.equal( '<b>foo</b>' );
+
+					// And the selection is after the inline filler.
+					expect( domSelection.rangeCount ).to.equal( 1 );
+					expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ] );
+					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
+					expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+				} );
+			} );
+
 			describe( 'in browsers other than Blink', () => {
 				beforeEach( () => {
 					testUtils.sinon.stub( env, 'isBlink' ).get( () => false );
@@ -4643,7 +4790,7 @@ describe( 'Renderer', () => {
 				domRoot.remove();
 			} );
 
-			describe( 'in Blink', () => {
+			describe( 'in Blink (non-Android)', () => {
 				beforeEach( () => {
 					testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
 					renderer.isSelecting = false;
@@ -4744,6 +4891,56 @@ describe( 'Renderer', () => {
 					expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
 					expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 				} );
+			} );
+
+			it( 'should update despite the selection being made in Blink on Android', () => {
+				testUtils.sinon.stub( env, 'isBlink' ).get( () => true );
+				testUtils.sinon.stub( env, 'isAndroid' ).get( () => true );
+				renderer.isSelecting = false;
+
+				const domSelection = document.getSelection();
+
+				const {
+					view: viewParagraph,
+					selection: viewSelection
+				} = parse( '<container:p><attribute:b>f{o}o</attribute:b></container:p>' );
+
+				viewRoot._appendChild( viewParagraph );
+				selection._setTo( viewSelection );
+
+				// -----------------------------------------------------------------------------------------------
+				// STEP #1: The first render() is to set the initial state of the editor.
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				const domParagraph = domRoot.childNodes[ 0 ];
+
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 2 );
+
+				// -----------------------------------------------------------------------------------------------
+				// STEP #2: Now we're moving the selection somewhere else while isSelecting = true.
+				// Then comes the second render().
+				// * In browsers other than Blink, the selection should move despite isSelecting = true: <p><b>fo{o}</b></p>
+				renderer.isSelecting = true;
+
+				// <p><b>fo{o}</b></p>.
+				selection._setTo(
+					ViewRange._createFromParentsAndOffsets(
+						viewParagraph.getChild( 0 ).getChild( 0 ), 2,
+						viewParagraph.getChild( 0 ).getChild( 0 ), 3
+					)
+				);
+
+				renderer.render();
+
+				// <p><b>fo{o}</b></p>
+				expect( domSelection.rangeCount ).to.equal( 1 );
+				expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domParagraph.childNodes[ 0 ].childNodes[ 0 ] );
+				expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 2 );
+				expect( domSelection.getRangeAt( 0 ).endOffset ).to.equal( 3 );
 			} );
 
 			it( 'should update despite the selection being made in browsers other than Blink', () => {

@@ -22,7 +22,6 @@ import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -275,7 +274,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			assertEqualMarkup( getModelData( model ), '<paragraph>[]foo</paragraph>' );
+			expect( getModelData( model ) ).to.equalMarkup( '<paragraph>[]foo</paragraph>' );
 		} );
 
 		it( 'should do nothing if table cell has already a block content', () => {
@@ -286,7 +285,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			assertEqualMarkup( getModelData( model ), modelTable( [
+			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '<paragraph>[]11</paragraph>' ]
 			] ) );
 		} );
@@ -313,7 +312,7 @@ describe( 'TableEditing', () => {
 			viewDocument.fire( 'enter', evtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
-			assertEqualMarkup( getModelData( model ), modelTable( [
+			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '[]11' ]
 			] ) );
 		} );
