@@ -205,9 +205,9 @@ describe( 'DocumentListEditing', () => {
 
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="x1" listType="bulleted">x</paragraph>' +
+					'<paragraph listIndent="1" listItemId="x1" listType="numbered">x</paragraph>' +
 					'<paragraph listIndent="2" listItemId="x2" listType="numbered">x</paragraph>' +
-					'<paragraph listIndent="2" listItemId="c" listType="numbered">c</paragraph>'
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>'
 				);
 			} );
 
@@ -223,7 +223,7 @@ describe( 'DocumentListEditing', () => {
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
-					'<paragraph listIndent="1" listItemId="x" listType="bulleted">x</paragraph>'
+					'<paragraph listIndent="1" listItemId="x" listType="numbered">x</paragraph>'
 				);
 			} );
 
@@ -235,7 +235,7 @@ describe( 'DocumentListEditing', () => {
 				const output =
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>' +
 					'<paragraph listIndent="1" listItemId="d" listType="bulleted">d</paragraph>';
 
 				setModelData( model, input );
@@ -302,7 +302,7 @@ describe( 'DocumentListEditing', () => {
 
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>'
+					'<paragraph listIndent="1" listItemId="f" listType="numbered">f</paragraph>'
 				);
 			} );
 		} );
@@ -398,10 +398,10 @@ describe( 'DocumentListEditing', () => {
 
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="numbered">f</paragraph>' +
 					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
 					'<paragraph listIndent="1" listItemId="h" listType="numbered">h</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="numbered">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
 					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>' +
 					'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>'
@@ -424,13 +424,13 @@ describe( 'DocumentListEditing', () => {
 
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+					'<paragraph listIndent="1" listItemId="f" listType="numbered">f</paragraph>' +
 					'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
 					'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
 					'<paragraph listIndent="1" listItemId="e" listType="numbered">e</paragraph>' +
-					'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>'
+					'<paragraph listIndent="1" listItemId="i" listType="bulleted">i</paragraph>'
 				);
 			} );
 
@@ -816,7 +816,7 @@ describe( 'DocumentListEditing', () => {
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="numbered">X[]</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">X[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
@@ -844,7 +844,7 @@ describe( 'DocumentListEditing', () => {
 				'<paragraph>Foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="numbered">X</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="bulleted">X</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
 				'<paragraph>Bar</paragraph>'
 			);

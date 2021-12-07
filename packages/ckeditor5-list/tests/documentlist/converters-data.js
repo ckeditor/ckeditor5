@@ -1540,14 +1540,16 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">B</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">C</paragraph>',
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="numbered">C</paragraph>',
 
 					'<ul>' +
 						'<li>A' +
 							'<ul>' +
 								'<li>B</li>' +
-								'<li>C</li>' +
 							'</ul>' +
+							'<ol>' +
+								'<li>C</li>' +
+							'</ol>' +
 						'</li>' +
 					'</ul>'
 				);
@@ -1998,8 +2000,8 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted">1.1</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1.1</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1.2</paragraph>' +
-				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.3</paragraph>' +
-				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.4</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="numbered">1.1.3</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="numbered">1.1.4</paragraph>' +
 				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted">1.2</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.2.1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
@@ -2007,47 +2009,11 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000d" listType="numbered">3.1</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
 				'<paragraph listIndent="3" listItemId="e00000000000000000000000000000009" listType="numbered">3.1.1.1</paragraph>' +
-				'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000a" listType="numbered">3.1.1.2</paragraph>' +
+				'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000a" listType="bulleted">3.1.1.2</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1.2</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000e" listType="numbered">3.2</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000f" listType="numbered">3.3</paragraph>' +
-				'<paragraph>bar</paragraph>',
-
-				'<p>foo</p>' +
-				'<ul>' +
-					'<li>' +
-						'1' +
-						'<ul>' +
-							'<li>' +
-								'1.1' +
-								'<ul><li>1.1.1</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
-							'</li>' +
-							'<li>' +
-								'1.2' +
-								'<ul><li>1.2.1</li></ul>' +
-							'</li>' +
-						'</ul>' +
-					'</li>' +
-					'<li>2</li>' +
-					'<li>' +
-						'3' +
-						'<ol>' +
-							'<li>' +
-								'3.1' +
-								'<ul>' +
-									'<li>' +
-										'3.1.1' +
-										'<ol><li>3.1.1.1</li><li>3.1.1.2</li></ol>' +
-									'</li>' +
-									'<li>3.1.2</li>' +
-								'</ul>' +
-							'</li>' +
-							'<li>3.2</li>' +
-							'<li>3.3</li>' +
-						'</ol>' +
-					'</li>' +
-				'</ul>' +
-				'<p>bar</p>'
+				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000e" listType="bulleted">3.2</paragraph>' +
+				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000f" listType="bulleted">3.3</paragraph>' +
+				'<paragraph>bar</paragraph>'
 			);
 		} );
 
@@ -2062,7 +2028,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'			xxx' +
 				'			<li>' +
 				'				<ul><li></li><li>1.1.2</li></ul>' +
-				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +		// Will be changed to <ul>. TODO should not
+				'				<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
 				'			</li>' +
 				'			<li>' +
 				'				<ul><li>1.2.1</li></ul>' +
@@ -2080,7 +2046,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'					<li>' +
 				'						3.1.1' +
 				'						<ol><li>3.1.1.1</li></ol>' +
-				'						<ul><li>3.1.1.2</li></ul>' +			// Will be changed to <ol>. TODO should nor
+				'						<ul><li>3.1.1.2</li></ul>' +
 				'					</li>' +
 				'					<li>3.1.2</li>' +
 				'				</ul>' +
@@ -2101,8 +2067,8 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000004" listType="bulleted"></paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000000" listType="bulleted"></paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="bulleted">1.1.2</paragraph>' +
-				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="bulleted">1.1.3</paragraph>' +
-				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="bulleted">1.1.4</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000002" listType="numbered">1.1.3</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000003" listType="numbered">1.1.4</paragraph>' +
 				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000006" listType="bulleted"></paragraph>' +
 				'<paragraph listIndent="2" listItemId="e00000000000000000000000000000005" listType="bulleted">1.2.1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">2</paragraph>' +
@@ -2112,7 +2078,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000b" listType="bulleted">3.1.1</paragraph>' +
 				'<paragraph listIndent="3" listItemId="e00000000000000000000000000000009" listType="numbered">3.1.1.1</paragraph>' +
-				'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000a" listType="numbered">3.1.1.2</paragraph>' +
+				'<paragraph listIndent="3" listItemId="e0000000000000000000000000000000a" listType="bulleted">3.1.1.2</paragraph>' +
 				'<paragraph listIndent="2" listItemId="e0000000000000000000000000000000c" listType="bulleted">3.1.2</paragraph>' +
 				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">xxx</paragraph>' +
 				'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000e" listType="bulleted">3.2</paragraph>' +
@@ -2126,7 +2092,8 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 						'<ul>' +
 							'<li>' +
 								'&nbsp;' +
-								'<ul><li>&nbsp;</li><li>1.1.2</li><li>1.1.3</li><li>1.1.4</li></ul>' +
+								'<ul><li>&nbsp;</li><li>1.1.2</li></ul>' +
+								'<ol><li>1.1.3</li><li>1.1.4</li></ol>' +
 							'</li>' +
 							'<li>' +
 								'&nbsp;' +
@@ -2143,7 +2110,8 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 								'<ul>' +
 									'<li>' +
 										'3.1.1' +
-										'<ol><li>3.1.1.1</li><li>3.1.1.2</li></ol>' +
+										'<ol><li>3.1.1.1</li></ol>' +
+										'<ul><li>3.1.1.2</li></ul>' +
 									'</li>' +
 									'<li>3.1.2</li>' +
 								'</ul>' +
@@ -2273,7 +2241,6 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 		describe( 'model tests for nested lists', () => {
 			it( 'should properly set listIndent and listType', () => {
 				// <ol> in the middle will be fixed by postfixer to bulleted list.
-				// TODO is this expected?
 				test.data(
 					'<p>foo</p>' +
 					'<ul>' +
@@ -2299,9 +2266,9 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 					'<paragraph>foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000004" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1.1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="bulleted">1.2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000002" listType="numbered">1.2</paragraph>' +
 					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000001" listType="numbered">1.2.1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="bulleted">1.3</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000003" listType="numbered">1.3</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000005" listType="bulleted">2</paragraph>' +
 					'<paragraph>bar</paragraph>',
 
@@ -2311,6 +2278,8 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 							'1' +
 							'<ul>' +
 								'<li>1.1</li>' +
+							'</ul>' +
+							'<ol>' +
 								'<li>' +
 									'1.2' +
 									'<ol>' +
@@ -2318,7 +2287,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 									'</ol>' +
 								'</li>' +
 								'<li>1.3</li>' +
-							'</ul>' +
+							'</ol>' +
 						'</li>' +
 						'<li>2</li>' +
 					'</ul>' +

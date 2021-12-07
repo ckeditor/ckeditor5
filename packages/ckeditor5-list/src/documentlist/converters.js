@@ -137,12 +137,12 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			editing.reconvertItem( item );
 		}
 
-		function checkList( item ) {
+		function checkList( listHead ) {
 			const visited = new Set();
 			const stack = [];
 
 			for (
-				let prev = null;
+				let prev = null, item = listHead;
 				item && item.hasAttribute( 'listItemId' );
 				prev = item, item = item.nextSibling
 			) {

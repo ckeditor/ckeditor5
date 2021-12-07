@@ -206,18 +206,17 @@ export function modelChangePostFixer( model, writer ) {
 
 	for ( const listHead of itemToListHead.values() ) {
 		fixListIndents( listHead );
-		fixListTypes( listHead );
 		fixListItemIds( listHead );
 	}
 
 	return applied;
 
-	function fixListIndents( item ) {
+	function fixListIndents( listHead ) {
 		let maxIndent = 0;
 		let fixBy = null;
 
 		for (
-			item;
+			let item = listHead;
 			item && item.hasAttribute( 'listItemId' );
 			item = item.nextSibling
 		) {
@@ -247,44 +246,11 @@ export function modelChangePostFixer( model, writer ) {
 		}
 	}
 
-	function fixListTypes( item ) {
-		const typesStack = [];
-
-		for (
-			let prev = null;
-			item && item.hasAttribute( 'listItemId' );
-			prev = item, item = item.nextSibling
-		) {
-			const itemIndent = item.getAttribute( 'listIndent' );
-
-			if ( prev && itemIndent < prev.getAttribute( 'listIndent' ) ) {
-				typesStack.length = itemIndent + 1;
-			}
-
-			// Allow different types of lists at the top level.
-			if ( itemIndent == 0 ) {
-				continue;
-			}
-
-			if ( typesStack[ itemIndent ] ) {
-				const type = typesStack[ itemIndent ];
-
-				if ( item.getAttribute( 'listType' ) != type ) {
-					writer.setAttribute( 'listType', type, item );
-
-					applied = true;
-				}
-			} else {
-				typesStack[ itemIndent ] = item.getAttribute( 'listType' );
-			}
-		}
-	}
-
-	function fixListItemIds( item ) {
+	function fixListItemIds( listHead ) {
 		const visited = new Set();
 
 		for (
-			item;
+			let item = listHead;
 			item && item.hasAttribute( 'listItemId' );
 			item = item.nextSibling
 		) {

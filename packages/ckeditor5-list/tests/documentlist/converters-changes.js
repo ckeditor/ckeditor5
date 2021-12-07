@@ -1681,8 +1681,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 								'<span class="ck-list-bogus-paragraph">1</span>' +
 								'<ol>' +
 									'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
-									'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
 								'</ol>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
+								'</ul>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -1701,8 +1703,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 								'<span class="ck-list-bogus-paragraph">1</span>' +
 								'<ul>' +
 									'<li><span class="ck-list-bogus-paragraph">1.1</span></li>' +
-									'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
 								'</ul>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+								'</ol>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -1775,8 +1779,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 										'</ul>' +
 									'</li>' +
-									'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
 								'</ul>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">x</span></li>' +
+								'</ol>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -1876,7 +1882,11 @@ describe( 'DocumentListEditing - converters - changes', () => {
 							'<span class="ck-list-bogus-paragraph">a</span>' +
 							'<ul>' +
 								'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'</ul>' +
+							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ol>' +
+							'<ul>' +
 								'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 							'</ul>' +
 						'</li>' +
@@ -1991,8 +2001,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 							'<span class="ck-list-bogus-paragraph">a</span>' +
 							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-								'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 							'</ol>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
+							'</ul>' +
 						'</li>' +
 					'</ul>'
 				);
@@ -2136,7 +2148,11 @@ describe( 'DocumentListEditing - converters - changes', () => {
 							'<span class="ck-list-bogus-paragraph">a</span>' +
 							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'</ol>' +
+							'<ul>' +
 								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ul>' +
+							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 							'</ol>' +
 						'</li>' +
@@ -2455,8 +2471,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 								'<span class="ck-list-bogus-paragraph">a</span>' +
 								'<ol>' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 								'</ol>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+								'</ul>' +
 							'</li>' +
 						'</ul>'
 					);
@@ -2476,7 +2494,11 @@ describe( 'DocumentListEditing - converters - changes', () => {
 								'<span class="ck-list-bogus-paragraph">a</span>' +
 								'<ul>' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+								'<ol>' +
 									'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+								'</ol>' +
+								'<ul>' +
 									'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 								'</ul>' +
 							'</li>' +
@@ -2930,8 +2952,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 										'<li><span class="ck-list-bogus-paragraph">d</span></li>' +
 									'</ul>' +
 								'</li>' +
-								'<li><span class="ck-list-bogus-paragraph">g</span></li>' +
 							'</ul>' +
+							'<ol>' +
+								'<li><span class="ck-list-bogus-paragraph">g</span></li>' +
+							'</ol>' +
 						'</li>' +
 					'</ol>'
 				);
@@ -2986,15 +3010,19 @@ describe( 'DocumentListEditing - converters - changes', () => {
 							'<span class="ck-list-bogus-paragraph">a</span>' +
 							'<ul>' +
 								'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-								'<li><span class="ck-list-bogus-paragraph">f</span></li>' +
 							'</ul>' +
+							'<ol>' +
+								'<li><span class="ck-list-bogus-paragraph">f</span></li>' +
+							'</ol>' +
 						'</li>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">g</span>' +
 							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph">h</span></li>' +
-								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 							'</ol>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+							'</ul>' +
 						'</li>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">d</span>' +
@@ -3026,8 +3054,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 							'<span class="ck-list-bogus-paragraph">a</span>' +
 							'<ul>' +
 								'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-								'<li><span class="ck-list-bogus-paragraph">f</span></li>' +
 							'</ul>' +
+							'<ol>' +
+								'<li><span class="ck-list-bogus-paragraph">f</span></li>' +
+							'</ol>' +
 						'</li>' +
 						'<li>' +
 							'<span class="ck-list-bogus-paragraph">g</span>' +
@@ -3040,8 +3070,10 @@ describe( 'DocumentListEditing - converters - changes', () => {
 							'<span class="ck-list-bogus-paragraph">d</span>' +
 							'<ol>' +
 								'<li><span class="ck-list-bogus-paragraph">e</span></li>' +
-								'<li><span class="ck-list-bogus-paragraph">i</span></li>' +
 							'</ol>' +
+							'<ul>' +
+								'<li><span class="ck-list-bogus-paragraph">i</span></li>' +
+							'</ul>' +
 						'</li>' +
 					'</ul>'
 				);
