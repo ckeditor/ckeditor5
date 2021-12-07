@@ -299,6 +299,14 @@ describe( 'FindCommand', () => {
 					expect( results.length ).to.equal( 0 );
 				} );
 
+				it( 'set to true matches words separated by a single space', () => {
+					editor.setData( '<p>bar bar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 2 );
+				} );
+
 				it( 'is disabled by default', () => {
 					editor.setData( '<p>foo aabaraa</p>' );
 

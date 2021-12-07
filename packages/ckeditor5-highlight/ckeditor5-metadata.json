@@ -29,6 +29,7 @@
 				{
 					"elements": "mark",
 					"classes": "*",
+					"isAlternative": true,
 					"_comment": "The plugin can be configured to set any classes on the `<mark>` element."
 				}
 			]

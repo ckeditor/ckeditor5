@@ -31,6 +31,6 @@ export default class TableCellBackgroundColorCommand extends TableCellPropertyCo
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'backgroundColor', defaultValue );
+		super( editor, 'tableCellBackgroundColor', defaultValue );
 	}
 }

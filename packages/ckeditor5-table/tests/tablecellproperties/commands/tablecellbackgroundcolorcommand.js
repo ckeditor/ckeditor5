@@ -11,7 +11,6 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellBackgroundColorCommand from '../../../src/tablecellproperties/commands/tablecellbackgroundcolorcommand';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -70,14 +69,14 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no backgroundColor property', () => {
+					it( 'should be undefined if selected table cell has no tableCellBackgroundColor property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has backgroundColor property', () => {
-						setData( model, modelTable( [ [ { backgroundColor: 'blue', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellBackgroundColor property', () => {
+						setData( model, modelTable( [ [ { tableCellBackgroundColor: 'blue', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -91,14 +90,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { backgroundColor: 'blue', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellBackgroundColor: 'blue', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cell have the "backgroundColor" property', () => {
+					it( 'should be undefined if no table cell have the "tableCellBackgroundColor" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -113,45 +112,46 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "backgroundColor" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellBackgroundColor" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
+								{ contents: '00', isSelected: true, tableCellBackgroundColor: '#f00' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, backgroundColor: '#f00' }
+								{ contents: '11', isSelected: true, tableCellBackgroundColor: '#f00' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "backgroundColor" property value', () => {
+					it( `should be undefined if one of selected table cells
+						has a different "tableCellBackgroundColor" property value`, () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
-								{ contents: '01', isSelected: true, backgroundColor: 'pink' }
+								{ contents: '00', isSelected: true, tableCellBackgroundColor: '#f00' },
+								{ contents: '01', isSelected: true, tableCellBackgroundColor: 'pink' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, backgroundColor: '#f00' }
+								{ contents: '11', isSelected: true, tableCellBackgroundColor: '#f00' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cell have the same "backgroundColor" property value', () => {
+					it( 'should be set if all table cell have the same "tableCellBackgroundColor" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, backgroundColor: '#f00' },
-								{ contents: '01', isSelected: true, backgroundColor: '#f00' }
+								{ contents: '00', isSelected: true, tableCellBackgroundColor: '#f00' },
+								{ contents: '01', isSelected: true, tableCellBackgroundColor: '#f00' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, backgroundColor: '#f00' }
+								{ contents: '11', isSelected: true, tableCellBackgroundColor: '#f00' }
 							]
 						] ) );
 
@@ -233,7 +233,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "backgroundColor" attribute value of selected table cells', () => {
 						command.execute( { value: '#f00' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ { contents: '00', style: 'background-color:#f00;' }, '01' ],
 							[ '10', { contents: '11', style: 'background-color:#f00;' } ]
 						] ) );
@@ -247,7 +247,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -340,7 +340,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: 'red' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

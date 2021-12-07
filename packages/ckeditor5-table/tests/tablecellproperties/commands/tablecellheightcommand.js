@@ -11,7 +11,6 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertTableCellStyle, modelTable, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellHeightCommand from '../../../src/tablecellproperties/commands/tablecellheightcommand';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -70,14 +69,14 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no height property', () => {
+					it( 'should be undefined if selected table cell has no tableCellHeight property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has height property', () => {
-						setData( model, modelTable( [ [ { height: '100px', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellHeight property', () => {
+						setData( model, modelTable( [ [ { tableCellHeight: '100px', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
@@ -91,14 +90,14 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { height: '100px', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellHeight: '100px', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( '100px' );
 					} );
 				} );
 
 				describe( 'multi-cell selection', () => {
-					it( 'should be undefined if no table cell have the "height" property', () => {
+					it( 'should be undefined if no table cell have the "tableCellHeight" property', () => {
 						setData( model, modelTable( [
 							[
 								{ contents: '00', isSelected: true },
@@ -113,45 +112,45 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if only some table cells have the "height" property', () => {
+					it( 'should be undefined if only some table cells have the "tableCellHeight" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, height: '100px' },
+								{ contents: '00', isSelected: true, tableCellHeight: '100px' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, height: '100px' }
+								{ contents: '11', isSelected: true, tableCellHeight: '100px' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if one of selected table cells has a different "height" property value', () => {
+					it( 'should be undefined if one of selected table cells has a different "tableCellHeight" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, height: '100px' },
-								{ contents: '01', isSelected: true, height: '23px' }
+								{ contents: '00', isSelected: true, tableCellHeight: '100px' },
+								{ contents: '01', isSelected: true, tableCellHeight: '23px' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, height: '100px' }
+								{ contents: '11', isSelected: true, tableCellHeight: '100px' }
 							]
 						] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if all table cell have the same "height" property value', () => {
+					it( 'should be set if all table cell have the same "tableCellHeight" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, height: '100px' },
-								{ contents: '01', isSelected: true, height: '100px' }
+								{ contents: '00', isSelected: true, tableCellHeight: '100px' },
+								{ contents: '01', isSelected: true, tableCellHeight: '100px' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, height: '100px' }
+								{ contents: '11', isSelected: true, tableCellHeight: '100px' }
 							]
 						] ) );
 
@@ -289,7 +288,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "height" attribute value of selected table cells', () => {
 						command.execute( { value: '100px' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ { contents: '00', style: 'height:100px;' }, '01' ],
 							[ '10', { contents: '11', style: 'height:100px;' } ]
 						] ) );
@@ -303,7 +302,7 @@ describe( 'table cell properties', () => {
 
 						command.execute();
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -393,7 +392,7 @@ describe( 'table cell properties', () => {
 
 						command.execute( { value: '30px' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );

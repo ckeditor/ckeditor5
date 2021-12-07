@@ -39,6 +39,6 @@ export default class TableCellVerticalAlignmentCommand extends TableCellProperty
 	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'verticalAlignment', defaultValue );
+		super( editor, 'tableCellVerticalAlignment', defaultValue );
 	}
 }

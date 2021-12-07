@@ -354,6 +354,16 @@ export default class FindAndReplaceFormView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this._focusTracker.destroy();
+		this._keystrokes.destroy();
+	}
+
+	/**
 	 * Focuses the fist {@link #_focusables} in the form.
 	 */
 	focus() {
@@ -725,7 +735,7 @@ export default class FindAndReplaceFormView extends View {
 					this._findButtonView.fire( 'execute' );
 				}
 				stopPropagationAndPreventDefault( event );
-			} else if ( target === this._replaceInputView.fieldView.element ) {
+			} else if ( target === this._replaceInputView.fieldView.element && !this.isDirty ) {
 				this._replaceButtonView.fire( 'execute' );
 				stopPropagationAndPreventDefault( event );
 			}

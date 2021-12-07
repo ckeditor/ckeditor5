@@ -291,6 +291,24 @@ describe( 'MediaEmbedElementSupport', () => {
 			expect( editor.getData() ).to.equal( expectedHtml );
 		} );
 
+		it( 'should not double convert figure element', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			const expectedHtml =
+				'<figure class="media">' +
+					'<oembed url="https://www.youtube.com/watch?v=ZVv7UMQPEWk"></oembed>' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
 		it( 'should not consume media figure element that is already consumed (upcast)', () => {
 			editor.conversion.for( 'upcast' )
 				.add( dispatcher => {

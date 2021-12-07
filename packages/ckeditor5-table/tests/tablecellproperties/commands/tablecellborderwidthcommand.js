@@ -11,7 +11,6 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { assertTableCellStyle, modelTable, setTableCellWithObjectAttributes, viewTable } from '../../_utils/utils';
 import TableCellPropertiesEditing from '../../../src/tablecellproperties/tablecellpropertiesediting';
 import TableCellBorderWidthCommand from '../../../src/tablecellproperties/commands/tablecellborderwidthcommand';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'table cell properties', () => {
 	describe( 'commands', () => {
@@ -70,21 +69,21 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has no borderWidth property', () => {
+					it( 'should be undefined if selected table cell has no tableCellBorderWidth property', () => {
 						setData( model, modelTable( [ [ '[]foo' ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be set if selected table cell has borderWidth property (single string)', () => {
-						setData( model, modelTable( [ [ { borderWidth: '2em', contents: '[]foo' } ] ] ) );
+					it( 'should be set if selected table cell has tableCellBorderWidth property (single string)', () => {
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
 
-					it( 'should be set if selected table cell has borderWidth property object with same values', () => {
+					it( 'should be set if selected table cell has tableCellBorderWidth property object with same values', () => {
 						setTableCellWithObjectAttributes( model, {
-							borderWidth: {
+							tableCellBorderWidth: {
 								top: '2em',
 								right: '2em',
 								bottom: '2em',
@@ -94,9 +93,9 @@ describe( 'table cell properties', () => {
 						expect( command.value ).to.equal( '2em' );
 					} );
 
-					it( 'should be undefined if selected table cell has borderWidth property object with different values', () => {
+					it( 'should be undefined if selected table cell has tableCellBorderWidth property object with different values', () => {
 						setTableCellWithObjectAttributes( model, {
-							borderWidth: {
+							tableCellBorderWidth: {
 								top: '2em',
 								right: '333px',
 								bottom: '2em',
@@ -116,7 +115,7 @@ describe( 'table cell properties', () => {
 					} );
 
 					it( 'should be true is selection has table cell', () => {
-						setData( model, modelTable( [ [ { borderWidth: '2em', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.equal( '2em' );
 					} );
@@ -141,12 +140,12 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if only some table cells have the "borderWidth" property', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, borderWidth: '1px' },
+								{ contents: '00', isSelected: true, tableCellBorderWidth: '1px' },
 								{ contents: '01', isSelected: true }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, borderWidth: '1px' }
+								{ contents: '11', isSelected: true, tableCellBorderWidth: '1px' }
 							]
 						] ) );
 
@@ -156,12 +155,12 @@ describe( 'table cell properties', () => {
 					it( 'should be undefined if one of selected table cells has a different "borderWidth" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, borderWidth: '1px' },
-								{ contents: '01', isSelected: true, borderWidth: '20px' }
+								{ contents: '00', isSelected: true, tableCellBorderWidth: '1px' },
+								{ contents: '01', isSelected: true, tableCellBorderWidth: '20px' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, borderWidth: '1px' }
+								{ contents: '11', isSelected: true, tableCellBorderWidth: '1px' }
 							]
 						] ) );
 
@@ -171,12 +170,12 @@ describe( 'table cell properties', () => {
 					it( 'should be set if all table cells have the same "borderWidth" property value', () => {
 						setData( model, modelTable( [
 							[
-								{ contents: '00', isSelected: true, borderWidth: '1px' },
-								{ contents: '01', isSelected: true, borderWidth: '1px' }
+								{ contents: '00', isSelected: true, tableCellBorderWidth: '1px' },
+								{ contents: '01', isSelected: true, tableCellBorderWidth: '1px' }
 							],
 							[
 								'10',
-								{ contents: '11', isSelected: true, borderWidth: '1px' }
+								{ contents: '11', isSelected: true, tableCellBorderWidth: '1px' }
 							]
 						] ) );
 
@@ -252,7 +251,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'collapsed selection', () => {
-					it( 'should set selected table cell borderWidth to a passed value', () => {
+					it( 'should set selected table cell tableCellBorderWidth to a passed value', () => {
 						setData( model, modelTable( [ [ 'foo[]' ] ] ) );
 
 						command.execute( { value: '1px' } );
@@ -260,16 +259,16 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border-width:1px;' );
 					} );
 
-					it( 'should change selected table cell borderWidth to a passed value', () => {
-						setData( model, modelTable( [ [ { borderWidth: '2em', contents: '[]foo' } ] ] ) );
+					it( 'should change selected table cell tableCellBorderWidth to a passed value', () => {
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: '1px' } );
 
 						assertTableCellStyle( editor, 'border-width:1px;' );
 					} );
 
-					it( 'should remove borderWidth from a selected table cell if no value is passed', () => {
-						setData( model, modelTable( [ [ { borderWidth: '2em', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellBorderWidth from a selected table cell if no value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						command.execute();
 
@@ -278,7 +277,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should set selected table cell borderWidth to a passed value', () => {
+					it( 'should set selected table cell tableCellBorderWidth to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '1px' } );
@@ -286,7 +285,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border-width:1px;' );
 					} );
 
-					it( 'should change selected table cell borderWidth to a passed value', () => {
+					it( 'should change selected table cell tableCellBorderWidth to a passed value', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '1px' } );
@@ -294,7 +293,7 @@ describe( 'table cell properties', () => {
 						assertTableCellStyle( editor, 'border-width:1px;' );
 					} );
 
-					it( 'should remove borderWidth from a selected table cell if no value is passed', () => {
+					it( 'should remove tableCellBorderWidth from a selected table cell if no value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute();
@@ -314,7 +313,7 @@ describe( 'table cell properties', () => {
 					it( 'should set the "borderWidth" attribute value of selected table cells', () => {
 						command.execute( { value: '1px' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[
 								{ contents: '00', style: 'border-width:1px;' },
 								'01'
@@ -328,13 +327,13 @@ describe( 'table cell properties', () => {
 
 					it( 'should remove "borderWidth" from selected table cells if no value is passed', () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, borderWidth: '1px' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, borderWidth: '1px' } ]
+							[ { contents: '00', isSelected: true, tableCellBorderWidth: '1px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellBorderWidth: '1px' } ]
 						] ) );
 
 						command.execute();
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
@@ -361,15 +360,16 @@ describe( 'table cell properties', () => {
 
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should be undefined if selected table cell has the default borderWidth property (single string)', () => {
-						setData( model, modelTable( [ [ { borderWidth: '3px', contents: '[]foo' } ] ] ) );
+					it( 'should be undefined if selected table cell has the default tableCellBorderWidth property (single string)', () => {
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '3px', contents: '[]foo' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
-					it( 'should be undefined if selected table cell hast the default borderWidth property object with same values', () => {
+					it( `should be undefined if selected table cell hast the default
+						tableCellBorderWidth property object with same values`, () => {
 						setTableCellWithObjectAttributes( model, {
-							borderWidth: {
+							tableCellBorderWidth: {
 								top: '3px',
 								right: '3px',
 								bottom: '3px',
@@ -382,7 +382,7 @@ describe( 'table cell properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined is selection contains the default valuel', () => {
-						setData( model, modelTable( [ [ { borderWidth: '3px', contents: 'f[o]o' } ] ] ) );
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '3px', contents: 'f[o]o' } ] ] ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
@@ -394,12 +394,12 @@ describe( 'table cell properties', () => {
 						() => {
 							setData( model, modelTable( [
 								[
-									{ contents: '00', isSelected: true, borderWidth: '3px' },
-									{ contents: '01', isSelected: true, borderWidth: '3px' }
+									{ contents: '00', isSelected: true, tableCellBorderWidth: '3px' },
+									{ contents: '01', isSelected: true, tableCellBorderWidth: '3px' }
 								],
 								[
 									'10',
-									{ contents: '11', isSelected: true, borderWidth: '3px' }
+									{ contents: '11', isSelected: true, tableCellBorderWidth: '3px' }
 								]
 							] ) );
 
@@ -411,8 +411,8 @@ describe( 'table cell properties', () => {
 
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
-					it( 'should remove borderWidth from a selected table cell if the default value is passed', () => {
-						setData( model, modelTable( [ [ { borderWidth: '2em', contents: '[]foo' } ] ] ) );
+					it( 'should remove tableCellBorderWidth from a selected table cell if the default value is passed', () => {
+						setData( model, modelTable( [ [ { tableCellBorderWidth: '2em', contents: '[]foo' } ] ] ) );
 
 						command.execute( { value: '3px' } );
 
@@ -421,7 +421,7 @@ describe( 'table cell properties', () => {
 				} );
 
 				describe( 'non-collapsed selection', () => {
-					it( 'should remove borderWidth from a selected table cell if the default value is passed', () => {
+					it( 'should remove tableCellBorderWidth from a selected table cell if the default value is passed', () => {
 						setData( model, modelTable( [ [ '[foo]' ] ] ) );
 
 						command.execute( { value: '3px' } );
@@ -433,13 +433,13 @@ describe( 'table cell properties', () => {
 				describe( 'multi-cell selection', () => {
 					it( 'should remove "borderWidth" from selected table cells if the default value is passed', () => {
 						setData( model, modelTable( [
-							[ { contents: '00', isSelected: true, borderWidth: '1px' }, '01' ],
-							[ '10', { contents: '11', isSelected: true, borderWidth: '1px' } ]
+							[ { contents: '00', isSelected: true, tableCellBorderWidth: '1px' }, '01' ],
+							[ '10', { contents: '11', isSelected: true, tableCellBorderWidth: '1px' } ]
 						] ) );
 
 						command.execute( { value: '3px' } );
 
-						assertEqualMarkup( editor.getData(), viewTable( [
+						expect( editor.getData() ).to.equalMarkup( viewTable( [
 							[ '00', '01' ],
 							[ '10', '11' ]
 						] ) );
