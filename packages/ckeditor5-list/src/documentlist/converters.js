@@ -12,7 +12,8 @@ import {
 	isListView,
 	isListItemView,
 	getListItemElements,
-	findAddListHeadToMap
+	findAddListHeadToMap,
+	getViewElementNameForListType
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
@@ -212,7 +213,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 						break;
 					}
 				} else if ( isListView( attributeElement ) ) {
-					const expectedElementName = stack[ stackIdx ].type == 'numbered' ? 'ol' : 'ul';
+					const expectedElementName = getViewElementNameForListType( stack[ stackIdx ].type );
 
 					if ( attributeElement.name != expectedElementName ) {
 						break;

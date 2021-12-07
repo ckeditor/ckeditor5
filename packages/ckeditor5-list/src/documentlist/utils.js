@@ -99,7 +99,7 @@ export function getIndent( listItem ) {
  */
 export function createListElement( writer, indent, type, id ) {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
-	return writer.createAttributeElement( type == 'numbered' ? 'ol' : 'ul', null, {
+	return writer.createAttributeElement( getViewElementNameForListType( type ), null, {
 		priority: 2 * indent / 100 - 100,
 		id
 	} );
@@ -119,6 +119,13 @@ export function createListItemElement( writer, indent, id ) {
 		priority: ( 2 * indent + 1 ) / 100 - 100,
 		id
 	} );
+}
+
+/**
+ * TODO
+ */
+export function getViewElementNameForListType( type ) {
+	return type == 'numbered' ? 'ol' : 'ul';
 }
 
 /**
@@ -163,21 +170,6 @@ export function getAllListItemElements( listItem, model ) {
 	return [
 		...getListItemElements( listItem, model, 'backward' ),
 		...getListItemElements( listItem, model, 'forward' )
-	];
-}
-
-/**
- * TODO
- *
- * @param listItemId
- * @param limitIndent
- * @param startPosition
- * @return {*[]}
- */
-export function getAllListItemElementsByDetails( listItemId, limitIndent, startPosition ) {
-	return [
-		...getListItemElementsByDetails( listItemId, limitIndent, startPosition, 'backward' ),
-		...getListItemElementsByDetails( listItemId, limitIndent, startPosition, 'forward' )
 	];
 }
 

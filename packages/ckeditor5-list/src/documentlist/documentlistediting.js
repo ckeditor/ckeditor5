@@ -10,7 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
-import { CKEditorError, uid } from 'ckeditor5/src/utils';
+import { CKEditorError } from 'ckeditor5/src/utils';
 
 import {
 	listItemDowncastConverter,
@@ -23,8 +23,7 @@ import {
 import {
 	findAddListHeadToMap,
 	fixListIndents,
-	fixListItemIds,
-	getListItemElements
+	fixListItemIds
 } from './utils';
 
 /**
@@ -73,7 +72,6 @@ export default class DocumentListEditing extends Plugin {
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		this._setupConversion();
-		this._enableEnterHandling();
 	}
 
 	/**
@@ -106,31 +104,6 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @private
-	 */
-	_enableEnterHandling() {
-		const editor = this.editor;
-		const enterCommand = editor.commands.get( 'enter' );
-
-		if ( enterCommand ) {
-			this.listenTo( enterCommand, 'afterExecute', ( evt, { writer } ) => {
-				const position = editor.model.document.selection.getFirstPosition();
-				const positionParent = position.parent;
-
-				if ( positionParent.hasAttribute( 'listItemId' ) && position.isAtEnd ) {
-					const lastListItemElement = getListItemElements( positionParent, editor.model ).pop();
-
-					if ( lastListItemElement == positionParent ) {
-						writer.setAttribute( 'listItemId', uid(), lastListItemElement );
-					}
-				}
-			} );
-		}
 	}
 }
 
