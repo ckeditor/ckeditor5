@@ -424,8 +424,8 @@ export default class DomConverter {
 	 * **Note**: To remove the attribute, use {@link #removeDomElementAttribute}.
 	 *
 	 * @param {HTMLElement} domElement The DOM element the attribute should be set on.
-	 * @param {String} key The name of the attribute
-	 * @param {String} value The value of the attribute
+	 * @param {String} key The name of the attribute.
+	 * @param {String} value The value of the attribute.
 	 * @param {module:engine/view/element~Element} [relatedViewElement] The view element related to the `domElement` (if there is any).
 	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via
 	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
