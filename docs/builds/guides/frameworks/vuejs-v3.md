@@ -266,9 +266,6 @@ module.exports = {
 		config.module
 			.rule( 'cke-css' )
 			.test( /ckeditor5-[^/\\]+[/\\].+\.css$/ )
-			.use( 'css-loader' )
-			.loader( 'css-loader' )
-			.end()
 			.use( 'postcss-loader' )
 			.loader( 'postcss-loader' )
 			.tap( () => {
