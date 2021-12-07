@@ -177,9 +177,9 @@ Create your own CKEditor 5 build with customized plugins, toolbar and language i
 
 ### Customizing one of the predefined builds
 
-This option requires making changes to a {@link builds/guides/development/custom-builds predefined build} of your choice. You will create a new build somewhere next to your project and after adding the additional packages as dependencies (much like in the case of the online builder), include it like you {@link builds/guides/integration/advanced-setup#scenario-1-integrating-existing-builds included one of the existing builds}.
+This option requires making changes to a {@link builds/guides/development/custom-builds predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
 
-Read more about this method in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
+Read more about customising a predefined build in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
 
 ### Integrating the editor from source
 
