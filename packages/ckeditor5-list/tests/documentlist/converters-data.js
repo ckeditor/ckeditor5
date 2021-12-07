@@ -1221,7 +1221,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 
 						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Foo</paragraph>' +
 						'<splitBlock>Bar</splitBlock>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">Baz</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">Baz</paragraph>',
 
 						'<ul>' +
 							'<li>Foo</li>' +
@@ -1324,7 +1324,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 
 						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
 						'<heading1>bar</heading1>' +
-						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">baz</paragraph>',
+						'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">baz</paragraph>',
 
 						'<ul>' +
 							'<li>foo</li>' +

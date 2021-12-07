@@ -20,7 +20,12 @@ import {
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
 } from './converters';
-import { findAddListHeadToMap, getListItemElements } from './utils';
+import {
+	findAddListHeadToMap,
+	fixListIndents,
+	fixListItemIds,
+	getListItemElements
+} from './utils';
 
 /**
  * TODO
@@ -204,81 +209,15 @@ export function modelChangePostFixer( model, writer ) {
 		}
 	}
 
+	// Make sure that IDs are not shared by split list.
+	const seenIds = new Set();
+
 	for ( const listHead of itemToListHead.values() ) {
-		fixListIndents( listHead );
-		fixListItemIds( listHead );
+		applied = fixListIndents( listHead, writer ) || applied;
+		applied = fixListItemIds( listHead, seenIds, writer ) || applied;
 	}
 
 	return applied;
-
-	function fixListIndents( listHead ) {
-		let maxIndent = 0;
-		let fixBy = null;
-
-		for (
-			let item = listHead;
-			item && item.hasAttribute( 'listItemId' );
-			item = item.nextSibling
-		) {
-			const itemIndent = item.getAttribute( 'listIndent' );
-
-			if ( itemIndent > maxIndent ) {
-				let newIndent;
-
-				if ( fixBy === null ) {
-					fixBy = itemIndent - maxIndent;
-					newIndent = maxIndent;
-				} else {
-					if ( fixBy > itemIndent ) {
-						fixBy = itemIndent;
-					}
-
-					newIndent = itemIndent - fixBy;
-				}
-
-				writer.setAttribute( 'listIndent', newIndent, item );
-
-				applied = true;
-			} else {
-				fixBy = null;
-				maxIndent = item.getAttribute( 'listIndent' ) + 1;
-			}
-		}
-	}
-
-	function fixListItemIds( listHead ) {
-		const visited = new Set();
-
-		for (
-			let item = listHead;
-			item && item.hasAttribute( 'listItemId' );
-			item = item.nextSibling
-		) {
-			if ( visited.has( item ) ) {
-				continue;
-			}
-
-			const blocks = getListItemElements( item, model, 'forward' );
-
-			let listType = item.getAttribute( 'listType' );
-			let listItemId = item.getAttribute( 'listItemId' );
-
-			for ( const block of blocks ) {
-				visited.add( block );
-
-				if ( block.getAttribute( 'listType' ) != listType ) {
-					listItemId = uid();
-					listType = block.getAttribute( 'listType' );
-				}
-
-				if ( block.getAttribute( 'listItemId' ) != listItemId ) {
-					writer.setAttribute( 'listItemId', listItemId, block );
-
-					applied = true;
-				}
-			}
-		}
-	}
 }
 
 /**

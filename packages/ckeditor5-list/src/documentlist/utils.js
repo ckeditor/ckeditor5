@@ -4,6 +4,7 @@
  */
 
 import { TreeWalker } from 'ckeditor5/src/engine';
+import { uid } from 'ckeditor5/src/utils';
 
 /**
  * @module list/documentlist/utils
@@ -186,15 +187,15 @@ export function getAllListItemElementsByDetails( listItemId, limitIndent, startP
  * It means that values for `listIndent`, `listType`, `listStyle`, and `listItemId` for all items are equal.
  *
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {module:engine/model/model~Model} model The editor model.
+ * @param {module:engine/model/model~Model|module:engine/model/writer~Writer} modelOrModelWriter The editor model or model writer.
  * @param {'forward'|'backward'} [direction='forward'] Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItemElements( listItem, model, direction = 'forward' ) {
+export function getListItemElements( listItem, modelOrModelWriter, direction = 'forward' ) {
 	const limitIndent = listItem.getAttribute( 'listIndent' );
 	const listItemId = listItem.getAttribute( 'listItemId' );
 
-	return getListItemElementsByDetails( listItemId, limitIndent, model.createPositionBefore( listItem ), direction );
+	return getListItemElementsByDetails( listItemId, limitIndent, modelOrModelWriter.createPositionBefore( listItem ), direction );
 }
 
 // TODO
@@ -283,4 +284,89 @@ export function findAddListHeadToMap( position, itemToListHead ) {
 
 		itemToListHead.set( previousNode, listHead );
 	}
+}
+
+// TODO
+export function fixListIndents( listHead, writer ) {
+	let maxIndent = 0;
+	let fixBy = null;
+	let applied = false;
+
+	for (
+		let item = listHead;
+		item && item.hasAttribute( 'listItemId' );
+		item = item.nextSibling
+	) {
+		const itemIndent = item.getAttribute( 'listIndent' );
+
+		if ( itemIndent > maxIndent ) {
+			let newIndent;
+
+			if ( fixBy === null ) {
+				fixBy = itemIndent - maxIndent;
+				newIndent = maxIndent;
+			} else {
+				if ( fixBy > itemIndent ) {
+					fixBy = itemIndent;
+				}
+
+				newIndent = itemIndent - fixBy;
+			}
+
+			writer.setAttribute( 'listIndent', newIndent, item );
+
+			applied = true;
+		} else {
+			fixBy = null;
+			maxIndent = item.getAttribute( 'listIndent' ) + 1;
+		}
+	}
+
+	return applied;
+}
+
+// TODO
+export function fixListItemIds( listHead, seenIds, writer ) {
+	const visited = new Set();
+	let applied = false;
+
+	for (
+		let item = listHead;
+		item && item.hasAttribute( 'listItemId' );
+		item = item.nextSibling
+	) {
+		if ( visited.has( item ) ) {
+			continue;
+		}
+
+		const blocks = getListItemElements( item, writer, 'forward' );
+
+		let listType = item.getAttribute( 'listType' );
+		let listItemId = item.getAttribute( 'listItemId' );
+
+		// Use a new ID if this one was spot earlier (even in other list).
+		if ( seenIds.has( listItemId ) ) {
+			listItemId = uid();
+		}
+
+		seenIds.add( listItemId );
+
+		for ( const block of blocks ) {
+			visited.add( block );
+
+			// Use a new ID if a block of a bigger list item has different type.
+			if ( block.getAttribute( 'listType' ) != listType ) {
+				listItemId = uid();
+				listType = block.getAttribute( 'listType' );
+			}
+
+			if ( block.getAttribute( 'listItemId' ) != listItemId ) {
+				writer.setAttribute( 'listItemId', listItemId, block );
+
+				applied = true;
+			}
+		}
+	}
+
+	return applied;
 }

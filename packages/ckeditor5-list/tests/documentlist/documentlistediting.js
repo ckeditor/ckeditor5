@@ -250,6 +250,32 @@ describe( 'DocumentListEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
 			} );
+
+			it( 'paragraph between list item blocks', () => {
+				const input =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">d</paragraph>';
+
+				const output =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph>x</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">d</paragraph>';
+
+				setModelData( model, input );
+
+				const item = '<paragraph>x</paragraph><paragraph>x</paragraph>';
+
+				model.change( writer => {
+					writer.insert( parseModel( item, model.schema ), modelRoot, 1 );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+			} );
 		} );
 
 		describe( 'remove', () => {
@@ -555,6 +581,72 @@ describe( 'DocumentListEditing', () => {
 					writer.setAttribute( 'listIndent', 2, element );
 					writer.setAttribute( 'listType', 'bulleted', element );
 					writer.setAttribute( 'listIndent', 2, element.nextSibling );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+			} );
+
+			it( 'middle block indent', () => {
+				const modelBefore =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">c</paragraph>';
+
+				const expectedModel =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">c</paragraph>';
+
+				const selection = prepareTest( model, modelBefore );
+				const element = selection.getFirstPosition().nodeAfter;
+
+				model.change( writer => {
+					writer.setAttribute( 'listIndent', 1, element );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+			} );
+
+			it( 'middle blocks indent', () => {
+				const modelBefore =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">c</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">d</paragraph>';
+
+				const expectedModel =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">d</paragraph>';
+
+				const selection = prepareTest( model, modelBefore );
+
+				model.change( writer => {
+					for ( const item of selection.getFirstRange( 0 ).getItems( { shallow: true } ) ) {
+						writer.setAttribute( 'listIndent', 1, item );
+					}
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+			} );
+
+			it( 'middle block outdent', () => {
+				const modelBefore =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">c</paragraph>';
+
+				const expectedModel =
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">c</paragraph>';
+
+				const selection = prepareTest( model, modelBefore );
+				const element = selection.getFirstPosition().nodeAfter;
+
+				model.change( writer => {
+					writer.setAttribute( 'listIndent', 0, element );
 				} );
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
