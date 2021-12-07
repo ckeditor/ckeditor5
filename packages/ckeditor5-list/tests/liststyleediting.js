@@ -2641,21 +2641,40 @@ describe( 'ListStyleEditing', () => {
 					);
 				} );
 
-				it( 'should not inherit the reversed if outdented the only one item in the list (a paragraph below the list)', () => {
+				it(
+					'should not inherit the reversed attribute if outdented the only one item in the list (a paragraph below the list)',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
+							'<paragraph>Foo</paragraph>'
+						);
+
+						editor.execute( 'outdentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<paragraph>1.[]</paragraph>' +
+							'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
+							'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>' +
+							'<paragraph>Foo</paragraph>'
+						);
+					}
+				);
+
+				it( 'should not inherit the reversed attribute if outdented bulleted list', () => {
 					setModelData( model,
-						'<listItem listIndent="0" listReversed="true" listType="numbered">1.[]</listItem>' +
-						'<listItem listIndent="1" listReversed="true" listType="numbered">2.</listItem>' +
-						'<listItem listIndent="2" listReversed="false" listType="numbered">3.</listItem>' +
-						'<paragraph>Foo</paragraph>'
+						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">3.[]</listItem>'
 					);
 
 					editor.execute( 'outdentList' );
 
 					expect( getModelData( model ) ).to.equal(
-						'<paragraph>1.[]</paragraph>' +
-						'<listItem listIndent="0" listReversed="true" listType="numbered">2.</listItem>' +
-						'<listItem listIndent="1" listReversed="false" listType="numbered">3.</listItem>' +
-						'<paragraph>Foo</paragraph>'
+						'<listItem listIndent="0" listType="bulleted">1.</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">2.</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">3.[]</listItem>'
 					);
 				} );
 

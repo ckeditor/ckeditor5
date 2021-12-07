@@ -37,10 +37,6 @@ export default class ListReversedCommand extends Command {
 		const listItems = getListItemsOfSelectedList( model )
 			.filter( item => item.getAttribute( 'listType' ) == 'numbered' );
 
-		if ( !listItems.length ) {
-			return;
-		}
-
 		model.change( writer => {
 			for ( const item of listItems ) {
 				writer.setAttribute( 'listReversed', !!options.reversed, item );
