@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import ListEditing from './listediting';
 import ListStyleCommand from './liststylecommand';
+import ListReversedCommand from './listreversedcommand';
 import { getSiblingListItem, getSiblingNodes } from './utils';
 
 const DEFAULT_LIST_TYPE = 'default';
@@ -69,7 +70,9 @@ export default class ListStyleEditing extends Plugin {
 			allowAttributes: strategies.map( s => s.attributeName )
 		} );
 
-		editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+		for ( const strategy of strategies ) {
+			strategy.addCommand( editor );
+		}
 
 		// Fix list attributes when modifying their nesting levels (the `listIndent` attribute).
 		this.listenTo( editor.commands.get( 'indentList' ), '_executeCleanup', fixListAfterIndentListCommand( editor, strategies ) );
@@ -237,6 +240,7 @@ export default class ListStyleEditing extends Plugin {
 // @private
 // @member {String} attributeName
 // @member {*} defaultValue
+// @member {Function} addCommand
 // @member {Function} appliesToListItem
 // @member {Function} setAttributeOnDowncast
 // @member {Function} getAttributeOnUpcast
@@ -254,6 +258,10 @@ function createAttributeStrategies( enabledAttributes ) {
 		result.push( {
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
+
+			addCommand( editor ) {
+				editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+			},
 
 			appliesToListItem() {
 				return true;
@@ -277,6 +285,10 @@ function createAttributeStrategies( enabledAttributes ) {
 		result.push( {
 			attributeName: 'listReversed',
 			defaultValue: false,
+
+			addCommand( editor ) {
+				editor.commands.add( 'listReversed', new ListReversedCommand( editor ) );
+			},
 
 			appliesToListItem( item ) {
 				return item.getAttribute( 'listType' ) == 'numbered';

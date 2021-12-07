@@ -17,6 +17,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import ListStyleEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
+import ListReversedCommand from '../src/listreversedcommand';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 
 describe( 'ListStyleEditing', () => {
@@ -91,10 +92,22 @@ describe( 'ListStyleEditing', () => {
 		} );
 
 		describe( 'command', () => {
-			it( 'should register listStyle command', () => {
+			it( 'should register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
 				expect( command ).to.be.instanceOf( ListStyleCommand );
+			} );
+
+			it( 'should not register `listReversed` command', () => {
+				const command = editor.commands.get( 'listReversed' );
+
+				expect( command ).to.be.undefined;
+			} );
+
+			it( 'should not register `listStart` command', () => {
+				const command = editor.commands.get( 'listStart' );
+
+				expect( command ).to.be.undefined;
 			} );
 		} );
 
@@ -1775,11 +1788,22 @@ describe( 'ListStyleEditing', () => {
 		} );
 
 		describe( 'command', () => {
-			// TODO
-			it.skip( 'should register listStyle command', () => {
+			it( 'should register `listReversed` command', () => {
+				const command = editor.commands.get( 'listReversed' );
+
+				expect( command ).to.be.instanceOf( ListReversedCommand );
+			} );
+
+			it( 'should not register `listStyle` command', () => {
 				const command = editor.commands.get( 'listStyle' );
 
-				expect( command ).to.be.instanceOf( ListStyleCommand );
+				expect( command ).to.be.undefined;
+			} );
+
+			it( 'should not register `listStart` command', () => {
+				const command = editor.commands.get( 'listStart' );
+
+				expect( command ).to.be.undefined;
 			} );
 		} );
 
@@ -2343,45 +2367,6 @@ describe( 'ListStyleEditing', () => {
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Bar</listItem>' +
 							'<listItem listIndent="0" listReversed="true" listType="numbered">Foo Bar.[]</listItem>'
-						);
-					}
-				);
-
-				it.skip(
-					'should not inherit the reversed attribute when the modified list already has defined it (next sibling check)',
-					() => {
-						setModelData( model,
-							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>' +
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
-						);
-
-						// TODO
-						// editor.execute( 'listStyle', { type: 'disc' } );
-
-						expect( getModelData( model ) ).to.equal(
-							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>' +
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>'
-						);
-					} );
-
-				it.skip(
-					'should not inherit the reversed attribute when the modified list already has defined it (previous sibling check)',
-					() => {
-						setModelData( model,
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-							'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
-						);
-
-						// TODO
-						// editor.execute( 'listStyle', { type: 'disc' } );
-
-						expect( getModelData( model ) ).to.equal(
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Foo</listItem>' +
-							'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar</listItem>' +
-							'<listItem listIndent="0" listStyle="disc" listType="bulleted">Foo Bar.[]</listItem>'
 						);
 					}
 				);
