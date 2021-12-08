@@ -129,29 +129,26 @@ export function getViewElementNameForListType( type ) {
 
 /**
  * TODO
- *
- * @param modelItem
- * @param options
- * @returns {ChildNode|null}
  */
 export function getSiblingListItem( modelItem, options ) {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
 	const indent = options.listIndent;
+	const isForward = options.direction == 'forward';
 
-	let item = modelItem;
-
-	while ( item && item.hasAttribute( 'listItemId' ) ) {
+	for (
+		let item = modelItem;
+		item && item.hasAttribute( 'listItemId' );
+		item = isForward ? item.nextSibling : item.previousSibling
+	) {
 		const itemIndent = item.getAttribute( 'listIndent' );
 
-		if ( ( sameIndent && indent == itemIndent ) || ( smallerIndent && indent > itemIndent ) ) {
+		if ( sameIndent && itemIndent == indent ) {
 			return item;
 		}
 
-		if ( options.direction === 'forward' ) {
-			item = item.nextSibling;
-		} else {
-			item = item.previousSibling;
+		if ( smallerIndent && itemIndent < indent ) {
+			return item;
 		}
 	}
 
