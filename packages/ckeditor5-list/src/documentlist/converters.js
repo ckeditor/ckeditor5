@@ -123,7 +123,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 				if ( entry.attributeNewValue === null ) {
 					findAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
-					refreshItemParagraphIfNeeded( entry.range.start.nodeAfter, false );
+					refreshItemParagraphIfNeeded( entry.range.start.nodeAfter, [] );
 				} else {
 					changedItems.add( entry.range.start.nodeAfter );
 				}
@@ -167,18 +167,20 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				for ( const block of blocks ) {
 					visited.add( block );
 
-					refreshItemParagraphIfNeeded( block, blocks.length == 1 );
+					refreshItemParagraphIfNeeded( block, blocks );
 					refreshItemWrappingIfNeeded( block, stack );
 				}
 			}
 		}
 
-		function refreshItemParagraphIfNeeded( item, useBogus ) {
+		function refreshItemParagraphIfNeeded( item, blocks ) {
 			const viewElement = editing.mapper.toViewElement( item );
 
 			if ( !viewElement ) {
 				return;
 			}
+
+			const useBogus = shouldUseBogusParagraph( item, blocks );
 
 			if ( useBogus && viewElement.is( 'element', 'p' ) ) {
 				itemsToRefresh.add( item );
@@ -501,18 +503,16 @@ function getListItemFillerOffset() {
 }
 
 // TODO
-function shouldUseBogusParagraph( element ) {
-	if ( !element.hasAttribute( 'listItemId' ) ) {
+function shouldUseBogusParagraph( item, blocks = getAllListItemElements( item ) ) {
+	if ( !item.hasAttribute( 'listItemId' ) ) {
 		return false;
 	}
 
-	// TODO do not convert if paragraph has any attributes other than those from lists
-
-	const listItemElements = getAllListItemElements( element );
-
-	if ( listItemElements.length > 1 ) {
-		return false;
+	for ( const attributeKey of item.getAttributeKeys() ) {
+		if ( !attributeKey.startsWith( 'list' ) ) {
+			return false;
+		}
 	}
 
-	return true;
+	return blocks.length < 2;
 }

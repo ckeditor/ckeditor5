@@ -300,8 +300,6 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 			continue;
 		}
 
-		const blocks = getListItemElements( item, 'forward' );
-
 		let listType = item.getAttribute( 'listType' );
 		let listItemId = item.getAttribute( 'listItemId' );
 
@@ -312,7 +310,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 
 		seenIds.add( listItemId );
 
-		for ( const block of blocks ) {
+		for ( const block of getListItemElements( item, 'forward' ) ) {
 			visited.add( block );
 
 			// Use a new ID if a block of a bigger list item has different type.
