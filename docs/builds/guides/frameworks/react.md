@@ -392,7 +392,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 
 ```
 yarn add \
-	raw-loader@3 \
+	raw-loader@4 \
 	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
@@ -433,14 +433,17 @@ Then, add two new elements to the exported object under the `module.rules` array
 				}
 			}
 		},
+		'css-loader',
 		{
 			loader: 'postcss-loader',
-			options: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
+			options: {
+				postcssOptions: styles.getPostCssConfig( {
+					themeImporter: {
+						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+					},
+					minify: true
+				} )
+			}
 		}
 	]
 },
