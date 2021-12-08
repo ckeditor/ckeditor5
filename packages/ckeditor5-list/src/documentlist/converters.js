@@ -300,12 +300,7 @@ export function listItemDowncastConverter( attributes, model ) {
 
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-		const viewElement = findMappedViewElement( listItem, mapper, model, writer );
-
-		// Attributes are converted after the element itself so a view element should be there.
-		if ( !viewElement ) {
-			return;
-		}
+		const viewElement = findMappedViewElement( listItem, mapper, model );
 
 		// Unwrap element from current list wrappers.
 		unwrapListItemBlock( viewElement, writer );
@@ -371,31 +366,11 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 }
 
 // TODO
-function findMappedViewElement( listItem, mapper, model, viewOrViewWriter ) {
-	const viewElement = mapper.toViewElement( listItem );
-
-	// There is no mapping for a given model element.
-	if ( !viewElement ) {
-		return null;
-	}
-
-	const viewPosition = mapper.toViewPosition( model.createPositionBefore( listItem ) );
-
-	// Verify if the element is still in the same root (it could be removed).
-	if ( viewElement.root != viewPosition.root ) {
-		return null;
-	}
-
-	// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-	// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-	const modelElementRange = model.createRangeOn( listItem );
-	const viewElementRange = viewOrViewWriter.createRangeOn( viewElement );
-	const viewRange = mapper.toViewRange( modelElementRange ).getTrimmed();
-
-	// Verify if this is a range for the same element (in case the original element was removed).
-	if ( !viewRange.containsRange( viewElementRange, true ) ) {
-		return null;
-	}
+// Use positions mapping instead of mapper.toViewElement( element ) to find outermost view element.
+// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+function findMappedViewElement( element, mapper, model ) {
+	const modelRange = model.createRangeOn( element );
+	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
 	return viewRange.getContainedElement();
 }
@@ -459,7 +434,7 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 
 // TODO
 function createAttributesConsumer( attributes ) {
-	return ( node, consumable, options = {} ) => {
+	return ( node, consumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
@@ -473,9 +448,7 @@ function createAttributesConsumer( attributes ) {
 			return false;
 		}
 
-		if ( !options.preflight ) {
-			events.forEach( event => consumable.consume( node, event ) );
-		}
+		events.forEach( event => consumable.consume( node, event ) );
 
 		return true;
 	};
