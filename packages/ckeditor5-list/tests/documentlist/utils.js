@@ -4,17 +4,19 @@
  */
 
 import DocumentListEditing from '../../src/documentlist/documentlistediting';
+import { getIndent, getSiblingListItem, isListItemView, isListView } from '../../src/documentlist/utils';
+
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
-import { getSiblingListItem } from '../../src/documentlist/utils';
-
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'DocumentList - utils', () => {
-	let editor, model, document;
+	let editor, model, document, viewWriter;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( { plugins: [
@@ -23,17 +25,194 @@ describe( 'DocumentList - utils', () => {
 
 		model = editor.model;
 		document = model.document;
+		viewWriter = new UpcastWriter( editor.editing.view.document );
 	} );
 
 	afterEach( async () => {
 		await editor.destroy();
 	} );
 
-	describe( 'isListView()', () => {} );
+	describe( 'isListView()', () => {
+		it( 'should return true for UL element', () => {
+			expect( isListView( viewWriter.createElement( 'ul' ) ) ).to.be.true;
+		} );
 
-	describe( 'isListItemView()', () => {} );
+		it( 'should return true for OL element', () => {
+			expect( isListView( viewWriter.createElement( 'ol' ) ) ).to.be.true;
+		} );
 
-	describe( 'getIndent()', () => {} );
+		it( 'should return false for LI element', () => {
+			expect( isListView( viewWriter.createElement( 'li' ) ) ).to.be.false;
+		} );
+
+		it( 'should return false for other elements', () => {
+			expect( isListView( viewWriter.createElement( 'a' ) ) ).to.be.false;
+			expect( isListView( viewWriter.createElement( 'p' ) ) ).to.be.false;
+			expect( isListView( viewWriter.createElement( 'div' ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isListItemView()', () => {
+		it( 'should return true for LI element', () => {
+			expect( isListItemView( viewWriter.createElement( 'li' ) ) ).to.be.true;
+		} );
+
+		it( 'should return false for UL element', () => {
+			expect( isListItemView( viewWriter.createElement( 'ul' ) ) ).to.be.false;
+		} );
+
+		it( 'should return false for OL element', () => {
+			expect( isListItemView( viewWriter.createElement( 'ol' ) ) ).to.be.false;
+		} );
+
+		it( 'should return false for other elements', () => {
+			expect( isListItemView( viewWriter.createElement( 'a' ) ) ).to.be.false;
+			expect( isListItemView( viewWriter.createElement( 'p' ) ) ).to.be.false;
+			expect( isListItemView( viewWriter.createElement( 'div' ) ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'getIndent()', () => {
+		it( 'should return 0 for flat list', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>a</li>' +
+					'<li>b</li>' +
+				'</ul>'
+			);
+
+			expect( getIndent( viewElement.getChild( 0 ) ) ).to.equal( 0 );
+			expect( getIndent( viewElement.getChild( 1 ) ) ).to.equal( 0 );
+		} );
+
+		it( 'should return 1 for first level nested items', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>' +
+						'<ul>' +
+							'<li>a</li>' +
+							'<li>b</li>' +
+						'</ul>' +
+					'</li>' +
+					'<li>' +
+						'<ol>' +
+							'<li>c</li>' +
+							'<li>d</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getIndent( viewElement.getChild( 0 ).getChild( 0 ).getChild( 0 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 0 ).getChild( 0 ).getChild( 1 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 0 ).getChild( 0 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 0 ).getChild( 1 ) ) ).to.equal( 1 );
+		} );
+
+		it( 'should ignore container elements', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>' +
+						'<div>' +
+							'<ul>' +
+								'<li>a</li>' +
+								'<li>b</li>' +
+							'</ul>' +
+						'</div>' +
+					'</li>' +
+					'<li>' +
+						'<ul>' +
+							'<li>c</li>' +
+							'<li>d</li>' +
+						'</ul>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			expect( getIndent( viewElement.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 1 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 0 ).getChild( 0 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 0 ).getChild( 1 ) ) ).to.equal( 1 );
+		} );
+
+		it( 'should handle deep nesting', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>' +
+						'<ol>' +
+							'<li>' +
+								'<ul>' +
+									'<li>a</li>' +
+									'<li>b</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			const innerList = viewElement.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			expect( getIndent( innerList.getChild( 0 ) ) ).to.equal( 2 );
+			expect( getIndent( innerList.getChild( 1 ) ) ).to.equal( 2 );
+		} );
+
+		it( 'should ignore superfluous OLs', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>' +
+						'<ol>' +
+							'<ol>' +
+								'<ol>' +
+									'<ol>' +
+										'<li>a</li>' +
+									'</ol>' +
+								'</ol>' +
+							'</ol>' +
+							'<li>b</li>' +
+						'</ol>' +
+					'</li>' +
+				'</ul>'
+			);
+
+			const innerList = viewElement.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
+
+			expect( getIndent( innerList.getChild( 0 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 0 ).getChild( 0 ).getChild( 1 ) ) ).to.equal( 1 );
+		} );
+
+		it( 'should handle broken structure', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>a</li>' +
+					'<ul>' +
+						'<li>b</li>' +
+					'</ul>' +
+				'</ul>'
+			);
+
+			expect( getIndent( viewElement.getChild( 0 ) ) ).to.equal( 0 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 0 ) ) ).to.equal( 1 );
+		} );
+
+		it( 'should handle broken deeper structure', () => {
+			const viewElement = parseView(
+				'<ul>' +
+					'<li>a</li>' +
+					'<ol>' +
+						'<li>b</li>' +
+						'<ul>' +
+							'<li>c</li>' +
+						'</ul>' +
+						'</ol>' +
+				'</ul>'
+			);
+
+			expect( getIndent( viewElement.getChild( 0 ) ) ).to.equal( 0 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 0 ) ) ).to.equal( 1 );
+			expect( getIndent( viewElement.getChild( 1 ).getChild( 1 ).getChild( 0 ) ) ).to.equal( 2 );
+		} );
+	} );
 
 	describe( 'createListElement()', () => {} );
 
