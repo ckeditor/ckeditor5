@@ -19,7 +19,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import stubUid from './_utils/uid';
 
@@ -579,6 +579,85 @@ describe( 'DocumentListEditing - converters', () => {
 				);
 
 				expect( spy.notCalled ).to.be.true;
+			} );
+
+			describe( 'consuming', () => {
+				it( 'model bogus paragraph converter should not fire if change was already consumed', () => {
+					editor.conversion.for( 'downcast' )
+						.elementToElement( {
+							model: 'paragraph',
+							view: 'div',
+							converterPriority: 'highest'
+						} );
+
+					const input = parseModel(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
+						model.schema
+					);
+
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+						writer.insert( input, modelRoot, 0 );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<ul><li><div>foo</div></li></ul>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ul><li><div>foo</div></li></ul>'
+					);
+				} );
+
+				it( 'model change type converter should not fire if change was already consumed', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:listType' );
+						}, { priority: 'highest' } ) );
+
+					const input = parseModel(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
+						model.schema
+					);
+
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+						writer.insert( input, modelRoot, 0 );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>foo</p>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p>foo</p>'
+					);
+				} );
+
+				it( 'model change indent converter should not fire if change was already consumed', () => {
+					editor.conversion.for( 'downcast' )
+						.add( dispatcher => dispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
+							conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
+						}, { priority: 'highest' } ) );
+
+					const input = parseModel(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>',
+						model.schema
+					);
+
+					model.change( writer => {
+						writer.remove( writer.createRangeIn( modelRoot ) );
+						writer.insert( input, modelRoot, 0 );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>foo</p>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<p>foo</p>'
+					);
+				} );
 			} );
 		} );
 

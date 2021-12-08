@@ -319,15 +319,15 @@ export function listItemDowncastConverter( attributes, model ) {
  * TODO
  */
 export function listItemParagraphDowncastConverter( attributes, model, { dataPipeline } ) {
-	const consumer = createAttributesConsumer( attributes );
+	const attributesConsumer = createAttributesConsumer( attributes );
 
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 
 		const listItem = data.item;
 
-		// Test if attributes on the converted items are not consumed.
-		if ( !consumer( listItem, consumable, { preflight: true } ) ) {
+		// Test the paragraph.
+		if ( !consumable.test( listItem, evt.name ) ) {
 			return;
 		}
 
@@ -336,13 +336,13 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 			return;
 		}
 
-		// Test and consume the paragraph.
-		if ( !consumable.consume( listItem, evt.name ) ) {
+		// Consume attributes.
+		if ( !attributesConsumer( listItem, consumable ) ) {
 			return;
 		}
 
-		// Consume the attributes.
-		consumer( listItem, consumable );
+		// Consume the paragraph.
+		consumable.consume( listItem, evt.name );
 
 		const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
 		const viewPosition = mapper.toViewPosition( data.range.start );
