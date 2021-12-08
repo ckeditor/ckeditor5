@@ -421,8 +421,8 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 
 		currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
 
-		// There is no list item with smaller indent, this is most probably copied part of nested list
-		// so we don't need to try to wrap it further.
+		// There is no list item with smaller indent, this means this is a document fragment containing
+		// only a part of nested list (like copy to clipboard) so we don't need to try to wrap it further.
 		if ( !currentListItem ) {
 			break;
 		}
@@ -455,22 +455,19 @@ function createAttributesConsumer( attributes ) {
 }
 
 // TODO
+// Note that this has a purpose only in the data pipeline so we can ignore UIElements.
 function getListItemFillerOffset() {
-	for ( const [ idx, child ] of Array.from( this.getChildren() ).entries() ) {
-		if ( child.is( 'uiElement' ) ) {
-			continue;
-		}
-
-		// There is no content before a nested list so render a block filler just before the nested list.
+	for ( const child of this.getChildren() ) {
+		// There is no content before a nested list so render a block filler before the nested list.
 		if ( isListView( child ) ) {
-			return idx;
+			return 0;
 		} else {
 			return null;
 		}
 	}
 
-	// Render block filler at the end of element (after all ui elements).
-	return this.childCount;
+	// Render block filler if there is no children in the list item.
+	return 0;
 }
 
 // TODO
