@@ -118,14 +118,20 @@ export function reconvertItemsOnDataChange( model, editing ) {
 				findAddListHeadToMap( entry.position, itemToListHead );
 			}
 			// Changed list attribute.
-			else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
-				findAddListHeadToMap( entry.range.start, itemToListHead );
+			else if ( entry.type == 'attribute' ) {
+				const item = entry.range.start.nodeAfter;
 
-				if ( entry.attributeNewValue === null ) {
-					findAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
-					refreshItemParagraphIfNeeded( entry.range.start.nodeAfter, [] );
-				} else {
-					changedItems.add( entry.range.start.nodeAfter );
+				if ( entry.attributeKey.startsWith( 'list' ) ) {
+					findAddListHeadToMap( entry.range.start, itemToListHead );
+
+					if ( entry.attributeNewValue === null ) {
+						findAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+						refreshItemParagraphIfNeeded( item, [] );
+					} else {
+						changedItems.add( item );
+					}
+				} else if ( item.hasAttribute( 'listItemId' ) ) {
+					refreshItemParagraphIfNeeded( item );
 				}
 			}
 		}
@@ -174,6 +180,10 @@ export function reconvertItemsOnDataChange( model, editing ) {
 		}
 
 		function refreshItemParagraphIfNeeded( item, blocks ) {
+			if ( !item.is( 'element', 'paragraph' ) ) {
+				return;
+			}
+
 			const viewElement = editing.mapper.toViewElement( item );
 
 			if ( !viewElement ) {
@@ -509,6 +519,12 @@ function shouldUseBogusParagraph( item, blocks = getAllListItemElements( item ) 
 	}
 
 	for ( const attributeKey of item.getAttributeKeys() ) {
+		// Ignore selection attributes stored on block elements.
+		if ( attributeKey.startsWith( 'selection:' ) ) {
+			continue;
+		}
+
+		// Don't use bogus paragraph if there are attributes from other features.
 		if ( !attributeKey.startsWith( 'list' ) ) {
 			return false;
 		}
