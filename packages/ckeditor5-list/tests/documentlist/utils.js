@@ -4,7 +4,14 @@
  */
 
 import DocumentListEditing from '../../src/documentlist/documentlistediting';
-import { getIndent, getSiblingListItem, isListItemView, isListView } from '../../src/documentlist/utils';
+import {
+	createListElement,
+	createListItemElement,
+	getIndent,
+	getSiblingListItem, getViewElementNameForListType,
+	isListItemView,
+	isListView
+} from '../../src/documentlist/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
@@ -14,9 +21,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { DowncastWriter } from '@ckeditor/ckeditor5-engine';
 
 describe( 'DocumentList - utils', () => {
-	let editor, model, document, viewWriter;
+	let editor, model, document, viewUpcastWriter, viewDowncastWriter;
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( { plugins: [
@@ -25,7 +33,8 @@ describe( 'DocumentList - utils', () => {
 
 		model = editor.model;
 		document = model.document;
-		viewWriter = new UpcastWriter( editor.editing.view.document );
+		viewUpcastWriter = new UpcastWriter( editor.editing.view.document );
+		viewDowncastWriter = new DowncastWriter( editor.editing.view.document );
 	} );
 
 	afterEach( async () => {
@@ -34,41 +43,41 @@ describe( 'DocumentList - utils', () => {
 
 	describe( 'isListView()', () => {
 		it( 'should return true for UL element', () => {
-			expect( isListView( viewWriter.createElement( 'ul' ) ) ).to.be.true;
+			expect( isListView( viewUpcastWriter.createElement( 'ul' ) ) ).to.be.true;
 		} );
 
 		it( 'should return true for OL element', () => {
-			expect( isListView( viewWriter.createElement( 'ol' ) ) ).to.be.true;
+			expect( isListView( viewUpcastWriter.createElement( 'ol' ) ) ).to.be.true;
 		} );
 
 		it( 'should return false for LI element', () => {
-			expect( isListView( viewWriter.createElement( 'li' ) ) ).to.be.false;
+			expect( isListView( viewUpcastWriter.createElement( 'li' ) ) ).to.be.false;
 		} );
 
 		it( 'should return false for other elements', () => {
-			expect( isListView( viewWriter.createElement( 'a' ) ) ).to.be.false;
-			expect( isListView( viewWriter.createElement( 'p' ) ) ).to.be.false;
-			expect( isListView( viewWriter.createElement( 'div' ) ) ).to.be.false;
+			expect( isListView( viewUpcastWriter.createElement( 'a' ) ) ).to.be.false;
+			expect( isListView( viewUpcastWriter.createElement( 'p' ) ) ).to.be.false;
+			expect( isListView( viewUpcastWriter.createElement( 'div' ) ) ).to.be.false;
 		} );
 	} );
 
 	describe( 'isListItemView()', () => {
 		it( 'should return true for LI element', () => {
-			expect( isListItemView( viewWriter.createElement( 'li' ) ) ).to.be.true;
+			expect( isListItemView( viewUpcastWriter.createElement( 'li' ) ) ).to.be.true;
 		} );
 
 		it( 'should return false for UL element', () => {
-			expect( isListItemView( viewWriter.createElement( 'ul' ) ) ).to.be.false;
+			expect( isListItemView( viewUpcastWriter.createElement( 'ul' ) ) ).to.be.false;
 		} );
 
 		it( 'should return false for OL element', () => {
-			expect( isListItemView( viewWriter.createElement( 'ol' ) ) ).to.be.false;
+			expect( isListItemView( viewUpcastWriter.createElement( 'ol' ) ) ).to.be.false;
 		} );
 
 		it( 'should return false for other elements', () => {
-			expect( isListItemView( viewWriter.createElement( 'a' ) ) ).to.be.false;
-			expect( isListItemView( viewWriter.createElement( 'p' ) ) ).to.be.false;
-			expect( isListItemView( viewWriter.createElement( 'div' ) ) ).to.be.false;
+			expect( isListItemView( viewUpcastWriter.createElement( 'a' ) ) ).to.be.false;
+			expect( isListItemView( viewUpcastWriter.createElement( 'p' ) ) ).to.be.false;
+			expect( isListItemView( viewUpcastWriter.createElement( 'div' ) ) ).to.be.false;
 		} );
 	} );
 
@@ -214,11 +223,98 @@ describe( 'DocumentList - utils', () => {
 		} );
 	} );
 
-	describe( 'createListElement()', () => {} );
+	describe( 'createListElement()', () => {
+		it( 'should create an attribute element for numbered list with given ID', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'numbered', 'abc' );
 
-	describe( 'createListItemElement()', () => {} );
+			expect( element.is( 'attributeElement', 'ol' ) ).to.be.true;
+			expect( element.id ).to.equal( 'abc' );
+		} );
 
-	describe( 'getViewElementNameForListType()', () => {} );
+		it( 'should create an attribute element for bulleted list with given ID', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'bulleted', '123' );
+
+			expect( element.is( 'attributeElement', 'ul' ) ).to.be.true;
+			expect( element.id ).to.equal( '123' );
+		} );
+
+		it( 'should create an attribute element OL for other list types', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'something', 'foobar' );
+
+			expect( element.is( 'attributeElement', 'ul' ) ).to.be.true;
+			expect( element.id ).to.equal( 'foobar' );
+		} );
+
+		it( 'should use priority related to indent', () => {
+			let previousPriority = Number.NEGATIVE_INFINITY;
+
+			for ( let i = 0; i < 20; i++ ) {
+				const element = createListElement( viewDowncastWriter, i, 'abc', '123' );
+
+				expect( element.priority ).to.be.greaterThan( previousPriority );
+				expect( element.priority ).to.be.lessThan( 80 );
+
+				previousPriority = element.priority;
+			}
+		} );
+	} );
+
+	describe( 'createListItemElement()', () => {
+		it( 'should create an attribute element with given ID', () => {
+			const element = createListItemElement( viewDowncastWriter, 0, 'abc' );
+
+			expect( element.is( 'attributeElement', 'li' ) ).to.be.true;
+			expect( element.id ).to.equal( 'abc' );
+		} );
+
+		it( 'should use priority related to indent', () => {
+			let previousPriority = Number.NEGATIVE_INFINITY;
+
+			for ( let i = 0; i < 20; i++ ) {
+				const element = createListItemElement( viewDowncastWriter, i, 'abc' );
+
+				expect( element.priority ).to.be.greaterThan( previousPriority );
+				expect( element.priority ).to.be.lessThan( 80 );
+
+				previousPriority = element.priority;
+			}
+		} );
+
+		it( 'priorities of LI and UL should interleave between nesting levels', () => {
+			let previousPriority = Number.NEGATIVE_INFINITY;
+
+			for ( let i = 0; i < 20; i++ ) {
+				const listElement = createListElement( viewDowncastWriter, i, 'abc', '123' );
+				const listItemElement = createListItemElement( viewDowncastWriter, i, 'aaaa' );
+
+				expect( listElement.priority ).to.be.greaterThan( previousPriority );
+				expect( listElement.priority ).to.be.lessThan( 80 );
+
+				previousPriority = listElement.priority;
+
+				expect( listItemElement.priority ).to.be.greaterThan( previousPriority );
+				expect( listItemElement.priority ).to.be.lessThan( 80 );
+
+				previousPriority = listItemElement.priority;
+			}
+		} );
+	} );
+
+	describe( 'getViewElementNameForListType()', () => {
+		it( 'should return "ol" for numbered type', () => {
+			expect( getViewElementNameForListType( 'numbered' ) ).to.equal( 'ol' );
+		} );
+
+		it( 'should return "ul" for bulleted type', () => {
+			expect( getViewElementNameForListType( 'bulleted' ) ).to.equal( 'ul' );
+		} );
+
+		it( 'should return "ul" for other types', () => {
+			expect( getViewElementNameForListType( 'foo' ) ).to.equal( 'ul' );
+			expect( getViewElementNameForListType( 'bar' ) ).to.equal( 'ul' );
+			expect( getViewElementNameForListType( 'sth' ) ).to.equal( 'ul' );
+		} );
+	} );
 
 	describe( 'getSiblingListItem()', () => {
 		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0)', () => {
@@ -328,6 +424,22 @@ describe( 'DocumentList - utils', () => {
 			} );
 
 			expect( foundElement ).to.equal( document.getRoot().getChild( 4 ) );
+		} );
+
+		it( 'should return null if there were no items matching options', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElement = getSiblingListItem( listItem, {
+				smallerIndent: true,
+				listIndent: 0
+			} );
+
+			expect( foundElement ).to.be.null;
 		} );
 	} );
 
