@@ -162,7 +162,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 					type: item.getAttribute( 'listType' )
 				};
 
-				const blocks = getListItemElements( item, model, 'forward' );
+				const blocks = getListItemElements( item, 'forward' );
 
 				for ( const block of blocks ) {
 					visited.add( block );
@@ -332,7 +332,7 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 		}
 
 		// Convert only if a bogus paragraph should be used.
-		if ( !shouldUseBogusParagraph( listItem, model ) ) {
+		if ( !shouldUseBogusParagraph( listItem ) ) {
 			return;
 		}
 
@@ -501,14 +501,14 @@ function getListItemFillerOffset() {
 }
 
 // TODO
-function shouldUseBogusParagraph( element, model ) {
+function shouldUseBogusParagraph( element ) {
 	if ( !element.hasAttribute( 'listItemId' ) ) {
 		return false;
 	}
 
 	// TODO do not convert if paragraph has any attributes other than those from lists
 
-	const listItemElements = getAllListItemElements( element, model );
+	const listItemElements = getAllListItemElements( element );
 
 	if ( listItemElements.length > 1 ) {
 		return false;

@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { TreeWalker } from 'ckeditor5/src/engine';
 import { uid } from 'ckeditor5/src/utils';
 
 /**
@@ -163,13 +162,12 @@ export function getSiblingListItem( modelItem, options ) {
  * TODO
  *
  * @param listItem
- * @param model
  * @return {module:engine/model/element~Element[]}
  */
-export function getAllListItemElements( listItem, model ) {
+export function getAllListItemElements( listItem ) {
 	return [
-		...getListItemElements( listItem, model, 'backward' ),
-		...getListItemElements( listItem, model, 'forward' )
+		...getListItemElements( listItem, 'backward' ),
+		...getListItemElements( listItem, 'forward' )
 	];
 }
 
@@ -179,51 +177,26 @@ export function getAllListItemElements( listItem, model ) {
  * It means that values for `listIndent`, `listType`, `listStyle`, and `listItemId` for all items are equal.
  *
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {module:engine/model/model~Model|module:engine/model/writer~Writer} modelOrModelWriter The editor model or model writer.
- * @param {'forward'|'backward'} [direction='forward'] Walking direction.
+ * @param {'forward'|'backward'} direction Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItemElements( listItem, modelOrModelWriter, direction = 'forward' ) {
+export function getListItemElements( listItem, direction ) {
 	const limitIndent = listItem.getAttribute( 'listIndent' );
 	const listItemId = listItem.getAttribute( 'listItemId' );
-
-	return getListItemElementsByDetails( listItemId, limitIndent, modelOrModelWriter.createPositionBefore( listItem ), direction );
-}
-
-// TODO
-function getListItemElementsByDetails( listItemId, limitIndent, startPosition, direction ) {
+	const isForward = direction == 'forward';
 	const items = [];
 
-	const walkerOptions = {
-		ignoreElementEnd: true,
-		shallow: true,
-		startPosition,
-		direction
-	};
-
-	for ( const { item } of new TreeWalker( walkerOptions ) ) {
-		if ( !item.is( 'element' ) || !item.hasAttribute( 'listItemId' ) ) {
-			break;
-		}
-
+	for (
+		let item = isForward ? listItem : listItem.previousSibling;
+		item && item.hasAttribute( 'listItemId' );
+		item = isForward ? item.nextSibling : item.previousSibling
+	) {
 		// If current parsed item has lower indent that element that the element that was a starting point,
 		// it means we left a nested list. Abort searching items.
-		//
-		// ■ List item 1.       [listIndent=0]
-		//     ○ List item 2.[] [listIndent=1], limitIndent = 1,
-		//     ○ List item 3.   [listIndent=1]
-		// ■ List item 4.       [listIndent=0]
-		//
-		// Abort searching when leave nested list.
 		if ( item.getAttribute( 'listIndent' ) < limitIndent ) {
 			break;
 		}
 
-		// ■ List item 1.[]     [listIndent=0] limitIndent = 0,
-		//     ○ List item 2.   [listIndent=1]
-		//     ○ List item 3.   [listIndent=1]
-		// ■ List item 4.       [listIndent=0]
-		//
 		// Ignore nested lists.
 		if ( item.getAttribute( 'listIndent' ) > limitIndent ) {
 			continue;
@@ -234,14 +207,10 @@ function getListItemElementsByDetails( listItemId, limitIndent, startPosition, d
 			break;
 		}
 
-		if ( direction == 'backward' ) {
-			items.unshift( item );
-		} else {
-			items.push( item );
-		}
+		items.push( item );
 	}
 
-	return items;
+	return isForward ? items : items.reverse();
 }
 
 // TODO
@@ -331,7 +300,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 			continue;
 		}
 
-		const blocks = getListItemElements( item, writer, 'forward' );
+		const blocks = getListItemElements( item, 'forward' );
 
 		let listType = item.getAttribute( 'listType' );
 		let listItemId = item.getAttribute( 'listItemId' );
