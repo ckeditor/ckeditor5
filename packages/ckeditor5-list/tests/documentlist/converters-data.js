@@ -12,6 +12,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -27,7 +28,7 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing ]
+				BlockQuoteEditing, TableEditing, HeadingEditing, CodeBlockEditing ]
 		} );
 
 		model = editor.model;
@@ -328,6 +329,64 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">c</paragraph>' +
 				'<paragraph>yyy</paragraph>' +
 				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000003" listType="bulleted">d</paragraph>'
+			);
+		} );
+
+		it( 'blockquote inside a list item', () => {
+			test.data(
+				'<ul>' +
+					'<li>' +
+						'<blockquote>' +
+							'<p>foo</p>' +
+							'<p>bar</p>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>',
+
+				'<blockQuote listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
+					'<paragraph>foo</paragraph>' +
+					'<paragraph>bar</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'code block inside a list item', () => {
+			test.data(
+				'<ul>' +
+					'<li>' +
+						'<pre><code class="language-plaintext">abc</code></pre>' +
+					'</li>' +
+				'</ul>',
+
+				'<codeBlock language="plaintext" listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
+					'abc' +
+				'</codeBlock>'
+			);
+		} );
+
+		it( 'table inside a list item', () => {
+			test.data(
+				'<ul>' +
+					'<li>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>foo</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>',
+
+				'<table listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph>foo</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
 			);
 		} );
 
@@ -2122,6 +2181,58 @@ describe( 'DocumentListEditing - converters - data pipeline', () => {
 					'</li>' +
 				'</ul>' +
 				'<p>bar</p>'
+			);
+		} );
+
+		it( 'blockquote with nested list inside a list item', () => {
+			test.data(
+				'<ul>' +
+					'<li>' +
+						'<blockquote>' +
+							'<ul>' +
+								'<li>foo</li>' +
+								'<li>bar</li>' +
+							'</ul>' +
+						'</blockquote>' +
+					'</li>' +
+				'</ul>',
+
+				'<blockQuote listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">bar</paragraph>' +
+				'</blockQuote>'
+			);
+		} );
+
+		it( 'table with nested list inside a list item', () => {
+			test.data(
+				'<ul>' +
+					'<li>' +
+						'<figure class="table">' +
+							'<table>' +
+								'<tbody>' +
+									'<tr>' +
+										'<td>' +
+											'<ul>' +
+												'<li>foo</li>' +
+												'<li>bar</li>' +
+											'</ul>' +
+										'</td>' +
+									'</tr>' +
+								'</tbody>' +
+							'</table>' +
+						'</figure>' +
+					'</li>' +
+				'</ul>',
+
+				'<table listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+					'<tableRow>' +
+						'<tableCell>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+							'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">bar</paragraph>' +
+						'</tableCell>' +
+					'</tableRow>' +
+				'</table>'
 			);
 		} );
 

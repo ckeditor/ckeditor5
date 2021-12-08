@@ -12,6 +12,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
@@ -28,7 +29,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing ]
+				BlockQuoteEditing, TableEditing, HeadingEditing, CodeBlockEditing ]
 		} );
 
 		model = editor.model;
@@ -685,6 +686,64 @@ describe( 'DocumentListEditing - converters - changes', () => {
 				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 				expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 2 ) );
 				expect( test.reconvertSpy.thirdCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
+			} );
+
+			it( 'change outer list type with nested blockquote', () => {
+				test.changeType(
+					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+					'<blockQuote listIndent="1" listItemId="b" listType="bulleted">' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">b</paragraph>' +
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted">c</paragraph>' +
+					'</blockQuote>',
+
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">a</span>' +
+							'<ul>' +
+								'<li>' +
+									'<blockquote>' +
+										'<ul>' +
+											'<li>' +
+												'<span class="ck-list-bogus-paragraph">b</span>' +
+												'<ul>' +
+													'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</blockquote>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ol>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
+			} );
+
+			it( 'change outer list type with nested code block', () => {
+				test.changeType(
+					'[<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>]' +
+					'<codeBlock language="plaintext" listIndent="1" listItemId="b" listType="bulleted">' +
+						'abc' +
+					'</codeBlock>',
+
+					'<ol>' +
+						'<li>' +
+							'<span class="ck-list-bogus-paragraph">a</span>' +
+							'<ul>' +
+								'<li>' +
+									'<pre data-language="Plain text" spellcheck="false">' +
+										'<code class="language-plaintext">abc</code>' +
+									'</pre>' +
+								'</li>' +
+							'</ul>' +
+						'</li>' +
+					'</ol>'
+				);
+
+				expect( test.reconvertSpy.callCount ).to.equal( 1 );
+				expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 1 ) );
 			} );
 		} );
 

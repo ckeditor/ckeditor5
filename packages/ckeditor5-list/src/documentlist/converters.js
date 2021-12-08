@@ -194,10 +194,8 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 			if ( useBogus && viewElement.is( 'element', 'p' ) ) {
 				itemsToRefresh.add( item );
-				// @if CK_DEBUG // console.log( 'Refresh item (to bogus)', item.childCount ? item.getChild( 0 ).data : item );
 			} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
 				itemsToRefresh.add( item );
-				// @if CK_DEBUG // console.log( 'Refresh item (from bogus)', item.childCount ? item.getChild( 0 ).data : item );
 			}
 		}
 
@@ -208,39 +206,34 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			}
 
 			const viewElement = editing.mapper.toViewElement( item );
-
-			if ( !viewElement ) {
-				return;
-			}
-
 			let stackIdx = stack.length - 1;
 
 			for (
-				let attributeElement = viewElement.parent;
-				attributeElement.is( 'attributeElement' );
-				attributeElement = attributeElement.parent
+				let element = viewElement.parent;
+				!element.is( 'editableElement' );
+				element = element.parent
 			) {
-				if ( isListItemView( attributeElement ) ) {
-					if ( attributeElement.id != stack[ stackIdx ].id ) {
+				if ( isListItemView( element ) ) {
+					if ( element.id != stack[ stackIdx ].id ) {
 						break;
 					}
-				} else if ( isListView( attributeElement ) ) {
+				} else if ( isListView( element ) ) {
 					const expectedElementName = getViewElementNameForListType( stack[ stackIdx ].type );
 
-					if ( attributeElement.name != expectedElementName ) {
+					if ( element.name != expectedElementName ) {
 						break;
 					}
 
 					stackIdx--;
-				} else {
-					break;
+
+					// Don't need to iterate further if we already know that the item is wrapped appropriately.
+					if ( stackIdx < 0 ) {
+						return;
+					}
 				}
 			}
 
-			if ( stackIdx >= 0 && isListItemView( viewElement.parent ) ) {
-				itemsToRefresh.add( item );
-				// @if CK_DEBUG // console.log( 'Refresh item (re-wrap)', item.childCount && item.getChild( 0 ).data, item.startOffset );
-			}
+			itemsToRefresh.add( item );
 		}
 	};
 }
@@ -335,11 +328,6 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 
 		// Test if attributes on the converted items are not consumed.
 		if ( !consumer( listItem, consumable, { preflight: true } ) ) {
-			return;
-		}
-
-		// Test the paragraph itself.
-		if ( !consumable.test( listItem, evt.name ) ) {
 			return;
 		}
 
