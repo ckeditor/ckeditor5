@@ -37,11 +37,15 @@ export default class SlashCommandEditing extends Plugin {
 	 * @returns {Iterable.<Object>}
 	 */
 	getCommandsInfo( filterText ) {
+		if ( filterText ) {
+			filterText = filterText.toLowerCase();
+		}
+
 		let commands = Array.from( _getEditorCommands( this.editor ) );
 
 		if ( filterText ) {
 			commands = commands.filter( obj => {
-				return ( obj.title && obj.title.includes( filterText ) ) || obj.id.includes( filterText );
+				return ( obj.title && obj.title.toLowerCase().includes( filterText ) ) || obj.id.toLowerCase().includes( filterText );
 			} );
 		}
 
