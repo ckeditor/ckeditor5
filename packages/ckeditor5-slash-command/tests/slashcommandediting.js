@@ -53,11 +53,26 @@ describe( 'SlashCommandEditing', () => {
 		} );
 
 		describe( 'filter parameter', () => {
-			it( 'filters out the results', () => {} );
+			let filteredResults;
 
-			it( 'returns all the commands if not provided', () => {} );
+			it( 'filters out the results', () => {
+				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'Block quote' );
 
-			it( 'returns empty iterable if nothing was matched', () => {} );
+				expect( filteredResults ).to.have.length( 1 );
+
+				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'blockQuote' );
+
+				expect( filteredResults ).to.have.length( 1 );
+			} );
+
+			it( 'returns all the commands if not provided', () => {
+			} );
+
+			it( 'returns empty iterable if nothing was matched', () => {
+				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'foo' );
+
+				expect( filteredResults ).to.have.length( 0 );
+			} );
 		} );
 	} );
 } );

@@ -33,10 +33,11 @@ export default class SlashCommandEditing extends Plugin {
 	/**
 	 * Returns a list of commands along with their medadata (like human readable title, description etc).
 	 *
+	 * @param {String} filterText Text used to filter out returned commands.
 	 * @returns {Iterable.<Object>}
 	 */
-	getCommandsInfo() {
-		const fakeDataProvider = [ {
+	getCommandsInfo( filterText ) {
+		let fakeDataProvider = [ {
 			id: 'numberedList',
 			title: 'Numbered list',
 			icon: null,
@@ -52,6 +53,12 @@ export default class SlashCommandEditing extends Plugin {
 			icon: null,
 			description: null
 		} ];
+
+		if ( filterText ) {
+			fakeDataProvider = fakeDataProvider.filter( obj => {
+				return obj.title.includes( filterText ) || obj.id.includes( filterText );
+			} );
+		}
 
 		return new Set( fakeDataProvider );
 	}
