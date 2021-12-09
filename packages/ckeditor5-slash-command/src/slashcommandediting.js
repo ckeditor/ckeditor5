@@ -33,4 +33,26 @@ export default class SlashCommandEditing extends Plugin {
 
 		editor.commands.add( 'slashCommand', new SlashCommand( editor ) );
 	}
+
+	/**
+	 * @returns {Iterable.<Object>}
+	 */
+	getCommandsInfo() {
+		return new Set( [ {
+			id: 'numberedList',
+			title: 'Numbered list',
+			icon: null,
+			description: null
+		}, {
+			id: 'blockQuote',
+			title: 'Block quote',
+			icon: null,
+			description: null
+		}, {
+			id: 'indentList',
+			title: 'Increase indent',
+			icon: null,
+			description: null
+		} ] );
+	}
 }
