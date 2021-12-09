@@ -16,7 +16,7 @@ You can imagine a workflow in which a certain group of users is responsible for 
 By using this feature, the users of your application will be able to create template documents. In a certain way, this feature could be used to generate forms with rich-text capabilities. This kind of practical application is shown in the [How to create ready-to-print documents with CKEditor 5 pagination feature](https://ckeditor.com/blog/How-to-create-ready-to-print-documents-with-page-structure-in-WYSIWYG-editor---CKEditor-5-pagination-feature/) blog post.
 
 <info-box>
-	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode.
+	See also the {@link features/read-only read-only feature} that lets you turn the entire WYSIWYG editor into read-only mode. You can also read the [dedicated blog post](https://ckeditor.com/blog/feature-of-the-month-restricted-editing-modes/) about write-restricted editor modes.
 </info-box>
 
 ## Demo
