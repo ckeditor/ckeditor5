@@ -18,21 +18,29 @@ import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import SlashCommand from '../../src/slashcommand';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Table from '@ckeditor/ckeditor5-table/src/table';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+
+import SlashCommand from '../../src/slashcommand';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, SlashCommand, ShiftEnter, Typing,
-			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize, BlockQuote
+			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize, BlockQuote, List,
+			Strikethrough, Table, MediaEmbed, Heading
 		],
-		toolbar: [ 'italic', 'bold', 'link', 'underline', '|', 'undo', 'redo', 'blockquote' ],
+		toolbar: [ 'heading', '|', 'italic', 'bold', 'link', 'underline', 'strikethrough', '|', 'undo', 'redo', 'blockquote', '|',
+			'numberedList', 'bulletedList', '|', 'insertTable', 'mediaEmbed' ],
 		mention: {
 			dropdownLimit: 5
 		}
