@@ -645,6 +645,21 @@ export default class Schema {
 	}
 
 	/**
+	 * TODO
+	 */
+	getAttributesPropertiesWithProperty( propertyName ) {
+		const attributes = new Map();
+
+		for ( const [ key, properties ] of Object.entries( this._attributeProperties ) ) {
+			if ( properties[ propertyName ] ) {
+				attributes.set( key, properties );
+			}
+		}
+
+		return attributes;
+	}
+
+	/**
 	 * Returns the lowest {@link module:engine/model/schema~Schema#isLimit limit element} containing the entire
 	 * selection/range/position or the root otherwise.
 	 *

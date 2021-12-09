@@ -47,6 +47,16 @@ export function listItemUpcastConverter() {
 		};
 
 		for ( const item of items ) {
+			const previousSibling = item.previousSibling;
+			const previousItem = previousSibling && getSiblingListItem( previousSibling, {
+				sameIndent: true,
+				listIndent: attributes.listIndent
+			} );
+
+			attributes.listId = previousItem && previousItem.getAttribute( 'listType' ) == attributes.listType ?
+				previousItem.getAttribute( 'listId' ) :
+				uid();
+
 			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
 			if ( !item.hasAttribute( 'listItemId' ) ) {
 				writer.setAttributes( attributes, item );

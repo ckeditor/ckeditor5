@@ -67,6 +67,18 @@ export default class DocumentListEditing extends Plugin {
 			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
 		} );
 
+		model.schema.setAttributeProperties( 'listType', {
+			sharedReferenceAttribute: 'listId'
+		} );
+
+		model.schema.setAttributeProperties( 'listIndent', {
+			sharedReferenceAttribute: 'listId'
+		} );
+
+		model.schema.setAttributeProperties( 'listId', {
+			sharedReferenceAttribute: 'listItemId'
+		} );
+
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer ) );
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );

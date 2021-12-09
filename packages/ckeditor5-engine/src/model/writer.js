@@ -28,6 +28,8 @@ import DocumentSelection from './documentselection';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { uid } from '@ckeditor/ckeditor5-utils';
+import { extractSharedAttributes } from './sharedattributes';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -207,16 +209,21 @@ export default class Writer {
 			}
 		}
 
-		const version = position.root.document ? position.root.document.version : null;
+		// Extract shared attributes.
+		let extractedSharedAttributes = null;
 
-		const insert = new InsertOperation( position, item, version );
-
-		if ( item instanceof Text ) {
-			insert.shouldReceiveAttributes = true;
+		if ( position.root.document ) {
+			extractedSharedAttributes = extractSharedAttributes( item, this.model.schema );
 		}
 
-		this.batch.addOperation( insert );
-		this.model.applyOperation( insert );
+		addInsertOperation( this, position, item );
+
+		// Reapply shared attributes.
+		if ( extractedSharedAttributes ) {
+			for ( const [ item, attributes ] of extractedSharedAttributes ) {
+				this.setAttributes( attributes, item );
+			}
+		}
 
 		// When element is a DocumentFragment we need to move its markers to Document#markers.
 		if ( item instanceof DocumentFragment ) {
@@ -1477,6 +1484,22 @@ function setAttributeOnItem( writer, key, value, item ) {
 
 // TODO
 function addAttributeOperation( writer, itemOrRange, key, previousValue, newValue ) {
+	if ( itemOrRange.root.document ) {
+		const attributeProperties = writer.model.schema.getAttributeProperties( key );
+
+		if ( attributeProperties.sharedReferenceAttribute ) {
+			if ( itemOrRange.is( 'range' ) ) {
+				for ( const item of itemOrRange.getItems( { shallow: true } ) ) {
+					addSharedAttributeOperation( writer, item, key, attributeProperties.sharedReferenceAttribute, newValue );
+				}
+			} else {
+				addSharedAttributeOperation( writer, itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
+			}
+
+			return;
+		}
+	}
+
 	const version = itemOrRange.root.document ? itemOrRange.root.document.version : null;
 	let operation = null;
 
@@ -1491,6 +1514,45 @@ function addAttributeOperation( writer, itemOrRange, key, previousValue, newValu
 
 	writer.batch.addOperation( operation );
 	writer.model.applyOperation( operation );
+}
+
+// TODO
+function addSharedAttributeOperation( writer, item, key, sharedReferenceAttribute, newValue ) {
+	const refValue = getSharedReferenceAttribute( writer, item, sharedReferenceAttribute );
+	const oldValue = item.root.getAttribute( `$shared:${ refValue }:${ key }`, { ignoreShared: true } );
+
+	if ( oldValue != newValue ) {
+		addAttributeOperation( writer, item.root, `$shared:${ refValue }:${ key }`, oldValue, newValue );
+	}
+}
+
+// TODO
+function getSharedReferenceAttribute( writer, item, sharedReferenceAttribute ) {
+	let refValue = item.getAttribute( sharedReferenceAttribute );
+
+	// Note that undefined == null.
+	if ( refValue != null ) {
+		return refValue;
+	}
+
+	refValue = uid();
+
+	addAttributeOperation( writer, item, sharedReferenceAttribute, null, refValue );
+
+	return refValue;
+}
+
+// TODO
+function addInsertOperation( writer, position, item ) {
+	const version = position.root.document ? position.root.document.version : null;
+	const insert = new InsertOperation( position, item, version );
+
+	if ( item instanceof Text ) {
+		insert.shouldReceiveAttributes = true;
+	}
+
+	writer.batch.addOperation( insert );
+	writer.model.applyOperation( insert );
 }
 
 // Creates and applies marker operation to {@link module:engine/model/operation/operation~Operation operation}.

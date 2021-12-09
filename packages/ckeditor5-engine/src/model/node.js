@@ -13,6 +13,8 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 // To check if component is loaded more than once.
 import '@ckeditor/ckeditor5-utils/src/version';
 
+import { getSharedAttribute, getSharedAttributes } from './sharedattributes';
+
 /**
  * Model node. Most basic structure of model tree.
  *
@@ -331,8 +333,12 @@ export default class Node {
 	 * @param {String} key Key of attribute to check.
 	 * @returns {Boolean} `true` if attribute with given key is set on node, `false` otherwise.
 	 */
-	hasAttribute( key ) {
-		return this._attrs.has( key );
+	hasAttribute( key, options = {} ) {
+		if ( options.ignoreShared ) {
+			return this._attrs.has( key );
+		}
+
+		return getSharedAttribute( this, key, this._attrs.get( key ) ) !== undefined;
 	}
 
 	/**
@@ -341,8 +347,12 @@ export default class Node {
 	 * @param {String} key Key of attribute to look for.
 	 * @returns {*} Attribute value or `undefined`.
 	 */
-	getAttribute( key ) {
-		return this._attrs.get( key );
+	getAttribute( key, options = {} ) {
+		if ( options.ignoreShared ) {
+			return this._attrs.get( key );
+		}
+
+		return getSharedAttribute( this, key, this._attrs.get( key ) );
 	}
 
 	/**
@@ -353,8 +363,12 @@ export default class Node {
 	 *
 	 * @returns {Iterable.<*>}
 	 */
-	getAttributes() {
-		return this._attrs.entries();
+	getAttributes( options = {} ) {
+		if ( options.ignoreShared ) {
+			return this._attrs.entries();
+		}
+
+		return getSharedAttributes( this, this._attrs ).entries();
 	}
 
 	/**
@@ -362,8 +376,12 @@ export default class Node {
 	 *
 	 * @returns {Iterable.<String>}
 	 */
-	getAttributeKeys() {
-		return this._attrs.keys();
+	getAttributeKeys( options = {} ) {
+		if ( options.ignoreShared ) {
+			return this._attrs.keys();
+		}
+
+		return getSharedAttributes( this, this._attrs ).keys();
 	}
 
 	/**

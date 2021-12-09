@@ -41,6 +41,7 @@
     "@ckeditor/ckeditor5-list": "^31.0.0",
     "@ckeditor/ckeditor5-mention": "^31.0.0",
     "@ckeditor/ckeditor5-paragraph": "^31.0.0",
+    "@ckeditor/ckeditor5-source-editing": "^31.0.0",
     "@ckeditor/ckeditor5-table": "^31.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^31.0.0",
     "@ckeditor/ckeditor5-typing": "^31.0.0",
