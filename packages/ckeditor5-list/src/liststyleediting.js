@@ -98,7 +98,7 @@ export default class ListStyleEditing extends Plugin {
 	afterInit() {
 		const editor = this.editor;
 
-		// Enable post-fixer that removes the `listStyle` attribute from to-do list items only if the "TodoList" plugin is on.
+		// Enable post-fixer that removes the attributes from to-do list items only if the "TodoList" plugin is on.
 		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListStyleEditing`.
 		if ( editor.commands.get( 'todoList' ) ) {
 			editor.model.document.registerPostFixer( removeListItemAttributesFromTodoList( editor ) );
@@ -131,7 +131,7 @@ export default class ListStyleEditing extends Plugin {
 	 * See https://github.com/ckeditor/ckeditor5/issues/7879.
 	 *
 	 * @private
-	 * @param {Array.<Object>} attributeStrategies Strategies for the enabled attributes.
+	 * @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies Strategies for the enabled attributes.
 	 */
 	_mergeListStyleAttributeWhileMergingLists( attributeStrategies ) {
 		const editor = this.editor;
