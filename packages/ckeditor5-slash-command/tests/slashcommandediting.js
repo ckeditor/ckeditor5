@@ -74,20 +74,19 @@ describe( 'SlashCommandEditing', () => {
 			let filteredResults;
 
 			it( 'filters out the results', () => {
-				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'Block quote' );
-
-				expect( filteredResults ).to.have.length( 1 );
-
 				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'blockQuote' );
 
 				expect( filteredResults ).to.have.length( 1 );
 			} );
 
 			it( 'returns all the commands if not provided', () => {
+				filteredResults = slashCommandEditingPlugin.getCommandsInfo();
+
+				expect( filteredResults ).to.have.length( defaultCommands.length );
 			} );
 
 			it( 'returns empty iterable if nothing was matched', () => {
-				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'foo' );
+				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'bar' );
 
 				expect( filteredResults ).to.have.length( 0 );
 			} );

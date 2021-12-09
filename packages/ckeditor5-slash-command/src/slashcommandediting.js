@@ -37,16 +37,15 @@ export default class SlashCommandEditing extends Plugin {
 	 * @returns {Iterable.<Object>}
 	 */
 	getCommandsInfo( filterText ) {
-		const data = Array.from( _getEditorCommands( this.editor ) );
-		let fakeDataProvider = data;
+		let commands = Array.from( _getEditorCommands( this.editor ) );
 
 		if ( filterText ) {
-			fakeDataProvider = fakeDataProvider.filter( obj => {
+			commands = commands.filter( obj => {
 				return obj.title.includes( filterText ) || obj.id.includes( filterText );
 			} );
 		}
 
-		return new Set( fakeDataProvider );
+		return new Set( commands );
 	}
 }
 
