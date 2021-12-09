@@ -4,15 +4,16 @@
  */
 
 /**
- * @module remove-format/slashcommandediting
+ * @module slash-command/slashcommandediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+import SlashCommand from './slashcommand';
 
 /**
- * The remove format editing plugin.
+ * The slash command editing plugin.
  *
- * It registers the {@link module:remove-format/slashcommandcommand~SlashCommandCommand slashCommand} command.
+ * It registers the {@link module:slash-command/slashcommandcommand~SlashCommandCommand slashCommand} command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -28,5 +29,8 @@ export default class SlashCommandEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
+		editor.commands.add( 'slashCommand', new SlashCommand( editor ) );
 	}
 }
