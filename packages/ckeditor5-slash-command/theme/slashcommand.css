@@ -6,3 +6,8 @@ div.ck-button>span.ck-feed-command-id {
 	padding: 5px;
 	color: rgb(128, 124, 124);
 }
+
+div.ck-button.ck-on>span.ck-feed-command-id {
+	padding: 5px;
+	color: white;
+}
