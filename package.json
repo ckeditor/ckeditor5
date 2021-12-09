@@ -171,7 +171,8 @@
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
   "resolutions": {
-    "eslint-config-ckeditor5": "^3.0.0"
+    "eslint-config-ckeditor5": "^3.0.0",
+    "postcss-loader": "^4.0.0"
   },
   "lint-staged": {
     "**/*.js": [
