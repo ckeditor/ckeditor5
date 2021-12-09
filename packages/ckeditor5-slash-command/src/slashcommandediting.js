@@ -31,7 +31,7 @@ export default class SlashCommandEditing extends Plugin {
 	}
 
 	/**
-	 * Returns a list of commands along with their medadata (like human readable title, description etc).
+	 * Returns a list of commands along with their metadata (like human readable title, description etc).
 	 *
 	 * @param {String} [filterText] Text used to filter out returned commands.
 	 * @returns {Iterable.<Object>}
@@ -41,7 +41,7 @@ export default class SlashCommandEditing extends Plugin {
 
 		if ( filterText ) {
 			commands = commands.filter( obj => {
-				return obj.title.includes( filterText ) || obj.id.includes( filterText );
+				return ( obj.title && obj.title.includes( filterText ) ) || obj.id.includes( filterText );
 			} );
 		}
 
@@ -68,7 +68,7 @@ function* _getEditorCommands( editor ) {
 
 		yield {
 			id: commandName,
-			title: uiComponent && uiComponent.label ? uiComponent.label : '',
+			title: uiComponent && uiComponent.label ? uiComponent.label : null,
 			icon: uiComponent && uiComponent.icon ? uiComponent.icon : null,
 			description: null
 		};
