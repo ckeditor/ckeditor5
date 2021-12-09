@@ -9,29 +9,22 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import { setData as setModelData } from '../../src/dev-utils/model';
 
 class SharedAttributesTest extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		schema.extend( 'paragraph', {
-			allowAttributes: [ 'referenceId', 'groupId', 'standardOnElement', 'sharedOnElement' ]
-		} );
+		//
+		// Text attributes.
+		//
 
 		schema.extend( '$text', {
-			allowAttributes: [ 'referenceId', 'standardOnText', 'sharedOnText' ]
+			allowAttributes: [ 'itemId', 'standardOnText', 'sharedOnText' ]
 		} );
-
-		schema.setAttributeProperties( 'sharedOnElement', {
-			sharedReferenceAttribute: 'groupId'
-		} );
-		schema.setAttributeProperties( 'groupId', {
-			sharedReferenceAttribute: 'referenceId'
-		} );
-
 		schema.setAttributeProperties( 'sharedOnText', {
-			sharedReferenceAttribute: 'referenceId'
+			sharedReferenceAttribute: 'itemId'
 		} );
 
 		editor.conversion.for( 'upcast' )
@@ -60,13 +53,36 @@ class SharedAttributesTest extends Plugin {
 				view: ( value, { writer } ) => writer.createAttributeElement( 'span', { 'data-shared': value } )
 			} );
 
+		//
+		// Element attributes.
+		//
+
+		schema.extend( 'paragraph', {
+			allowAttributes: [ 'itemId', 'groupId', 'standardOnElement', 'groupSharedOnElement', 'itemSharedOnElement' ]
+		} );
+
+		schema.setAttributeProperties( 'groupId', {
+			sharedReferenceAttribute: 'itemId'
+		} );
+		schema.setAttributeProperties( 'groupSharedOnElement', {
+			sharedReferenceAttribute: 'groupId'
+		} );
+		schema.setAttributeProperties( 'itemSharedOnElement', {
+			sharedReferenceAttribute: 'itemId'
+		} );
+
 		editor.conversion.attributeToAttribute( {
 			model: 'standardOnElement',
 			view: 'data-standard'
 		} );
 
 		editor.conversion.attributeToAttribute( {
-			model: 'sharedOnElement',
+			model: 'groupSharedOnElement',
+			view: 'data-shared'
+		} );
+
+		editor.conversion.attributeToAttribute( {
+			model: 'itemSharedOnElement',
 			view: 'data-shared'
 		} );
 	}
@@ -102,10 +118,22 @@ ClassicEditor
 				'tableRow',
 				'mergeTableCells'
 			]
-		}
+		},
+		initialData: ''
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		setModelData( editor.model,
+			'<paragraph groupId="g1" itemId="g1i1" groupSharedOnElement="first-group" itemSharedOnElement="1aaa">1a1</paragraph>' +
+			'<paragraph groupId="g1" itemId="g1i1" groupSharedOnElement="first-group" itemSharedOnElement="1aaa">1a2</paragraph>' +
+			'<paragraph groupId="g1" itemId="g1i2" groupSharedOnElement="first-group" itemSharedOnElement="1bbb">1b1</paragraph>' +
+			'<paragraph groupId="g1" itemId="g1i2" groupSharedOnElement="first-group" itemSharedOnElement="1bbb">1b2</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i1" groupSharedOnElement="second-group" itemSharedOnElement="2aaa">2a1</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i1" groupSharedOnElement="second-group" itemSharedOnElement="2aaa">2a2</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i2" groupSharedOnElement="second-group" itemSharedOnElement="2bbb">2b1</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i2" groupSharedOnElement="second-group" itemSharedOnElement="2bbb">2b2</paragraph>'
+		);
 	} )
 	.catch( err => {
 		console.error( err.stack );

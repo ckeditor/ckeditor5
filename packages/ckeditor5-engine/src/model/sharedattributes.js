@@ -105,14 +105,12 @@ export function getSharedAttributes( node, attributes ) {
 export function extractSharedAttributes( item, schema ) {
 	const sharedAttributes = new Map();
 
-	if ( item.is( '$text' ) || item.is( '$textProxy' ) ) {
-		sharedAttributes.set( item, extractItemSharedAttributes( item, schema ) );
-	} else {
-		const range = item.is( 'documentFragment' ) ? Range._createIn( item ) : Range._createOn( item );
-
-		for ( const item of range.getItems() ) {
-			sharedAttributes.set( item, extractItemSharedAttributes( item, schema ) );
+	if ( item.is( 'documentFragment' ) ) {
+		for ( const subItem of Range._createIn( item ).getItems() ) {
+			sharedAttributes.set( subItem, extractItemSharedAttributes( subItem, schema ) );
 		}
+	} else {
+		sharedAttributes.set( item, extractItemSharedAttributes( item, schema ) );
 	}
 
 	return sharedAttributes;
