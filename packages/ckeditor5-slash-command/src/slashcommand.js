@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import SlashCommandUI from './slashcommandui';
 import SlashCommandEditing from './slashcommandediting';
+import Mention from '@ckeditor/ckeditor5-mention/src/mention';
 
 /**
  * The remove format plugin.
@@ -27,7 +28,7 @@ export default class SlashCommand extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ SlashCommandEditing, SlashCommandUI ];
+		return [ SlashCommandEditing, SlashCommandUI, Mention ];
 	}
 
 	/**

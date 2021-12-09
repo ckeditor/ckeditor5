@@ -12,7 +12,8 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^31.1.0"
+    "ckeditor5": "^31.1.0",
+    "@ckeditor/ckeditor5-mention": "^31.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
