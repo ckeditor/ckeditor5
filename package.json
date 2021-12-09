@@ -132,7 +132,7 @@
     "wrapper-webpack-plugin": "^2.2.0-beta.0"
   },
   "engines": {
-    "node": ">=12.0.0",
+    "node": ">=14.0.0",
     "npm": ">=5.7.1"
   },
   "author": "CKSource (http://cksource.com/)",
