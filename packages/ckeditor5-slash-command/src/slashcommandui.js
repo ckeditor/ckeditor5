@@ -49,15 +49,15 @@ export default class SlashCommandUI extends Plugin {
 
 		config.push( {
 			marker: '/',
-			feed: this._getCommandList(),
+			feed: this._getCommandList.bind( this ),
 			itemRenderer: customItemRenderer
 		} );
 
 		editor.config.set( 'mention.feeds', config );
 	}
 
-	_getCommandList() {
-		const commandsList = Array.from( this.editor.plugins.get( 'SlashCommandEditing' ).getCommandsInfo() );
+	_getCommandList( searchString ) {
+		const commandsList = Array.from( this.editor.plugins.get( 'SlashCommandEditing' ).getCommandsInfo( searchString ) );
 
 		commandsList.forEach( entry => {
 			entry.id = '/' + entry.id;
@@ -74,7 +74,11 @@ export default class SlashCommandUI extends Plugin {
 			const eventData = data[ 0 ];
 			const model = editor.model;
 
-			if ( eventData.marker == '/' && commandList.some( command => command.id == eventData.mention.id ) ) {
+			const matcher = command => {
+				return command.id == eventData.mention.id;
+			};
+
+			if ( eventData.marker == '/' && commandList.some( matcher ) ) {
 				const commandName = eventData.mention.id.substr( 1 );
 
 				model.change( writer => {

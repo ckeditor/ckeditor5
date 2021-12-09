@@ -76,7 +76,6 @@ function* _getEditorCommands( editor ) {
 			uiComponent = componentFactory.create( commandName );
 
 			buttonLikeComponent = uiComponent.buttonView ? uiComponent.buttonView : uiComponent;
-			// buttonLikeComponent = uiComponent;
 
 			uiComponent = componentFactory.create( commandName );
 
