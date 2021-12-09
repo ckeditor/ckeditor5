@@ -30,6 +30,7 @@
     "@ckeditor/ckeditor5-paragraph": "^31.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
     "@ckeditor/ckeditor5-typing": "^31.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^31.1.0",
     "@ckeditor/ckeditor5-undo": "^31.1.0",
     "@ckeditor/ckeditor5-utils": "^31.1.0",
     "webpack": "^5.58.1",

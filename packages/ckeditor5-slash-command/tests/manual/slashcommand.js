@@ -23,15 +23,19 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, SlashCommand, ShiftEnter, Typing,
-			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize
+			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize, BlockQuote
 		],
-		toolbar: [ 'italic', 'bold', 'link', 'underline', '|', 'undo', 'redo' ]
+		toolbar: [ 'italic', 'bold', 'link', 'underline', '|', 'undo', 'redo', 'blockquote' ],
+		mention: {
+			dropdownLimit: 5
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
