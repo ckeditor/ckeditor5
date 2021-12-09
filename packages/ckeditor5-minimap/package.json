@@ -20,7 +20,7 @@
     "@ckeditor/ckeditor5-cloud-services": "^31.1.0",
     "@ckeditor/ckeditor5-code-block": "^31.1.0",
     "@ckeditor/ckeditor5-core": "^31.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^26.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^27.0.0",
     "@ckeditor/ckeditor5-easy-image": "^31.1.0",
     "@ckeditor/ckeditor5-editor-decoupled": "^31.1.0",
     "@ckeditor/ckeditor5-font": "^31.1.0",
