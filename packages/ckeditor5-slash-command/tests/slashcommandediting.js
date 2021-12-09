@@ -11,9 +11,10 @@ import SlashCommandEditing from '../src/slashcommandediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import List from '@ckeditor/ckeditor5-list/src/list';
+import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 
 describe( 'SlashCommandEditing', () => {
 	let editorElement, editor, slashCommandEditingPlugin;
@@ -21,14 +22,15 @@ describe( 'SlashCommandEditing', () => {
 	// A list of commands that are available in this particular editor configuration.
 	const defaultCommands = [ 'paragraph', 'insertParagraph', 'indent', 'outdent', 'bold', 'enter',
 		'deleteForward', 'forwardDelete', 'delete', 'numberedList', 'bulletedList', 'indentList',
-		'outdentList', 'blockQuote' ];
+		'outdentList', 'blockQuote', 'mediaEmbed', 'undo', 'redo' ];
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicEditor.create( editorElement, {
-			plugins: [ Paragraph, Indent, Bold, List, BlockQuoteEditing, SlashCommandEditing ]
+			plugins: [ Paragraph, Indent, Bold, List, BlockQuote, MediaEmbed, SlashCommandEditing ],
+			toolbar: [ 'mediaEmbed' ]
 		} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -86,6 +88,22 @@ describe( 'SlashCommandEditing', () => {
 			} );
 		} );
 
+		describe( 'returned object reads meta info from DropdownView', () => {
+			it( 'title', () => {
+				const numberedListInfo = Array.from( slashCommandEditingPlugin.getCommandsInfo() )
+					.find( el => el.id == 'mediaEmbed' );
+
+				expect( numberedListInfo.title ).to.eql( 'Insert media' );
+			} );
+
+			it( 'icon', () => {
+				const numberedListInfo = Array.from( slashCommandEditingPlugin.getCommandsInfo() )
+					.find( el => el.id == 'mediaEmbed' );
+
+				expect( numberedListInfo.icon ).to.be.a( 'string' );
+			} );
+		} );
+
 		describe( 'filter parameter', () => {
 			let filteredResults;
 
@@ -105,6 +123,24 @@ describe( 'SlashCommandEditing', () => {
 				filteredResults = slashCommandEditingPlugin.getCommandsInfo( 'bar' );
 
 				expect( filteredResults ).to.have.length( 0 );
+			} );
+		} );
+
+		describe( 'proxied commands', () => {
+			it( 'works for media Embed (dropdown view)', () => {
+				const button = Array.from( editor.ui.view.toolbar.items )[ 0 ].buttonView; // .fire( 'execute' );
+				const executeSpy = sinon.spy();
+
+				button.on( 'execute', executeSpy );
+
+				const mediaEmbedInfo = Array.from( slashCommandEditingPlugin.getCommandsInfo() )
+					.find( el => el.id == 'mediaEmbed' );
+
+				expect( mediaEmbedInfo.proxy ).to.be.a( 'function' );
+
+				mediaEmbedInfo.proxy();
+
+				expect( executeSpy.callCount ).to.eql( 1 );
 			} );
 		} );
 	} );

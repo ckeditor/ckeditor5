@@ -57,20 +57,58 @@ export default class SlashCommandEditing extends Plugin {
  * @returns {Object}
  */
 function* _getEditorCommands( editor ) {
+	// Proxied commands are the commands that normally just expect have data to be given. However, we want
+	// them to show/focus relevant UI elements.
 	const componentFactory = editor.ui.componentFactory;
+	const proxiedCommands = [ 'insertTable', 'mediaEmbed' ];
+	let proxyExecutor = null;
+
 	for ( const [ commandName ] of editor.commands ) {
 		let uiComponent = null;
+		let buttonLikeComponent = null;
 
 		// UI component is used to obtain metadata (like human readable title or an icon).
 		if ( componentFactory.has( commandName ) ) {
 			uiComponent = componentFactory.create( commandName );
+
+			buttonLikeComponent = uiComponent.buttonView ? uiComponent.buttonView : uiComponent;
+			// buttonLikeComponent = uiComponent;
+
+			uiComponent = componentFactory.create( commandName );
+
+			if ( proxiedCommands.includes( commandName ) ) {
+				// Look in classic toolbar.
+				if ( editor.ui && editor.ui.view.toolbar ) {
+					for ( const toolbarItem of editor.ui.view.toolbar.items ) {
+						if ( !proxyExecutor && isTheSameUIItem( uiComponent, toolbarItem ) ) {
+							proxyExecutor = () => {
+								( toolbarItem.buttonView || toolbarItem ).fire( 'execute' );
+							};
+						}
+					}
+				}
+				// @todo: Look in balloon toolbar and other toolbars.
+
+				// This is a proxy command but no matching button was found (e.g. someone did not add it to a toolbar)
+				// we need to ignore it in this case.
+				if ( !proxyExecutor ) {
+					continue;
+				}
+			}
 		}
 
 		yield {
 			id: commandName,
-			title: uiComponent && uiComponent.label ? uiComponent.label : null,
-			icon: uiComponent && uiComponent.icon ? uiComponent.icon : null,
-			description: null
+			title: buttonLikeComponent && buttonLikeComponent.label ? buttonLikeComponent.label : null,
+			icon: buttonLikeComponent && buttonLikeComponent.icon ? buttonLikeComponent.icon : null,
+			description: null,
+			proxy: proxyExecutor
 		};
 	}
+}
+
+// Compares two UI items.
+function isTheSameUIItem( itemA, itemB ) {
+	return itemA.label === itemB.label &&
+	itemA.icon === itemB.icon;
 }
