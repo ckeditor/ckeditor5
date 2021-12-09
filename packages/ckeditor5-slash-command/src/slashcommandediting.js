@@ -8,7 +8,6 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import SlashCommand from './slashcommand';
 
 /**
  * The slash command editing plugin.
@@ -29,9 +28,6 @@ export default class SlashCommandEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-
-		editor.commands.add( 'slashCommand', new SlashCommand( editor ) );
 	}
 
 	/**
