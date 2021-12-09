@@ -10,6 +10,10 @@
 import { Plugin } from 'ckeditor5/src/core';
 import { SlashCommandEditing } from '.';
 
+import '../theme/slashcommand.css';
+
+/* global document */
+
 /**
  * The remove format UI plugin. It registers the `'slashCommand'` button which can be
  * used in the toolbar.
@@ -45,7 +49,8 @@ export default class SlashCommandUI extends Plugin {
 
 		config.push( {
 			marker: '/',
-			feed: this._getCommandList()
+			feed: this._getCommandList(),
+			itemRenderer: customItemRenderer
 		} );
 
 		editor.config.set( 'mention.feeds', config );
@@ -86,4 +91,32 @@ export default class SlashCommandUI extends Plugin {
 			}
 		}, { priority: 'high' } );
 	}
+}
+
+function customItemRenderer( item ) {
+	const feedContainer = document.createElement( 'div' );
+
+	if ( item.icon ) {
+		const icon = document.createElement( 'span' );
+
+		icon.innerHTML = item.icon;
+		icon.firstChild.style.width = '20px';
+
+		feedContainer.appendChild( icon );
+	}
+
+	const commandTitleElement = document.createElement( 'span' );
+
+	commandTitleElement.classList.add( 'ck-feed-command-title' );
+	commandTitleElement.textContent = item.title;
+
+	const commandIdElement = document.createElement( 'span' );
+
+	commandIdElement.classList.add( 'ck-feed-command-id' );
+	commandIdElement.textContent = item.id;
+
+	feedContainer.appendChild( commandTitleElement );
+	feedContainer.appendChild( commandIdElement );
+
+	return feedContainer;
 }

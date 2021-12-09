@@ -1,0 +1,8 @@
+div.ck-button>span.ck-feed-command-title {
+	padding: 5px;
+}
+
+div.ck-button>span.ck-feed-command-id {
+	padding: 5px;
+	color: rgb(128, 124, 124);
+}
