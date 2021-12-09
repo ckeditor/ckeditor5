@@ -31,10 +31,12 @@ export default class SlashCommandEditing extends Plugin {
 	}
 
 	/**
+	 * Returns a list of commands along with their medadata (like human readable title, description etc).
+	 *
 	 * @returns {Iterable.<Object>}
 	 */
 	getCommandsInfo() {
-		return new Set( [ {
+		const fakeDataProvider = [ {
 			id: 'numberedList',
 			title: 'Numbered list',
 			icon: null,
@@ -49,6 +51,8 @@ export default class SlashCommandEditing extends Plugin {
 			title: 'Increase indent',
 			icon: null,
 			description: null
-		} ] );
+		} ];
+
+		return new Set( fakeDataProvider );
 	}
 }
