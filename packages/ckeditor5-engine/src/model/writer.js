@@ -1416,20 +1416,17 @@ export default class Writer {
 // @param {*} value Attribute new value.
 // @param {module:engine/model/range~Range} range Model range on which the attribute will be set.
 function setAttributeOnRange( writer, key, value, range ) {
-	const model = writer.model;
-	const doc = model.document;
-
 	// Position of the last split, the beginning of the new range.
 	let lastSplitPosition = range.start;
 
-	// Currently position in the scanning range. Because we need value after the position, it is not a current
+	// Current position in the scanning range. Because we need value after the position, it is not a current
 	// position of the iterator but the previous one (we need to iterate one more time to get the value after).
 	let position;
 
-	// Value before the currently position.
+	// Value before the current position.
 	let valueBefore;
 
-	// Value after the currently position.
+	// Value after the current position.
 	let valueAfter;
 
 	for ( const val of range.getWalker( { shallow: true } ) ) {
@@ -1440,7 +1437,9 @@ function setAttributeOnRange( writer, key, value, range ) {
 		if ( position && valueBefore != valueAfter ) {
 			// if valueBefore == value there is nothing to change, so we add operation only if these values are different.
 			if ( valueBefore != value ) {
-				addOperation();
+				const range = new Range( lastSplitPosition, position );
+
+				addAttributeOperation( writer, range, key, valueBefore, value );
 			}
 
 			lastSplitPosition = position;
@@ -1453,16 +1452,9 @@ function setAttributeOnRange( writer, key, value, range ) {
 	// Because position in the loop is not the iterator position (see let position comment), the last position in
 	// the while loop will be last but one position in the range. We need to check the last position manually.
 	if ( position instanceof Position && position != lastSplitPosition && valueBefore != value ) {
-		addOperation();
-	}
-
-	function addOperation() {
 		const range = new Range( lastSplitPosition, position );
-		const version = range.root.document ? doc.version : null;
-		const operation = new AttributeOperation( range, key, valueBefore, value, version );
 
-		writer.batch.addOperation( operation );
-		model.applyOperation( operation );
+		addAttributeOperation( writer, range, key, valueBefore, value );
 	}
 }
 
@@ -1474,30 +1466,31 @@ function setAttributeOnRange( writer, key, value, range ) {
 // @param {*} value Attribute new value.
 // @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
 function setAttributeOnItem( writer, key, value, item ) {
-	const model = writer.model;
-	const doc = model.document;
 	const previousValue = item.getAttribute( key );
-	let range, operation;
 
-	if ( previousValue != value ) {
-		const isRootChanged = item.root === item;
-
-		if ( isRootChanged ) {
-			// If we change attributes of root element, we have to use `RootAttributeOperation`.
-			const version = item.document ? doc.version : null;
-
-			operation = new RootAttributeOperation( item, key, previousValue, value, version );
-		} else {
-			range = new Range( Position._createBefore( item ), writer.createPositionAfter( item ) );
-
-			const version = range.root.document ? doc.version : null;
-
-			operation = new AttributeOperation( range, key, previousValue, value, version );
-		}
-
-		writer.batch.addOperation( operation );
-		model.applyOperation( operation );
+	if ( previousValue == value ) {
+		return;
 	}
+
+	addAttributeOperation( writer, item, key, previousValue, value );
+}
+
+// TODO
+function addAttributeOperation( writer, itemOrRange, key, previousValue, newValue ) {
+	const version = itemOrRange.root.document ? itemOrRange.root.document.version : null;
+	let operation = null;
+
+	if ( itemOrRange === itemOrRange.root ) {
+		// If we change attributes of root element, we have to use `RootAttributeOperation`.
+		operation = new RootAttributeOperation( itemOrRange, key, previousValue, newValue, version );
+	} else {
+		const range = itemOrRange.is( 'range' ) ? itemOrRange : writer.createRangeOn( itemOrRange );
+
+		operation = new AttributeOperation( range, key, previousValue, newValue, version );
+	}
+
+	writer.batch.addOperation( operation );
+	writer.model.applyOperation( operation );
 }
 
 // Creates and applies marker operation to {@link module:engine/model/operation/operation~Operation operation}.
