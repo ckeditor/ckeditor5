@@ -78,8 +78,7 @@ export default class SlashCommandUI extends Plugin {
 
 					writer.remove( range );
 
-					// editor.execute( commandName );
-					console.log( commandName );
+					editor.execute( commandName );
 
 					// Default mentions handler should not be triggered.
 					event.stop();
