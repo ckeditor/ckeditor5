@@ -9,6 +9,8 @@ meta-description: Navigate through CKEditor 5 examples to see what you are able 
 
 # Examples
 
+Check out the examples of different editor integrations. See the predefined builds in action, witness the unharnessed power of a full-featured editor and find out amazing, custom-tailored implementations using the CKEditor 5 Framework.
+
 <info-box>
 	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through CKEditor 5 examples. Visit the {@link features/index Features} section to see even more examples!
 </info-box>
