@@ -37,22 +37,8 @@ export default class SlashCommandEditing extends Plugin {
 	 * @returns {Iterable.<Object>}
 	 */
 	getCommandsInfo( filterText ) {
-		let fakeDataProvider = [ {
-			id: 'numberedList',
-			title: 'Numbered list',
-			icon: null,
-			description: null
-		}, {
-			id: 'blockQuote',
-			title: 'Block quote',
-			icon: null,
-			description: null
-		}, {
-			id: 'indentList',
-			title: 'Increase indent',
-			icon: null,
-			description: null
-		} ];
+		const data = Array.from( _getEditorCommands( this.editor ) );
+		let fakeDataProvider = data;
 
 		if ( filterText ) {
 			fakeDataProvider = fakeDataProvider.filter( obj => {
@@ -61,5 +47,23 @@ export default class SlashCommandEditing extends Plugin {
 		}
 
 		return new Set( fakeDataProvider );
+	}
+}
+
+/**
+ * Inspects a given `editor` instance in search for commands. Tries to fetch
+ * metadata relevant for a given command.
+ *
+ * @param {module:core/editor/editor~Editor} editor
+ * @returns {Object}
+ */
+function* _getEditorCommands( editor ) {
+	for ( const [ commandName ] of editor.commands ) {
+		yield {
+			id: commandName,
+			title: 'foo',
+			icon: null,
+			description: null
+		};
 	}
 }
