@@ -70,6 +70,22 @@ describe( 'SlashCommandEditing', () => {
 			expect( results.sort() ).to.deep.equal( defaultCommands.sort() );
 		} );
 
+		describe( 'returned object reads meta info from ButtonView', () => {
+			it( 'title', () => {
+				const numberedListInfo = Array.from( slashCommandEditingPlugin.getCommandsInfo() )
+					.find( el => el.id == 'numberedList' );
+
+				expect( numberedListInfo.title ).to.eql( 'Numbered List' );
+			} );
+
+			it( 'icon', () => {
+				const numberedListInfo = Array.from( slashCommandEditingPlugin.getCommandsInfo() )
+					.find( el => el.id == 'numberedList' );
+
+				expect( numberedListInfo.icon ).to.be.a( 'string' );
+			} );
+		} );
+
 		describe( 'filter parameter', () => {
 			let filteredResults;
 

@@ -57,11 +57,19 @@ export default class SlashCommandEditing extends Plugin {
  * @returns {Object}
  */
 function* _getEditorCommands( editor ) {
+	const componentFactory = editor.ui.componentFactory;
 	for ( const [ commandName ] of editor.commands ) {
+		let uiComponent = null;
+
+		// UI component is used to obtain metadata (like human readable title or an icon).
+		if ( componentFactory.has( commandName ) ) {
+			uiComponent = componentFactory.create( commandName );
+		}
+
 		yield {
 			id: commandName,
-			title: 'foo',
-			icon: null,
+			title: uiComponent && uiComponent.label ? uiComponent.label : '',
+			icon: uiComponent && uiComponent.icon ? uiComponent.icon : null,
 			description: null
 		};
 	}
