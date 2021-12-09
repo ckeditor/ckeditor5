@@ -33,7 +33,7 @@ export default class SlashCommandEditing extends Plugin {
 	/**
 	 * Returns a list of commands along with their medadata (like human readable title, description etc).
 	 *
-	 * @param {String} filterText Text used to filter out returned commands.
+	 * @param {String} [filterText] Text used to filter out returned commands.
 	 * @returns {Iterable.<Object>}
 	 */
 	getCommandsInfo( filterText ) {
