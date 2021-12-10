@@ -14,7 +14,7 @@ do
   esac
 done
 
-MANUAL_TEST_SERVER_OPTIONS="--silent -r $REPOSITORY"
+MANUAL_TEST_SERVER_OPTIONS="--disable-watch --silent -r $REPOSITORY"
 
 if [ ! -z "$FILES" ]
 then
