@@ -58,32 +58,38 @@ class SharedAttributesTest extends Plugin {
 		//
 
 		schema.extend( 'paragraph', {
-			allowAttributes: [ 'itemId', 'groupId', 'standardOnElement', 'groupSharedOnElement', 'itemSharedOnElement' ]
+			allowAttributes: [ 'itemId', 'groupId', 'standard', 'groupShared', 'itemShared' ]
 		} );
 
 		schema.setAttributeProperties( 'groupId', {
 			sharedReferenceAttribute: 'itemId'
 		} );
-		schema.setAttributeProperties( 'groupSharedOnElement', {
+		schema.setAttributeProperties( 'groupShared', {
 			sharedReferenceAttribute: 'groupId'
 		} );
-		schema.setAttributeProperties( 'itemSharedOnElement', {
+		schema.setAttributeProperties( 'itemShared', {
 			sharedReferenceAttribute: 'itemId'
 		} );
 
 		editor.conversion.attributeToAttribute( {
-			model: 'standardOnElement',
+			model: 'standard',
 			view: 'data-standard'
 		} );
-
 		editor.conversion.attributeToAttribute( {
-			model: 'groupSharedOnElement',
-			view: 'data-shared'
+			model: 'itemId',
+			view: 'data-item-id'
 		} );
-
 		editor.conversion.attributeToAttribute( {
-			model: 'itemSharedOnElement',
-			view: 'data-shared'
+			model: 'groupId',
+			view: 'data-group-id'
+		} );
+		editor.conversion.attributeToAttribute( {
+			model: 'groupShared',
+			view: 'data-group-shared'
+		} );
+		editor.conversion.attributeToAttribute( {
+			model: 'itemShared',
+			view: 'data-item-shared'
 		} );
 	}
 }
@@ -125,14 +131,14 @@ ClassicEditor
 		window.editor = editor;
 
 		setModelData( editor.model,
-			'<paragraph groupId="g1" itemId="g1i1" groupSharedOnElement="first-group" itemSharedOnElement="1aaa">1a1</paragraph>' +
-			'<paragraph groupId="g1" itemId="g1i1" groupSharedOnElement="first-group" itemSharedOnElement="1aaa">1a2</paragraph>' +
-			'<paragraph groupId="g1" itemId="g1i2" groupSharedOnElement="first-group" itemSharedOnElement="1bbb">1b1</paragraph>' +
-			'<paragraph groupId="g1" itemId="g1i2" groupSharedOnElement="first-group" itemSharedOnElement="1bbb">1b2</paragraph>' +
-			'<paragraph groupId="g2" itemId="g2i1" groupSharedOnElement="second-group" itemSharedOnElement="2aaa">2a1</paragraph>' +
-			'<paragraph groupId="g2" itemId="g2i1" groupSharedOnElement="second-group" itemSharedOnElement="2aaa">2a2</paragraph>' +
-			'<paragraph groupId="g2" itemId="g2i2" groupSharedOnElement="second-group" itemSharedOnElement="2bbb">2b1</paragraph>' +
-			'<paragraph groupId="g2" itemId="g2i2" groupSharedOnElement="second-group" itemSharedOnElement="2bbb">2b2</paragraph>'
+			'<paragraph groupId="g1" itemId="g1i1" groupShared="first-group" itemShared="1aaa">1a1</paragraph>' +
+			'<paragraph groupId="g1" itemId="g1i1" groupShared="first-group" itemShared="1aaa">1a2</paragraph>' +
+			'<paragraph groupId="g1" itemId="g1i2" groupShared="first-group" itemShared="1bbb">1b1</paragraph>' +
+			'<paragraph groupId="g1" itemId="g1i2" groupShared="first-group" itemShared="1bbb">1b2</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i1" groupShared="second-group" itemShared="2aaa">2a1</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i1" groupShared="second-group" itemShared="2aaa">2a2</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i2" groupShared="second-group" itemShared="2bbb">2b1</paragraph>' +
+			'<paragraph groupId="g2" itemId="g2i2" groupShared="second-group" itemShared="2bbb">2b2</paragraph>'
 		);
 	} )
 	.catch( err => {

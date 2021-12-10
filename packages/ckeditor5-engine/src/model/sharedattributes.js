@@ -18,7 +18,23 @@ export default class SharedAttributes {
 	 * TODO
 	 */
 	constructor( model ) {
+		/**
+		 * TODO
+		 * @private
+		 */
 		this._model = model;
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._referenceCounters = new Map();
+
+		/**
+		 * TODO
+		 * @private
+		 */
+		this._referenceAttributes = null;
 	}
 
 	/**
@@ -74,33 +90,32 @@ export default class SharedAttributes {
 			return attributes;
 		}
 
-		const referenceAttributesProperties = this._model.schema.getAttributesPropertiesWithProperty( 'sharedReferenceAttribute' );
-		const referenceAttributes = new Set(
-			Array.from( referenceAttributesProperties.values() )
-				.map( ( { sharedReferenceAttribute } ) => sharedReferenceAttribute )
-		);
-
+		const referenceAttributes = new Set( this._getReferenceAttributesDefinitions().values() );
 		let checkSharedAttributes = true;
 
 		while ( checkSharedAttributes ) {
 			checkSharedAttributes = false;
 
 			for ( const sharedReferenceAttribute of referenceAttributes ) {
-				if ( attributes.has( sharedReferenceAttribute ) ) {
-					referenceAttributes.delete( sharedReferenceAttribute );
+				if ( !attributes.has( sharedReferenceAttribute ) ) {
+					continue;
+				}
 
-					const prefix = `$shared:${ attributes.get( sharedReferenceAttribute ) }:`;
+				referenceAttributes.delete( sharedReferenceAttribute );
 
-					for ( const [ key, value ] of node.root.getAttributes( { ignoreShared: true } ) ) {
-						if ( key.startsWith( prefix ) ) {
-							const sharedKey = key.substring( prefix.length );
+				const prefix = `$shared:${ attributes.get( sharedReferenceAttribute ) }:`;
 
-							attributes.set( sharedKey, value );
+				for ( const [ key, value ] of node.root.getAttributes( { ignoreShared: true } ) ) {
+					if ( !key.startsWith( prefix ) ) {
+						continue;
+					}
 
-							if ( referenceAttributes.has( sharedKey ) ) {
-								checkSharedAttributes = true;
-							}
-						}
+					const sharedKey = key.substring( prefix.length );
+
+					attributes.set( sharedKey, value );
+
+					if ( referenceAttributes.has( sharedKey ) ) {
+						checkSharedAttributes = true;
 					}
 				}
 			}
@@ -125,32 +140,9 @@ export default class SharedAttributes {
 			return operations;
 		}
 
-		if ( itemOrRange.is( 'range' ) ) {
-			for ( const item of itemOrRange.getItems( { shallow: true } ) ) {
-				addSharedAttributeOperation( item, key, attributeProperties.sharedReferenceAttribute, newValue );
-			}
-		} else {
-			addSharedAttributeOperation( itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
-		}
+		const referenceAttributes = new Set( this._getReferenceAttributesDefinitions().values() );
 
-		return operations;
-
-		function addSharedAttributeOperation( item, key, sharedReferenceAttribute, newValue ) {
-			const refValue = getSharedReferenceAttribute( item, sharedReferenceAttribute );
-			const previousValue = item.root.getAttribute( `$shared:${ refValue }:${ key }`, { ignoreShared: true } );
-
-			if ( previousValue != newValue ) {
-				operations.push( {
-					item: item.root,
-					key: `$shared:${ refValue }:${ key }`,
-					previousValue,
-					newValue
-				} );
-			}
-		}
-
-		// TODO
-		function getSharedReferenceAttribute( item, sharedReferenceAttribute ) {
+		const getSharedReferenceAttribute = ( item, sharedReferenceAttribute ) => {
 			let refValue = item.getAttribute( sharedReferenceAttribute );
 
 			// Note that undefined == null.
@@ -163,12 +155,57 @@ export default class SharedAttributes {
 			operations.push( {
 				item,
 				key: sharedReferenceAttribute,
-				previousValue: null,
-				newValue: refValue
+				value: refValue
 			} );
 
 			return refValue;
+		};
+
+		const addSharedAttributeOperation = ( item, key, sharedReferenceAttribute, newValue ) => {
+			const refValue = getSharedReferenceAttribute( item, sharedReferenceAttribute );
+
+			this._increaseReferenceCount( refValue );
+
+			operations.push( {
+				item: item.root,
+				key: `$shared:${ refValue }:${ key }`,
+				value: newValue
+			} );
+
+			if ( referenceAttributes.has( key ) ) {
+				for ( const [ aKey, aValue ] of item.root.getAttributes( { ignoreShared: true } ) ) {
+					const prefix = `$shared:${ previousValue }:`;
+
+					if ( aKey.startsWith( prefix ) ) {
+						if ( this._decreaseReferenceCount( previousValue ) == 0 ) {
+							operations.push( {
+								item: item.root,
+								key: aKey,
+								value: null
+							} );
+						}
+
+						this._increaseReferenceCount( newValue );
+
+						operations.push( {
+							item: item.root,
+							key: `$shared:${ newValue }:${ aKey.substring( prefix.length ) }`,
+							value: aValue
+						} );
+					}
+				}
+			}
+		};
+
+		if ( itemOrRange.is( 'range' ) ) {
+			for ( const item of itemOrRange.getItems( { shallow: true } ) ) {
+				addSharedAttributeOperation( item, key, attributeProperties.sharedReferenceAttribute, newValue );
+			}
+		} else {
+			addSharedAttributeOperation( itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
 		}
+
+		return operations;
 	}
 
 	/**
@@ -191,6 +228,56 @@ export default class SharedAttributes {
 		}
 
 		return sharedAttributes;
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_getReferenceAttributesDefinitions() {
+		if ( this._referenceAttributes ) {
+			return this._referenceAttributes;
+		}
+
+		this._referenceAttributes = new Map();
+
+		for ( const [ key, properties ] of this._model.schema.getAttributesPropertiesWithProperty( 'sharedReferenceAttribute' ) ) {
+			this._referenceAttributes.set( key, properties.sharedReferenceAttribute );
+		}
+
+		return this._referenceAttributes;
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_increaseReferenceCount( id ) {
+		const oldCount = this._referenceCounters.get( id ) || 0;
+
+		this._referenceCounters.set( id, oldCount + 1 );
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 */
+	_decreaseReferenceCount( id ) {
+		const oldCount = this._referenceCounters.get( id ) || 0;
+
+		if ( !oldCount ) {
+			throw new Error( 'invalid ref count' );
+		}
+
+		const newCount = oldCount - 1;
+
+		if ( newCount == 0 ) {
+			this._referenceCounters.delete( id );
+		} else {
+			this._referenceCounters.set( id, newCount );
+		}
+
+		return newCount;
 	}
 }
 

@@ -1486,8 +1486,8 @@ function addAttributeOperation( writer, itemOrRange, key, previousValue, newValu
 	const sharedAttributes = writer.model._sharedAttributes.prepareSetAttributeOperations( itemOrRange, key, previousValue, newValue );
 
 	if ( sharedAttributes.length ) {
-		for ( const { item, key, previousValue, newValue } of sharedAttributes ) {
-			addAttributeOperation( writer, item, key, previousValue, newValue );
+		for ( const { item, key, value } of sharedAttributes ) {
+			addAttributeOperation( writer, item, key, item.getAttribute( key, { ignoreShared: true } ), value );
 		}
 
 		return;
