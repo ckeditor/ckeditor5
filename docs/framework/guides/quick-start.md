@@ -22,10 +22,10 @@ This guide will show you how to initialize CKEditor 5 rich-text editor from sour
 
 The CKEditor 5 Framework consist of several [npm packages](https://npmjs.com). To install it you need:
 
-* [Node.js](https://nodejs.org/en/) 12.0.0+
+* [Node.js](https://nodejs.org/en/) 14.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
-Besides Node.js and npm you also need [webpack@4](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 builds Advanced setup} guide.
+Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 builds Advanced setup} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -37,11 +37,12 @@ First, install packages needed to build CKEditor 5:
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:
@@ -84,14 +85,17 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
 					}
 				]
 			}

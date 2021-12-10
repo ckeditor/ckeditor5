@@ -56,14 +56,14 @@ yarn add --dev \
 	@ckeditor/ckeditor5-ui \
 	@ckeditor/ckeditor5-widget \
 	babel-loader \
-	css-loader \
-	postcss-loader@3 \
-	raw-loader@3 \
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
 	react \
 	react-dom \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4
 ```
 
 Create a minimal [webpack](https://webpack.js.org) configuration and save it as `webpack.config.js` in the root of the application. To learn more about using webpack with CKEditor 5 and React, check out the {@link builds/guides/frameworks/react#integrating-ckeditor-5-built-from-source Integrating CKEditor 5 built from source} section of the CKEditor 5 React component guide.
@@ -109,14 +109,17 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
 					}
 				]
 			}

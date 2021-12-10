@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document */
+/* globals document, console */
 
 import DomConverter from '../../../src/view/domconverter';
 import ViewEditable from '../../../src/view/editableelement';
@@ -436,18 +436,14 @@ describe( 'DomConverter', () => {
 	} );
 
 	describe( 'shouldRenderAttribute()', () => {
-		beforeEach( () => {
-			converter.experimentalRenderingMode = true;
-		} );
-
-		afterEach( () => {
-			converter.experimentalRenderingMode = false;
-		} );
-
 		it( 'should allow all in data pipeline', () => {
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '   javascript:something' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', ' data:image/svg,foo' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.false;
+			expect( converter.shouldRenderAttribute( 'anything', '   data:text/html,foo' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.false;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.false;
@@ -455,16 +451,37 @@ describe( 'DomConverter', () => {
 			// Make sure it's rendered in the editing mode.
 			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
 
+			// It should not filter out the attribute that do not match URI.
+			expect( converter.shouldRenderAttribute( 'anything', 'foobar data:text/html,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'foobar javascript:something' ) ).to.be.true;
+
 			converter.renderingMode = 'data';
 
 			expect( converter.shouldRenderAttribute( 'onclick', 'anything' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'anything', 'javascript:something' ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', 'data:foo' ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'anything', '<script>something</script>' ) ).to.be.true;
-			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '   javascript:something' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:image/svg,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', ' data:image/svg,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', 'data:text/html,foo' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'anything', '   data:text/html,foo' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<script>something</script>' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<div onclick="alert(1)">' ) ).to.be.true;
 			expect( converter.shouldRenderAttribute( 'srcdoc', '<a href="javascript:alert(1)">' ) ).to.be.true;
+
+			expect( converter.shouldRenderAttribute( 'contenteditable', 'anything' ) ).to.be.true;
+		} );
+
+		it( 'should allow SVG in src attribute of img element', () => {
+			expect( converter.shouldRenderAttribute( 'src', 'data:image/svg,foo', 'img' ) ).to.be.true;
+			expect( converter.shouldRenderAttribute( 'srcset', 'data:image/svg,foo', 'img' ) ).to.be.true;
+		} );
+
+		it( 'should allow SVG in srcset attribute of img element', () => {
+			expect( converter.shouldRenderAttribute( 'srcset', 'data:image/svg,foo', 'img' ) ).to.be.true;
+		} );
+
+		it( 'should allow SVG in srcset attribute of source element', () => {
+			expect( converter.shouldRenderAttribute( 'srcset', 'data:image/svg,foo', 'source' ) ).to.be.true;
 		} );
 
 		it( 'should accept all Base64-encoded content', () => {
@@ -602,12 +619,10 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'editing pipeline', () => {
-			beforeEach( () => {
-				converter.experimentalRenderingMode = true;
-			} );
+			let warnStub;
 
-			afterEach( () => {
-				converter.experimentalRenderingMode = false;
+			beforeEach( () => {
+				warnStub = testUtils.sinon.stub( console, 'warn' );
 			} );
 
 			it( 'should replace certain unsafe attributes', () => {
@@ -705,6 +720,24 @@ describe( 'DomConverter', () => {
 				} );
 			} );
 
+			it( 'should warn when an unsafe attribute was detected and renamed', () => {
+				const element = document.createElement( 'p' );
+				const html = '<a href="foo" onclick="alert(1)">foo</a>';
+
+				converter.setContentOf( element, html );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+					{
+						domElement: element.firstChild,
+						key: 'onclick',
+						value: 'alert(1)'
+					},
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
 			it( 'should replace a script element with a span', () => {
 				const element = document.createElement( 'p' );
 				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
@@ -715,11 +748,25 @@ describe( 'DomConverter', () => {
 					'<div>foo<span data-ck-unsafe-element="script" class="foo-class" style="foo-style" data-foo="bar">bar</span></div>'
 				);
 			} );
+
+			it( 'should warn when an unsafe element was detected and renamed', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
+
+				converter.setContentOf( element, html );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-element-detected/ ),
+					sinon.match.has( 'unsafeElement', sinon.match.has( 'tagName', 'SCRIPT' ) ),
+					sinon.match.string // Link to the documentation
+				);
+			} );
 		} );
 	} );
 
 	describe( 'setDomElementAttribute()', () => {
-		let writer;
+		let writer, warnStub;
 
 		beforeEach( () => {
 			writer = new DowncastWriter( viewDocument );
@@ -727,11 +774,11 @@ describe( 'DomConverter', () => {
 				renderingMode: 'editing'
 			} );
 
-			converter.experimentalRenderingMode = true;
-		} );
+			warnStub = testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
 
-		afterEach( () => {
-			converter.experimentalRenderingMode = false;
+			console.warn.callThrough();
 		} );
 
 		it( 'should set the plain value of an attribute', () => {
@@ -787,34 +834,107 @@ describe( 'DomConverter', () => {
 			expect( domElement.outerHTML ).to.equal( '<p onclick="bar"></p>' );
 		} );
 
-		it( 'should render the prefixed value if the previous value was safe but the new one is unsafe (avoiding duplication)', () => {
-			const domElement = document.createElement( 'img' );
+		it( 'should render the prefixed value if the previous value was unsafe but the new one is safe (avoiding duplication)', () => {
+			const domElement = document.createElement( 'iframe' );
 
 			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
-			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+			expect( domElement.outerHTML ).to.equal( '<iframe data-ck-unsafe-attribute-src="data:image/svg,foo"></iframe>' );
 
 			converter.setDomElementAttribute( domElement, 'src', 'data:image/png,foo' );
-			expect( domElement.outerHTML ).to.equal( '<img src="data:image/png,foo">' );
+			expect( domElement.outerHTML ).to.equal( '<iframe src="data:image/png,foo"></iframe>' );
 		} );
 
-		it( 'should not render the prefixed value if the previous value was unsafe but the new one is safe (avoiding duplication)', () => {
-			const domElement = document.createElement( 'img' );
+		it( 'should not render the prefixed value if the previous value was safe but the new one is unsafe (avoiding duplication)', () => {
+			const domElement = document.createElement( 'iframe' );
 
 			converter.setDomElementAttribute( domElement, 'src', 'data:image/png,foo' );
-			expect( domElement.outerHTML ).to.equal( '<img src="data:image/png,foo">' );
+			expect( domElement.outerHTML ).to.equal( '<iframe src="data:image/png,foo"></iframe>' );
 
 			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
-			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+			expect( domElement.outerHTML ).to.equal( '<iframe data-ck-unsafe-attribute-src="data:image/svg,foo"></iframe>' );
+		} );
+
+		it( 'should warn when an unsafe attribute was prefixed (renamed)', () => {
+			const domElement = document.createElement( 'p' );
+
+			converter.setDomElementAttribute( domElement, 'onclick', 'bar' );
+
+			sinon.assert.calledOnce( warnStub );
+			sinon.assert.calledWithExactly( warnStub,
+				sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+				{
+					domElement,
+					key: 'onclick',
+					value: 'bar'
+				},
+				sinon.match.string // Link to the documentation
+			);
+		} );
+
+		it( 'should set src attribute for SVG on img element', () => {
+			const domElement = document.createElement( 'img' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img src="data:image/svg,foo">' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg+xml;base64,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img src="data:image/svg+xml;base64,foo">' );
+		} );
+
+		it( 'should set srcset attribute for SVG on img element', () => {
+			const domElement = document.createElement( 'img' );
+
+			converter.setDomElementAttribute( domElement, 'srcset', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img srcset="data:image/svg,foo">' );
+
+			converter.setDomElementAttribute( domElement, 'srcset', 'data:image/svg+xml;base64,foo' );
+			expect( domElement.outerHTML ).to.equal( '<img srcset="data:image/svg+xml;base64,foo">' );
+		} );
+
+		it( 'should set srcset attribute for SVG on source element', () => {
+			const domElement = document.createElement( 'source' );
+
+			converter.setDomElementAttribute( domElement, 'srcset', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<source srcset="data:image/svg,foo">' );
+
+			converter.setDomElementAttribute( domElement, 'srcset', 'data:image/svg+xml;base64,foo' );
+			expect( domElement.outerHTML ).to.equal( '<source srcset="data:image/svg+xml;base64,foo">' );
+		} );
+
+		it( 'should transform src attribute to unsafe for SVG on iframe element', () => {
+			const domElement = document.createElement( 'iframe' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<iframe data-ck-unsafe-attribute-src="data:image/svg,foo"></iframe>' );
+		} );
+
+		it( 'should transform src attribute to unsafe for SVG on embed element', () => {
+			const domElement = document.createElement( 'embed' );
+
+			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<embed data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+		} );
+
+		it( 'should transform data attribute to unsafe for SVG on object element', () => {
+			const domElement = document.createElement( 'object' );
+
+			converter.setDomElementAttribute( domElement, 'data', 'data:image/svg,foo' );
+			expect( domElement.outerHTML ).to.equal( '<object data-ck-unsafe-attribute-data="data:image/svg,foo"></object>' );
 		} );
 	} );
 
 	describe( 'removeDomElementAttribute()', () => {
 		beforeEach( () => {
-			converter.experimentalRenderingMode = true;
-		} );
+			// Silence warnings about unsafe attributes and elements created by the DomConverter.
+			testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
 
-		afterEach( () => {
-			converter.experimentalRenderingMode = false;
+			console.warn
+				.withArgs( sinon.match( /^domconverter-unsafe-element-detected/ ) )
+				.callsFake( () => {} );
+
+			console.warn.callThrough();
 		} );
 
 		it( 'should remove the plain attribute value', () => {
@@ -828,13 +948,13 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should also remove the unsafe (prefixed) attribute value together with the safe value', () => {
-			const domElement = document.createElement( 'img' );
+			const domElement = document.createElement( 'iframe' );
 
 			converter.setDomElementAttribute( domElement, 'src', 'data:image/svg,foo' );
-			expect( domElement.outerHTML ).to.equal( '<img data-ck-unsafe-attribute-src="data:image/svg,foo">' );
+			expect( domElement.outerHTML ).to.equal( '<iframe data-ck-unsafe-attribute-src="data:image/svg,foo"></iframe>' );
 
 			converter.removeDomElementAttribute( domElement, 'src' );
-			expect( domElement.outerHTML ).to.equal( '<img>' );
+			expect( domElement.outerHTML ).to.equal( '<iframe></iframe>' );
 		} );
 
 		it( 'should skip removing the (replacement) attribute representing the unsafe <script> tag', () => {

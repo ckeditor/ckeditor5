@@ -280,7 +280,6 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 
 #snippet-inline-editor header.ck-content h3 {
 	color: hsla(212, 79%, 9%, 0.59);
-	font-weight: 600;
 	font-size: 1.6rem;
 }
 
