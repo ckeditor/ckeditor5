@@ -134,12 +134,6 @@ export default class SharedAttributes {
 			return operations;
 		}
 
-		const attributeProperties = this._model.schema.getAttributeProperties( key );
-
-		if ( !attributeProperties.sharedReferenceAttribute ) {
-			return operations;
-		}
-
 		const referenceAttributes = new Set( this._getReferenceAttributesDefinitions().values() );
 
 		const getSharedReferenceAttribute = ( item, sharedReferenceAttribute ) => {
@@ -161,6 +155,30 @@ export default class SharedAttributes {
 			return refValue;
 		};
 
+		const addReferenceAttributeOperation = ( item, previousValue, newValue ) => {
+			for ( const [ sharedKey, sharedValue ] of item.root.getAttributes( { ignoreShared: true } ) ) {
+				const prefix = `$shared:${ previousValue }:`;
+
+				if ( sharedKey.startsWith( prefix ) ) {
+					if ( this._decreaseReferenceCount( previousValue ) == 0 ) {
+						operations.push( {
+							item: item.root,
+							key: sharedKey,
+							value: null
+						} );
+					}
+
+					this._increaseReferenceCount( newValue );
+
+					operations.push( {
+						item: item.root,
+						key: `$shared:${ newValue }:${ sharedKey.substring( prefix.length ) }`,
+						value: sharedValue
+					} );
+				}
+			}
+		};
+
 		const addSharedAttributeOperation = ( item, key, sharedReferenceAttribute, newValue ) => {
 			const refValue = getSharedReferenceAttribute( item, sharedReferenceAttribute );
 
@@ -171,38 +189,28 @@ export default class SharedAttributes {
 				key: `$shared:${ refValue }:${ key }`,
 				value: newValue
 			} );
-
-			if ( referenceAttributes.has( key ) ) {
-				for ( const [ aKey, aValue ] of item.root.getAttributes( { ignoreShared: true } ) ) {
-					const prefix = `$shared:${ previousValue }:`;
-
-					if ( aKey.startsWith( prefix ) ) {
-						if ( this._decreaseReferenceCount( previousValue ) == 0 ) {
-							operations.push( {
-								item: item.root,
-								key: aKey,
-								value: null
-							} );
-						}
-
-						this._increaseReferenceCount( newValue );
-
-						operations.push( {
-							item: item.root,
-							key: `$shared:${ newValue }:${ aKey.substring( prefix.length ) }`,
-							value: aValue
-						} );
-					}
-				}
-			}
 		};
+
+		const attributeProperties = this._model.schema.getAttributeProperties( key );
 
 		if ( itemOrRange.is( 'range' ) ) {
 			for ( const item of itemOrRange.getItems( { shallow: true } ) ) {
-				addSharedAttributeOperation( item, key, attributeProperties.sharedReferenceAttribute, newValue );
+				if ( attributeProperties.sharedReferenceAttribute ) {
+					addSharedAttributeOperation( item, key, attributeProperties.sharedReferenceAttribute, newValue );
+				}
+
+				if ( referenceAttributes.has( key ) ) {
+					addReferenceAttributeOperation( item, previousValue, newValue );
+				}
 			}
 		} else {
-			addSharedAttributeOperation( itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
+			if ( attributeProperties.sharedReferenceAttribute ) {
+				addSharedAttributeOperation( itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
+			}
+
+			if ( referenceAttributes.has( key ) ) {
+				addReferenceAttributeOperation( itemOrRange, previousValue, newValue );
+			}
 		}
 
 		return operations;
