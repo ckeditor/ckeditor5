@@ -9,6 +9,11 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
+const DEFAULT_ALLOWED_COMMANDS = [ 'paragraph', 'indent', 'indentBlock', 'indentList', 'outdent',
+	'outdentBlock', 'outdentList', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript',
+	'enter', 'shiftEnter', 'numberedList', 'bulletedList', 'todoList', 'blockQuote',
+	'selectAll', 'htmlEmbed', 'pageBreak', 'codeBlock', 'mediaEmbed', 'insertTable' ];
+
 /**
  * The slash command editing plugin.
  *
@@ -42,6 +47,13 @@ export default class SlashCommandEditing extends Plugin {
 		}
 
 		let commands = Array.from( _getEditorCommands( this.editor ) );
+
+		const allowedCommands = typeof this.editor.config.get( 'slashCommand.allowedCommands' ) != 'undefined' ||
+			DEFAULT_ALLOWED_COMMANDS;
+
+		if ( allowedCommands && allowedCommands.length ) {
+			commands = commands.filter( command => allowedCommands.includes( command.id ) );
+		}
 
 		if ( filterText ) {
 			commands = commands.filter( obj => {

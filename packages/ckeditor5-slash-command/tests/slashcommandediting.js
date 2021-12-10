@@ -20,9 +20,8 @@ describe( 'SlashCommandEditing', () => {
 	let editorElement, editor, slashCommandEditingPlugin;
 
 	// A list of commands that are available in this particular editor configuration.
-	const defaultCommands = [ 'paragraph', 'insertParagraph', 'indent', 'outdent', 'bold', 'enter',
-		'deleteForward', 'forwardDelete', 'delete', 'numberedList', 'bulletedList', 'indentList',
-		'outdentList', 'blockQuote', 'mediaEmbed', 'undo', 'redo' ];
+	const defaultCommands = [ 'paragraph', 'indent', 'outdent', 'bold', 'enter',
+		'numberedList', 'bulletedList', 'indentList', 'outdentList', 'blockQuote', 'mediaEmbed' ];
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
