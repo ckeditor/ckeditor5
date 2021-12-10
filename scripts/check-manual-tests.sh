@@ -34,7 +34,7 @@ node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/te
 MANUAL_TEST_SERVER_PROCESS_ID=$!
 
 echo "Waiting for the server..."
-node_modules/.bin/wait-on http://localhost:8125 && yarn run manual:verify
+node_modules/.bin/wait-on http://localhost:8125 && yarn run manual:verify --no-spinner
 
 MANUAL_VERIFY_EXIT_CODE=$?
 
