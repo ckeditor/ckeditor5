@@ -334,11 +334,11 @@ export default class Node {
 	 * @returns {Boolean} `true` if attribute with given key is set on node, `false` otherwise.
 	 */
 	hasAttribute( key, options = {} ) {
-		if ( options.ignoreShared ) {
+		if ( !this.root.document || options.ignoreShared ) {
 			return this._attrs.has( key );
 		}
 
-		return getSharedAttribute( this, key, this._attrs.get( key ) ) !== undefined;
+		return this.root.document.model._sharedAttributes.getSharedAttribute( this, key, this._attrs.get( key ) ) !== undefined;
 	}
 
 	/**
@@ -348,11 +348,11 @@ export default class Node {
 	 * @returns {*} Attribute value or `undefined`.
 	 */
 	getAttribute( key, options = {} ) {
-		if ( options.ignoreShared ) {
+		if ( !this.root.document || options.ignoreShared ) {
 			return this._attrs.get( key );
 		}
 
-		return getSharedAttribute( this, key, this._attrs.get( key ) );
+		return this.root.document.model._sharedAttributes.getSharedAttribute( this, key, this._attrs.get( key ) );
 	}
 
 	/**
@@ -364,11 +364,11 @@ export default class Node {
 	 * @returns {Iterable.<*>}
 	 */
 	getAttributes( options = {} ) {
-		if ( options.ignoreShared ) {
+		if ( !this.root.document || options.ignoreShared ) {
 			return this._attrs.entries();
 		}
 
-		return getSharedAttributes( this, this._attrs ).entries();
+		return this.root.document.model._sharedAttributes.getSharedAttributes( this, this._attrs ).entries();
 	}
 
 	/**
@@ -377,11 +377,11 @@ export default class Node {
 	 * @returns {Iterable.<String>}
 	 */
 	getAttributeKeys( options = {} ) {
-		if ( options.ignoreShared ) {
+		if ( !this.root.document || options.ignoreShared ) {
 			return this._attrs.keys();
 		}
 
-		return getSharedAttributes( this, this._attrs ).keys();
+		return this.root.document.model._sharedAttributes.getSharedAttributes( this, this._attrs ).keys();
 	}
 
 	/**

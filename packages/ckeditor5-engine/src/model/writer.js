@@ -213,7 +213,7 @@ export default class Writer {
 		let extractedSharedAttributes = null;
 
 		if ( position.root.document ) {
-			extractedSharedAttributes = extractSharedAttributes( item, this.model.schema );
+			extractedSharedAttributes = this.model._sharedAttributes.extractSharedAttributes( item );
 		}
 
 		addInsertOperation( this, position, item );

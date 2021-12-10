@@ -19,6 +19,7 @@ import ModelRange from './range';
 import ModelPosition from './position';
 import ModelSelection from './selection';
 import OperationFactory from './operation/operationfactory';
+import SharedAttributes from './sharedattributes';
 
 import insertContent from './utils/insertcontent';
 import deleteContent from './utils/deletecontent';
@@ -79,6 +80,12 @@ export default class Model {
 		 * @member {module:engine/model/writer~Writer}
 		 */
 		this._currentWriter = null;
+
+		/**
+		 * TODO
+		 * @protected
+		 */
+		this._sharedAttributes = new SharedAttributes( this );
 
 		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );
