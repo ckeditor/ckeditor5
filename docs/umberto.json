@@ -53,7 +53,8 @@
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
-		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html"
+		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
+		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -174,7 +175,12 @@
 							"slug": "tutorials",
 							"order": 200
 						},
-
+						{
+							"name": "Developing custom plugins",
+							"id": "framework-plugins",
+							"slug": "plugins",
+							"order": 250
+						},
 						{
 							"name": "Deep dive",
 							"id": "framework-deep-dive",
