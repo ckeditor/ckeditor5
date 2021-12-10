@@ -11,8 +11,8 @@ import { Plugin } from 'ckeditor5/src/core';
 
 const DEFAULT_ALLOWED_COMMANDS = [ 'paragraph', 'indent', 'indentBlock', 'indentList', 'outdent',
 	'outdentBlock', 'outdentList', 'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript',
-	'enter', 'shiftEnter', 'numberedList', 'bulletedList', 'todoList', 'blockQuote',
-	'selectAll', 'htmlEmbed', 'pageBreak', 'codeBlock', 'mediaEmbed', 'insertTable' ];
+	'numberedList', 'bulletedList', 'todoList', 'blockQuote', 'selectAll', 'htmlEmbed', 'pageBreak',
+	'codeBlock', 'mediaEmbed', 'insertTable' ];
 
 /**
  * The slash command editing plugin.

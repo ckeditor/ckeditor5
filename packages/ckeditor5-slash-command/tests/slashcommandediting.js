@@ -20,8 +20,8 @@ describe( 'SlashCommandEditing', () => {
 	let editorElement, editor, slashCommandEditingPlugin;
 
 	// A list of commands that are available in this particular editor configuration.
-	const defaultCommands = [ 'paragraph', 'indent', 'outdent', 'bold', 'enter',
-		'numberedList', 'bulletedList', 'indentList', 'outdentList', 'blockQuote', 'mediaEmbed' ];
+	const defaultCommands = [ 'paragraph', 'indent', 'outdent', 'bold', 'numberedList', 'bulletedList',
+		'indentList', 'outdentList', 'blockQuote', 'mediaEmbed' ];
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );

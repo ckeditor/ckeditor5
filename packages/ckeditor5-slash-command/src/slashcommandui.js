@@ -96,7 +96,7 @@ export default class SlashCommandUI extends Plugin {
 
 	_customItemRenderer( item ) {
 		// This should be configurable.
-		const layout = 'clean';
+		const layout = 'compact';
 		const layoutClass = layout === 'clean' ? 'ck-feed-clean-command-' : 'ck-feed-command-';
 
 		const feedContainer = document.createElement( 'div' );
