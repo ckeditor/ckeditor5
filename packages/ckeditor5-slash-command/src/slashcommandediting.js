@@ -64,10 +64,11 @@ function* _getEditorCommands( editor ) {
 	// Proxied commands are the commands that normally just expect have data to be given. However, we want
 	// them to show/focus relevant UI elements.
 	const componentFactory = editor.ui.componentFactory;
-	const proxiedCommands = [ 'insertTable', 'mediaEmbed' ];
-	let proxyExecutor = null;
+	const proxiedCommands = [ 'insertTable', 'mediaEmbed', 'fontSize' ];
+	const proxyExecutors = {};
 
 	for ( const [ commandName ] of editor.commands ) {
+		let proxyExecutor = null;
 		let uiComponent = null;
 		let buttonLikeComponent = null;
 
@@ -79,14 +80,15 @@ function* _getEditorCommands( editor ) {
 
 			uiComponent = componentFactory.create( commandName );
 
+			// Special handling for proxied commands.
 			if ( proxiedCommands.includes( commandName ) ) {
 				// Look in classic toolbar.
 				if ( editor.ui && editor.ui.view.toolbar ) {
 					for ( const toolbarItem of editor.ui.view.toolbar.items ) {
 						if ( !proxyExecutor && isTheSameUIItem( uiComponent, toolbarItem ) ) {
-							proxyExecutor = () => {
-								( toolbarItem.buttonView || toolbarItem ).fire( 'execute' );
-							};
+							proxyExecutor = () => ( toolbarItem.buttonView || toolbarItem ).fire( 'execute' );
+
+							proxyExecutors[ commandName ] = proxyExecutor;
 						}
 					}
 				}
@@ -104,14 +106,16 @@ function* _getEditorCommands( editor ) {
 			id: commandName,
 			title: buttonLikeComponent && buttonLikeComponent.label ? buttonLikeComponent.label : null,
 			icon: buttonLikeComponent && buttonLikeComponent.icon ? buttonLikeComponent.icon : null,
-			description: null,
-			proxy: proxyExecutor
+			proxy: proxyExecutors[ commandName ] || null
 		};
 	}
 }
 
 // Compares two UI items.
 function isTheSameUIItem( itemA, itemB ) {
-	return itemA.label === itemB.label &&
-	itemA.icon === itemB.icon;
+	const buttonA = itemA.buttonView || itemA;
+	const buttonB = itemB.buttonView || itemB;
+
+	return buttonA.label === buttonB.label &&
+		buttonA.icon === buttonB.icon;
 }

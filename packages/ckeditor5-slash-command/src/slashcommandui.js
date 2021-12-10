@@ -37,10 +37,8 @@ export default class SlashCommandUI extends Plugin {
 	 */
 	init() {
 		this._prepareConfig();
-	}
-
-	afterInit() {
-		this._setupListener();
+		// Some commands are registered in afterInit method.
+		this.editor.once( 'ready', this._setupListener.bind( this ) );
 	}
 
 	_prepareConfig() {
@@ -74,11 +72,7 @@ export default class SlashCommandUI extends Plugin {
 			const eventData = data[ 0 ];
 			const model = editor.model;
 
-			const matcher = command => {
-				return command.id == eventData.mention.id;
-			};
-
-			if ( eventData.marker == '/' && commandList.some( matcher ) ) {
+			if ( eventData.marker == '/' && commandList.some( command => command.id == eventData.mention.id ) ) {
 				const commandName = eventData.mention.id.substr( 1 );
 
 				model.change( writer => {
@@ -87,7 +81,11 @@ export default class SlashCommandUI extends Plugin {
 
 					writer.remove( range );
 
-					editor.execute( commandName );
+					if ( eventData.mention.proxy ) {
+						eventData.mention.proxy();
+					} else {
+						editor.execute( commandName );
+					}
 
 					// Default mentions handler should not be triggered.
 					event.stop();

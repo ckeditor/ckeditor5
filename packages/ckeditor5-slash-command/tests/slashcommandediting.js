@@ -62,7 +62,6 @@ describe( 'SlashCommandEditing', () => {
 			expect( firstResult ).to.be.an( 'object' );
 			expect( firstResult ).to.have.property( 'id' );
 			expect( firstResult ).to.have.property( 'title' );
-			expect( firstResult ).to.have.property( 'description' );
 			expect( firstResult ).to.have.property( 'icon' );
 		} );
 
