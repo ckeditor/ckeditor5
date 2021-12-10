@@ -48,10 +48,11 @@ export default class SlashCommandUI extends Plugin {
 		config.push( {
 			marker: '/',
 			feed: this._getCommandList.bind( this ),
-			itemRenderer: this._customItemRenderer
+			itemRenderer: this._customItemRenderer.bind( this )
 		} );
 
 		editor.config.set( 'mention.feeds', config );
+		editor.config.define( 'mention.layout', 'compact' );
 	}
 
 	_getCommandList( searchString ) {
@@ -95,8 +96,7 @@ export default class SlashCommandUI extends Plugin {
 	}
 
 	_customItemRenderer( item ) {
-		// This should be configurable.
-		const layout = 'compact';
+		const layout = this.editor.config.get( 'mention.layout' );
 		const layoutClass = layout === 'clean' ? 'ck-feed-clean-command-' : 'ck-feed-command-';
 
 		const feedContainer = document.createElement( 'div' );

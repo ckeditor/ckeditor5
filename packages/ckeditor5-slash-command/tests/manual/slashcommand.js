@@ -32,7 +32,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import SlashCommand from '../../src/slashcommand';
 
 ClassicEditor
-	.create( global.document.querySelector( '#editor' ), {
+	.create( global.document.querySelector( '#editor1' ), {
 		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [
 			Bold, Clipboard, Enter, Italic, Link, Paragraph, SlashCommand, ShiftEnter, Typing,
@@ -42,11 +42,33 @@ ClassicEditor
 		toolbar: [ 'heading', '|', 'italic', 'bold', 'link', 'underline', 'strikethrough', '|', 'undo', 'redo', 'blockquote', '|',
 			'numberedList', 'bulletedList', '|', 'insertTable', 'mediaEmbed' ],
 		mention: {
-			dropdownLimit: 5
+			dropdownLimit: 8
 		}
 	} )
 	.then( editor => {
-		window.editor = editor;
+		window.editor1 = editor;
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+ClassicEditor
+	.create( global.document.querySelector( '#editor2' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
+		plugins: [
+			Bold, Clipboard, Enter, Italic, Link, Paragraph, SlashCommand, ShiftEnter, Typing,
+			Underline, Undo, Image, ImageCaption, ImageToolbar, ImageResize, BlockQuote, List,
+			Strikethrough, Table, MediaEmbed, Heading
+		],
+		toolbar: [ 'heading', '|', 'italic', 'bold', 'link', 'underline', 'strikethrough', '|', 'undo', 'redo', 'blockquote', '|',
+			'numberedList', 'bulletedList', '|', 'insertTable', 'mediaEmbed' ],
+		mention: {
+			dropdownLimit: 5,
+			layout: 'clean'
+		}
+	} )
+	.then( editor => {
+		window.editor2 = editor;
 	} )
 	.catch( err => {
 		console.error( err.stack );
