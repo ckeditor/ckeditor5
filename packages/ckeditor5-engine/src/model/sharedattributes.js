@@ -7,6 +7,7 @@
  * @module engine/model/sharedattributes
  */
 
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import Range from './range';
 
 /**
@@ -106,6 +107,68 @@ export default class SharedAttributes {
 		}
 
 		return attributes;
+	}
+
+	/**
+	 * TODO
+	 */
+	prepareSetAttributeOperations( itemOrRange, key, previousValue, newValue ) {
+		const operations = [];
+
+		if ( !itemOrRange.root.document ) {
+			return operations;
+		}
+
+		const attributeProperties = this._model.schema.getAttributeProperties( key );
+
+		if ( !attributeProperties.sharedReferenceAttribute ) {
+			return operations;
+		}
+
+		if ( itemOrRange.is( 'range' ) ) {
+			for ( const item of itemOrRange.getItems( { shallow: true } ) ) {
+				addSharedAttributeOperation( item, key, attributeProperties.sharedReferenceAttribute, newValue );
+			}
+		} else {
+			addSharedAttributeOperation( itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
+		}
+
+		return operations;
+
+		function addSharedAttributeOperation( item, key, sharedReferenceAttribute, newValue ) {
+			const refValue = getSharedReferenceAttribute( item, sharedReferenceAttribute );
+			const previousValue = item.root.getAttribute( `$shared:${ refValue }:${ key }`, { ignoreShared: true } );
+
+			if ( previousValue != newValue ) {
+				operations.push( {
+					item: item.root,
+					key: `$shared:${ refValue }:${ key }`,
+					previousValue,
+					newValue
+				} );
+			}
+		}
+
+		// TODO
+		function getSharedReferenceAttribute( item, sharedReferenceAttribute ) {
+			let refValue = item.getAttribute( sharedReferenceAttribute );
+
+			// Note that undefined == null.
+			if ( refValue != null ) {
+				return refValue;
+			}
+
+			refValue = uid();
+
+			operations.push( {
+				item,
+				key: sharedReferenceAttribute,
+				previousValue: null,
+				newValue: refValue
+			} );
+
+			return refValue;
+		}
 	}
 
 	/**

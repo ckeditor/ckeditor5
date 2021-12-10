@@ -28,8 +28,6 @@ import DocumentSelection from './documentselection';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 import CKEditorError, { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { uid } from '@ckeditor/ckeditor5-utils';
-import { extractSharedAttributes } from './sharedattributes';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -1484,20 +1482,15 @@ function setAttributeOnItem( writer, key, value, item ) {
 
 // TODO
 function addAttributeOperation( writer, itemOrRange, key, previousValue, newValue ) {
-	if ( itemOrRange.root.document ) {
-		const attributeProperties = writer.model.schema.getAttributeProperties( key );
+	// Check if specified attribute should not be stored as a shared attribute.
+	const sharedAttributes = writer.model._sharedAttributes.prepareSetAttributeOperations( itemOrRange, key, previousValue, newValue );
 
-		if ( attributeProperties.sharedReferenceAttribute ) {
-			if ( itemOrRange.is( 'range' ) ) {
-				for ( const item of itemOrRange.getItems( { shallow: true } ) ) {
-					addSharedAttributeOperation( writer, item, key, attributeProperties.sharedReferenceAttribute, newValue );
-				}
-			} else {
-				addSharedAttributeOperation( writer, itemOrRange, key, attributeProperties.sharedReferenceAttribute, newValue );
-			}
-
-			return;
+	if ( sharedAttributes.length ) {
+		for ( const { item, key, previousValue, newValue } of sharedAttributes ) {
+			addAttributeOperation( writer, item, key, previousValue, newValue );
 		}
+
+		return;
 	}
 
 	const version = itemOrRange.root.document ? itemOrRange.root.document.version : null;
@@ -1514,32 +1507,6 @@ function addAttributeOperation( writer, itemOrRange, key, previousValue, newValu
 
 	writer.batch.addOperation( operation );
 	writer.model.applyOperation( operation );
-}
-
-// TODO
-function addSharedAttributeOperation( writer, item, key, sharedReferenceAttribute, newValue ) {
-	const refValue = getSharedReferenceAttribute( writer, item, sharedReferenceAttribute );
-	const oldValue = item.root.getAttribute( `$shared:${ refValue }:${ key }`, { ignoreShared: true } );
-
-	if ( oldValue != newValue ) {
-		addAttributeOperation( writer, item.root, `$shared:${ refValue }:${ key }`, oldValue, newValue );
-	}
-}
-
-// TODO
-function getSharedReferenceAttribute( writer, item, sharedReferenceAttribute ) {
-	let refValue = item.getAttribute( sharedReferenceAttribute );
-
-	// Note that undefined == null.
-	if ( refValue != null ) {
-		return refValue;
-	}
-
-	refValue = uid();
-
-	addAttributeOperation( writer, item, sharedReferenceAttribute, null, refValue );
-
-	return refValue;
 }
 
 // TODO
