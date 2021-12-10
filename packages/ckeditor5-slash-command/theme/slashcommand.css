@@ -1,13 +1,42 @@
-div.ck-button>span.ck-feed-command-title {
-	padding: 5px;
+div.ck-button span.ck-feed-clean-command-title {
+	padding-left: 10px;
+	font-size: var( --ck-font-size-big );
 }
 
-div.ck-button>span.ck-feed-command-id {
-	padding: 5px;
+div.ck-button span.ck-feed-compact-command-title {
+	padding-left: 10px;
+}
+
+div.ck-button span.ck-feed-command-id {
+	padding-left: 10px;
 	color: rgb(128, 124, 124);
 }
 
-div.ck-button.ck-on>span.ck-feed-command-id {
-	padding: 5px;
+div.ck-button.ck-on span.ck-feed-command-id {
 	color: white;
+}
+
+div.ck-button>div.ck-feed-clean-command-container {
+	display: flex;
+	align-items: start;
+	flex-direction: column;
+}
+
+div.ck-button>span.ck-feed-clean-command-icon {
+	display: inline-block;
+	width: 40px;
+	border-right: 1px gray solid;
+}
+
+div.ck-button.ck-on>span.ck-feed-clean-command-icon {
+	display: inline-block;
+	width: 40px;
+	border-right: 1px white solid;
+}
+
+.ck-mentions div.ck-button.ck-feed-command-entry {
+	display: flex;
+	align-items: center;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }

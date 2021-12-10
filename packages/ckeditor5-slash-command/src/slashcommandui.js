@@ -50,7 +50,7 @@ export default class SlashCommandUI extends Plugin {
 		config.push( {
 			marker: '/',
 			feed: this._getCommandList.bind( this ),
-			itemRenderer: customItemRenderer
+			itemRenderer: this._customItemRenderer
 		} );
 
 		editor.config.set( 'mention.feeds', config );
@@ -95,32 +95,48 @@ export default class SlashCommandUI extends Plugin {
 			}
 		}, { priority: 'high' } );
 	}
-}
 
-function customItemRenderer( item ) {
-	const feedContainer = document.createElement( 'div' );
+	_customItemRenderer( item ) {
+		// This should be configurable.
+		const layout = 'clean';
+		const layoutClass = layout === 'clean' ? 'ck-feed-clean-command-' : 'ck-feed-command-';
 
-	if ( item.icon ) {
-		const icon = document.createElement( 'span' );
+		const feedContainer = document.createElement( 'div' );
+		feedContainer.classList.add( 'ck-feed-command-entry' );
 
-		icon.innerHTML = item.icon;
-		icon.firstChild.style.width = '20px';
+		if ( item.icon ) {
+			const icon = document.createElement( 'span' );
 
-		feedContainer.appendChild( icon );
+			icon.classList.add( layoutClass + 'icon' );
+			icon.innerHTML = item.icon;
+			icon.firstChild.style.width = layout === 'clean' ? '30px' : '20px';
+
+			feedContainer.appendChild( icon );
+		}
+
+		const commandTitleElement = document.createElement( 'span' );
+
+		commandTitleElement.classList.add( layoutClass + 'title' );
+		commandTitleElement.textContent = item.title;
+
+		const commandIdElement = document.createElement( 'span' );
+
+		commandIdElement.classList.add( 'ck-feed-command-id' );
+		commandIdElement.textContent = item.id;
+
+		if ( layout == 'clean' ) {
+			const div = document.createElement( 'div' );
+			div.classList.add( layoutClass + 'container' );
+
+			div.appendChild( commandTitleElement );
+			div.appendChild( commandIdElement );
+
+			feedContainer.appendChild( div );
+		} else {
+			feedContainer.appendChild( commandTitleElement );
+			feedContainer.appendChild( commandIdElement );
+		}
+
+		return feedContainer;
 	}
-
-	const commandTitleElement = document.createElement( 'span' );
-
-	commandTitleElement.classList.add( 'ck-feed-command-title' );
-	commandTitleElement.textContent = item.title;
-
-	const commandIdElement = document.createElement( 'span' );
-
-	commandIdElement.classList.add( 'ck-feed-command-id' );
-	commandIdElement.textContent = item.id;
-
-	feedContainer.appendChild( commandTitleElement );
-	feedContainer.appendChild( commandIdElement );
-
-	return feedContainer;
 }
