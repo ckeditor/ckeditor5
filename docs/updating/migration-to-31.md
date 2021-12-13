@@ -1,6 +1,6 @@
 
 ---
-category: builds-migration
+category: updating
 menu-title: Migration to v31.x
 order: 93
 modified_at: 2021-12-03

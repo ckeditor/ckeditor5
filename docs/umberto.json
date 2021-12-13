@@ -139,7 +139,7 @@
 							"order": 300
 						},
 						{
-							"name": "Migration / update",
+							"name": "Migration",
 							"id": "builds-migration",
 							"slug": "migration",
 							"order": 400
@@ -252,6 +252,11 @@
 					"slug": "framework"
 				}
 			]
+		},
+		{
+			"name": "Updating",
+			"id": "updating",
+			"slug": "updating"
 		},
 		{
 			"name": "Framework",

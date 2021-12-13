@@ -1,5 +1,5 @@
 ---
-category: builds-migration
+category: updating
 menu-title: Migration to v26.x
 order: 98
 ---
