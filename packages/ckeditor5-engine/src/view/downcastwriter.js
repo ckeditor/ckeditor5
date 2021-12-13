@@ -1327,7 +1327,7 @@ export default class DowncastWriter {
 			//
 			// <p><a href="foo.html">abc</a></p>  -->  <p><a href="foo.html"><span class="foo">abc</span></a></p>
 			//
-			else if ( isAttribute ) {
+			else /* if ( isAttribute ) */ {
 				this._wrapChildren( child, 0, child.childCount, wrapElement );
 			}
 
