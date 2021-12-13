@@ -35,10 +35,23 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$root' ) ).to.be.true;
 		} );
 
+		it( 'registers $container to the schema', () => {
+			expect( schema.isRegistered( '$container' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$container' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$container' ) ).to.be.true;
+			expect( schema.checkChild( [ '$container' ], '$block' ) ).to.be.true;
+		} );
+
 		it( 'registers $block to the schema', () => {
 			expect( schema.isRegistered( '$block' ) ).to.be.true;
 			expect( schema.isBlock( '$block' ) ).to.be.true;
 			expect( schema.checkChild( [ '$root' ], '$block' ) ).to.be.true;
+		} );
+
+		it( '$block shares the attributes of $container', () => {
+			schema.extend( '$container', { allowAttributes: 'foo' } );
+
+			expect( schema.checkAttribute( '$block', 'foo' ) ).to.be.true;
 		} );
 
 		it( 'registers $text to the schema', () => {

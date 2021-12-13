@@ -60,7 +60,7 @@ describe( 'Differ', () => {
 				);
 
 				expectChanges( [
-					{ type: 'insert', name: 'imageBlock', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position, attributes: new Map( [ [ 'src', 'foo.jpg' ] ] ) }
 				] );
 			} );
 		} );
@@ -180,7 +180,7 @@ describe( 'Differ', () => {
 				// so there is also a diff for text.
 				expectChanges( [
 					{ type: 'attribute', range: diffRange, attributeKey: 'align', attributeOldValue: null, attributeNewValue: 'center' },
-					{ type: 'insert', name: '$text', length: 3, position }
+					{ type: 'insert', name: '$text', length: 3, position, attributes: new Map( [ [ 'bold', true ] ] ) }
 				] );
 			} );
 		} );
@@ -295,6 +295,23 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'element with attributes', () => {
+			const position = new Position( root, [ 0 ] );
+			const range = new Range( Position._createAt( root, 0 ), Position._createAt( root, 1 ) );
+
+			model.change( () => {
+				attribute( range, 'align', null, 'center' );
+			} );
+
+			model.change( () => {
+				remove( position, 1 );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position, attributes: new Map( [ [ 'align', 'center' ] ] ) }
+				] );
+			} );
+		} );
+
 		it( 'a character', () => {
 			const position = new Position( root, [ 0, 1 ] );
 
@@ -315,6 +332,23 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'remove', name: '$text', length: 2, position }
+				] );
+			} );
+		} );
+
+		it( 'characters with attributes', () => {
+			const position = new Position( root, [ 0, 0 ] );
+			const range = new Range( Position._createAt( root.getChild( 0 ), 0 ), Position._createAt( root.getChild( 0 ), 2 ) );
+
+			model.change( () => {
+				attribute( range, 'bold', null, true );
+			} );
+
+			model.change( () => {
+				remove( position, 2 );
+
+				expectChanges( [
+					{ type: 'remove', name: '$text', length: 2, position, attributes: new Map( [ [ 'bold', true ] ] ) }
 				] );
 			} );
 		} );
@@ -2041,6 +2075,8 @@ describe( 'Differ', () => {
 				if ( Object.prototype.hasOwnProperty.call( expected[ i ], key ) ) {
 					if ( key == 'position' || key == 'range' ) {
 						expect( changes[ i ][ key ].isEqual( expected[ i ][ key ] ), `item ${ i }, key "${ key }"` ).to.be.true;
+					} else if ( key == 'attributes' ) {
+						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).to.deep.equal( expected[ i ][ key ] );
 					} else {
 						expect( changes[ i ][ key ], `item ${ i }, key "${ key }"` ).to.equal( expected[ i ][ key ] );
 					}
