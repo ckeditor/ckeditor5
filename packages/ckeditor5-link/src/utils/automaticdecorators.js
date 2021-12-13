@@ -67,7 +67,7 @@ export default class AutomaticDecorators {
 					return;
 				}
 
-				if ( !conversionApi.schema.isInline( data.item ) ) {
+				if ( !( data.item.is( 'selection' ) || conversionApi.schema.isInline( data.item ) ) ) {
 					return;
 				}
 
