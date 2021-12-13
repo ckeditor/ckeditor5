@@ -156,6 +156,14 @@ describe( 'CodeBlockEditing', () => {
 		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
 	} );
 
+	it( 'inherits attributes from $container', () => {
+		model.schema.extend( '$container', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'codeBlock', 'foo' ) ).to.be.true;
+	} );
+
 	describe( 'tab key handling', () => {
 		let domEvtDataStub;
 

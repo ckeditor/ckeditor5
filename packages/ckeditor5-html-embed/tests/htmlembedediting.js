@@ -60,6 +60,14 @@ describe( 'HtmlEmbedEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'rawHtml' ) ).to.be.false;
 	} );
 
+	it( 'inherits attributes from $container', () => {
+		model.schema.extend( '$container', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'rawHtml', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'should register the htmlEmbed command', () => {
 		expect( editor.commands.get( 'htmlEmbed' ) ).to.be.instanceOf( HtmlEmbedCommand );
 	} );

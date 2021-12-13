@@ -64,6 +64,14 @@ describe( 'ImageBlockEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'imageBlock' ) ).to.be.false;
 	} );
 
+	it( 'inherits attributes from $container', () => {
+		model.schema.extend( '$container', {
+			allowAttributes: 'foo'
+		} );
+
+		expect( model.schema.checkAttribute( 'imageBlock', 'foo' ) ).to.be.true;
+	} );
+
 	it( 'should register ImageLoadObserver', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
