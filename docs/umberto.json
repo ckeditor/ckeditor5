@@ -54,7 +54,8 @@
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
-		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html"
+		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
+		"builds/guides/faq.html": "builds/guides/support/faq.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -146,70 +147,6 @@
 						{
 							"name": "Support",
 							"id": "builds-support",
-							"slug": "support",
-							"order": 500
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "Framework",
-			"id": "framework",
-			"slug": "framework",
-			"categories": [
-				{
-					"name": "Guides",
-					"id": "framework-guides",
-					"slug": "guides",
-					"categories": [
-						{
-							"name": "Architecture",
-							"id": "framework-architecture",
-							"slug": "architecture",
-							"order": 100
-						},
-						{
-							"name": "Tutorials",
-							"id": "framework-tutorials",
-							"slug": "tutorials",
-							"order": 200
-						},
-						{
-							"name": "Developing custom plugins",
-							"id": "framework-plugins",
-							"slug": "plugins",
-							"order": 250
-						},
-						{
-							"name": "Deep dive",
-							"id": "framework-deep-dive",
-							"slug": "deep-dive",
-							"order": 300,
-							"categories": [
-								{
-									"name": "Conversion",
-									"id": "framework-deep-dive-conversion",
-									"slug": "conversion",
-									"order": 100
-								},
-								{
-									"name": "User interface",
-									"id": "framework-deep-dive-ui",
-									"slug": "ui",
-									"order": 110
-								}
-							]
-						},
-						{
-							"name": "Contributing",
-							"id": "framework-contributing",
-							"slug": "contributing",
-							"order": 400
-						},
-						{
-							"name": "Support",
-							"id": "framework-support",
 							"slug": "support",
 							"order": 500
 						}
@@ -313,6 +250,70 @@
 					"name": "Framework",
 					"id": "examples-framework",
 					"slug": "framework"
+				}
+			]
+		},
+		{
+			"name": "Framework",
+			"id": "framework",
+			"slug": "framework",
+			"categories": [
+				{
+					"name": "Guides",
+					"id": "framework-guides",
+					"slug": "guides",
+					"categories": [
+						{
+							"name": "Architecture",
+							"id": "framework-architecture",
+							"slug": "architecture",
+							"order": 100
+						},
+						{
+							"name": "Tutorials",
+							"id": "framework-tutorials",
+							"slug": "tutorials",
+							"order": 200
+						},
+						{
+							"name": "Developing custom plugins",
+							"id": "framework-plugins",
+							"slug": "plugins",
+							"order": 250
+						},
+						{
+							"name": "Deep dive",
+							"id": "framework-deep-dive",
+							"slug": "deep-dive",
+							"order": 300,
+							"categories": [
+								{
+									"name": "Conversion",
+									"id": "framework-deep-dive-conversion",
+									"slug": "conversion",
+									"order": 100
+								},
+								{
+									"name": "User interface",
+									"id": "framework-deep-dive-ui",
+									"slug": "ui",
+									"order": 110
+								}
+							]
+						},
+						{
+							"name": "Contributing",
+							"id": "framework-contributing",
+							"slug": "contributing",
+							"order": 400
+						},
+						{
+							"name": "Support",
+							"id": "framework-support",
+							"slug": "support",
+							"order": 500
+						}
+					]
 				}
 			]
 		},

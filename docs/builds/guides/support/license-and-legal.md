@@ -3,7 +3,7 @@
 # * Clarify copyright and license conditions.
 
 category: builds-support
-order: 20
+order: 30
 ---
 
 # License and legal
