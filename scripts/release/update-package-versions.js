@@ -9,14 +9,15 @@
 
 'use strict';
 
-// This script updates all of the ckeditor5 dependencies to the latest version of ckeditor5.
+// Updates `@ckeditor/ckeditor5-*` and `ckeditor5` dependencies in `packages/*` and `release/*` directories to the latest version.
+// Changes in `packages/*` will be committed as well.
+//
+// See https://github.com/cksource/ckeditor5-internal/issues/1123
 //
 // This task must be called before: `npm run release:publish`.
 //
 // Use:
 // npm run release:update-package-versions -- --dry-run
-//
-// See https://github.com/cksource/ckeditor5-internal/issues/1123
 
 require( '@ckeditor/ckeditor5-dev-env' )
 	.updatePackageVersions( {
