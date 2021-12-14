@@ -6,7 +6,6 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableSelection from '../../src/tableselection';
 import TableEditing from '../../src/tableediting';
@@ -68,7 +67,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -116,7 +115,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -151,7 +150,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'[<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -177,7 +176,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -201,7 +200,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute( { focusCaptionOnShow: true } );
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -227,7 +226,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -239,7 +238,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -266,7 +265,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 			// Hide the caption.
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -291,7 +290,7 @@ describe( 'ToggleTableCaptionCommand', () => {
 			command.execute();
 			command.execute();
 
-			assertEqualMarkup( getData( model ),
+			expect( getData( model ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
