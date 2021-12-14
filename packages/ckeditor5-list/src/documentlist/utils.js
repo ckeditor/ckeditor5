@@ -198,6 +198,8 @@ export function getAllListItemElements( listItem ) {
  *
  * It means that values for `listIndent`, and `listItemId` for all items are equal.
  *
+ * **Note**: For backward search the provided item is not included, but for forward search it is included in the result.
+ *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @param {'forward'|'backward'} direction Walking direction.

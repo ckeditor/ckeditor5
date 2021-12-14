@@ -1063,8 +1063,7 @@ describe( 'DocumentListEditing', () => {
 				);
 			} );
 
-			// https://github.com/ckeditor/ckeditor5-list/issues/126#issuecomment-518206743
-			it.skip( 'should properly handle split of list items with non-standard converters', () => {
+			it( 'should properly handle split of list items with non-standard converters', () => {
 				setModelData( model,
 					'<paragraph listType="bulleted" listItemId="a" listIndent="0">A[]</paragraph>' +
 					'<paragraph listType="bulleted" listItemId="b" listIndent="1">B</paragraph>' +
@@ -1075,15 +1074,11 @@ describe( 'DocumentListEditing', () => {
 
 				editor.conversion.for( 'downcast' ).elementToElement( { model: 'splitBlock', view: 'splitBlock' } );
 				editor.conversion.for( 'upcast' ).add( dispatcher => dispatcher.on( 'element:splitBlock', ( evt, data, conversionApi ) => {
-					conversionApi.consumable.consume( data.viewItem, { name: true } );
-
-					// Use split to allowed parent logic to simulate a non-standard use of `modelCursor` after split.
 					const splitBlock = conversionApi.writer.createElement( 'splitBlock' );
 
+					conversionApi.consumable.consume( data.viewItem, { name: true } );
 					conversionApi.safeInsert( splitBlock, data.modelCursor );
-
-					data.modelRange = conversionApi.writer.createRangeOn( splitBlock );
-					data.modelCursor = conversionApi.writer.createPositionAfter( splitBlock );
+					conversionApi.updateConversionResult( splitBlock, data );
 				} ) );
 
 				const clipboard = editor.plugins.get( 'ClipboardPipeline' );
@@ -1095,7 +1090,7 @@ describe( 'DocumentListEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">Aa</paragraph>' +
 					'<splitBlock></splitBlock>' +
-					'<paragraph listIndent="0" listItemId="e0000000TODO" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">b</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);

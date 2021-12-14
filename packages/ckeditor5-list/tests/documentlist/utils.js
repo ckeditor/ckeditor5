@@ -7,8 +7,11 @@ import DocumentListEditing from '../../src/documentlist/documentlistediting';
 import {
 	createListElement,
 	createListItemElement,
+	getAllListItemElements,
 	getIndent,
-	getSiblingListItem, getViewElementNameForListType,
+	getListItemElements,
+	getSiblingListItem,
+	getViewElementNameForListType,
 	isListItemView,
 	isListView
 } from '../../src/documentlist/utils';
@@ -443,9 +446,197 @@ describe( 'DocumentList - utils', () => {
 		} );
 	} );
 
-	describe( 'getAllListItemElements()', () => {} );
+	describe( 'getAllListItemElements()', () => {
+		it( 'should return a single item if it meets conditions', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
 
-	describe( 'getListItemElements()', () => {} );
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElements = getAllListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 1 );
+			expect( foundElements[ 0 ] ).to.be.equal( listItem );
+		} );
+
+		it( 'should return a items if started looking from the first list item block', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElements = getAllListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( listItem );
+			expect( foundElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
+		} );
+
+		it( 'should return a items if started looking from the last list item block', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 3 );
+			const foundElements = getAllListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
+			expect( foundElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElements[ 2 ] ).to.be.equal( listItem );
+		} );
+
+		it( 'should return a items if started looking from the middle list item block', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 2 );
+			const foundElements = getAllListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
+			expect( foundElements[ 1 ] ).to.be.equal( listItem );
+			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
+		} );
+
+		it( 'should ignore nested list blocks', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b1</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="1">b1.c</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b2</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="1">b2.d</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b3</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 4 );
+			const foundElements = getAllListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElements[ 1 ] ).to.be.equal( listItem );
+			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 6 ) );
+		} );
+	} );
+
+	describe( 'getListItemElements()', () => {
+		it( 'should return a single item if it meets conditions', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElements = getListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 1 );
+			expect( foundElements[ 0 ] ).to.be.equal( listItem );
+		} );
+
+		it( 'should return a items if started looking from the first list item block', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 1 );
+			const foundElements = getListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( listItem );
+			expect( foundElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
+		} );
+
+		it( 'should return a items if started looking from the last list item block', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 3 );
+			const foundElements = getListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
+			expect( foundElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElements[ 2 ] ).to.be.equal( listItem );
+		} );
+
+		it( 'should return a items if started looking from the middle list item block', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 2 );
+			const foundElements = getListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
+			expect( foundElements[ 1 ] ).to.be.equal( listItem );
+			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
+		} );
+
+		it( 'should ignore nested list blocks', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b1</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="1">b1.c</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b2</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="1">b2.d</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b3</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>' +
+				'<paragraph>bar</paragraph>'
+			);
+
+			const listItem = document.getRoot().getChild( 4 );
+			const foundElements = getListItemElements( listItem );
+
+			expect( foundElements.length ).to.equal( 3 );
+			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( foundElements[ 1 ] ).to.be.equal( listItem );
+			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 6 ) );
+		} );
+	} );
 
 	describe( 'findAddListHeadToMap()', () => {} );
 
