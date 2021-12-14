@@ -17,7 +17,7 @@
 // You can test the whole process using `dry-run` mode. It won't change anything in the project
 // and any repository.
 //
-// This task must be called before: `npm run release:publish`.
+// This task must be called before: `npm run release:update-package-versions` and npm `run release:publish`.
 //
 // Use:
 // npm run release:bump-version -- --dry-run

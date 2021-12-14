@@ -9,17 +9,17 @@
 
 'use strict';
 
-const path = require( 'path' );
-const { updatePackageVersions } = require( '@ckeditor/ckeditor5-dev-env' );
-
 // This script updates all of the ckeditor5 dependencies to the latest version of ckeditor5.
 //
 // This task must be called before: `npm run release:publish`.
 //
+// Use:
+// npm run release:update-package-versions -- --dry-run
+//
 // See https://github.com/cksource/ckeditor5-internal/issues/1123
 
-const pathToPackages = path.posix.join( process.cwd(), 'packages' );
-// const pathToRelease = path.posix.join( process.cwd(), 'release', 'packages' );
-
-updatePackageVersions( pathToPackages );
-// updatePackageVersions( pathToRelease );
+require( '@ckeditor/ckeditor5-dev-env' )
+	.updatePackageVersions( {
+		cwd: process.cwd(),
+		dryRun: process.argv.includes( '--dry-run' )
+	} );
