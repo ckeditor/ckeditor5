@@ -552,10 +552,12 @@ describe( 'DocumentList - utils', () => {
 			);
 
 			const listItem = document.getRoot().getChild( 1 );
-			const foundElements = getListItemElements( listItem );
+			const backwardElements = getListItemElements( listItem, 'backward' );
+			const forwardElements = getListItemElements( listItem, 'forward' );
 
-			expect( foundElements.length ).to.equal( 1 );
-			expect( foundElements[ 0 ] ).to.be.equal( listItem );
+			expect( backwardElements.length ).to.equal( 0 );
+			expect( forwardElements.length ).to.equal( 1 );
+			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
 		} );
 
 		it( 'should return a items if started looking from the first list item block', () => {
@@ -569,12 +571,14 @@ describe( 'DocumentList - utils', () => {
 			);
 
 			const listItem = document.getRoot().getChild( 1 );
-			const foundElements = getListItemElements( listItem );
+			const backwardElements = getListItemElements( listItem, 'backward' );
+			const forwardElements = getListItemElements( listItem, 'forward' );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( listItem );
-			expect( foundElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
-			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
+			expect( backwardElements.length ).to.equal( 0 );
+			expect( forwardElements.length ).to.equal( 3 );
+			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
+			expect( forwardElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+			expect( forwardElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
 		} );
 
 		it( 'should return a items if started looking from the last list item block', () => {
@@ -588,12 +592,15 @@ describe( 'DocumentList - utils', () => {
 			);
 
 			const listItem = document.getRoot().getChild( 3 );
-			const foundElements = getListItemElements( listItem );
+			const backwardElements = getListItemElements( listItem, 'backward' );
+			const forwardElements = getListItemElements( listItem, 'forward' );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
-			expect( foundElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
-			expect( foundElements[ 2 ] ).to.be.equal( listItem );
+			expect( backwardElements.length ).to.equal( 2 );
+			expect( backwardElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
+			expect( backwardElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+
+			expect( forwardElements.length ).to.equal( 1 );
+			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
 		} );
 
 		it( 'should return a items if started looking from the middle list item block', () => {
@@ -607,12 +614,15 @@ describe( 'DocumentList - utils', () => {
 			);
 
 			const listItem = document.getRoot().getChild( 2 );
-			const foundElements = getListItemElements( listItem );
+			const backwardElements = getListItemElements( listItem, 'backward' );
+			const forwardElements = getListItemElements( listItem, 'forward' );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
-			expect( foundElements[ 1 ] ).to.be.equal( listItem );
-			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
+			expect( backwardElements.length ).to.equal( 1 );
+			expect( backwardElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 1 ) );
+
+			expect( forwardElements.length ).to.equal( 2 );
+			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
+			expect( forwardElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 3 ) );
 		} );
 
 		it( 'should ignore nested list blocks', () => {
@@ -629,12 +639,15 @@ describe( 'DocumentList - utils', () => {
 			);
 
 			const listItem = document.getRoot().getChild( 4 );
-			const foundElements = getListItemElements( listItem );
+			const backwardElements = getListItemElements( listItem, 'backward' );
+			const forwardElements = getListItemElements( listItem, 'forward' );
 
-			expect( foundElements.length ).to.equal( 3 );
-			expect( foundElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
-			expect( foundElements[ 1 ] ).to.be.equal( listItem );
-			expect( foundElements[ 2 ] ).to.be.equal( document.getRoot().getChild( 6 ) );
+			expect( backwardElements.length ).to.equal( 1 );
+			expect( backwardElements[ 0 ] ).to.be.equal( document.getRoot().getChild( 2 ) );
+
+			expect( forwardElements.length ).to.equal( 2 );
+			expect( forwardElements[ 0 ] ).to.be.equal( listItem );
+			expect( forwardElements[ 1 ] ).to.be.equal( document.getRoot().getChild( 6 ) );
 		} );
 	} );
 
