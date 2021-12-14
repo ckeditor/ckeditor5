@@ -22,4 +22,4 @@ Listed below are the most important changes that require your attention when upg
 
 ### Bump of minimal version of `Node.js` to 14.x
 
-[Node.js 12 ends its long-term support in April 2022](https://nodejs.org/en/about/releases/). Because of that, starting from v32.0.0, the minimal version of `Node.js` required by CKEditor 5 will be 14.
+[`Node.js` 12 ends its long-term support in April 2022](https://nodejs.org/en/about/releases/). Because of that, starting from v32.0.0, the minimal version of `Node.js` required by CKEditor 5 will be 14.
