@@ -12,6 +12,7 @@ import { uid } from 'ckeditor5/src/utils';
 /**
  * Checks if view element is a list type (ul or ol).
  *
+ * @protected
  * @param {module:engine/view/element~Element} viewElement
  * @returns {Boolean}
 */
@@ -22,6 +23,7 @@ export function isListView( viewElement ) {
 /**
  * Checks if view element is a list item (li).
  *
+ * @protected
  * @param {module:engine/view/element~Element} viewElement
  * @returns {Boolean}
  */
@@ -29,35 +31,38 @@ export function isListItemView( viewElement ) {
 	return viewElement.is( 'element', 'li' );
 }
 
-// Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
-//
-// Also, fixes non HTML compliant lists indents:
-//
-//		before:                                     fixed list:
-//		OL                                          OL
-//		|-> LI (parent LIs: 0)                      |-> LI     (indent: 0)
-//		    |-> OL                                  |-> OL
-//		        |-> OL                                  |
-//		        |   |-> OL                              |
-//		        |       |-> OL                          |
-//		        |           |-> LI (parent LIs: 1)      |-> LI (indent: 1)
-//		        |-> LI (parent LIs: 1)                  |-> LI (indent: 1)
-//
-//		before:                                     fixed list:
-//		OL                                          OL
-//		|-> OL                                      |
-//		    |-> OL                                  |
-//		         |-> OL                             |
-//		             |-> LI (parent LIs: 0)         |-> LI        (indent: 0)
-//
-//		before:                                     fixed list:
-//		OL                                          OL
-//		|-> LI (parent LIs: 0)                      |-> LI         (indent: 0)
-//		|-> OL                                          |-> OL
-//		    |-> LI (parent LIs: 0)                          |-> LI (indent: 1)
-//
-// @param {module:engine/view/element~Element} listItem
-// @returns {Number}
+/**
+ * Calculates the indent value for a list item. Handles HTML compliant and non-compliant lists.
+ *
+ * Also, fixes non HTML compliant lists indents:
+ *
+ * 		before:                                     fixed list:
+ * 		OL                                          OL
+ * 		|-> LI (parent LIs: 0)                      |-> LI     (indent: 0)
+ * 		    |-> OL                                  |-> OL
+ * 		        |-> OL                                  |
+ * 		        |   |-> OL                              |
+ * 		        |       |-> OL                          |
+ * 		        |           |-> LI (parent LIs: 1)      |-> LI (indent: 1)
+ * 		        |-> LI (parent LIs: 1)                  |-> LI (indent: 1)
+ *
+ * 		before:                                     fixed list:
+ * 		OL                                          OL
+ * 		|-> OL                                      |
+ * 		    |-> OL                                  |
+ * 		         |-> OL                             |
+ * 		             |-> LI (parent LIs: 0)         |-> LI        (indent: 0)
+ *
+ * 		before:                                     fixed list:
+ * 		OL                                          OL
+ * 		|-> LI (parent LIs: 0)                      |-> LI         (indent: 0)
+ * 		|-> OL                                          |-> OL
+ * 		    |-> LI (parent LIs: 0)                          |-> LI (indent: 1)
+ *
+ * @protected
+ * @param {module:engine/view/element~Element} listItem
+ * @returns {Number}
+ */
 export function getIndent( listItem ) {
 	let indent = 0;
 	let parent = listItem.parent;
@@ -88,13 +93,14 @@ export function getIndent( listItem ) {
 }
 
 /**
- * TODO
+ * Creates a list attribute element (ol or ul).
  *
- * @param writer
- * @param indent
- * @param type
- * @param id
- * @returns {module:engine/view/attributeelement~AttributeElement|any}
+ * @protected
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer The downcast writer.
+ * @param {Number} indent The list item indent.
+ * @param {'bulleted'|'numbered'} type The list type.
+ * @param {String} [id] The list ID.
+ * @returns {module:engine/view/attributeelement~AttributeElement}
  */
 export function createListElement( writer, indent, type, id ) {
 	// Negative priorities so that restricted editing attribute won't wrap lists.
@@ -105,12 +111,13 @@ export function createListElement( writer, indent, type, id ) {
 }
 
 /**
- * TODO
+ * Creates a list item attribute element (li).
  *
- * @param writer
- * @param indent
- * @param id
- * @returns {module:engine/view/attributeelement~AttributeElement|any}
+ * @protected
+ * @param {module:engine/view/downcastwriter~DowncastWriter} writer The downcast writer.
+ * @param {Number} indent The list item indent.
+ * @param {String} id The list item ID.
+ * @returns {module:engine/view/attributeelement~AttributeElement}
  */
 export function createListItemElement( writer, indent, id ) {
 	// Negative priorities so that restricted editing attribute won't wrap list items.
@@ -121,23 +128,38 @@ export function createListItemElement( writer, indent, id ) {
 }
 
 /**
- * TODO
+ * Returns a view element name for the given list type.
+ *
+ * @protected
+ * @param {'bulleted'|'numbered'} type The list type.
+ * @returns {String}
  */
 export function getViewElementNameForListType( type ) {
 	return type == 'numbered' ? 'ol' : 'ul';
 }
 
 /**
- * TODO
+ * Returns the closest list item model element according to the specified options.
+ *
+ * Note that if the provided model element satisfies the provided options then it's returned.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} modelElement
+ * @param {Object} options
+ * @param {Number} options.listIndent The reference list indent.
+ * @param {Boolean} [options.sameIndent=false] Whether to return list item model element with the same indent as specified.
+ * @param {Boolean} [options.smallerIndent=false] Whether to return list item model element with the smaller indent as specified.
+ * @param {'forward'|'backward'} [options.direction='backward'] The search direction.
+ * @return {module:engine/model/element~Element|null}
  */
-export function getSiblingListItem( modelItem, options ) {
+export function getSiblingListItem( modelElement, options ) {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
 	const indent = options.listIndent;
 	const isForward = options.direction == 'forward';
 
 	for (
-		let item = modelItem;
+		let item = modelElement;
 		item && item.hasAttribute( 'listItemId' );
 		item = isForward ? item.nextSibling : item.previousSibling
 	) {
@@ -156,10 +178,13 @@ export function getSiblingListItem( modelItem, options ) {
 }
 
 /**
- * TODO
+ * Returns an array with all elements that represents the same list item.
  *
- * @param listItem
- * @return {module:engine/model/element~Element[]}
+ * It means that values for `listIndent`, and `listItemId` for all items are equal.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listItem Starting list item element.
+ * @return {Array.<module:engine/model/element~Element>}
  */
 export function getAllListItemElements( listItem ) {
 	return [
@@ -169,10 +194,11 @@ export function getAllListItemElements( listItem ) {
 }
 
 /**
- * Returns an array with all elements that represents the same list item.
+ * Returns an array with elements that represents the same list item in the specified direction.
  *
- * It means that values for `listIndent`, `listType`, `listStyle`, and `listItemId` for all items are equal.
+ * It means that values for `listIndent`, and `listItemId` for all items are equal.
  *
+ * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @param {'forward'|'backward'} direction Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
@@ -210,8 +236,15 @@ export function getListItemElements( listItem, direction ) {
 	return isForward ? items : items.reverse();
 }
 
-// TODO
-export function findAddListHeadToMap( position, itemToListHead ) {
+/**
+ * Based on the provided positions looks for the list head and stores it in the provided map.
+ *
+ * @protected
+ * @param {module:engine/model/position~Position} position The search starting position.
+ * @param {Map.<module:engine/model/element~Element,module:engine/model/element~Element>} itemToListHead The map from list item element
+ * to the list head element.
+ */
+export function findAndAddListHeadToMap( position, itemToListHead ) {
 	const previousNode = position.nodeBefore;
 
 	if ( !previousNode || !previousNode.hasAttribute( 'listItemId' ) ) {
@@ -228,7 +261,6 @@ export function findAddListHeadToMap( position, itemToListHead ) {
 		}
 
 		for (
-			// Cache previousSibling and reuse for performance reasons. See #6581.
 			let previousSibling = listHead.previousSibling;
 			previousSibling && previousSibling.hasAttribute( 'listItemId' );
 			previousSibling = listHead.previousSibling
@@ -244,7 +276,14 @@ export function findAddListHeadToMap( position, itemToListHead ) {
 	}
 }
 
-// TODO
+/**
+ * Scans the list starting from the given list head element and fixes items' indentation.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listHead The list head model element.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Boolean} Whether the model was modified.
+ */
 export function fixListIndents( listHead, writer ) {
 	let maxIndent = 0;
 	let fixBy = null;
@@ -283,7 +322,15 @@ export function fixListIndents( listHead, writer ) {
 	return applied;
 }
 
-// TODO
+/**
+ * Scans the list starting from the given list head element and fixes items' types.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listHead The list head model element.
+ * @param {Set.<String>} seenIds The set of already known IDs.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Boolean} Whether the model was modified.
+ */
 export function fixListItemIds( listHead, seenIds, writer ) {
 	const visited = new Set();
 	let applied = false;

@@ -12,7 +12,7 @@ import {
 	isListView,
 	isListItemView,
 	getListItemElements,
-	findAddListHeadToMap,
+	findAndAddListHeadToMap,
 	getViewElementNameForListType
 } from './utils';
 import { uid } from 'ckeditor5/src/utils';
@@ -23,7 +23,10 @@ import { UpcastWriter } from 'ckeditor5/src/engine';
  */
 
 /**
- * TODO
+ * Returns the upcast converter for list items. It's supposed to work after the block converters (content inside list items) is converted.
+ *
+ * @protected
+ * @returns {Function}
  */
 export function listItemUpcastConverter() {
 	return ( evt, data, conversionApi ) => {
@@ -71,12 +74,12 @@ export function listItemUpcastConverter() {
 }
 
 /**
- * TODO
- *
- * A view-to-model converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
+ * Returns the upcast converter for the `<ul>` and `<ol>` view elements that cleans the input view of garbage.
  * This is mostly to clean whitespaces from between the `<li>` view elements inside the view list element, however, also
  * incorrect data can be cleared if the view was incorrect.
  *
+ * @protected
+ * @returns {Function}
  */
 export function listUpcastCleanList() {
 	return ( evt, data, conversionApi ) => {
@@ -94,7 +97,14 @@ export function listUpcastCleanList() {
 	};
 }
 
-// TODO
+/**
+ * Returns a model document change:data event listener that triggers conversion of related items if needed.
+ *
+ * @protected
+ * @param {module:engine/model/model~Model} model The editor model.
+ * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
+ * @return {Function}
+ */
 export function reconvertItemsOnDataChange( model, editing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
@@ -104,28 +114,28 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 		for ( const entry of changes ) {
 			if ( entry.type == 'insert' && entry.name != '$text' ) {
-				findAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead );
 
 				// Insert of a non-list item.
 				if ( !entry.attributes.has( 'listItemId' ) ) {
-					findAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
+					findAndAddListHeadToMap( entry.position.getShiftedBy( entry.length ), itemToListHead );
 				} else {
 					changedItems.add( entry.position.nodeAfter );
 				}
 			}
 			// Removed list item.
 			else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
-				findAddListHeadToMap( entry.position, itemToListHead );
+				findAndAddListHeadToMap( entry.position, itemToListHead );
 			}
 			// Changed list attribute.
 			else if ( entry.type == 'attribute' ) {
 				const item = entry.range.start.nodeAfter;
 
 				if ( entry.attributeKey.startsWith( 'list' ) ) {
-					findAddListHeadToMap( entry.range.start, itemToListHead );
+					findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 					if ( entry.attributeNewValue === null ) {
-						findAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
+						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
 						refreshItemParagraphIfNeeded( item, [] );
 					} else {
 						changedItems.add( item );
@@ -238,7 +248,15 @@ export function reconvertItemsOnDataChange( model, editing ) {
 	};
 }
 
-// TODO
+/**
+ * Returns the view-to-model element length mapping callback for list items. This is used in the data pipeline to be able to map length
+ * of the bogus paragraphs that are down-casted in the data pipeline without any container.
+ *
+ * @protected
+ * @param {module:engine/conversion/mapper~Mapper} mapper The mapper instance.
+ * @param {module:engine/model/schema~Schema} schema A schema instance.
+ * @return {Function}
+ */
 export function listItemViewToModelLengthMapper( mapper, schema ) {
 	function getViewListItemModelLength( element ) {
 		let length = 0;
@@ -283,7 +301,12 @@ export function listItemViewToModelLengthMapper( mapper, schema ) {
 }
 
 /**
- * TODO
+ * Returns the list item downcast converter.
+ *
+ * @protected
+ * @param {Array.<String>} attributes A list of attribute names that should be converted if are set.
+ * @param {module:engine/model/model~Model} model The model.
+ * @returns {Function}
  */
 export function listItemDowncastConverter( attributes, model ) {
 	const consumer = createAttributesConsumer( attributes );
@@ -311,7 +334,14 @@ export function listItemDowncastConverter( attributes, model ) {
 }
 
 /**
- * TODO
+ * Returns the bogus paragraph downcast converter. A bogus paragraph is used if a list item contains only a single block or nested list.
+ *
+ * @protected
+ * @param {Array.<String>} attributes A list of attribute names that should be converted if are set.
+ * @param {module:engine/model/model~Model} model The model.
+ * @param {Object} [options]
+ * @param {Boolean} [options.dataPipeline=false]
+ * @returns {Function}
  */
 export function listItemParagraphDowncastConverter( attributes, model, { dataPipeline } ) {
 	const attributesConsumer = createAttributesConsumer( attributes );
@@ -365,9 +395,8 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 	};
 }
 
-// TODO
-// Use positions mapping instead of mapper.toViewElement( element ) to find outermost view element.
-// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+// Helper for mapping mode to view elements. It's using positions mapping instead of mapper.toViewElement( element )
+// to find outermost view element. This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 function findMappedViewElement( element, mapper, model ) {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
@@ -375,7 +404,7 @@ function findMappedViewElement( element, mapper, model ) {
 	return viewRange.getContainedElement();
 }
 
-// TODO
+// Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
 function unwrapListItemBlock( viewElement, viewWriter ) {
 	let attributeElement = viewElement.parent;
 
@@ -394,7 +423,7 @@ function unwrapListItemBlock( viewElement, viewWriter ) {
 	}
 }
 
-// TODO
+// Wraps the given list item with appropriate attribute elements for ul, ol, and li.
 function wrapListItemBlock( listItem, viewRange, writer ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
@@ -432,7 +461,7 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 	}
 }
 
-// TODO
+// Returns the function that is responsible for consuming attributes that are set on the model node.
 function createAttributesConsumer( attributes ) {
 	return ( node, consumable ) => {
 		const events = [];
@@ -454,8 +483,8 @@ function createAttributesConsumer( attributes ) {
 	};
 }
 
-// TODO
-// Note that this has a purpose only in the data pipeline so we can ignore UIElements.
+// The function that handled block filler position in the list items with bogus paragraph.
+// Note that this has a purpose only in the data pipeline, so we can ignore UIElements.
 function getListItemFillerOffset() {
 	for ( const child of this.getChildren() ) {
 		// There is no content before a nested list so render a block filler before the nested list.
@@ -470,7 +499,7 @@ function getListItemFillerOffset() {
 	return 0;
 }
 
-// TODO
+// Whether the given item should be rendered as a bogus paragraph.
 function shouldUseBogusParagraph( item, blocks = getAllListItemElements( item ) ) {
 	if ( !item.hasAttribute( 'listItemId' ) ) {
 		return false;
