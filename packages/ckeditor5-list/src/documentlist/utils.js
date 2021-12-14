@@ -305,11 +305,21 @@ export function fixListIndents( listHead, writer ) {
 				fixBy = itemIndent - maxIndent;
 				newIndent = maxIndent;
 			} else {
-				if ( fixBy > itemIndent ) {
-					fixBy = itemIndent;
+				// if ( fixBy > itemIndent ) {
+				// 	fixBy = itemIndent;
+				// }
+
+				// if ( itemIndent - fixBy > maxIndent + 1 ) {
+				// 	fixBy = itemIndent - maxIndent - 1;
+				// }
+
+				newIndent = Math.max( 0, itemIndent - fixBy );
+
+				if ( newIndent > maxIndent ) {
+					newIndent = maxIndent;
 				}
 
-				newIndent = itemIndent - fixBy;
+				maxIndent = newIndent + 1;
 			}
 
 			writer.setAttribute( 'listIndent', newIndent, item );

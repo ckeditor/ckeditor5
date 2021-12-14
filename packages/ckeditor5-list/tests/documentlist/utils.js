@@ -7,6 +7,8 @@ import DocumentListEditing from '../../src/documentlist/documentlistediting';
 import {
 	createListElement,
 	createListItemElement,
+	findAndAddListHeadToMap,
+	fixListIndents,
 	getAllListItemElements,
 	getIndent,
 	getListItemElements,
@@ -22,7 +24,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData, stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { DowncastWriter } from '@ckeditor/ckeditor5-engine';
 
@@ -651,9 +653,275 @@ describe( 'DocumentList - utils', () => {
 		} );
 	} );
 
-	describe( 'findAddListHeadToMap()', () => {} );
+	describe( 'findAndAddListHeadToMap()', () => {
+		it( 'should find list that starts just after the given position', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>'
+			);
 
-	describe( 'fixListIndents()', () => {} );
+			const position = model.createPositionAt( document.getRoot(), 1 );
+			const itemToListHead = new Map();
+
+			findAndAddListHeadToMap( position, itemToListHead );
+
+			const heads = Array.from( itemToListHead.values() );
+
+			expect( heads.length ).to.equal( 1 );
+			expect( heads[ 0 ] ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+
+		it( 'should find list that starts just before the given position', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>'
+			);
+
+			const position = model.createPositionAt( document.getRoot(), 2 );
+			const itemToListHead = new Map();
+
+			findAndAddListHeadToMap( position, itemToListHead );
+
+			const heads = Array.from( itemToListHead.values() );
+
+			expect( heads.length ).to.equal( 1 );
+			expect( heads[ 0 ] ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+
+		it( 'should find list that ends just before the given position', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>'
+			);
+
+			const position = model.createPositionAt( document.getRoot(), 3 );
+			const itemToListHead = new Map();
+
+			findAndAddListHeadToMap( position, itemToListHead );
+
+			const heads = Array.from( itemToListHead.values() );
+
+			expect( heads.length ).to.equal( 1 );
+			expect( heads[ 0 ] ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+
+		it( 'should reuse data from map if found some item that was previously mapped to head', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>'
+			);
+
+			const position = model.createPositionAt( document.getRoot(), 4 );
+			const itemToListHead = new Map();
+
+			itemToListHead.set( document.getRoot().getChild( 2 ), document.getRoot().getChild( 1 ) );
+
+			findAndAddListHeadToMap( position, itemToListHead );
+
+			const heads = Array.from( itemToListHead.values() );
+
+			expect( heads.length ).to.equal( 1 );
+			expect( heads[ 0 ] ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+
+		it( 'should not mix 2 lists separated by some non-list element', () => {
+			setData( model,
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>'
+			);
+
+			const position = model.createPositionAt( document.getRoot(), 4 );
+			const itemToListHead = new Map();
+
+			findAndAddListHeadToMap( position, itemToListHead );
+
+			const heads = Array.from( itemToListHead.values() );
+
+			expect( heads.length ).to.equal( 1 );
+			expect( heads[ 0 ] ).to.equal( document.getRoot().getChild( 2 ) );
+		} );
+
+		it( 'should find list head even for mixed indents, ids, and types', () => {
+			setData( model,
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="numbered" listItemId="b" listIndent="1">b</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>'
+			);
+
+			const position = model.createPositionAt( document.getRoot(), 5 );
+			const itemToListHead = new Map();
+
+			findAndAddListHeadToMap( position, itemToListHead );
+
+			const heads = Array.from( itemToListHead.values() );
+
+			expect( heads.length ).to.equal( 1 );
+			expect( heads[ 0 ] ).to.equal( document.getRoot().getChild( 1 ) );
+		} );
+	} );
+
+	describe( 'fixListIndents()', () => {
+		it( 'should fix indentation of first list item', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a" listType="bulleted">a</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>'
+			);
+		} );
+
+		it( 'should fix indentation of to deep nested items', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="4" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="4" listItemId="c" listType="bulleted">c</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
+			);
+		} );
+
+		it( 'should not affect properly indented items after fixed item', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="4" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
+			);
+		} );
+
+		it( 'aaaa', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="10" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="3" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="10" listItemId="c" listType="bulleted">c</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>'
+			);
+		} );
+
+		it( 'bbbb', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="10" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+				'<paragraph listIndent="15" listItemId="d" listType="bulleted">d</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="2" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
+				'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>'
+			);
+		} );
+
+		it( 'ccc', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="10" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="11" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="12" listItemId="c" listType="bulleted">c</paragraph>' +
+				'<paragraph listIndent="13" listItemId="d" listType="bulleted">d</paragraph>' +
+				'<paragraph listIndent="12" listItemId="e" listType="bulleted">e</paragraph>' +
+				'<paragraph listIndent="11" listItemId="f" listType="bulleted">f</paragraph>' +
+				'<paragraph listIndent="10" listItemId="g" listType="bulleted">g</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="bulleted">d</paragraph>' +
+				'<paragraph listIndent="2" listItemId="e" listType="bulleted">e</paragraph>' +
+				'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
+				'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>'
+			);
+		} );
+
+		it( 'ddd', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="3" listItemId="e" listType="numbered">e</paragraph>' +
+				'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
+				'<paragraph listIndent="3" listItemId="g" listType="bulleted">g</paragraph>' +
+				'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+				'<paragraph listIndent="2" listItemId="i" listType="numbered">i</paragraph>' +
+				'<paragraph listIndent="0" listItemId="j" listType="numbered">j</paragraph>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="e" listType="numbered">e</paragraph>' +
+				'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
+				'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
+				'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
+				'<paragraph listIndent="2" listItemId="i" listType="numbered">i</paragraph>' +
+				'<paragraph listIndent="0" listItemId="j" listType="numbered">j</paragraph>'
+			);
+		} );
+	} );
 
 	describe( 'fixListItemIds()', () => {} );
 } );
