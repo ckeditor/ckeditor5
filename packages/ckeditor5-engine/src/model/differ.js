@@ -1225,6 +1225,12 @@ function _changesInGraveyardFilter( entry ) {
  */
 
 /**
+ * Map of attributes that were set on the item while it was inserted.
+ *
+ * @member {Map.<String,*>} module:engine/model/differ~DiffItemInsert#attributes
+ */
+
+/**
  * The position where the node was inserted.
  *
  * @member {module:engine/model/position~Position} module:engine/model/differ~DiffItemInsert#position
@@ -1253,6 +1259,12 @@ function _changesInGraveyardFilter( entry ) {
  * The name of the removed element or `'$text'` for a text node.
  *
  * @member {String} module:engine/model/differ~DiffItemRemove#name
+ */
+
+/**
+ * Map of attributes that were set on the item while it was removed.
+ *
+ * @member {Map.<String,*>} module:engine/model/differ~DiffItemRemove#attributes
  */
 
 /**
