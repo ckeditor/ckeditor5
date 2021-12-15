@@ -27,5 +27,6 @@ require( '@ckeditor/ckeditor5-dev-env' )
 			{ pattern: '*', options: { dot: true } }, // LICENSE.md, .eslintrc.js, etc.
 			{ pattern: '!(build|coverage|node_modules|external)/**' }
 		],
-		cwd: process.cwd()
+		cwd: process.cwd(),
+		callback: string => string.replace( /CKSource - Frederico Knabben./, 'CKSource Holding sp. z o.o.' )
 	} );
