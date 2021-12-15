@@ -32,6 +32,7 @@ import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformatio
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Font from "@ckeditor/ckeditor5-font/src/font";
+import CodeBlock from "@ckeditor/ckeditor5-code-block/src/code-block";
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -46,6 +47,7 @@ ClassicEditor.builtinPlugins = [
 	BlockQuote,
 	Font,
 	CKFinder,
+	CodeBlock,
 	CloudServices,
 	EasyImage,
 	Heading,
@@ -82,6 +84,7 @@ ClassicEditor.defaultConfig = {
 			'indent',
 			'|',
 			'uploadImage',
+			'codeBlock',
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
@@ -89,6 +92,12 @@ ClassicEditor.defaultConfig = {
 			'redo',
 			'fontFamily',
 			'fontSize',
+		]
+	},
+	codeBlock: {
+		languages: [
+			{ language: 'css', label: 'CSS' },
+			{ language: 'html', label: 'HTML' }
 		]
 	},
 	image: {
