@@ -376,7 +376,7 @@ export function getSiblingNodes( position, direction ) {
 }
 
 /**
- * Returns an array with all `listItem` elements that represents the currently selected list.
+ * Returns an array with all `listItem` elements in the model selection.
  *
  * It returns all the items even if only part of the list is selected.
  * If no list is selected, returns an empty array.
