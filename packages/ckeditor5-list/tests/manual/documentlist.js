@@ -50,6 +50,7 @@ ClassicEditor
 		],
 		toolbar: [
 			'sourceEditing', '|',
+			'numberedList', 'bulletedList',
 			'outdent', 'indent', '|',
 			'heading', '|',
 			'bold', 'italic', 'link', '|',

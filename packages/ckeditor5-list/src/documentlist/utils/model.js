@@ -156,6 +156,36 @@ export function splitListItemBefore( listBlock, writer ) {
 }
 
 /**
+ * Splits the list item just before the provided list block.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listBlock The list block element.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ */
+export function mergeListItemBlocksIntoParentListItem( listBlock, writer ) {
+	const blocks = getAllListItemBlocks( listBlock );
+	const firstBlock = blocks[ 0 ];
+	const parentListItem = firstBlock.previousSibling;
+
+	// TODO remove paranoid check that should not be necessary.
+	if ( !parentListItem || !parentListItem.hasAttribute( 'listItemId' ) ) {
+		throw 'Cannot merge when there is nothing to merge into.';
+	}
+
+	const parentListAttributes = {};
+
+	for ( const attributeKey of parentListItem.getAttributeKeys() ) {
+		if ( attributeKey.startsWith( 'list' ) ) {
+			parentListAttributes[ attributeKey ] = parentListItem.getAttribute( attributeKey );
+		}
+	}
+
+	for ( const block of blocks ) {
+		writer.setAttributes( parentListAttributes, block );
+	}
+}
+
+/**
  * Updates indentation of given list blocks.
  *
  * @protected
