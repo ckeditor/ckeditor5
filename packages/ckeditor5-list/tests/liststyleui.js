@@ -37,7 +37,14 @@ describe( 'ListStyleUI', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ]
+			plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+			list: {
+				numberedProperties: {
+					styles: true,
+					startIndex: true,
+					reversed: true
+				}
+			}
 		} ).then( newEditor => {
 			editor = newEditor;
 			model = editor.model;
@@ -564,7 +571,14 @@ describe( 'ListStyleUI', () => {
 						styleButtonView.fire( 'execute' );
 
 						expect( getData( model ) ).to.equal(
-							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">foo[]</listItem>'
+							'<listItem ' +
+								'listIndent="0" ' +
+								'listReversed="false" ' +
+								'listStart="1" ' +
+								'listStyle="decimal-leading-zero" ' +
+								'listType="numbered">' +
+								'foo[]' +
+							'</listItem>'
 						);
 
 						editor.execute( 'undo' );
@@ -640,7 +654,7 @@ describe( 'ListStyleUI', () => {
 					listPropertiesView.fire( 'listReversed' );
 
 					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy, 'listReversed' );
+					sinon.assert.calledWithExactly( spy, 'listReversed', { reversed: true } );
 				} );
 			} );
 		} );
