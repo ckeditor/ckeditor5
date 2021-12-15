@@ -29,7 +29,7 @@ export default class ListStartCommand extends Command {
 	* Executes the command.
 	*
 	* @param {Object} options
-	* @param {Number} [options.start=1] Whether the list should be reversed.
+	* @param {Number} [options.startIndex=1] Whether the list should be reversed.
 	* @protected
 	*/
 	execute( options = {} ) {
@@ -39,7 +39,7 @@ export default class ListStartCommand extends Command {
 
 		model.change( writer => {
 			for ( const item of listItems ) {
-				writer.setAttribute( 'listStart', options.start || 1, item );
+				writer.setAttribute( 'listStart', options.startIndex || 1, item );
 			}
 		} );
 	}

@@ -150,7 +150,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="0" listStart="1" listType="numbered">1.[]</listItem>'
 			);
 
-			listStartCommand.execute( { start: 5 } );
+			listStartCommand.execute( { startIndex: 5 } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStart="5" listType="numbered">1.[]</listItem>'
@@ -162,7 +162,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="0" listStart="2" listType="numbered">[1.]</listItem>'
 			);
 
-			listStartCommand.execute( { start: 5 } );
+			listStartCommand.execute( { startIndex: 5 } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStart="5" listType="numbered">[1.]</listItem>'
@@ -176,7 +176,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="0" listStart="2" listType="numbered">3.</listItem>'
 			);
 
-			listStartCommand.execute( { start: 3 } );
+			listStartCommand.execute( { startIndex: 3 } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStart="3" listType="numbered">1.[]</listItem>' +
@@ -195,7 +195,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="1" listStart="1" listType="numbered">3.1.</listItem>'
 			);
 
-			listStartCommand.execute( { start: 2 } );
+			listStartCommand.execute( { startIndex: 2 } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStart="2" listType="numbered">1.[]</listItem>' +
@@ -219,7 +219,7 @@ describe( 'ListStartCommand', () => {
 					'<listItem listIndent="1" listStart="1" listType="numbered">3.1.</listItem>'
 				);
 
-				listStartCommand.execute( { start: 2 } );
+				listStartCommand.execute( { startIndex: 2 } );
 
 				expect( getData( model ) ).to.equal(
 					'<listItem listIndent="0" listStart="1" listType="numbered">1.</listItem>' +
@@ -240,7 +240,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="0" listStart="1" listType="numbered">3.</listItem>'
 			);
 
-			listStartCommand.execute( { start: 2 } );
+			listStartCommand.execute( { startIndex: 2 } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
@@ -258,7 +258,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="0" listType="bulleted">1.</listItem>'
 			);
 
-			listStartCommand.execute( { start: 2 } );
+			listStartCommand.execute( { startIndex: 2 } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
@@ -276,7 +276,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="0" listStart="2" listType="numbered">1.</listItem>'
 			);
 
-			listStartCommand.execute( { start: 3 } );
+			listStartCommand.execute( { startIndex: 3 } );
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>Foo.</paragraph>' +
@@ -294,7 +294,7 @@ describe( 'ListStartCommand', () => {
 				'<paragraph>Foo.]</paragraph>'
 			);
 
-			listStartCommand.execute( { start: 3 } );
+			listStartCommand.execute( { startIndex: 3 } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStart="3" listType="numbered">1.</listItem>' +
@@ -358,7 +358,7 @@ describe( 'ListStartCommand', () => {
 				'<listItem listIndent="2" listStart="5" listType="numbered">3.1.1.</listItem>'
 			);
 
-			listStartCommand.execute( { start: 7 } );
+			listStartCommand.execute( { startIndex: 7 } );
 
 			expect( getData( model ) ).to.equal(
 				'<listItem listIndent="0" listStart="7" listType="numbered">1.</listItem>' +
