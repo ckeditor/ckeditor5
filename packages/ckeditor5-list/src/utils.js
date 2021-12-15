@@ -350,8 +350,18 @@ export function getSiblingNodes( position, direction ) {
 		// ○ List item 3.    [listType=bulleted]
 		// ○ List item 4.    [listType=bulleted]
 		//
-		// Abort searching when found a different list style.
+		// Abort searching when found a different list style,
 		if ( element.getAttribute( 'listStyle' ) !== listItem.getAttribute( 'listStyle' ) ) {
+			break;
+		}
+
+		// ... different direction
+		if ( element.getAttribute( 'listReversed' ) !== listItem.getAttribute( 'listReversed' ) ) {
+			break;
+		}
+
+		// ... and different start index
+		if ( element.getAttribute( 'listStart' ) !== listItem.getAttribute( 'listStart' ) ) {
 			break;
 		}
 

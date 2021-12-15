@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import ListEditing from './listediting';
 import ListStyleCommand from './liststylecommand';
 import ListReversedCommand from './listreversedcommand';
+import ListStartCommand from './liststartcommand';
 import { getSiblingListItem, getSiblingNodes } from './utils';
 
 const DEFAULT_LIST_TYPE = 'default';
@@ -308,6 +309,33 @@ function createAttributeStrategies( enabledAttributes ) {
 		} );
 	}
 
+	if ( enabledAttributes.startIndex ) {
+		result.push( {
+			attributeName: 'listStart',
+			defaultValue: 1,
+
+			addCommand( editor ) {
+				editor.commands.add( 'listStart', new ListStartCommand( editor ) );
+			},
+
+			appliesToListItem( item ) {
+				return item.getAttribute( 'listType' ) == 'numbered';
+			},
+
+			setAttributeOnDowncast( writer, listStart, element ) {
+				if ( listStart != 1 ) {
+					writer.setAttribute( 'start', listStart, element );
+				} else {
+					writer.removeAttribute( 'start', element );
+				}
+			},
+
+			getAttributeOnUpcast( listParent ) {
+				return listParent.getAttribute( 'start' ) || 1;
+			}
+		} );
+	}
+
 	return result;
 }
 
@@ -379,7 +407,8 @@ function downcastListItemAttributes( attributeStrategies ) {
 			listItem1.getAttribute( 'listType' ) === listItem2.getAttribute( 'listType' ) &&
 			listItem1.getAttribute( 'listIndent' ) === listItem2.getAttribute( 'listIndent' ) &&
 			listItem1.getAttribute( 'listStyle' ) === listItem2.getAttribute( 'listStyle' ) &&
-			listItem1.getAttribute( 'listReversed' ) === listItem2.getAttribute( 'listReversed' );
+			listItem1.getAttribute( 'listReversed' ) === listItem2.getAttribute( 'listReversed' ) &&
+			listItem1.getAttribute( 'listStart' ) === listItem2.getAttribute( 'listStart' );
 	}
 }
 
@@ -524,7 +553,7 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 	};
 }
 
-// Each `listItem` element must have specified the `listStyle` and `listReversed` attributes
+// Each `listItem` element must have specified the `listStyle`, `listReversed` and `listStart` attributes
 // if they are enabled and supported by its `listType`.
 // This post-fixer checks whether inserted elements `listItem` elements should inherit the attribute values from
 // their sibling nodes or should use the default values.
@@ -659,7 +688,7 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 	};
 }
 
-// Checks whether the `listStyle` and `listReversed` attributes
+// Checks whether the `listStyle`, `listReversed` and `listStart` attributes
 // should be copied from the `baseItem` element.
 //
 // The attribute should be copied if the inserted element does not have defined it and
@@ -691,7 +720,7 @@ function shouldInheritListType( baseItem, itemToChange, attributeStrategy ) {
 	return true;
 }
 
-// Checks whether the `listStyle` and `listReversed` attributes
+// Checks whether the `listStyle`, `listReversed` and `listStart` attributes
 // should be copied from previous list item.
 //
 // The attribute should be copied if there's a mismatch of styles of the pasted list into a nested list.
@@ -724,7 +753,7 @@ function shouldInheritListTypeFromPreviousItem( previousItem, itemToChange, attr
 	return true;
 }
 
-// Removes the `listStyle` and `listReversed` attributes from "todo" list items.
+// Removes the `listStyle`, `listReversed` and `listStart` attributes from "todo" list items.
 //
 // @param {module:core/editor/editor~Editor} editor
 // @returns {Function}
@@ -735,7 +764,8 @@ function removeListItemAttributesFromTodoList( editor ) {
 				// Handle the todo lists only. The rest is handled in another post-fixer.
 				return item.getAttribute( 'listType' ) === 'todo' && (
 					item.hasAttribute( 'listStyle' ) ||
-					item.hasAttribute( 'listReversed' )
+					item.hasAttribute( 'listReversed' ) ||
+					item.hasAttribute( 'listStart' )
 				);
 			} );
 
@@ -746,6 +776,7 @@ function removeListItemAttributesFromTodoList( editor ) {
 		for ( const item of todoListItems ) {
 			writer.removeAttribute( 'listStyle', item );
 			writer.removeAttribute( 'listReversed', item );
+			writer.removeAttribute( 'listStart', item );
 		}
 
 		return true;
