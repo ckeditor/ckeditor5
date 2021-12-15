@@ -8,16 +8,51 @@ import Operation from '../../src/model/operation/operation';
 
 describe( 'Batch', () => {
 	describe( 'type', () => {
-		it( 'should default to "default"', () => {
+		it( 'should have default value', () => {
 			const batch = new Batch();
 
-			expect( batch.type ).to.equal( 'default' );
+			expect( batch.isUndoable ).to.be.true;
+			expect( batch.isLocal ).to.be.true;
+			expect( batch.isUndo ).to.be.false;
+			expect( batch.isTyping ).to.be.false;
 		} );
 
-		it( 'should be set to the value set in constructor', () => {
+		it( 'should set batch properties accordingly', () => {
+			const batch = new Batch( { isUndoable: false, isLocal: false, isUndo: true, isTyping: true } );
+
+			expect( batch.isUndoable ).to.be.false;
+			expect( batch.isLocal ).to.be.false;
+			expect( batch.isUndo ).to.be.true;
+			expect( batch.isTyping ).to.be.true;
+		} );
+
+		it( 'can be set partially', () => {
+			const batch = new Batch( { isUndoable: false, isLocal: false } );
+
+			expect( batch.isUndoable ).to.be.false;
+			expect( batch.isLocal ).to.be.false;
+			expect( batch.isUndo ).to.be.false;
+			expect( batch.isTyping ).to.be.false;
+		} );
+	} );
+
+	describe( 'deprecated string type', () => {
+		it( 'when set to "default" should set default properties', () => {
+			const batch = new Batch( 'default' );
+
+			expect( batch.isUndoable ).to.be.true;
+			expect( batch.isLocal ).to.be.true;
+			expect( batch.isUndo ).to.be.false;
+			expect( batch.isTyping ).to.be.false;
+		} );
+
+		it( 'when set to "transparent" should set isUndoable to false', () => {
 			const batch = new Batch( 'transparent' );
 
-			expect( batch.type ).to.equal( 'transparent' );
+			expect( batch.isUndoable ).to.be.false;
+			expect( batch.isLocal ).to.be.true;
+			expect( batch.isUndo ).to.be.false;
+			expect( batch.isTyping ).to.be.false;
 		} );
 	} );
 

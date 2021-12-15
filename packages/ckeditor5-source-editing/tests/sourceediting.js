@@ -428,7 +428,7 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.calledOnce ).to.be.true;
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: '<p>Foo</p><p>bar</p>' },
-				{ batchType: 'default' }
+				{ batchType: { isUndoable: true } }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
@@ -478,11 +478,11 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.calledTwice ).to.be.true;
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'foo' },
-				{ batchType: 'default' }
+				{ batchType: { isUndoable: true } }
 			] );
 			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
 				{ main: 'bar' },
-				{ batchType: 'default' }
+				{ batchType: { isUndoable: true } }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
 		} );

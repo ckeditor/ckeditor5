@@ -36,7 +36,7 @@ describe( 'ImageTypeCommand', () => {
 	describe( 'isEnabled', () => {
 		describe( 'block command', () => {
 			it( 'should be false when the selection directly in the root', () => {
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setModelData( model, '[]' );
 
 					blockCommand.refresh();
@@ -90,7 +90,7 @@ describe( 'ImageTypeCommand', () => {
 
 		describe( 'inline command', () => {
 			it( 'should be false when the selection directly in the root', () => {
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setModelData( model, '[]' );
 
 					inlineCommand.refresh();

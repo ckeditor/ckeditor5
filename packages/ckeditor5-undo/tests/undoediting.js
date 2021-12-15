@@ -120,7 +120,7 @@ describe( 'UndoEditing', () => {
 	it( 'should not add a transparent batch', () => {
 		sinon.spy( undo._undoCommand, 'addBatch' );
 
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.insertText( 'foobar', root );
 		} );
 

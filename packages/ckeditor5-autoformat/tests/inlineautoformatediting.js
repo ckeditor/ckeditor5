@@ -152,11 +152,23 @@ describe( 'inlineAutoformatEditing', () => {
 		} );
 	} );
 
-	it( 'should ignore transparent batches', () => {
+	it( 'should ignore non-local batches', () => {
 		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 		setData( model, '<paragraph>*foobar[]</paragraph>' );
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isLocal: false }, writer => {
+			writer.insertText( '*', doc.selection.getFirstPosition() );
+		} );
+
+		sinon.assert.notCalled( formatSpy );
+		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+	} );
+
+	it( 'should ignore undo batches', () => {
+		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
+
+		setData( model, '<paragraph>*foobar[]</paragraph>' );
+		model.enqueueChange( { isUndo: true }, writer => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 

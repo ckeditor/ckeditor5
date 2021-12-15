@@ -77,7 +77,7 @@ export default class TablePropertyCommand extends Command {
 		const table = selection.getFirstPosition().findAncestor( 'table' );
 		const valueToSet = this._getValueToSet( value );
 
-		model.enqueueChange( batch || 'default', writer => {
+		model.enqueueChange( batch, writer => {
 			if ( valueToSet ) {
 				writer.setAttribute( this.attributeName, valueToSet, table );
 			} else {

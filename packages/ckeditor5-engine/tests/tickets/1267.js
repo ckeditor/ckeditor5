@@ -40,7 +40,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 		);
 
 		// Remove second paragraph where selection is placed.
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 
@@ -63,7 +63,7 @@ describe( 'Bug ckeditor5-engine#1267', () => {
 		);
 
 		// Remove second paragraph.
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.remove( Range._createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 

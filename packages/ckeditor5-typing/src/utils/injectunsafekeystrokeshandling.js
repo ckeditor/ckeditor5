@@ -121,7 +121,6 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 		buffer.lock();
 
 		const batch = buffer.batch;
-		inputCommand._batches.add( batch );
 
 		model.enqueueChange( batch, () => {
 			model.deleteContent( model.document.selection );

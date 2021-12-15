@@ -234,12 +234,24 @@ describe( 'blockAutoformatEditing', () => {
 		} );
 	} );
 
-	it( 'should ignore transparent batches', () => {
+	it( 'should ignore non-local batches', () => {
 		const spy = testUtils.sinon.spy();
 		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 		setData( model, '<paragraph>*[]</paragraph>' );
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isLocal: false }, writer => {
+			writer.insertText( ' ', doc.selection.getFirstPosition() );
+		} );
+
+		sinon.assert.notCalled( spy );
+	} );
+
+	it( 'should ignore undo batches', () => {
+		const spy = testUtils.sinon.spy();
+		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
+
+		setData( model, '<paragraph>*[]</paragraph>' );
+		model.enqueueChange( { isUndo: true }, writer => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
 

@@ -33,7 +33,7 @@ export default class UndoCommand extends BaseCommand {
 		const batchIndex = batch ? this._stack.findIndex( a => a.batch == batch ) : this._stack.length - 1;
 
 		const item = this._stack.splice( batchIndex, 1 )[ 0 ];
-		const undoingBatch = this.editor.model.createBatch( 'transparent' );
+		const undoingBatch = this.editor.model.createBatch( { isUndo: true } );
 
 		// All changes has to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive operations, or won't do changes to the document before selection is properly restored.

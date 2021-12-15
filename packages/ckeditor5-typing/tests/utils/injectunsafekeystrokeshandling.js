@@ -109,12 +109,14 @@ describe( 'unsafe keystroke handling utils', () => {
 		} );
 
 		it( 'uses typing batch while removing the content', () => {
-			const inputCommand = editor.commands.get( 'input' );
+			let currentBatch = getCurrentBatch();
 
-			expect( inputCommand._batches.has( getCurrentBatch() ), 'batch before typing' ).to.equal( false );
+			expect( currentBatch.isTyping, 'batch before typing' ).to.equal( false );
 
 			model.on( 'deleteContent', () => {
-				expect( inputCommand._batches.has( getCurrentBatch() ), 'batch when deleting content' ).to.equal( true );
+				currentBatch = getCurrentBatch();
+
+				expect( currentBatch.isTyping, 'batch when deleting content' ).to.equal( true );
 			}, { priority: 'highest' } );
 
 			setData( model, '<paragraph>[foo]</paragraph>' );
