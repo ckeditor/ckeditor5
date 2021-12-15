@@ -250,14 +250,26 @@ function createListPropertiesView( {
 	styleGridAriaLabel
 } ) {
 	const locale = editor.locale;
-	const listStyleCommand = editor.commands.get( 'listStyle' );
-	const enabledProperties = parentCommandName == 'numberedList' ? editor.config.get( 'list.numberedProperties' ) : { styles: true };
-	const styleButtonCreator = getStyleButtonCreator( {
-		editor,
-		parentCommandName,
-		listStyleCommand
-	} );
-	const styleButtonViews = enabledProperties.styles ? styleDefinitions.map( styleButtonCreator ) : null;
+	const enabledProperties = editor.config.get( 'list.numberedProperties' );
+	let styleButtonViews;
+
+	if ( parentCommandName != 'numberedList' ) {
+		enabledProperties.startIndex = false;
+		enabledProperties.reversed = false;
+	}
+
+	if ( enabledProperties.styles ) {
+		const listStyleCommand = editor.commands.get( 'listStyle' );
+
+		const styleButtonCreator = getStyleButtonCreator( {
+			editor,
+			parentCommandName,
+			listStyleCommand
+		} );
+
+		styleButtonViews = styleDefinitions.map( styleButtonCreator );
+	}
+
 	const listPropertiesView = new ListPropertiesView( locale, {
 		styleGridAriaLabel,
 		enabledProperties,
@@ -277,7 +289,11 @@ function createListPropertiesView( {
 
 		listPropertiesView.reversedSwitchButtonView.bind( 'isEnabled' ).to( listReversedCommand );
 		listPropertiesView.reversedSwitchButtonView.bind( 'isOn' ).to( listReversedCommand, 'value' );
-		listPropertiesView.on( 'listReversed', () => editor.execute( 'listReversed' ) );
+		listPropertiesView.on( 'listReversed', () => {
+			const isReversed = listReversedCommand.value;
+
+			editor.execute( 'listReversed', { reversed: !isReversed } );
+		} );
 	}
 
 	// Make sure applying styles closes the dropdown.
