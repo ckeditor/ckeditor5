@@ -788,18 +788,16 @@ describe( 'DocumentList - utils', () => {
 
 		it( 'should fix indentation of to deep nested items', () => {
 			const fragment = parseModel(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="4" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="4" listItemId="c" listType="bulleted">c</paragraph>',
 				model.schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
@@ -808,47 +806,42 @@ describe( 'DocumentList - utils', () => {
 
 		it( 'should not affect properly indented items after fixed item', () => {
 			const fragment = parseModel(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="4" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>',
 				model.schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
 			);
 		} );
 
-		it( 'aaaa', () => {
+		it( 'should fix rapid indent spikes', () => {
 			const fragment = parseModel(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="10" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="3" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="10" listItemId="c" listType="bulleted">c</paragraph>',
 				model.schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
 			);
 		} );
 
-		it( 'bbbb', () => {
+		it( 'should fix rapid indent spikes after some item', () => {
 			const fragment = parseModel(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="1" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="10" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -856,11 +849,10 @@ describe( 'DocumentList - utils', () => {
 				model.schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -868,9 +860,8 @@ describe( 'DocumentList - utils', () => {
 			);
 		} );
 
-		it( 'ccc', () => {
+		it( 'should fix indentation keeping the relative indentations', () => {
 			const fragment = parseModel(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="10" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="11" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="12" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -881,11 +872,10 @@ describe( 'DocumentList - utils', () => {
 				model.schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
@@ -896,9 +886,8 @@ describe( 'DocumentList - utils', () => {
 			);
 		} );
 
-		it( 'ddd', () => {
+		it( 'should flatten the leading indentation spike', () => {
 			const fragment = parseModel(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="3" listItemId="e" listType="numbered">e</paragraph>' +
 				'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
 				'<paragraph listIndent="3" listItemId="g" listType="bulleted">g</paragraph>' +
@@ -908,11 +897,10 @@ describe( 'DocumentList - utils', () => {
 				model.schema );
 
 			model.change( writer => {
-				fixListIndents( fragment.getChild( 1 ), writer );
+				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="e" listType="numbered">e</paragraph>' +
 				'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
 				'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>' +
