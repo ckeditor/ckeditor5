@@ -31,6 +31,7 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
+import Font from "@ckeditor/ckeditor5-font/src/font";
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -43,6 +44,7 @@ ClassicEditor.builtinPlugins = [
 	Bold,
 	Italic,
 	BlockQuote,
+	Font,
 	CKFinder,
 	CloudServices,
 	EasyImage,
@@ -84,7 +86,9 @@ ClassicEditor.defaultConfig = {
 			'insertTable',
 			'mediaEmbed',
 			'undo',
-			'redo'
+			'redo',
+			'fontFamily',
+			'fontSize',
 		]
 	},
 	image: {
@@ -97,6 +101,10 @@ ClassicEditor.defaultConfig = {
 			'imageTextAlternative'
 		]
 	},
+	fontSize: {supportAllValues: true},
+	fontFamily: {supportAllValues: true},
+	fontColor: {supportAllValues: true},
+	fontBackgroundColor: {supportAllValues: true},
 	table: {
 		contentToolbar: [
 			'tableColumn',
