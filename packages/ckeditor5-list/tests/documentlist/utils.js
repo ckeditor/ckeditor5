@@ -842,7 +842,7 @@ describe( 'DocumentList - utils', () => {
 				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="c" listType="bulleted">c</paragraph>'
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
 			);
 		} );
 
@@ -862,7 +862,7 @@ describe( 'DocumentList - utils', () => {
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="2" listItemId="b" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
 				'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>'
 			);
@@ -915,10 +915,32 @@ describe( 'DocumentList - utils', () => {
 				'<paragraph>foo</paragraph>' +
 				'<paragraph listIndent="0" listItemId="e" listType="numbered">e</paragraph>' +
 				'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
-				'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>' +
-				'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
-				'<paragraph listIndent="2" listItemId="i" listType="numbered">i</paragraph>' +
+				'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>' +
+				'<paragraph listIndent="0" listItemId="h" listType="bulleted">h</paragraph>' +
+				'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>' +
 				'<paragraph listIndent="0" listItemId="j" listType="numbered">j</paragraph>'
+			);
+		} );
+
+		it( 'list nested in blockquote', () => {
+			const fragment = parseModel(
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">bar</paragraph>' +
+				'</blockQuote>',
+				model.schema );
+
+			model.change( writer => {
+				fixListIndents( fragment.getChild( 1 ).getChild( 0 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equal(
+				'<paragraph>foo</paragraph>' +
+				'<blockQuote listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">bar</paragraph>' +
+				'</blockQuote>'
 			);
 		} );
 	} );

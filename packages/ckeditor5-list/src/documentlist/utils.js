@@ -287,7 +287,8 @@ export function findAndAddListHeadToMap( position, itemToListHead ) {
  * @returns {Boolean} Whether the model was modified.
  */
 export function fixListIndents( listHead, writer ) {
-	let maxIndent = 0;
+	let maxIndent = 0; // Guards local sublist max indents that need fixing.
+	let prevIndent = -1; // Previous item indent.
 	let fixBy = null;
 	let applied = false;
 
@@ -305,29 +306,25 @@ export function fixListIndents( listHead, writer ) {
 				fixBy = itemIndent - maxIndent;
 				newIndent = maxIndent;
 			} else {
-				// if ( fixBy > itemIndent ) {
-				// 	fixBy = itemIndent;
-				// }
-
-				// if ( itemIndent - fixBy > maxIndent + 1 ) {
-				// 	fixBy = itemIndent - maxIndent - 1;
-				// }
-
-				newIndent = Math.max( 0, itemIndent - fixBy );
-
-				if ( newIndent > maxIndent ) {
-					newIndent = maxIndent;
+				if ( fixBy > itemIndent ) {
+					fixBy = itemIndent;
 				}
 
-				maxIndent = newIndent + 1;
+				newIndent = itemIndent - fixBy;
+			}
+
+			if ( newIndent > prevIndent + 1 ) {
+				newIndent = prevIndent + 1;
 			}
 
 			writer.setAttribute( 'listIndent', newIndent, item );
 
 			applied = true;
+			prevIndent = newIndent;
 		} else {
 			fixBy = null;
-			maxIndent = item.getAttribute( 'listIndent' ) + 1;
+			maxIndent = itemIndent + 1;
+			prevIndent = itemIndent;
 		}
 	}
 
