@@ -52,6 +52,10 @@ describe( 'ListStyleEditing', () => {
 				}
 			} );
 		} );
+
+		it( 'should be loaded', () => {
+			expect( editor.plugins.get( ListStyleEditing ) ).to.be.instanceOf( ListStyleEditing );
+		} );
 	} );
 
 	describe( 'listStyle', () => {
@@ -72,10 +76,6 @@ describe( 'ListStyleEditing', () => {
 
 		afterEach( () => {
 			return editor.destroy();
-		} );
-
-		it( 'should be loaded', () => {
-			expect( editor.plugins.get( ListStyleEditing ) ).to.be.instanceOf( ListStyleEditing );
 		} );
 
 		describe( 'schema rules', () => {
@@ -3776,9 +3776,9 @@ describe( 'ListStyleEditing', () => {
 		} );
 
 		describe( 'integrations', () => {
-			describe( 'merging a list into a reversed list', () => {
+			describe( 'merging a list into a list', () => {
 				it(
-					'should inherit the reversed attribute ' +
+					'should inherit the start attribute ' +
 					'when merging the same kind of lists (from top, merge a single item, start: 3)',
 					() => {
 						setModelData( model,
@@ -5022,6 +5022,555 @@ describe( 'ListStyleEditing', () => {
 						setData() {}
 					};
 				}
+			} );
+		} );
+	} );
+
+	describe( 'listStyle + listStart + listReversed', () => {
+		beforeEach( () => {
+			return VirtualTestEditor
+				.create( {
+					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					list: {
+						numberedProperties: { styles: true, startIndex: true, reversed: true }
+					}
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					view = editor.editing.view;
+				} );
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
+		} );
+
+		describe( 'schema rules', () => {
+			it( 'should allow set `listStyle` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStyle' ) ).to.be.true;
+			} );
+
+			it( 'should allow set `listReversed` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listReversed' ) ).to.be.true;
+			} );
+
+			it( 'should allow set `listStart` on the `listItem`', () => {
+				expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listStart' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'command', () => {
+			it( 'should register `listReversed` command', () => {
+				const command = editor.commands.get( 'listReversed' );
+
+				expect( command ).to.be.instanceOf( ListReversedCommand );
+			} );
+
+			it( 'should register `listStyle` command', () => {
+				const command = editor.commands.get( 'listStyle' );
+
+				expect( command ).to.be.instanceOf( ListStyleCommand );
+			} );
+
+			it( 'should register `listStart` command', () => {
+				const command = editor.commands.get( 'listStart' );
+
+				expect( command ).to.be.instanceOf( ListStartCommand );
+			} );
+		} );
+
+		describe( 'conversion in data pipeline', () => {
+			describe( 'model to data', () => {
+				it( 'should convert single list (default values)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
+							'Foo' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
+							'Bar' +
+						'</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
+				} );
+
+				it( 'should convert single list (non-default values)', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="5" listReversed="true" listStyle="circle">' +
+							'Foo' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="5" listReversed="true" listStyle="circle">' +
+							'Bar' +
+						'</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol style="list-style-type:circle;" reversed="reversed" start="5"><li>Foo</li><li>Bar</li></ol>'
+					);
+				} );
+
+				it( 'should convert nested lists', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="false" listStyle="default">' +
+							'1' +
+						'</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
+							'1.1' +
+						'</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
+							'1.2' +
+						'</listItem>' +
+						'<listItem listIndent="2" listType="numbered" listStart="1" listReversed="true" listStyle="default">' +
+							'1.2.1' +
+						'</listItem>' +
+						'<listItem listIndent="3" listType="numbered" listStart="1" listReversed="true" listStyle="circle">' +
+							'1.2.1.1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="false" listStyle="default">' +
+							'2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="false" listStyle="default">' +
+							'3' +
+						'</listItem>' +
+						'<listItem listIndent="1" listType="numbered" listStart="3" listReversed="true" listStyle="circle">' +
+							'3.1' +
+						'</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol start="2">' +
+							'<li>1' +
+								'<ol>' +
+									'<li>1.1</li>' +
+									'<li>1.2' +
+										'<ol reversed="reversed">' +
+											'<li>1.2.1' +
+												'<ol style="list-style-type:circle;" reversed="reversed">' +
+													'<li>1.2.1.1</li>' +
+												'</ol>' +
+											'</li>' +
+										'</ol>' +
+									'</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>2</li>' +
+							'<li>3' +
+								'<ol style="list-style-type:circle;" reversed="reversed" start="3">' +
+									'<li>3.1</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'should produce different lists', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
+							'A1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="1" listReversed="false" listStyle="default">' +
+							'A2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="false" listStyle="default">' +
+							'B1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="false" listStyle="default">' +
+							'B2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="true" listStyle="default">' +
+							'C1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="true" listStyle="default">' +
+							'C2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="true" listStyle="circle">' +
+							'D1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="numbered" listStart="2" listReversed="true" listStyle="circle">' +
+							'D2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">' +
+							'E1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">' +
+							'E2' +
+						'</listItem>'
+					);
+
+					expect( editor.getData() ).to.equal(
+						'<ol>' +
+							'<li>A1</li>' +
+							'<li>A2</li>' +
+						'</ol>' +
+						'<ol start="2">' +
+							'<li>B1</li>' +
+							'<li>B2</li>' +
+						'</ol>' +
+						'<ol start="2" reversed="reversed">' +
+							'<li>C1</li>' +
+							'<li>C2</li>' +
+						'</ol>' +
+						'<ol style="list-style-type:circle;" start="2" reversed="reversed">' +
+							'<li>D1</li>' +
+							'<li>D2</li>' +
+						'</ol>' +
+						'<ul>' +
+							'<li>E1</li>' +
+							'<li>E2</li>' +
+						'</ul>'
+					);
+				} );
+			} );
+
+			describe( 'view to model', () => {
+				it( 'should convert single list', () => {
+					editor.setData(
+						'<ol reversed="reversed" start="5" style="list-style-type:lower-latin;"><li>Foo</li><li>Bar</li></ol>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listStart="5" listStyle="lower-latin" listType="numbered">' +
+							'Foo' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="5" listStyle="lower-latin" listType="numbered">' +
+							'Bar' +
+						'</listItem>'
+					);
+				} );
+
+				it( 'should convert nested lists', () => {
+					editor.setData(
+						'<ol start="2">' +
+							'<li>1</li>' +
+							'<li>2' +
+								'<ul>' +
+									'<li>2.1</li>' +
+									'<li>2.2</li>' +
+								'</ul>' +
+							'</li>' +
+							'<li>3' +
+								'<ol reversed="reversed">' +
+									'<li>3.1</li>' +
+									'<li>3.2' +
+										'<ol style="list-style-type:lower-latin">' +
+											'<li>3.2.1</li>' +
+											'<li>3.2.2</li>' +
+										'</ol>' +
+									'</li>' +
+								'</ol>' +
+							'</li>' +
+							'<li>4</li>' +
+						'</ol>'
+					);
+
+					expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listStart="2" listStyle="default" listType="numbered">' +
+							'1' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listStart="2" listStyle="default" listType="numbered">' +
+							'2' +
+						'</listItem>' +
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">' +
+							'2.1' +
+						'</listItem>' +
+						'<listItem listIndent="1" listStyle="default" listType="bulleted">' +
+							'2.2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listStart="2" listStyle="default" listType="numbered">' +
+							'3' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="default" listType="numbered">' +
+							'3.1' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="default" listType="numbered">' +
+							'3.2' +
+						'</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listStart="1" listStyle="lower-latin" listType="numbered">' +
+							'3.2.1' +
+						'</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listStart="1" listStyle="lower-latin" listType="numbered">' +
+							'3.2.2' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="false" listStart="2" listStyle="default" listType="numbered">' +
+							'4' +
+						'</listItem>'
+					);
+				} );
+			} );
+		} );
+
+		describe( 'integrations', () => {
+			describe( 'merging a list into a reversed list', () => {
+				it( 'should inherit the attributes when merging the same kind of lists', () => {
+					setModelData( model,
+						'<paragraph>Foo Bar.[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+							'Foo' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+							'Bar' +
+						'</listItem>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+							'Foo Bar.[]' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+							'Foo' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+							'Bar' +
+						'</listItem>'
+					);
+				} );
+
+				it( 'should not inherit anything if there is no list below the inserted list', () => {
+					setModelData( model,
+						'<paragraph>Foo Bar 1.[]</paragraph>' +
+						'<paragraph>Foo Bar 2.</paragraph>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
+							'Foo Bar 1.[]' +
+						'</listItem>' +
+						'<paragraph>Foo Bar 2.</paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'modifying "listType" attribute', () => {
+				it(
+					'should inherit the attributes when the modified list is the same kind of the list as previous sibling',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+								'Foo' +
+							'</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+								'Bar' +
+							'</listItem>' +
+							'<listItem listIndent="0" listStyle="upper-alpha" listType="bulleted">Foo Bar.[]</listItem>'
+						);
+
+						editor.execute( 'numberedList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+								'Foo' +
+							'</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+								'Bar' +
+							'</listItem>' +
+							'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+								'Foo Bar.[]' +
+							'</listItem>'
+						);
+					}
+				);
+
+				it( 'should add default attributes when changing `listType` to `numbered`', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">Foo Bar.[]</listItem>'
+					);
+
+					editor.execute( 'numberedList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
+							'Foo Bar.[]' +
+						'</listItem>'
+					);
+				} );
+			} );
+
+			describe( 'indenting lists', () => {
+				it( 'should restore the default value of the start attribute when indenting', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'1.' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+							'1A.' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'2B.' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'2.[]' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'3.' +
+						'</listItem>'
+					);
+
+					editor.execute( 'indentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'1.' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+							'1A.' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'2B.' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listStart="1" listStyle="default" listType="numbered">' +
+							'2.[]' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="lower-latin" listType="numbered">' +
+							'3.' +
+						'</listItem>'
+					);
+				} );
+
+				it(
+					'should copy the value of the start attribute when indenting a single item into a nested list',
+					() => {
+						setModelData( model,
+							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
+								'1.' +
+							'</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-alpha" listType="numbered">' +
+								'2.' +
+							'</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
+								'3.[]' +
+							'</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
+								'4.' +
+							'</listItem>'
+						);
+
+						editor.execute( 'indentList' );
+
+						expect( getModelData( model ) ).to.equal(
+							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
+								'1.' +
+							'</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-alpha" listType="numbered">' +
+								'2.' +
+							'</listItem>' +
+							'<listItem listIndent="1" listReversed="true" listStart="1" listStyle="upper-alpha" listType="numbered">' +
+								'3.[]' +
+							'</listItem>' +
+							'<listItem listIndent="0" listReversed="false" listStart="3" listStyle="lower-lating" listType="numbered">' +
+								'4.' +
+							'</listItem>'
+						);
+					}
+				);
+			} );
+
+			describe( 'outdenting lists', () => {
+				it( 'should inherit the attributes from parent list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+							'1.' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listStart="3" listStyle="upper-alpha" listType="numbered">' +
+							'2.[]' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+							'3.' +
+						'</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+							'1.' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+							'2.[]' +
+						'</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-alpha" listType="numbered">' +
+							'3.' +
+						'</listItem>'
+					);
+				} );
+
+				it( 'should not inherit the attributes if outdented the only one item in the list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listStart="2" listStyle="lower-latin" listType="numbered">' +
+							'1.[]' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
+							'2.' +
+						'</listItem>' +
+						'<listItem listIndent="2" listReversed="false" listStart="4" listStyle="lower-latin" listType="numbered">' +
+							'3.' +
+						'</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>1.[]</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listStart="3" listStyle="upper-latin" listType="numbered">' +
+							'2.' +
+						'</listItem>' +
+						'<listItem listIndent="1" listReversed="false" listStart="4" listStyle="lower-latin" listType="numbered">' +
+							'3.' +
+						'</listItem>'
+					);
+				} );
+
+				it( 'should not do anything if there is no list after outdenting', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listStart="5" listStyle="lower-latin" listType="numbered">' +
+							'1.[]' +
+						'</listItem>'
+					);
+
+					editor.execute( 'outdentList' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<paragraph>1.[]</paragraph>'
+					);
+				} );
+			} );
+
+			describe( 'todo list', () => {
+				let editor, model;
+
+				beforeEach( () => {
+					return VirtualTestEditor
+						.create( {
+							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+							list: {
+								numberedProperties: { styles: false, startIndex: true, reversed: false }
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							model = editor.model;
+						} );
+				} );
+
+				afterEach( () => {
+					return editor.destroy();
+				} );
+
+				it( 'should remove the attributes while switching the list type that uses the list style feature', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStart="2" listReversed="true" listStyle="lower-latin" listType="numbered">' +
+							'Foo[]' +
+						'</listItem>'
+					);
+
+					editor.execute( 'todoList' );
+
+					expect( getModelData( model ), '<listItem listIndent="0" listType="todo">Foo[]</listItem>' );
+				} );
 			} );
 		} );
 	} );
