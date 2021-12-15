@@ -350,8 +350,18 @@ export function getSiblingNodes( position, direction ) {
 		// ○ List item 3.    [listType=bulleted]
 		// ○ List item 4.    [listType=bulleted]
 		//
-		// Abort searching when found a different list style.
+		// Abort searching when found a different list style,
 		if ( element.getAttribute( 'listStyle' ) !== listItem.getAttribute( 'listStyle' ) ) {
+			break;
+		}
+
+		// ... different direction
+		if ( element.getAttribute( 'listReversed' ) !== listItem.getAttribute( 'listReversed' ) ) {
+			break;
+		}
+
+		// ... and different start index
+		if ( element.getAttribute( 'listStart' ) !== listItem.getAttribute( 'listStart' ) ) {
 			break;
 		}
 
@@ -363,6 +373,40 @@ export function getSiblingNodes( position, direction ) {
 	}
 
 	return items;
+}
+
+/**
+ * Returns an array with all `listItem` elements that represents the currently selected list.
+ *
+ * It returns all the items even if only part of the list is selected.
+ * If no list is selected, returns an empty array.
+ * The order of elements is not specified.
+ *
+ * @param {module:engine/model/model~Model} model
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getListItemsOfSelectedList( model ) {
+	const document = model.document;
+
+	// For all selected blocks find all list items that are being selected
+	// and update the `listStyle` attribute in those lists.
+	let listItems = [ ...document.selection.getSelectedBlocks() ]
+		.filter( element => element.is( 'element', 'listItem' ) )
+		.map( element => {
+			const position = model.change( writer => writer.createPositionAt( element, 0 ) );
+
+			return [
+				...getSiblingNodes( position, 'backward' ),
+				...getSiblingNodes( position, 'forward' )
+			];
+		} )
+		.flat();
+
+	// Since `getSelectedBlocks()` can return items that belong to the same list, and
+	// `getSiblingNodes()` returns the entire list, we need to remove duplicated items.
+	listItems = [ ...new Set( listItems ) ];
+
+	return listItems;
 }
 
 // Implementation of getFillerOffset for view list item element.

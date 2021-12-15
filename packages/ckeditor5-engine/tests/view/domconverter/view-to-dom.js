@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text */
+/* globals Range, DocumentFragment, HTMLElement, Comment, document, Text, console */
 
 import ViewText from '../../../src/view/text';
 import ViewElement from '../../../src/view/element';
@@ -18,13 +18,21 @@ import ViewDocument from '../../../src/view/document';
 import DowncastWriter from '../../../src/view/downcastwriter';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, BR_FILLER, NBSP_FILLER, MARKED_NBSP_FILLER } from '../../../src/view/filler';
 
-import { parse } from '../../../src/dev-utils/view';
+import { parse, getData as getViewData } from '../../../src/dev-utils/view';
+import { setData as setModelData } from '../../../src/dev-utils/model';
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
 import { StylesProcessor } from '../../../src/view/stylesmap';
 
 describe( 'DomConverter', () => {
 	let converter, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		viewDocument = new ViewDocument( new StylesProcessor() );
@@ -217,6 +225,12 @@ describe( 'DomConverter', () => {
 		} );
 
 		describe( 'options.renderingMode = editing', () => {
+			let warnStub;
+
+			beforeEach( () => {
+				warnStub = testUtils.sinon.stub( console, 'warn' );
+			} );
+
 			it( 'should filter DOM event handlers', () => {
 				const viewImg = new ViewElement( viewDocument, 'img' );
 				const viewText = new ViewText( viewDocument, 'foo' );
@@ -231,7 +245,6 @@ describe( 'DomConverter', () => {
 					renderingMode: 'editing'
 				} );
 
-				converter.experimentalRenderingMode = true;
 				converter.bindElements( domImg, viewImg );
 
 				const domP = converter.viewToDom( viewP, document );
@@ -249,6 +262,27 @@ describe( 'DomConverter', () => {
 				expect( converter.mapDomToView( domP.childNodes[ 0 ] ) ).to.equal( viewImg );
 			} );
 
+			it( 'should warn when an unsafe attribute was filtered out', () => {
+				const viewP = new ViewElement( viewDocument, 'p', { onclick: 'bar' } );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				const domP = converter.viewToDom( viewP, document );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-attribute-detected/ ),
+					{
+						domElement: domP,
+						key: 'onclick',
+						value: 'bar'
+					},
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
 			it( 'should replace script with span and add special data attribute', () => {
 				const viewScript = new ViewElement( viewDocument, 'script' );
 				const viewText = new ViewText( viewDocument, 'foo' );
@@ -260,7 +294,6 @@ describe( 'DomConverter', () => {
 				converter = new DomConverter( viewDocument, {
 					renderingMode: 'editing'
 				} );
-				converter.experimentalRenderingMode = true;
 
 				const domP = converter.viewToDom( viewP, document );
 
@@ -275,6 +308,28 @@ describe( 'DomConverter', () => {
 				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
 			} );
 
+			it( 'should warn when an unsafe script was filtered out', () => {
+				const viewScript = new ViewElement( viewDocument, 'script' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
+
+				viewP._appendChild( viewScript );
+				viewP._appendChild( viewText );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				converter.viewToDom( viewP, document );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-element-detected/ ),
+					sinon.match.has( 'unsafeElement', sinon.match.has( 'name', 'script' ) ),
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
 			describe( 'unsafe attribute names that were declaratively permitted', () => {
 				let writer;
 
@@ -283,8 +338,6 @@ describe( 'DomConverter', () => {
 					converter = new DomConverter( viewDocument, {
 						renderingMode: 'editing'
 					} );
-
-					converter.experimentalRenderingMode = true;
 				} );
 
 				it( 'should not be rejected when set on attribute elements', () => {
@@ -349,6 +402,131 @@ describe( 'DomConverter', () => {
 						'<p onclick="foo" data-ck-unsafe-attribute-onkeydown="bar">foo</p>'
 					);
 				} );
+			} );
+
+			describe( 'DOM elements with included script ', () => {
+				const svgBase64 = 'data:image/svg+xml;base64,' + global.window.btoa( `<svg xmlns="http://www.w3.org/2000/svg">
+							<image href="x" onerror="alert(1)" />
+							</svg>` );
+
+				const svgEncoded = 'data:image/svg+xml;utf8,' + encodeURIComponent( `<svg xmlns="http://www.w3.org/2000/svg">
+							<image href="x" onerror="alert(1)" />
+							</svg>` );
+
+				let editor, editorElement, alertStub;
+
+				beforeEach( async () => {
+					editorElement = document.createElement( 'div' );
+					document.body.appendChild( editorElement );
+
+					editor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph ]
+					} );
+
+					editor.model.schema.register( 'fakeImg', {
+						allowAttributes: [ 'src' ],
+						allowWhere: '$text',
+						isInline: true
+					} );
+
+					editor.conversion.for( 'downcast' ).elementToElement( {
+						model: 'fakeImg',
+						view: ( modelElement, { writer } ) => writer.createEmptyElement( 'img', {
+							src: modelElement.getAttribute( 'src' ),
+							srcset: modelElement.getAttribute( 'src' )
+						} )
+					} );
+
+					editor.model.schema.register( 'fakePicture', {
+						allowAttributes: [ 'srcset', 'media' ],
+						allowWhere: '$text',
+						isInline: true
+					} );
+
+					editor.conversion.for( 'downcast' ).elementToElement( {
+						model: 'fakePicture',
+						view: ( modelElement, { writer } ) => {
+							const picture = writer.createContainerElement( 'picture' );
+							const source = writer.createEmptyElement( 'source', {
+								srcset: modelElement.getAttribute( 'srcset' ),
+								media: modelElement.getAttribute( 'media' )
+							} );
+							const image = writer.createEmptyElement( 'img', {
+								src: modelElement.getAttribute( 'srcset' )
+							} );
+
+							writer.insert( writer.createPositionAt( picture, 0 ), image );
+							writer.insert( writer.createPositionAt( picture, 0 ), source );
+
+							return picture;
+						}
+					} );
+
+					alertStub = testUtils.sinon.stub( global.window, 'alert' );
+				} );
+
+				afterEach( () => {
+					editorElement.remove();
+					return editor.destroy();
+				} );
+
+				it( 'script included in SVG encoded as base64 should not be executed when set on src attribute of img element', () => {
+					setModelData( editor.model, `<paragraph><fakeImg src='${ svgBase64 }'></fakeImg></paragraph>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>' +
+							`<img src="${ svgBase64 }" srcset="${ svgBase64 }"></img>` +
+						'</p>'
+					);
+					expect( alertStub.callCount ).to.equal( 0 );
+				} );
+
+				it( 'script included in encoded SVG should not be executed when set on src attribute of img element', () => {
+					setModelData( editor.model, `<paragraph><fakeImg src='${ svgEncoded }'></fakeImg></paragraph>` );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<p>' +
+							`<img src="${ svgEncoded }" srcset="${ svgEncoded }"></img>` +
+						'</p>'
+					);
+					expect( alertStub.callCount ).to.equal( 0 );
+				} );
+
+				it( 'script included in SVG encoded as base64 should not be executed when set on srcset attribute of source element',
+					() => {
+						setModelData( editor.model,
+							`<paragraph><fakePicture srcset='${ svgBase64 }' media="(min-width: 10px)"></fakePicture></paragraph>`
+						);
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+							'<p>' +
+								'<picture>' +
+									`<source media="(min-width: 10px)" srcset="${ svgBase64 }"></source>` +
+									`<img src="${ svgBase64 }"></img>` +
+								'</picture>' +
+							'</p>'
+						);
+						expect( alertStub.callCount ).to.equal( 0 );
+					}
+				);
+
+				it( 'script included in encoded SVG should not be executed when set on srcset attribute of source element',
+					() => {
+						setModelData( editor.model,
+							`<paragraph><fakePicture srcset='${ svgEncoded }' media="(min-width: 10px)"></fakePicture></paragraph>`
+						);
+
+						expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+							'<p>' +
+								'<picture>' +
+									`<source media="(min-width: 10px)" srcset="${ svgEncoded }"></source>` +
+									`<img src="${ svgEncoded }"></img>` +
+								'</picture>' +
+							'</p>'
+						);
+						expect( alertStub.callCount ).to.equal( 0 );
+					}
+				);
 			} );
 		} );
 

@@ -10,9 +10,12 @@ import MediaEmbedEditing from '../src/mediaembedediting';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'MediaEmbedEditing', () => {
 	let editor, model, doc, view;
+
+	testUtils.createSinonSandbox();
 
 	const testProviders = {
 		A: {
@@ -1073,6 +1076,10 @@ describe( 'MediaEmbedEditing', () => {
 			} );
 
 			it( 'should apply filtering to the output', () => {
+				testUtils.sinon.stub( console, 'warn' )
+					.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+					.callsFake( () => {} );
+
 				const provider = {
 					name: 'test',
 					url: 'foo.com',
@@ -1086,7 +1093,6 @@ describe( 'MediaEmbedEditing', () => {
 						provider
 					]
 				} ).then( editor => {
-					editor.editing.view.domConverter.experimentalRenderingMode = true;
 					editor.setData( '<figure class="media"><div data-oembed-url="foo.com"></div></figure>' );
 
 					expect( getViewData( editor.editing.view, {
