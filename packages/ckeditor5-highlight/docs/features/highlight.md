@@ -12,7 +12,17 @@ The highlight plugin always comes with a predefined and limited number of availa
 
 ## Demo
 
+Select the text you want to highlight, then use the highlight toolbar button {@icon @ckeditor/ckeditor5-highlight/theme/icons/marker.svg Highlight} to chose a desired color from the dropdown.
+
 {@snippet features/highlight}
+
+## Related features
+
+There are more CKEditor 5 features that can help you style your content:
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/block-quote Block quote} &ndash; Include block quotations or pull quotes in your rich-text content.
+* {@link features/remove-format Remove format} &ndash; Easily clean basic text formatting.
 
 ## Configuring the highlight options
 

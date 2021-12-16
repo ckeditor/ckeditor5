@@ -127,21 +127,21 @@ To avoid such troubles, and to make collaborative editing possible for real, CKE
 ```html
 <paragraph>
 	"Foo "
-	<image></image>
+	<imageInline></imageInline>
 	"bar"
 </paragraph>
 ```
 
-The `"Foo "` text node is at index `0` in its parent, `<image></image>` is at index `1` and `"bar"` is at index `2`.
+The `"Foo "` text node is at index `0` in its parent, `<imageInline></imageInline>` is at index `1` and `"bar"` is at index `2`.
 
 On the other hand, offset `x` in `<paragraph>` translates to:
 
-| Offset | Position                                         | Node      |
-|--------|--------------------------------------------------|-----------|
-| `0`    | `<paragraph>^Foo <image></image>bar</paragraph>` | `"Foo "`  |
-| `1`    | `<paragraph>F^oo <image></image>bar</paragraph>` | `"Foo "`  |
-| `4`    | `<paragraph>Foo ^<image></image>bar</paragraph>` | `<image>` |
-| `6`    | `<paragraph>Foo <image></image>b^ar</paragraph>` | `"bar"`   |
+| Offset | Position                                                     | Node            |
+|--------|--------------------------------------------------------------|-----------------|
+| `0`    | `<paragraph>^Foo <imageInline></imageInline>bar</paragraph>` | `"Foo "`        |
+| `1`    | `<paragraph>F^oo <imageInline></imageInline>bar</paragraph>` | `"Foo "`        |
+| `4`    | `<paragraph>Foo ^<imageInline></imageInline>bar</paragraph>` | `<imageInline>` |
+| `6`    | `<paragraph>Foo <imageInline></imageInline>b^ar</paragraph>` | `"bar"`         |
 
 ### Positions, ranges and selections
 
@@ -226,14 +226,14 @@ editor.data;                    // The data pipeline (DataController).
 
 ### Element types and custom data
 
-The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and to better express the semantics of the content, the view structure implements 6 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
+The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and to better express the semantics of the content, the view structure implements 6 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/rawelement~RawElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by the editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#conversion).
 
 The element types can be defined as follows:
 
 * **Container element** &ndash; The elements that build the structure of the content. Used for block elements such as `<p>`, `<h1>`, `<blockQuote>`, `<li>`, etc.
 * **Attribute element** &ndash; The elements that cannot hold container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimized to `<a href="..." class="bar">x</a>`.
 * **Empty element** &ndash; The elements that must not have any child nodes, for example `<img>`.
-* **UI elements** &ndash; The elements that are not a part of the "data" but need to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. The contents of these elements and events coming from them are filtered out, too.
+* **UI element** &ndash; The elements that are not a part of the "data" but need to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. The contents of these elements and events coming from them are filtered out, too.
 * **Raw element** &ndash; The elements that work as data containers ("wrappers", "sandboxes") but their children are transparent to the editor. Useful when non-standard data must be rendered but the editor should not be concerned what it is and how it works. Users cannot put the selection inside a raw element, split it into smaller chunks or directly modify its content.
 * **Editable element** &ndash; The elements used as "nested editables" of non-editable fragments of the content, for example a caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
@@ -260,8 +260,8 @@ The view may need to be changed manually if the cause of such change is not repr
 For that, just like in the model, you should use the `change()` block (of the view) in which you will have access to the view downcast writer.
 
 ```js
-editor.data.view.change( writer => {
-	writer.insert( position1, writer.createText( 'foo' ) );
+editor.editing.view.change( writer => {
+	writer.insert( position, writer.createText( 'foo' ) );
 } );
 ```
 
@@ -325,11 +325,12 @@ By default, the view adds the following observers:
 * {@link module:engine/view/observer/keyobserver~KeyObserver}
 * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}
 * {@link module:engine/view/observer/compositionobserver~CompositionObserver}
+* {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}
 
 Additionally, some features add their own observers. For instance, the {@link module:clipboard/clipboard~Clipboard clipboard feature} adds {@link module:clipboard/clipboardobserver~ClipboardObserver}.
 
 <info-box>
-	For a complete list of events fired by observes check the {@link module:engine/view/document~Document}'s list of events.
+	For a complete list of events fired by observers check the {@link module:engine/view/document~Document}'s list of events.
 </info-box>
 
 You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~View#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer.
@@ -365,6 +366,10 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 * It takes place in the "editing pipeline" (the left branch of the diagram).
 * It does not have its counterpart &mdash; there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
 * Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document's for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed &mdash; i.e. if the DOM actually differs from the view at this stage).
+
+### More information
+
+A more in-depth introduction with examples could be found in the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 
 <!--TODO: upcasting, downcasting, mapping nodes and positions, API.
 

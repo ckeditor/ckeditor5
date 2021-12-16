@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,20 +12,21 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import ImageEditing from '@ckeditor/ckeditor5-image/src/image/imageediting';
+import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isLinkElement } from '../src/utils';
+import { env } from 'ckeditor5/src/utils';
 
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
-
-/* global document */
+/* global document, window */
 
 describe( 'LinkEditing', () => {
 	let element, editor, model, view;
@@ -35,7 +36,7 @@ describe( 'LinkEditing', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, LinkEditing, Enter ],
+			plugins: [ Paragraph, LinkEditing, Enter, Clipboard, ImageInline ],
 			link: {
 				decorators: {
 					isExternal: {
@@ -51,6 +52,9 @@ describe( 'LinkEditing', () => {
 		} );
 
 		editor.model.schema.extend( '$text', { allowAttributes: 'bold' } );
+		editor.model.schema.setAttributeProperties( 'bold', {
+			isFormatting: true
+		} );
 
 		editor.conversion.attributeToElement( {
 			model: 'bold',
@@ -143,7 +147,7 @@ describe( 'LinkEditing', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/6053
 	describe( 'selection attribute management on paste', () => {
-		it( 'should remove link atttributes when pasting a link', () => {
+		it( 'should remove link attributes when pasting a link', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			model.change( writer => {
@@ -155,7 +159,7 @@ describe( 'LinkEditing', () => {
 			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
 		} );
 
-		it( 'should remove all atttributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
+		it( 'should remove all attributes starting with "link" (e.g. decorator attributes) when pasting a link', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 			model.change( writer => {
@@ -171,7 +175,7 @@ describe( 'LinkEditing', () => {
 			expect( [ ...model.document.selection.getAttributeKeys() ] ).to.be.empty;
 		} );
 
-		it( 'should not remove link atttributes when pasting a non-link content', () => {
+		it( 'should not remove link attributes when pasting a non-link content', () => {
 			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">foo[]</$text></paragraph>' );
 
 			model.change( writer => {
@@ -188,7 +192,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'bold' );
 		} );
 
-		it( 'should not remove link atttributes when pasting in the middle of a link with the same URL', () => {
+		it( 'should not remove link attributes when pasting in the middle of a link with the same URL', () => {
 			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">fo[]o</$text></paragraph>' );
 
 			model.change( writer => {
@@ -199,7 +203,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
-		it( 'should not remove link atttributes from the selection when pasting before a link when the gravity is overridden', () => {
+		it( 'should not remove link attributes from the selection when pasting before a link when the gravity is overridden', () => {
 			setModelData( model, '<paragraph>foo[]<$text linkHref="ckeditor.com">bar</$text></paragraph>' );
 
 			view.document.fire( 'keydown', {
@@ -226,7 +230,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
-		it( 'should not remove link atttributes when pasting a link into another link (different URLs, no merge)', () => {
+		it( 'should not remove link attributes when pasting a link into another link (different URLs, no merge)', () => {
 			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">f[]oo</$text></paragraph>' );
 
 			model.change( writer => {
@@ -244,7 +248,7 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 		} );
 
-		it( 'should not remove link atttributes when pasting before another link (different URLs, no merge)', () => {
+		it( 'should not remove link attributes when pasting before another link (different URLs, no merge)', () => {
 			setModelData( model, '<paragraph>[]<$text linkHref="ckeditor.com">foo</$text></paragraph>' );
 
 			expect( model.document.selection ).to.have.property( 'isGravityOverridden', false );
@@ -262,6 +266,43 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection ).to.have.attribute( 'linkHref' );
 			expect( model.document.selection ).to.have.attribute( 'linkHref', 'http://INSERTED' );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8158
+		it( 'should expand link text on pasting plain text', () => {
+			setModelData( model, '<paragraph><$text linkHref="ckeditor.com">f[]oo</$text></paragraph>' );
+
+			view.document.fire( 'paste', {
+				dataTransfer: createDataTransfer( {
+					'text/html': '<p>bar</p>',
+					'text/plain': 'bar'
+				} ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>' +
+					'<$text linkHref="ckeditor.com">fbar[]oo</$text>' +
+				'</paragraph>'
+			);
+		} );
+
+		it( 'doesn\'t affect attributes other than link', () => {
+			setModelData( model, '<paragraph><$text bold="true">[foo]</$text></paragraph>' );
+
+			view.document.fire( 'paste', {
+				dataTransfer: createDataTransfer( {
+					'text/html': '<p>bar</p>',
+					'text/plain': 'bar'
+				} ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true">bar[]</$text></paragraph>'
+			);
 		} );
 	} );
 
@@ -670,6 +711,11 @@ describe( 'LinkEditing', () => {
 						attributes: {
 							class: 'mail-url'
 						}
+					}, {
+						url: 'ftp://example.com',
+						attributes: {
+							style: 'background:blue;color:yellow;'
+						}
 					}
 				];
 
@@ -698,8 +744,14 @@ describe( 'LinkEditing', () => {
 								isMail: {
 									mode: 'automatic',
 									callback: url => url.startsWith( 'mailto:' ),
-									attributes: {
-										class: 'mail-url'
+									classes: 'mail-url'
+								},
+								isFile: {
+									mode: 'automatic',
+									callback: url => url.startsWith( 'ftp' ),
+									styles: {
+										color: 'yellow',
+										background: 'blue'
 									}
 								}
 							}
@@ -733,7 +785,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				it( 'stores decorators in LinkCommand#automaticDecorators collection', () => {
-					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 3 );
+					expect( editor.commands.get( 'link' ).automaticDecorators.length ).to.equal( 4 );
 				} );
 			} );
 		} );
@@ -803,7 +855,8 @@ describe( 'LinkEditing', () => {
 			it( 'should upcast attributes from initial data', async () => {
 				editor = await ClassicTestEditor.create( element, {
 					initialData: '<p><a href="url" target="_blank" rel="noopener noreferrer" download="file">Foo</a>' +
-						'<a href="example.com" download="file">Bar</a></p>',
+						'<a href="example.com" class="file" style="text-decoration:underline;">Bar</a>' +
+						'<a href="example.com" download="file">Baz</a></p>',
 					plugins: [ Paragraph, LinkEditing, Enter ],
 					link: {
 						decorators: {
@@ -821,6 +874,14 @@ describe( 'LinkEditing', () => {
 								attributes: {
 									download: 'file'
 								}
+							},
+							isFile: {
+								mode: 'manual',
+								label: 'File',
+								classes: 'file',
+								styles: {
+									'text-decoration': 'underline'
+								}
 							}
 						}
 					}
@@ -831,7 +892,8 @@ describe( 'LinkEditing', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 					'<paragraph>' +
 						'<$text linkHref="url" linkIsDownloadable="true" linkIsExternal="true">Foo</$text>' +
-						'<$text linkHref="example.com" linkIsDownloadable="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsFile="true">Bar</$text>' +
+						'<$text linkHref="example.com" linkIsDownloadable="true">Baz</$text>' +
 					'</paragraph>'
 				);
 
@@ -875,6 +937,215 @@ describe( 'LinkEditing', () => {
 
 				await editor.destroy();
 			} );
+		} );
+	} );
+
+	describe( 'link following', () => {
+		let stub, eventPreventDefault;
+
+		beforeEach( () => {
+			stub = sinon.stub( window, 'open' );
+
+			stub.returns( undefined );
+		} );
+
+		afterEach( () => {
+			stub.restore();
+		} );
+
+		describe( 'using mouse', () => {
+			const initialEnvMac = env.isMac;
+
+			afterEach( () => {
+				env.isMac = initialEnvMac;
+			} );
+
+			describe( 'on Mac', () => {
+				beforeEach( () => {
+					env.isMac = true;
+				} );
+
+				it( 'should follow the link after CMD+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: true, ctrlKey: false } );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.true;
+				} );
+
+				it( 'should not follow the link after CTRL+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+					expect( stub.notCalled ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.false;
+				} );
+
+				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: false } );
+
+					expect( stub.notCalled ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.false;
+				} );
+			} );
+
+			describe( 'on non-Mac', () => {
+				beforeEach( () => {
+					env.isMac = false;
+				} );
+
+				it( 'should follow the link after CTRL+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+
+				it( 'should not follow the link after CMD+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: true, ctrlKey: false } );
+
+					expect( stub.notCalled ).to.be.true;
+				} );
+
+				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: false } );
+
+					expect( stub.notCalled ).to.be.true;
+				} );
+			} );
+
+			it( 'should follow the inline image link', () => {
+				setModelData( model, '<paragraph>[<imageInline linkHref="http://www.ckeditor.com"></imageInline>]</paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, 'img' );
+
+				expect( stub.calledOnce ).to.be.true;
+				expect( stub.calledOn( window ) ).to.be.true;
+				expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.true;
+			} );
+
+			it( 'should not follow the link if "a" element doesn\'t have "href" attribute', () => {
+				editor.conversion.attributeToElement( {
+					model: 'customLink',
+					view: 'a'
+				} );
+
+				setModelData( model, '<paragraph><$text customLink="">Bar[]</$text></paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac } );
+
+				expect( stub.notCalled ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.false;
+			} );
+
+			it( 'should not follow the link if no link is clicked', () => {
+				editor.conversion.attributeToElement( {
+					model: 'customLink',
+					view: 'span'
+				} );
+
+				setModelData( model, '<paragraph><$text customLink="">Bar[]</$text></paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, 'span' );
+
+				expect( stub.notCalled ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.false;
+			} );
+
+			function fireClickEvent( options, tagName = 'a' ) {
+				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+				eventPreventDefault = sinon.spy();
+
+				view.document.fire( 'click', {
+					domTarget: linkElement,
+					domEvent: options,
+					preventDefault: eventPreventDefault
+				} );
+			}
+		} );
+
+		describe( 'using keyboard', () => {
+			const positiveScenarios = [
+				{
+					condition: 'selection is collapsed inside the link',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">Ba[]r</$text></paragraph>'
+				},
+				{
+					condition: 'selection is collapsed at the end of the link',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>'
+				},
+				{
+					condition: 'selection is collapsed at the begining of the link',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">[]Bar</$text></paragraph>'
+				},
+				{
+					condition: 'part of the link is selected',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">B[a]r</$text></paragraph>'
+				},
+				{
+					condition: 'the whole link is selected',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">[Bar]</$text></paragraph>'
+				},
+				{
+					condition: 'linked image is selected',
+					modelData: '<paragraph>[<imageInline linkHref="http://www.ckeditor.com"></imageInline>]</paragraph>'
+				}
+			];
+
+			for ( const { condition, modelData } of positiveScenarios ) {
+				it( `should open link after pressing ALT+ENTER if ${ condition }`, () => {
+					setModelData( model, modelData );
+
+					fireEnterPressedEvent( { altKey: true } );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+			}
+
+			it( 'should not open link after pressing ENTER without ALT', () => {
+				setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Ba[]r</$text></paragraph>' );
+
+				fireEnterPressedEvent( { altKey: false } );
+
+				expect( stub.notCalled ).to.be.true;
+			} );
+
+			it( 'should not open link after pressing ALT+ENTER if not inside a link', () => {
+				setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar</$text>Baz[]</paragraph>' );
+
+				fireEnterPressedEvent( { altKey: true } );
+
+				expect( stub.notCalled ).to.be.true;
+			} );
+
+			function fireEnterPressedEvent( options ) {
+				view.document.fire( 'keydown', {
+					keyCode: keyCodes.enter,
+					domEvent: {
+						keyCode: keyCodes.enter,
+						preventDefault: () => {},
+						target: document.body,
+						...options
+					}
+				} );
+			}
 		} );
 	} );
 
@@ -1052,8 +1323,13 @@ describe( 'LinkEditing', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">Bar[]</$text></paragraph>' );
 		} );
 
-		it( 'should remove manual decorators', () => {
-			setModelData( model, '<paragraph><$text linkIsFoo="true" linkIsBar="true" linkHref="url">Bar[]</$text></paragraph>' );
+		it( 'should remove all `link*` attributes', () => {
+			allowLinkTarget( editor );
+
+			setModelData(
+				model,
+				'<paragraph><$text linkIsFoo="true" linkTarget="_blank" linkHref="https://ckeditor.com">Bar[]</$text></paragraph>'
+			);
 
 			editor.editing.view.document.fire( 'mousedown' );
 			editor.editing.view.document.fire( 'selectionChange', {
@@ -1061,15 +1337,29 @@ describe( 'LinkEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>[]</paragraph>'
+				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>[]</paragraph>'
 			);
 
 			editor.execute( 'input', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<paragraph><$text linkHref="url" linkIsBar="true" linkIsFoo="true">Bar</$text>Foo[]</paragraph>'
+				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>Foo[]</paragraph>'
 			);
 		} );
+
+		// Based on `packages/ckeditor5-engine/docs/_snippets/framework/extending-content-allow-link-target.js`.
+		// And covers #8462.
+		function allowLinkTarget( editor ) {
+			editor.model.schema.extend( '$text', { allowAttributes: 'linkTarget' } );
+
+			editor.conversion.for( 'downcast' ).attributeToElement( {
+				model: 'linkTarget',
+				view: ( attributeValue, { writer } ) => {
+					return writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
+				},
+				converterPriority: 'low'
+			} );
+		}
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/4762
@@ -1078,7 +1368,7 @@ describe( 'LinkEditing', () => {
 
 		beforeEach( async () => {
 			editor = await ClassicTestEditor.create( element, {
-				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageEditing ],
+				plugins: [ Paragraph, LinkEditing, Enter, BoldEditing, ItalicEditing, ImageBlockEditing ],
 				link: {
 					decorators: {
 						isFoo: {
@@ -1112,8 +1402,8 @@ describe( 'LinkEditing', () => {
 			await editor.destroy();
 		} );
 
-		it( 'should require Clipboard plugin', () => {
-			expect( LinkEditing.requires.includes( Clipboard ) ).to.equal( true );
+		it( 'should require ClipboardPipeline plugin', () => {
+			expect( LinkEditing.requires.includes( ClipboardPipeline ) ).to.equal( true );
 		} );
 
 		it( 'should require Input plugin', () => {
@@ -1294,7 +1584,7 @@ describe( 'LinkEditing', () => {
 
 		it( 'should not preserve anything if selected an element instead of text', () => {
 			setModelData( model,
-				'[<image src="/assets/sample.png"></image>]'
+				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 
 			editor.execute( 'input', {
@@ -1397,15 +1687,6 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is Abcde[]from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 		} );
-
-		function createDataTransfer( data ) {
-			return {
-				getData( type ) {
-					return data[ type ];
-				},
-				setData() {}
-			};
-		}
 	} );
 
 	// https://github.com/ckeditor/ckeditor5/issues/7521
@@ -1586,4 +1867,13 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 		} );
 	} );
+
+	function createDataTransfer( data ) {
+		return {
+			getData( type ) {
+				return data[ type ];
+			},
+			setData() {}
+		};
+	}
 } );

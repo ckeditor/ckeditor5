@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Math and chemical formulas
+badges: [ premium ]
 ---
 
 # Math equations and chemical formulas
@@ -18,7 +19,7 @@ Additionally, MathType offers a special tool designed to help you work with chem
 
 ## Demo
 
-In order to start creating math or chemical formulas in the WYSIWYG editor below, click the MathType or ChemType buttons in the toolbar. This will open the relevant dialog on the screen.
+To start creating math or chemical formulas in the WYSIWYG editor below, click the MathType {@icon @wiris/mathtype-ckeditor5/theme/icons/formula.svg MathType} or ChemType {@icon @wiris/mathtype-ckeditor5/theme/icons/chem.svg ChemType} buttons in the toolbar. This will open the relevant dialog on the screen.
 
 Use the toolbar to write your equation or formula. At any time you can also click the "Go to handwritten mode" button on the right side of the MathType editor to switch to handwriting.
 
@@ -69,3 +70,147 @@ ClassicEditor
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
+
+## Customizing MathType service
+
+It is possible to use different services for MathType support. There are several ways to deploy it in the CKEditor 5 environment. The following instructions will allow you to customize MathType Web Integration services for CKEditor 5.
+
+### Java
+
+To install the Java service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - Java](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Deploy the `pluginwiris_engine` war file.
+
+3. Add `mathTypeParameters` to CKEditor 5 with the configuration shown below:
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : '/pluginwiris_engine/app/configurationjs',
+                    server : 'java'
+                }
+            }
+    }
+    ```
+
+### PHP
+
+To install the PHP service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - PHP](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Copy the `generic_wiris/integration` folder into your project. In this example it was assumed the services are located at `DOCUMENT_ROOT/php-services/`.
+
+3. Add `mathTypeParameters` to CKEditor 5 with the following configuration:
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : 'http://localhost/php-services/integration',
+                    server : 'php'
+                }
+            }
+    }
+    ```
+
+### .NET
+
+To install the .NET service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - Aspx](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Copy the `generic_wiris/integration` folder into your project. In this example it was assumed the services are located at `DOCUMENT_ROOT/aspx-services/`.
+
+3. Add `mathTypeParameters` to CKEditor 5 with this configuration:
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : 'http://localhost/aspx-services/integration',
+                    server : 'aspx'
+                }
+            }
+    }
+    ```
+
+### Ruby on Rails
+
+To install the Ruby on Rails service, follow the steps below:
+
+1. Download the [MathType Web Integration Services - Ruby on Rails](http://www.wiris.com/en/plugins/services/download) package.
+
+2. Instal the `wirispluginengine.gem` gem.
+
+    ```
+    gem install -l wirispluginengine.gem
+    ```
+
+3. Add `mathTypeParameters` to CKEditor 5 with the configuration below:
+
+
+    ```js
+    ClassicEditor.create( document.querySelector( '#example' ), {
+            plugins: [ ..., MathType, ... ],
+            toolbar: {
+                items: [
+                    ...,
+                    'MathType',
+                    'ChemType',
+                    ...,
+                ]
+            },
+            language: 'en',
+            // MathType parameters.
+            mathTypeParameters : {
+                serviceProviderProperties : {
+                    URI : '/wirispluginengine/integrationn',
+                    server : 'ruby'
+                }
+            }
+    }
+    ```
+
+## Displaying equations on your website
+
+By default, MathType returns equations in MathML which is [not supported by all browsers](https://developer.mozilla.org/en-US/docs/Web/MathML#browser_compatibility). In order to display equations on a page, you will need to use some engine that will handle the rendering process.
+
+Fortunately, MathType introduces the full MathML mode that handles the unsupported markup and converts it into a form that could be properly recognized by browsers. You can read more about the full MathML mode [in the documentation](https://docs.wiris.com/en/mathtype/mathtype_web/integrations/mathml-mode).
+

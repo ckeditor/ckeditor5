@@ -1,14 +1,18 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-toolbar-dropdown {
-	& .ck.ck-toolbar .ck.ck-toolbar__items {
-		flex-wrap: nowrap;
-	}
+:root {
+	--ck-toolbar-dropdown-max-width: 60vw;
+}
 
-	& .ck-dropdown__panel .ck-button {
+.ck.ck-toolbar-dropdown > .ck-dropdown__panel {
+	/* https://github.com/ckeditor/ckeditor5/issues/5586 */
+	width: max-content;
+	max-width: var(--ck-toolbar-dropdown-max-width);
+
+	& .ck-button {
 		&:focus {
 			z-index: calc(var(--ck-z-default) + 1);
 		}

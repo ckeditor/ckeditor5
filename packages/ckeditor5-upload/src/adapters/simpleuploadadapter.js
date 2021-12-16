@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,11 @@
  * @module upload/adapters/simpleuploadadapter
  */
 
-/* globals XMLHttpRequest, FormData, console */
+/* globals XMLHttpRequest, FormData */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '../filerepository';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * The Simple upload adapter allows uploading images to an application running on your server using
@@ -30,10 +30,10 @@ import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckedito
  *			.then( ... )
  *			.catch( ... );
  *
- * See the {@glink features/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
+ * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn how to
  * learn more about the feature (configuration, server–side requirements, etc.).
  *
- * Check out the {@glink features/image-upload/image-upload comprehensive "Image upload overview"} to learn about
+ * Check out the {@glink features/images/image-upload/image-upload comprehensive "Image upload overview"} to learn about
  * other ways to upload images into CKEditor 5.
  *
  * @extends module:core/plugin~Plugin
@@ -69,11 +69,9 @@ export default class SimpleUploadAdapter extends Plugin {
 			 * configuration required by the {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter `SimpleUploadAdapter`}
 			 * is missing. Make sure the correct URL is specified for the image upload to work properly.
 			 *
-			 * @error simple-upload-adapter-missing-uploadUrl
+			 * @error simple-upload-adapter-missing-uploadurl
 			 */
-			console.warn( attachLinkToDocumentation(
-				'simple-upload-adapter-missing-uploadUrl: Missing the "uploadUrl" property in the "simpleUpload" editor configuration.'
-			) );
+			logWarning( 'simple-upload-adapter-missing-uploadurl' );
 
 			return;
 		}
@@ -176,7 +174,14 @@ class Adapter {
 				return reject( response && response.error && response.error.message ? response.error.message : genericErrorText );
 			}
 
-			resolve( response.url ? { default: response.url } : response.urls );
+			const urls = response.url ? { default: response.url } : response.urls;
+
+			// Resolve with the normalized `urls` property and pass the rest of the response
+			// to allow customizing the behavior of features relying on the upload adapters.
+			resolve( {
+				...response,
+				urls
+			} );
 		} );
 
 		// Upload progress when it is supported.
@@ -238,7 +243,7 @@ class Adapter {
  *			.then( ... )
  *			.catch( ... );
  *
- * See the {@glink features/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn more.
+ * See the {@glink features/images/image-upload/simple-upload-adapter "Simple upload adapter"} guide to learn more.
  *
  * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
@@ -258,7 +263,7 @@ class Adapter {
  * upload of resources (images) inserted into the editor content.
  *
  * Learn more about the server application requirements in the
- * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
  * of the feature guide.
  *
  * @member {String} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#uploadUrl
@@ -282,7 +287,7 @@ class Adapter {
  *			.catch( ... );
  *
  * Learn more about the server application requirements in the
- * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
  * of the feature guide.
  *
  * @member {Object.<String, String>} module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#headers
@@ -304,7 +309,7 @@ class Adapter {
  *			.catch( ... );
  *
  * Learn more about the server application requirements in the
- * {@glink features/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
+ * {@glink features/images/image-upload/simple-upload-adapter#server-side-configuration "Server-side configuration"} section
  * of the feature guide.
  *
  * @member {Boolean} [module:upload/adapters/simpleuploadadapter~SimpleUploadConfig#withCredentials=false]

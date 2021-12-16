@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,10 @@
  * @module horizontal-line/horizontallineediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { toWidget } from 'ckeditor5/src/widget';
+
 import HorizontalLineCommand from './horizontallinecommand';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import '../theme/horizontalline.css';
 
@@ -42,24 +43,24 @@ export default class HorizontalLineEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'horizontalLine',
-			view: ( modelElement, viewWriter ) => {
-				return viewWriter.createEmptyElement( 'hr' );
+			view: ( modelElement, { writer } ) => {
+				return writer.createEmptyElement( 'hr' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'horizontalLine',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const label = t( 'Horizontal line' );
-				const viewWrapper = viewWriter.createContainerElement( 'div' );
-				const viewHrElement = viewWriter.createEmptyElement( 'hr' );
+				const viewWrapper = writer.createContainerElement( 'div' );
+				const viewHrElement = writer.createEmptyElement( 'hr' );
 
-				viewWriter.addClass( 'ck-horizontal-line', viewWrapper );
-				viewWriter.setCustomProperty( 'hr', true, viewWrapper );
+				writer.addClass( 'ck-horizontal-line', viewWrapper );
+				writer.setCustomProperty( 'hr', true, viewWrapper );
 
-				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewHrElement );
+				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewHrElement );
 
-				return toHorizontalLineWidget( viewWrapper, viewWriter, label );
+				return toHorizontalLineWidget( viewWrapper, writer, label );
 			}
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,7 @@
  * @module editor-classic/classiceditoruiview
  */
 
-import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
-import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
-import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import { BoxedEditorUIView, InlineEditableUIView, StickyPanelView, ToolbarView } from 'ckeditor5/src/ui';
 
 import '../theme/classiceditor.css';
 
@@ -26,7 +23,7 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
 	 * @param {module:engine/view/view~View} editingView The editing view instance this view is related to.
-	 * @param {Object} [options={}] Configuration options fo the view instance.
+	 * @param {Object} [options={}] Configuration options for the view instance.
 	 * @param {Boolean} [options.shouldToolbarGroupWhenFull] When set `true` enables automatic items grouping
 	 * in the main {@link module:editor-classic/classiceditoruiview~ClassicEditorUIView#toolbar toolbar}.
 	 * See {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull} to learn more.

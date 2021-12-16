@@ -1,0 +1,111 @@
+{
+	"plugins": [
+		{
+			"name": "Font background color",
+			"className": "FontBackgroundColor",
+			"description": "Introduces font background color support with a configurable color palette panel.",
+			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
+			"path": "src/fontbackgroundcolor.js",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "fontBackgroundColor",
+					"iconPath": "theme/icons/font-background.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"styles": "background-color"
+				}
+			]
+		},
+		{
+			"name": "Font color",
+			"className": "FontColor",
+			"description": "Introduces font color support with a configurable color palette panel.",
+			"docs": "features/font.html#configuring-the-font-color-and-font-background-color-features",
+			"path": "src/fontcolor.js",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "fontColor",
+					"iconPath": "theme/icons/font-color.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"styles": "color"
+				}
+			]
+		},
+		{
+			"name": "Font size",
+			"className": "FontSize",
+			"description": "Introduces font size support.",
+			"docs": "features/font.html#configuring-the-font-size-feature",
+			"path": "src/fontsize.js",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "fontSize",
+					"iconPath": "theme/icons/font-size.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"classes": [
+						"text-tiny",
+						"text-small",
+						"text-big",
+						"text-huge"
+					],
+					"_comment": "If the `config.fontSize.options` option is not set or it contains predefined named presets, the feature uses class names."
+				},
+				{
+					"elements": "span",
+					"styles": "font-size",
+					"isAlternative": true,
+					"_comment": "If the `config.fontSize.options` option contains numerical values, the font size feature uses the `font-size` inline style."
+				},
+				{
+					"elements": "*",
+					"classes": "*",
+					"styles": "*",
+					"isAlternative": true,
+					"_comment": "The plugin can be configured to return any element with any classes and any inline styles."
+				}
+			]
+		},
+		{
+			"name": "Font family",
+			"className": "FontFamily",
+			"description": "Introduces font family support.",
+			"docs": "features/font.html#configuring-the-font-family-feature",
+			"path": "src/fontfamily.js",
+			"uiComponents": [
+				{
+					"type": "SplitButton",
+					"name": "fontFamily",
+					"iconPath": "theme/icons/font-family.svg"
+				}
+			],
+			"htmlOutput": [
+				{
+					"elements": "span",
+					"styles": "font-family",
+					"_comment": "By default, the font family feature uses the `font-family` inline style."
+				},
+				{
+					"elements": "*",
+					"classes": "*",
+					"styles": "*",
+					"isAlternative": true,
+					"_comment": "The plugin can be configured to return any element with any classes and any inline styles."
+				}
+			]
+		}
+	]
+}

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -75,7 +75,7 @@ describe( 'CommandCollection', () => {
 
 			expectToThrowCKEditorError( () => {
 				collection.execute( 'foo' );
-			}, /^commandcollection-command-not-found:/, editor );
+			}, 'commandcollection-command-not-found', editor );
 		} );
 	} );
 
@@ -135,8 +135,8 @@ describe( 'CommandCollection', () => {
 		} );
 	} );
 
-	describe( 'commands()', () => {
-		it( 'returns iterator of commands', () => {
+	describe( 'destroy()', () => {
+		it( 'should destroy commands', () => {
 			const c1 = new SomeCommand( editor );
 			const c2 = new SomeCommand( editor );
 

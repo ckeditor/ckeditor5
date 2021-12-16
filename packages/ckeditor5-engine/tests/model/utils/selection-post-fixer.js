@@ -1,14 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Model from '../../../src/model/model';
 
-import { injectSelectionPostFixer } from '../../../src/model/utils/selection-post-fixer';
-
-import { getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { stringify, getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
+import { injectSelectionPostFixer, mergeIntersectingRanges } from '../../../src/model/utils/selection-post-fixer';
 
 describe( 'Selection post-fixer', () => {
 	describe( 'injectSelectionPostFixer()', () => {
@@ -41,12 +39,13 @@ describe( 'Selection post-fixer', () => {
 			model.schema.register( 'tableCell', {
 				allowIn: 'tableRow',
 				allowAttributes: [ 'colspan', 'rowspan' ],
-				isObject: true
+				isLimit: true,
+				isSelectable: true
 			} );
 
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
-			model.schema.register( 'image', {
+			model.schema.register( 'imageBlock', {
 				isObject: true,
 				isBlock: true,
 				allowWhere: '$block'
@@ -55,7 +54,7 @@ describe( 'Selection post-fixer', () => {
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 
 			model.schema.register( 'caption', {
-				allowIn: 'image',
+				allowIn: 'imageBlock',
 				allowContentOf: '$block',
 				isLimit: true
 			} );
@@ -74,30 +73,31 @@ describe( 'Selection post-fixer', () => {
 		it( 'should not crash if there is no correct position for model selection', () => {
 			setModelData( model, '' );
 
-			expect( getModelData( model ) ).to.equal( '[]' );
+			// Note that auto-paragraphing post-fixer injected a paragraph into the empty root.
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
 		} );
 
 		it( 'should react to structure changes', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph><image></image>' );
+			setModelData( model, '<paragraph>[]foo</paragraph><imageBlock></imageBlock>' );
 
 			model.change( writer => {
 				writer.remove( modelRoot.getChild( 0 ) );
 			} );
 
-			expect( getModelData( model ) ).to.equal( '[<image></image>]' );
+			expect( getModelData( model ) ).to.equal( '[<imageBlock></imageBlock>]' );
 		} );
 
 		it( 'should react to selection changes', () => {
-			setModelData( model, '<paragraph>[]foo</paragraph><image></image>' );
+			setModelData( model, '<paragraph>[]foo</paragraph><imageBlock></imageBlock>' );
 
-			// <paragraph>foo</paragraph>[]<image></image>
+			// <paragraph>foo</paragraph>[]<imageBlock></imageBlock>
 			model.change( writer => {
 				writer.setSelection(
 					writer.createRange( writer.createPositionAt( modelRoot, 1 ), writer.createPositionAt( modelRoot, 1 ) )
 				);
 			} );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><image></image>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph><imageBlock></imageBlock>' );
 		} );
 
 		describe( 'selection - table scenarios', () => {
@@ -217,7 +217,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>baz</paragraph>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'[<table>' +
 						'<tableRow>' +
@@ -359,7 +359,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>foo</paragraph><image></image></tableCell>' +
+							'<tableCell><paragraph>foo</paragraph><imageBlock></imageBlock></tableCell>' +
 							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -375,7 +375,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>foo</paragraph>[<image></image>]</tableCell>' +
+							'<tableCell><paragraph>foo</paragraph>[<imageBlock></imageBlock>]</tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -387,7 +387,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>foo</paragraph><image></image></tableCell>' +
+							'<tableCell><paragraph>foo</paragraph><imageBlock></imageBlock></tableCell>' +
 							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -403,7 +403,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><paragraph>[foo</paragraph><image></image>]</tableCell>' +
+							'<tableCell><paragraph>[foo</paragraph><imageBlock></imageBlock>]</tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -415,7 +415,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell><image></image><paragraph>foo</paragraph></tableCell>' +
+							'<tableCell><imageBlock></imageBlock><paragraph>foo</paragraph></tableCell>' +
 							'<tableCell><paragraph>[]bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -431,7 +431,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell>[<image></image><paragraph>foo]</paragraph></tableCell>' +
+							'<tableCell>[<imageBlock></imageBlock><paragraph>foo]</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>'
@@ -620,7 +620,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 					'<tableRow>' +
 							'[<tableCell><paragraph>a</paragraph></tableCell>]' +
@@ -643,7 +643,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow><tableCell><paragraph>[aaa]</paragraph></tableCell></tableRow>' +
 					'</table>'
@@ -668,7 +668,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'[<tableCell><paragraph>A1</paragraph></tableCell>]' +
@@ -707,7 +707,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -749,7 +749,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>A1</paragraph></tableCell>' +
@@ -781,7 +781,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>[foo]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -803,7 +803,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -825,7 +825,7 @@ describe( 'Selection post-fixer', () => {
 					'</table>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'[<table>' +
 						'<tableRow>' +
 							'<tableCell><paragraph>aaa</paragraph></tableCell>' +
@@ -840,7 +840,7 @@ describe( 'Selection post-fixer', () => {
 				setModelData( model,
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell>[<image></image>]</tableCell>' +
+							'<tableCell>[<imageBlock></imageBlock>]</tableCell>' +
 						'</tableRow>' +
 					'</table>'
 				);
@@ -854,15 +854,44 @@ describe( 'Selection post-fixer', () => {
 					writer.setSelectionAttribute( 'foo', 'bar' );
 				} );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
 						'<tableRow>' +
-							'<tableCell>[<image></image>]</tableCell>' +
+							'<tableCell>[<imageBlock></imageBlock>]</tableCell>' +
 						'</tableRow>' +
 					'</table>'
 				);
 
 				expect( model.document.selection.hasAttribute( 'foo' ) ).to.be.true;
+			} );
+
+			it( 'should include a selectable object at the end of the selection', () => {
+				model.schema.register( 'blockQuote', {
+					allowWhere: '$block',
+					allowContentOf: '$root'
+				} );
+
+				setModelData( model,
+					'[<blockQuote>' +
+						'<paragraph>foo</paragraph>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell><paragraph>bar</paragraph></tableCell>' +
+							'</tableRow>' +
+						'</table>' +
+					'</blockQuote>]'
+				);
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<blockQuote>' +
+						'<paragraph>[foo</paragraph>' +
+						'<table>' +
+							'<tableRow>' +
+								'<tableCell><paragraph>bar</paragraph></tableCell>' +
+							'</tableRow>' +
+						'</table>]' +
+					'</blockQuote>'
+				);
 			} );
 		} );
 
@@ -870,16 +899,16 @@ describe( 'Selection post-fixer', () => {
 			beforeEach( () => {
 				setModelData( model,
 					'<paragraph>[]foo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>xxx</caption>' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
 			it( 'should fix #1 (crossing object and limit boundaries)', () => {
 				model.change( writer => {
-					// <paragraph>f[oo</paragraph><image><caption>x]xx</caption>...
+					// <paragraph>f[oo</paragraph><imageBlock><caption>x]xx</caption>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
 						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 1 )
@@ -888,16 +917,16 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>xxx</caption>' +
-					'</image>]' +
+					'</imageBlock>]' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
 			it( 'should fix #2 (crossing object boundary)', () => {
 				model.change( writer => {
-					// <paragraph>f[oo</paragraph><image>]<caption>xxx</caption>...
+					// <paragraph>f[oo</paragraph><imageBlock>]<caption>xxx</caption>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
 						writer.createPositionAt( modelRoot.getChild( 1 ), 0 )
@@ -906,16 +935,16 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>xxx</caption>' +
-					'</image>]' +
+					'</imageBlock>]' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
 			it( 'should fix #3 (crossing object boundary)', () => {
 				model.change( writer => {
-					// <paragraph>f[oo</paragraph><image><caption>xxx</caption>]</image>...
+					// <paragraph>f[oo</paragraph><imageBlock><caption>xxx</caption>]</imageBlock>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( modelRoot.getChild( 0 ), 1 ),
 						writer.createPositionAt( modelRoot.getChild( 1 ), 1 )
@@ -924,16 +953,16 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>f[oo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>xxx</caption>' +
-					'</image>]' +
+					'</imageBlock>]' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
 			it( 'should fix #4 (element selection of not an object)', () => {
 				model.change( writer => {
-					// <paragraph>foo</paragraph><image>[<caption>xxx</caption>]</image>...
+					// <paragraph>foo</paragraph><imageBlock>[<caption>xxx</caption>]</imageBlock>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( modelRoot.getChild( 1 ), 0 ),
 						writer.createPositionAt( modelRoot.getChild( 1 ), 1 )
@@ -942,16 +971,16 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					'[<image>' +
+					'[<imageBlock>' +
 						'<caption>xxx</caption>' +
-					'</image>]' +
+					'</imageBlock>]' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
 
 			it( 'should not fix #1 (element selection of an object)', () => {
 				model.change( writer => {
-					// <paragraph>foo</paragraph>[<image><caption>xxx</caption></image>]...
+					// <paragraph>foo</paragraph>[<imageBlock><caption>xxx</caption></imageBlock>]...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( modelRoot, 1 ),
 						writer.createPositionAt( modelRoot, 2 )
@@ -960,9 +989,9 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					'[<image>' +
+					'[<imageBlock>' +
 						'<caption>xxx</caption>' +
-					'</image>]' +
+					'</imageBlock>]' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -971,7 +1000,7 @@ describe( 'Selection post-fixer', () => {
 				model.change( writer => {
 					const caption = modelRoot.getChild( 1 ).getChild( 0 );
 
-					// <paragraph>foo</paragraph><image><caption>[xxx]</caption></image>...
+					// <paragraph>foo</paragraph><imageBlock><caption>[xxx]</caption></imageBlock>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( caption, 0 ),
 						writer.createPositionAt( caption, 3 )
@@ -980,9 +1009,9 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>[xxx]</caption>' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -991,7 +1020,7 @@ describe( 'Selection post-fixer', () => {
 				model.change( writer => {
 					const caption = modelRoot.getChild( 1 ).getChild( 0 );
 
-					// <paragraph>foo</paragraph><image><caption>[xx]x</caption></image>...
+					// <paragraph>foo</paragraph><imageBlock><caption>[xx]x</caption></imageBlock>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( caption, 0 ),
 						writer.createPositionAt( caption, 2 )
@@ -1000,9 +1029,9 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>[xx]x</caption>' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -1011,7 +1040,7 @@ describe( 'Selection post-fixer', () => {
 				model.change( writer => {
 					const caption = modelRoot.getChild( 1 ).getChild( 0 );
 
-					// <paragraph>foo</paragraph><image><caption>x[xx]</caption></image>...
+					// <paragraph>foo</paragraph><imageBlock><caption>x[xx]</caption></imageBlock>...
 					writer.setSelection( writer.createRange(
 						writer.createPositionAt( caption, 1 ),
 						writer.createPositionAt( caption, 3 )
@@ -1020,9 +1049,9 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal(
 					'<paragraph>foo</paragraph>' +
-					'<image>' +
+					'<imageBlock>' +
 						'<caption>x[xx]</caption>' +
-					'</image>' +
+					'</imageBlock>' +
 					'<paragraph>bar</paragraph>'
 				);
 			} );
@@ -1035,6 +1064,115 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal(
 					'[<figure></figure>]'
 				);
+			} );
+
+			it( 'should fix multi-range selection with equal ranges', () => {
+				// It may happen that multi-range selection contains equal ranges.
+				// Duplicated ranges should be ommited from the final (merged) selection.
+				// https://github.com/ckeditor/ckeditor5/issues/7892
+				model.change( writer => {
+					const firstRange = writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 3 )
+					);
+
+					const duplicatedRange = firstRange.clone();
+
+					const otherRange = writer.createRange(
+						writer.createPositionAt( modelRoot.getChild( 1 ).getChild( 0 ), 3 ),
+						writer.createPositionAt( modelRoot.getChild( 2 ), 0 )
+					);
+
+					// <paragraph>foo</paragraph><imageBlock><caption>xxx[][][</caption></imageBlock><paragraph>]bar</paragraph>
+					writer.setSelection( [ firstRange, duplicatedRange, otherRange ] );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'[<imageBlock>' +
+						'<caption>xxx</caption>' +
+					'</imageBlock>' +
+					'<paragraph>]bar</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'intersecting selection - merge ranges', () => {
+			it( 'should return one merged range: A+B+C - #1', () => {
+				setModelData( model,
+					'<paragraph>fo[o b][ar b]az</paragraph>'
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				// A range containing both rangeA and rangeB.
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 0 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 1 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>[foo bar baz]</paragraph>' );
+			} );
+
+			it( 'should return one merged range: A+B+C - #2', () => {
+				setModelData( model,
+					'<paragraph>f[oo b]a[r ba]z</paragraph>'
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				// Range intersecting with rangeA and rangeB
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 4 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 1 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo bar baz]</paragraph>' );
+			} );
+
+			it( 'should return two ranges: A, B+C', () => {
+				setModelData( model,
+					'<paragraph>f[oo] ba[r ba]z</paragraph>'
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				// Range intersecting with rangeB
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 4 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 10 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 2 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo [bar ba]z</paragraph>' );
+			} );
+
+			it( 'should return two ranges: A+B,C', () => {
+				setModelData( model,
+					'<paragraph>f[oo][ bar] baz</paragraph>'	// foo bar baz
+				);
+
+				const rangeA = model.document.selection.getFirstRange();
+				const rangeB = model.document.selection.getLastRange();
+				const rangeC = model.createRange(
+					model.createPositionAt( modelRoot.getChild( 0 ), 8 ),
+					model.createPositionAt( modelRoot.getChild( 0 ), 11 )
+				);
+
+				const mergedRanges = mergeIntersectingRanges( [ rangeA, rangeB, rangeC ] );
+
+				expect( mergedRanges.length ).to.equal( 3 );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 0 ] ) ).to.equal( '<paragraph>f[oo] bar baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 1 ] ) ).to.equal( '<paragraph>foo[ bar] baz</paragraph>' );
+				expect( stringify( model.document.getRoot(), mergedRanges[ 2 ] ) ).to.equal( '<paragraph>foo bar [baz]</paragraph>' );
 			} );
 		} );
 
@@ -1205,6 +1343,30 @@ describe( 'Selection post-fixer', () => {
 
 				expect( getModelData( model ) ).to.equal( '<div>[<div></div>]</div>' );
 			} );
+
+			it( 'should not fix #5 (selection starts before a selectable, which is not an object)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
+				model.schema.extend( '$text', { allowIn: 'selectable' } );
+
+				setModelData( model,
+					'<div>[<selectable>foo]</selectable></div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div>[<selectable>foo]</selectable></div>' );
+			} );
+
+			it( 'should not fix #6 (selection ends after before a selectable, which is not an object)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'selectable', { isSelectable: true, allowIn: 'div' } );
+				model.schema.extend( '$text', { allowIn: 'selectable' } );
+
+				setModelData( model,
+					'<div><selectable>[foo</selectable>]</div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div><selectable>[foo</selectable>]</div>' );
+			} );
 		} );
 
 		describe( 'non-collapsed selection - inline widget scenarios', () => {
@@ -1274,7 +1436,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -1296,7 +1458,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
-							'[<tableCell><paragraph>aaa</paragraph></tableCell>]' +
+							'<tableCell><paragraph>[]aaa</paragraph></tableCell>' +
 							'<tableCell><paragraph>bbb</paragraph></tableCell>' +
 						'</tableRow>' +
 					'</table>' +
@@ -1315,7 +1477,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					'<table>' +
 						'<tableRow>' +
@@ -1323,6 +1485,24 @@ describe( 'Selection post-fixer', () => {
 						'</tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should fix #4 (selection inside limit element that doesn\'t allow text)', () => {
+				setModelData( model, '<imageBlock>[]</imageBlock>' );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'[<imageBlock></imageBlock>]'
+				);
+			} );
+
+			it( 'should fix #5 (selection inside limit element that doesn\'t allow text - closest ancestor)', () => {
+				setModelData( model,
+					'<table><tableRow><tableCell><imageBlock>[]</imageBlock></tableCell></tableRow></table>'
+				);
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					'<table><tableRow><tableCell>[<imageBlock></imageBlock>]</tableCell></tableRow></table>'
 				);
 			} );
 
@@ -1337,7 +1517,7 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>[]foo[]</paragraph>' +
 					'<table>' +
 						'<tableRow>' +

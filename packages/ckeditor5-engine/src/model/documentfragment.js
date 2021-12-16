@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,7 +16,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 // @if CK_DEBUG_ENGINE // const { stringifyMap } = require( '../dev-utils/utils' );
 
 /**
- * DocumentFragment represents a part of model which does not have a common root but it's top-level nodes
+ * DocumentFragment represents a part of model which does not have a common root but its top-level nodes
  * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
  *
  * DocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,7 @@ import ConversionHelpers from './conversionhelpers';
 
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * Downcast conversion helper functions.
@@ -52,20 +53,43 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: 'heading',
-	 *			view: ( modelElement, viewWriter ) => {
-	 *				return viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
+	 *			}
+	 *		} );
+	 *
+	 * The element-to-element conversion supports the reconversion mechanism. This is helpful in the conversion to complex view structures
+	 * where multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying
+	 * `triggerBy()` events you can trigger reconverting the model to full view tree structures at once.
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: 'complex',
+	 *			view: ( modelElement, conversionApi ) => createComplexViewFromModel( modelElement, conversionApi ),
+	 *			triggerBy: {
+	 *				attributes: [ 'foo', 'bar' ],
+	 *				children: [ 'slot' ]
 	 *			}
 	 *		} );
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
+	 * You can read more about element-to-element conversion in the
+	 * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion} guide.
+	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model element to convert.
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
-	 * that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
+	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
+	 * @param {Object} [config.triggerBy] Reconversion triggers. At least one trigger must be defined.
+	 * @param {Array.<String>} config.triggerBy.attributes The name of the element's attributes whose change will trigger element
+	 * reconversion.
+	 * @param {Array.<String>} config.triggerBy.children The name of direct children whose adding or removing will trigger element
+	 * reconversion.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
@@ -120,8 +144,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToElement( {
 	 *			model: 'bold',
-	 *			view: ( modelAttributeValue, viewWriter ) => {
-	 *				return viewWriter.createAttributeElement( 'span', {
+	 *			view: ( modelAttributeValue, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createAttributeElement( 'span', {
 	 *					style: 'font-weight:' + modelAttributeValue
 	 *				} );
 	 *			}
@@ -132,8 +158,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *				key: 'color',
 	 *				name: '$text'
 	 *			},
-	 *			view: ( modelAttributeValue, viewWriter ) => {
-	 *				return viewWriter.createAttributeElement( 'span', {
+	 *			view: ( modelAttributeValue, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createAttributeElement( 'span', {
 	 *					style: 'color:' + modelAttributeValue
 	 *				} );
 	 *			}
@@ -147,9 +175,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
 	 * of `String`s with possible values if the model attribute is an enumerable.
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
-	 * that takes the model attribute value and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
-	 * as parameters and returns a view attribute element. If `config.model.values` is
-	 * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
+	 * that takes the model attribute value and
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as parameters and returns a view
+	 * attribute element. If `config.model.values` is given, `config.view` should be an object assigning values from `config.model.values`
+	 * to view element definitions or functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
@@ -161,7 +190,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * Model attribute to view attribute conversion helper.
 	 *
 	 * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
-	 * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
+	 * `<imageInline src='foo.jpg'></imageInline>` is converted to `<img src='foo.jpg'></img>`.
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'source',
@@ -176,7 +205,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: {
-	 *				name: 'image',
+	 *				name: 'imageInline',
 	 *				key: 'source'
 	 *			},
 	 *			view: 'src'
@@ -201,7 +230,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
 	 *			model: 'styled',
-	 *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
+	 *			view: modelAttributeValue => ( {
+	 *				key: 'class',
+	 *				value: 'styled-' + modelAttributeValue
+	 *			} )
 	 *		} );
 	 *
 	 * **Note**: Downcasting to a style property requires providing `value` as an object:
@@ -225,7 +257,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
 	 * the attribute key, possible values and, optionally, an element name to convert from.
 	 * @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
-	 * the model attribute value and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
+	 * the model attribute value and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+	 * as parameters and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
 	 * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
 	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
 	 * `{ key, value }` objects or a functions.
@@ -239,8 +272,11 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
-	 * **Note**: This method should be used only for editing downcast. For data downcast, use
-	 * {@link #markerToData `#markerToData()`} that produces valid HTML data.
+	 * **Note**: This method should be used mainly for editing downcast and it is recommended
+	 * to use {@link #markerToData `#markerToData()`} helper instead.
+	 *
+	 * This helper may produce invalid HTML code (e.g. a span between table cells).
+	 * It should be used only when you are sure that the produced HTML will be semantically correct.
 	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
 	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
@@ -269,8 +305,10 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 	 *			model: 'search',
-	 *			view: ( markerData, viewWriter ) => {
-	 *				return viewWriter.createUIElement( 'span', {
+	 *			view: ( markerData, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createUIElement( 'span', {
 	 *					'data-marker': 'search',
 	 *					'data-start': markerData.isOpening
 	 *				} );
@@ -278,7 +316,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		} );
 	 *
 	 * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
-	 * receives the `data` object as a parameter and should return an instance of the
+	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+	 * as a parameters and should return an instance of the
 	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` object and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `conversionApi`} are passed from
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
@@ -291,8 +330,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @method #markerToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
-	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
-	 * that takes the model marker data as a parameter and returns a view UI element.
+	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function that
+	 * takes the model marker data and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+	 * as a parameters and returns a view UI element.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
@@ -312,8 +352,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
 	 * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
-	 * For example, a model marker set like this: `[<image src="foo.jpg"></image>]` becomes `<img src="foo.jpg" class="comment"></img>`
-	 * in the view.
+	 * For example, a model marker set like this:
+	 * `[<imageInline src="foo.jpg"></imageInline>]` becomes `<img src="foo.jpg" class="comment"></img>` in the view.
 	 *
 	 * For container elements, the conversion is two-step. While the converter processes the highlight descriptor and passes it
 	 * to a container element, it is the container element instance itself that applies values from the highlight descriptor.
@@ -323,24 +363,26 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		editor.conversion.for( 'downcast' ).markerToHighlight( {
 	 *			model: 'comment',
-	 *			view: { classes: 'new-comment' },
+	 *			view: { classes: 'comment' },
 	 *			converterPriority: 'high'
 	 *		} );
 	 *
 	 *		editor.conversion.for( 'downcast' ).markerToHighlight( {
 	 *			model: 'comment',
-	 *			view: data => {
-	 *				// Assuming that the marker name is in a form of comment:commentType.
-	 *				const commentType = data.markerName.split( ':' )[ 1 ];
+	 *			view: ( data, conversionApi ) => {
+	 *				// Assuming that the marker name is in a form of comment:commentType:commentId.
+	 *				const [ , commentType, commentId ] = data.markerName.split( ':' );
 	 *
 	 *				return {
-	 *					classes: [ 'comment', 'comment-' + commentType ]
+	 *					classes: [ 'comment', 'comment-' + commentType ],
+	 *					attributes: { 'data-comment-id': commentId }
 	 *				};
 	 *			}
 	 *		} );
 	 *
 	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
-	 * receives the `data` object as a parameter and should return a
+	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
+	 * as a parameters and should return a
 	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
@@ -351,7 +393,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * @param {Object} config Conversion configuration.
 	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
 	 * @param {module:engine/conversion/downcasthelpers~HighlightDescriptor|Function} config.view A highlight descriptor
-	 * that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
+	 * that will be used for highlighting or a function that takes the model marker data and
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as a parameters
+	 * and returns a highlight descriptor.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
@@ -364,34 +408,33 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * This conversion creates a representation for model marker boundaries in the view:
 	 *
-	 * * If the marker boundary is at a position where text nodes are allowed, then a view element with the specified tag name
-	 * and `name` attribute is added at this position.
-	 * * In other cases, a specified attribute is set on a view element that is before or after the marker boundary.
+	 * * If the marker boundary is before or after a model element, a view attribute is set on a corresponding view element.
+	 * * In other cases, a view element with the specified tag name is inserted at the corresponding view position.
 	 *
-	 * Typically, marker names use the `group:uniqueId:otherData` convention. For example: `comment:e34zfk9k2n459df53sjl34:zx32c`.
+	 * Typically, the marker names use the `group:uniqueId:otherData` convention. For example: `comment:e34zfk9k2n459df53sjl34:zx32c`.
 	 * The default configuration for this conversion is that the first part is the `group` part and the rest of
 	 * the marker name becomes the `name` part.
 	 *
 	 * Tag and attribute names and values are generated from the marker name:
 	 *
-	 * * Templates for attributes are `data-[group]-start-before="[name]"`, `data-[group]-start-after="[name]"`,
+	 * * The templates for attributes are `data-[group]-start-before="[name]"`, `data-[group]-start-after="[name]"`,
 	 * `data-[group]-end-before="[name]"` and `data-[group]-end-after="[name]"`.
-	 * * Templates for view elements are `<[group]-start name="[name]">` and `<[group]-end name="[name]">`.
+	 * * The templates for view elements are `<[group]-start name="[name]">` and `<[group]-end name="[name]">`.
 	 *
 	 * Attributes mark whether the given marker's start or end boundary is before or after the given element.
-	 * Attributes `data-[group]-start-before` and `data-[group]-end-after` are favored.
+	 * The `data-[group]-start-before` and `data-[group]-end-after` attributes are favored.
 	 * The other two are used when the former two cannot be used.
 	 *
 	 * The conversion configuration can take a function that will generate different group and name parts.
-	 * If such function is set as the `config.view` parameter, it is passed a marker name and it is expected to return an object with two
+	 * If such a function is set as the `config.view` parameter, it is passed a marker name and it is expected to return an object with two
 	 * properties: `group` and `name`. If the function returns a falsy value, the conversion will not take place.
 	 *
 	 * Basic usage:
 	 *
 	 *		// Using the default conversion.
-	 *		// In this case, all markers whose name starts with 'comment:' will be converted.
+	 *		// In this case, all markers with names starting with 'comment:' will be converted.
 	 *		// The `group` parameter will be set to `comment`.
-	 *		// The `name` parameter will be the rest of the marker name (without `:`).
+	 *		// The `name` parameter will be the rest of the marker name (without the `:`).
 	 *		editor.conversion.for( 'dataDowncast' ).markerToData( {
 	 *			model: 'comment'
 	 *		} );
@@ -401,7 +444,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		// Model:
 	 *		<paragraph>Foo[bar</paragraph>
-	 *		<image src="abc.jpg"></image>]
+	 *		<imageBlock src="abc.jpg"></imageBlock>]
 	 *
 	 *		// View:
 	 *		<p>Foo<comment-start name="commentId:uid"></comment-start>bar</p>
@@ -414,7 +457,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		<p>Foo <myMarker-start></myMarker-start>bar</p>
 	 *		<figure data-myMarker-end-after="" class="image"><img src="abc.jpg" /></figure>
 	 *
-	 * **Note:** A situation where some markers have the `name` part and some do not have it is incorrect and should be avoided.
+	 * **Note:** A situation where some markers have the `name` part and some do not, is incorrect and should be avoided.
 	 *
 	 * Examples where `data-group-start-after` and `data-group-end-before` are used:
 	 *
@@ -458,14 +501,15 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
 	 *
-	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
-	 * to the conversion process.
+	 * See the {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} API guide to learn how to
+	 * add a converter to the conversion process.
 	 *
 	 * @method #markerToData
 	 * @param {Object} config Conversion configuration.
-	 * @param {String} config.model The name of the model marker (or model marker group) to convert.
-	 * @param {Function} [config.view] A function that takes the model marker name as a parameter and returns an object with the `group`
-	 * and `name` properties.
+	 * @param {String} config.model The name of the model marker (or the model marker group) to convert.
+	 * @param {Function} [config.view] A function that takes the model marker name and
+	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API} as the parameters
+	 * and returns an object with the `group` and `name` properties.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
@@ -507,7 +551,7 @@ export function insertText() {
  */
 export function remove() {
 	return ( evt, data, conversionApi ) => {
-		// Find view range start position by mapping model position at which the remove happened.
+		// Find the view range start position by mapping the model position at which the remove happened.
 		const viewStart = conversionApi.mapper.toViewPosition( data.position );
 
 		const modelEnd = data.position.getShiftedBy( data.length );
@@ -528,7 +572,7 @@ export function remove() {
 
 /**
  * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
- * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If a priority
+ * provided by the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor} object. If the priority
  * is not provided in the descriptor, the default priority will be used.
  *
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
@@ -542,7 +586,7 @@ export function createViewElementFromHighlightDescriptor( writer, descriptor ) {
 		viewElement._addClass( descriptor.classes );
 	}
 
-	if ( descriptor.priority ) {
+	if ( typeof descriptor.priority === 'number' ) {
 		viewElement._priority = descriptor.priority;
 	}
 
@@ -691,8 +735,8 @@ export function clearAttributes() {
  * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, viewWriter ) => {
- *			return viewWriter.createAttributeElement( 'strong' );
+ *		modelDispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, { writer } ) => {
+ *			return writer.createAttributeElement( 'strong' );
  *		} );
  *
  * @protected
@@ -703,10 +747,10 @@ export function wrap( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
-		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi.writer );
+		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi );
 
 		// Create node to wrap with.
-		const newViewElement = elementCreator( data.attributeNewValue, conversionApi.writer );
+		const newViewElement = elementCreator( data.attributeNewValue, conversionApi );
 
 		if ( !oldViewElement && !newViewElement ) {
 			return;
@@ -750,9 +794,9 @@ export function wrap( elementCreator ) {
  *
  *		downcastDispatcher.on(
  *			'insert:myElem',
- *			insertElement( ( modelItem, viewWriter ) => {
- *				const text = viewWriter.createText( 'myText' );
- *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
+ *			insertElement( ( modelItem, { writer } ) => {
+ *				const text = writer.createText( 'myText' );
+ *				const myElem = writer.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
  *
  *				// Do something fancy with `myElem` using `modelItem` or other parameters.
  *
@@ -766,7 +810,7 @@ export function wrap( elementCreator ) {
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewElement = elementCreator( data.item, conversionApi.writer );
+		const viewElement = elementCreator( data.item, conversionApi );
 
 		if ( !viewElement ) {
 			return;
@@ -803,10 +847,10 @@ export function insertUIElement( elementCreator ) {
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.
 		data.isOpening = true;
-		const viewStartElement = elementCreator( data, conversionApi.writer );
+		const viewStartElement = elementCreator( data, conversionApi );
 
 		data.isOpening = false;
-		const viewEndElement = elementCreator( data, conversionApi.writer );
+		const viewEndElement = elementCreator( data, conversionApi );
 
 		if ( !viewStartElement || !viewEndElement ) {
 			return;
@@ -880,7 +924,7 @@ function removeUIElement() {
 // @returns {Function} Add marker converter.
 function insertMarkerData( viewCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewMarkerData = viewCreator( data.markerName );
+		const viewMarkerData = viewCreator( data.markerName, conversionApi );
 
 		if ( !viewMarkerData ) {
 			return;
@@ -903,33 +947,40 @@ function insertMarkerData( viewCreator ) {
 // Helper function for `insertMarkerData()` that marks a marker boundary at the beginning or end of given `range`.
 function handleMarkerBoundary( range, isStart, conversionApi, data, viewMarkerData ) {
 	const modelPosition = isStart ? range.start : range.end;
-	const canInsertElement = conversionApi.schema.checkChild( modelPosition, '$text' );
+	const elementAfter = modelPosition.nodeAfter && modelPosition.nodeAfter.is( 'element' ) ? modelPosition.nodeAfter : null;
+	const elementBefore = modelPosition.nodeBefore && modelPosition.nodeBefore.is( 'element' ) ? modelPosition.nodeBefore : null;
 
-	if ( canInsertElement ) {
-		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-
-		insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
-	} else {
+	if ( elementAfter || elementBefore ) {
 		let modelElement;
 		let isBefore;
 
 		// If possible, we want to add `data-group-start-before` and `data-group-end-after` attributes.
-		// Below `if` is constructed in a way that will favor adding these attributes.
-		//
-		// Also, I assume that there will be always an element either after or before the position.
-		// If not, then it is a case when we are not in a position where text is allowed and also there are no elements around...
-		if ( isStart && modelPosition.nodeAfter || !isStart && !modelPosition.nodeBefore ) {
-			modelElement = modelPosition.nodeAfter;
+		if ( isStart && elementAfter || !isStart && !elementBefore ) {
+			// [<elementAfter>...</elementAfter> -> <elementAfter data-group-start-before="...">...</elementAfter>
+			// <parent>]<elementAfter> -> <parent><elementAfter data-group-end-before="...">
+			modelElement = elementAfter;
 			isBefore = true;
 		} else {
-			modelElement = modelPosition.nodeBefore;
+			// <elementBefore>...</elementBefore>] -> <elementBefore data-group-end-after="...">...</elementBefore>
+			// </elementBefore>[</parent> -> </elementBefore data-group-start-after="..."></parent>
+			modelElement = elementBefore;
 			isBefore = false;
 		}
 
 		const viewElement = conversionApi.mapper.toViewElement( modelElement );
 
-		insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
+		// In rare circumstances, the model element may be not mapped to any view element and that would cause an error.
+		// One of those situations is a soft break inside code block.
+		if ( viewElement ) {
+			insertMarkerAsAttribute( viewElement, isStart, isBefore, conversionApi, data, viewMarkerData );
+
+			return;
+		}
 	}
+
+	const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
+
+	insertMarkerAsElement( viewPosition, isStart, conversionApi, data, viewMarkerData );
 }
 
 // Helper function for `insertMarkerData()` that marks a marker boundary in the view as an attribute on a view element.
@@ -961,7 +1012,7 @@ function insertMarkerAsElement( position, isStart, conversionApi, data, viewMark
 // @returns {Function} Remove marker converter.
 function removeMarkerData( viewCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const viewData = viewCreator( data.markerName );
+		const viewData = viewCreator( data.markerName, conversionApi );
 
 		if ( !viewData ) {
 			return;
@@ -1036,8 +1087,8 @@ function removeMarkerData( viewCreator ) {
 // @returns {Function} Set/change attribute converter.
 function changeAttribute( attributeCreator ) {
 	return ( evt, data, conversionApi ) => {
-		const oldAttribute = attributeCreator( data.attributeOldValue, data );
-		const newAttribute = attributeCreator( data.attributeNewValue, data );
+		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
+		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
 
 		if ( !oldAttribute && !newAttribute ) {
 			return;
@@ -1079,7 +1130,7 @@ function changeAttribute( attributeCreator ) {
 			 *				key: 'attribute-name',
 			 *				name: '$text'
 			 *			},
-			 *			view: ( value, writer ) => {
+			 *			view: ( value, { writer } ) => {
 			 *				return writer.createAttributeElement( 'span', { 'attribute-name': value } );
 			 *			},
 			 *			converterPriority: 'high'
@@ -1088,8 +1139,7 @@ function changeAttribute( attributeCreator ) {
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
 			throw new CKEditorError(
-				'conversion-attribute-to-attribute-on-text: ' +
-				'Trying to convert text node\'s attribute with attribute-to-attribute converter.',
+				'conversion-attribute-to-attribute-on-text',
 				[ data, conversionApi ]
 			);
 		}
@@ -1097,7 +1147,7 @@ function changeAttribute( attributeCreator ) {
 		// First remove the old attribute if there was one.
 		if ( data.attributeOldValue !== null && oldAttribute ) {
 			if ( oldAttribute.key == 'class' ) {
-				const classes = Array.isArray( oldAttribute.value ) ? oldAttribute.value : [ oldAttribute.value ];
+				const classes = toArray( oldAttribute.value );
 
 				for ( const className of classes ) {
 					viewWriter.removeClass( className, viewElement );
@@ -1116,7 +1166,7 @@ function changeAttribute( attributeCreator ) {
 		// Then set the new attribute.
 		if ( data.attributeNewValue !== null && newAttribute ) {
 			if ( newAttribute.key == 'class' ) {
-				const classes = Array.isArray( newAttribute.value ) ? newAttribute.value : [ newAttribute.value ];
+				const classes = toArray( newAttribute.value );
 
 				for ( const className of classes ) {
 					viewWriter.addClass( className, viewElement );
@@ -1313,13 +1363,14 @@ function removeHighlight( highlightDescriptor ) {
 
 // Model element to view element conversion helper.
 //
-// See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples.
+// See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples and config params description.
 //
 // @param {Object} config Conversion configuration.
-// @param {String} config.model The name of the model element to convert.
-// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
-// that takes the model element and {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer}
-// as parameters and returns a view container element.
+// @param {String} config.model
+// @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
+// @param {Object} [config.triggerBy]
+// @param {Array.<String>} [config.triggerBy.attributes]
+// @param {Array.<String>} [config.triggerBy.children]
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
@@ -1328,6 +1379,21 @@ function downcastElementToElement( config ) {
 
 	return dispatcher => {
 		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+
+		if ( config.triggerBy ) {
+			if ( config.triggerBy.attributes ) {
+				for ( const attributeKey of config.triggerBy.attributes ) {
+					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
+				}
+			}
+
+			if ( config.triggerBy.children ) {
+				for ( const childName of config.triggerBy.children ) {
+					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
+					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
+				}
+			}
+		}
 	};
 }
 
@@ -1487,7 +1553,7 @@ function normalizeToElementConfig( view, viewElementType ) {
 		return view;
 	}
 
-	return ( modelData, viewWriter ) => createViewElementFromDefinition( view, viewWriter, viewElementType );
+	return ( modelData, conversionApi ) => createViewElementFromDefinition( view, conversionApi, viewElementType );
 }
 
 // Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
@@ -1496,13 +1562,14 @@ function normalizeToElementConfig( view, viewElementType ) {
 // @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
 // @param {'container'|'attribute'|'ui'} viewElementType
 // @returns {module:engine/view/element~Element}
-function createViewElementFromDefinition( viewElementDefinition, viewWriter, viewElementType ) {
+function createViewElementFromDefinition( viewElementDefinition, conversionApi, viewElementType ) {
 	if ( typeof viewElementDefinition == 'string' ) {
 		// If `viewElementDefinition` is given as a `String`, normalize it to an object with `name` property.
 		viewElementDefinition = { name: viewElementDefinition };
 	}
 
 	let element;
+	const viewWriter = conversionApi.writer;
 	const attributes = Object.assign( {}, viewElementDefinition.attributes );
 
 	if ( viewElementType == 'container' ) {
@@ -1543,11 +1610,11 @@ function createViewElementFromDefinition( viewElementDefinition, viewWriter, vie
 
 function getFromAttributeCreator( config ) {
 	if ( config.model.values ) {
-		return ( modelAttributeValue, viewWriter ) => {
+		return ( modelAttributeValue, conversionApi ) => {
 			const view = config.view[ modelAttributeValue ];
 
 			if ( view ) {
-				return view( modelAttributeValue, viewWriter );
+				return view( modelAttributeValue, conversionApi );
 			}
 
 			return null;

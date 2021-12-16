@@ -21,8 +21,16 @@ In this guide you can learn how to add plugins to your editor in the two most co
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 6.9.0+
-* npm 4+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+* [Node.js](https://nodejs.org/en/) 12.0.0+
+* npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
+
+<info-box warning>
+	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example - if you'd like to install `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the Alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/error-codes.html#error-ckeditor-duplicated-modules).
+
+	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [npm-check-updates](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
+
+	**NOTE:** the above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
+</info-box>
 
 ## Adding a plugin to a build
 
@@ -106,7 +114,7 @@ ClassicEditor.defaultConfig = {
 			'link',
 			'bulletedList',
 			'numberedList',
-			'imageUpload',
+			'uploadImage',
 			'blockQuote',
 			'undo',
 			'redo'
@@ -114,9 +122,11 @@ ClassicEditor.defaultConfig = {
 	},
 	image: {
 		toolbar: [
-			'imageStyle:full',
+			'imageStyle:inline',
+			'imageStyle:block',
 			'imageStyle:side',
 			'|',
+			'toggleImageCaption',
 			'imageTextAlternative'
 		]
 	},

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module remove-format/removeformatcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * The remove format command.
@@ -70,11 +70,19 @@ export default class RemoveFormatCommand extends Command {
 			return !!first( this._getFormattingAttributes( item, schema ) );
 		};
 
+		// Check formatting on selected items that are not blocks.
 		for ( const curRange of selection.getRanges() ) {
 			for ( const item of curRange.getItems() ) {
-				if ( itemHasRemovableFormatting( item ) ) {
+				if ( !schema.isBlock( item ) && itemHasRemovableFormatting( item ) ) {
 					yield item;
 				}
+			}
+		}
+
+		// Check formatting from selected blocks.
+		for ( const block of selection.getSelectedBlocks() ) {
+			if ( itemHasRemovableFormatting( block ) ) {
+				yield block;
 			}
 		}
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,8 +36,7 @@ export default function secureSourceElement( editor ) {
 		 * @param {HTMLElement} element DOM element that caused the collision.
 		 */
 		throw new CKEditorError(
-			'editor-source-element-already-used: ' +
-			'The DOM element cannot be used to create multiple editor instances.',
+			'editor-source-element-already-used',
 			editor
 		);
 	}

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoCommand from '../src/undocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
+import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 describe( 'UndoCommand', () => {
 	let editor, model, doc, root, undo;
@@ -27,7 +28,7 @@ describe( 'UndoCommand', () => {
 	} );
 
 	describe( 'UndoCommand', () => {
-		const p = pos => model.createPositionFromPath( root, [].concat( pos ) );
+		const p = pos => model.createPositionFromPath( root, toArray( pos ) );
 		const r = ( a, b ) => model.createRange( p( a ), p( b ) );
 
 		describe( 'execute()', () => {
@@ -354,6 +355,50 @@ describe( 'UndoCommand', () => {
 			editor.setData( 'foo' );
 
 			sinon.assert.called( spy );
+		} );
+
+		it( 'should clear stack on DataController set() when the `batchType` is set to `transparent`', () => {
+			const spy = sinon.stub( undo, 'clearStack' );
+
+			editor.setData( 'foo' );
+
+			sinon.assert.called( spy );
+		} );
+
+		it( 'should not clear stack on DataController#set() when the `batchType` is set to `default`', () => {
+			const spy = sinon.spy( undo, 'clearStack' );
+
+			editor.data.set( 'foo', { batchType: 'default' } );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should override the batch type when the batch type is not set', () => {
+			const dataSetSpy = sinon.spy();
+
+			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
+
+			editor.data.set( 'foo' );
+
+			const firstCall = dataSetSpy.firstCall;
+			const data = firstCall.args[ 1 ];
+
+			expect( data[ 1 ] ).to.be.an( 'object' );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'transparent' );
+		} );
+
+		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
+			const dataSetSpy = sinon.spy();
+
+			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
+
+			editor.data.set( 'foo', { batchType: 'default' } );
+
+			const firstCall = dataSetSpy.firstCall;
+			const data = firstCall.args[ 1 ];
+
+			expect( data[ 1 ] ).to.be.an( 'object' );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'default' );
 		} );
 	} );
 } );

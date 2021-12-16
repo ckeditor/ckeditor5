@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,13 +10,8 @@
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-import {
-	isArrowKeyCode,
-	getLocalizedArrowKeyCodeDirection
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { Plugin } from 'ckeditor5/src/core';
+import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
 import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
 
 /**
@@ -52,10 +47,7 @@ export default class TableKeyboard extends Plugin {
 		this.editor.keystrokes.set( 'Tab', this._getTabHandler( true ), { priority: 'low' } );
 		this.editor.keystrokes.set( 'Shift+Tab', this._getTabHandler( false ), { priority: 'low' } );
 
-		// Note: This listener has the "high-10" priority because it should allow the Widget plugin to handle the default
-		// behavior first ("high") but it should not be "prevent–defaulted" by the Widget plugin ("high-20") because of
-		// the fake selection retention on the fully selected widget.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: priorities.get( 'high' ) - 10 } );
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
 	}
 
 	/**
@@ -69,20 +61,17 @@ export default class TableKeyboard extends Plugin {
 	_handleTabOnSelectedTable( data, cancel ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
+		const selectedElement = selection.getSelectedElement();
 
-		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
-			const selectedElement = selection.getSelectedElement();
-
-			if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
-				return;
-			}
-
-			cancel();
-
-			editor.model.change( writer => {
-				writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
-			} );
+		if ( !selectedElement || !selectedElement.is( 'element', 'table' ) ) {
+			return;
 		}
+
+		cancel();
+
+		editor.model.change( writer => {
+			writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+		} );
 	}
 
 	/**
@@ -97,7 +86,11 @@ export default class TableKeyboard extends Plugin {
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-			const tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+			let tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+
+			if ( !tableCell ) {
+				tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
+			}
 
 			if ( !tableCell ) {
 				return;
@@ -114,19 +107,28 @@ export default class TableKeyboard extends Plugin {
 			const isFirstCellInRow = currentCellIndex === 0;
 
 			if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
-				// It's the first cell of the table - don't do anything (stay in the current position).
+				// Set the selection over the whole table if the selection was in the first table cell.
+				editor.model.change( writer => {
+					writer.setSelection( writer.createRangeOn( table ) );
+				} );
+
 				return;
 			}
 
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 			const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-			const isLastRow = currentRowIndex === table.childCount - 1;
+			const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
 
 			if ( isForward && isLastRow && isLastCellInRow ) {
 				editor.execute( 'insertTableRowBelow' );
 
 				// Check if the command actually added a row. If `insertTableRowBelow` execution didn't add a row (because it was disabled
-				// or it got overwritten) do not change the selection.
-				if ( currentRowIndex === table.childCount - 1 ) {
+				// or it got overwritten) set the selection over the whole table to mirror the first cell case.
+				if ( currentRowIndex === tableUtils.getRows( table ) - 1 ) {
+					editor.model.change( writer => {
+						writer.setSelection( writer.createRangeOn( table ) );
+					} );
+
 					return;
 				}
 			}
@@ -163,13 +165,9 @@ export default class TableKeyboard extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_onKeydown( eventInfo, domEventData ) {
+	_onArrowKey( eventInfo, domEventData ) {
 		const editor = this.editor;
 		const keyCode = domEventData.keyCode;
-
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
 
 		const direction = getLocalizedArrowKeyCodeDirection( keyCode, editor.locale.contentLanguageDirection );
 		const wasHandled = this._handleArrowKeys( direction, domEventData.shiftKey );
@@ -215,53 +213,40 @@ export default class TableKeyboard extends Plugin {
 		// Abort if we're not in a table cell.
 		const tableCell = selection.focus.findAncestor( 'tableCell' );
 
+		/* istanbul ignore if: paranoid check */
 		if ( !tableCell ) {
 			return false;
 		}
 
-		const cellRange = model.createRangeIn( tableCell );
+		// When the selection is not collapsed.
+		if ( !selection.isCollapsed ) {
+			if ( expandSelection ) {
+				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+				// Selection for sure will not approach cell edge.
+				//
+				// With a special case when all cell content is selected - then selection should expand to the other cell.
+				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.
+				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
+					return false;
+				}
+			} else {
+				const selectedElement = selection.getSelectedElement();
+
+				// It will collapse for non-object selected so it's not going to move to other cell.
+				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+					return false;
+				}
+			}
+		}
 
 		// Let's check if the selection is at the beginning/end of the cell.
-		if ( this._isSelectionAtCellEdge( selection, isForward ) ) {
+		if ( this._isSelectionAtCellEdge( selection, tableCell, isForward ) ) {
 			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
 
 			return true;
 		}
 
-		// If there isn't any $text position between cell edge and selection then we shall move the selection to next cell.
-		const textRange = this._findTextRangeFromSelection( cellRange, selection, isForward );
-
-		if ( !textRange ) {
-			this._navigateFromCellInDirection( tableCell, direction, expandSelection );
-
-			return true;
-		}
-
-		// If the navigation is horizontal then we have no more custom cases.
-		if ( [ 'left', 'right' ].includes( direction ) ) {
-			return false;
-		}
-
-		// If the range is a single line then move the selection to the beginning/end of a cell content.
-		//
-		// We can't move the selection directly to the another cell because of dual position at the end/beginning
-		// of wrapped line (it's at the same time at the end of one line and at the start of the next line).
-		if ( this._isSingleLineRange( textRange, isForward ) ) {
-			model.change( writer => {
-				const newPosition = isForward ? cellRange.end : cellRange.start;
-
-				if ( expandSelection ) {
-					const newSelection = model.createSelection( selection.anchor );
-					newSelection.setFocus( newPosition );
-
-					writer.setSelection( newSelection );
-				} else {
-					writer.setSelection( newPosition );
-				}
-			} );
-
-			return true;
-		}
+		return false;
 	}
 
 	/**
@@ -269,10 +254,11 @@ export default class TableKeyboard extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/model/selection~Selection} selection The current selection.
+	 * @param {module:engine/model/element~Element} tableCell The current table cell element.
 	 * @param {Boolean} isForward The expected navigation direction.
 	 * @returns {Boolean}
 	 */
-	_isSelectionAtCellEdge( selection, isForward ) {
+	_isSelectionAtCellEdge( selection, tableCell, isForward ) {
 		const model = this.editor.model;
 		const schema = this.editor.model.schema;
 
@@ -281,7 +267,9 @@ export default class TableKeyboard extends Plugin {
 		// If the current limit element is not table cell we are for sure not at the cell edge.
 		// Also `modifySelection` will not let us out of it.
 		if ( !schema.getLimitElement( focus ).is( 'element', 'tableCell' ) ) {
-			return false;
+			const boundaryPosition = model.createPositionAt( tableCell, isForward ? 'end' : 0 );
+
+			return boundaryPosition.isTouching( focus );
 		}
 
 		const probe = model.createSelection( focus );
@@ -290,120 +278,6 @@ export default class TableKeyboard extends Plugin {
 
 		// If there was no change in the focus position, then it's not possible to move the selection there.
 		return focus.isEqual( probe.focus );
-	}
-
-	/**
-	 * Truncates the range so that it spans from the last selection position
-	 * to the last allowed `$text` position (mirrored if `isForward` is false).
-	 *
-	 * Returns `null` if, according to the schema, the resulting range cannot contain a `$text` element.
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} range The current table cell content range.
-	 * @param {module:engine/model/selection~Selection} selection The current selection.
-	 * @param {Boolean} isForward The expected navigation direction.
-	 * @returns {module:engine/model/range~Range|null}
-	 */
-	_findTextRangeFromSelection( range, selection, isForward ) {
-		const model = this.editor.model;
-
-		if ( isForward ) {
-			const position = selection.getLastPosition();
-			const lastRangePosition = this._getNearestVisibleTextPosition( range, 'backward' );
-
-			if ( lastRangePosition && position.isBefore( lastRangePosition ) ) {
-				return model.createRange( position, lastRangePosition );
-			}
-
-			return null;
-		} else {
-			const position = selection.getFirstPosition();
-			const firstRangePosition = this._getNearestVisibleTextPosition( range, 'forward' );
-
-			if ( firstRangePosition && position.isAfter( firstRangePosition ) ) {
-				return model.createRange( firstRangePosition, position );
-			}
-
-			return null;
-		}
-	}
-
-	/**
-	 * Basing on the provided range, finds the first or last (depending on `direction`) position inside the range
-	 * that can contain `$text` (according to schema) and is visible in the view.
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} range The range to find the position in.
-	 * @param {'forward'|'backward'} direction Search direction.
-	 * @returns {module:engine/model/position~Position} The nearest selection range.
-	 */
-	_getNearestVisibleTextPosition( range, direction ) {
-		const schema = this.editor.model.schema;
-		const mapper = this.editor.editing.mapper;
-
-		for ( const { nextPosition, item } of range.getWalker( { direction } ) ) {
-			if ( schema.checkChild( nextPosition, '$text' ) ) {
-				const viewElement = mapper.toViewElement( item );
-
-				if ( viewElement && !viewElement.hasClass( 'ck-hidden' ) ) {
-					return nextPosition;
-				}
-			}
-		}
-	}
-
-	/**
-	 * Checks if the DOM range corresponding to the provided model range renders as a single line by analyzing DOMRects
-	 * (verifying if they visually wrap content to the next line).
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} modelRange The current table cell content range.
-	 * @param {Boolean} isForward The expected navigation direction.
-	 * @returns {Boolean}
-	 */
-	_isSingleLineRange( modelRange, isForward ) {
-		const model = this.editor.model;
-		const editing = this.editor.editing;
-		const domConverter = editing.view.domConverter;
-
-		// Wrapped lines contain exactly the same position at the end of current line
-		// and at the beginning of next line. That position's client rect is at the end
-		// of current line. In case of caret at first position of the last line that 'dual'
-		// position would be detected as it's not the last line.
-		if ( isForward ) {
-			const probe = model.createSelection( modelRange.start );
-
-			model.modifySelection( probe );
-
-			// If the new position is at the end of the container then we can't use this position
-			// because it would provide incorrect result for eg caption of image and selection
-			// just before end of it. Also in this case there is no "dual" position.
-			if ( !probe.focus.isAtEnd && !modelRange.start.isEqual( probe.focus ) ) {
-				modelRange = model.createRange( probe.focus, modelRange.end );
-			}
-		}
-
-		const viewRange = editing.mapper.toViewRange( modelRange );
-		const domRange = domConverter.viewRangeToDom( viewRange );
-		const rects = Rect.getDomRangeRects( domRange );
-
-		let boundaryVerticalPosition;
-
-		for ( const rect of rects ) {
-			if ( boundaryVerticalPosition === undefined ) {
-				boundaryVerticalPosition = Math.round( rect.bottom );
-				continue;
-			}
-
-			// Let's check if this rect is in new line.
-			if ( Math.round( rect.top ) >= boundaryVerticalPosition ) {
-				return false;
-			}
-
-			boundaryVerticalPosition = Math.max( boundaryVerticalPosition, Math.round( rect.bottom ) );
-		}
-
-		return true;
 	}
 
 	/**

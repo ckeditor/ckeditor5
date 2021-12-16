@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -461,12 +461,9 @@ export default class View {
 			/**
 			 * This View has already been rendered.
 			 *
-			 * @error ui-view-render-rendered
+			 * @error ui-view-render-already-rendered
 			 */
-			throw new CKEditorError(
-				'ui-view-render-already-rendered: This View has already been rendered.',
-				this
-			);
+			throw new CKEditorError( 'ui-view-render-already-rendered', this );
 		}
 
 		// Render #element of the view.

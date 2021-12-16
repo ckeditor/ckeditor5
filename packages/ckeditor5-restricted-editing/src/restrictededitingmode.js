@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module restricted-editing/restrictededitingmode
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+
 import RestrictedEditingModeEditing from './restrictededitingmodeediting';
 import RestrictedEditingModeUI from './restrictededitingmodeui';
 
@@ -72,7 +73,7 @@ export default class RestrictedEditingMode extends Plugin {
  * The command names allowed in non-restricted areas of the content.
  *
  * Defines which feature commands should be enabled in the restricted editing mode. The commands used for typing and deleting text
- * (`'input'`, `'delete'` and `'forwardDelete'`) are allowed by the feature inside non-restricted regions and do not need to be defined.
+ * (`'input'`, `'delete'` and `'deleteForward'`) are allowed by the feature inside non-restricted regions and do not need to be defined.
  *
  * **Note**: The restricted editing mode always allows to use the restricted mode navigation commands as well as `'undo'` and `'redo'`
  * commands.

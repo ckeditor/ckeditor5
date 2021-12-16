@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,9 @@
  * @module mention/mentioncommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import { Command } from 'ckeditor5/src/core';
+import { CKEditorError, toMap } from 'ckeditor5/src/utils';
+
 import { _addMentionAttributes } from './mentionediting';
 
 /**
@@ -68,8 +68,8 @@ export default class MentionCommand extends Command {
 	 * @param {String} options.marker The marker character (e.g. `'@'`).
 	 * @param {String} [options.text] The text of the inserted mention. Defaults to the full mention string composed from `marker` and
 	 * `mention` string or `mention.id` if an object is passed.
-	 * @param {String} [options.range] The range to replace. Note that the replaced range might be shorter than the inserted text with the
-	 * mention attribute.
+	 * @param {module:engine/model/range~Range} [options.range] The range to replace.
+	 * Note that the replaced range might be shorter than the inserted text with the mention attribute.
 	 * @fires execute
 	 */
 	execute( options ) {
@@ -99,7 +99,7 @@ export default class MentionCommand extends Command {
 			 * @error mentioncommand-incorrect-marker
 			 */
 			throw new CKEditorError(
-				'mentioncommand-incorrect-marker: The marker must be a single character.',
+				'mentioncommand-incorrect-marker',
 				this
 			);
 		}
@@ -131,7 +131,7 @@ export default class MentionCommand extends Command {
 			 * @error mentioncommand-incorrect-id
 			 */
 			throw new CKEditorError(
-				'mentioncommand-incorrect-id: The item id must start with the marker character.',
+				'mentioncommand-incorrect-id',
 				this
 			);
 		}

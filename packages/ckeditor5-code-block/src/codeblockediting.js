@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,23 @@
  * @module code-block/codeblockediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
+import { Plugin } from 'ckeditor5/src/core';
+import { ShiftEnter } from 'ckeditor5/src/enter';
+import { UpcastWriter } from 'ckeditor5/src/engine';
+
 import CodeBlockCommand from './codeblockcommand';
 import IndentCodeBlockCommand from './indentcodeblockcommand';
 import OutdentCodeBlockCommand from './outdentcodeblockcommand';
 import {
 	getNormalizedAndLocalizedLanguageDefinitions,
 	getLeadingWhiteSpaces,
-	rawSnippetTextToModelDocumentFragment
+	rawSnippetTextToViewDocumentFragment
 } from './utils';
 import {
 	modelToViewCodeBlockInsertion,
 	modelToDataViewSoftBreakInsertion,
-	dataViewToModelCodeBlockInsertion
+	dataViewToModelCodeBlockInsertion,
+	dataViewToModelTextNewlinesInsertion
 } from './converters';
 
 const DEFAULT_ELEMENT = 'paragraph';
@@ -83,6 +86,7 @@ export default class CodeBlockEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const model = editor.model;
+		const view = editor.editing.view;
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -109,12 +113,9 @@ export default class CodeBlockEditing extends Plugin {
 
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
+			allowChildren: '$text',
 			isBlock: true,
 			allowAttributes: [ 'language' ]
-		} );
-
-		schema.extend( '$text', {
-			allowIn: 'codeBlock'
 		} );
 
 		// Disallow all attributes on $text inside `codeBlock`.
@@ -124,28 +125,41 @@ export default class CodeBlockEditing extends Plugin {
 			}
 		} );
 
+		// Disallow object elements inside `codeBlock`. See #9567.
+		editor.model.schema.addChildCheck( ( context, childDefinition ) => {
+			if ( context.endsWith( 'codeBlock' ) && childDefinition.isObject ) {
+				return false;
+			}
+		} );
+
 		// Conversion.
 		editor.editing.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs, true ) );
 		editor.data.downcastDispatcher.on( 'insert:codeBlock', modelToViewCodeBlockInsertion( model, normalizedLanguagesDefs ) );
 		editor.data.downcastDispatcher.on( 'insert:softBreak', modelToDataViewSoftBreakInsertion( model ), { priority: 'high' } );
-		editor.data.upcastDispatcher.on( 'element:pre', dataViewToModelCodeBlockInsertion( editor.editing.view, normalizedLanguagesDefs ) );
+
+		editor.data.upcastDispatcher.on( 'element:code', dataViewToModelCodeBlockInsertion( view, normalizedLanguagesDefs ) );
+		editor.data.upcastDispatcher.on( 'text', dataViewToModelTextNewlinesInsertion() );
 
 		// Intercept the clipboard input (paste) when the selection is anchored in the code block and force the clipboard
 		// data to be pasted as a single plain text. Otherwise, the code lines will split the code block and
 		// "spill out" as separate paragraphs.
 		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
-			const modelSelection = model.document.selection;
+			let insertionRange = model.createRange( model.document.selection.anchor );
 
-			if ( !modelSelection.anchor.parent.is( 'element', 'codeBlock' ) ) {
+			// Use target ranges in case this is a drop.
+			if ( data.targetRanges ) {
+				insertionRange = editor.editing.mapper.toModelRange( data.targetRanges[ 0 ] );
+			}
+
+			if ( !insertionRange.start.parent.is( 'element', 'codeBlock' ) ) {
 				return;
 			}
 
 			const text = data.dataTransfer.getData( 'text/plain' );
+			const writer = new UpcastWriter( editor.editing.view.document );
 
-			model.change( writer => {
-				model.insertContent( rawSnippetTextToModelDocumentFragment( writer, text ), modelSelection );
-				evt.stop();
-			} );
+			// Pass the view fragment to the default clipboardInput handler.
+			data.content = rawSnippetTextToViewDocumentFragment( writer, text );
 		} );
 
 		// Make sure multi–line selection is always wrapped in a code block when `getSelectedContent()`
@@ -205,7 +219,7 @@ export default class CodeBlockEditing extends Plugin {
 
 		// Customize the response to the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd>
 		// key press when the selection is in the code block. Upon enter key press we can either
-		// leave the block if it's "two enters" in a row or create a new code block line, preserving
+		// leave the block if it's "two or three enters" in a row or create a new code block line, preserving
 		// previous line's indentation.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
 			const positionParent = editor.model.document.selection.getLastPosition().parent;
@@ -214,13 +228,13 @@ export default class CodeBlockEditing extends Plugin {
 				return;
 			}
 
-			leaveBlockStartOnEnter( editor, data.isSoft ) ||
-			leaveBlockEndOnEnter( editor, data.isSoft ) ||
-			breakLineOnEnter( editor );
+			if ( !leaveBlockStartOnEnter( editor, data.isSoft ) && !leaveBlockEndOnEnter( editor, data.isSoft ) ) {
+				breakLineOnEnter( editor );
+			}
 
 			data.preventDefault();
 			evt.stop();
-		} );
+		}, { context: 'pre' } );
 	}
 }
 
@@ -287,7 +301,7 @@ function leaveBlockStartOnEnter( editor, isSoftEnter ) {
 		return false;
 	}
 
-	if ( !nodeAfter || !nodeAfter.is( 'element', 'softBreak' ) ) {
+	if ( !isSoftBreakNode( nodeAfter ) ) {
 		return false;
 	}
 
@@ -338,42 +352,61 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 
 	let emptyLineRangeToRemoveOnEnter;
 
-	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore ) {
+	if ( isSoftEnter || !modelDoc.selection.isCollapsed || !lastSelectionPosition.isAtEnd || !nodeBefore || !nodeBefore.previousSibling ) {
 		return false;
 	}
 
-	// When the position is directly preceded by a soft break
+	// When the position is directly preceded by two soft breaks
 	//
-	//		<codeBlock>foo<softBreak></softBreak>[]</codeBlock>
+	//		<codeBlock>foo<softBreak></softBreak><softBreak></softBreak>[]</codeBlock>
 	//
 	// it creates the following range that will be cleaned up before leaving:
 	//
-	//		<codeBlock>foo[<softBreak></softBreak>]</codeBlock>
+	//		<codeBlock>foo[<softBreak></softBreak><softBreak></softBreak>]</codeBlock>
 	//
-	if ( nodeBefore.is( 'element', 'softBreak' ) ) {
-		emptyLineRangeToRemoveOnEnter = model.createRangeOn( nodeBefore );
+	if ( isSoftBreakNode( nodeBefore ) && isSoftBreakNode( nodeBefore.previousSibling ) ) {
+		emptyLineRangeToRemoveOnEnter = model.createRange(
+			model.createPositionBefore( nodeBefore.previousSibling ), model.createPositionAfter( nodeBefore )
+		);
 	}
 
-	// When there's some text before the position made purely of white–space characters
+	// When there's some text before the position that is
+	// preceded by two soft breaks and made purely of white–space characters
 	//
-	//		<codeBlock>foo<softBreak></softBreak>    []</codeBlock>
-	//
-	// but NOT when it's the first one of the kind
-	//
-	//		<codeBlock>    []</codeBlock>
+	//		<codeBlock>foo<softBreak></softBreak><softBreak></softBreak>    []</codeBlock>
 	//
 	// it creates the following range to clean up before leaving:
 	//
-	//		<codeBlock>foo[<softBreak></softBreak>    ]</codeBlock>
+	//		<codeBlock>foo[<softBreak></softBreak><softBreak></softBreak>    ]</codeBlock>
 	//
 	else if (
-		nodeBefore.is( '$text' ) &&
-		!nodeBefore.data.match( /\S/ ) &&
-		nodeBefore.previousSibling &&
-		nodeBefore.previousSibling.is( 'element', 'softBreak' )
+		isEmptyishTextNode( nodeBefore ) &&
+		isSoftBreakNode( nodeBefore.previousSibling ) &&
+		isSoftBreakNode( nodeBefore.previousSibling.previousSibling )
 	) {
 		emptyLineRangeToRemoveOnEnter = model.createRange(
-			model.createPositionBefore( nodeBefore.previousSibling ), model.createPositionAfter( nodeBefore )
+			model.createPositionBefore( nodeBefore.previousSibling.previousSibling ), model.createPositionAfter( nodeBefore )
+		);
+	}
+
+	// When there's some text before the position that is made purely of white–space characters
+	// and is preceded by some other text made purely of white–space characters
+	//
+	//		<codeBlock>foo<softBreak></softBreak>    <softBreak></softBreak>    []</codeBlock>
+	//
+	// it creates the following range to clean up before leaving:
+	//
+	//		<codeBlock>foo[<softBreak></softBreak>    <softBreak></softBreak>    ]</codeBlock>
+	//
+	else if (
+		isEmptyishTextNode( nodeBefore ) &&
+		isSoftBreakNode( nodeBefore.previousSibling ) &&
+		isEmptyishTextNode( nodeBefore.previousSibling.previousSibling ) &&
+		isSoftBreakNode( nodeBefore.previousSibling.previousSibling.previousSibling )
+	) {
+		emptyLineRangeToRemoveOnEnter = model.createRange(
+			model.createPositionBefore( nodeBefore.previousSibling.previousSibling.previousSibling ),
+			model.createPositionAfter( nodeBefore )
 		);
 	}
 
@@ -381,8 +414,9 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	//
 	//		<codeBlock>    []</codeBlock>
 	//		<codeBlock>  a []</codeBlock>
-	//		<codeBlock>foo<softBreak></softBreak>bar[]</codeBlock>
-	//		<codeBlock>foo<softBreak></softBreak> a []</codeBlock>
+	//		<codeBlock>foo<softBreak></softBreak>[]</codeBlock>
+	//		<codeBlock>foo<softBreak></softBreak><softBreak></softBreak>bar[]</codeBlock>
+	//		<codeBlock>foo<softBreak></softBreak><softBreak></softBreak> a []</codeBlock>
 	//
 	else {
 		return false;
@@ -390,7 +424,7 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 
 	// We're doing everything in a single change block to have a single undo step.
 	editor.model.change( writer => {
-		// Remove the last <softBreak> and all white space characters that followed it.
+		// Remove the last <softBreak>s and all white space characters that followed them.
 		writer.remove( emptyLineRangeToRemoveOnEnter );
 
 		// "Clone" the <codeBlock> in the standard way.
@@ -407,4 +441,12 @@ function leaveBlockEndOnEnter( editor, isSoftEnter ) {
 	view.scrollToTheSelection();
 
 	return true;
+}
+
+function isEmptyishTextNode( node ) {
+	return node && node.is( '$text' ) && !node.data.match( /\S/ );
+}
+
+function isSoftBreakNode( node ) {
+	return node && node.is( 'element', 'softBreak' );
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,6 +31,22 @@ describe( 'viewToPlainText()', () => {
 			'<container:div>Xyz</container:div>',
 
 			'Header\n\nFoo\n\nBar\n\nAbc\n\nXyz'
+		);
+	} );
+
+	it( 'should turn a soft break into a single empty line', () => {
+		testViewToPlainText(
+			'<container:p>Foo<empty:br />Bar</container:p>',
+
+			'Foo\nBar'
+		);
+	} );
+
+	it( 'should turn multiple soft breaks into empty lines', () => {
+		testViewToPlainText(
+			'<container:p>Foo<empty:br /><empty:br />Bar</container:p>',
+
+			'Foo\n\nBar'
 		);
 	} );
 

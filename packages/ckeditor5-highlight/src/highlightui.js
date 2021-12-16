@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,11 @@
  * @module highlight/highlightui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { Plugin, icons } from 'ckeditor5/src/core';
+import { ButtonView, SplitButtonView, ToolbarSeparatorView, createDropdown, addToolbarToDropdown } from 'ckeditor5/src/ui';
 
 import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
-import eraserIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
-
-import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import './../theme/highlight.css';
 
@@ -100,8 +94,11 @@ export default class HighlightUI extends Plugin {
 	 */
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
+		const command = this.editor.commands.get( 'highlight' );
 
-		this._addButton( 'removeHighlight', t( 'Remove highlight' ), eraserIcon );
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), icons.eraser, null, button => {
+			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
+		} );
 	}
 
 	/**
@@ -130,10 +127,11 @@ export default class HighlightUI extends Plugin {
 	 * @param {String} name The name of the button.
 	 * @param {String} label The label for the button.
 	 * @param {String} icon The button icon.
-	 * @param {Function} [decorateButton=()=>{}] Additional method for extending the button.
+	 * @param {*} value The `value` property passed to the executed command.
+	 * @param {Function} decorateButton A callback getting ButtonView instance so that it can be further customized.
 	 * @private
 	 */
-	_addButton( name, label, icon, value, decorateButton = () => {} ) {
+	_addButton( name, label, icon, value, decorateButton ) {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( name, locale => {

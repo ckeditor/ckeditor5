@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -168,12 +168,6 @@ export default class ResizeObserver {
 
 		ResizeObserver._observerInstance = new ObserverConstructor( entries => {
 			for ( const entry of entries ) {
-				// Do not execute callbacks for elements that are invisible.
-				// https://github.com/ckeditor/ckeditor5/issues/6570
-				if ( !entry.target.offsetParent ) {
-					continue;
-				}
-
 				const callbacks = ResizeObserver._getElementCallbacks( entry.target );
 
 				if ( callbacks ) {

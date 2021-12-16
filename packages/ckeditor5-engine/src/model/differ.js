@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -370,9 +370,11 @@ export default class Differ {
 	 * Calculates the diff between the old model tree state (the state before the first buffered operations since the last {@link #reset}
 	 * call) and the new model tree state (actual one). It should be called after all buffered operations are executed.
 	 *
-	 * The diff set is returned as an array of diff items, each describing a change done on the model. The items are sorted by
-	 * the position on which the change happened. If a position {@link module:engine/model/position~Position#isBefore is before}
-	 * another one, it will be on an earlier index in the diff set.
+	 * The diff set is returned as an array of {@link module:engine/model/differ~DiffItem diff items}, each describing a change done
+	 * on the model. The items are sorted by the position on which the change happened. If a position
+	 * {@link module:engine/model/position~Position#isBefore is before} another one, it will be on an earlier index in the diff set.
+	 *
+	 * **Note**: Elements inside inserted element will not have a separate diff item, only the top most element change will be reported.
 	 *
 	 * Because calculating the diff is a costly operation, the result is cached. If no new operation was buffered since the
 	 * previous {@link #getChanges} call, the next call will return the cached value.
@@ -380,7 +382,7 @@ export default class Differ {
 	 * @param {Object} options Additional options.
 	 * @param {Boolean} [options.includeChangesInGraveyard=false] If set to `true`, also changes that happened
 	 * in the graveyard root will be returned. By default, changes in the graveyard root are not returned.
-	 * @returns {Array.<Object>} Diff between the old and the new model tree state.
+	 * @returns {Array.<module:engine/model/differ~DiffItem>} Diff between the old and the new model tree state.
 	 */
 	getChanges( options = { includeChangesInGraveyard: false } ) {
 		// If there are cached changes, just return them instead of calculating changes again.
@@ -393,7 +395,7 @@ export default class Differ {
 		}
 
 		// Will contain returned results.
-		const diffSet = [];
+		let diffSet = [];
 
 		// Check all changed elements.
 		for ( const element of this._changesInElement.keys() ) {
@@ -483,8 +485,8 @@ export default class Differ {
 		} );
 
 		// Glue together multiple changes (mostly on text nodes).
-		for ( let i = 1; i < diffSet.length; i++ ) {
-			const prevDiff = diffSet[ i - 1 ];
+		for ( let i = 1, prevIndex = 0; i < diffSet.length; i++ ) {
+			const prevDiff = diffSet[ prevIndex ];
 			const thisDiff = diffSet[ i ];
 
 			// Glue remove changes if they happen on text on same position.
@@ -511,16 +513,19 @@ export default class Differ {
 				prevDiff.attributeNewValue == thisDiff.attributeNewValue;
 
 			if ( isConsecutiveTextRemove || isConsecutiveTextAdd || isConsecutiveAttributeChange ) {
-				diffSet[ i - 1 ].length++;
+				prevDiff.length++;
 
 				if ( isConsecutiveAttributeChange ) {
-					diffSet[ i - 1 ].range.end = diffSet[ i - 1 ].range.end.getShiftedBy( 1 );
+					prevDiff.range.end = prevDiff.range.end.getShiftedBy( 1 );
 				}
 
-				diffSet.splice( i, 1 );
-				i--;
+				diffSet[ i ] = null;
+			} else {
+				prevIndex = i;
 			}
 		}
+
+		diffSet = diffSet.filter( v => v );
 
 		// Remove `changeCount` property from diff items. It is used only for sorting and is internal thing.
 		for ( const item of diffSet ) {
@@ -536,7 +541,7 @@ export default class Differ {
 
 		// Cache changes.
 		this._cachedChangesWithGraveyard = diffSet.slice();
-		this._cachedChanges = diffSet.slice().filter( _changesInGraveyardFilter );
+		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
 			return this._cachedChangesWithGraveyard;
@@ -1164,3 +1169,114 @@ function _changesInGraveyardFilter( entry ) {
 
 	return !posInGy && !rangeInGy;
 }
+
+/**
+ * The single diff item.
+ *
+ * Could be one of:
+ *
+ * * {@link module:engine/model/differ~DiffItemInsert `DiffItemInsert`},
+ * * {@link module:engine/model/differ~DiffItemRemove `DiffItemRemove`},
+ * * {@link module:engine/model/differ~DiffItemAttribute `DiffItemAttribute`}.
+ *
+ * @interface DiffItem
+ */
+
+/**
+ * The single diff item for inserted nodes.
+ *
+ * @class DiffItemInsert
+ * @implements module:engine/model/differ~DiffItem
+ */
+
+/**
+ * The type of diff item.
+ *
+ * @member {'insert'} module:engine/model/differ~DiffItemInsert#type
+ */
+
+/**
+ * The name of the inserted elements or `'$text'` for a text node.
+ *
+ * @member {String} module:engine/model/differ~DiffItemInsert#name
+ */
+
+/**
+ * The position where the node was inserted.
+ *
+ * @member {module:engine/model/position~Position} module:engine/model/differ~DiffItemInsert#position
+ */
+
+/**
+ * The length of an inserted text node. For elements it is always 1 as each inserted element is counted as a one.
+ *
+ * @member {Number} module:engine/model/differ~DiffItemInsert#length
+ */
+
+/**
+ * The single diff item for removed nodes.
+ *
+ * @class DiffItemRemove
+ * @implements module:engine/model/differ~DiffItem
+ */
+
+/**
+ * The type of diff item.
+ *
+ * @member {'remove'} module:engine/model/differ~DiffItemRemove#type
+ */
+
+/**
+ * The name of the removed element or `'$text'` for a text node.
+ *
+ * @member {String} module:engine/model/differ~DiffItemRemove#name
+ */
+
+/**
+ * The position where the node was removed.
+ *
+ * @member {module:engine/model/position~Position} module:engine/model/differ~DiffItemRemove#position
+ */
+
+/**
+ * The length of a removed text node. For elements it is always 1 as each removed element is counted as a one.
+ *
+ * @member {Number} module:engine/model/differ~DiffItemRemove#length
+ */
+
+/**
+ * The single diff item for attribute change.
+ *
+ * @class DiffItemAttribute
+ * @implements module:engine/model/differ~DiffItem
+ */
+
+/**
+ * The type of diff item.
+ *
+ * @member {'attribute'} module:engine/model/differ~DiffItemAttribute#type
+ */
+
+/**
+ * The name of the changed attribute.
+ *
+ * @member {String} module:engine/model/differ~DiffItemAttribute#attributeKey
+ */
+
+/**
+ * An attribute previous value (before change).
+ *
+ * @member {String} module:engine/model/differ~DiffItemAttribute#attributeOldValue
+ */
+
+/**
+ * An attribute new value (after change).
+ *
+ * @member {String} module:engine/model/differ~DiffItemAttribute#attributeNewValue
+ */
+
+/**
+ * The range where the change happened.
+ *
+ * @member {module:engine/model/range~Range} module:engine/model/differ~DiffItemAttribute#range
+ */

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -42,7 +42,7 @@ ClassicEditor
 		editor.conversion.for( 'downcast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const b = writer.createAttributeElement( 'b' );
 					const div = writer.createContainerElement( 'div' );
 
@@ -53,7 +53,7 @@ ClassicEditor
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( item, writer ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
+				view: ( item, { writer } ) => writer.createEditableElement( 'figcaption', { contenteditable: true } )
 			} );
 
 		setData( editor.model,

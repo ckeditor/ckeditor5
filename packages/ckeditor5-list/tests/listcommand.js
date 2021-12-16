@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -130,6 +130,33 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					expect( writer.batch.operations.length ).to.be.above( 0 );
+				} );
+			} );
+
+			describe( 'options.forceValue', () => {
+				it( 'should force converting into the list if the `options.forceValue` is set to `true`', () => {
+					setData( model, '<paragraph>fo[]o</paragraph>' );
+
+					command.execute( { forceValue: true } );
+
+					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+
+					command.execute( { forceValue: true } );
+
+					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+				} );
+
+				it( 'should force converting into the paragraph if the `options.forceValue` is set to `false`', () => {
+					setData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
+
+					command.execute( { forceValue: false } );
+
+					// Attributes will be removed by post fixer.
+					expect( getData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
+
+					command.execute( { forceValue: false } );
+
+					expect( getData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 				} );
 			} );
 
@@ -278,7 +305,7 @@ describe( 'ListCommand', () => {
 				} );
 
 				it( 'should not rename blocks which cannot become listItems (block is an object)', () => {
-					model.schema.register( 'image', {
+					model.schema.register( 'imageBlock', {
 						isBlock: true,
 						isObject: true,
 						allowIn: '$root'
@@ -287,7 +314,7 @@ describe( 'ListCommand', () => {
 					setData(
 						model,
 						'<paragraph>a[bc</paragraph>' +
-						'<image></image>' +
+						'<imageBlock></imageBlock>' +
 						'<paragraph>de]f</paragraph>'
 					);
 
@@ -295,7 +322,7 @@ describe( 'ListCommand', () => {
 
 					expect( getData( model ) ).to.equal(
 						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
-						'<image></image>' +
+						'<imageBlock></imageBlock>' +
 						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
 					);
 				} );
@@ -453,6 +480,35 @@ describe( 'ListCommand', () => {
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
+			} );
+
+			it( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
+				setData( model,
+					'<paragraph>Foo 1.</paragraph>' +
+					'<paragraph>[Foo 2.</paragraph>' +
+					'<paragraph>Foo 3.]</paragraph>' +
+					'<paragraph>Foo 4.</paragraph>'
+				);
+
+				command.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>Foo 1.</paragraph>' +
+					'<listItem listIndent="0" listType="bulleted">[Foo 2.</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">Foo 3.]</listItem>' +
+					'<paragraph>Foo 4.</paragraph>'
+				);
+
+				command.on( '_executeCleanup', ( evt, data ) => {
+					expect( data ).to.deep.equal( [
+						root.getChild( 2 ),
+						root.getChild( 1 )
+					] );
+
+					done();
+				} );
+
+				command.execute();
 			} );
 		} );
 	} );

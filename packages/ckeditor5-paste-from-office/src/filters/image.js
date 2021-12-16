@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,8 +9,7 @@
 
 /* globals btoa */
 
-import ViewMatcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import { Matcher, UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
  * Replaces source attribute of all `<img>` elements representing regular
@@ -60,13 +59,17 @@ export function _convertHexToBase64( hexString ) {
 function findAllShapesIds( documentFragment, writer ) {
 	const range = writer.createRangeIn( documentFragment );
 
-	const shapeElementsMatcher = new ViewMatcher( {
+	const shapeElementsMatcher = new Matcher( {
 		name: /v:(.+)/
 	} );
 
 	const shapesIds = [];
 
 	for ( const value of range ) {
+		if ( value.type != 'elementStart' ) {
+			continue;
+		}
+
 		const el = value.item;
 		const prevSiblingName = el.previousSibling && el.previousSibling.name || null;
 
@@ -87,7 +90,7 @@ function findAllShapesIds( documentFragment, writer ) {
 function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, writer ) {
 	const range = writer.createRangeIn( documentFragment );
 
-	const imageElementsMatcher = new ViewMatcher( {
+	const imageElementsMatcher = new Matcher( {
 		name: 'img'
 	} );
 
@@ -119,14 +122,14 @@ function removeAllImgElementsRepresentingShapes( shapesIds, documentFragment, wr
 function removeAllShapeElements( documentFragment, writer ) {
 	const range = writer.createRangeIn( documentFragment );
 
-	const shapeElementsMatcher = new ViewMatcher( {
+	const shapeElementsMatcher = new Matcher( {
 		name: /v:(.+)/
 	} );
 
 	const shapes = [];
 
 	for ( const value of range ) {
-		if ( shapeElementsMatcher.match( value.item ) ) {
+		if ( value.type == 'elementStart' && shapeElementsMatcher.match( value.item ) ) {
 			shapes.push( value.item );
 		}
 	}
@@ -146,7 +149,7 @@ function removeAllShapeElements( documentFragment, writer ) {
 function findAllImageElementsWithLocalSource( documentFragment, writer ) {
 	const range = writer.createRangeIn( documentFragment );
 
-	const imageElementsMatcher = new ViewMatcher( {
+	const imageElementsMatcher = new Matcher( {
 		name: 'img'
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module markdown-gfm/gfmdataprocessor
  */
 
-import marked from './lib/marked/marked';
-import toMarkdown from './lib/to-markdown/to-markdown';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import GFMRenderer from './lib/marked/renderer';
-import converters from './lib/to-markdown/converters';
+import { HtmlDataProcessor } from 'ckeditor5/src/engine';
+
+import markdown2html from './markdown2html/markdown2html';
+import html2markdown, { turndownService } from './html2markdown/html2markdown';
 
 /**
  * This data processor implementation uses GitHub Flavored Markdown as input/output data.
@@ -37,20 +36,25 @@ export default class GFMDataProcessor {
 	}
 
 	/**
-	 * Converts the provided Markdown string to view tree.
+	 * Keeps the specified element in the output as HTML. This is useful if the editor contains
+	 * features producing HTML that is not a part of the Markdown standard.
+	 *
+	 * By default, all HTML tags are removed.
+	 *
+	 * @param element {String} The element name to be kept.
+	 */
+	keepHtml( element ) {
+		turndownService.keep( [ element ] );
+	}
+
+	/**
+	 * Converts the provided Markdown string to a view tree.
 	 *
 	 * @param {String} data A Markdown string.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} The converted view element.
 	 */
 	toView( data ) {
-		const html = marked.parse( data, {
-			gfm: true,
-			breaks: true,
-			tables: true,
-			xhtml: true,
-			renderer: new GFMRenderer()
-		} );
-
+		const html = markdown2html( data );
 		return this._htmlDP.toView( html );
 	}
 
@@ -63,7 +67,26 @@ export default class GFMDataProcessor {
 	 */
 	toData( viewFragment ) {
 		const html = this._htmlDP.toData( viewFragment );
-
-		return toMarkdown( html, { gfm: true, converters } );
+		return html2markdown( html );
 	}
+
+	/**
+	 * Registers a {@link module:engine/view/matcher~MatcherPattern} for view elements whose content should be treated as raw data
+	 * and not processed during the conversion from Markdown to view elements.
+	 *
+	 * The raw data can be later accessed by a
+	 * {@link module:engine/view/element~Element#getCustomProperty custom property of a view element} called `"$rawContent"`.
+	 *
+	 * @param {module:engine/view/matcher~MatcherPattern} pattern The pattern matching all view elements whose content should
+	 * be treated as raw data.
+	 */
+	registerRawContentMatcher( pattern ) {
+		this._htmlDP.registerRawContentMatcher( pattern );
+	}
+
+	/**
+	 * This method does not have any effect on the data processor result. It exists for compatibility with the
+	 * {@link module:engine/dataprocessor/dataprocessor~DataProcessor `DataProcessor` interface}.
+	 */
+	useFillerType() {}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,7 +12,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 // The official <CKEditor> component for React.
-import CKEditor from '@ckeditor/ckeditor5-react';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 
 // The base editor class and features required to run the editor.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -71,7 +71,7 @@ class ProductPreviewEditing extends Plugin {
 				name: 'section',
 				classes: 'product'
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Read the "data-id" attribute from the view and set it as the "id" in the model.
 				return modelWriter.createElement( 'productPreview', {
 					id: parseInt( viewElement.getAttribute( 'data-id' ) )
@@ -82,7 +82,7 @@ class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → data view)
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the data view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="..."></section>
@@ -96,7 +96,7 @@ class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → editing view)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the editing view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="...">

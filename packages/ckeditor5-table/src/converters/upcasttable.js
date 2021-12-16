@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,6 +8,57 @@
  */
 
 import { createEmptyTableCell } from '../utils/common';
+import { first } from 'ckeditor5/src/utils';
+
+/**
+ * Returns a function that converts the table view representation:
+ *
+ *		<figure class="table"><table>...</table></figure>
+ *
+ * to the model representation:
+ *
+ *		<table></table>
+ *
+ * @returns {Function}
+ */
+export function upcastTableFigure() {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			// Do not convert if this is not a "table figure".
+			if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'table' } ) ) {
+				return;
+			}
+
+			// Find an table element inside the figure element.
+			const viewTable = getViewTableFromFigure( data.viewItem );
+
+			// Do not convert if table element is absent or was already converted.
+			if ( !viewTable || !conversionApi.consumable.test( viewTable, { name: true } ) ) {
+				return;
+			}
+
+			// Consume the figure to prevent other converters from processing it again.
+			conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'table' } );
+
+			// Convert view table to model table.
+			const conversionResult = conversionApi.convertItem( viewTable, data.modelCursor );
+
+			// Get table element from conversion result.
+			const modelTable = first( conversionResult.modelRange.getItems() );
+
+			// When table wasn't successfully converted then finish conversion.
+			if ( !modelTable ) {
+				// Revert consumed figure so other features can convert it.
+				conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'table' } );
+
+				return;
+			}
+
+			conversionApi.convertChildren( data.viewItem, conversionApi.writer.createPositionAt( modelTable, 'end' ) );
+			conversionApi.updateConversionResult( modelTable, data );
+		} );
+	};
+}
 
 /**
  * View table element to model table element conversion helper.
@@ -41,19 +92,17 @@ export default function upcastTable() {
 
 			const table = conversionApi.writer.createElement( 'table', attributes );
 
-			// Insert element on allowed position.
-			const splitResult = conversionApi.splitToAllowedParent( table, data.modelCursor );
-
-			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
-			if ( !splitResult ) {
+			if ( !conversionApi.safeInsert( table, data.modelCursor ) ) {
 				return;
 			}
 
-			conversionApi.writer.insert( table, splitResult.position );
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
 			// Upcast table rows in proper order (heading rows first).
 			rows.forEach( row => conversionApi.convertItem( row, conversionApi.writer.createPositionAt( table, 'end' ) ) );
+
+			// Convert everything else.
+			conversionApi.convertChildren( viewTable, conversionApi.writer.createPositionAt( table, 'end' ) );
 
 			// Create one row and one table cell for empty table.
 			if ( table.isEmpty ) {
@@ -63,41 +112,20 @@ export default function upcastTable() {
 				createEmptyTableCell( conversionApi.writer, conversionApi.writer.createPositionAt( row, 'end' ) );
 			}
 
-			// Set conversion result range.
-			data.modelRange = conversionApi.writer.createRange(
-				// Range should start before inserted element
-				conversionApi.writer.createPositionBefore( table ),
-				// Should end after but we need to take into consideration that children could split our
-				// element, so we need to move range after parent of the last converted child.
-				// before: <allowed>[]</allowed>
-				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-				conversionApi.writer.createPositionAfter( table )
-			);
-
-			// Now we need to check where the modelCursor should be.
-			// If we had to split parent to insert our element then we want to continue conversion inside split parent.
-			//
-			// before: <allowed><notAllowed>[]</notAllowed></allowed>
-			// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
-			if ( splitResult.cursorParent ) {
-				data.modelCursor = conversionApi.writer.createPositionAt( splitResult.cursorParent, 0 );
-
-				// Otherwise just continue after inserted element.
-			} else {
-				data.modelCursor = data.modelRange.end;
-			}
+			conversionApi.updateConversionResult( table, data );
 		} );
 	};
 }
 
 /**
- * Conversion helper that skips empty <tr> from upcasting at the beginning of the table.
+ * A conversion helper that skips empty <tr> elements from upcasting at the beginning of the table.
  *
- * Empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
- * and empty TR-s are used to maintain table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only rows
- * that have related tableRow elements).
+ * An empty row is considered a table model error but when handling clipboard data there could be rows that contain only row-spanned cells
+ * and empty TR-s are used to maintain the table structure (also {@link module:table/tablewalker~TableWalker} assumes that there are only
+ * rows that have related `tableRow` elements).
  *
- * *Note:* Only first empty rows are removed because those have no meaning and solves issue of improper table with all empty rows.
+ * *Note:* Only the first empty rows are removed because they have no meaning and it solves the issue
+ * of an improper table with all empty rows.
  *
  * @returns {Function} Conversion helper.
  */
@@ -111,52 +139,41 @@ export function skipEmptyTableRow() {
 	};
 }
 
-export function upcastTableCell( elementName ) {
+/**
+ * A converter that ensures an empty paragraph is inserted in a table cell if no other content was converted.
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function ensureParagraphInTableCell( elementName ) {
 	return dispatcher => {
 		dispatcher.on( `element:${ elementName }`, ( evt, data, conversionApi ) => {
-			const viewTableCell = data.viewItem;
-
-			// When element was already consumed then skip it.
-			if ( !conversionApi.consumable.test( viewTableCell, { name: true } ) ) {
+			// The default converter will create a model range on converted table cell.
+			if ( !data.modelRange ) {
 				return;
 			}
 
-			const tableCell = conversionApi.writer.createElement( 'tableCell' );
+			// Ensure a paragraph in the model for empty table cells for converted table cells.
+			if ( data.viewItem.isEmpty ) {
+				const tableCell = data.modelRange.start.nodeAfter;
+				const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
 
-			// Insert element on allowed position.
-			const splitResult = conversionApi.splitToAllowedParent( tableCell, data.modelCursor );
-
-			// When there is no split result it means that we can't insert element to model tree, so let's skip it.
-			if ( !splitResult ) {
-				return;
-			}
-
-			conversionApi.writer.insert( tableCell, splitResult.position );
-			conversionApi.consumable.consume( viewTableCell, { name: true } );
-
-			const modelCursor = conversionApi.writer.createPositionAt( tableCell, 0 );
-			conversionApi.convertChildren( viewTableCell, modelCursor );
-
-			// Ensure a paragraph in the model for empty table cells.
-			if ( !tableCell.childCount ) {
 				conversionApi.writer.insertElement( 'paragraph', modelCursor );
 			}
-
-			// Set conversion result range.
-			data.modelRange = conversionApi.writer.createRange(
-				// Range should start before inserted element
-				conversionApi.writer.createPositionBefore( tableCell ),
-				// Should end after but we need to take into consideration that children could split our
-				// element, so we need to move range after parent of the last converted child.
-				// before: <allowed>[]</allowed>
-				// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-				conversionApi.writer.createPositionAfter( tableCell )
-			);
-
-			// Continue after inserted element.
-			data.modelCursor = data.modelRange.end;
-		} );
+		}, { priority: 'low' } );
 	};
+}
+
+// Get view `<table>` element from the view widget (`<figure>`).
+//
+// @private
+// @param {module:engine/view/element~Element} figureView
+// @returns {module:engine/view/element~Element}
+function getViewTableFromFigure( figureView ) {
+	for ( const figureChild of figureView.getChildren() ) {
+		if ( figureChild.is( 'element', 'table' ) ) {
+			return figureChild;
+		}
+	}
 }
 
 // Scans table rows and extracts required metadata from the table:
@@ -165,6 +182,7 @@ export function upcastTableCell( elementName ) {
 // headingColumns - The maximum number of row headings.
 // rows           - Sorted `<tr>` elements as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
 //
+// @private
 // @param {module:engine/view/element~Element} viewTable
 // @returns {{headingRows, headingColumns, rows}}
 function scanTable( viewTable ) {
@@ -184,24 +202,24 @@ function scanTable( viewTable ) {
 	//			<tbody><tr><td>3</td></tr></tbody>
 	//		</table>
 	//
-	// But browsers will render rows in order as: 1 as heading and 2 and 3 as the body.
+	// But browsers will render rows in order as: 1 as the heading and 2 and 3 as the body.
 	const headRows = [];
 	const bodyRows = [];
 
 	// Currently the editor does not support more then one <thead> section.
-	// Only the first <thead> from the view will be used as heading rows and others will be converted to body rows.
+	// Only the first <thead> from the view will be used as a heading row and the others will be converted to body rows.
 	let firstTheadElement;
 
 	for ( const tableChild of Array.from( viewTable.getChildren() ) ) {
-		// Only <thead>, <tbody> & <tfoot> from allowed table children can have <tr>s.
-		// The else is for future purposes (mainly <caption>).
+		// Only `<thead>`, `<tbody>` & `<tfoot>` from allowed table children can have `<tr>`s.
+		// The else is for future purposes (mainly `<caption>`).
 		if ( tableChild.name === 'tbody' || tableChild.name === 'thead' || tableChild.name === 'tfoot' ) {
-			// Save the first <thead> in the table as table header - all other ones will be converted to table body rows.
+			// Save the first `<thead>` in the table as table header - all other ones will be converted to table body rows.
 			if ( tableChild.name === 'thead' && !firstTheadElement ) {
 				firstTheadElement = tableChild;
 			}
 
-			// There might be some extra empty text nodes between the `tr`s.
+			// There might be some extra empty text nodes between the `<tr>`s.
 			// Make sure further code operates on `tr`s only. (#145)
 			const trs = Array.from( tableChild.getChildren() ).filter( el => el.is( 'element', 'tr' ) );
 
@@ -236,6 +254,7 @@ function scanTable( viewTable ) {
 // - For body rows:
 //     - Calculates the number of column headings.
 //
+// @private
 // @param {module:engine/view/element~Element} tr
 // @returns {Number}
 function scanRowForHeadingColumns( tr ) {

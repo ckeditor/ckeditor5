@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,10 +63,9 @@ describe( 'MediaEmbedToolbar', () => {
 
 			setData( model, '[<media url=""></media>]' );
 
-			sinon.assert.calledWithMatch( spy, {
-				view: toolbar,
-				balloonClassName: 'ck-toolbar-container'
-			} );
+			sinon.assert.calledWithMatch( spy, sinon.match( ( { balloonClassName, view } ) => {
+				return view === toolbar && balloonClassName === 'ck-toolbar-container';
+			} ) );
 		} );
 
 		it( 'should set aria-label attribute', () => {
@@ -251,7 +250,7 @@ describe( 'MediaEmbedToolbar - integration with BalloonEditor', () => {
 
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'mediaEmbed' ) ).to.be.undefined;
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
 
 			element.remove();
 			return editor.destroy();

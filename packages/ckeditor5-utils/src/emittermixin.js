@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,6 +20,11 @@ const _emitterId = Symbol( 'emitterId' );
 
 /**
  * Mixin that injects the {@link ~Emitter events API} into its host.
+ *
+ * Read more about the concept of emitters in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
  *
  * @mixin EmitterMixin
  * @implements module:utils/emittermixin~Emitter
@@ -109,34 +114,7 @@ const EmitterMixin = {
 		eventCallbacks.push( callback );
 
 		// Finally register the callback to the event.
-		createEventNamespace( emitter, event );
-		const lists = getCallbacksListsForNamespace( emitter, event );
-		const priority = priorities.get( options.priority );
-
-		const callbackDefinition = {
-			callback,
-			priority
-		};
-
-		// Add the callback to all callbacks list.
-		for ( const callbacks of lists ) {
-			// Add the callback to the list in the right priority position.
-			let added = false;
-
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].priority < priority ) {
-					callbacks.splice( i, 0, callbackDefinition );
-					added = true;
-
-					break;
-				}
-			}
-
-			// Add at the end, if right place was not found.
-			if ( !added ) {
-				callbacks.push( callbackDefinition );
-			}
-		}
+		addEventListener( this, emitter, event, callback, options );
 	},
 
 	/**
@@ -155,12 +133,24 @@ const EmitterMixin = {
 
 		// All params provided. off() that single callback.
 		if ( callback ) {
-			removeCallback( emitter, event, callback );
+			removeEventListener( this, emitter, event, callback );
+
+			// We must remove callbacks as well in order to prevent memory leaks.
+			// See https://github.com/ckeditor/ckeditor5/pull/8480
+			const index = eventCallbacks.indexOf( callback );
+
+			if ( index !== -1 ) {
+				if ( eventCallbacks.length === 1 ) {
+					delete emitterInfo.callbacks[ event ];
+				} else {
+					removeEventListener( this, emitter, event, callback );
+				}
+			}
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
 			while ( ( callback = eventCallbacks.pop() ) ) {
-				removeCallback( emitter, event, callback );
+				removeEventListener( this, emitter, event, callback );
 			}
 
 			delete emitterInfo.callbacks[ event ];
@@ -213,7 +203,7 @@ const EmitterMixin = {
 						// Remove the called mark for the next calls.
 						delete eventInfo.off.called;
 
-						removeCallback( this, event, callbacks[ i ].callback );
+						this._removeEventListener( event, callbacks[ i ].callback );
 					}
 
 					// Do not execute next callbacks if stop() was called.
@@ -289,6 +279,58 @@ const EmitterMixin = {
 				destinations.delete( emitter );
 			}
 		}
+	},
+
+	/**
+	 * @inheritDoc
+	 */
+	_addEventListener( event, callback, options ) {
+		createEventNamespace( this, event );
+
+		const lists = getCallbacksListsForNamespace( this, event );
+		const priority = priorities.get( options.priority );
+
+		const callbackDefinition = {
+			callback,
+			priority
+		};
+
+		// Add the callback to all callbacks list.
+		for ( const callbacks of lists ) {
+			// Add the callback to the list in the right priority position.
+			let added = false;
+
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				if ( callbacks[ i ].priority < priority ) {
+					callbacks.splice( i, 0, callbackDefinition );
+					added = true;
+
+					break;
+				}
+			}
+
+			// Add at the end, if right place was not found.
+			if ( !added ) {
+				callbacks.push( callbackDefinition );
+			}
+		}
+	},
+
+	/**
+	 * @inheritDoc
+	 */
+	_removeEventListener( event, callback ) {
+		const lists = getCallbacksListsForNamespace( this, event );
+
+		for ( const callbacks of lists ) {
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				if ( callbacks[ i ].callback == callback ) {
+					// Remove the callback from the list (fixing the next index).
+					callbacks.splice( i, 1 );
+					i--;
+				}
+			}
+		}
 	}
 };
 
@@ -298,6 +340,11 @@ export default EmitterMixin;
  * Emitter/listener interface.
  *
  * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
+ *
+ * Read more about the usage of this interface in the:
+ * * {@glink framework/guides/architecture/core-editor-architecture#event-system-and-observables Event system and observables}
+ * section of the {@glink framework/guides/architecture/core-editor-architecture Core editor architecture} guide.
+ * * {@glink framework/guides/deep-dive/event-system Event system} deep dive guide.
  *
  * @interface Emitter
  */
@@ -429,6 +476,28 @@ export default EmitterMixin;
  * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
  * @param {module:utils/emittermixin~Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to.
  * If omitted, stops delegation of `event` to all emitters.
+ */
+
+/**
+ * Adds callback to emitter for given event.
+ *
+ * @protected
+ * @method #_addEventListener
+ * @param {String} event The name of the event.
+ * @param {Function} callback The function to be called on event.
+ * @param {Object} [options={}] Additional options.
+ * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+ * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+ * order they were added.
+ */
+
+/**
+ * Removes callback from emitter for given event.
+ *
+ * @protected
+ * @method #_removeEventListener
+ * @param {String} event The name of the event.
+ * @param {Function} callback The function to stop being called.
  */
 
 /**
@@ -626,22 +695,25 @@ function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
 	}
 }
 
-// Removes callback from emitter for given event.
-//
-// @param {module:utils/emittermixin~Emitter} emitter
-// @param {String} event
-// @param {Function} callback
-function removeCallback( emitter, event, callback ) {
-	const lists = getCallbacksListsForNamespace( emitter, event );
+// Helper for registering event callback on the emitter.
+function addEventListener( listener, emitter, event, callback, options ) {
+	if ( emitter._addEventListener ) {
+		emitter._addEventListener( event, callback, options );
+	} else {
+		// Allow listening on objects that do not implement Emitter interface.
+		// This is needed in some tests that are using mocks instead of the real objects with EmitterMixin mixed.
+		listener._addEventListener.call( emitter, event, callback, options );
+	}
+}
 
-	for ( const callbacks of lists ) {
-		for ( let i = 0; i < callbacks.length; i++ ) {
-			if ( callbacks[ i ].callback == callback ) {
-				// Remove the callback from the list (fixing the next index).
-				callbacks.splice( i, 1 );
-				i--;
-			}
-		}
+// Helper for removing event callback from the emitter.
+function removeEventListener( listener, emitter, event, callback ) {
+	if ( emitter._removeEventListener ) {
+		emitter._removeEventListener( event, callback );
+	} else {
+		// Allow listening on objects that do not implement Emitter interface.
+		// This is needed in some tests that are using mocks instead of the real objects with EmitterMixin mixed.
+		listener._removeEventListener.call( emitter, event, callback );
 	}
 }
 

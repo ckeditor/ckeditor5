@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import PasteFromOffice from '../src/pastefromoffice';
-import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import { createDataTransfer } from './_utils/utils';
@@ -12,6 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { StylesProcessor } from '@ckeditor/ckeditor5-engine/src/view/stylesmap';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
 
 describe( 'PasteFromOffice', () => {
 	const htmlDataProcessor = new HtmlDataProcessor( new ViewDocument( new StylesProcessor() ) );
@@ -26,7 +27,7 @@ describe( 'PasteFromOffice', () => {
 			.then( _editor => {
 				editor = _editor;
 				pasteFromOffice = editor.plugins.get( 'PasteFromOffice' );
-				clipboard = editor.plugins.get( 'Clipboard' );
+				clipboard = editor.plugins.get( 'ClipboardPipeline' );
 			} );
 	} );
 
@@ -39,7 +40,7 @@ describe( 'PasteFromOffice', () => {
 	} );
 
 	it( 'should load Clipboard plugin', () => {
-		expect( editor.plugins.get( Clipboard ) ).to.be.instanceOf( Clipboard );
+		expect( editor.plugins.get( ClipboardPipeline ) ).to.be.instanceOf( ClipboardPipeline );
 	} );
 
 	describe( 'isTransformedWithPasteFromOffice - flag', () => {
@@ -62,7 +63,13 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._parsedData ).to.have.property( 'body' );
+				expect( data._parsedData ).to.have.property( 'bodyString' );
+				expect( data._parsedData ).to.have.property( 'styles' );
+				expect( data._parsedData ).to.have.property( 'stylesString' );
+				expect( data._parsedData.body ).to.be.instanceOf( ViewDocumentFragment );
+
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -82,7 +89,9 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.undefined;
+				expect( data._parsedData ).to.be.undefined;
+
 				sinon.assert.called( getDataSpy );
 			}
 		} );
@@ -104,7 +113,9 @@ describe( 'PasteFromOffice', () => {
 
 				clipboard.fire( 'inputTransformation', data );
 
-				expect( data.isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._isTransformedWithPasteFromOffice ).to.be.true;
+				expect( data._parsedData ).to.be.undefined;
+
 				sinon.assert.notCalled( getDataSpy );
 			}
 		} );
@@ -120,7 +131,7 @@ describe( 'PasteFromOffice', () => {
 		};
 
 		if ( isTransformedWithPasteFromOffice ) {
-			data.isTransformedWithPasteFromOffice = true;
+			data._isTransformedWithPasteFromOffice = true;
 		}
 
 		return data;

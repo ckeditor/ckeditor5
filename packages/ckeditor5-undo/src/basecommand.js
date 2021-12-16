@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -42,7 +42,32 @@ export default class BaseCommand extends Command {
 		// Refresh state, so the command is inactive right after initialization.
 		this.refresh();
 
-		this.listenTo( editor.data, 'set', () => this.clearStack() );
+		// Set the transparent batch for the `editor.data.set()` call if the
+		// batch type is not set already.
+		this.listenTo( editor.data, 'set', ( evt, data ) => {
+			// Create a shallow copy of the options to not change the original args.
+			// And make sure that an object is assigned to data[ 1 ].
+			data[ 1 ] = { ...data[ 1 ] };
+
+			const options = data[ 1 ];
+
+			if ( options.batchType ) {
+				return;
+			}
+
+			options.batchType = 'transparent';
+		}, { priority: 'high' } );
+
+		// Clear the stack for the `transparent` batches.
+		this.listenTo( editor.data, 'set', ( evt, data ) => {
+			// We can assume that the object exists - it was ensured
+			// with the high priority listener before.
+			const options = data[ 1 ];
+
+			if ( options.batchType === 'transparent' ) {
+				this.clearStack();
+			}
+		} );
 	}
 
 	/**
@@ -100,7 +125,14 @@ export default class BaseCommand extends Command {
 
 		for ( const rangeGroup of transformedRangeGroups ) {
 			// While transforming there could appear ranges that are contained by other ranges, we shall ignore them.
-			const transformed = rangeGroup.filter( range => !isRangeContainedByAnyOtherRange( range, allRanges ) );
+			const transformed = rangeGroup
+				.filter( range => range.root != document.graveyard )
+				.filter( range => !isRangeContainedByAnyOtherRange( range, allRanges ) );
+
+			// All the transformed ranges ended up in graveyard.
+			if ( !transformed.length ) {
+				continue;
+			}
 
 			// After the range got transformed, we have an array of ranges. Some of those
 			// ranges may be "touching" -- they can be next to each other and could be merged.
@@ -108,16 +140,8 @@ export default class BaseCommand extends Command {
 
 			// For each `range` from `ranges`, we take only one transformed range.
 			// This is because we want to prevent situation where single-range selection
-			// got transformed to multi-range selection. We will take the first range that
-			// is not in the graveyard.
-			const newRange = transformed.find(
-				range => range.root != document.graveyard
-			);
-
-			// `transformedRange` might be `undefined` if transformed range ended up in graveyard.
-			if ( newRange ) {
-				selectionRanges.push( newRange );
-			}
+			// got transformed to multi-range selection.
+			selectionRanges.push( transformed[ 0 ] );
 		}
 
 		// @if CK_DEBUG_ENGINE // console.log( `Restored selection by undo: ${ selectionRanges.join( ', ' ) }` );

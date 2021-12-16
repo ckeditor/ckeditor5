@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -111,61 +111,6 @@ describe( 'ResizeObserver()', () => {
 			sinon.assert.calledOnce( callbackA );
 			sinon.assert.calledWithExactly( callbackA.firstCall, { target: elementA } );
 
-			observerA.destroy();
-		} );
-
-		it( 'should not react to resizing of an element if element is invisible', () => {
-			const callbackA = sinon.spy();
-			let resizeCallback;
-
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
-				resizeCallback = callback;
-
-				return {
-					observe() {},
-					unobserve() {}
-				};
-			} );
-
-			const observerA = new ResizeObserver( elementA, callbackA );
-
-			elementA.style.display = 'none';
-
-			resizeCallback( [
-				{ target: elementA }
-			] );
-
-			sinon.assert.notCalled( callbackA );
-
-			observerA.destroy();
-		} );
-
-		it( 'should not react to resizing of an element if element\'s parent is invisible', () => {
-			const callbackA = sinon.spy();
-			let resizeCallback;
-
-			testUtils.sinon.stub( global.window, 'ResizeObserver' ).callsFake( callback => {
-				resizeCallback = callback;
-
-				return {
-					observe() {},
-					unobserve() {}
-				};
-			} );
-
-			const observerA = new ResizeObserver( elementA, callbackA );
-			const parent = document.createElement( 'div' );
-			document.body.appendChild( parent );
-			parent.appendChild( elementA );
-			parent.style.display = 'none';
-
-			resizeCallback( [
-				{ target: elementA }
-			] );
-
-			sinon.assert.notCalled( callbackA );
-
-			parent.remove();
 			observerA.destroy();
 		} );
 

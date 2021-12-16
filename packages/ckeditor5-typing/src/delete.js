@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,6 +19,13 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  */
 export default class Delete extends Plugin {
 	/**
+	 * Whether pressing backspace should trigger undo action
+	 *
+	 * @private
+	 * @member {Boolean} #_undoOnBackspace
+	 */
+
+	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
@@ -29,10 +36,18 @@ export default class Delete extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const modelDocument = editor.model.document;
 
 		view.addObserver( DeleteObserver );
 
-		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
+		this._undoOnBackspace = false;
+
+		const deleteForwardCommand = new DeleteCommand( editor, 'forward' );
+
+		// Register `deleteForward` command and add `forwardDelete` command as an alias for backward compatibility.
+		editor.commands.add( 'deleteForward', deleteForwardCommand );
+		editor.commands.add( 'forwardDelete', deleteForwardCommand );
+
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
@@ -52,12 +67,12 @@ export default class Delete extends Plugin {
 				deleteCommandParams.selection = modelSelection;
 			}
 
-			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', deleteCommandParams );
+			editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
 
 			data.preventDefault();
 
 			view.scrollToTheSelection();
-		} );
+		}, { priority: 'low' } );
 
 		// Android IMEs have a quirk - they change DOM selection after the input changes were performed by the browser.
 		// This happens on `keyup` event. Android doesn't know anything about our deletion and selection handling. Even if the selection
@@ -91,6 +106,34 @@ export default class Delete extends Plugin {
 					domSelectionAfterDeletion = null;
 				}
 			} );
+		}
+
+		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
+			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+				if ( this._undoOnBackspace && data.direction == 'backward' && data.sequence == 1 && data.unit == 'codePoint' ) {
+					this._undoOnBackspace = false;
+
+					editor.execute( 'undo' );
+
+					data.preventDefault();
+					evt.stop();
+				}
+			}, { context: '$capture' } );
+
+			this.listenTo( modelDocument, 'change', () => {
+				this._undoOnBackspace = false;
+			} );
+		}
+	}
+
+	/**
+	 * If the next user action after calling this method is pressing backspace, it would undo the last change.
+	 *
+	 * Requires {@link module:undo/undoediting~UndoEditing} plugin. If not loaded, does nothing.
+	 */
+	requestUndoOnBackspace() {
+		if ( this.editor.plugins.has( 'UndoEditing' ) ) {
+			this._undoOnBackspace = true;
 		}
 	}
 }

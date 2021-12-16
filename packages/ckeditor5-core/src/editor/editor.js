@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -52,6 +52,9 @@ export default class Editor {
 	 * @param {Object} [config={}] The editor configuration.
 	 */
 	constructor( config = {} ) {
+		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
+		const language = config.language || ( this.constructor.defaultConfig && this.constructor.defaultConfig.language );
+
 		/**
 		 * The editor context.
 		 * When it is not provided through the configuration, the editor creates it.
@@ -59,7 +62,7 @@ export default class Editor {
 		 * @protected
 		 * @type {module:core/context~Context}
 		 */
-		this._context = config.context || new Context( { language: config.language } );
+		this._context = config.context || new Context( { language } );
 		this._context._addEditor( this, !config.context );
 
 		// Clone the plugins to make sure that the plugin array will not be shared
@@ -70,7 +73,7 @@ export default class Editor {
 		 * Stores all configurations specific to this editor instance.
 		 *
 		 *		editor.config.get( 'image.toolbar' );
-		 *		// -> [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		 *		// -> [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		 *
 		 * @readonly
 		 * @member {module:utils/config~Config}
@@ -82,7 +85,7 @@ export default class Editor {
 		/**
 		 * The plugins loaded and in use by this editor instance.
 		 *
-		 *		editor.plugins.get( 'Clipboard' ); // -> An instance of the clipboard plugin.
+		 *		editor.plugins.get( 'ClipboardPipeline' ); // -> An instance of the clipboard pipeline plugin.
 		 *
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
@@ -237,8 +240,9 @@ export default class Editor {
 		const plugins = config.get( 'plugins' );
 		const removePlugins = config.get( 'removePlugins' ) || [];
 		const extraPlugins = config.get( 'extraPlugins' ) || [];
+		const substitutePlugins = config.get( 'substitutePlugins' ) || [];
 
-		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins );
+		return this.plugins.init( plugins.concat( extraPlugins ), removePlugins, substitutePlugins );
 	}
 
 	/**
@@ -297,6 +301,19 @@ export default class Editor {
 	}
 
 	/**
+	 * Focuses the editor.
+	 *
+	 * **Note** To explicitly focus the editing area of the editor, use the
+	 * {@link module:engine/view/view~View#focus `editor.editing.view.focus()`} method of the editing view.
+	 *
+	 * Check out the {@glink framework/guides/deep-dive/ui/focus-tracking#focus-in-the-editor-ui Focus in the editor UI} section
+	 * of the {@glink framework/guides/deep-dive/ui/focus-tracking Deep dive into focus tracking} guide to learn more.
+	 */
+	focus() {
+		this.editing.view.focus();
+	}
+
+	/**
 	 * Creates and initializes a new editor instance.
 	 *
 	 * This is an abstract method. Every editor type needs to implement its own initialization logic.
@@ -343,7 +360,8 @@ mix( Editor, ObservableMixin );
 /**
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
  *
- * The only editor type which can be initialized on `<textarea>` elements is {@glink builds/guides/overview#classic-editor classic editor}.
+ * The only editor type which can be initialized on `<textarea>` elements is
+ * the {@glink builds/guides/predefined-builds/overview#classic-editor classic editor}.
  * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
  * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *

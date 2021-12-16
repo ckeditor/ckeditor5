@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,6 +22,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Table from '@ckeditor/ckeditor5-table/src/table';
+import Link from '@ckeditor/ckeditor5-link/src/link';
 
 class InlineWidget extends Plugin {
 	constructor( editor ) {
@@ -31,15 +32,16 @@ class InlineWidget extends Plugin {
 			allowWhere: '$text',
 			isObject: true,
 			isInline: true,
+			allowAttributesOf: '$text',
 			allowAttributes: [ 'type' ]
 		} );
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createPlaceholderView( modelItem, viewWriter );
+			view: ( modelItem, conversionApi ) => {
+				const widgetElement = createPlaceholderView( modelItem, conversionApi );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, conversionApi.writer );
 			}
 		} );
 
@@ -50,7 +52,7 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: 'placeholder',
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer } ) => {
 				let type = 'general';
 
 				if ( viewElement.childCount ) {
@@ -61,7 +63,7 @@ class InlineWidget extends Plugin {
 					}
 				}
 
-				return modelWriter.createElement( 'placeholder', { type } );
+				return writer.createElement( 'placeholder', { type } );
 			}
 		} );
 
@@ -72,11 +74,11 @@ class InlineWidget extends Plugin {
 
 		this._createToolbarButton();
 
-		function createPlaceholderView( modelItem, viewWriter ) {
-			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
-			const viewText = viewWriter.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
+		function createPlaceholderView( modelItem, { writer } ) {
+			const widgetElement = writer.createContainerElement( 'placeholder', null, { isAllowedInsideAttributeElement: true } );
+			const viewText = writer.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewText );
+			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
 		}
@@ -99,7 +101,11 @@ class InlineWidget extends Plugin {
 				const model = editor.model;
 
 				model.change( writer => {
-					const placeholder = writer.createElement( 'placeholder', { type: 'placeholder' } );
+					const attributes = model.document.selection.getAttributes();
+					const placeholder = writer.createElement( 'placeholder', {
+						...Object.fromEntries( attributes ),
+						type: 'placeholder'
+					} );
 
 					model.insertContent( placeholder );
 
@@ -114,8 +120,8 @@ class InlineWidget extends Plugin {
 
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table ],
-		toolbar: [ 'heading', '|', 'bold', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Paragraph, Heading, Bold, Undo, Clipboard, Widget, ShiftEnter, InlineWidget, Table, Link ],
+		toolbar: [ 'heading', '|', 'bold', 'link', '|', 'placeholder', '|', 'insertTable', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

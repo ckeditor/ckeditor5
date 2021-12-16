@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,10 +30,10 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createPlaceholderView( modelItem, viewWriter );
+			view: ( modelItem, conversionApi ) => {
+				const widgetElement = createPlaceholderView( modelItem, conversionApi );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, conversionApi.writer );
 			}
 		} );
 
@@ -44,7 +44,7 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'upcast' ).elementToElement( {
 			view: 'placeholder',
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer } ) => {
 				let type = 'general';
 
 				if ( viewElement.childCount ) {
@@ -55,7 +55,7 @@ class InlineWidget extends Plugin {
 					}
 				}
 
-				return modelWriter.createElement( 'placeholder', { type } );
+				return writer.createElement( 'placeholder', { type } );
 			}
 		} );
 
@@ -66,11 +66,11 @@ class InlineWidget extends Plugin {
 
 		this._createToolbarButton();
 
-		function createPlaceholderView( modelItem, viewWriter ) {
-			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
-			const viewText = viewWriter.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
+		function createPlaceholderView( modelItem, { writer } ) {
+			const widgetElement = writer.createContainerElement( 'placeholder' );
+			const viewText = writer.createText( '{' + modelItem.getAttribute( 'type' ) + '}' );
 
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewText );
+			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
 		}
@@ -147,7 +147,7 @@ ClassicEditor
 			'|', 'undo', 'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ],

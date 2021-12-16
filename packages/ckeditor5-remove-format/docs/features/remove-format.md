@@ -8,13 +8,20 @@ category: features
 
 The {@link module:remove-format/removeformat~RemoveFormat `Remove format`} feature allows you to quickly remove any text formatting applied using inline HTML elements and CSS styles, like {@link features/basic-styles basic text styles} (bold, italic, etc.), {@link features/font font family, size, and color} and similar.
 
-Note that block-level formatting ({@link features/headings headings}, {@link features/image images}) and semantic data ({@link features/link links}) will not be removed by this feature.
+Note that block-level formatting ({@link features/headings headings}, {@link features/images-overview images}) and semantic data ({@link features/link links}) will not be removed by this feature.
 
 ## Demo
 
-Select the content you want to clean up and press the "Remove Format" button in the toolbar:
+Select the content you want to clean up and press the remove format button {@icon @ckeditor/ckeditor5-remove-format/theme/icons/remove-format.svg remove format} in the toolbar:
 
 {@snippet features/remove-format}
+
+## Related features
+
+There are more CKEditor 5 features that can help you format your content:
+* {@link features/basic-styles Basic text styles} &ndash; The essentials, like **bold**, *italic* and others.
+* {@link features/font Font styles} &ndash; Easily and efficiently control the font {@link features/font#configuring-the-font-family-feature family}, {@link features/font#configuring-the-font-size-feature size}, {@link features/font#configuring-the-font-color-and-font-background-color-features text or background color}.
+* {@link features/text-alignment Text alignment} &ndash; Align your content left, align it right, center it or justify.
 
 ## Configuring the remove format feature
 

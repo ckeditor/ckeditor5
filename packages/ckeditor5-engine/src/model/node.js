@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,7 +87,7 @@ export default class Node {
 		}
 
 		if ( ( pos = this.parent.getChildIndex( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.', this );
+			throw new CKEditorError( 'model-node-not-found-in-parent', this );
 		}
 
 		return pos;
@@ -111,7 +111,7 @@ export default class Node {
 		}
 
 		if ( ( pos = this.parent.getChildStartOffset( this ) ) === null ) {
-			throw new CKEditorError( 'model-node-not-found-in-parent: The node\'s parent does not contain this node.', this );
+			throw new CKEditorError( 'model-node-not-found-in-parent', this );
 		}
 
 		return pos;
@@ -406,9 +406,9 @@ export default class Node {
 	 *
 	 * By using this method it is also possible to check a name of an element:
 	 *
-	 *		imageElement.is( 'element', 'image' ); // -> true
-	 *		imageElement.is( 'element', 'image' ); // -> same as above
-	 *		imageElement.is( 'model:element', 'image' ); // -> same as above, but more precise
+	 *		imageElement.is( 'element', 'imageBlock' ); // -> true
+	 *		imageElement.is( 'element', 'imageBlock' ); // -> same as above
+	 *		imageElement.is( 'model:element', 'imageBlock' ); // -> same as above, but more precise
 	 *
 	 * The list of model objects which implement the `is()` method:
 	 *
@@ -499,3 +499,9 @@ export default class Node {
 		this._attrs.clear();
 	}
 }
+
+/**
+ * The node's parent does not contain this node.
+ *
+ * @error model-node-not-found-in-parent
+ */

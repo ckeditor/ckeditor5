@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,12 +11,12 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import {
-	isArrowKeyCode,
 	isForwardArrowKeyCode,
 	keyCodes
 } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 import {
 	isTypeAroundWidget,
@@ -30,6 +30,8 @@ import {
 import {
 	isNonTypingKeystroke
 } from '@ckeditor/ckeditor5-typing/src/utils/injectunsafekeystrokeshandling';
+
+import { isWidget } from '../utils';
 
 import returnIcon from '../../theme/icons/return-arrow.svg';
 import '../../theme/widgettypearound.css';
@@ -59,6 +61,13 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	static get pluginName() {
 		return 'WidgetTypeAround';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ Enter, Delete ];
 	}
 
 	/**
@@ -112,6 +121,7 @@ export default class WidgetTypeAround extends Plugin {
 		this._enableTypeAroundFakeCaretActivationUsingKeyboardArrows();
 		this._enableDeleteIntegration();
 		this._enableInsertContentIntegration();
+		this._enableDeleteContentIntegration();
 	}
 
 	/**
@@ -257,13 +267,10 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		// This is the main listener responsible for the fake caret.
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high-10").
-		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
-			if ( isArrowKeyCode( domEventData.keyCode ) ) {
-				this._handleArrowKeyPress( evt, domEventData );
-			}
-		}, { priority: priorities.get( 'high' ) + 10 } );
+		// Note: The priority must precede the default Widget class keydown handler ("high").
+		this._listenToIfEnabled( editingView.document, 'arrowKey', ( evt, domEventData ) => {
+			this._handleArrowKeyPress( evt, domEventData );
+		}, { context: [ isWidget, '$text' ], priority: 'high' } );
 
 		// This listener makes sure the widget type around selection attribute will be gone from the model
 		// selection as soon as the model range changes. This attribute only makes sense when a widget is selected
@@ -391,6 +398,10 @@ export default class WidgetTypeAround extends Plugin {
 		else if ( modelSelection.isCollapsed ) {
 			shouldStopAndPreventDefault = this._handleArrowKeyPressWhenSelectionNextToAWidget( isForward );
 		}
+		// Handle collapsing a non-collapsed selection that is wider than on a single widget.
+		else if ( !domEventData.shiftKey ) {
+			shouldStopAndPreventDefault = this._handleArrowKeyPressWhenNonCollapsedSelection( isForward );
+		}
 
 		if ( shouldStopAndPreventDefault ) {
 			domEventData.preventDefault();
@@ -486,6 +497,42 @@ export default class WidgetTypeAround extends Plugin {
 	}
 
 	/**
+	 * Handles the keyboard navigation on "keydown" when a widget is currently selected (together with some other content)
+	 * and the widget is the first or last element in the selection. It activates or deactivates the fake caret for that widget.
+	 *
+	 * @private
+	 * @param {Boolean} isForward `true` when the pressed arrow key was responsible for the forward model selection movement
+	 * as in {@link module:utils/keyboard~isForwardArrowKeyCode}.
+	 * @returns {Boolean} Returns `true` when the keypress was handled and no other keydown listener of the editor should
+	 * process the event any further. Returns `false` otherwise.
+	 */
+	_handleArrowKeyPressWhenNonCollapsedSelection( isForward ) {
+		const editor = this.editor;
+		const model = editor.model;
+		const schema = model.schema;
+		const mapper = editor.editing.mapper;
+		const modelSelection = model.document.selection;
+
+		const selectedModelNode = isForward ?
+			modelSelection.getLastPosition().nodeBefore :
+			modelSelection.getFirstPosition().nodeAfter;
+
+		const selectedViewNode = mapper.toViewElement( selectedModelNode );
+
+		// There is a widget at the collapse position so collapse the selection to the fake caret on it.
+		if ( isTypeAroundWidget( selectedViewNode, selectedModelNode, schema ) ) {
+			model.change( writer => {
+				writer.setSelection( selectedModelNode, 'on' );
+				writer.setSelectionAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE, isForward ? 'after' : 'before' );
+			} );
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Registers a `mousedown` listener for the view document which intercepts events
 	 * coming from the widget type around UI, which happens when a user clicks one of the buttons
 	 * that insert a paragraph next to a widget.
@@ -531,11 +578,19 @@ export default class WidgetTypeAround extends Plugin {
 	 */
 	_enableInsertingParagraphsOnEnterKeypress() {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 		const editingView = editor.editing.view;
 
 		this._listenToIfEnabled( editingView.document, 'enter', ( evt, domEventData ) => {
-			const selectedViewElement = editingView.document.selection.getSelectedElement();
-			const selectedModelElement = editor.editing.mapper.toModelElement( selectedViewElement );
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
+			const selectedModelElement = selection.getSelectedElement();
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
 			const schema = editor.model.schema;
 			let wasHandled;
 
@@ -556,7 +611,7 @@ export default class WidgetTypeAround extends Plugin {
 				domEventData.preventDefault();
 				evt.stop();
 			}
-		} );
+		}, { context: isWidget } );
 	}
 
 	/**
@@ -587,14 +642,13 @@ export default class WidgetTypeAround extends Plugin {
 			keyCodes.backspace
 		];
 
-		// Note: The priority must precede the default Widget class keydown handler ("high") and the
-		// TableKeyboard keydown handler ("high + 1").
+		// Note: The priority must precede the default observers.
 		this._listenToIfEnabled( editingView.document, 'keydown', ( evt, domEventData ) => {
 			// Don't handle enter/backspace/delete here. They are handled in dedicated listeners.
 			if ( !keyCodesHandledSomewhereElse.includes( domEventData.keyCode ) && !isNonTypingKeystroke( domEventData ) ) {
 				this._insertParagraphAccordingToFakeCaretPosition();
 			}
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -613,8 +667,13 @@ export default class WidgetTypeAround extends Plugin {
 		const model = editor.model;
 		const schema = model.schema;
 
-		// Note: The priority must precede the default Widget class delete handler.
 		this._listenToIfEnabled( editingView.document, 'delete', ( evt, domEventData ) => {
+			// This event could be triggered from inside the widget but we are interested
+			// only when the widget is selected itself.
+			if ( evt.eventPhase != 'atTarget' ) {
+				return;
+			}
+
 			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( model.document.selection );
 
 			// This listener handles only these cases when the fake caret is active.
@@ -626,8 +685,8 @@ export default class WidgetTypeAround extends Plugin {
 			const selectedModelWidget = model.document.selection.getSelectedElement();
 
 			const isFakeCaretBefore = typeAroundFakeCaretPosition === 'before';
-			const isForwardDelete = direction == 'forward';
-			const shouldDeleteEntireWidget = isFakeCaretBefore === isForwardDelete;
+			const isDeleteForward = direction == 'forward';
+			const shouldDeleteEntireWidget = isFakeCaretBefore === isDeleteForward;
 
 			if ( shouldDeleteEntireWidget ) {
 				editor.execute( 'delete', {
@@ -645,7 +704,7 @@ export default class WidgetTypeAround extends Plugin {
 					if ( !range.isCollapsed ) {
 						model.change( writer => {
 							writer.setSelection( range );
-							editor.execute( isForwardDelete ? 'forwardDelete' : 'delete' );
+							editor.execute( isDeleteForward ? 'deleteForward' : 'delete' );
 						} );
 					} else {
 						const probe = model.createSelection( range.start );
@@ -656,11 +715,11 @@ export default class WidgetTypeAround extends Plugin {
 						if ( !probe.focus.isEqual( range.start ) ) {
 							model.change( writer => {
 								writer.setSelection( range );
-								editor.execute( isForwardDelete ? 'forwardDelete' : 'delete' );
+								editor.execute( isDeleteForward ? 'deleteForward' : 'delete' );
 							} );
 						}
 						// If there is no non-collapsed range to be deleted then we are sure that there is an empty element
-						// next to a widget that should be removed. "delete" and "forwardDelete" commands cannot get rid of it
+						// next to a widget that should be removed. "delete" and "deleteForward" commands cannot get rid of it
 						// so calling Model#deleteContent here manually.
 						else {
 							const deepestEmptyRangeAncestor = getDeepestEmptyElementAncestor( schema, range.start.parent );
@@ -677,7 +736,7 @@ export default class WidgetTypeAround extends Plugin {
 			// If nothing was deleted, then the default handler will have nothing to do anyway.
 			domEventData.preventDefault();
 			evt.stop();
-		}, { priority: priorities.get( 'high' ) + 1 } );
+		}, { context: isWidget } );
 	}
 
 	/**
@@ -717,6 +776,35 @@ export default class WidgetTypeAround extends Plugin {
 
 				return result;
 			} );
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Attaches the {@link module:engine/model/model~Model#event:deleteContent} event listener to block the event when the fake
+	 * caret is active.
+	 *
+	 * This is required for cases that trigger {@link module:engine/model/model~Model#deleteContent `model.deleteContent()`}
+	 * before calling {@link module:engine/model/model~Model#insertContent `model.insertContent()`} like, for instance,
+	 * plain text pasting.
+	 *
+	 * @private
+	 */
+	_enableDeleteContentIntegration() {
+		const editor = this.editor;
+		const model = this.editor.model;
+		const documentSelection = model.document.selection;
+
+		this._listenToIfEnabled( editor.model, 'deleteContent', ( evt, [ selection ] ) => {
+			if ( selection && !selection.is( 'documentSelection' ) ) {
+				return;
+			}
+
+			const typeAroundFakeCaretPosition = getTypeAroundFakeCaretPosition( documentSelection );
+
+			// Disable removing the selection content while pasting plain text.
+			if ( typeAroundFakeCaretPosition ) {
+				evt.stop();
+			}
 		}, { priority: 'high' } );
 	}
 }

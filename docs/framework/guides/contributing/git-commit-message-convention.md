@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
-order: 40
+order: 50
+modified_at: 2021-09-07
 ---
 
 # Git commit message convention
@@ -24,8 +25,8 @@ Type (another-package-name): If the change affects more than one package, it's p
 
 Optional description.
 
-BREAKING CHANGE (package-name): If any breaking changes were done, they need to be listed here.
-BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
+MAJOR BREAKING CHANGE (package-name): If any breaking changes were done, they need to be listed here.
+MINOR BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
 ```
 
 ### Commit types
@@ -43,14 +44,18 @@ BREAKING CHANGE (package-name): Another breaking change if needed. Closes #ZZZ.
 
 Each commit can contain additional notes that will be inserted into the changelog:
 
-* `MAJOR BREAKING CHANGE` (alias: `BREAKING CHANGE`),
+* `MAJOR BREAKING CHANGE`,
 * `MINOR BREAKING CHANGE`.
 
-If any change contains the `MAJOR BREAKING CHANGE` note, the next release will be marked as `major` automatically.
+If any change contains the `MAJOR BREAKING CHANGE` note, the next release will automatically be marked as `major`.
 
 For reference on how to identify minor or major breaking change see the {@link framework/guides/support/versioning-policy versioning policy guide}.
 
-Each `BREAKING CHANGE` note must be followed by the package name.
+Each `MAJOR BREAKING CHANGE` or `MINOR BREAKING CHANGE` note must be followed by the package name.
+
+<info-box>
+	Remember to always specify whether the breaking change is major or minor. If you fail to do so, the system will assume all unspecified breaking changes are major.
+</info-box>
 
 ### Package name
 
@@ -58,9 +63,68 @@ Most commits are related to one or more packages. Each affected package should b
 
 It is, however, possible to skip this part if many packages are affected. This usually indicates a generic change. In this case having all the packages listed would reduce the changelog readability.
 
-The package name is based on the npm package name, however, it has the `@ckeditor/ckeditor(5)-` prefix stripped.
+The package name is based on the npm package name, however, it has the `@ckeditor/ckeditor5-` prefix stripped.
 
 If your change is related to the main package only, use `ckeditor5` as the package name.
+
+<info-box>
+	If the commit introduces a breaking change across the entire project (a generic change), the package name does not have to be specified.
+</info-box>
+
+### Referencing issues
+
+When creating PRs that address specific issues, use the following messages to indicate it. Add these in the same line with the merge message:
+* `Closes #123` &ndash; when the PR closes an issue.
+* `Closes #123` (outside the merge message) &ndash; when a PR in a public repo closes an issue from a private repository.
+* `See #123` &ndash; when the PR only references an issue, but does not close it yet.
+* _No reference_ &ndash; when the PR does not reference any issue.
+
+### Methods name syntax
+
+All methods mentioned in the git commit message should use the **#** sign inbetween the class name and the method name. And example of a properly named method:
+
+```
+MarkerCollection#has()
+```
+
+### Order of entries
+
+The proper order of sections for a commit message is as follows:
+* Entries that should be added to the changelog.
+* Entries that will not be added to the changelog.
+* Breaking change notes.
+
+All entries must be separated with a blank line, otherwise the lines will not be treated as separate entries.
+
+### Examples of correct and incorrect message formatting
+
+An example of a proper commit message:
+
+```
+Feature (package-name-1): Message 1. Closes: #123
+
+Fix (package-name-2): Message 2. Closes: #456
+
+Tests: A change across the entire project.
+```
+
+An example of an invalid commit message with incorrectly separated lines (the second line will just be treated as a part of the first line):
+
+```
+Feature (package-name-1): Message 1.
+Fix (package-name-2): Message 2.
+Tests: Message 3.
+```
+
+An example of an invalid commit message with an incorrect section order (the "internal" message will be treated as a part of the breaking change message):
+
+```
+Feature (package-name): Message 1.
+
+MINOR BREAKING CHANGE (package-name): A description.
+
+Internal: Message 2.
+```
 
 ### Example commits
 
@@ -93,11 +157,11 @@ Tests (widget): Introduced missing tests. Closes #5.
 An improvement that is not backward compatible and sent by a non-core contributor. Public API was changed:
 
 ```
-Other (utils): Extracted the `utils.foo()` to a separate package. Closes #9.
+Other (utils): Extracted the `utils#foo()` to a separate package. Closes #9.
 
-Feature (engine): Introduced the `engine.foo()` method. Closes #9.
+Feature (engine): Introduced the `engine#foo()` method. Closes #9.
 
-MAJOR BREAKING CHANGE (utils): The `utils.foo()` method was moved to the `engine` package. See #9.
+MAJOR BREAKING CHANGE (utils): The `utils#foo()` method was moved to the `engine` package. See #9.
 ```
 
 For the commits shown above the changelog will look like this:
@@ -110,11 +174,11 @@ Changelog
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils.foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: The `utils#foo()` method was moved to the `engine` package. See [#9](https://github.com/ckeditor/ckeditor5/issue/9).
 
 ### Features
 
-* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine.foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[engine](http://npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced the `engine#foo()` method. Thanks to [@CKEditor](https://github.com/CKEditor). Closes [#9](https://github.com/ckeditor/ckeditor5/issue/9). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 * **[ui](http://npmjs.com/package/@ckeditor/ckeditor5-ui)**: Added support for RTL languages. Closes [#1](https://github.com/ckeditor/ckeditor5/issue/1). ([adc59ed](https://github.com/ckeditor/ckeditor5/commit/adc59ed))
 
    RTL content will now be rendered correctly.
@@ -125,8 +189,22 @@ Changelog
 
 ### Other changes
 
-* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils.foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
+* **[utils](http://npmjs.com/package/@ckeditor/ckeditor5-utils)**: Extracted the `utils#foo()` to a separate package. Thanks to [@CKEditor](https://github.com/CKEditor). ([e8cc04f](https://github.com/ckeditor/ckeditor5/commit/e8cc04f))
 ```
+
+### Fixing errors
+
+If the commit message was wrong but it was already too late to fix (e.g. already merged into `master`), you can push an empty commit with the correct message straight to `master`:
+
+```
+git checkout master
+git commit --allow-empty # Fix the message in the commit
+git push origin master
+```
+
+<info-box>
+	Two commits for the same pull request will require **manual deduplication** during the changelog generation process. To reduce the noise, **avoid this technique for minor errors** like spelling or grammar: changelog entries will be checked and corrected anyway. Use it to add missing `BREAKING CHANGE` entries or fix wrong ticket numbers in `Closes #123` (critical information for integrators). You can also notify the team about the fix.
+</info-box>
 
 ## Handling pull requests
 

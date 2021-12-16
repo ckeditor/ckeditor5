@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,6 +13,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { resizerMouseSimulator, focusEditor, getHandleCenterPoint, getWidgetDomParts } from './widgetresize/_utils/utils';
 
@@ -26,7 +27,7 @@ describe( 'WidgetResize', () => {
 
 		setModelData( editor.model, '[<widget></widget>]' );
 
-		focusEditor( editor );
+		await focusEditor( editor );
 
 		widget = editor.editing.view.document.getRoot().getChild( 0 );
 
@@ -468,37 +469,93 @@ describe( 'WidgetResize', () => {
 	} );
 
 	describe( 'attachTo()', () => {
-		it( 'works without WidgetToolbarRepository plugin', async () => {
-			const localEditorElement = createEditorElement();
-			const localEditor = await ClassicEditor.create( localEditorElement, {
-				plugins: [
-					WidgetResize, simpleWidgetPlugin
-				]
-			} );
+		let localEditorElement, localEditor;
 
+		beforeEach( async () => {
+			localEditorElement = createEditorElement();
+			localEditor = await ClassicEditor.create( localEditorElement, {
+				plugins: [
+					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
+				],
+				image: {
+					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
+				}
+			} );
+		} );
+
+		afterEach( () => {
+			localEditorElement.remove();
+			return localEditor.destroy();
+		} );
+
+		it( 'works without WidgetToolbarRepository plugin', async () => {
 			setModelData( localEditor.model, '[<widget></widget>]' );
 
-			const resizerOptions = {
-				modelElement: localEditor.model.document.getRoot().getChild( 0 ),
-				viewElement: localEditor.editing.view.document.getRoot().getChild( 0 ),
+			localEditor.plugins.get( WidgetResize ).attachTo( gerResizerOptions( localEditor ) );
+			// Nothing should be thrown.
+		} );
+
+		it( 'sets the visible resizer if associated widget is already selected', async () => {
+			setModelData( localEditor.model, '[<widget></widget>]' );
+
+			const widgetResizePlugin = localEditor.plugins.get( WidgetResize );
+			const resizer = widgetResizePlugin.attachTo( gerResizerOptions( localEditor ) );
+
+			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
+		} );
+
+		it( 'sets the visible resizer if the associated inline widget surrounded by an attribute is already selected', async () => {
+			localEditor.model.schema.register( 'inline-widget', {
+				allowWhere: '$text',
+				isObject: true,
+				isInline: true,
+				allowAttributes: [ 'attr' ]
+			} );
+
+			localEditor.model.schema.extend( '$text', {
+				allowAttributes: [ 'attr' ]
+			} );
+
+			localEditor.conversion.for( 'downcast' )
+				.elementToElement( {
+					model: 'inline-widget',
+					view: ( modelItem, { writer } ) => {
+						const span = writer.createContainerElement( 'span', null, { isAllowedInsideAttributeElement: true } );
+
+						return toWidget( span, writer );
+					}
+				} )
+				.attributeToElement( {
+					model: 'attr',
+					view: ( attributeValue, { writer } ) => {
+						return writer.createAttributeElement( 'attr' );
+					}
+				} );
+
+			setModelData( localEditor.model, '<paragraph>foo [<inline-widget attr="foo"></inline-widget>] bar</paragraph>' );
+
+			expect( getViewData( localEditor.editing.view ) ).to.equal(
+				'<p>' +
+					'foo ' +
+					'<attr>[<span class="ck-widget ck-widget_selected" contenteditable="false"></span>]</attr>' +
+					' bar' +
+				'</p>'
+			);
+
+			const widgetResizePlugin = localEditor.plugins.get( WidgetResize );
+			const resizer = widgetResizePlugin.attachTo( {
+				modelElement: localEditor.model.document.getRoot().getChild( 0 ).getChild( 1 ),
+				viewElement: localEditor.editing.view.document.getRoot().getChild( 0 ).getChild( 1 ).getChild( 0 ),
 				editor: localEditor,
 
 				isCentered: () => false,
-				getHandleHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
-				getResizeHost( domWidgetElement ) {
-					return domWidgetElement;
-				},
+				getHandleHost: domWidgetElement => domWidgetElement,
+				getResizeHost: domWidgetElement => domWidgetElement,
 
 				onCommit: commitStub
-			};
+			} );
 
-			localEditor.plugins.get( WidgetResize ).attachTo( resizerOptions );
-			// Nothing should be thrown.
-			// And clean up.
-			localEditorElement.remove();
-			return localEditor.destroy();
+			expect( widgetResizePlugin.visibleResizer ).to.eql( resizer );
 		} );
 	} );
 
@@ -510,7 +567,7 @@ describe( 'WidgetResize', () => {
 			const resizer = createResizer();
 			const redrawSpy = sinon.spy( resizer, 'redraw' );
 
-			focusEditor( editor );
+			await focusEditor( editor );
 
 			editor.model.change( writer => {
 				const widgetModel = editor.model.document.getRoot().getChild( 0 );
@@ -518,6 +575,50 @@ describe( 'WidgetResize', () => {
 			} );
 
 			expect( redrawSpy.callCount ).to.equal( 1 );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10156
+		it( 'removes references to and destroys resizers of widget removed from the model document', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
+
+			editor.setData( '' );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
+			sinon.assert.calledOnce( resizerDestroySpy );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/10266
+		it( 'removes references to and destroys resizers of widgets moved in the model document (but re-rendered in view)', () => {
+			const plugin = editor.plugins.get( WidgetResize );
+			const resizer = plugin.attachTo( gerResizerOptions( editor ) );
+			const widgetViewElement = editor.editing.view.document.getRoot().getChild( 0 );
+			const resizerDestroySpy = sinon.spy( resizer, 'destroy' );
+
+			editor.model.schema.register( 'wrapperBlock', {
+				allowIn: '$root',
+				allowChildren: [ 'widget' ]
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'wrapperBlock',
+				view: 'wrapperBlock'
+			} );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.equal( resizer );
+			sinon.assert.notCalled( resizerDestroySpy );
+
+			editor.model.change( writer => {
+				writer.wrap( writer.createRangeIn( editor.model.document.getRoot() ), 'wrapperBlock' );
+			} );
+
+			expect( plugin.getResizerByViewElement( widgetViewElement ) ).to.be.undefined;
+			sinon.assert.calledOnce( resizerDestroySpy );
 		} );
 	} );
 
@@ -584,7 +685,7 @@ describe( 'WidgetResize', () => {
 					ArticlePluginSet, WidgetResize, simpleWidgetPlugin
 				],
 				image: {
-					toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
+					toolbar: [ 'imageStyle:block', 'imageStyle:side' ]
 				}
 			} );
 	}
@@ -598,19 +699,19 @@ describe( 'WidgetResize', () => {
 		editor.conversion.for( 'downcast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, viewWriter ) => {
-					const parentDiv = viewWriter.createContainerElement( 'div' );
-					viewWriter.setStyle( 'height', '50px', parentDiv );
-					viewWriter.setStyle( 'width', '25%', parentDiv ); // It evaluates to 100px.
+				view: ( modelItem, { writer } ) => {
+					const parentDiv = writer.createContainerElement( 'div' );
+					writer.setStyle( 'height', '50px', parentDiv );
+					writer.setStyle( 'width', '25%', parentDiv ); // It evaluates to 100px.
 
-					const subDiv = viewWriter.createContainerElement( 'div' );
-					viewWriter.insert( viewWriter.createPositionAt( subDiv, 'start' ), viewWriter.createText( 'foo' ) );
-					viewWriter.addClass( 'sub-div', subDiv );
-					viewWriter.setStyle( 'height', '20px', subDiv );
-					viewWriter.setStyle( 'width', '50px', subDiv );
-					viewWriter.insert( viewWriter.createPositionAt( parentDiv, 'start' ), subDiv );
+					const subDiv = writer.createContainerElement( 'div' );
+					writer.insert( writer.createPositionAt( subDiv, 'start' ), writer.createText( 'foo' ) );
+					writer.addClass( 'sub-div', subDiv );
+					writer.setStyle( 'height', '20px', subDiv );
+					writer.setStyle( 'width', '50px', subDiv );
+					writer.insert( writer.createPositionAt( parentDiv, 'start' ), subDiv );
 
-					return toWidget( parentDiv, viewWriter, {
+					return toWidget( parentDiv, writer, {
 						label: 'element label'
 					} );
 				}
@@ -645,5 +746,23 @@ describe( 'WidgetResize', () => {
 		};
 
 		return editor.plugins.get( WidgetResize ).attachTo( Object.assign( defaultOptions, resizerOptions ) );
+	}
+
+	function gerResizerOptions( editor ) {
+		return {
+			modelElement: editor.model.document.getRoot().getChild( 0 ),
+			viewElement: editor.editing.view.document.getRoot().getChild( 0 ),
+			editor,
+
+			isCentered: () => false,
+			getHandleHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+			getResizeHost( domWidgetElement ) {
+				return domWidgetElement;
+			},
+
+			onCommit: commitStub
+		};
 	}
 } );

@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global Event */
 
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import InputTextView from '../../src/inputtext/inputtextview';
 
 describe( 'InputTextView', () => {
@@ -28,6 +29,18 @@ describe( 'InputTextView', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input-text' ) ).to.be.true;
+		} );
+
+		it( 'should set the #isFocused observable property', () => {
+			expect( view.isFocused ).to.be.false;
+		} );
+
+		it( 'should set the #isEmpty observable property', () => {
+			expect( view.isEmpty ).to.be.true;
+		} );
+
+		it( 'should create an instance of FocusTracker under #focusTracker property', () => {
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 	} );
 
@@ -70,6 +83,15 @@ describe( 'InputTextView', () => {
 
 				expect( view.element.value ).to.equal( 'baz' );
 			} );
+
+			it( 'should update along with the #isEmpty property', () => {
+				view.value = 'foo';
+
+				expect( view.isEmpty ).to.be.false;
+
+				view.value = '';
+				expect( view.isEmpty ).to.be.true;
+			} );
 		} );
 
 		describe( 'id', () => {
@@ -110,6 +132,24 @@ describe( 'InputTextView', () => {
 
 				expect( view.element.classList.contains( 'ck-error' ) ).to.be.true;
 			} );
+
+			it( 'should react on view#isFocused', () => {
+				expect( view.element.classList.contains( 'ck-input_focused' ) ).to.be.false;
+
+				view.isFocused = true;
+
+				expect( view.element.classList.contains( 'ck-input_focused' ) ).to.be.true;
+			} );
+
+			it( 'should react on view#isEmpty', () => {
+				view.value = '';
+
+				expect( view.element.classList.contains( 'ck-input-text_empty' ) ).to.be.true;
+
+				view.value = 'bar';
+
+				expect( view.element.classList.contains( 'ck-input-text_empty' ) ).to.be.false;
+			} );
 		} );
 
 		describe( 'aria-invalid', () => {
@@ -140,7 +180,41 @@ describe( 'InputTextView', () => {
 
 				view.element.dispatchEvent( new Event( 'input' ) );
 				sinon.assert.calledOnce( spy );
+				sinon.assert.calledWith( spy, sinon.match.object );
 			} );
+
+			// https://github.com/ckeditor/ckeditor5/issues/10431
+			it( 'should trigger update of the #isEmpty property', () => {
+				view.element.value = 'foo';
+				view.element.dispatchEvent( new Event( 'input' ) );
+
+				expect( view.isEmpty ).to.be.false;
+
+				view.element.value = '';
+				view.element.dispatchEvent( new Event( 'input' ) );
+
+				expect( view.isEmpty ).to.be.true;
+			} );
+		} );
+	} );
+
+	describe( 'render()', () => {
+		it( 'registers #element in the #focusTracker', () => {
+			expect( view.isFocused ).to.be.false;
+
+			view.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( view.isFocused ).to.be.true;
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

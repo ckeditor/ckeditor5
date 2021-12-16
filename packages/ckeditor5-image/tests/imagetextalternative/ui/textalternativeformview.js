@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,6 +29,7 @@ describe( 'TextAlternativeFormView', () => {
 
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-text-alternative-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -66,6 +67,10 @@ describe( 'TextAlternativeFormView', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
+		} );
 	} );
 
 	describe( 'render()', () => {
@@ -89,7 +94,7 @@ describe( 'TextAlternativeFormView', () => {
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
-				const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
+				const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
 				view.render();
 
@@ -142,6 +147,24 @@ describe( 'TextAlternativeFormView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

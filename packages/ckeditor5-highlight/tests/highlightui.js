@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -58,6 +58,7 @@ describe( 'HighlightUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				command = editor.commands.get( 'highlight' );
 			} );
 	} );
 
@@ -67,11 +68,10 @@ describe( 'HighlightUI', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'highlight Dropdown', () => {
+	describe( 'highlight dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
-			command = editor.commands.get( 'highlight' );
 			dropdown = editor.ui.componentFactory.create( 'highlight' );
 		} );
 
@@ -244,6 +244,31 @@ describe( 'HighlightUI', () => {
 						return newEditor.destroy();
 					} );
 			}
+		} );
+	} );
+
+	describe( 'highlight remove', () => {
+		let removeHighlightButton;
+
+		beforeEach( () => {
+			removeHighlightButton = editor.ui.componentFactory.create( 'removeHighlight' );
+		} );
+
+		it( 'removeButton has the base properties', () => {
+			expect( editor.ui.componentFactory.has( 'removeHighlight' ) ).to.be.true;
+			expect( removeHighlightButton ).to.have.property( 'tooltip', true );
+			expect( removeHighlightButton ).to.have.property( 'label', 'Remove highlight' );
+			expect( removeHighlightButton ).to.have.property( 'icon', eraserIcon );
+		} );
+
+		describe( 'model to command binding', () => {
+			it( 'isEnabled', () => {
+				command.isEnabled = false;
+				expect( removeHighlightButton.isEnabled ).to.be.false;
+
+				command.isEnabled = true;
+				expect( removeHighlightButton.isEnabled ).to.be.true;
+			} );
 		} );
 	} );
 } );

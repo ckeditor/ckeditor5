@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-engine",
-  "version": "21.0.0",
+  "version": "31.1.0",
   "description": "The editing engine of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "wysiwyg",
@@ -15,31 +15,40 @@
     "collaborative",
     "real-time",
     "framework",
-    "ckeditor5-lib",
     "ckeditor",
     "ckeditor5",
-    "ckeditor 5"
+    "ckeditor 5",
+    "ckeditor5-lib",
+    "ckeditor5-dll"
   ],
+  "main": "src/index.js",
   "dependencies": {
-    "@ckeditor/ckeditor5-utils": "^21.0.0",
+    "@ckeditor/ckeditor5-utils": "^31.1.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^21.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^21.0.0",
-    "@ckeditor/ckeditor5-core": "^21.0.0",
-    "@ckeditor/ckeditor5-editor-classic": "^21.0.0",
-    "@ckeditor/ckeditor5-enter": "^21.0.0",
-    "@ckeditor/ckeditor5-essentials": "^21.0.0",
-    "@ckeditor/ckeditor5-heading": "^21.0.0",
-    "@ckeditor/ckeditor5-link": "^21.0.0",
-    "@ckeditor/ckeditor5-list": "^21.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^21.0.0",
-    "@ckeditor/ckeditor5-table": "^21.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^21.0.0",
-    "@ckeditor/ckeditor5-typing": "^21.0.0",
-    "@ckeditor/ckeditor5-undo": "^21.0.0",
-    "@ckeditor/ckeditor5-widget": "^21.0.0"
+    "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
+    "@ckeditor/ckeditor5-block-quote": "^31.1.0",
+    "@ckeditor/ckeditor5-clipboard": "^31.1.0",
+    "@ckeditor/ckeditor5-cloud-services": "^31.1.0",
+    "@ckeditor/ckeditor5-core": "^31.1.0",
+    "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
+    "@ckeditor/ckeditor5-enter": "^31.1.0",
+    "@ckeditor/ckeditor5-essentials": "^31.1.0",
+    "@ckeditor/ckeditor5-heading": "^31.1.0",
+    "@ckeditor/ckeditor5-image": "^31.1.0",
+    "@ckeditor/ckeditor5-link": "^31.1.0",
+    "@ckeditor/ckeditor5-list": "^31.1.0",
+    "@ckeditor/ckeditor5-mention": "^31.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^31.1.0",
+    "@ckeditor/ckeditor5-table": "^31.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
+    "@ckeditor/ckeditor5-typing": "^31.1.0",
+    "@ckeditor/ckeditor5-ui": "^31.1.0",
+    "@ckeditor/ckeditor5-undo": "^31.1.0",
+    "@ckeditor/ckeditor5-widget": "^31.1.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
   },
   "engines": {
     "node": ">=12.0.0",
@@ -57,6 +66,7 @@
   "files": [
     "lang",
     "src",
-    "theme"
+    "theme",
+    "ckeditor5-metadata.json"
   ]
 }

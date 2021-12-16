@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,6 +20,7 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
+import ToolbarLineBreakView from '../../src/toolbar/toolbarlinebreakview';
 
 describe( 'ToolbarView', () => {
 	let locale, view;
@@ -64,7 +65,7 @@ describe( 'ToolbarView', () => {
 				expect( view.options ).to.deep.equal( {} );
 			} );
 
-			it( 'should be an empty object if none were passed', () => {
+			it( 'should be an empty object if other options were passed', () => {
 				const options = {
 					foo: 'bar'
 				};
@@ -116,6 +117,43 @@ describe( 'ToolbarView', () => {
 			expect( view.element.firstChild ).to.equal( view.itemsView.element );
 			expect( view.itemsView.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.itemsView.element.classList.contains( 'ck-toolbar__items' ) ).to.true;
+		} );
+
+		it( 'should include the ck-toolbar_floating class if "shouldGroupWhenFull" and "isFloating" options are on,' +
+			'but not if any of them is off', () => {
+			let viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: true,
+				isFloating: true
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: false,
+				isFloating: true
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: true,
+				isFloating: false
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions = new ToolbarView( locale, {
+				shouldGroupWhenFull: false,
+				isFloating: false
+			} );
+			viewWithOptions.render();
+
+			expect( viewWithOptions.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.false;
+
+			viewWithOptions.destroy();
 		} );
 
 		describe( 'attributes', () => {
@@ -323,6 +361,48 @@ describe( 'ToolbarView', () => {
 			} );
 		} );
 
+		describe( 'activates keyboard navigation for the RTL toolbar', () => {
+			beforeEach( () => {
+				view.destroy();
+				locale = new Locale( { uiLanguage: 'ar' } );
+
+				view = new ToolbarView( locale );
+				view.render();
+			} );
+
+			it( 'so "arrowleft" focuses next focusable item', () => {
+				const keyEvtData = getArrowKeyData( 'arrowleft' );
+
+				view.items.add( focusable() );
+				view.items.add( nonFocusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				// Mock the first item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( view.items.get( 2 ).focus );
+			} );
+
+			it( 'so "arrowright" focuses previous focusable item', () => {
+				const keyEvtData = getArrowKeyData( 'arrowright' );
+
+				view.items.add( focusable() );
+				view.items.add( nonFocusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				// Mock the last item is focused.
+				view.focusTracker.isFocused = true;
+				view.focusTracker.focusedElement = view.items.get( 0 ).element;
+
+				view.keystrokes.press( keyEvtData );
+				sinon.assert.calledOnce( view.items.get( 3 ).focus );
+			} );
+		} );
+
 		it( 'calls _behavior#render()', () => {
 			const view = new ToolbarView( locale );
 			sinon.spy( view._behavior, 'render' );
@@ -349,6 +429,22 @@ describe( 'ToolbarView', () => {
 
 			view.destroy();
 			sinon.assert.calledOnce( view._behavior.destroy );
+		} );
+
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 
@@ -397,15 +493,105 @@ describe( 'ToolbarView', () => {
 		} );
 
 		it( 'expands the config into collection', () => {
-			view.fillFromConfig( [ 'foo', 'bar', '|', 'foo' ], factory );
+			view.fillFromConfig( [ 'foo', '-', 'bar', '|', 'foo' ], factory );
+
+			const items = view.items;
+			expect( items ).to.have.length( 5 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
+			expect( items.get( 3 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 4 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'accepts configuration object', () => {
+			view.fillFromConfig( { items: [ 'foo', 'bar', 'foo' ] }, factory );
+
+			const items = view.items;
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'removes items listed in `removeItems`', () => {
+			view.fillFromConfig(
+				{
+					items: [ 'foo', 'bar', 'foo' ],
+					removeItems: [ 'foo' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+			expect( items ).to.have.length( 1 );
+			expect( items.get( 0 ).name ).to.equal( 'bar' );
+		} );
+
+		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the vertical separator case (`|`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '|', 'foo', '|', 'bar', '|', 'foo' ],
+					removeItems: [ 'bar' ]
+				},
+				factory
+			);
 
 			const items = view.items;
 
-			expect( items ).to.have.length( 4 );
+			expect( items ).to.have.length( 3 );
 			expect( items.get( 0 ).name ).to.equal( 'foo' );
-			expect( items.get( 1 ).name ).to.equal( 'bar' );
-			expect( items.get( 2 ) ).to.be.instanceOf( ToolbarSeparatorView );
-			expect( items.get( 3 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'deduplicates consecutive separators after removing items listed in `removeItems` - the line break case (`-`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '-', '-', 'foo', '-', 'bar', '-', 'foo' ],
+					removeItems: [ 'bar' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).to.equal( 'foo' );
+		} );
+
+		it( 'removes trailing and leading separators from the item list - the vertical separator case (`|`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '|', '|', 'foo', '|', 'bar', '|' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarSeparatorView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
+		} );
+
+		it( 'removes trailing and leading separators from the item list - the line break case (`-`)', () => {
+			view.fillFromConfig(
+				{
+					items: [ '-', '-', 'foo', '-', 'bar', '-' ]
+				},
+				factory
+			);
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 3 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ) ).to.be.instanceOf( ToolbarLineBreakView );
+			expect( items.get( 2 ).name ).to.equal( 'bar' );
 		} );
 
 		it( 'warns if there is no such component in the factory', () => {
@@ -421,8 +607,39 @@ describe( 'ToolbarView', () => {
 			sinon.assert.calledOnce( consoleWarnStub );
 			sinon.assert.calledWithExactly( consoleWarnStub,
 				sinon.match( /^toolbarview-item-unavailable/ ),
-				{ name: 'baz' }
+				sinon.match( { name: 'baz' } ),
+				sinon.match.string // Link to the documentation.
 			);
+		} );
+
+		it( 'warns if the line separator is used when the button grouping option is enabled', () => {
+			const consoleWarnStub = sinon.stub( console, 'warn' );
+			view.options.shouldGroupWhenFull = true;
+
+			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
+
+			sinon.assert.calledOnce( consoleWarnStub );
+			sinon.assert.calledWithExactly( consoleWarnStub,
+				sinon.match( /^toolbarview-line-break-ignored-when-grouping-items/ ),
+				sinon.match.array,
+				sinon.match.string // Link to the documentation.
+			);
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/8582
+		it( 'does not render line separator when the button grouping option is enabled', () => {
+			// Catch warn to stop tests from failing in production mode.
+			sinon.stub( console, 'warn' );
+
+			view.options.shouldGroupWhenFull = true;
+
+			view.fillFromConfig( [ 'foo', '-', 'bar' ], factory );
+
+			const items = view.items;
+
+			expect( items ).to.have.length( 2 );
+			expect( items.get( 0 ).name ).to.equal( 'foo' );
+			expect( items.get( 1 ).name ).to.equal( 'bar' );
 		} );
 	} );
 
@@ -828,6 +1045,47 @@ describe( 'ToolbarView', () => {
 				expect( ungroupedItems ).to.have.length( 5 );
 				expect( groupedItems ).to.have.length( 0 );
 			} );
+
+			it( 'should fire the "groupedItemsUpdate" event on the toolbar when some item is grouped or ungrouped', () => {
+				const updateSpy = sinon.spy();
+
+				view.on( 'groupedItemsUpdate', updateSpy );
+
+				view.element.style.width = '200px';
+
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+				view.items.add( focusable() );
+
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
+
+				sinon.assert.calledOnce( updateSpy );
+
+				// This 10px is not enough to ungroup an item.
+				view.element.style.width = '210px';
+
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
+
+				sinon.assert.calledOnce( updateSpy );
+
+				// But this is not enough to ungroup some items.
+				view.element.style.width = '300px';
+
+				resizeCallback( [ {
+					target: view.element,
+					contentRect: new Rect( view.element )
+				} ] );
+
+				sinon.assert.calledTwice( updateSpy );
+			} );
 		} );
 
 		describe( 'destroy()', () => {
@@ -885,6 +1143,26 @@ describe( 'ToolbarView', () => {
 				expect( view.children.has( groupedItemsDropdown ) ).to.be.true;
 				expect( groupedItemsDropdown.element.classList.contains( 'ck-toolbar__grouped-dropdown' ) );
 				expect( groupedItemsDropdown.buttonView.label ).to.equal( 'Show more items' );
+			} );
+
+			it( 'tooltip has the proper position depending on the UI language direction (LTR UI)', () => {
+				const locale = new Locale( { uiLanguage: 'en' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'sw' );
+
+				view.destroy();
+			} );
+
+			it( 'tooltip has the proper position depending on the UI language direction (RTL UI)', () => {
+				const locale = new Locale( { uiLanguage: 'ar' } );
+				const view = new ToolbarView( locale, { shouldGroupWhenFull: true } );
+				view.render();
+
+				expect( view._behavior.groupedItemsDropdown.buttonView.tooltipPosition ).to.equal( 'se' );
+
+				view.destroy();
 			} );
 
 			it( 'shares its toolbarView#items with grouped items', () => {

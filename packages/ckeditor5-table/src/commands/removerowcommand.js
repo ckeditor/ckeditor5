@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/commands/removerowcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 
 import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
@@ -51,23 +51,25 @@ export default class RemoveRowCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+
 		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
 		const removedRowIndexes = getRowIndexes( referenceCells );
 
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.findAncestor( 'table' );
 
-		const columnIndexToFocus = this.editor.plugins.get( 'TableUtils' ).getCellLocation( firstCell ).column;
+		const columnIndexToFocus = tableUtils.getCellLocation( firstCell ).column;
 
 		model.change( writer => {
 			const rowsToRemove = removedRowIndexes.last - removedRowIndexes.first + 1;
 
-			this.editor.plugins.get( 'TableUtils' ).removeRows( table, {
+			tableUtils.removeRows( table, {
 				at: removedRowIndexes.first,
 				rows: rowsToRemove
 			} );
 
-			const cellToFocus = getCellToFocus( table, removedRowIndexes.first, columnIndexToFocus );
+			const cellToFocus = getCellToFocus( table, removedRowIndexes.first, columnIndexToFocus, tableUtils.getRows( table ) );
 
 			writer.setSelection( writer.createPositionAt( cellToFocus, 0 ) );
 		} );
@@ -77,8 +79,9 @@ export default class RemoveRowCommand extends Command {
 // Returns a cell that should be focused before removing the row, belonging to the same column as the currently focused cell.
 // * If the row was not the last one, the cell to focus will be in the row that followed it (before removal).
 // * If the row was the last one, the cell to focus will be in the row that preceded it (before removal).
-function getCellToFocus( table, removedRowIndex, columnToFocus ) {
-	const row = table.getChild( removedRowIndex ) || table.getChild( table.childCount - 1 );
+function getCellToFocus( table, removedRowIndex, columnToFocus, tableRowCount ) {
+	// Don't go beyond last row's index.
+	const row = table.getChild( Math.min( removedRowIndex, tableRowCount - 1 ) );
 
 	// Default to first table cell.
 	let cellToFocus = row.getChild( 0 );

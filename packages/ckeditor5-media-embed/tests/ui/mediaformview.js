@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,6 +35,7 @@ describe( 'MediaFormView', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-media-form' ) ).to.true;
+			expect( view.element.classList.contains( 'ck-responsive-form' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 
@@ -77,11 +78,11 @@ describe( 'MediaFormView', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		describe( 'url input view', () => {
-			it( 'has placeholder', () => {
-				expect( view.urlInputView.fieldView.placeholder ).to.equal( 'https://example.com' );
-			} );
+		it( 'should implement the CSS transition disabling feature', () => {
+			expect( view.disableCssTransitions ).to.be.a( 'function' );
+		} );
 
+		describe( 'url input view', () => {
 			it( 'has info text', () => {
 				expect( view.urlInputView.infoText ).to.match( /^Paste the media URL/ );
 			} );
@@ -121,9 +122,10 @@ describe( 'MediaFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
-
 			view = new MediaFormView( [], { t: () => {} } );
+
+			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
+
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
@@ -215,6 +217,24 @@ describe( 'MediaFormView', () => {
 
 			view.urlInputView.element.dispatchEvent( event );
 			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,12 +7,16 @@
  * @module list/todolistediting
  */
 
+import { Plugin } from 'ckeditor5/src/core';
+import {
+	getCode,
+	parseKeystroke,
+	getLocalizedArrowKeyCodeDirection
+} from 'ckeditor5/src/utils';
+
 import ListCommand from './listcommand';
 import ListEditing from './listediting';
-import TodoListCheckCommand from './todolistcheckcommand';
-
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
+import CheckTodoListCommand from './checktodolistcommand';
 import {
 	dataModelViewInsertion,
 	dataViewModelCheckmarkInsertion,
@@ -21,7 +25,8 @@ import {
 	modelViewChangeType,
 	modelViewInsertion
 } from './todolistconverters';
-import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+const ITEM_TOGGLE_KEYSTROKE = parseKeystroke( 'Ctrl+Enter' );
 
 /**
  * The engine of the to-do list feature. It handles creating, editing and removing to-do lists and their items.
@@ -30,7 +35,8 @@ import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src
  * it with the commands:
  *
  * - `'todoList'`,
- * - `'todoListCheck'`.
+ * - `'checkTodoList'`,
+ * - `'todoListCheck'` as an alias for `checkTodoList` command.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -70,9 +76,14 @@ export default class TodoListEditing extends Plugin {
 			}
 		} );
 
-		// Register commands.
+		// Register `todoList` command.
 		editor.commands.add( 'todoList', new ListCommand( editor, 'todo' ) );
-		editor.commands.add( 'todoListCheck', new TodoListCheckCommand( editor ) );
+
+		const checkTodoListCommand = new CheckTodoListCommand( editor );
+
+		// Register `checkTodoList` command and add `todoListCheck` command as an alias for backward compatibility.
+		editor.commands.add( 'checkTodoList', checkTodoListCommand );
+		editor.commands.add( 'todoListCheck', checkTodoListCommand );
 
 		// Define converters.
 		data.downcastDispatcher.on( 'insert:listItem', dataModelViewInsertion( model ), { priority: 'high' } );
@@ -105,10 +116,15 @@ export default class TodoListEditing extends Plugin {
 		// <blockquote><p>Foo{}</p></blockquote>
 		// <ul><li><checkbox/>Bar</li></ul>
 		//
-		this.listenTo( editing.view.document, 'keydown', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ) );
+		this.listenTo( editing.view.document, 'arrowKey', jumpOverCheckmarkOnSideArrowKeyPress( model, editor.locale ), { context: 'li' } );
 
 		// Toggle check state of selected to-do list items on keystroke.
-		editor.keystrokes.set( 'Ctrl+space', () => editor.execute( 'todoListCheck' ) );
+		this.listenTo( editing.view.document, 'keydown', ( evt, data ) => {
+			if ( getCode( data ) === ITEM_TOGGLE_KEYSTROKE ) {
+				editor.execute( 'checkTodoList' );
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 
 		// Remove `todoListChecked` attribute when a host element is no longer a to-do list item.
 		const listItemsToFix = new Set();
@@ -163,7 +179,7 @@ export default class TodoListEditing extends Plugin {
 
 		model.change( writer => {
 			writer.setSelection( listItem, 'end' );
-			editor.execute( 'todoListCheck' );
+			editor.execute( 'checkTodoList' );
 			writer.setSelection( previousSelectionRanges );
 		} );
 	}

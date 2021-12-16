@@ -2,14 +2,14 @@ CKEditor 5 basic styles feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-basic-styles.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-basic-styles/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-basic-styles?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package contains CKEditor 5 features allowing to apply basic text formatting such as bold, italic, underline, and code in CKEditor 5.
 
 ## Demo
 
-Check out the [demo in the Basic styles feature](https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html#demo) guide.
+Check out the [demo in the basic styles feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/basic-styles.html#demo).
 
 ## Documentation
 

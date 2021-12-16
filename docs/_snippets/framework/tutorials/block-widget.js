@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -134,7 +134,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBox',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
 
 				return toWidget( section, viewWriter, { label: 'simple box widget' } );
@@ -158,7 +158,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxTitle',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const h1 = viewWriter.createEditableElement( 'h1', { class: 'simple-box-title' } );
 
@@ -183,7 +183,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxDescription',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement( 'div', { class: 'simple-box-description' } );
 
@@ -230,8 +230,12 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-block-widget' ), {
 		plugins: [ Essentials, Bold, Italic, Heading, List, Paragraph, SimpleBox ],
 		toolbar: {
-			items: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			items: [ 'heading', '|', 'bold', 'italic', 'numberedList', 'bulletedList', 'simpleBox' ]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

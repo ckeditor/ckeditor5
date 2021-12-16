@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,6 +12,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
 		balloonToolbar: [ 'bold', 'link' ]
@@ -29,6 +30,7 @@ ClassicEditor
 // Editor for the external delete.
 ClassicEditor
 	.create( document.querySelector( '#editor-delete' ), {
+		image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
 		balloonToolbar: [ 'bold', 'link' ]

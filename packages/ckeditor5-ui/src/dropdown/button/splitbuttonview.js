@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -47,6 +47,7 @@ export default class SplitButtonView extends View {
 		const bind = this.bindTemplate;
 
 		// Implement the Button interface.
+		this.set( 'class' );
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
@@ -111,6 +112,7 @@ export default class SplitButtonView extends View {
 				class: [
 					'ck',
 					'ck-splitbutton',
+					bind.to( 'class' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' )
 				]
@@ -151,6 +153,16 @@ export default class SplitButtonView extends View {
 				cancel();
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 	}
 
 	/**

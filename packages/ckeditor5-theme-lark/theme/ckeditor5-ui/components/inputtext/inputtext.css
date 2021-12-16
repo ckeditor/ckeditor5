@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,6 @@
 
 .ck.ck-input-text {
 	@mixin ck-rounded-corners;
-	@mixin ck-box-shadow var(--ck-inner-shadow);
 
 	background: var(--ck-color-input-background);
 	border: 1px solid var(--ck-color-input-border);
@@ -24,11 +23,11 @@
 	min-height: var(--ck-ui-component-min-height);
 
 	/* Apply some smooth transition to the box-shadow and border. */
-	transition: box-shadow .2s ease-in-out, border .2s ease-in-out;
+	transition: box-shadow .1s ease-in-out, border .1s ease-in-out;
 
 	&:focus {
 		@mixin ck-focus-ring;
-		@mixin ck-box-shadow var(--ck-focus-outer-shadow), var(--ck-inner-shadow);
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
 	}
 
 	&[readonly] {
@@ -38,7 +37,7 @@
 
 		&:focus {
 			/* The read-only input should have a slightly less visible shadow when focused. */
-			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow), var(--ck-inner-shadow);
+			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);
 		}
 	}
 
@@ -47,7 +46,7 @@
 		animation: ck-text-input-shake .3s ease both;
 
 		&:focus {
-			@mixin ck-box-shadow var(--ck-focus-error-outer-shadow), var(--ck-inner-shadow);
+			@mixin ck-box-shadow var(--ck-focus-error-outer-shadow);
 		}
 	}
 }

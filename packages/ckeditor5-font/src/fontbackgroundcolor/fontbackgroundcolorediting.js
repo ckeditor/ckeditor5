@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,11 @@
  * @module font/fontbackgroundcolor/fontbackgroundcolorediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { addBackgroundRules } from 'ckeditor5/src/engine';
+
 import FontBackgroundColorCommand from './fontbackgroundcolorcommand';
 import { FONT_BACKGROUND_COLOR, renderDowncastElement, renderUpcastAttribute } from '../utils';
-import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 /**
  * The font background color editing feature.

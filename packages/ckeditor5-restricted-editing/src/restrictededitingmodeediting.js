@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module restricted-editing/restrictededitingmodeediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+
 import RestrictedEditingNavigationCommand from './restrictededitingmodenavigationcommand';
 import {
 	extendMarkerOnTypingPostFixer,
@@ -53,18 +54,18 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		 * @type {Set.<String>}
 		 * @private
 		 */
-		this._alwaysEnabled = new Set( [ 'undo', 'redo', 'goToPreviousRestrictedEditingException', 'goToNextRestrictedEditingException' ] );
+		this._alwaysEnabled = new Set( [ 'undo', 'redo' ] );
 
 		/**
 		 * Commands allowed in non-restricted areas.
 		 *
-		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'forwardDelete'` with commands defined
+		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'deleteForward'` with commands defined
 		 * in the feature configuration.
 		 *
 		 * @type {Set<string>}
 		 * @private
 		 */
-		this._allowedInException = new Set( [ 'input', 'delete', 'forwardDelete' ] );
+		this._allowedInException = new Set( [ 'input', 'delete', 'deleteForward' ] );
 	}
 
 	/**
@@ -126,8 +127,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const doc = model.document;
 
-		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers management.
-		// Also, the markers will only be created when  when loading the data.
+		// The restricted editing does not attach additional data to the zones so there's no need for smarter markers managing.
+		// Also, the markers will only be created when loading the data.
 		let markerNumber = 0;
 
 		editor.conversion.for( 'upcast' ).add( upcastHighlightToMarker( {
@@ -142,7 +143,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			}
 		} ) );
 
-		// Currently the marker helpers are tied to other use-cases and do not render collapsed marker as highlight.
+		// Currently the marker helpers are tied to other use-cases and do not render a collapsed marker as highlight.
 		// That's why there are 2 downcast converters for them:
 		// 1. The default marker-to-highlight will wrap selected text with `<span>`.
 		editor.conversion.for( 'downcast' ).markerToHighlight( {
@@ -158,11 +159,11 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		} );
 
 		// 2. But for collapsed marker we need to render it as an element.
-		// Additionally the editing pipeline should always display a collapsed markers.
+		// Additionally the editing pipeline should always display a collapsed marker.
 		editor.conversion.for( 'editingDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
-			view: ( markerData, viewWriter ) => {
-				return viewWriter.createUIElement( 'span', {
+			view: ( markerData, { writer } ) => {
+				return writer.createUIElement( 'span', {
 					class: 'restricted-editing-exception restricted-editing-exception_collapsed'
 				} );
 			}
@@ -170,8 +171,8 @@ export default class RestrictedEditingModeEditing extends Plugin {
 
 		editor.conversion.for( 'dataDowncast' ).markerToElement( {
 			model: 'restrictedEditingException',
-			view: ( markerData, viewWriter ) => {
-				return viewWriter.createEmptyElement( 'span', {
+			view: ( markerData, { writer } ) => {
+				return writer.createEmptyElement( 'span', {
 					class: 'restricted-editing-exception'
 				} );
 			}
@@ -199,6 +200,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 		const viewDoc = editor.editing.view.document;
+		const clipboard = editor.plugins.get( 'ClipboardPipeline' );
 
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
@@ -210,12 +212,12 @@ export default class RestrictedEditingModeEditing extends Plugin {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 
-		// Block clipboard outside exception marker on paste.
-		this.listenTo( viewDoc, 'clipboardInput', function( evt ) {
+		// Block clipboard outside exception marker on paste and drop.
+		this.listenTo( clipboard, 'contentInsertion', evt => {
 			if ( !isRangeInsideSingleMarker( editor, selection.getFirstRange() ) ) {
 				evt.stop();
 			}
-		}, { priority: 'high' } );
+		} );
 
 		// Block clipboard outside exception marker on cut.
 		this.listenTo( viewDoc, 'clipboardOutput', ( evt, data ) => {
@@ -239,7 +241,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const model = editor.model;
 		const doc = model.document;
 
-		this._disableCommands( editor );
+		this._disableCommands();
 
 		this.listenTo( doc.selection, 'change', this._checkCommands.bind( this ) );
 		this.listenTo( doc, 'change:data', this._checkCommands.bind( this ) );
@@ -255,7 +257,7 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		const selection = editor.model.document.selection;
 
 		if ( selection.rangeCount > 1 ) {
-			this._disableCommands( editor );
+			this._disableCommands();
 
 			return;
 		}
@@ -278,12 +280,21 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	_enableCommands( marker ) {
 		const editor = this.editor;
 
-		const commands = this._getCommandNamesToToggle( editor, this._allowedInException )
-			.filter( name => this._allowedInException.has( name ) )
-			.filter( filterDeleteCommandsOnMarkerBoundaries( editor.model.document.selection, marker.getRange() ) )
-			.map( name => editor.commands.get( name ) );
+		for ( const [ commandName, command ] of editor.commands ) {
+			if ( !command.affectsData || this._alwaysEnabled.has( commandName ) ) {
+				continue;
+			}
 
-		for ( const command of commands ) {
+			// Enable ony those commands that are allowed in the exception marker.
+			if ( !this._allowedInException.has( commandName ) ) {
+				continue;
+			}
+
+			// Do not enable 'delete' and 'deleteForward' commands on the exception marker boundaries.
+			if ( isDeleteCommandOnMarkerBoundaries( commandName, editor.model.document.selection, marker.getRange() ) ) {
+				continue;
+			}
+
 			command.clearForceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
 	}
@@ -295,24 +306,14 @@ export default class RestrictedEditingModeEditing extends Plugin {
 	 */
 	_disableCommands() {
 		const editor = this.editor;
-		const commands = this._getCommandNamesToToggle( editor )
-			.map( name => editor.commands.get( name ) );
 
-		for ( const command of commands ) {
+		for ( const [ commandName, command ] of editor.commands ) {
+			if ( !command.affectsData || this._alwaysEnabled.has( commandName ) ) {
+				continue;
+			}
+
 			command.forceDisabled( COMMAND_FORCE_DISABLE_ID );
 		}
-	}
-
-	/**
-	 * Returns command names that should be toggleable.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor
-	 * @returns {Array.<String>}
-	 * @private
-	 */
-	_getCommandNamesToToggle( editor ) {
-		return Array.from( editor.commands.names() )
-			.filter( name => !this._alwaysEnabled.has( name ) );
 	}
 }
 
@@ -355,24 +356,22 @@ function getSelectAllHandler( editor ) {
 	};
 }
 
-// Additional filtering rule for enabling "delete" and "forwardDelete" commands if selection is on range boundaries:
+// Additional rule for enabling "delete" and "deleteForward" commands if selection is on range boundaries:
 //
 // Does not allow to enable command when selection focus is:
 // - is on marker start - "delete" - to prevent removing content before marker
-// - is on marker end - "forwardDelete" - to prevent removing content after marker
-function filterDeleteCommandsOnMarkerBoundaries( selection, markerRange ) {
-	return name => {
-		if ( name == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
-			return false;
-		}
-
-		// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
-		if ( name == 'forwardDelete' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
-			return false;
-		}
-
+// - is on marker end - "deleteForward" - to prevent removing content after marker
+function isDeleteCommandOnMarkerBoundaries( commandName, selection, markerRange ) {
+	if ( commandName == 'delete' && markerRange.start.isEqual( selection.focus ) ) {
 		return true;
-	};
+	}
+
+	// Only for collapsed selection - non-collapsed selection that extends over a marker is handled elsewhere.
+	if ( commandName == 'deleteForward' && selection.isCollapsed && markerRange.end.isEqual( selection.focus ) ) {
+		return true;
+	}
+
+	return false;
 }
 
 // Ensures that model.deleteContent() does not delete outside exception markers ranges.

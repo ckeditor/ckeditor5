@@ -2,14 +2,18 @@ CKEditor 5 code block feature
 ========================================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-code-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-code-block/status.svg)](https://david-dm.org/ckeditor/ckeditor5-code-block)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-code-block/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-code-block?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the code block feature for CKEditor 5.
 
+## Demo
+
+Check out the [demo in the code block feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html#demo).
+
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-code-block` package](https://ckeditor.com/docs/ckeditor5/latest/api/code-block.html) page as well as the [Code block feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-code-block` package](https://ckeditor.com/docs/ckeditor5/latest/api/code-block.html) page as well as the [code block feature](https://ckeditor.com/docs/ckeditor5/latest/features/code-blocks.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

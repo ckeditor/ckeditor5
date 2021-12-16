@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -50,9 +50,30 @@ describe( 'MediaEmbedCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
+		it( 'should be true if a media is selected in a table cell', () => {
+			model.schema.register( 'table', { allowIn: '$root', isLimit: true, isObject: true, isBlock: true } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
+			model.schema.extend( 'media', { allowIn: 'tableCell' } );
+
+			setData( model, '<table><tableRow><tableCell>[<media></media>]</tableCell></tableRow></table>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true if in a table cell', () => {
+			model.schema.register( 'table', { allowIn: '$root', isLimit: true, isObject: true, isBlock: true } );
+			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
+			model.schema.extend( '$block', { allowIn: 'tableCell' } );
+
+			setData( model, '<table><tableRow><tableCell><p>foo[]</p></tableCell></tableRow></table>' );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
+
 		it( 'should be true when the selection directly in a block', () => {
-			model.schema.register( 'block', { inheritAllFrom: '$block' } );
-			model.schema.extend( '$text', { allowIn: 'block' } );
+			model.schema.register( 'block', { inheritAllFrom: '$block', allowChildren: '$text' } );
 
 			setData( model, '<block>foo[]</block>' );
 			expect( command.isEnabled ).to.be.true;
@@ -65,6 +86,20 @@ describe( 'MediaEmbedCommand', () => {
 
 			setData( model, '<block><limit>foo[]</limit></block>' );
 			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be true if a non-object element is selected', () => {
+			model.schema.register( 'element', { allowIn: '$root', isSelectable: true } );
+
+			setData( model, '[<element></element>]' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should be true if a non-media object is selected', () => {
+			model.schema.register( 'imageBlock', { isObject: true, isBlock: true, allowWhere: '$block' } );
+
+			setData( model, '[<imageBlock src="http://ckeditor.com"></imageBlock>]' );
+			expect( command.isEnabled ).to.be.true;
 		} );
 	} );
 
@@ -107,6 +142,19 @@ describe( 'MediaEmbedCommand', () => {
 			command.execute( 'http://cksource.com' );
 
 			expect( getData( model ) ).to.equal( '[<media url="http://cksource.com"></media>]' );
+		} );
+
+		it( 'should replace an existing selected object with a media', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setData( model, '<p>foo</p>[<object></object>]<p>bar</p>' );
+
+			command.execute( 'http://ckeditor.com' );
+
+			expect( getData( model ) ).to.equal(
+				'<p>foo</p>[<media url="http://ckeditor.com"></media>]<p>bar</p>'
+			);
 		} );
 	} );
 } );

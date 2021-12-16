@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -913,6 +913,76 @@ describe( 'DataController utils', () => {
 				'extends over empty inline objects - backward',
 				'<p><inlineObj></inlineObj>[]foo</p>',
 				'<p>[<inlineObj></inlineObj>]foo</p>',
+				{ direction: 'backward' }
+			);
+		} );
+
+		describe( 'selectable handling', () => {
+			beforeEach( () => {
+				model.schema.register( 'sel', {
+					isSelectable: true
+				} );
+				model.schema.extend( 'sel', { allowIn: '$root' } );
+				model.schema.extend( '$text', { allowIn: 'sel' } );
+
+				model.schema.register( 'inlineSel', {
+					allowIn: 'p',
+					isObject: true
+				} );
+				model.schema.extend( '$text', { allowIn: 'inlineSel' } );
+			} );
+
+			test(
+				'extends over next selectable element when at the end of an element',
+				'<p>foo[]</p><sel>bar</sel>',
+				'<p>foo[</p><sel>bar</sel>]'
+			);
+
+			test(
+				'extends over previous selectable element when at the beginning of an element ',
+				'<sel>bar</sel><p>[]foo</p>',
+				'[<sel>bar</sel><p>]foo</p>',
+				{ direction: 'backward' }
+			);
+
+			test(
+				'extends over selectable elements - forward',
+				'[<sel></sel>]<sel></sel>',
+				'[<sel></sel><sel></sel>]'
+			);
+
+			it( 'extends over selectable elements - backward', () => {
+				setData( model, '<sel></sel>[<sel></sel>]', { lastRangeBackward: true } );
+
+				modifySelection( model, doc.selection, { direction: 'backward' } );
+
+				expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '[<sel></sel><sel></sel>]' );
+				expect( doc.selection.isBackward ).to.true;
+			} );
+
+			test(
+				'extends over inline selectables - forward',
+				'<p>foo[]<inlineSel>bar</inlineSel></p>',
+				'<p>foo[<inlineSel>bar</inlineSel>]</p>'
+			);
+
+			test(
+				'extends over inline selectables - backward',
+				'<p><inlineSel>bar</inlineSel>[]foo</p>',
+				'<p>[<inlineSel>bar</inlineSel>]foo</p>',
+				{ direction: 'backward' }
+			);
+
+			test(
+				'extends over empty inline selectables - forward',
+				'<p>foo[]<inlineSel></inlineSel></p>',
+				'<p>foo[<inlineSel></inlineSel>]</p>'
+			);
+
+			test(
+				'extends over empty inline selectables - backward',
+				'<p><inlineSel></inlineSel>[]foo</p>',
+				'<p>[<inlineSel></inlineSel>]foo</p>',
 				{ direction: 'backward' }
 			);
 		} );

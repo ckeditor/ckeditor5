@@ -21,6 +21,10 @@ While it is not strictly necessary to read the {@link framework/guides/quick-sta
 
 The tutorial will also reference various parts of the {@link framework/guides/architecture/intro CKEditor 5 architecture} section as you go. While reading them is not necessary to finish this tutorial, it is recommended to read these guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
+<info-box>
+	If you want to use your own event handler for events triggered by your widget, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to {@link framework/guides/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
+</info-box>
+
 ## Let's start
 
 This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
@@ -646,7 +650,7 @@ export default class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBox',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
 
 				return toWidget( section, viewWriter, { label: 'simple box widget' } );
@@ -670,7 +674,7 @@ export default class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxTitle',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const h1 = viewWriter.createEditableElement( 'h1', { class: 'simple-box-title' } );
 
@@ -695,7 +699,7 @@ export default class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxDescription',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement( 'div', { class: 'simple-box-description' } );
 
@@ -1111,7 +1115,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBox',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				const section = viewWriter.createContainerElement( 'section', { class: 'simple-box' } );
 
 				return toWidget( section, viewWriter, { label: 'simple box widget' } );
@@ -1135,7 +1139,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxTitle',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const h1 = viewWriter.createEditableElement( 'h1', { class: 'simple-box-title' } );
 
@@ -1160,7 +1164,7 @@ class SimpleBoxEditing extends Plugin {
 		} );
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'simpleBoxDescription',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// Note: You use a more specialized createEditableElement() method here.
 				const div = viewWriter.createEditableElement( 'div', { class: 'simple-box-description' } );
 

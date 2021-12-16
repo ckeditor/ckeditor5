@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,9 +22,9 @@ import Position from '../position';
  * allows a `$text`.
  * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
  * boundary (a range must be rooted within one limit element).
- * * Only {@link module:engine/model/schema~Schema#isObject object elements} can be selected from the outside
+ * * Only {@link module:engine/model/schema~Schema#isSelectable selectable elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
- * selection is correct: `<paragraph>f[oo</paragraph><image></image>]`.
+ * selection is correct: `<paragraph>f[oo</paragraph><imageBlock></imageBlock>]`.
  *
  * If the position is not correct, the post-fixer will automatically correct it.
  *
@@ -128,9 +128,17 @@ function tryFixingCollapsedRange( range, schema ) {
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
 
-	// This might be null ie when editor data is empty.
-	// In such cases there is no need to fix the selection range.
+	// This might be null, i.e. when the editor data is empty or the selection is inside a limit element
+	// that doesn't allow text inside.
+	// In the first case, there is no need to fix the selection range.
+	// In the second, let's go up to the outer selectable element
 	if ( !nearestSelectionRange ) {
+		const ancestorObject = originalPosition.getAncestors().reverse().find( item => schema.isObject( item ) );
+
+		if ( ancestorObject ) {
+			return Range._createOn( ancestorObject );
+		}
+
 		return null;
 	}
 
@@ -154,8 +162,7 @@ function tryFixingCollapsedRange( range, schema ) {
 // @param {module:engine/model/schema~Schema} schema
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
 function tryFixingNonCollapsedRage( range, schema ) {
-	const start = range.start;
-	const end = range.end;
+	const { start, end } = range;
 
 	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
 	const isTextAllowedOnEnd = schema.checkChild( end, '$text' );
@@ -176,17 +183,17 @@ function tryFixingNonCollapsedRage( range, schema ) {
 		// - [<block>foo</block>]    ->    <block>[foo]</block>
 		// - [<block>foo]</block>    ->    <block>[foo]</block>
 		// - <block>f[oo</block>]    ->    <block>f[oo]</block>
-		// - [<block>foo</block><object></object>]    ->    <block>[foo</block><object></object>]
+		// - [<block>foo</block><selectable></selectable>]    ->    <block>[foo</block><selectable></selectable>]
 		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
-			const isStartObject = start.nodeAfter && schema.isObject( start.nodeAfter );
-			const fixedStart = isStartObject ? null : schema.getNearestSelectionRange( start, 'forward' );
+			const isStartBeforeSelectable = start.nodeAfter && schema.isSelectable( start.nodeAfter );
+			const fixedStart = isStartBeforeSelectable ? null : schema.getNearestSelectionRange( start, 'forward' );
 
-			const isEndObject = end.nodeBefore && schema.isObject( end.nodeBefore );
-			const fixedEnd = isEndObject ? null : schema.getNearestSelectionRange( end, 'backward' );
+			const isEndAfterSelectable = end.nodeBefore && schema.isSelectable( end.nodeBefore );
+			const fixedEnd = isEndAfterSelectable ? null : schema.getNearestSelectionRange( end, 'backward' );
 
 			// The schema.getNearestSelectionRange might return null - if that happens use original position.
 			const rangeStart = fixedStart ? fixedStart.start : start;
-			const rangeEnd = fixedEnd ? fixedEnd.start : end;
+			const rangeEnd = fixedEnd ? fixedEnd.end : end;
 
 			return new Range( rangeStart, rangeEnd );
 		}
@@ -200,8 +207,8 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	if ( isStartInLimit || isEndInLimit ) {
 		const bothInSameParent = ( start.nodeAfter && end.nodeBefore ) && start.nodeAfter.parent === end.nodeBefore.parent;
 
-		const expandStart = isStartInLimit && ( !bothInSameParent || !isInObject( start.nodeAfter, schema ) );
-		const expandEnd = isEndInLimit && ( !bothInSameParent || !isInObject( end.nodeBefore, schema ) );
+		const expandStart = isStartInLimit && ( !bothInSameParent || !isSelectable( start.nodeAfter, schema ) );
+		const expandEnd = isEndInLimit && ( !bothInSameParent || !isSelectable( end.nodeBefore, schema ) );
 
 		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
 		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
@@ -256,40 +263,50 @@ function checkSelectionOnNonLimitElements( start, end, schema ) {
 	return startIsOnBlock || endIsOnBlock;
 }
 
-// Returns a minimal non-intersecting array of ranges.
-//
-// @param {Array.<module:engine/model/range~Range>} ranges
-// @returns {Array.<module:engine/model/range~Range>}
-function mergeIntersectingRanges( ranges ) {
-	const nonIntersectingRanges = [];
+/**
+ * Returns a minimal non-intersecting array of ranges without duplicates.
+ *
+ * @param {Array.<module:engine/model/range~Range>} Ranges to merge.
+ * @returns {Array.<module:engine/model/range~Range>} Array of unique and nonIntersecting ranges.
+ */
+export function mergeIntersectingRanges( ranges ) {
+	const rangesToMerge = [ ...ranges ];
+	const rangeIndexesToRemove = new Set();
+	let currentRangeIndex = 1;
 
-	// First range will always be fine.
-	nonIntersectingRanges.push( ranges.shift() );
+	while ( currentRangeIndex < rangesToMerge.length ) {
+		const currentRange = rangesToMerge[ currentRangeIndex ];
+		const previousRanges = rangesToMerge.slice( 0, currentRangeIndex );
 
-	for ( const range of ranges ) {
-		const previousRange = nonIntersectingRanges.pop();
+		for ( const [ previousRangeIndex, previousRange ] of previousRanges.entries() ) {
+			if ( rangeIndexesToRemove.has( previousRangeIndex ) ) {
+				continue;
+			}
 
-		if ( range.isIntersecting( previousRange ) ) {
-			// Get the sum of two ranges.
-			const start = previousRange.start.isAfter( range.start ) ? range.start : previousRange.start;
-			const end = previousRange.end.isAfter( range.end ) ? previousRange.end : range.end;
+			if ( currentRange.isEqual( previousRange ) ) {
+				rangeIndexesToRemove.add( previousRangeIndex );
+			} else if ( currentRange.isIntersecting( previousRange ) ) {
+				rangeIndexesToRemove.add( previousRangeIndex );
+				rangeIndexesToRemove.add( currentRangeIndex );
 
-			const merged = new Range( start, end );
-			nonIntersectingRanges.push( merged );
-		} else {
-			nonIntersectingRanges.push( previousRange );
-			nonIntersectingRanges.push( range );
+				const mergedRange = currentRange.getJoined( previousRange );
+				rangesToMerge.push( mergedRange );
+			}
 		}
+
+		currentRangeIndex++;
 	}
+
+	const nonIntersectingRanges = rangesToMerge.filter( ( _, index ) => !rangeIndexesToRemove.has( index ) );
 
 	return nonIntersectingRanges;
 }
 
-// Checks if node exists and if it's an object.
+// Checks if node exists and if it's a selectable.
 //
 // @param {module:engine/model/node~Node} node
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function isInObject( node, schema ) {
-	return node && schema.isObject( node );
+function isSelectable( node, schema ) {
+	return node && schema.isSelectable( node );
 }

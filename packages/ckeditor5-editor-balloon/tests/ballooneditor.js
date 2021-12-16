@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -96,9 +96,7 @@ describe( 'BalloonEditor', () => {
 						expect.fail( 'Balloon editor should not initialize on an element already used by other instance.' );
 					},
 					err => {
-						assertCKEditorError( err,
-							/^editor-source-element-already-used/
-						);
+						assertCKEditorError( err, 'editor-source-element-already-used' );
 					}
 				)
 				.then( done )
@@ -189,6 +187,23 @@ describe( 'BalloonEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			const editorElement = document.createElement( 'div' );
+			editorElement.innerHTML = '<p><strong>foo</strong> bar</p>';
+
+			return BalloonEditor.create( editorElement, {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				return editor.destroy();
+			} ).then( () => {
+				editorElement.remove();
+			} );
+		} );
+
 		it( 'throws if initial data is passed in Editor#create and config.initialData is also used', done => {
 			BalloonEditor.create( '<p>Hello world!</p>', {
 				initialData: '<p>I am evil!</p>',
@@ -199,11 +214,7 @@ describe( 'BalloonEditor', () => {
 						expect.fail( 'Balloon editor should throw an error when both initial data are passed' );
 					},
 					err => {
-						assertCKEditorError( err,
-							// eslint-disable-next-line max-len
-							/^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./,
-							null
-						);
+						assertCKEditorError( err, 'editor-create-initial-data', null );
 					}
 				)
 				.then( () => {
@@ -247,10 +258,7 @@ describe( 'BalloonEditor', () => {
 						expect.fail( 'Balloon editor should throw an error when is initialized in textarea.' );
 					},
 					err => {
-						assertCKEditorError( err,
-							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./,
-							null
-						);
+						assertCKEditorError( err, 'editor-wrong-element', null );
 					}
 				)
 				.then( done )
@@ -322,9 +330,10 @@ describe( 'BalloonEditor', () => {
 
 					const schema = editor.model.schema;
 
-					schema.register( 'heading' );
-					schema.extend( 'heading', { allowIn: '$root' } );
-					schema.extend( '$text', { allowIn: 'heading' } );
+					schema.register( 'heading', {
+						allowIn: '$root',
+						allowChildren: '$text'
+					} );
 
 					editor.conversion.for( 'upcast' ).elementToElement( { model: 'heading', view: 'heading' } );
 					editor.conversion.for( 'dataDowncast' ).elementToElement( { model: 'heading', view: 'heading' } );
@@ -364,7 +373,7 @@ describe( 'BalloonEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

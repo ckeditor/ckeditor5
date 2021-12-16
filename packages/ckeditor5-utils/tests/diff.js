@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,7 +63,7 @@ describe( 'diff', () => {
 		testUtils.sinon.assert.called( fastDiffSpy );
 	} );
 
-	it( 'should use fastDiff() internally for strings with length sum of 2000+', () => {
+	it( 'should use fastDiff() internally for strings with length sum of exaclty 2000', () => {
 		diff( getLongText( 10 ), getLongText( 1990 ) );
 		testUtils.sinon.assert.called( fastDiffSpy );
 	} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -43,12 +43,9 @@ export default class LivePosition extends Position {
 			/**
 			 * LivePosition's root has to be an instance of RootElement.
 			 *
-			 * @error liveposition-root-not-rootelement
+			 * @error model-liveposition-root-not-rootelement
 			 */
-			throw new CKEditorError(
-				'model-liveposition-root-not-rootelement: LivePosition\'s root has to be an instance of RootElement.',
-				root
-			);
+			throw new CKEditorError( 'model-liveposition-root-not-rootelement', root );
 		}
 
 		bindWithDocument.call( this );
@@ -99,7 +96,7 @@ export default class LivePosition extends Position {
 	 *
 	 * @param {module:engine/model/position~Position} position
 	 * @param {module:engine/model/position~PositionStickiness} [stickiness]
-	 * @returns {module:engine/model/position~Position}
+	 * @returns {module:engine/model/liveposition~LivePosition}
 	 */
 	static fromPosition( position, stickiness ) {
 		return new this( position.root, position.path.slice(), stickiness ? stickiness : position.stickiness );

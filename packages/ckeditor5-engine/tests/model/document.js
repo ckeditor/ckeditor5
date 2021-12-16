@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,7 +87,7 @@ describe( 'Document', () => {
 
 			expectToThrowCKEditorError( () => {
 				model.applyOperation( operation );
-			}, /^model-document-applyOperation-wrong-version/, model );
+			}, 'model-document-applyoperation-wrong-version', model );
 		} );
 	} );
 
@@ -130,7 +130,7 @@ describe( 'Document', () => {
 
 			expectToThrowCKEditorError( () => {
 				doc.createRoot( '$root', 'rootName' );
-			}, /model-document-createRoot-name-exists/, model );
+			}, 'model-document-createroot-name-exists', model );
 		} );
 	} );
 

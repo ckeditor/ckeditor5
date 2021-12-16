@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module page-break/pagebreakcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import { findOptimalInsertionPosition } from '@ckeditor/ckeditor5-widget/src/utils';
+import { Command } from 'ckeditor5/src/core';
+import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 
 /**
  * The page break command.
@@ -26,7 +26,11 @@ export default class PageBreakCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = isPageBreakAllowed( this.editor.model );
+		const model = this.editor.model;
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		this.isEnabled = isPageBreakAllowedInParent( selection, schema, model );
 	}
 
 	/**
@@ -62,18 +66,6 @@ export default class PageBreakCommand extends Command {
 	}
 }
 
-// Checks if the `pageBreak` element can be inserted at the current model selection.
-//
-// @param {module:engine/model/model~Model} model
-// @returns {Boolean}
-function isPageBreakAllowed( model ) {
-	const schema = model.schema;
-	const selection = model.document.selection;
-
-	return isPageBreakAllowedInParent( selection, schema, model ) &&
-		!checkSelectionOnObject( selection, schema );
-}
-
 // Checks if a page break is allowed by the schema in the optimal insertion parent.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
@@ -86,26 +78,14 @@ function isPageBreakAllowedInParent( selection, schema, model ) {
 	return schema.checkChild( parent, 'pageBreak' );
 }
 
-// Checks if the selection is on object.
-//
-// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
-// @param {module:engine/model/schema~Schema} schema
-// @returns {Boolean}
-function checkSelectionOnObject( selection, schema ) {
-	const selectedElement = selection.getSelectedElement();
-
-	return selectedElement && schema.isObject( selectedElement );
-}
-
 // Returns a node that will be used to insert a page break with `model.insertContent` to check if the page break can be placed there.
 //
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 // @param {module:engine/model/model~Model} model Model instance.
 // @returns {module:engine/model/element~Element}
 function getInsertPageBreakParent( selection, model ) {
-	const insertAt = findOptimalInsertionPosition( selection, model );
-
-	const parent = insertAt.parent;
+	const insertionRange = findOptimalInsertionRange( selection, model );
+	const parent = insertionRange.start.parent;
 
 	if ( parent.isEmpty && !parent.is( 'element', '$root' ) ) {
 		return parent.parent;

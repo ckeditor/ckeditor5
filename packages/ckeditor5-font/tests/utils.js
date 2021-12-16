@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -60,7 +60,7 @@ describe( 'utils', () => {
 			const fake = testUtils.sinon.fake();
 			const fakeViewWriter = { createAttributeElement: fake };
 
-			downcastViewConverterFn( 'blue', fakeViewWriter );
+			downcastViewConverterFn( 'blue', { writer: fakeViewWriter } );
 
 			sinon.assert.calledWithExactly( fake, 'span', { style: 'color:blue' }, { priority: 7 } );
 		} );

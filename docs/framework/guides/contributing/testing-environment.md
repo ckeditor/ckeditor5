@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 20
+modified_at: 2021-11-24
 ---
 
 # Testing environment
@@ -48,17 +49,63 @@ Run the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ck
 yarn run test -cw --files=basic-styles/bold*.js
 ```
 
+### Custom Chai assertions
+
+Our testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
+
+#### `equalMarkup`
+
+Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
+
+This assertion will pass:
+
+```js
+expect( `<b>foo</b>` ).to.equalMarkup( `<b>foo</b>` )
+```
+
+This assertion will throw an error:
+
+```js
+expect(
+	'<paragraph>foo bXXX[]r baz</paragraph>'
+).to.equalMarkup(
+	'<paragraph>foo bYYY[]r baz</paragraph>'
+);
+```
+
+#### `attribute`
+
+Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~DocumentSelection#hasAttribute hasAttribute}.
+
+```js
+expect( selection ).to.have.attribute( 'linkHref' );
+```
+
+When optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
+
+```js
+expect( selection ).to.have.attribute( 'linkHref', 'example.com' );
+```
+
+Negations works as well.
+
+```js
+expect( selection ).to.not.have.attribute( 'linkHref' );
+```
+
+
 ## Running manual tests
 
 In order to start the manual tests server, use the `yarn run manual` task.
 
 The task accepts the following options:
 
-* `--source-map` (alias `-s`) &ndash; Whether to generate useful source maps for the code.
-* `--files` &ndash; Specifies test files to run. Accepts a package name or a glob. For example `--files=ckeditor5` will only run tests from the CKEditor 5 main package. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
-* `--additionalLanguages="ar,pl,..."` &ndash; Specifies extra languages to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
+* `--files` (alias `-f`) &ndash; Specifies test files to run. Accepts a package name or a glob. For example `--files=ckeditor5` will only run tests from the CKEditor 5 main package. Read more about the [rules for converting the `--files` option to a glob pattern](https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-tests#rules-for-converting---files-option-to-glob-pattern).
+* `--language="pl"` &ndash; The main language build in into all test editors, passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin).  Check out the {@link features/ui-language UI language guide} to learn more. When unspecified, `'en'` is passed to the test runner.
+* `--additional-languages="ar,pl,..."` &ndash; Specifies extra languages passed to the [CKEditor 5 webpack plugin](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin). Check out the {@link features/ui-language UI language guide} to learn more.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `8125`.
+* `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
 
 It starts the server available at http://localhost:8125.
 
@@ -128,6 +175,18 @@ ClassicEditor
 <info-box>
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
+
+### Verifying all manual tests
+
+To verify that all manual tests can be **opened** without any errors (the crawler does not execute the manual test steps, it just visits the page), you do not need to do that manually, page by page. Instead, there is a web crawler that automatically traverses the documentation and it visits all pages that have been found. The crawler opens a headless Chromium browser and logs to the console any error that has been found.
+
+To check manual tests, start the server (`yarn manual --files=XYZ`), and then run the crawler:
+
+```
+yarn run manual:verify
+```
+
+Read more about the crawler in {@link framework/guides/contributing/development-environment#verifying-documentation Verifying documentation}.
 
 ## Test suite and CI
 

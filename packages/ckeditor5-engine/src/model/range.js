@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,8 +25,9 @@ export default class Range {
 	/**
 	 * Creates a range spanning from `start` position to `end` position.
 	 *
-	 * @param {module:engine/model/position~Position} start Start position.
-	 * @param {module:engine/model/position~Position} [end] End position. If not set, range will be collapsed at `start` position.
+	 * @param {module:engine/model/position~Position} start The start position.
+	 * @param {module:engine/model/position~Position} [end] The end position. If not set,
+	 * the range will be collapsed at the `start` position.
 	 */
 	constructor( start, end = null ) {
 		/**
@@ -426,6 +427,7 @@ export default class Range {
 	 * @param {Boolean} [options.singleCharacters=false]
 	 * @param {Boolean} [options.shallow=false]
 	 * @param {Boolean} [options.ignoreElementEnd=false]
+	 * @returns {module:engine/model/treewalker~TreeWalker}
 	 */
 	getWalker( options = {} ) {
 		options.boundaries = this;
@@ -444,7 +446,7 @@ export default class Range {
 	 * You may specify additional options for the tree walker. See {@link module:engine/model/treewalker~TreeWalker} for
 	 * a full list of available options.
 	 *
-	 * @param {Object} options Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
+	 * @param {Object} [options] Object with configuration options. See {@link module:engine/model/treewalker~TreeWalker}.
 	 * @returns {Iterable.<module:engine/model/item~Item>}
 	 */
 	* getItems( options = {} ) {
@@ -974,7 +976,7 @@ export default class Range {
 			 * @error range-create-from-ranges-empty-array
 			 */
 			throw new CKEditorError(
-				'range-create-from-ranges-empty-array: At least one range has to be passed.',
+				'range-create-from-ranges-empty-array',
 				null
 			);
 		} else if ( ranges.length == 1 ) {
@@ -1031,7 +1033,7 @@ export default class Range {
 	 *
 	 * @param {Object} json Plain object to be converted to `Range`.
 	 * @param {module:engine/model/document~Document} doc Document object that will be range owner.
-	 * @returns {module:engine/model/element~Element} `Range` instance created using given plain object.
+	 * @returns {module:engine/model/range~Range} `Range` instance created using given plain object.
 	 */
 	static fromJSON( json, doc ) {
 		return new this( Position.fromJSON( json.start, doc ), Position.fromJSON( json.end, doc ) );

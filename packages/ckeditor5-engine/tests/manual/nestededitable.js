@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -50,8 +50,8 @@ class NestedEditable extends Plugin {
 
 		editor.conversion.for( 'downcast' ).elementToElement( {
 			model: 'figcaption',
-			view: ( modelItem, viewWriter ) => {
-				const element = viewWriter.createEditableElement( 'figcaption', { contenteditable: 'true' } );
+			view: ( modelItem, { writer } ) => {
+				const element = writer.createEditableElement( 'figcaption', { contenteditable: 'true' } );
 
 				element.on( 'change:isFocused', ( evt, property, is ) => {
 					if ( is ) {

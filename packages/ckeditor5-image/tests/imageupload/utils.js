@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { createImageTypeRegExp } from '../../src/imageupload/utils';
 
-describe( 'upload utils', () => {
+describe( 'Upload utils', () => {
 	describe( 'createImageTypeRegExp()', () => {
 		it( 'should return RegExp for testing regular mime type', () => {
 			expect( createImageTypeRegExp( [ 'png' ] ).test( 'image/png' ) ).to.be.true;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,9 @@
 
 import CKEditorError from './ckeditorerror';
 
-const version = '21.0.0';
+const version = '31.1.0';
+
+export default version;
 
 /* istanbul ignore next */
 const windowOrGlobal = typeof window === 'object' ? window : global;
@@ -108,7 +110,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * different versions of the core package.
 	 *
 	 * The solution to this issue is to update all packages to their latest version. We recommend
-	 * using tools like [`node-check-updates`](https://www.npmjs.com/package/npm-check-updates) which simplify this process.
+	 * using tools like [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates) which simplify this process.
 	 *
 	 * # Conflicting version of dependencies
 	 *
@@ -147,7 +149,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * @error ckeditor-duplicated-modules
 	 */
 	throw new CKEditorError(
-		'ckeditor-duplicated-modules: Some CKEditor 5 modules are duplicated.',
+		'ckeditor-duplicated-modules',
 		null
 	);
 } else {

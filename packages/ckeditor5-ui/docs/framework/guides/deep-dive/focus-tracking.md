@@ -43,7 +43,7 @@ The main editable area of CKEditor 5 WYSIWYG editor can be focused thanks to the
 Each root of the editing view has the `contenteditable` attribute. The editing view uses the {@link module:engine/view/observer/focusobserver~FocusObserver `FocusObserver`} (learn more about {@link framework/guides/architecture/editing-engine#observers view observers}) to track focus in editables by listening to native DOM `focus` and `blur` events coming from them.
 
 <info-box>
-	Already confused? Take a look at our {@link framework/guides/architecture/editing-engine#observers Editing engine} guide that explains what the editing view, editables and other building blocks of CKEditor 5 are.
+	Already confused? Take a look at our {@link framework/guides/architecture/editing-engine#observers editing engine guide} that explains what the editing view, editables and other building blocks of CKEditor 5 are.
 </info-box>
 
 ### Checking if the view document is focused
@@ -66,20 +66,22 @@ editor.editing.view.document.on( 'change:isFocused', ( evt, data, isFocused ) =>
 
 Click the editable area of the editor and then click somewhere else &mdash; the `isFocused` property will change its value when you do that. The same will also happen if you run an editor with {@link framework/guides/custom-editor-creator **multiple editing roots**} and navigate across them.
 
-To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/guides/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/image#image-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
+To spice things up even more, you should also know `isFocused` will change when you focus any {@link framework/guides/tutorials/implementing-a-block-widget **nested editable**} in the content (take, for example, a {@link features/images-captions caption of an image}). Sounds weird, right? This is because every nested editable in the content has the `contenteditable` attribute, too, and for the web browser moving your caret inside it means the main editable element is blurred and the nested one is focused.
 
 ### How to focus the editor?
 
-Say, for instance, your application wants to focus an editable area of CKEditor 5 when a certain action is executed (e.g. a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
+The simplest way to focus the editor is to call the {@link module:core/editor/editor~Editor#focus `editor.focus()`} method.
+
+However, you may wish to explicitly focus the editable area of CKEditor 5 when a certain action is executed (e.g. a button is clicked). To do that, use the {@link module:engine/view/view~View#focus `focus()`} method of the editing view:
 
 ```js
 editor.editing.view.focus();
 ```
 
-This snippet focuses an editable that has the selection. If the editor has not been focused yet, this will focus the very first editable. If an editor has multiple editing roots and the user was editing content, focus will be brought back where the user left off.
+This snippet focuses the editable that has the selection. If the editor has not been focused yet, this will focus the very first editable. If an editor has multiple editing roots and the user was editing content, focus will be brought back where the user left off.
 
 <info-box>
-	Focusing an editor does not change its selection. If you want to focus an editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/guides/architecture/editing-engine#model model writer} to change the selection.
+	Focusing the editor does not change its selection. If you want to focus the editor and move the caret to a specific position, you should call `editor.editing.view.focus()` first and then use the {@link module:engine/model/writer~Writer#setSelection `setSelection()`} method of the {@link framework/guides/architecture/editing-engine#model model writer} to change the selection.
 </info-box>
 
 ## Focus in the editor UI
@@ -89,7 +91,7 @@ If you read the [previous section](#focus-in-the-editor-engine) of this guide yo
 As for the user interface of CKEditor 5, it is a composition of multiple components {@link framework/guides/architecture/ui-library#view-collections-and-the-ui-tree organized as a tree}. This tree determines not only the logical structure of the UI (a toolbar has a dropdown, a dropdown has a button, a button has an icon, etc.) but also its behavior, and that includes tracking and maintaining focus as the user navigates and interacts with various pieces of the interface.
 
 <info-box>
-	Feeling overwhelmed? Take a look at the {@link framework/guides/architecture/ui-library UI library} guide and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
+	Feeling overwhelmed? Take a look at the {@link framework/guides/architecture/ui-library UI library guide} and learn some basics about how the UI of CKEditor 5 works and what its main building blocks are.
 </info-box>
 
 To sum up, there are two main reasons why focus is being tracked separately on the UI level:

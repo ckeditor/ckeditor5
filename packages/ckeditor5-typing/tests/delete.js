@@ -1,12 +1,15 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Delete from '../src/delete';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -34,7 +37,11 @@ describe( 'Delete feature', () => {
 
 	it( 'creates two commands', () => {
 		expect( editor.commands.get( 'delete' ) ).to.have.property( 'direction', 'backward' );
-		expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );
+		expect( editor.commands.get( 'deleteForward' ) ).to.have.property( 'direction', 'forward' );
+	} );
+
+	it( 'should register forwardDelete command as an alias for deleteForward command', () => {
+		expect( editor.commands.get( 'forwardDelete' ) ).to.equal( editor.commands.get( 'deleteForward' ) );
 	} );
 
 	it( 'listens to the editing view document delete event', () => {
@@ -49,7 +56,7 @@ describe( 'Delete feature', () => {
 		} ) );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithMatch( 'forwardDelete', { unit: 'character', sequence: 1 } ) ).to.be.true;
+		expect( spy.calledWithMatch( 'deleteForward', { unit: 'character', sequence: 1 } ) ).to.be.true;
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
@@ -102,12 +109,6 @@ describe( 'Delete feature', () => {
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
 	} );
-
-	function getDomEvent() {
-		return {
-			preventDefault: sinon.spy()
-		};
-	}
 } );
 
 describe( 'Delete feature - Android', () => {
@@ -218,3 +219,135 @@ describe( 'Delete feature - Android', () => {
 		} ).not.to.throw();
 	} );
 } );
+
+describe( 'Delete feature - undo by pressing backspace', () => {
+	let element, editor, viewDocument, plugin;
+
+	const deleteEventEventData = {
+		direction: 'backward',
+		unit: 'codePoint',
+		sequence: 1
+	};
+
+	beforeEach( () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor
+			.create( element, { plugins: [ Delete, UndoEditing ] } )
+			.then( newEditor => {
+				editor = newEditor;
+				viewDocument = editor.editing.view.document;
+				plugin = newEditor.plugins.get( 'Delete' );
+			} );
+	} );
+
+	afterEach( () => {
+		element.remove();
+		return editor.destroy();
+	} );
+
+	it( 'executes `undo` once on pressing backspace after requestUndoOnBackspace()', () => {
+		const spy = editor.execute = sinon.spy();
+		const domEvt = getDomEvent();
+		const event = new EventInfo( viewDocument, 'delete' );
+
+		plugin.requestUndoOnBackspace();
+
+		viewDocument.fire( event, new DomEventData( viewDocument, domEvt, deleteEventEventData ) );
+
+		expect( spy.calledOnce ).to.be.true;
+		expect( spy.calledWithMatch( 'undo' ) ).to.be.true;
+
+		expect( event.stop.called ).to.be.true;
+		expect( domEvt.preventDefault.calledOnce ).to.be.true;
+
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
+
+		expect( spy.calledTwice ).to.be.true;
+		expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
+	} );
+
+	describe( 'does not execute `undo` instead of deleting', () => {
+		const testCases = [
+			{
+				condition: 'it\'s forward deletion',
+				eventData: { direction: 'forward', unit: 'codePoint', sequence: 1 }
+			},
+			{
+				condition: 'the sequence doesn\'t equal 1',
+				eventData: { direction: 'backward', unit: 'codePoint', sequence: 2 }
+			},
+			{
+				condition: 'the unit is not `codePoint`',
+				eventData: { direction: 'backward', unit: 'word', sequence: 1 }
+			}
+		];
+
+		testCases.forEach( ( { condition, eventData } ) => {
+			it( 'if ' + condition, () => {
+				const spy = editor.execute = sinon.spy();
+
+				plugin.requestUndoOnBackspace();
+
+				viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), eventData ) );
+
+				expect( spy.calledOnce ).to.be.true;
+				expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
+				expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
+			} );
+		} );
+
+		it( 'if requestUndoOnBackspace() hasn\'t been called', () => {
+			const spy = editor.execute = sinon.spy();
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
+			expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
+		} );
+
+		it( 'if `UndoEditing` plugin is not loaded', async () => {
+			await editor.destroy();
+
+			editor = await ClassicTestEditor.create( element, { plugins: [ Delete ] } );
+			viewDocument = editor.editing.view.document;
+			plugin = editor.plugins.get( 'Delete' );
+
+			const spy = editor.execute = sinon.spy();
+
+			plugin.requestUndoOnBackspace();
+
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
+				direction: 'backward',
+				unit: 'word',
+				sequence: 1
+			} ) );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
+			expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
+		} );
+
+		it( 'after model has changed', () => {
+			const modelDocument = editor.model.document;
+			const spy = editor.execute = sinon.spy();
+
+			plugin.requestUndoOnBackspace();
+
+			modelDocument.fire( 'change', new Batch() );
+			viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), deleteEventEventData ) );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.calledWithMatch( 'undo' ) ).to.be.false;
+			expect( spy.calledWithMatch( 'delete', {} ) ).to.be.true;
+		} );
+	} );
+} );
+
+function getDomEvent() {
+	return {
+		preventDefault: sinon.spy()
+	};
+}

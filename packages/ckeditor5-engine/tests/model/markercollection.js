@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -127,7 +127,7 @@ describe( 'MarkerCollection', () => {
 		it( 'should throw if marker name with "," is added', () => {
 			expectToThrowCKEditorError( () => {
 				markers._set( 'foo,bar', range );
-			}, /^markercollection-incorrect-marker-name:/, markers );
+			}, 'markercollection-incorrect-marker-name', markers );
 		} );
 	} );
 
@@ -139,6 +139,17 @@ describe( 'MarkerCollection', () => {
 		it( 'should return true if marker with given name is in the collection', () => {
 			markers._set( 'name', range );
 			expect( markers.has( 'name' ) ).to.be.true;
+		} );
+
+		it( 'should return false if given instance of marker is not in the collection', () => {
+			const differentMarkerCollection = new MarkerCollection();
+			const marker = differentMarkerCollection._set( 'differentName', range );
+			expect( markers.has( marker ) ).to.be.false;
+		} );
+
+		it( 'should return true if given instance of marker is in the collection', () => {
+			const marker = markers._set( 'name', range );
+			expect( markers.has( marker ) ).to.be.true;
 		} );
 	} );
 
@@ -215,7 +226,7 @@ describe( 'MarkerCollection', () => {
 		it( 'should throw if marker does not exist', () => {
 			expectToThrowCKEditorError( () => {
 				markers._refresh( 'name' );
-			}, /^markercollection-refresh-marker-not-exists:/, markers );
+			}, 'markercollection-refresh-marker-not-exists', markers );
 		} );
 	} );
 

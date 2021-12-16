@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -396,9 +396,8 @@ describe( 'Config', () => {
 
 		it( 'should not be possible to retrieve value directly from config object', () => {
 			expect( config.creator ).to.be.undefined;
-			expect( () => {
-				config.resize.maxHeight;
-			} ).to.throw();
+			// Check if 'resize.maxHeight' would be accessible;
+			expect( config.resize ).to.be.undefined;
 		} );
 
 		it( 'should not be possible to alter config object by altering returned value', () => {
@@ -430,7 +429,8 @@ describe( 'Config', () => {
 		} );
 
 		it( 'should return class & functions references from config array', () => {
-			class Foo {}
+			class Foo {
+			}
 
 			function bar() {
 				return 'bar';

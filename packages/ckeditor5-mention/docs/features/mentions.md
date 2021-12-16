@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Mentions
+modified_at: 2021-10-20
 ---
 
 {@snippet features/build-mention-source}
@@ -8,6 +9,8 @@ menu-title: Mentions
 # Mentions (autocompletion)
 
 The {@link module:mention/mention~Mention} feature brings support for smart autocompletion based on user input. When a user types a pre-configured marker, such as `@` or `#`, they get autocomplete suggestions in a panel displayed next to the caret. The selected suggestion is then inserted into the content.
+
+You can read more about possible implementations of the mention feature in a [dedicated blog post](https://ckeditor.com/blog/mentions-in-ckeditor-5-feature-of-the-month/).
 
 ## Demo
 
@@ -23,8 +26,9 @@ You can type the "@" character to invoke the mention autocomplete UI. The demo b
 
 In addition to enabling mentions, you may want to check the following productivity features:
 
-* {@link features/text-transformation Automatic text transformation} &ndash; It allows to automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
-* {@link features/autoformat Autoformatting} &ndash; It allows to quickly apply formatting to the content you are writing.
+* {@link features/text-transformation Automatic text transformation} &ndash; Allows to automatically turn snippets such as `(tm)` into `™` and `"foo"` into `“foo”`.
+* {@link features/link#autolink-feature Autolink} &ndash; Turns the links and email addresses typed or pasted into the editor into active URLs.
+* {@link features/autoformat Autoformatting} &ndash; Allows to quickly apply formatting to the content you are writing.
 
 ## Configuration
 
@@ -137,6 +141,8 @@ A full, working demo with all possible customizations and its source code is ava
 
 ### Customizing the autocomplete list
 
+#### Styling
+
 The items displayed in the autocomplete list can be customized by defining the {@link module:mention/mention~MentionFeed `itemRenderer`} callback.
 
 This callback takes a feed item (it contains at least the `name` property) and must return a new DOM element.
@@ -174,6 +180,30 @@ function customItemRenderer( item ) {
 
 	return itemElement;
 }
+```
+
+A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
+
+#### List length
+
+The number of items displayed in the autocomplete list can be customized by defining the {@link module:mention/mention~MentionConfig#dropdownLimit `dropdownLimit`} option.
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ Mention, ... ],
+		mention: {
+			feeds: [
+				{
+					// Define the custom number of visible mentions.
+					dropdownLimit: 4
+					feed: [ ... ]
+				}
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
 ```
 
 A full, working demo with all possible customizations and its source code is available {@link features/mentions#fully-customized-mention-feed at the end of this section}.
@@ -247,13 +277,13 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, viewWriter ) => {
+		view: ( modelAttributeValue, { writer } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
 			}
 
-			return viewWriter.createAttributeElement( 'a', {
+			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,
@@ -279,6 +309,7 @@ Below is an example of a customized mention feature that:
 * Uses a feed of items with additional properties (`id`, `username`, `link`).
 * Renders custom item views in the autocomplete panel.
 * Converts a mention to an `<a>` element instead of a `<span>`.
+* Limits a number of mentions to 4 elements.
 
 {@snippet features/mention-customization}
 
@@ -289,6 +320,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-mention-customization' ), {
 		plugins: [ Mention, MentionCustomization, ... ],
 		mention: {
+			dropdownLimit: 4,
 			feeds: [
 				{
 					marker: '@',
@@ -339,13 +371,13 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, viewWriter ) => {
+		view: ( modelAttributeValue, { writer } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
 			}
 
-			return viewWriter.createAttributeElement( 'a', {
+			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,

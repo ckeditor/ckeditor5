@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,13 +8,11 @@
 // Multiroot editor dependencies.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
-import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 import { enablePlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
@@ -26,6 +24,7 @@ import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Link from '@ckeditor/ckeditor5-link/src/link';
@@ -39,6 +38,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 /**
@@ -66,8 +66,6 @@ class MultirootEditor extends Editor {
 	 */
 	constructor( sourceElements, config ) {
 		super( config );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
@@ -159,14 +157,6 @@ class MultirootEditorUI extends EditorUI {
 		 * @member {module:ui/editorui/editoruiview~EditorUIView} #view
 		 */
 		this.view = view;
-
-		/**
-		 * A normalized `config.toolbar` object.
-		 *
-		 * @type {Object}
-		 * @private
-		 */
-		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 	}
 
 	/**
@@ -285,7 +275,7 @@ class MultirootEditorUI extends EditorUI {
 		const view = this.view;
 		const toolbar = view.toolbar;
 
-		toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
+		toolbar.fillFromConfig( editor.config.get( 'toolbar' ), this.componentFactory );
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
@@ -316,7 +306,8 @@ class MultirootEditorUI extends EditorUI {
 					view: editingView,
 					element: editingRoot,
 					text: placeholderText,
-					isDirectHost: false
+					isDirectHost: false,
+					keepOnFocus: true
 				} );
 			}
 		}
@@ -399,13 +390,17 @@ MultirootEditor
 		footerleft: document.querySelector( '#footer-left' ),
 		footerright: document.querySelector( '#footer-right' )
 	}, {
-		plugins: [ Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
-			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage ],
-		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'blockQuote',
-			'insertTable', 'mediaEmbed', 'undo', 'redo' ],
+		plugins: [
+			Essentials, Paragraph, Heading, Bold, Italic, List, Link, BlockQuote, Image, ImageCaption,
+			ImageStyle, ImageToolbar, ImageUpload, Table, TableToolbar, MediaEmbed, EasyImage, CloudServices, FindAndReplace
+		],
+		toolbar: [
+			'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'uploadImage', 'blockQuote',
+			'insertTable', 'mediaEmbed', 'findAndReplace', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
-			styles: [ 'full', 'alignLeft', 'alignRight' ]
+			toolbar: [
+				'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative'
+			]
 		},
 		table: {
 			contentToolbar: [
@@ -420,7 +415,12 @@ MultirootEditor
 			footerleft: 'Left footer content',
 			footerright: 'Right footer content'
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} )
 	.then( newEditor => {
 		document.querySelector( '#toolbar' ).appendChild( newEditor.ui.view.toolbar.element );
@@ -430,4 +430,3 @@ MultirootEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-

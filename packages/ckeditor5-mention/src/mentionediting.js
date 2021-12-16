@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module mention/mentionediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
+import { Plugin } from 'ckeditor5/src/core';
+import { uid } from 'ckeditor5/src/utils';
 
 import MentionCommand from './mentioncommand';
 
@@ -49,7 +49,7 @@ export default class MentionEditing extends Plugin {
 			},
 			model: {
 				key: 'mention',
-				value: _toMentionAttribute
+				value: viewElement => _toMentionAttribute( viewElement )
 			}
 		} );
 
@@ -129,9 +129,9 @@ function preventPartialMentionDowncast( dispatcher ) {
 // Creates a mention element from the mention data.
 //
 // @param {Object} mention
-// @param {module:engine/view/downcastwriter~DowncastWriter} viewWriter
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {module:engine/view/attributeelement~AttributeElement}
-function createViewMentionElement( mention, viewWriter ) {
+function createViewMentionElement( mention, { writer } ) {
 	if ( !mention ) {
 		return;
 	}
@@ -146,7 +146,7 @@ function createViewMentionElement( mention, viewWriter ) {
 		priority: 20
 	};
 
-	return viewWriter.createAttributeElement( 'span', attributes, options );
+	return writer.createAttributeElement( 'span', attributes, options );
 }
 
 // Model post-fixer that disallows typing with selection when the selection is placed after the text node with the mention attribute or

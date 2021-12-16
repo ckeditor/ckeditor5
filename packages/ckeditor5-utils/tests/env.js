@@ -1,15 +1,22 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import env, { isMac, isGecko, isSafari, isAndroid, isRegExpUnicodePropertySupported } from '../src/env';
+import env, {
+	isMac, isWindows, isGecko, isSafari, isiOS, isAndroid, isRegExpUnicodePropertySupported, isBlink
+} from '../src/env';
+
+import global from '../src/dom/global';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 function toLowerCase( str ) {
 	return str.toLowerCase();
 }
 
 describe( 'Env', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'is an object', () => {
 		expect( env ).to.be.an( 'object' );
 	} );
@@ -17,6 +24,12 @@ describe( 'Env', () => {
 	describe( 'isMac', () => {
 		it( 'is a boolean', () => {
 			expect( env.isMac ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isWindows', () => {
+		it( 'is a boolean', () => {
+			expect( env.isWindows ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -32,9 +45,21 @@ describe( 'Env', () => {
 		} );
 	} );
 
+	describe( 'isiOS', () => {
+		it( 'is a boolean', () => {
+			expect( env.isiOS ).to.be.a( 'boolean' );
+		} );
+	} );
+
 	describe( 'isAndroid', () => {
 		it( 'is a boolean', () => {
 			expect( env.isAndroid ).to.be.a( 'boolean' );
+		} );
+	} );
+
+	describe( 'isBlink', () => {
+		it( 'is a boolean', () => {
+			expect( env.isBlink ).to.be.a( 'boolean' );
 		} );
 	} );
 
@@ -65,6 +90,26 @@ describe( 'Env', () => {
 			expect( isMac( '' ) ).to.be.false;
 			expect( isMac( 'mac' ) ).to.be.false;
 			expect( isMac( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isWindows()', () => {
+		it( 'returns true for Windows UA strings', () => {
+			expect( isWindows( 'windows' ) ).to.be.true;
+
+			expect( isWindows( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0'
+			) ) ).to.be.true;
+
+			expect( isWindows( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-Windows UA strings', () => {
+			expect( isWindows( '' ) ).to.be.false;
+			expect( isWindows( 'macintosh' ) ).to.be.false;
+			expect( isWindows( 'foo' ) ).to.be.false;
 		} );
 	} );
 
@@ -118,6 +163,52 @@ describe( 'Env', () => {
 		/* eslint-enable max-len */
 	} );
 
+	describe( 'isiOS()', () => {
+		/* eslint-disable max-len */
+		it( 'returns true for Safari@iPhone UA string ("Request Mobile Website")', () => {
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (iPhone; CPU OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns true for Safari@iPad UA string ("Request Mobile Website")', () => {
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (iPad; CPU OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns true for Safari UA string ("Request Desktop Website")', () => {
+			// This is how you tell Safari@Mac from Safari@iOS.
+			testUtils.sinon.stub( global.window.navigator, 'maxTouchPoints' ).get( () => 3 );
+
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns true for Chrome UA string', () => {
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (iPad; CPU OS 15_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/95.0.4638.50 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-iOS UA strings', () => {
+			// Safari on Mac
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.1 Safari/605.1.15'
+			) ) ).to.be.false;
+
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+			) ) ).to.be.false;
+
+			expect( isiOS( toLowerCase(
+				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
+			) ) ).to.be.false;
+		} );
+		/* eslint-enable max-len */
+	} );
+
 	describe( 'isAndroid()', () => {
 		/* eslint-disable max-len */
 		it( 'returns true for Android UA strings', () => {
@@ -142,6 +233,42 @@ describe( 'Env', () => {
 
 			expect( isAndroid( toLowerCase(
 				'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko'
+			) ) ).to.be.false;
+		} );
+		/* eslint-enable max-len */
+	} );
+
+	describe( 'isBlink()', () => {
+		/* eslint-disable max-len */
+		it( 'returns true for Blink UA strings', () => {
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36'
+			) ) ).to.be.true;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36'
+			) ) ).to.be.true;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36 Edg/84.0.522.52'
+			) ) ).to.be.true;
+		} );
+
+		it( 'returns false for non-Blink UA strings', () => {
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0.3 Safari/605.1.15'
+			) ) ).to.be.false;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1'
+			) ) ).to.be.false;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+			) ) ).to.be.false;
+
+			expect( isBlink( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36 Edge/17.17134'
 			) ) ).to.be.false;
 		} );
 		/* eslint-enable max-len */

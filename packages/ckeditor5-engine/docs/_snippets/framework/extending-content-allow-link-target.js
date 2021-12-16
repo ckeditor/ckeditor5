@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,7 +12,7 @@ function AllowLinkTarget( editor ) {
 
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'linkTarget',
-		view: ( attributeValue, writer ) => {
+		view: ( attributeValue, { writer } ) => {
 			const linkElement = writer.createAttributeElement( 'a', { target: attributeValue }, { priority: 5 } );
 			writer.setCustomProperty( 'link', true, linkElement );
 
@@ -35,8 +35,10 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-link-target' ), {
 		cloudServices: CS_CONFIG,
 		extraPlugins: [ AllowLinkTarget ],
-		toolbar: {
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} )
 	.then( editor => {

@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-resizer-size: 10px;
+
+	/* Set the resizer with a 50% offset. */
+	--ck-resizer-offset: calc( ( var(--ck-resizer-size) / -2 ) - 2px);
+	--ck-resizer-border-width: 1px;
+}
+
+.ck .ck-widget__resizer {
+	outline: 1px solid var(--ck-color-resizer);
+}
+
+.ck .ck-widget__resizer__handle {
+	width: var(--ck-resizer-size);
+	height: var(--ck-resizer-size);
+	background: var(--ck-color-focus-border);
+	border: var(--ck-resizer-border-width) solid hsl(0, 0%, 100%);
+	border-radius: var(--ck-resizer-border-radius);
+
+	&.ck-widget__resizer__handle-top-left {
+		top: var(--ck-resizer-offset);
+		left: var(--ck-resizer-offset);
+	}
+
+	&.ck-widget__resizer__handle-top-right {
+		top: var(--ck-resizer-offset);
+		right: var(--ck-resizer-offset);
+	}
+
+	&.ck-widget__resizer__handle-bottom-right {
+		bottom: var(--ck-resizer-offset);
+		right: var(--ck-resizer-offset);
+	}
+
+	&.ck-widget__resizer__handle-bottom-left {
+		bottom: var(--ck-resizer-offset);
+		left: var(--ck-resizer-offset);
+	}
+}

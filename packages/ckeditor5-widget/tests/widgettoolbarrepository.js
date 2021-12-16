@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,11 +14,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Widget from '../src/widget';
 import WidgetToolbarRepository from '../src/widgettoolbarrepository';
-import {
-	isWidget,
-	toWidget,
-	centeredBalloonPositionForLongWidgets
-} from '../src/utils';
+import { isWidget, toWidget } from '../src/utils';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -138,7 +134,7 @@ describe( 'WidgetToolbarRepository', () => {
 			expect( widgetToolbarRepository._toolbarDefinitions.get( 'fake' ) ).to.be.undefined;
 
 			expect( consoleWarnStub.calledOnce ).to.equal( true );
-			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items:/ );
+			expect( consoleWarnStub.firstCall.args[ 0 ] ).to.match( /^widget-toolbar-no-items/ );
 		} );
 	} );
 
@@ -517,7 +513,7 @@ describe( 'WidgetToolbarRepository', () => {
 						defaultPositions.southArrowNorth,
 						defaultPositions.southArrowNorthWest,
 						defaultPositions.southArrowNorthEast,
-						centeredBalloonPositionForLongWidgets
+						defaultPositions.viewportStickyNorth
 					]
 				},
 				balloonClassName: 'ck-toolbar-container'
@@ -732,28 +728,26 @@ class FakeWidget extends Plugin {
 		schema.register( 'fake-widget', {
 			isObject: true,
 			isBlock: true,
-			allowWhere: '$block'
+			allowWhere: '$block',
+			allowChildren: [ '$text', 'paragraph' ]
 		} );
-
-		schema.extend( '$text', { allowIn: 'fake-widget' } );
-		schema.extend( 'paragraph', { allowIn: 'fake-widget' } );
 
 		const conversion = editor.conversion;
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'fake-widget',
-			view: ( modelElement, viewWriter ) => {
-				return viewWriter.createContainerElement( 'div' );
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement( 'div' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fake-widget',
-			view: ( modelElement, viewWriter ) => {
-				const fakeWidget = viewWriter.createContainerElement( 'div' );
-				viewWriter.setCustomProperty( 'fakeWidget', true, fakeWidget );
+			view: ( modelElement, { writer } ) => {
+				const fakeWidget = writer.createContainerElement( 'div' );
+				writer.setCustomProperty( 'fakeWidget', true, fakeWidget );
 
-				return toWidget( fakeWidget, viewWriter, { label: 'fake-widget' } );
+				return toWidget( fakeWidget, writer, { label: 'fake-widget' } );
 			}
 		} );
 
@@ -761,8 +755,8 @@ class FakeWidget extends Plugin {
 			view: {
 				name: 'div'
 			},
-			model: ( view, modelWriter ) => {
-				return modelWriter.createElement( 'fake-widget' );
+			model: ( view, { writer } ) => {
+				return writer.createElement( 'fake-widget' );
 			}
 		} );
 	}
@@ -794,18 +788,18 @@ class FakeChildWidget extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'fake-child-widget',
-			view: ( modelElement, viewWriter ) => {
-				return viewWriter.createContainerElement( 'div' );
+			view: ( modelElement, { writer } ) => {
+				return writer.createContainerElement( 'div' );
 			}
 		} );
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fake-child-widget',
-			view: ( modelElement, viewWriter ) => {
-				const fakeWidget = viewWriter.createContainerElement( 'div' );
-				viewWriter.setCustomProperty( 'fakeChildWidget', true, fakeWidget );
+			view: ( modelElement, { writer } ) => {
+				const fakeWidget = writer.createContainerElement( 'div' );
+				writer.setCustomProperty( 'fakeChildWidget', true, fakeWidget );
 
-				return toWidget( fakeWidget, viewWriter, { label: 'fake-child-widget' } );
+				return toWidget( fakeWidget, writer, { label: 'fake-child-widget' } );
 			}
 		} );
 
@@ -813,8 +807,8 @@ class FakeChildWidget extends Plugin {
 			view: {
 				name: 'div'
 			},
-			model: ( view, modelWriter ) => {
-				return modelWriter.createElement( 'fake-child-widget' );
+			model: ( view, { writer } ) => {
+				return writer.createElement( 'fake-child-widget' );
 			}
 		} );
 	}

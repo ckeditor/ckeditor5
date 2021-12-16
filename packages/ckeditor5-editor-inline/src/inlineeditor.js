@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,22 +7,16 @@
  * @module editor-inline/inlineeditor
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { Editor, DataApiMixin, ElementApiMixin, attachToForm, secureSourceElement } from 'ckeditor5/src/core';
+import { mix, getDataFromElement, setDataInElement, CKEditorError } from 'ckeditor5/src/utils';
+
+import { isElement } from 'lodash-es';
+
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
-import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
- * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
+ * The {@glink builds/guides/predefined-builds/overview#inline-editor inline editor} implementation.
  * It uses an inline editable and a floating toolbar.
  * See the {@glink examples/builds/inline-editor demo}.
  *
@@ -33,9 +27,9 @@ import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/secur
  *
  * The inline editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-inline`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline) package)
- * but it is also available in the {@glink builds/guides/overview#inline-editor inline build}.
+ * but it is also available in the {@glink builds/guides/predefined-builds/overview#inline-editor inline build}.
  *
- * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * {@glink builds/guides/predefined-builds/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
  * Using the editor from source gives much better flexibility and allows easier customization.
@@ -63,8 +57,6 @@ export default class InlineEditor extends Editor {
 	 */
 	constructor( sourceElementOrData, config ) {
 		super( config );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 
@@ -173,7 +165,7 @@ export default class InlineEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-inline`).
+	 * {@glink builds/guides/predefined-builds/overview editor build} (for example – `@ckeditor/ckeditor5-build-inline`).
 	 *
 	 * If you want to use the inline editor from source (`@ckeditor/ckeditor5-editor-inline/src/inlineeditor`),
 	 * you need to define the list of
@@ -199,8 +191,8 @@ export default class InlineEditor extends Editor {
 
 			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
-				throw new CKEditorError(
-					'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.', null );
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
 			}
 
 			const editor = new this( sourceElementOrData, config );
@@ -213,14 +205,11 @@ export default class InlineEditor extends Editor {
 					.then( () => {
 						if ( !isHTMLElement && config.initialData ) {
 							// Documented in core/editor/editorconfig.jdoc.
-							throw new CKEditorError(
-								'editor-create-initial-data: ' +
-								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
-								null
-							);
+							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
-						const initialData = config.initialData || getInitialData( sourceElementOrData );
+						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )

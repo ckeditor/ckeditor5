@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,17 +7,12 @@
  * @module font/ui/colortableview
  */
 
-import View from '@ckeditor/ckeditor5-ui/src/view';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ColorTileView from '@ckeditor/ckeditor5-ui/src/colorgrid/colortileview';
-import ColorGridView from '@ckeditor/ckeditor5-ui/src/colorgrid/colorgridview';
-import LabelView from '@ckeditor/ckeditor5-ui/src/label/labelview';
+import { icons } from 'ckeditor5/src/core';
+import { ButtonView, ColorGridView, ColorTileView, FocusCycler, LabelView, Template, View } from 'ckeditor5/src/ui';
+import { FocusTracker, KeystrokeHandler } from 'ckeditor5/src/utils';
+
 import DocumentColorCollection from '../documentcolorcollection';
-import Template from '@ckeditor/ckeditor5-ui/src/template';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import removeButtonIcon from '@ckeditor/ckeditor5-core/theme/icons/eraser.svg';
+
 import '../../theme/fontcolor.css';
 
 /**
@@ -40,7 +35,7 @@ export default class ColorTableView extends View {
 	 * @param {Number} config.columns The number of columns in the color grid.
 	 * @param {String} config.removeButtonLabel The label of the button responsible for removing the color.
 	 * @param {String} config.documentColorsLabel The label for the section with the document colors.
-	 * @param {String} config.documentColorsCount The number of colors in the document colors section inside the color dropdown.
+	 * @param {Number} config.documentColorsCount The number of colors in the document colors section inside the color dropdown.
 	 */
 	constructor( locale, { colors, columns, removeButtonLabel, documentColorsLabel, documentColorsCount } ) {
 		super( locale );
@@ -56,7 +51,7 @@ export default class ColorTableView extends View {
 		/**
 		 * An array with objects representing colors to be displayed in the grid.
 		 *
-		 * @type {Arrray.<module:ui/colorgrid/colorgrid~ColorDefinition>}
+		 * @type {Array.<module:ui/colorgrid/colorgrid~ColorDefinition>}
 		 */
 		this.colorDefinitions = colors;
 
@@ -241,6 +236,16 @@ export default class ColorTableView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
 	 * Appends {@link #staticColorsGrid} and {@link #documentColorsGrid} views.
 	 */
 	appendGrids() {
@@ -297,7 +302,7 @@ export default class ColorTableView extends View {
 
 		buttonView.set( {
 			withText: true,
-			icon: removeButtonIcon,
+			icon: icons.eraser,
 			tooltip: true,
 			label: this.removeButtonLabel
 		} );

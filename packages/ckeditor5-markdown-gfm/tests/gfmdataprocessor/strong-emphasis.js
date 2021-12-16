@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -77,6 +77,18 @@ describe( 'GFMDataProcessor', () => {
 		it( 'should not process emphasis inside words', () => {
 			testDataProcessor(
 				'This should_not_be_emp.',
+
+				'<p>This should_not_be_emp.</p>',
+
+				// Turndow escape markdown markup characters used inside text.
+				'This should\\_not\\_be\\_emp.'
+			);
+		} );
+
+		it( 'should not render escape marks', () => {
+			testDataProcessor(
+				// Following the previous test.
+				'This should\\_not\\_be\\_emp.',
 
 				'<p>This should_not_be_emp.</p>'
 			);

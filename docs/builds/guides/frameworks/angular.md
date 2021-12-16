@@ -4,9 +4,15 @@ category: builds-integration-frameworks
 order: 20
 ---
 
+{@snippet builds/frameworks/framework-integration}
+
 # Rich text editor component for Angular
 
-[![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular)
+<p>
+	<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-angular" target="_blank" rel="noopener">
+		<img src="https://badge.fury.io/js/%40ckeditor%2Fckeditor5-angular.svg" alt="npm version" loading="lazy">
+	</a>
+</p>
 
 CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
@@ -15,6 +21,15 @@ Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 
 <info-box>
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link builds/guides/development/custom-builds create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
+
+## Supported Angular versions
+
+Because of the breaking changes in the Angular library output format, the `ckeditor5-angular` package is released in the following versions to support various Angular ecosystems:
+
+* Versions `1.x.x` &ndash; For **Angular 5-8** applications. We no longer provide support for these as the official support for these Angular versions was dropped.
+* Versions `2.x.x` &ndash; For **Angular 9.1+** applications. These versions are currently actively supported.
+
+All available versions are [listed on npm](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular), where they can be pulled from.
 
 ## Quick start
 
@@ -130,7 +145,7 @@ Note that to allow importing JavaScript files without providing their correspond
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate [collaboration plugins](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html) in an Angular application is to create a custom build first and later import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and later import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
 
 For such scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
 
@@ -497,6 +512,21 @@ export class MyComponent {
 ```
 
 For advanced usage see the {@link features/ui-language Setting the UI language} guide.
+
+## Common issues
+
+### zone.js
+
+There is a repeatable issue with zone.js library when upgrading to new Angular versions. The ngOnDestroy handler crashes throwing:
+```
+ERROR Error: Uncaught (in promise): TypeError: Cannot read property 'data-ck-expando' of undefined
+TypeError: Cannot read property 'data-ck-expando' of undefined
+```
+
+Workaround: in `polyfills.js` import zone.js using `import zone.js/dist/zone.js` instead of `import 'zone.js'`.
+More details:
+- https://github.com/ckeditor/ckeditor5-angular/issues/109
+- https://github.com/angular/angular/tree/master/packages/zone.js#breaking-changes-since-zonejs-v0111
 
 ## Contributing and reporting issues
 

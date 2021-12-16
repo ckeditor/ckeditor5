@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -38,11 +38,11 @@ class FancyWidget extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'fancywidget',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
-				viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewWriter.createText( 'widget' ) );
+			view: ( modelItem, { writer } ) => {
+				const widgetElement = writer.createContainerElement( 'figure', { class: 'fancy-widget' } );
+				writer.insert( writer.createPositionAt( widgetElement, 0 ), writer.createText( 'widget' ) );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, writer );
 			}
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -173,6 +173,18 @@ describe( 'DecoupledEditor build', () => {
 					'<ol>',
 					'<li>Item 1.</li>',
 					'<li>Item 2.</li>',
+					'</ol>'
+				].join( '' );
+
+				editor.setData( data );
+				expect( editor.getData() ).to.equal( data );
+			} );
+
+			it( 'list style works', () => {
+				const data = [
+					'<ol style="list-style-type:upper-roman;">' +
+					'<li>Item 1.</li>' +
+					'<li>Item 2.</li>' +
 					'</ol>'
 				].join( '' );
 

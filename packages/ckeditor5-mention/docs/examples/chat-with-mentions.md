@@ -13,7 +13,7 @@ Learn how to {@link features/mentions#configuration configure mention feeds} in 
 
 ## Source code
 
-The following code will let you run the editor inside a chat application like in the example above. See the {@link builds/guides/integration/installing-plugins installing plugins} guide to learn more.
+The following code will let you run the editor inside a chat application like in the example above. See the {@link builds/guides/integration/installing-plugins installing plugins guide} to learn more.
 
 **Note**: You may need to change the path to the `assets/img` both in the HTML and JavaScript code to load user avatars properly.
 
@@ -141,6 +141,10 @@ The HTML code of the application is listed below:
 		border-top-right-radius: 0;
 	}
 
+	.chat .chat__editor + .ck.ck-editor .ck-content.highlighted {
+		animation: highlight 600ms ease-out;
+	}
+
 	/* ---- In–editor mention list --------------------------------------------------------------- */
 
 	.ck-mentions .mention__item {
@@ -249,11 +253,31 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
+		const editingView = editor.editing.view;
+		const rootElement = editingView.document.getRoot();
+
 		window.editor = editor;
 
 		// Clone the first message in the chat when "Send" is clicked, fill it with new data
 		// and append to the chat list.
 		document.querySelector( '.chat-send' ).addEventListener( 'click', () => {
+			const message = editor.getData();
+
+			if ( !message ) {
+				editingView.change( writer => {
+					writer.addClass( 'highlighted', rootElement );
+					editingView.focus();
+				} );
+
+				setTimeout( () => {
+					editingView.change( writer => {
+						writer.removeClass( 'highlighted', rootElement );
+					} );
+				}, 650 );
+
+				return;
+			}
+
 			const clone = document.querySelector( '.chat__posts li' ).cloneNode( true );
 
 			clone.classList.add( 'new-post' );
@@ -266,9 +290,12 @@ ClassicEditor
 			mailtoUser.href = 'mailto:info@cksource.com';
 
 			clone.querySelector( '.chat__posts__post__time' ).textContent = 'just now';
-			clone.querySelector( '.chat__posts__post__content' ).innerHTML = editor.getData();
+			clone.querySelector( '.chat__posts__post__content' ).innerHTML = message;
 
 			document.querySelector( '.chat__posts' ).appendChild( clone );
+
+			editor.setData( '' );
+			editingView.focus();
 		} );
 	} )
 	.catch( err => {
@@ -308,7 +335,7 @@ function MentionLinks( editor ) {
 	// element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, viewWriter ) => {
+		view: ( modelAttributeValue, { writer } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
@@ -323,7 +350,7 @@ function MentionLinks( editor ) {
 				href = `https://example.com/social/${ modelAttributeValue.id.slice( 1 ) }`;
 			}
 
-			return viewWriter.createAttributeElement( 'a', {
+			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				href

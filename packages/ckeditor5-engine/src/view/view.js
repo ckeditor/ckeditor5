@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -22,6 +22,7 @@ import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
 import CompositionObserver from './observer/compositionobserver';
 import InputObserver from './observer/inputobserver';
+import ArrowKeysObserver from './observer/arrowkeysobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -115,7 +116,7 @@ export default class View {
 		 * @type {module:engine/view/renderer~Renderer}
 		 */
 		this._renderer = new Renderer( this.domConverter, this.document.selection );
-		this._renderer.bind( 'isFocused' ).to( this.document );
+		this._renderer.bind( 'isFocused', 'isSelecting' ).to( this.document );
 
 		/**
 		 * A DOM root attributes cache. It saves the initial values of DOM root attributes before the DOM element
@@ -184,6 +185,7 @@ export default class View {
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
 		this.addObserver( CompositionObserver );
+		this.addObserver( ArrowKeysObserver );
 
 		if ( env.isAndroid ) {
 			this.addObserver( InputObserver );
@@ -206,6 +208,11 @@ export default class View {
 
 		// Listen to the document selection changes directly.
 		this.listenTo( this.document.selection, 'change', () => {
+			this._hasChangedSinceTheLastRendering = true;
+		} );
+
+		// Trigger re-render if only the focus changed.
+		this.listenTo( this.document, 'change:isFocused', () => {
 			this._hasChangedSinceTheLastRendering = true;
 		} );
 	}
@@ -460,9 +467,7 @@ export default class View {
 			 * @error cannot-change-view-tree
 			 */
 			throw new CKEditorError(
-				'cannot-change-view-tree: ' +
-				'Attempting to make changes to the view when it is in an incorrect state: rendering or post-fixers are in progress. ' +
-				'This may cause some unexpected behavior and inconsistency between the DOM and the view.',
+				'cannot-change-view-tree',
 				this
 			);
 		}

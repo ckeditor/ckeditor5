@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module list/converters
  */
+
+import { TreeWalker } from 'ckeditor5/src/engine';
 
 import {
 	generateLiInUl,
@@ -14,7 +16,6 @@ import {
 	getSiblingListItem,
 	positionAfterUiElements
 } from './utils';
-import TreeWalker from '@ckeditor/ckeditor5-engine/src/model/treewalker';
 
 /**
  * A model-to-view converter for the `listItem` model element insertion.
@@ -379,30 +380,16 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'listType', type, listItem );
 
-		// Try to find allowed parent for list item.
-		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
-
-		// When there is no allowed parent it means that list item cannot be converted at current model position
-		// and in any of position ancestors.
-		if ( !splitResult ) {
+		if ( !conversionApi.safeInsert( listItem, data.modelCursor ) ) {
 			return;
 		}
-
-		writer.insert( listItem, splitResult.position );
 
 		const nextPosition = viewToModelListItemChildrenConverter( listItem, data.viewItem.getChildren(), conversionApi );
 
 		// Result range starts before the first item and ends after the last.
 		data.modelRange = writer.createRange( data.modelCursor, nextPosition );
 
-		// When `data.modelCursor` parent had to be split to insert list item...
-		if ( splitResult.cursorParent ) {
-			// Continue conversion in the split element.
-			data.modelCursor = writer.createPositionAt( splitResult.cursorParent, 0 );
-		} else {
-			// Otherwise continue conversion after the last list item.
-			data.modelCursor = data.modelRange.end;
-		}
+		conversionApi.updateConversionResult( listItem, data );
 	}
 }
 
@@ -448,29 +435,16 @@ export function cleanListItem( evt, data, conversionApi ) {
 		const children = [ ...data.viewItem.getChildren() ];
 
 		let foundList = false;
-		let firstNode = true;
 
 		for ( const child of children ) {
 			if ( foundList && !isList( child ) ) {
 				child._remove();
 			}
 
-			if ( child.is( '$text' ) ) {
-				// If this is the first node and it's a text node, left-trim it.
-				if ( firstNode ) {
-					child._data = child.data.replace( /^\s+/, '' );
-				}
-
-				// If this is the last text node before <ul> or <ol>, right-trim it.
-				if ( !child.nextSibling || isList( child.nextSibling ) ) {
-					child._data = child.data.replace( /\s+$/, '' );
-				}
-			} else if ( isList( child ) ) {
+			if ( isList( child ) ) {
 				// If this is a <ul> or <ol>, do not process it, just mark that we already visited list element.
 				foundList = true;
 			}
-
-			firstNode = false;
 		}
 	}
 }
@@ -621,6 +595,12 @@ export function modelChangePostFixer( model, writer ) {
 
 				if ( item.hasAttribute( 'listType' ) ) {
 					writer.removeAttribute( 'listType', item );
+
+					applied = true;
+				}
+
+				if ( item.hasAttribute( 'listStyle' ) ) {
+					writer.removeAttribute( 'listStyle', item );
 
 					applied = true;
 				}

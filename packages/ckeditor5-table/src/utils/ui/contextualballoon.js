@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,10 @@
  * @module table/utils/ui/contextualballoon
  */
 
-import { centeredBalloonPositionForLongWidgets } from '@ckeditor/ckeditor5-widget/src/utils';
-import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import { Rect } from 'ckeditor5/src/utils';
+import { BalloonPanelView } from 'ckeditor5/src/ui';
+
 import { getTableWidgetAncestor } from './widget';
-import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 
 const DEFAULT_BALLOON_POSITIONS = BalloonPanelView.defaultPositions;
 
@@ -20,12 +20,8 @@ const BALLOON_POSITIONS = [
 	DEFAULT_BALLOON_POSITIONS.northArrowSouthEast,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorth,
 	DEFAULT_BALLOON_POSITIONS.southArrowNorthWest,
-	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast
-];
-
-const TABLE_PROPERTIES_BALLOON_POSITIONS = [
-	...BALLOON_POSITIONS,
-	centeredBalloonPositionForLongWidgets
+	DEFAULT_BALLOON_POSITIONS.southArrowNorthEast,
+	DEFAULT_BALLOON_POSITIONS.viewportStickyNorth
 ];
 
 /**
@@ -68,7 +64,7 @@ export function getBalloonTablePositionData( editor ) {
 
 	return {
 		target: editor.editing.view.domConverter.viewToDom( viewTable ),
-		positions: TABLE_PROPERTIES_BALLOON_POSITIONS
+		positions: BALLOON_POSITIONS
 	};
 }
 
@@ -87,11 +83,7 @@ export function getBalloonCellPositionData( editor ) {
 
 	if ( selection.rangeCount > 1 ) {
 		return {
-			target: () => createBoundingRect( selection.getRanges(), modelRange => {
-				const modelTableCell = getTableCellAtPosition( modelRange.start );
-				const viewTableCell = mapper.toViewElement( modelTableCell );
-				return new Rect( domConverter.viewToDom( viewTableCell ) );
-			} ),
+			target: () => createBoundingRect( selection.getRanges(), editor ),
 			positions: BALLOON_POSITIONS
 		};
 	}
@@ -115,30 +107,19 @@ function getTableCellAtPosition( position ) {
 	return isTableCellSelected ? position.nodeAfter : position.findAncestor( 'tableCell' );
 }
 
-// Returns bounding rect for list of rects.
+// Returns bounding rectangle for given model ranges.
 //
-// @param {Array.<module:utils/dom/rect~Rect>|Array.<*>} list List of `Rect`s or any list to map by `mapFn`.
-// @param {Function} mapFn Mapping function for list elements.
+// @param {Iterable.<module:engine/model/range~Range>} ranges Model ranges that the bounding rect should be returned for.
+// @param {module:core/editor/editor~Editor} editor The editor instance.
 // @returns {module:utils/dom/rect~Rect}
-function createBoundingRect( list, mapFn ) {
-	const rectData = {
-		left: Number.POSITIVE_INFINITY,
-		top: Number.POSITIVE_INFINITY,
-		right: Number.NEGATIVE_INFINITY,
-		bottom: Number.NEGATIVE_INFINITY
-	};
+function createBoundingRect( ranges, editor ) {
+	const mapper = editor.editing.mapper;
+	const domConverter = editor.editing.view.domConverter;
+	const rects = Array.from( ranges ).map( range => {
+		const modelTableCell = getTableCellAtPosition( range.start );
+		const viewTableCell = mapper.toViewElement( modelTableCell );
+		return new Rect( domConverter.viewToDom( viewTableCell ) );
+	} );
 
-	for ( const item of list ) {
-		const rect = mapFn( item );
-
-		rectData.left = Math.min( rectData.left, rect.left );
-		rectData.top = Math.min( rectData.top, rect.top );
-		rectData.right = Math.max( rectData.right, rect.right );
-		rectData.bottom = Math.max( rectData.bottom, rect.bottom );
-	}
-
-	rectData.width = rectData.right - rectData.left;
-	rectData.height = rectData.bottom - rectData.top;
-
-	return new Rect( rectData );
+	return Rect.getBoundingRect( rects );
 }

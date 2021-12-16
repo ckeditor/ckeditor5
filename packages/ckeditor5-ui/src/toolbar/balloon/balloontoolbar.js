@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,13 +10,14 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
-import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import BalloonPanelView, { generatePositions } from '../../panel/balloon/balloonpanelview.js';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
 import { debounce } from 'lodash-es';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import { env, global } from '@ckeditor/ckeditor5-utils';
 
 const toPx = toUnit( 'px' );
 
@@ -165,6 +166,15 @@ export default class BalloonToolbar extends Plugin {
 				} );
 			} );
 		}
+
+		// Listen to the toolbar view and whenever it changes its geometry due to some items being
+		// grouped or ungrouped, update the position of the balloon because a shorter/longer toolbar
+		// means the balloon could be pointing at the wrong place. Once updated, the balloon will point
+		// at the right selection in the content again.
+		// https://github.com/ckeditor/ckeditor5/issues/6444
+		this.listenTo( this.toolbarView, 'groupedItemsUpdate', () => {
+			this._updatePosition();
+		} );
 	}
 
 	/**
@@ -176,7 +186,7 @@ export default class BalloonToolbar extends Plugin {
 	afterInit() {
 		const factory = this.editor.ui.componentFactory;
 
-		this.toolbarView.fillFromConfig( this._balloonConfig.items, factory );
+		this.toolbarView.fillFromConfig( this._balloonConfig, factory );
 	}
 
 	/**
@@ -188,13 +198,8 @@ export default class BalloonToolbar extends Plugin {
 	_createToolbarView() {
 		const shouldGroupWhenFull = !this._balloonConfig.shouldNotGroupWhenFull;
 		const toolbarView = new ToolbarView( this.editor.locale, {
-			shouldGroupWhenFull
-		} );
-
-		toolbarView.extendTemplate( {
-			attributes: {
-				class: [ 'ck-toolbar_floating' ]
-			}
+			shouldGroupWhenFull,
+			isFloating: true
 		} );
 
 		toolbarView.render();
@@ -222,9 +227,9 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Do not show the toolbar when there is more than one range in the selection and they fully contain object elements.
+		// Do not show the toolbar when there is more than one range in the selection and they fully contain selectable elements.
 		// See https://github.com/ckeditor/ckeditor5/issues/6443.
-		if ( selectionContainsOnlyMultipleObjects( selection, schema ) ) {
+		if ( selectionContainsOnlyMultipleSelectables( selection, schema ) ) {
 			return;
 		}
 
@@ -236,7 +241,7 @@ export default class BalloonToolbar extends Plugin {
 
 		// Update the toolbar position when the editor ui should be refreshed.
 		this.listenTo( this.editor.ui, 'update', () => {
-			this._balloon.updatePosition( this._getBalloonPositionData() );
+			this._updatePosition();
 		} );
 
 		// Add the toolbar to the common editor contextual balloon.
@@ -296,8 +301,20 @@ export default class BalloonToolbar extends Plugin {
 					return rangeRects[ rangeRects.length - 1 ];
 				}
 			},
-			positions: getBalloonPositions( isBackward )
+			positions: this._getBalloonPositions( isBackward )
 		};
+	}
+
+	/**
+	 * Updates the position of the {@link #_balloon} to make up for changes:
+	 *
+	 * * in the geometry of the selection it is attached to (e.g. the selection moved in the viewport or expanded or shrunk),
+	 * * or the geometry of the balloon toolbar itself (e.g. the toolbar has grouped or ungrouped some items and it is shorter or longer).
+	 *
+	 * @private
+	 */
+	_updatePosition() {
+		this._balloon.updatePosition( this._getBalloonPositionData() );
 	}
 
 	/**
@@ -329,49 +346,61 @@ export default class BalloonToolbar extends Plugin {
 	 * @protected
 	 * @event _selectionChangeDebounced
 	 */
+
+	/**
+	 * Returns toolbar positions for the given direction of the selection.
+	 *
+	 * @private
+	 * @param {Boolean} isBackward
+	 * @returns {Array.<module:utils/dom/position~Position>}
+	 */
+	_getBalloonPositions( isBackward ) {
+		const isSafariIniOS = env.isSafari && env.isiOS;
+
+		// https://github.com/ckeditor/ckeditor5/issues/7707
+		const positions = isSafariIniOS ? generatePositions( {
+			// 20px when zoomed out. Less then 20px when zoomed in; the "radius" of the native selection handle gets
+			// smaller as the user zooms in. No less than the default v-offset, though.
+			verticalOffset: Math.max(
+				BalloonPanelView.arrowVerticalOffset,
+				Math.round( 20 / global.window.visualViewport.scale )
+			)
+		} ) : BalloonPanelView.defaultPositions;
+
+		return isBackward ? [
+			positions.northWestArrowSouth,
+			positions.northWestArrowSouthWest,
+			positions.northWestArrowSouthEast,
+			positions.northWestArrowSouthMiddleEast,
+			positions.northWestArrowSouthMiddleWest,
+			positions.southWestArrowNorth,
+			positions.southWestArrowNorthWest,
+			positions.southWestArrowNorthEast,
+			positions.southWestArrowNorthMiddleWest,
+			positions.southWestArrowNorthMiddleEast
+		] : [
+			positions.southEastArrowNorth,
+			positions.southEastArrowNorthEast,
+			positions.southEastArrowNorthWest,
+			positions.southEastArrowNorthMiddleEast,
+			positions.southEastArrowNorthMiddleWest,
+			positions.northEastArrowSouth,
+			positions.northEastArrowSouthEast,
+			positions.northEastArrowSouthWest,
+			positions.northEastArrowSouthMiddleEast,
+			positions.northEastArrowSouthMiddleWest
+		];
+	}
 }
 
-// Returns toolbar positions for the given direction of the selection.
-//
-// @private
-// @param {Boolean} isBackward
-// @returns {Array.<module:utils/dom/position~Position>}
-function getBalloonPositions( isBackward ) {
-	const defaultPositions = BalloonPanelView.defaultPositions;
-
-	return isBackward ? [
-		defaultPositions.northWestArrowSouth,
-		defaultPositions.northWestArrowSouthWest,
-		defaultPositions.northWestArrowSouthEast,
-		defaultPositions.northWestArrowSouthMiddleEast,
-		defaultPositions.northWestArrowSouthMiddleWest,
-		defaultPositions.southWestArrowNorth,
-		defaultPositions.southWestArrowNorthWest,
-		defaultPositions.southWestArrowNorthEast,
-		defaultPositions.southWestArrowNorthMiddleWest,
-		defaultPositions.southWestArrowNorthMiddleEast
-	] : [
-		defaultPositions.southEastArrowNorth,
-		defaultPositions.southEastArrowNorthEast,
-		defaultPositions.southEastArrowNorthWest,
-		defaultPositions.southEastArrowNorthMiddleEast,
-		defaultPositions.southEastArrowNorthMiddleWest,
-		defaultPositions.northEastArrowSouth,
-		defaultPositions.northEastArrowSouthEast,
-		defaultPositions.northEastArrowSouthWest,
-		defaultPositions.northEastArrowSouthMiddleEast,
-		defaultPositions.northEastArrowSouthMiddleWest
-	];
-}
-
-// Returns "true" when the selection has multiple ranges and each range contains an object
+// Returns "true" when the selection has multiple ranges and each range contains a selectable element
 // and nothing else.
 //
 // @private
 // @param {module:engine/model/selection~Selection} selection
 // @param {module:engine/model/schema~Schema} schema
 // @returns {Boolean}
-function selectionContainsOnlyMultipleObjects( selection, schema ) {
+function selectionContainsOnlyMultipleSelectables( selection, schema ) {
 	// It doesn't contain multiple objects if there is only one range.
 	if ( selection.rangeCount === 1 ) {
 		return false;
@@ -380,7 +409,7 @@ function selectionContainsOnlyMultipleObjects( selection, schema ) {
 	return [ ...selection.getRanges() ].every( range => {
 		const element = range.getContainedElement();
 
-		return element && schema.isObject( element );
+		return element && schema.isSelectable( element );
 	} );
 }
 

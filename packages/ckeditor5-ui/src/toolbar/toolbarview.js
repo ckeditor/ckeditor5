@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,20 @@
  * @module ui/toolbar/toolbarview
  */
 
-/* globals console */
-
 import View from '../view';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '../focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import ToolbarSeparatorView from './toolbarseparatorview';
+import ToolbarLineBreakView from './toolbarlinebreakview';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
-import { attachLinkToDocumentation } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import verticalDotsIcon from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import normalizeToolbarConfig from './normalizetoolbarconfig';
+import threeVerticalDots from '@ckeditor/ckeditor5-core/theme/icons/three-vertical-dots.svg';
 
 import '../../theme/components/toolbar/toolbar.css';
 
@@ -171,28 +171,37 @@ export default class ToolbarView extends View {
 		 * @protected
 		 * @member {module:ui/focuscycler~FocusCycler}
 		 */
+
+		const isRtl = locale.uiLanguageDirection === 'rtl';
+
 		this._focusCycler = new FocusCycler( {
 			focusables: this.focusables,
 			focusTracker: this.focusTracker,
 			keystrokeHandler: this.keystrokes,
 			actions: {
 				// Navigate toolbar items backwards using the arrow[left,up] keys.
-				focusPrevious: [ 'arrowleft', 'arrowup' ],
+				focusPrevious: [ isRtl ? 'arrowright' : 'arrowleft', 'arrowup' ],
 
 				// Navigate toolbar items forwards using the arrow[right,down] keys.
-				focusNext: [ 'arrowright', 'arrowdown' ]
+				focusNext: [ isRtl ? 'arrowleft' : 'arrowright', 'arrowdown' ]
 			}
 		} );
+
+		const classes = [
+			'ck',
+			'ck-toolbar',
+			bind.to( 'class' ),
+			bind.if( 'isCompact', 'ck-toolbar_compact' )
+		];
+
+		if ( this.options.shouldGroupWhenFull && this.options.isFloating ) {
+			classes.push( 'ck-toolbar_floating' );
+		}
 
 		this.setTemplate( {
 			tag: 'div',
 			attributes: {
-				class: [
-					'ck',
-					'ck-toolbar',
-					bind.to( 'class' ),
-					bind.if( 'isCompact', 'ck-toolbar_compact' )
-				],
+				class: classes,
 				role: 'toolbar',
 				'aria-label': bind.to( 'ariaLabel' ),
 				style: {
@@ -250,6 +259,8 @@ export default class ToolbarView extends View {
 	 */
 	destroy() {
 		this._behavior.destroy();
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 
 		return super.destroy();
 	}
@@ -272,38 +283,139 @@ export default class ToolbarView extends View {
 	 * A utility that expands the plain toolbar configuration into
 	 * {@link module:ui/toolbar/toolbarview~ToolbarView#items} using a given component factory.
 	 *
-	 * @param {Array.<String>} config The toolbar items configuration.
+	 * @param {Array.<String>|Object} itemsOrConfig The toolbar items or the entire toolbar configuration object.
 	 * @param {module:ui/componentfactory~ComponentFactory} factory A factory producing toolbar items.
 	 */
-	fillFromConfig( config, factory ) {
-		this.items.addMany( config.map( name => {
-			if ( name == '|' ) {
-				return new ToolbarSeparatorView();
-			} else if ( factory.has( name ) ) {
+	fillFromConfig( itemsOrConfig, factory ) {
+		const config = normalizeToolbarConfig( itemsOrConfig );
+
+		const itemsToClean = config.items
+			.filter( ( name, idx, items ) => {
+				if ( name === '|' ) {
+					return true;
+				}
+
+				// Items listed in `config.removeItems` should not be added to the toolbar.
+				if ( config.removeItems.indexOf( name ) !== -1 ) {
+					return false;
+				}
+
+				if ( name === '-' ) {
+					// The toolbar line breaks must not be rendered when toolbar grouping is enabled.
+					// (https://github.com/ckeditor/ckeditor5/issues/8582)
+					if ( this.options.shouldGroupWhenFull ) {
+						/**
+						 * The toolbar multiline breaks (`-` items) only work when the automatic button grouping
+						 * is disabled in the toolbar configuration.
+						 * To do this, set the `shouldNotGroupWhenFull` option to `true` in the editor configuration:
+						 *
+						 *		const config = {
+						 *			toolbar: {
+						 *				items: [ ... ],
+						 *				shouldNotGroupWhenFull: true
+						 *			}
+						 *		}
+						 *
+						 * Learn more about {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+						 *
+						 * @error toolbarview-line-break-ignored-when-grouping-items
+						 */
+						logWarning( 'toolbarview-line-break-ignored-when-grouping-items', items );
+
+						return false;
+					}
+
+					return true;
+				}
+
+				// For the items that cannot be instantiated we are sending warning message. We also filter them out.
+				if ( !factory.has( name ) ) {
+					/**
+					 * There was a problem processing the configuration of the toolbar. The item with the given
+					 * name does not exist so it was omitted when rendering the toolbar.
+					 *
+					 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
+					 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
+					 *
+					 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
+					 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
+					 *
+					 * You can use the following snippet to retrieve all available toolbar items:
+					 *
+					 *		Array.from( editor.ui.componentFactory.names() );
+					 *
+					 * @error toolbarview-item-unavailable
+					 * @param {String} name The name of the component.
+					 */
+					logWarning( 'toolbarview-item-unavailable', { name } );
+
+					return false;
+				}
+
+				return true;
+			} );
+
+		const itemsToAdd = this._cleanSeparators( itemsToClean )
+			// Instantiate toolbar items.
+			.map( name => {
+				if ( name === '|' ) {
+					return new ToolbarSeparatorView();
+				} else if ( name === '-' ) {
+					return new ToolbarLineBreakView();
+				}
+
 				return factory.create( name );
-			} else {
-				/**
-				 * There was a problem processing the configuration of the toolbar. The item with the given
-				 * name does not exist so it was omitted when rendering the toolbar.
-				 *
-				 * This warning usually shows up when the {@link module:core/plugin~Plugin} which is supposed
-				 * to provide a toolbar item has not been loaded or there is a typo in the configuration.
-				 *
-				 * Make sure the plugin responsible for this toolbar item is loaded and the toolbar configuration
-				 * is correct, e.g. {@link module:basic-styles/bold~Bold} is loaded for the `'bold'` toolbar item.
-				 *
-				 * You can use the following snippet to retrieve all available toolbar items:
-				 *
-				 *		Array.from( editor.ui.componentFactory.names() );
-				 *
-				 * @error toolbarview-item-unavailable
-				 * @param {String} name The name of the component.
-				 */
-				console.warn( attachLinkToDocumentation(
-					'toolbarview-item-unavailable: The requested toolbar item is unavailable.' ), { name } );
-			}
-		} ).filter( item => item !== undefined ) );
+			} );
+
+		this.items.addMany( itemsToAdd );
 	}
+
+	/**
+	 * Remove leading, trailing, and duplicated separators (`-` and `|`).
+	 *
+	 * @private
+	 * @param {Array.<String>} items
+	 */
+	_cleanSeparators( items ) {
+		const nonSeparatorPredicate = item => ( item !== '-' && item !== '|' );
+		const count = items.length;
+
+		// Find an index of the first item that is not a separator.
+		const firstCommandItem = items.findIndex( nonSeparatorPredicate );
+
+		// Search from the end of the list, then convert found index back to the original direction.
+		const lastCommandItem = count - items
+			.slice()
+			.reverse()
+			.findIndex( nonSeparatorPredicate );
+
+		return items
+			// Return items without the leading and trailing separators.
+			.slice( firstCommandItem, lastCommandItem )
+			// Remove duplicated separators.
+			.filter( ( name, idx, items ) => {
+				// Filter only separators.
+				if ( nonSeparatorPredicate( name ) ) {
+					return true;
+				}
+				const isDuplicated = idx > 0 && items[ idx - 1 ] === name;
+
+				return !isDuplicated;
+			} );
+	}
+
+	/**
+	 * Fired when some toolbar {@link #items} were grouped or ungrouped as a result of some change
+	 * in the toolbar geometry.
+	 *
+	 * **Note**: This event is always fired **once** regardless of the number of items that were be
+	 * grouped or ungrouped at a time.
+	 *
+	 * **Note**: This event is fired only if the items grouping functionality was enabled in
+	 * the first place (see {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull}).
+	 *
+	 * @event groupedItemsUpdate
+	 */
 }
 
 /**
@@ -418,6 +530,14 @@ class DynamicGrouping {
 	 * is added to.
 	 */
 	constructor( view ) {
+		/**
+		 * A toolbar view this behavior belongs to.
+		 *
+		 * @readonly
+		 * @member {module:ui/toolbar~ToolbarView}
+		 */
+		this.view = view;
+
 		/**
 		 * A collection of toolbar children.
 		 *
@@ -644,6 +764,9 @@ class DynamicGrouping {
 			return;
 		}
 
+		// Remember how many items were initially grouped so at the it is possible to figure out if the number
+		// of grouped items has changed. If the number has changed, geometry of the toolbar has also changed.
+		const initialGroupedItemsCount = this.groupedItems.length;
 		let wereItemsGrouped;
 
 		// Group #items as long as some wrap to the next row. This will happen, for instance,
@@ -671,6 +794,10 @@ class DynamicGrouping {
 			if ( this._areItemsOverflowing ) {
 				this._groupLastItem();
 			}
+		}
+
+		if ( this.groupedItems.length !== initialGroupedItemsCount ) {
+			this.view.fire( 'groupedItemsUpdate' );
 		}
 	}
 
@@ -809,7 +936,8 @@ class DynamicGrouping {
 		dropdown.buttonView.set( {
 			label: t( 'Show more items' ),
 			tooltip: true,
-			icon: verticalDotsIcon
+			tooltipPosition: locale.uiLanguageDirection === 'rtl' ? 'se' : 'sw',
+			icon: threeVerticalDots
 		} );
 
 		// 1:1 pass–through binding.
@@ -852,11 +980,22 @@ class DynamicGrouping {
 /**
  * When set to `true`, the toolbar will automatically group {@link module:ui/toolbar/toolbarview~ToolbarView#items} that
  * would normally wrap to the next line when there is not enough space to display them in a single row, for
- * instance, if the parent container of the toolbar is narrow.
+ * instance, if the parent container of the toolbar is narrow. For toolbars in absolutely positioned containers
+ * without width restrictions also the {@link module:ui/toolbar/toolbarview~ToolbarOptions#isFloating} option is required to be `true`.
  *
- * Also see: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
+ * See also: {@link module:ui/toolbar/toolbarview~ToolbarView#maxWidth}.
  *
  * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull
+ */
+
+/**
+ * This option should be enabled for toolbars in absolutely positioned containers without width restrictions
+ * to enable automatic {@link module:ui/toolbar/toolbarview~ToolbarView#items} grouping.
+ * When this option is set to `true`, the items will stop wrapping to the next line
+ * and together with {@link module:ui/toolbar/toolbarview~ToolbarOptions#shouldGroupWhenFull},
+ * this will allow grouping them when there is not enough space in a single row.
+ *
+ * @member {Boolean} module:ui/toolbar/toolbarview~ToolbarOptions#isFloating
  */
 
 /**

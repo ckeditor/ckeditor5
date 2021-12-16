@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -171,6 +171,17 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.view.destroy();
+		this._rotatorView.destroy();
+		this._fakePanelsView.destroy();
+	}
+
+	/**
 	 * Returns `true` when the given view is in one of the stacks. Otherwise returns `false`.
 	 *
 	 * @param {module:ui/view~View} view
@@ -200,7 +211,7 @@ export default class ContextualBalloon extends Plugin {
 			 * @error contextualballoon-add-view-exist
 			 */
 			throw new CKEditorError(
-				'contextualballoon-add-view-exist: Cannot add configuration of the same view twice.',
+				'contextualballoon-add-view-exist',
 				[ this, data ]
 			);
 		}
@@ -252,7 +263,7 @@ export default class ContextualBalloon extends Plugin {
 			 * @error contextualballoon-remove-view-not-exist
 			 */
 			throw new CKEditorError(
-				'contextualballoon-remove-view-not-exist: Cannot remove the configuration of a non-existent view.',
+				'contextualballoon-remove-view-not-exist',
 				[ this, view ]
 			);
 		}
@@ -320,7 +331,7 @@ export default class ContextualBalloon extends Plugin {
 			 * @error contextualballoon-showstack-stack-not-exist
 			 */
 			throw new CKEditorError(
-				'contextualballoon-showstack-stack-not-exist: Cannot show a stack that does not exist.',
+				'contextualballoon-showstack-stack-not-exist',
 				this
 			);
 		}
@@ -444,6 +455,7 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @private
 	 * @returns {module:ui/view~View}
 	 */
 	_createFakePanelsView() {
@@ -497,11 +509,18 @@ export default class ContextualBalloon extends Plugin {
 	_getBalloonPosition() {
 		let position = Array.from( this._visibleStack.values() ).pop().position;
 
-		// Use the default limiter if none has been specified.
-		if ( position && !position.limiter ) {
+		if ( position ) {
+			// Use the default limiter if none has been specified.
+			if ( !position.limiter ) {
+				// Don't modify the original options object.
+				position = Object.assign( {}, position, {
+					limiter: this.positionLimiter
+				} );
+			}
+
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				limiter: this.positionLimiter
+				viewportOffsetConfig: this.editor.ui.viewportOffset
 			} );
 		}
 
@@ -618,6 +637,15 @@ class RotatorView extends View {
 		super.render();
 
 		this.focusTracker.add( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
 	}
 
 	/**

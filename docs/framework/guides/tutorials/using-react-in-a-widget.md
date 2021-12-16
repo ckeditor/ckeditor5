@@ -25,9 +25,13 @@ There are a couple of things you should know before you start:
 * Also, while it is not strictly necessary to read the {@link framework/guides/quick-start Quick start} guide before going through this tutorial, it may help you to get more comfortable with CKEditor 5 Framework before you dive into this tutorial.
 * Various parts of the {@link framework/guides/architecture/intro CKEditor 5 architecture} section will be referenced as you go. While reading them is not necessary to finish this tutorial, it is recommended to read those guides at some point to get a better understanding of the mechanisms used in this tutorial.
 
+<info-box>
+	If you want to use your own event handler for events triggered by your React component, you must wrap it with a container that has a `data-cke-ignore-events` attribute to exclude it from the editor's default handlers. Refer to {@link framework/guides/deep-dive/widget-internals#exclude-dom-events-from-default-handlers Exclude DOM events from default handlers} for more details.
+</info-box>
+
 ## Let's start
 
-This guide assumes that you are familiar with [yarn](https://yarnpkg.com) and your project uses yarn already. If not, see the [yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm) you do not have to worry — you can perform the same installation tasks just as easily using [corresponding npm commands](https://docs.npmjs.com/getting-packages-from-the-registry).
+This guide assumes that you are familiar with [yarn](https://yarnpkg.com) and your project uses yarn already. If not, see the [yarn documentation](https://yarnpkg.com/en/docs/getting-started). If you are using [npm](https://www.npmjs.com/get-npm), you do not have to worry &mdash; you can perform the same installation tasks just as easily using [corresponding npm commands](https://docs.npmjs.com/packages-and-modules/getting-packages-from-the-registry).
 
 First, install the packages needed to build and set up a basic React application with a CKEditor 5 instance.
 
@@ -322,7 +326,7 @@ export default class ProductPreviewEditing extends Plugin {
 				name: 'section',
 				classes: 'product'
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Read the "data-id" attribute from the view and set it as the "id" in the model.
 				return modelWriter.createElement( 'productPreview', {
 					id: parseInt( viewElement.getAttribute( 'data-id' ) )
@@ -333,7 +337,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → data view)
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the data view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="..."></section>
@@ -347,7 +351,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → editing view)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the editing view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="...">
@@ -582,7 +586,7 @@ class App extends React.Component {
 		};
 
 		this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
-		this.handleEditorInit = this.handleEditorInit.bind( this );
+		this.handleEditorReady = this.handleEditorReady.bind( this );
 	}
 
 	// A handler executed when the user types or modifies the editor content.
@@ -595,7 +599,7 @@ class App extends React.Component {
 
 	// A handler executed when the editor has been initialized and is ready.
 	// It synchronizes the initial data state and saves the reference to the editor instance.
-	handleEditorInit( editor ) {
+	handleEditorReady( editor ) {
 		this.editor = editor;
 
 		this.setState( {
@@ -621,7 +625,7 @@ class App extends React.Component {
 					data={this.state.editorData}
 					config={this.editorConfig}
 					onChange={this.handleEditorDataChange}
-					onInit={this.handleEditorInit}
+					onReady={this.handleEditorReady}
 				/>
 
 				<h3>Editor data</h3>
@@ -993,7 +997,7 @@ class App extends React.Component {
 		};
 
 		this.handleEditorDataChange = this.handleEditorDataChange.bind( this );
-		this.handleEditorInit = this.handleEditorInit.bind( this );
+		this.handleEditorReady = this.handleEditorReady.bind( this );
 	}
 
 	// A handler executed when the user types or modifies the editor content.
@@ -1006,7 +1010,7 @@ class App extends React.Component {
 
 	// A handler executed when the editor has been initialized and is ready.
 	// It synchronizes the initial data state and saves the reference to the editor instance.
-	handleEditorInit( editor ) {
+	handleEditorReady( editor ) {
 		this.editor = editor;
 
 		this.setState( {
@@ -1032,7 +1036,7 @@ class App extends React.Component {
 					data={this.state.editorData}
 					config={this.editorConfig}
 					onChange={this.handleEditorDataChange}
-					onInit={this.handleEditorInit}
+					onReady={this.handleEditorReady}
 				/>
 
 				<h3>Editor data</h3>
@@ -1137,7 +1141,7 @@ export default class ProductPreviewEditing extends Plugin {
 				name: 'section',
 				classes: 'product'
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Read the "data-id" attribute from the view and set it as the "id" in the model.
 				return modelWriter.createElement( 'productPreview', {
 					id: parseInt( viewElement.getAttribute( 'data-id' ) )
@@ -1148,7 +1152,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → data view)
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the data view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="..."></section>
@@ -1162,7 +1166,7 @@ export default class ProductPreviewEditing extends Plugin {
 		// <productPreview> converters (model → editing view)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'productPreview',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer: viewWriter } ) => {
 				// In the editing view, the model <productPreview> corresponds to:
 				//
 				// <section class="product" data-id="...">

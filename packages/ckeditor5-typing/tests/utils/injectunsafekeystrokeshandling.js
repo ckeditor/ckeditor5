@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,6 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes, getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import { isNonTypingKeystroke } from '../../src/utils/injectunsafekeystrokeshandling';
 import Typing from '../../src/typing';
 
@@ -15,6 +16,11 @@ describe( 'unsafe keystroke handling utils', () => {
 		it( 'should return "true" for any keystroke with the Ctrl key', () => {
 			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, ctrlKey: true } ), 'Ctrl+a' ).to.be.true;
 			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], ctrlKey: true } ), 'Ctrl+0' ).to.be.true;
+		} );
+
+		it( 'should return "true" for any keystroke with the Cmd key', () => {
+			expect( isNonTypingKeystroke( { keyCode: keyCodes.a, metaKey: true } ), '⌘a' ).to.be.true;
+			expect( isNonTypingKeystroke( { keyCode: keyCodes[ 0 ], metaKey: true } ), '⌘0' ).to.be.true;
 		} );
 
 		it( 'should return "true" for all arrow keys', () => {
@@ -123,6 +129,95 @@ describe( 'unsafe keystroke handling utils', () => {
 			function getCurrentBatch() {
 				return editor.model.change( writer => writer.batch );
 			}
+		} );
+
+		describe( 'handling Shift + Delete on Windows', () => {
+			let view, viewDocument, oldEnvIsWindows;
+
+			beforeEach( () => {
+				view = editor.editing.view;
+				viewDocument = view.document;
+			} );
+
+			describe( 'on Windows', () => {
+				before( () => {
+					oldEnvIsWindows = env.isWindows;
+					env.isWindows = true;
+				} );
+
+				after( () => {
+					env.isWindows = oldEnvIsWindows;
+				} );
+
+				it( 'should not delete the selected content if Shift + Delete is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'delete' ),
+						shiftKey: true
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[foo]</paragraph>' );
+				} );
+
+				it( 'should delete the selected content if only Delete is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'delete' )
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
+
+				it( 'should delete the selected content if Backspace is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'backspace' )
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
+			} );
+
+			describe( 'on non-Windows', () => {
+				before( () => {
+					oldEnvIsWindows = env.isWindows;
+					env.isWindows = false;
+				} );
+
+				after( () => {
+					env.isWindows = oldEnvIsWindows;
+				} );
+
+				it( 'should delete the selected content if Shift + Delete is pressed on non-collapsed selection', () => {
+					const domEventData = new DomEventData( view, {
+						preventDefault: () => {}
+					}, {
+						keyCode: getCode( 'delete' ),
+						shiftKey: true
+					} );
+
+					setData( model, '<paragraph>[foo]</paragraph>' );
+
+					viewDocument.fire( 'keydown', domEventData );
+
+					expect( getData( model ) ).to.equal( '<paragraph>[]</paragraph>' );
+				} );
+			} );
 		} );
 	} );
 } );

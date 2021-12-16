@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -201,7 +201,7 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				// eslint-disable-next-line no-new
 				new TestEditor( { context: editor._context } );
-			}, /^context-addEditor-private-context/ );
+			}, 'context-addeditor-private-context' );
 		} );
 
 		it( 'should destroy context created by the editor at the end of the editor destroy chain', async () => {
@@ -306,10 +306,46 @@ describe( 'Editor', () => {
 			expect( editor.t ).to.equal( editor._context.t );
 		} );
 
-		it( 'should use locale instance with a proper configuration', () => {
+		it( 'should use locale instance with a proper configuration passed as the argument to the constructor', () => {
 			const editor = new TestEditor( {
 				language: 'pl'
 			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should use locale instance with a proper configuration set as the defaultConfig option on the constructor', () => {
+			TestEditor.defaultConfig = {
+				language: 'pl'
+			};
+
+			const editor = new TestEditor();
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should prefer the language passed as the argument to the constructor instead of the defaultConfig if both are set', () => {
+			TestEditor.defaultConfig = {
+				language: 'de'
+			};
+
+			const editor = new TestEditor( {
+				language: 'pl'
+			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should prefer the language from the context instead of the constructor config or defaultConfig if all are set', async () => {
+			TestEditor.defaultConfig = {
+				language: 'de'
+			};
+
+			const context = await Context.create( { language: 'pl' } );
+			const editor = new TestEditor( { context, language: 'ru' } );
 
 			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
 			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
@@ -510,7 +546,7 @@ describe( 'Editor', () => {
 
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'command' );
-			}, /^commandcollection-command-not-found:/, editor );
+			}, /^commandcollection-command-not-found/, editor );
 		} );
 
 		it( 'should rethrow native errors as they are in the debug=true mode', () => {
@@ -543,6 +579,7 @@ describe( 'Editor', () => {
 					this.isEnabled = true;
 				}
 				execute() {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', editor );
 				}
 			}
@@ -552,6 +589,18 @@ describe( 'Editor', () => {
 			expectToThrowCKEditorError( () => {
 				editor.execute( 'someCommand' );
 			}, /foo/, editor );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'should call view\'s focus() method', () => {
+			const editor = new TestEditor();
+			const focusSpy = sinon.spy( editor.editing.view, 'focus' );
+
+			editor.editing.view.document.isFocused = true;
+			editor.focus();
+
+			expect( focusSpy.calledOnce ).to.be.true;
 		} );
 	} );
 
@@ -920,6 +969,115 @@ describe( 'Editor', () => {
 					.then( () => {
 						expect( getPlugins( editor ).length ).to.equal( 2 );
 						expect( editor.plugins.get( PluginB ) ).to.be.an.instanceof( Plugin );
+					} );
+			} );
+		} );
+
+		describe( '"substitutePlugins" config', () => {
+			it( 'should substitute a plugin when passed as "config.plugins', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const editor = new TestEditor( {
+					plugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+					} );
+			} );
+
+			it( 'should substitute a plugin when passed as "config.extraPlugins', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const editor = new TestEditor( {
+					extraPlugins: [ ErrorPlugin ],
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+					} );
+			} );
+
+			it( 'should substitute a plugin when it is a built-in plugin in the editor class', () => {
+				class ErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						throw new Error( 'Ooops.' );
+					}
+				}
+
+				class NoErrorPlugin extends Plugin {
+					static get pluginName() {
+						return 'FooPlugin';
+					}
+
+					init() {
+						return Promise.resolve();
+					}
+				}
+
+				const originalBuiltinPlugins = Editor.builtinPlugins;
+
+				Editor.builtinPlugins = [ ErrorPlugin ];
+
+				const editor = new TestEditor( {
+					substitutePlugins: [ NoErrorPlugin ]
+				} );
+
+				return editor.initPlugins()
+					.then( () => {
+						expect( getPlugins( editor ).length ).to.equal( 1 );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( Plugin );
+						expect( editor.plugins.get( 'FooPlugin' ) ).to.be.an.instanceof( NoErrorPlugin );
+
+						Editor.builtinPlugins = originalBuiltinPlugins;
 					} );
 			} );
 		} );

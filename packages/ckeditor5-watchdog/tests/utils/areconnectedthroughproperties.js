@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -279,17 +279,6 @@ describe( 'areConnectedThroughProperties()', () => {
 					bar: []
 				}
 			};
-
-			const editor1 = new Editor();
-			const editor2 = new Editor();
-
-			expect( areConnectedThroughProperties( editor1, editor2 ) ).to.be.false;
-		} );
-
-		it( 'should return false for two different editors sharing builtin plugins', () => {
-			Editor.builtinPlugins = [
-				class Foo {}
-			];
 
 			const editor1 = new Editor();
 			const editor2 = new Editor();

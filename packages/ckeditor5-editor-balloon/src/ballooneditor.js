@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,23 +7,17 @@
  * @module editor-balloon/ballooneditor
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
+import { Editor, DataApiMixin, ElementApiMixin, attachToForm, secureSourceElement } from 'ckeditor5/src/core';
+import { BalloonToolbar } from 'ckeditor5/src/ui';
+import { CKEditorError, setDataInElement, getDataFromElement, mix } from 'ckeditor5/src/utils';
+
+import { isElement } from 'lodash-es';
+
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
-import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
-import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
- * The {@glink builds/guides/overview#balloon-editor balloon editor} implementation (Medium-like editor).
+ * The {@glink builds/guides/predefined-builds/overview#balloon-editor balloon editor} implementation (Medium-like editor).
  * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}.
  * See the {@glink examples/builds/balloon-editor demo}.
  *
@@ -34,9 +28,9 @@ import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/secur
  *
  * The balloon editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-balloon`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon) package)
- * but it is also available in the {@glink builds/guides/overview#balloon-editor balloon build}.
+ * but it is also available in the {@glink builds/guides/predefined-builds/overview#balloon-editor balloon build}.
  *
- * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * {@glink builds/guides/predefined-builds/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
  * Using the editor from source gives much better flexibility and allows easier customization.
@@ -76,8 +70,6 @@ export default class BalloonEditor extends Editor {
 		this.config.set( 'plugins', plugins );
 
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 
@@ -177,7 +169,7 @@ export default class BalloonEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-balloon`).
+	 * {@glink builds/guides/predefined-builds/overview editor build} (for example – `@ckeditor/ckeditor5-build-balloon`).
 	 *
 	 * If you want to use the balloon editor from source (`@ckeditor/ckeditor5-editor-balloon/src/ballooneditor`),
 	 * you need to define the list of
@@ -203,10 +195,8 @@ export default class BalloonEditor extends Editor {
 
 			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
-				throw new CKEditorError(
-					'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.',
-					null
-				);
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
 			}
 
 			const editor = new this( sourceElementOrData, config );
@@ -219,14 +209,11 @@ export default class BalloonEditor extends Editor {
 					.then( () => {
 						if ( !isHTMLElement && config.initialData ) {
 							// Documented in core/editor/editorconfig.jdoc.
-							throw new CKEditorError(
-								'editor-create-initial-data: ' +
-								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
-								null
-							);
+							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
-						const initialData = config.initialData || getInitialData( sourceElementOrData );
+						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )

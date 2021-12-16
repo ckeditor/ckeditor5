@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module image/imageupload
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageUploadUI from './imageupload/imageuploadui';
 import ImageUploadProgress from './imageupload/imageuploadprogress';
 import ImageUploadEditing from './imageupload/imageuploadediting';
@@ -15,7 +15,7 @@ import ImageUploadEditing from './imageupload/imageuploadediting';
 /**
  * The image upload plugin.
  *
- * For a detailed overview, check the {@glink features/image-upload/image-upload image upload feature} documentation.
+ * For a detailed overview, check the {@glink features/images/image-upload/image-upload image upload feature} documentation.
  *
  * This plugin does not do anything directly, but it loads a set of specific plugins to enable image uploading:
  *
@@ -42,7 +42,7 @@ export default class ImageUpload extends Plugin {
 }
 
 /**
- * Image upload configuration.
+ * The image upload configuration.
  *
  * @member {module:image/imageupload~ImageUploadConfig} module:image/image~ImageConfig#upload
  */
@@ -75,7 +75,7 @@ export default class ImageUpload extends Plugin {
  *		};
  *
  * The type string should match [one of the sub-types](https://www.iana.org/assignments/media-types/media-types.xhtml#image)
- * of the image MIME type. E.g. for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
+ * of the image MIME type. For example, for the `image/jpeg` MIME type, add `'jpeg'` to your image upload configuration.
  *
  * **Note:** This setting only restricts some image types to be selected and uploaded through the CKEditor UI and commands. Image type
  * recognition and filtering should also be implemented on the server which accepts image uploads.

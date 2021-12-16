@@ -1,0 +1,9 @@
+{
+  "Insert HTML": "Toolbar button tooltip for the HTML embed feature.",
+  "HTML snippet": "The HTML snippet.",
+  "Paste raw HTML here...": "A placeholder that will be displayed in the raw HTML textarea field.",
+  "Edit source": "A label of a button that switches the HTML embed to the source editing mode.",
+  "Save changes": "A label of a button that saves the HTML embed content and navigates back to the preview.",
+  "No preview available": "An information displayed in the HTML embed preview if the content is not previewable.",
+  "Empty snippet content": "An information displayed in the HTML embed preview if the HTML snippet has no content."
+}

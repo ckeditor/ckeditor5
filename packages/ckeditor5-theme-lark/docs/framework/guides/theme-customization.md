@@ -18,7 +18,7 @@ Below you can see a demo of an editor with the dark theme as a result of customi
 CKEditor 5 is bundled using [webpack](https://webpack.js.org/) and it handles the importing and processing of styles using [loaders](https://webpack.js.org/concepts/loaders/). Its configuration can be found in the `webpack.config.js` file.
 
 <info-box info>
-	To learn more about building CKEditor, check out the {@link builds/guides/development/custom-builds Creating custom builds} guide.
+	To learn more about building CKEditor, check out the {@link builds/guides/development/custom-builds Creating custom builds guide}.
 </info-box>
 
 The entire process of building and managing the styles boils down to three steps:
@@ -126,12 +126,16 @@ The file containing custom variables will be named `custom.css` and it will look
 
 	/* -- Overrides the default .ck-input class colors. ----------------------------------------- */
 
-	--ck-color-input-background: var(--ck-custom-foreground);
+	--ck-color-input-background: var(--ck-custom-background);
 	--ck-color-input-border: hsl(257, 3%, 43%);
 	--ck-color-input-text: hsl(0, 0%, 98%);
 	--ck-color-input-disabled-background: hsl(255, 4%, 21%);
 	--ck-color-input-disabled-border: hsl(250, 3%, 38%);
-	--ck-color-input-disabled-text: hsl(0, 0%, 46%);
+	--ck-color-input-disabled-text: hsl(0, 0%, 78%);
+
+	/* -- Overrides the default .ck-labeled-field-view class colors. ---------------------------- */
+
+	--ck-color-labeled-field-label-background: var(--ck-custom-background);
 
 	/* -- Overrides the default .ck-list class colors. ------------------------------------------ */
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -47,7 +47,7 @@ export default class InlineEditableUIView extends EditableUIView {
 		editingView.change( writer => {
 			const viewRoot = editingView.document.getRoot( this.name );
 
-			writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', [ this.name ] ), viewRoot );
+			writer.setAttribute( 'aria-label', t( 'Rich Text Editor, %0', this.name ), viewRoot );
 		} );
 	}
 }

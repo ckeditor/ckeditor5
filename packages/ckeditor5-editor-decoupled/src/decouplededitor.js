@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,20 +7,16 @@
  * @module editor-decoupled/decouplededitor
  */
 
-import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
-import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import { Editor, DataApiMixin, secureSourceElement } from 'ckeditor5/src/core';
+import { CKEditorError, getDataFromElement, setDataInElement, mix } from 'ckeditor5/src/utils';
+
+import { isElement } from 'lodash-es';
+
 import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
-import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import { isElement } from 'lodash-es';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/securesourceelement';
 
 /**
- * The {@glink builds/guides/overview#document-editor decoupled editor} implementation.
+ * The {@glink builds/guides/predefined-builds/overview#document-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
  * it does not render these components anywhere in the DOM unless configured.
  *
@@ -37,9 +33,9 @@ import secureSourceElement from '@ckeditor/ckeditor5-core/src/editor/utils/secur
  *
  * The decoupled editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
- * but it is also available in the {@glink builds/guides/overview#document-editor document editor build}.
+ * but it is also available in the {@glink builds/guides/predefined-builds/overview#document-editor document editor build}.
  *
- * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
+ * {@glink builds/guides/predefined-builds/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
  * Using the editor from source gives much better flexibility and allows for easier customization.
@@ -71,8 +67,6 @@ export default class DecoupledEditor extends Editor {
 			this.sourceElement = sourceElementOrData;
 			secureSourceElement( this );
 		}
-
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		this.model.document.createRoot();
 
@@ -199,7 +193,7 @@ export default class DecoupledEditor extends Editor {
 	 * # Using the editor from source
 	 *
 	 * The code samples listed in the previous sections of this documentation assume that you are using an
-	 * {@glink builds/guides/overview editor build} (for example – `@ckeditor/ckeditor5-build-decoupled`).
+	 * {@glink builds/guides/predefined-builds/overview editor build} (for example – `@ckeditor/ckeditor5-build-decoupled`).
 	 *
 	 * If you want to use the decoupled editor from source (`@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor`),
 	 * you need to define the list of
@@ -226,8 +220,8 @@ export default class DecoupledEditor extends Editor {
 
 			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
-				throw new CKEditorError(
-					'editor-wrong-element: This type of editor cannot be initialized inside <textarea> element.', null );
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-wrong-element', null );
 			}
 
 			const editor = new this( sourceElementOrData, config );
@@ -240,14 +234,11 @@ export default class DecoupledEditor extends Editor {
 					.then( () => {
 						if ( !isHTMLElement && config.initialData ) {
 							// Documented in core/editor/editorconfig.jdoc.
-							throw new CKEditorError(
-								'editor-create-initial-data: ' +
-								'The config.initialData option cannot be used together with initial data passed in Editor.create().',
-								null
-							);
+							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+							throw new CKEditorError( 'editor-create-initial-data', null );
 						}
 
-						const initialData = config.initialData || getInitialData( sourceElementOrData );
+						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
 
 						return editor.data.init( initialData );
 					} )

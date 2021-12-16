@@ -13,6 +13,8 @@ The UI of the editor can be localized. CKEditor 5 currently supports around 90 l
 	If you want to help translate CKEditor 5 into your native language, join the [CKEditor 5 project on Transifex](https://www.transifex.com/ckeditor/ckeditor5/). Your help will be much appreciated!
 </info-box>
 
+## Demo
+
 See the demo of the editor in Spanish:
 
 {@snippet features/ui-language}
@@ -24,6 +26,8 @@ See the demo of the editor in Spanish:
 ## Right–to–left (RTL) languages support
 
 CKEditor 5 supports right–to–left languages out–of–the–box. When one of <abbr title="right–to–left">RTL</abbr> languages is used, the WYSIWYG editor adapts its UI for the best editing experience, for instance, mirroring various elements like toolbars, dropdowns, buttons, etc.
+
+### Demo
 
 See the demo of the editor in Arabic:
 
@@ -128,17 +132,7 @@ If you build CKEditor 5 from scratch or integrate it directly into your applicat
 				// The bundle is optimized for one language when this option is omitted.
 				additionalLanguages: 'all',
 
-				// An optional directory for emitted translations. Relative to the webpack's output.
-				// Defaults to `'translations'`.
-				// outputDirectory: 'ckeditor5-translations',
-
-				// Whether the build process should fail if an error occurs.
-				// Defaults to `false`.
-				// strict: true,
-
-				// Whether to log all warnings to the console.
-				// Defaults to `false`.
-				// verbose: true
+				// For more advanced options see https://github.com/ckeditor/ckeditor5-dev/tree/master/packages/ckeditor5-dev-webpack-plugin.
 			} ),
 
 			// Other webpack plugins...
@@ -201,3 +195,9 @@ ClassicEditor
 <info-box>
 	If you are unsure about the language that the content will be typed in, do not set it. The language of the content will then be inherited from the {@link module:core/editor/editorconfig~EditorConfig#language language of the UI}.
 </info-box>
+
+## Related features
+
+There are other CKEditor 5 features that will help you control the content language:
+
+* {@link features/language Text part Language}  &ndash; Set the language of the selected content part to support multilingual texts.

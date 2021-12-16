@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -192,7 +192,7 @@ describe( 'DeleteCommand integration', () => {
 			setData( model,
 				'<listItem listIndent="0" listType="numbered">OL List i[tem 1</listItem>' +
 				'<listItem listIndent="0" listType="numbered">OL List item 2</listItem>]' +
-				'<image alt="bar" imageStyle="side" src="/assets/sample.png"><caption>[Caption</caption></image>' +
+				'<imageBlock alt="bar" imageStyle="side" src="/assets/sample.png"><caption>[Caption</caption></imageBlock>' +
 				'<blockQuote>' +
 					'<paragraph>Quote</paragraph>' +
 					'<listItem listIndent="0" listType="bulleted">Quoted UL List item 1</listItem>' +

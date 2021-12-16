@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,9 +29,10 @@ const documentPlaceholders = new WeakMap();
  * in the passed `element` but in one of its children (selected automatically, i.e. a first empty child element).
  * Useful when attaching placeholders to elements that can host other elements (not just text), for instance,
  * editable root elements.
+ * @param {Boolean} [options.keepOnFocus=false] If set `true`, the placeholder stay visible when the host element is focused.
  */
 export function enablePlaceholder( options ) {
-	const { view, element, text, isDirectHost = true } = options;
+	const { view, element, text, isDirectHost = true, keepOnFocus = false } = options;
 	const doc = view.document;
 
 	// Use a single a single post fixer per—document to update all placeholders.
@@ -46,7 +47,9 @@ export function enablePlaceholder( options ) {
 	// Store information about the element placeholder under its document.
 	documentPlaceholders.get( doc ).set( element, {
 		text,
-		isDirectHost
+		isDirectHost,
+		keepOnFocus,
+		hostElement: isDirectHost ? element : null
 	} );
 
 	// Update the placeholders right away.
@@ -140,22 +143,32 @@ export function hidePlaceholder( writer, element ) {
  * {@link module:engine/view/placeholder~enablePlaceholder `enablePlaceholder()`} in that case or make
  * sure the correct element is passed to the helper.
  *
- * @param {module:engine/view/element~Element} element
+ * @param {module:engine/view/element~Element} element Element that holds the placeholder.
+ * @param {Boolean} keepOnFocus Focusing the element will keep the placeholder visible.
  * @returns {Boolean}
  */
-export function needsPlaceholder( element ) {
+export function needsPlaceholder( element, keepOnFocus ) {
 	if ( !element.isAttached() ) {
 		return false;
 	}
 
-	// The element is empty only as long as it contains nothing but uiElements.
-	const isEmptyish = !Array.from( element.getChildren() )
+	// Anything but uiElement(s) counts as content.
+	const hasContent = Array.from( element.getChildren() )
 		.some( element => !element.is( 'uiElement' ) );
+
+	if ( hasContent ) {
+		return false;
+	}
+
+	// Skip the focus check and make the placeholder visible already regardless of document focus state.
+	if ( keepOnFocus ) {
+		return true;
+	}
 
 	const doc = element.document;
 
-	// If the element is empty and the document is blurred.
-	if ( !doc.isFocused && isEmptyish ) {
+	// If the document is blurred.
+	if ( !doc.isFocused ) {
 		return true;
 	}
 
@@ -163,11 +176,7 @@ export function needsPlaceholder( element ) {
 	const selectionAnchor = viewSelection.anchor;
 
 	// If document is focused and the element is empty but the selection is not anchored inside it.
-	if ( isEmptyish && selectionAnchor && selectionAnchor.parent !== element ) {
-		return true;
-	}
-
-	return false;
+	return selectionAnchor && selectionAnchor.parent !== element;
 }
 
 // Updates all placeholders associated with a document in a post–fixer callback.
@@ -178,9 +187,42 @@ export function needsPlaceholder( element ) {
 // @returns {Boolean} True if any changes were made to the view document.
 function updateDocumentPlaceholders( doc, writer ) {
 	const placeholders = documentPlaceholders.get( doc );
+	const directHostElements = [];
 	let wasViewModified = false;
 
+	// First set placeholders on the direct hosts.
 	for ( const [ element, config ] of placeholders ) {
+		if ( config.isDirectHost ) {
+			directHostElements.push( element );
+
+			if ( updatePlaceholder( writer, element, config ) ) {
+				wasViewModified = true;
+			}
+		}
+	}
+
+	// Then set placeholders on the indirect hosts but only on those that does not already have an direct host placeholder.
+	for ( const [ element, config ] of placeholders ) {
+		if ( config.isDirectHost ) {
+			continue;
+		}
+
+		const hostElement = getChildPlaceholderHostSubstitute( element );
+
+		// When not a direct host, it could happen that there is no child element
+		// capable of displaying a placeholder.
+		if ( !hostElement ) {
+			continue;
+		}
+
+		// Don't override placeholder if the host element already has some direct placeholder.
+		if ( directHostElements.includes( hostElement ) ) {
+			continue;
+		}
+
+		// Update the host element (used for setting and removing the placeholder).
+		config.hostElement = hostElement;
+
 		if ( updatePlaceholder( writer, element, config ) ) {
 			wasViewModified = true;
 		}
@@ -199,21 +241,9 @@ function updateDocumentPlaceholders( doc, writer ) {
 // @param {Boolean} config.isDirectHost
 // @returns {Boolean} True if any changes were made to the view document.
 function updatePlaceholder( writer, element, config ) {
-	const { text, isDirectHost } = config;
+	const { text, isDirectHost, hostElement } = config;
 
-	const hostElement = isDirectHost ? element : getChildPlaceholderHostSubstitute( element );
 	let wasViewModified = false;
-
-	// When not a direct host, it could happen that there is no child element
-	// capable of displaying a placeholder.
-	if ( !hostElement ) {
-		return false;
-	}
-
-	// Cache the host element. It will be necessary for disablePlaceholder() to know
-	// which element should have class and attribute removed because, depending on
-	// the config.isDirectHost value, it could be the element or one of its descendants.
-	config.hostElement = hostElement;
 
 	// This may be necessary when updating the placeholder text to something else.
 	if ( hostElement.getAttribute( 'data-placeholder' ) !== text ) {
@@ -221,7 +251,10 @@ function updatePlaceholder( writer, element, config ) {
 		wasViewModified = true;
 	}
 
-	if ( needsPlaceholder( hostElement ) ) {
+	// If the host element is not a direct host then placeholder is needed only when there is only one element.
+	const isOnlyChild = isDirectHost || element.childCount == 1;
+
+	if ( isOnlyChild && needsPlaceholder( hostElement, config.keepOnFocus ) ) {
 		if ( showPlaceholder( writer, hostElement ) ) {
 			wasViewModified = true;
 		}
@@ -240,7 +273,7 @@ function updatePlaceholder( writer, element, config ) {
 // @param {module:engine/view/element~Element} parent
 // @returns {module:engine/view/element~Element|null}
 function getChildPlaceholderHostSubstitute( parent ) {
-	if ( parent.childCount === 1 ) {
+	if ( parent.childCount ) {
 		const firstChild = parent.getChild( 0 );
 
 		if ( firstChild.is( 'element' ) && !firstChild.is( 'uiElement' ) ) {

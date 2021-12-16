@@ -1,0 +1,127 @@
+<div class="sticky-header">
+	Sticky header. Table balloon toolbar should not overlap with this header at any point when scrolling down.
+</div>
+<div class="sticky-footer">
+	Sticky footer.
+</div>
+
+<h1>Other webpage content</h1>
+<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Officia itaque eum necessitatibus possimus adipisci mollitia dolor quia molestias voluptate dignissimos? Optio architecto dicta dolorum laborum nam nulla minus aspernatur iste.</p>
+<div id="editor">
+	<h2>Short table</h2>
+	<table>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+	</table>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+	<h2>Very long table</h2>
+	<table>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+		<tr><td></td><td></td></tr>
+	</table>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+	<h2>Short image</h2>
+	<figure class="image">
+		<img src="./sample.jpg" alt="Autumn fields" />
+	</figure>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+	<h2>Very tall image</h2>
+	<figure class="image">
+		<img src="./sample-very-tall.jpg" alt="Very tall image" />
+	</figure>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+</div>
+
+<style>
+	.manual-test-container {
+		padding-top: 100px;
+	}
+
+	#editor {
+		margin: 0 auto;
+		max-width: 800px;
+	}
+
+	.ck-block-toolbar-button {
+		transform: translateX( -10px );
+	}
+
+	.sticky-header,
+	.sticky-footer {
+		display: flex;
+		opacity: .9;
+		position: fixed;
+		left: 48px;
+		right: 48px;
+		align-items: center;
+		height: 100px;
+		padding-left: 10px;
+		background-color: hsl( 0, 0%, 90% );
+		z-index: 9999;
+	}
+
+	.sticky-header {
+		top: 0;
+	}
+
+	.sticky-footer {
+		bottom: 0;
+	}
+
+	.manual-test-container_pinned-sidebar .sticky-header,
+	.manual-test-container_pinned-sidebar .sticky-footer {
+		left: calc(48px + 390px);
+	}
+</style>

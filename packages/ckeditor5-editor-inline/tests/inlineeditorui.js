@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals document, Event, console */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
@@ -68,15 +68,53 @@ describe( 'InlineEditorUI', () => {
 			it( 'sets view#viewportTopOffset, if specified', () => {
 				return VirtualInlineTestEditor
 					.create( 'foo', {
-						toolbar: {
-							viewportTopOffset: 100
+						ui: {
+							viewportOffset: {
+								top: 100
+							}
 						}
 					} )
 					.then( editor => {
 						const ui = editor.ui;
 						const view = ui.view;
 
+						expect( ui.viewportOffset.top ).to.equal( 100 );
 						expect( view.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'sets view#viewportTopOffset if legacy toolbar.vierportTopOffset specified', () => {
+				sinon.stub( console, 'warn' );
+
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						toolbar: {
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						const ui = editor.ui;
+
+						expect( ui.viewportOffset.top ).to.equal( 100 );
+						expect( ui.view.viewportTopOffset ).to.equal( 100 );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'warns if legacy toolbar.vierportTopOffset specified', () => {
+				const spy = sinon.stub( console, 'warn' );
+
+				return VirtualInlineTestEditor
+					.create( 'foo', {
+						toolbar: {
+							viewportTopOffset: 100
+						}
+					} )
+					.then( editor => {
+						sinon.assert.calledWithMatch( spy, 'editor-ui-deprecated-viewport-offset-config' );
 
 						return editor.destroy();
 					} );
@@ -210,8 +248,7 @@ describe( 'InlineEditorUI', () => {
 				return VirtualInlineTestEditor
 					.create( '', {
 						toolbar: {
-							items: [ 'foo', 'bar' ],
-							viewportTopOffset: 100
+							items: [ 'foo', 'bar' ]
 						}
 					} )
 					.then( editor => {
@@ -219,6 +256,24 @@ describe( 'InlineEditorUI', () => {
 
 						expect( items.get( 0 ).name ).to.equal( 'foo' );
 						expect( items.get( 1 ).name ).to.equal( 'bar' );
+
+						return editor.destroy();
+					} );
+			} );
+
+			it( 'can be removed using config.toolbar.removeItems', () => {
+				return VirtualInlineTestEditor
+					.create( '', {
+						toolbar: {
+							items: [ 'foo', 'bar' ],
+							removeItems: [ 'bar' ]
+						}
+					} )
+					.then( editor => {
+						const items = editor.ui.view.toolbar.items;
+
+						expect( items.get( 0 ).name ).to.equal( 'foo' );
+						expect( items.length ).to.equal( 1 );
 
 						return editor.destroy();
 					} );

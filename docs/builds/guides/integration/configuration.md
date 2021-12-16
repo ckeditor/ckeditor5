@@ -33,7 +33,7 @@ As you can see, configurations are set by a simple JavaScript object passed to t
 
 ## Removing features
 
-Builds come with all features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
+The official builds come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
 
 In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
@@ -51,7 +51,7 @@ ClassicEditor
 	} );
 ```
 <info-box>
-	Be careful when removing plugins from CKEditor builds using `config.removePlugins`. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the updated toolbar configuration as in the example above.
+	Be careful when removing plugins from CKEditor builds using `config.removePlugins`. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the {@link features/toolbar updated toolbar configuration} as in the example above or by providing only items that need to be removed using `config.toolbar.removeItems`.
 </info-box>
 
 ### List of plugins
@@ -119,31 +119,7 @@ ClassicEditor
 
 ## Toolbar setup
 
-In builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration.
-
-Each editor may have a different toolbar configuration scheme, so it is recommended to check its documentation. In any case, the following example may give you a general idea:
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		toolbar: [ 'bold', 'italic', 'link' ]
-	} )
-	.catch( error => {
-		console.log( error );
-	} );
-```
-
-<info-box hint>
-	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their respective plugins. Check [Removing features](#removing-features) above for more information.
-</info-box>
-
-### Listing available items
-
-You can use the following snippet to retrieve all toolbar items available in your editor:
-
-```js
-Array.from( editor.ui.componentFactory.names() );
-```
+In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
 
 ## Other configuration options
 

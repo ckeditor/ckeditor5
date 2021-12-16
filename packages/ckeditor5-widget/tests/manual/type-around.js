@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -29,10 +29,10 @@ class InlineWidget extends Plugin {
 
 		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
-				const widgetElement = createPlaceholderView( modelItem, viewWriter );
+			view: ( modelItem, conversionApi ) => {
+				const widgetElement = createPlaceholderView( modelItem, conversionApi );
 
-				return toWidget( widgetElement, viewWriter );
+				return toWidget( widgetElement, conversionApi.writer );
 			}
 		} );
 
@@ -53,11 +53,11 @@ class InlineWidget extends Plugin {
 
 		this._createToolbarButton();
 
-		function createPlaceholderView( modelItem, viewWriter ) {
-			const widgetElement = viewWriter.createContainerElement( 'placeholder' );
-			const viewText = viewWriter.createText( '{inline-widget}' );
+		function createPlaceholderView( modelItem, { writer } ) {
+			const widgetElement = writer.createContainerElement( 'placeholder' );
+			const viewText = writer.createText( '{inline-widget}' );
 
-			viewWriter.insert( viewWriter.createPositionAt( widgetElement, 0 ), viewText );
+			writer.insert( writer.createPositionAt( widgetElement, 0 ), viewText );
 
 			return widgetElement;
 		}
@@ -128,7 +128,7 @@ ClassicEditor
 			'redo'
 		],
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
 		},
 		table: {
 			contentToolbar: [

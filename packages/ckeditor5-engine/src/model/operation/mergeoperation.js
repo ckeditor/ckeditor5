@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -127,10 +127,7 @@ export default class MergeOperation extends Operation {
 		const path = this.sourcePosition.path.slice( 0, -1 );
 		const insertionPosition = new Position( this.sourcePosition.root, path )._getTransformedByMergeOperation( this );
 
-		const split = new SplitOperation( targetPosition, this.howMany, this.graveyardPosition, this.baseVersion + 1 );
-		split.insertionPosition = insertionPosition;
-
-		return split;
+		return new SplitOperation( targetPosition, this.howMany, insertionPosition, this.graveyardPosition, this.baseVersion + 1 );
 	}
 
 	/**
@@ -147,21 +144,21 @@ export default class MergeOperation extends Operation {
 			 *
 			 * @error merge-operation-source-position-invalid
 			 */
-			throw new CKEditorError( 'merge-operation-source-position-invalid: Merge source position is invalid.', this );
+			throw new CKEditorError( 'merge-operation-source-position-invalid', this );
 		} else if ( !targetElement.parent ) {
 			/**
 			 * Merge target position is invalid. The element to be merged must have a parent node.
 			 *
 			 * @error merge-operation-target-position-invalid
 			 */
-			throw new CKEditorError( 'merge-operation-target-position-invalid: Merge target position is invalid.', this );
+			throw new CKEditorError( 'merge-operation-target-position-invalid', this );
 		} else if ( this.howMany != sourceElement.maxOffset ) {
 			/**
 			 * Merge operation specifies wrong number of nodes to move.
 			 *
 			 * @error merge-operation-how-many-invalid
 			 */
-			throw new CKEditorError( 'merge-operation-how-many-invalid: Merge operation specifies wrong number of nodes to move.', this );
+			throw new CKEditorError( 'merge-operation-how-many-invalid', this );
 		}
 	}
 

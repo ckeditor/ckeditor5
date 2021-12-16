@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -150,6 +150,18 @@ describe( 'DecoupledEditor', () => {
 			} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5/issues/8974
+		it( 'initializes with empty content if config.initialData is set to an empty string', () => {
+			return DecoupledEditor.create( document.createElement( 'div' ), {
+				initialData: '',
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '' );
+
+				editor.destroy();
+			} );
+		} );
+
 		// See: https://github.com/ckeditor/ckeditor5/issues/746
 		it( 'should throw when trying to create the editor using the same source element more than once', done => {
 			const sourceElement = document.createElement( 'div' );
@@ -163,7 +175,7 @@ describe( 'DecoupledEditor', () => {
 						expect.fail( 'Decoupled editor should not initialize on an element already used by other instance.' );
 					},
 					err => {
-						assertCKEditorError( err, /^editor-source-element-already-used/ );
+						assertCKEditorError( err, 'editor-source-element-already-used' );
 					}
 				)
 				.then( done )
@@ -180,11 +192,7 @@ describe( 'DecoupledEditor', () => {
 						expect.fail( 'Decoupled editor should throw an error when both initial data are passed' );
 					},
 					err => {
-						assertCKEditorError( err,
-							// eslint-disable-next-line max-len
-							/^editor-create-initial-data: The config\.initialData option cannot be used together with initial data passed in Editor\.create\(\)\./,
-							null
-						);
+						assertCKEditorError( err, 'editor-create-initial-data' );
 					}
 				)
 				.then( () => {
@@ -201,10 +209,7 @@ describe( 'DecoupledEditor', () => {
 						expect.fail( 'Decoupled editor should throw an error when is initialized in textarea.' );
 					},
 					err => {
-						assertCKEditorError( err,
-							/^editor-wrong-element: This type of editor cannot be initialized inside <textarea> element\./,
-							null
-						);
+						assertCKEditorError( err, 'editor-wrong-element', null );
 					}
 				)
 				.then( done )
@@ -409,7 +414,7 @@ describe( 'DecoupledEditor', () => {
 					plugins: [ ArticlePluginSet ],
 					toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 					image: {
-						toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+						toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
 					}
 				} ) );
 	} );

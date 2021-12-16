@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,10 @@
  * @module paste-from-office/normalizers/googledocsnormalizer
  */
 
+import { UpcastWriter } from 'ckeditor5/src/engine';
+
 import removeBoldWrapper from '../filters/removeboldwrapper';
 import { unwrapParagraphInListItem } from '../filters/list';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
 
 const googleDocsMatch = /id=("|')docs-internal-guid-[-0-9a-f]+("|')/i;
 
@@ -44,8 +45,11 @@ export default class GoogleDocsNormalizer {
 	 */
 	execute( data ) {
 		const writer = new UpcastWriter( this.document );
+		const { body: documentFragment } = data._parsedData;
 
-		removeBoldWrapper( data.content, writer );
-		unwrapParagraphInListItem( data.content, writer );
+		removeBoldWrapper( documentFragment, writer );
+		unwrapParagraphInListItem( documentFragment, writer );
+
+		data.content = documentFragment;
 	}
 }

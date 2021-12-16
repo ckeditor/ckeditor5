@@ -25,6 +25,10 @@ Observables are useful when it comes to managing the state of the application, w
 
 Observables can also [decorate their methods](#decorating-object-methods) which makes it possible to control their execution using event listeners, giving external code some control over their behavior.
 
+<info-box>
+	Since the observables are just another layer on top of the event {@link module:utils/emittermixin~EmitterMixin emitters}, check out the {@link framework/guides/deep-dive/event-system event system deep dive guide} to learn more about the advanced usage of events with some additional examples.
+</info-box>
+
 ## Making properties observable
 
 Having mixed the {@link module:utils/observablemixin~ObservableMixin} into your class, you can define observable properties. To do that, use the {@link module:utils/observablemixin~ObservableMixin#set `set()` method}.
@@ -197,6 +201,17 @@ button.bind( 'isOn' ).to( command, 'value' );
 ```
 
 The property has been "renamed" in the binding and from now on, whenever `command.value` changes, the value of `button.isOn` will reflect it.
+
+#### Processing a property value
+
+Another use case is processing the bound property value, for instance, when a button should be disabled only if certain conditions are met. Passing a callback as the third parameter allows implementing a custom logic.
+
+In the example below, the `isEnabled` property will be set to `true` only when `command.value` equals `'heading1`.
+
+```js
+const command = editor.commands.get( 'heading' );
+button.bind( 'isOn' ).to( command, 'value', value => value === 'heading1' );
+```
 
 ### Binding multiple properties
 

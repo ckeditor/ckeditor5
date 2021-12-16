@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,7 +21,7 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 ClassicEditor
 	.create( document.querySelector( '#editor1' ), {
 		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload', 'alignment' ]
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'uploadImage', 'alignment' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -35,7 +35,7 @@ ClassicEditor
 ClassicEditor
 	.create( document.querySelector( '#editor2' ), {
 		plugins: [ Enter, Typing, Undo, Heading, Title, Clipboard, Image, ImageUpload, Bold, Alignment ],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'imageUpload', 'alignment' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'uploadImage', 'alignment' ],
 		placeholder: 'Custom body placeholder',
 		title: {
 			placeholder: 'Custom title placeholder'

@@ -2,14 +2,18 @@ CKEditor 5 select all feature
 ===========================
 
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-select-all.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-select-all)
-[![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-select-all/status.svg)](https://david-dm.org/ckeditor/ckeditor5-select-all)
-[![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-select-all/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-select-all?type=dev)
+[![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
+[![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
 
 This package implements the select all feature for CKEditor 5.
 
+## Demo
+
+Check out the demo in the [select all feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html#demo).
+
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-select-all` package](https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html) as well as the [Select all feature guide](https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html) in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-select-all` package](https://ckeditor.com/docs/ckeditor5/latest/api/select-all.html) as well as the [select all feature](https://ckeditor.com/docs/ckeditor5/latest/features/select-all.html) guide in [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest/).
 
 ## License
 

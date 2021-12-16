@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/tablemouse
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import TableSelection from './tableselection';
 import MouseEventsObserver from './tablemouse/mouseeventsobserver';
@@ -41,7 +41,7 @@ export default class TableMouse extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		// Currently the MouseObserver only handles `mouseup` events.
+		// Currently the MouseObserver only handles `mousedown` and `mouseup` events.
 		// TODO move to the engine?
 		editor.editing.view.addObserver( MouseEventsObserver );
 

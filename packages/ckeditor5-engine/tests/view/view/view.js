@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -31,7 +31,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 6;
+	const DEFAULT_OBSERVERS_COUNT = 7;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
@@ -488,8 +488,8 @@ describe( 'view', () => {
 		} );
 	} );
 
-	describe( 'isFocused', () => {
-		it( 'should change renderer.isFocused too', () => {
+	describe( 'Renderer property bindings to the document', () => {
+		it( 'Renderer#isFocused should be bound to Document#isFocused', () => {
 			expect( viewDocument.isFocused ).to.equal( false );
 			expect( view._renderer.isFocused ).to.equal( false );
 
@@ -497,6 +497,16 @@ describe( 'view', () => {
 
 			expect( viewDocument.isFocused ).to.equal( true );
 			expect( view._renderer.isFocused ).to.equal( true );
+		} );
+
+		it( 'Renderer#isSelecting should be bound to Document#isSelecting', () => {
+			expect( viewDocument.isSelecting ).to.equal( false );
+			expect( view._renderer.isSelecting ).to.equal( false );
+
+			viewDocument.isSelecting = true;
+
+			expect( viewDocument.isSelecting ).to.equal( true );
+			expect( view._renderer.isSelecting ).to.equal( true );
 		} );
 	} );
 
@@ -904,6 +914,7 @@ describe( 'view', () => {
 		it( 'should rethrow custom CKEditorError errors', () => {
 			expectToThrowCKEditorError( () => {
 				view.change( () => {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', view );
 				} );
 			}, /foo/, view );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -232,7 +232,7 @@ describe( 'ClassicTestEditor', () => {
 				.then( () => {
 					throw new Error( 'It should throw an error' );
 				}, err => {
-					assertCKEditorError( err, /^editor-create-initial-data:/, null );
+					assertCKEditorError( err, 'editor-create-initial-data', null );
 					removeEditorBodyOrphans();
 				} );
 		} );

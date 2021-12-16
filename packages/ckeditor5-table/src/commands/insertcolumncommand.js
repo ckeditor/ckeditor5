@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module table/commands/insertcolumncommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import { Command } from 'ckeditor5/src/core';
 import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
 /**
@@ -52,10 +52,9 @@ export default class InsertColumnCommand extends Command {
 	 */
 	refresh() {
 		const selection = this.editor.model.document.selection;
+		const isAnyCellSelected = !!getSelectionAffectedTableCells( selection ).length;
 
-		const tableParent = selection.getFirstPosition().findAncestor( 'table' );
-
-		this.isEnabled = !!tableParent;
+		this.isEnabled = isAnyCellSelected;
 	}
 
 	/**

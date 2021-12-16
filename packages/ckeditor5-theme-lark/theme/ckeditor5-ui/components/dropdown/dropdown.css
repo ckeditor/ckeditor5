@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -77,6 +77,16 @@
 
 		&.ck-dropdown__button_label-width_auto .ck-button__label {
 			width: auto;
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/8699 */
+		&.ck-off:active,
+		&.ck-on:active {
+			box-shadow: none;
+			
+			&:focus {
+				@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+			}
 		}
 	}
 }

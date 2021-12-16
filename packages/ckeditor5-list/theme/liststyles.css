@@ -1,0 +1,12 @@
+/*
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+.ck.ck-list-styles-dropdown > .ck-dropdown__panel > .ck-toolbar > .ck-toolbar__items {
+	/*
+	 * Use the benefits of the toolbar (e.g. out-of-the-box keyboard navigation) but make it look
+	 * like a panel with thumbnails (previews).
+	 */
+	display: grid;
+}

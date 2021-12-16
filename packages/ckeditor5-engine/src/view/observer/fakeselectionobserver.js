@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -46,13 +46,19 @@ export default class FakeSelectionObserver extends Observer {
 	observe() {
 		const document = this.document;
 
-		document.on( 'keydown', ( eventInfo, data ) => {
+		document.on( 'arrowKey', ( eventInfo, data ) => {
 			const selection = document.selection;
 
-			if ( selection.isFake && _isArrowKeyCode( data.keyCode ) && this.isEnabled ) {
+			if ( selection.isFake && this.isEnabled ) {
 				// Prevents default key down handling - no selection change will occur.
 				data.preventDefault();
+			}
+		}, { context: '$capture' } );
 
+		document.on( 'arrowKey', ( eventInfo, data ) => {
+			const selection = document.selection;
+
+			if ( selection.isFake && this.isEnabled ) {
 				this._handleSelectionMove( data.keyCode );
 			}
 		}, { priority: 'lowest' } );
@@ -110,16 +116,3 @@ export default class FakeSelectionObserver extends Observer {
 		this._fireSelectionChangeDoneDebounced( data );
 	}
 }
-
-// Checks if one of the arrow keys is pressed.
-//
-// @private
-// @param {Number} keyCode
-// @returns {Boolean}
-function _isArrowKeyCode( keyCode ) {
-	return keyCode == keyCodes.arrowright ||
-		keyCode == keyCodes.arrowleft ||
-		keyCode == keyCodes.arrowup ||
-		keyCode == keyCodes.arrowdown;
-}
-

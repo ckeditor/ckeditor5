@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,10 +14,15 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
-			],
-			viewportTopOffset: window.getViewportTopOffsetConfig()
+			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		},
 		mention: {
+			dropdownLimit: 4,
 			feeds: [
 				{
 					marker: '@',
@@ -68,13 +73,13 @@ function MentionCustomization( editor ) {
 	// Downcast the model 'mention' text attribute to a view <a> element.
 	editor.conversion.for( 'downcast' ).attributeToElement( {
 		model: 'mention',
-		view: ( modelAttributeValue, viewWriter ) => {
+		view: ( modelAttributeValue, { writer } ) => {
 			// Do not convert empty attributes (lack of value means no mention).
 			if ( !modelAttributeValue ) {
 				return;
 			}
 
-			return viewWriter.createAttributeElement( 'a', {
+			return writer.createAttributeElement( 'a', {
 				class: 'mention',
 				'data-mention': modelAttributeValue.id,
 				'data-user-id': modelAttributeValue.userId,

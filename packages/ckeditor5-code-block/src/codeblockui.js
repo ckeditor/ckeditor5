@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,10 @@
  * @module code-block/codeblockui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { Plugin } from 'ckeditor5/src/core';
+import { Collection } from 'ckeditor5/src/utils';
+import { Model, SplitButtonView, createDropdown, addListToDropdown } from 'ckeditor5/src/ui';
+
 import { getNormalizedAndLocalizedLanguageDefinitions } from './utils';
 
 import codeBlockIcon from '../theme/icons/codeblock.svg';
@@ -28,12 +27,18 @@ export default class CodeBlockUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get pluginName() {
+		return 'CodeBlockUI';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const t = editor.t;
 		const componentFactory = editor.ui.componentFactory;
 		const normalizedLanguageDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
-		const defaultLanguageDefinition = normalizedLanguageDefs[ 0 ];
 
 		componentFactory.add( 'codeBlock', locale => {
 			const command = editor.commands.get( 'codeBlock' );
@@ -51,7 +56,7 @@ export default class CodeBlockUI extends Plugin {
 
 			splitButtonView.on( 'execute', () => {
 				editor.execute( 'codeBlock', {
-					language: defaultLanguageDefinition.language
+					usePreviousLanguageChoice: true
 				} );
 
 				editor.editing.view.focus();

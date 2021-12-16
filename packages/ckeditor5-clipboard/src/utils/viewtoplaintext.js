@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -27,6 +27,9 @@ export default function viewToPlainText( viewItem ) {
 	} else if ( viewItem.is( 'element', 'img' ) && viewItem.hasAttribute( 'alt' ) ) {
 		// Special case for images - use alt attribute if it is provided.
 		text = viewItem.getAttribute( 'alt' );
+	} else if ( viewItem.is( 'element', 'br' ) ) {
+		// A soft break should be converted into a single line break (#8045).
+		text = '\n';
 	} else {
 		// Other elements are document fragments, attribute elements or container elements.
 		// They don't have their own text value, so convert their children.

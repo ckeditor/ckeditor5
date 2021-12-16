@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module alignment/alignment
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 
 import AlignmentEditing from './alignmentediting';
 import AlignmentUI from './alignmentui';
@@ -82,7 +82,24 @@ export default class Alignment extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
+ * By default the alignment is set inline using the `text-align` CSS property. To further customize the alignment,
+ * you can provide names of classes for each alignment option using the `className` property.
+ *
+ * **Note:** Once you define the `className` property for one option, you need to specify it for all other options.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				alignment: {
+ *					options: [
+ *						{ name: 'left', className: 'my-align-left' },
+ *						{ name: 'right', className: 'my-align-right' }
+ *					]
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
  * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  *
- * @member {Array.<String>} module:alignment/alignment~AlignmentConfig#options
+ * @member {Array.<String|module:alignment/alignmentediting~AlignmentFormat>} module:alignment/alignment~AlignmentConfig#options
  */

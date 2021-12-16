@@ -1,8 +1,8 @@
 Software License Agreement
 ==========================
 
-**Inline Editor** – https://github.com/ckeditor/ckeditor5-editor-inline <br>
-Copyright (c) 2003-2020, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
+**Inline editor implementation** – https://github.com/ckeditor/ckeditor5-editor-inline <br>
+Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
 

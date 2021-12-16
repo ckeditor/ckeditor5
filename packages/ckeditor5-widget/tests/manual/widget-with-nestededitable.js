@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -40,13 +40,13 @@ ClassicEditor
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					return writer.createContainerElement( 'div', { class: 'widget' } );
 				}
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					return writer.createContainerElement( 'div', { class: 'nested' } );
 				}
 			} );
@@ -54,7 +54,7 @@ ClassicEditor
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'widget',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const div = writer.createContainerElement( 'div', { class: 'widget' } );
 
 					return toWidget( div, writer, { label: 'widget label' } );
@@ -62,7 +62,7 @@ ClassicEditor
 			} )
 			.elementToElement( {
 				model: 'nested',
-				view: ( modelItem, writer ) => {
+				view: ( modelItem, { writer } ) => {
 					const nested = writer.createEditableElement( 'div', { class: 'nested' } );
 
 					return toWidgetEditable( nested, writer );

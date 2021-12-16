@@ -18,7 +18,7 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 1. **Check whether an [official integration](#official-wysiwyg-editor-integrations) exists.**
 
-	There are three official integrations so far: for {@link builds/guides/frameworks/react React}, {@link builds/guides/frameworks/angular Angular}, and for {@link builds/guides/frameworks/vuejs Vue.js}.
+	There are four official integrations so far: for {@link builds/guides/frameworks/react React}, {@link builds/guides/frameworks/angular Angular}, {@link builds/guides/frameworks/vuejs-v2 Vue.js 2.x}, and for {@link builds/guides/frameworks/vuejs-v3 Vue.js 3.x}.
 2. **If not, search for community-driven integrations.** Most of them are available on [npm](https://www.npmjs.com/).
 3. **If none exists, integrate CKEditor 5 with your framework by yourself.**
 
@@ -26,11 +26,12 @@ When checking how to integrate CKEditor 5 with your framework you can follow the
 
 ## Official WYSIWYG editor integrations
 
-There are three official integrations so far:
+There are four official integrations so far:
 
 * {@link builds/guides/frameworks/angular CKEditor 5 rich-text editor for Angular}
 * {@link builds/guides/frameworks/react CKEditor 5 rich-text editor for React}
-* {@link builds/guides/frameworks/vuejs CKEditor 5 rich-text editor for Vue.js}
+* {@link builds/guides/frameworks/vuejs-v2 CKEditor 5 rich-text editor for Vue.js 2.x}
+* {@link builds/guides/frameworks/vuejs-v3 CKEditor 5 rich-text editor for Vue.js 3.x}
 
 Refer to their documentation to learn how to use them.
 

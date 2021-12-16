@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,9 @@
  * @module table/tableui
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
-import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { Plugin } from 'ckeditor5/src/core';
+import { addListToDropdown, createDropdown, Model, SplitButtonView } from 'ckeditor5/src/ui';
+import { Collection } from 'ckeditor5/src/utils';
 
 import InsertTableView from './ui/inserttableview';
 
@@ -33,6 +31,13 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * @extends module:core/plugin~Plugin
  */
 export default class TableUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'TableUI';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -273,13 +278,22 @@ export default class TableUI extends Plugin {
 		const dropdownView = createDropdown( locale, SplitButtonView );
 		const mergeCommandName = 'mergeTableCells';
 
-		this._fillDropdownWithListOptions( dropdownView, options );
+		// Main command.
+		const mergeCommand = editor.commands.get( mergeCommandName );
+
+		// Subcommands in the dropdown.
+		const commands = this._fillDropdownWithListOptions( dropdownView, options );
 
 		dropdownView.buttonView.set( {
 			label,
 			icon,
 			tooltip: true,
 			isEnabled: true
+		} );
+
+		// Make dropdown button disabled when all options are disabled together with the main command.
+		dropdownView.bind( 'isEnabled' ).toMany( [ mergeCommand, ...commands ], 'isEnabled', ( ...areEnabled ) => {
+			return areEnabled.some( isEnabled => isEnabled );
 		} );
 
 		// Merge selected table cells when the main part of the split button is clicked.

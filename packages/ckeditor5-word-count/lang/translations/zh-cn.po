@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Label showing the number of words in the editor content."
 msgid "Words: %0"
-msgstr "字数：%0"
+msgstr "单词数：%0"
 
 msgctxt "Label showing the number of characters in the editor content."
 msgid "Characters: %0"

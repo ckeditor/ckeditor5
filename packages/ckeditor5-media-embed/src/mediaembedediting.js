@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module media-embed/mediaembedediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 import { modelToViewUrlAttributeConverter } from './converters';
 import MediaEmbedCommand from './mediaembedcommand';
@@ -36,6 +37,7 @@ export default class MediaEmbedEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'mediaEmbed', {
+			elementName: 'oembed',
 			providers: [
 				{
 					name: 'dailymotion',
@@ -132,7 +134,12 @@ export default class MediaEmbedEditing extends Plugin {
 				},
 				{
 					name: 'googleMaps',
-					url: /^google\.com\/maps/
+					url: [
+						/^google\.com\/maps/,
+						/^goo\.gl\/maps/,
+						/^maps\.google\.com/,
+						/^maps\.app\.goo\.gl/
+					]
 				},
 				{
 					name: 'flickr',
@@ -162,6 +169,8 @@ export default class MediaEmbedEditing extends Plugin {
 		const t = editor.t;
 		const conversion = editor.conversion;
 		const renderMediaPreview = editor.config.get( 'mediaEmbed.previewsInData' );
+		const elementName = editor.config.get( 'mediaEmbed.elementName' );
+
 		const registry = this.registry;
 
 		editor.commands.add( 'mediaEmbed', new MediaEmbedCommand( editor ) );
@@ -177,10 +186,11 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> Data
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'media',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
 
-				return createMediaFigureElement( viewWriter, registry, url, {
+				return createMediaFigureElement( writer, registry, url, {
+					elementName,
 					renderMediaPreview: url && renderMediaPreview
 				} );
 			}
@@ -189,25 +199,28 @@ export default class MediaEmbedEditing extends Plugin {
 		// Model -> Data (url -> data-oembed-url)
 		conversion.for( 'dataDowncast' ).add(
 			modelToViewUrlAttributeConverter( registry, {
+				elementName,
 				renderMediaPreview
 			} ) );
 
 		// Model -> View (element)
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'media',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
-				const figure = createMediaFigureElement( viewWriter, registry, url, {
+				const figure = createMediaFigureElement( writer, registry, url, {
+					elementName,
 					renderForEditingView: true
 				} );
 
-				return toMediaWidget( figure, viewWriter, t( 'media widget' ) );
+				return toMediaWidget( figure, writer, t( 'media widget' ) );
 			}
 		} );
 
 		// Model -> View (url -> data-oembed-url)
 		conversion.for( 'editingDowncast' ).add(
 			modelToViewUrlAttributeConverter( registry, {
+				elementName,
 				renderForEditingView: true
 			} ) );
 
@@ -215,17 +228,14 @@ export default class MediaEmbedEditing extends Plugin {
 		conversion.for( 'upcast' )
 			// Upcast semantic media.
 			.elementToElement( {
-				view: {
-					name: 'oembed',
-					attributes: {
-						url: true
-					}
-				},
-				model: ( viewMedia, modelWriter ) => {
+				view: element => [ 'oembed', elementName ].includes( element.name ) && element.getAttribute( 'url' ) ?
+					{ name: true } :
+					null,
+				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'url' );
 
 					if ( registry.hasMedia( url ) ) {
-						return modelWriter.createElement( 'media', { url } );
+						return writer.createElement( 'media', { url } );
 					}
 				}
 			} )
@@ -237,11 +247,33 @@ export default class MediaEmbedEditing extends Plugin {
 						'data-oembed-url': true
 					}
 				},
-				model: ( viewMedia, modelWriter ) => {
+				model: ( viewMedia, { writer } ) => {
 					const url = viewMedia.getAttribute( 'data-oembed-url' );
 
 					if ( registry.hasMedia( url ) ) {
-						return modelWriter.createElement( 'media', { url } );
+						return writer.createElement( 'media', { url } );
+					}
+				}
+			} )
+			// Consume `<figure class="media">` elements, that were left after upcast.
+			.add( dispatcher => {
+				dispatcher.on( 'element:figure', converter );
+
+				function converter( evt, data, conversionApi ) {
+					if ( !conversionApi.consumable.consume( data.viewItem, { name: true, classes: 'media' } ) ) {
+						return;
+					}
+
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+
+					const modelElement = first( modelRange.getItems() );
+
+					if ( !modelElement ) {
+						// Revert consumed figure so other features can convert it.
+						conversionApi.consumable.revert( data.viewItem, { name: true, classes: 'media' } );
 					}
 				}
 			} );

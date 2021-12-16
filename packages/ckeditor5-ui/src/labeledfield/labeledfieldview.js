@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -93,6 +93,27 @@ export default class LabeledFieldView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
+		 * An observable flag set to `true` when {@link #fieldView} is empty (`false` otherwise).
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isEmpty
+		 * @default true
+		 */
+		this.set( 'isEmpty', true );
+
+		/**
+		 * An observable flag set to `true` when {@link #fieldView} is currently focused by
+		 * the user (`false` otherwise).
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} #isFocused
+		 * @default false
+		 */
+		this.set( 'isFocused', false );
+
+		/**
 		 * The validation error text. When set, it will be displayed
 		 * next to the {@link #fieldView} as a typical validation error message.
 		 * Set it to `null` to hide the message.
@@ -117,6 +138,7 @@ export default class LabeledFieldView extends View {
 		 *
 		 * @observable
 		 * @member {String|null} #infoText
+		 * @default null
 		 */
 		this.set( 'infoText', null );
 
@@ -127,6 +149,14 @@ export default class LabeledFieldView extends View {
 		 * @member {String} #class
 		 */
 		this.set( 'class' );
+
+		/**
+		 * The content of the `placeholder` attribute of the {@link #fieldView}.
+		 *
+		 * @observable
+		 * @member {String} #placeholder
+		 */
+		this.set( 'placeholder' );
 
 		/**
 		 * The label view instance that describes the entire view.
@@ -170,12 +200,27 @@ export default class LabeledFieldView extends View {
 					'ck',
 					'ck-labeled-field-view',
 					bind.to( 'class' ),
-					bind.if( 'isEnabled', 'ck-disabled', value => !value )
+					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
+					bind.if( 'isEmpty', 'ck-labeled-field-view_empty' ),
+					bind.if( 'isFocused', 'ck-labeled-field-view_focused' ),
+					bind.if( 'placeholder', 'ck-labeled-field-view_placeholder' ),
+					bind.if( 'errorText', 'ck-error' )
 				]
 			},
 			children: [
-				this.labelView,
-				this.fieldView,
+				{
+					tag: 'div',
+					attributes: {
+						class: [
+							'ck',
+							'ck-labeled-field-view__input-wrapper'
+						]
+					},
+					children: [
+						this.fieldView,
+						this.labelView
+					]
+				},
 				this.statusView
 			]
 		} );

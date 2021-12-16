@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -12,7 +12,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import icon from '../theme/icons/paragraph.svg';
 
 /**
- * This plugin defines the `'paragraphs'` button. It can be used together with
+ * This plugin defines the `'paragraph'` button. It can be used together with
  * {@link module:heading/headingbuttonsui~HeadingButtonsUI} to replace the standard heading dropdown.
  *
  * This plugin is not loaded automatically by the {@link module:paragraph/paragraph~Paragraph} plugin. It must

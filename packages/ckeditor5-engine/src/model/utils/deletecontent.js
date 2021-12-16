@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -45,7 +45,7 @@ import DocumentSelection from '../documentselection';
  * @param {Boolean} [options.doNotAutoparagraph=false] Whether to create a paragraph if after content deletion selection is moved
  * to a place where text cannot be inserted.
  *
- * For example `<paragraph>x</paragraph>[<image src="foo.jpg"></image>]` will become:
+ * For example `<paragraph>x</paragraph>[<imageBlock src="foo.jpg"></imageBlock>]` will become:
  *
  * * `<paragraph>x</paragraph><paragraph>[]</paragraph>` with the option disabled (`doNotAutoparagraph == false`)
  * * `<paragraph>x</paragraph>[]` with the option enabled (`doNotAutoparagraph == true`).
@@ -53,9 +53,9 @@ import DocumentSelection from '../documentselection';
  * If you use this option you need to make sure to handle invalid selections yourself or leave
  * them to the selection post-fixer (may not always work).
  *
- * **Note:** if there is no valid position for the selection, the paragraph will always be created:
+ * **Note:** If there is no valid position for the selection, the paragraph will always be created:
  *
- * `[<image src="foo.jpg"></image>]` -> `<paragraph>[]</paragraph>`.
+ * `[<imageBlock src="foo.jpg"></imageBlock>]` -> `<paragraph>[]</paragraph>`.
  */
 export default function deleteContent( model, selection, options = {} ) {
 	if ( selection.isCollapsed ) {
@@ -84,8 +84,8 @@ export default function deleteContent( model, selection, options = {} ) {
 		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 
 		// 2. Remove the content if there is any.
-		if ( !selRange.start.isTouching( selRange.end ) ) {
-			writer.remove( selRange );
+		if ( !startPosition.isTouching( endPosition ) ) {
+			writer.remove( writer.createRange( startPosition, endPosition ) );
 		}
 
 		// 3. Merge elements in the right branch to the elements in the left branch.
@@ -148,7 +148,20 @@ function getLivePositionsForSelectedBlocks( range ) {
 			// This is how modifySelection works and here we are making use of it.
 			model.modifySelection( selection, { direction: 'backward' } );
 
-			endPosition = selection.getLastPosition();
+			const newEndPosition = selection.getLastPosition();
+
+			// For such a model and selection:
+			//     <paragraph>A[</paragraph><imageBlock></imageBlock><paragraph>]B</paragraph>
+			//
+			// After modifySelection(), we would end up with this:
+			//     <paragraph>A[</paragraph>]<imageBlock></imageBlock><paragraph>B</paragraph>
+			//
+			// So we need to check if there is no content in the skipped range (because we want to include the <imageBlock>).
+			const skippedRange = model.createRange( newEndPosition, endPosition );
+
+			if ( !model.hasContent( skippedRange, { ignoreMarkers: true } ) ) {
+				endPosition = newEndPosition;
+			}
 		}
 	}
 
@@ -212,6 +225,18 @@ function mergeBranches( writer, startPosition, endPosition ) {
 
 	// Merging should not go deeper than common ancestor.
 	const [ startAncestor, endAncestor ] = getAncestorsJustBelowCommonAncestor( startPosition, endPosition );
+
+	// Branches can't be merged if one of the positions is directly inside a common ancestor.
+	//
+	// Example:
+	//     <blockQuote>
+	//         <paragraph>[foo</paragraph>]
+	//         <table> ... </table>
+	//     <blockQuote>
+	//
+	if ( !startAncestor || !endAncestor ) {
+		return;
+	}
 
 	if ( !model.hasContent( startAncestor, { ignoreMarkers: true } ) && model.hasContent( endAncestor, { ignoreMarkers: true } ) ) {
 		mergeBranchesRight( writer, startPosition, endPosition, startAncestor.parent );

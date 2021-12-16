@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,6 +35,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * and {@link module:engine/conversion/mapper~Mapper#toModelPosition toModelPosition} methods. `Mapper` adds it's own default callbacks
  * with `'lowest'` priority. To override default `Mapper` mapping, add custom callback with higher priority and
  * stop the event.
+ * @mixes module:utils/emittermixin~EmitterMixin
  */
 export default class Mapper {
 	/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,7 @@
  * @module paste-from-office/filters/list
  */
 
-import Matcher from '@ckeditor/ckeditor5-engine/src/view/matcher';
-import UpcastWriter from '@ckeditor/ckeditor5-engine/src/view/upcastwriter';
+import { Matcher, UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
  * Transforms Word specific list-like elements to the semantic HTML lists.
@@ -56,13 +55,11 @@ export function transformListItemLikeElementsIntoLists( documentFragment, styles
 				const lastListItemChild = lastListItem.getChild( lastListItem.childCount - 1 );
 
 				currentList = insertNewEmptyList( listStyle, lastListItemChild, writer );
-
 				currentIndentation += 1;
 			} else if ( itemLikeElement.indent < currentIndentation ) {
 				const differentIndentation = currentIndentation - itemLikeElement.indent;
 
 				currentList = findParentListAtLevel( currentList, differentIndentation );
-
 				currentIndentation = parseInt( itemLikeElement.indent );
 			}
 
@@ -93,7 +90,7 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
 			// Google Docs allows on single paragraph inside LI.
 			const firstChild = element.getChild( 0 );
 
-			if ( firstChild.is( 'element', 'p' ) ) {
+			if ( firstChild && firstChild.is( 'element', 'p' ) ) {
 				writer.unwrapElement( firstChild );
 			}
 		}
@@ -142,7 +139,7 @@ function findAllItemLikeElements( documentFragment, writer ) {
 
 // Extracts list item style from the provided CSS.
 //
-// List item style is extracted from CSS stylesheet. Each list with its specific style attribute
+// List item style is extracted from the CSS stylesheet. Each list with its specific style attribute
 // value (`mso-list:l1 level1 lfo1`) has its dedicated properties in a CSS stylesheet defined with a selector like:
 //
 // 		@list l1:level1 { ... }
@@ -158,28 +155,123 @@ function findAllItemLikeElements( documentFragment, writer ) {
 // @param {String} stylesString CSS stylesheet.
 // @returns {Object} result
 // @returns {String} result.type List type, could be `ul` or `ol`.
-// @returns {String} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
-// directly from Word stylesheet without further processing and may be not compatible
-// with CSS `list-style-type` property accepted values.
+// @returns {String|null} result.style List style, for example: `decimal`, `lower-roman`, etc. It is extracted
+// directly from Word stylesheet and adjusted to represent proper values for the CSS `list-style-type` property.
+// If it cannot be adjusted, the `null` value is returned.
 function detectListStyle( listLikeItem, stylesString ) {
 	const listStyleRegexp = new RegExp( `@list l${ listLikeItem.id }:level${ listLikeItem.indent }\\s*({[^}]*)`, 'gi' );
-	const listStyleTypeRegex = /mso-level-number-format:([^;]*);/gi;
+	const listStyleTypeRegex = /mso-level-number-format:([^;]{0,100});/gi;
 
 	const listStyleMatch = listStyleRegexp.exec( stylesString );
 
 	let listStyleType = 'decimal'; // Decimal is default one.
+	let type = 'ol'; // <ol> is default list.
+
 	if ( listStyleMatch && listStyleMatch[ 1 ] ) {
 		const listStyleTypeMatch = listStyleTypeRegex.exec( listStyleMatch[ 1 ] );
 
 		if ( listStyleTypeMatch && listStyleTypeMatch[ 1 ] ) {
 			listStyleType = listStyleTypeMatch[ 1 ].trim();
+			type = listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul';
+		}
+
+		// Styles for the numbered lists are always defined in the Word CSS stylesheet.
+		// Unordered lists MAY contain a value for the Word CSS definition `mso-level-text` but sometimes
+		// this tag is missing. And because of that, we cannot depend on that. We need to predict the list style value
+		// based on the list style marker element.
+		if ( listStyleType === 'bullet' ) {
+			const bulletedStyle = findBulletedListStyle( listLikeItem.element );
+
+			if ( bulletedStyle ) {
+				listStyleType = bulletedStyle;
+			}
 		}
 	}
 
 	return {
-		type: listStyleType !== 'bullet' && listStyleType !== 'image' ? 'ol' : 'ul',
-		style: listStyleType
+		type,
+		style: mapListStyleDefinition( listStyleType )
 	};
+}
+
+// Tries to extract the `list-style-type` value based on the marker element for bulleted list.
+//
+// @param {module:engine/view/element~Element} element
+// @returns {module:engine/view/element~Element|null}
+function findBulletedListStyle( element ) {
+	const listMarkerElement = findListMarkerNode( element );
+
+	if ( !listMarkerElement ) {
+		return null;
+	}
+
+	const listMarker = listMarkerElement._data;
+
+	if ( listMarker === 'o' ) {
+		return 'circle';
+	} else if ( listMarker === '·' ) {
+		return 'disc';
+	}
+	// Word returns '§' instead of '■' for the square list style.
+	else if ( listMarker === '§' ) {
+		return 'square';
+	}
+
+	return null;
+}
+
+// Tries to find a text node that represents the marker element (list-style-type).
+//
+// @param {module:engine/view/element~Element} element
+// @returns {module:engine/view/text~Text|null}
+function findListMarkerNode( element ) {
+	// If the first child is a text node, it is the data for the element.
+	// The list-style marker is not present here.
+	if ( element.getChild( 0 ).is( '$text' ) ) {
+		return null;
+	}
+
+	for ( const childNode of element.getChildren() ) {
+		// The list-style marker will be inside the `<span>` element. Let's ignore all non-span elements.
+		// It may happen that the `<a>` element is added as the first child. Most probably, it's an anchor element.
+		if ( !childNode.is( 'element', 'span' ) ) {
+			continue;
+		}
+
+		const textNodeOrElement = childNode.getChild( 0 );
+
+		// If already found the marker element, use it.
+		if ( textNodeOrElement.is( '$text' ) ) {
+			return textNodeOrElement;
+		}
+
+		return textNodeOrElement.getChild( 0 );
+	}
+}
+
+// Parses the `list-style-type` value extracted directly from the Word CSS stylesheet and returns proper CSS definition.
+//
+// @param {String|null} value
+// @returns {String|null}
+function mapListStyleDefinition( value ) {
+	switch ( value ) {
+		case 'arabic-leading-zero':
+			return 'decimal-leading-zero';
+		case 'alpha-upper':
+			return 'upper-alpha';
+		case 'alpha-lower':
+			return 'lower-alpha';
+		case 'roman-upper':
+			return 'upper-roman';
+		case 'roman-lower':
+			return 'lower-roman';
+		case 'circle':
+		case 'disc':
+		case 'square':
+			return value;
+		default:
+			return null;
+	}
 }
 
 // Creates empty list of a given type and inserts it after a specified element.
@@ -197,13 +289,19 @@ function insertNewEmptyList( listStyle, element, writer ) {
 
 	writer.insertChild( position, list, parent );
 
+	// We do not support modifying the marker for a particular list item.
+	// Set the value for the `list-style-type` property directly to the list container.
+	if ( listStyle.style ) {
+		writer.setStyle( 'list-style-type', listStyle.style, list );
+	}
+
 	return list;
 }
 
-// Transforms given element into a semantic list item. As the function operates on a provided
+// Transforms a given element into a semantic list item. As the function operates on a provided
 // {module:engine/src/view/element~Element element} it will modify the view structure to which this element belongs.
 //
-// @param {module:engine/view/element~Element} element Element which will be transformed into list item.
+// @param {module:engine/view/element~Element} element Element which will be transformed into a list item.
 // @param {module:engine/view/upcastwriter~UpcastWriter} writer
 // @returns {module:engine/view/element~Element} New element to which the given one was transformed. It is
 // inserted in place of the old element (the reference to the old element is lost due to renaming).
@@ -233,9 +331,9 @@ function getListItemData( element ) {
 	const listStyle = element.getStyle( 'mso-list' );
 
 	if ( listStyle ) {
-		const idMatch = listStyle.match( /(^|\s+)l(\d+)/i );
-		const orderMatch = listStyle.match( /\s*lfo(\d+)/i );
-		const indentMatch = listStyle.match( /\s*level(\d+)/i );
+		const idMatch = listStyle.match( /(^|\s{1,100})l(\d+)/i );
+		const orderMatch = listStyle.match( /\s{0,100}lfo(\d+)/i );
+		const indentMatch = listStyle.match( /\s{0,100}level(\d+)/i );
 
 		if ( idMatch && orderMatch && indentMatch ) {
 			data.id = idMatch[ 2 ];
@@ -269,8 +367,13 @@ function removeBulletElement( element, writer ) {
 	}
 }
 
-// Whether previous and current item belongs to the same list. It is determined based on `item.id`
-// (extracted from `mso-list` style, see #getListItemData) and previous sibling of the current item.
+// Whether the previous and current items belong to the same list. It is determined based on `item.id`
+// (extracted from `mso-list` style, see #getListItemData) and a previous sibling of the current item.
+//
+// However, it's quite easy to change the `id` attribute for nested lists in Word. It will break the list feature while pasting.
+// Let's check also the `indent` attribute. If the difference between those two elements is equal to 1, we can assume that
+// the `currentItem` is a beginning of the nested list because lists in CKEditor 5 always start with the `indent=0` attribute.
+// See: https://github.com/ckeditor/ckeditor5/issues/7805.
 //
 // @param {Object} previousItem
 // @param {Object} currentItem
@@ -281,6 +384,14 @@ function isNewListNeeded( previousItem, currentItem ) {
 	}
 
 	if ( previousItem.id !== currentItem.id ) {
+		// See: https://github.com/ckeditor/ckeditor5/issues/7805.
+		//
+		// * List item 1.
+		//     - Nested list item 1.
+		if ( currentItem.indent - previousItem.indent === 1 ) {
+			return false;
+		}
+
 		return true;
 	}
 
@@ -298,8 +409,8 @@ function isList( element ) {
 	return element.is( 'element', 'ol' ) || element.is( 'element', 'ul' );
 }
 
-// Calculates the indentation difference between two given list items (based on indent attribute
-// extracted from `mso-list` style, see #getListItemData).
+// Calculates the indentation difference between two given list items (based on the indent attribute
+// extracted from the `mso-list` style, see #getListItemData).
 //
 // @param {Object} previousItem
 // @param {Object} currentItem
@@ -308,7 +419,7 @@ function getIndentationDifference( previousItem, currentItem ) {
 	return previousItem ? currentItem.indent - previousItem.indent : currentItem.indent - 1;
 }
 
-// Finds parent list element (ul/ol) of a given list element with indentation level lower by a given value.
+// Finds the parent list element (ul/ol) of a given list element with indentation level lower by a given value.
 //
 // @param {module:engine/view/element~Element} listElement List element from which to start looking for a parent list.
 // @param {Number} indentationDifference Indentation difference between lists.

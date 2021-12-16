@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -43,6 +43,7 @@ describe( 'Model', () => {
 
 		it( 'registers $text to the schema', () => {
 			expect( schema.isRegistered( '$text' ) ).to.be.true;
+			expect( schema.isContent( '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$block' ], '$text' ) ).to.be.true;
 		} );
 
@@ -51,6 +52,13 @@ describe( 'Model', () => {
 			expect( schema.isLimit( '$clipboardHolder' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
+		} );
+
+		it( 'registers $documentFragment to the schema', () => {
+			expect( schema.isRegistered( '$documentFragment' ) ).to.be.true;
+			expect( schema.isLimit( '$documentFragment' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$text' ) ).to.be.true;
+			expect( schema.checkChild( [ '$documentFragment' ], '$block' ) ).to.be.true;
 		} );
 
 		it( 'registers $marker to the schema', () => {
@@ -338,6 +346,7 @@ describe( 'Model', () => {
 		it( 'should throw the original CKEditorError error if it was thrown inside the `change()` block', () => {
 			expectToThrowCKEditorError( () => {
 				model.change( () => {
+					// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 					throw new CKEditorError( 'foo', null, { foo: 1 } );
 				} );
 			}, /foo/, null, { foo: 1 } );
@@ -354,6 +363,7 @@ describe( 'Model', () => {
 		} );
 
 		it( 'should throw the original CKEditorError error if it was thrown inside the `enqueueChange()` block', () => {
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 			const err = new CKEditorError( 'foo', null, { foo: 1 } );
 
 			expectToThrowCKEditorError( () => {
@@ -426,7 +436,7 @@ describe( 'Model', () => {
 
 			model.change( writer => {
 				model.insertContent( new ModelText( 'abc' ) );
-				expect( writer.batch.operations ).to.length( 1 );
+				expect( writer.batch.operations.filter( operation => operation.isDocumentOperation ) ).to.length( 1 );
 			} );
 		} );
 	} );
@@ -532,10 +542,14 @@ describe( 'Model', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( '$block', { allowIn: 'div' } );
-			schema.register( 'image', {
+			schema.register( 'imageBlock', {
 				isObject: true
 			} );
-			schema.extend( 'image', { allowIn: 'div' } );
+			schema.register( 'content', {
+				inheritAllFrom: '$block',
+				isContent: true
+			} );
+			schema.extend( 'imageBlock', { allowIn: 'div' } );
 			schema.register( 'listItem', {
 				inheritAllFrom: '$block'
 			} );
@@ -544,15 +558,19 @@ describe( 'Model', () => {
 				model,
 
 				'<div>' +
-				'<paragraph></paragraph>' +
+					'<paragraph></paragraph>' +
 				'</div>' +
 				'<paragraph>foo</paragraph>' +
 				'<div>' +
-				'<image></image>' +
+					'<imageBlock></imageBlock>' +
 				'</div>' +
 				'<listItem></listItem>' +
 				'<listItem></listItem>' +
-				'<listItem></listItem>'
+				'<listItem></listItem>' +
+				'<content>foo</content>' +
+				'<div>' +
+					'<content></content>' +
+				'</div>'
 			);
 
 			root = model.document.getRoot();
@@ -760,6 +778,19 @@ describe( 'Model', () => {
 			expect( model.hasContent( pEmpty, { ignoreWhitespaces: true } ) ).to.be.true;
 			expect( model.hasContent( pEmpty, { ignoreMarkers: true } ) ).to.be.true;
 			expect( model.hasContent( pEmpty, { ignoreMarkers: true, ignoreWhitespaces: true } ) ).to.be.false;
+		} );
+
+		it( 'should return true for an item registered as a content (isContent=true, isObject=false) in the schema', () => {
+			const contentElement = root.getChild( 6 );
+
+			expect( model.hasContent( contentElement ) ).to.be.true;
+		} );
+
+		it( 'should return true if a range contains an item registered as a content (isContent=true, isObject=false) in the schema', () => {
+			// [<div><content></content></div>]
+			const range = new ModelRange( ModelPosition._createAt( root, 6 ), ModelPosition._createAt( root, 7 ) );
+
+			expect( model.hasContent( range ) ).to.be.true;
 		} );
 	} );
 

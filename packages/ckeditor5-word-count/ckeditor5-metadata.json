@@ -1,0 +1,11 @@
+{
+	"plugins": [
+		{
+			"name": "Word count",
+			"className": "WordCount",
+			"description": "Provides the possibility to track the number of words and characters written in the rich-text editor.",
+			"docs": "features/word-count.html",
+			"path": "src/wordcount.js"
+		}
+	]
+}

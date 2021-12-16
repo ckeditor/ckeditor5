@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -62,7 +62,7 @@
 /**
  * The list of plugins to load.
  *
- * If you use an {@glink builds/guides/overview editor build} you can define the list of plugins to load
+ * If you use an {@glink builds/guides/predefined-builds/overview editor build} you can define the list of plugins to load
  * using the names of plugins that are available:
  *
  *		const config = {
@@ -94,7 +94,7 @@
 
 /**
  * The list of additional plugins to load along those already available in the
- * {@glink builds/guides/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
+ * {@glink builds/guides/predefined-builds/overview editor build}. It extends the {@link #plugins `plugins`} configuration.
  *
  *		function MyPlugin( editor ) {
  *			// ...
@@ -109,13 +109,13 @@
  * build with complex features, create a {@glink builds/guides/development/custom-builds custom build}.
  *
  * **Note:** Make sure you include the new features in you toolbar configuration. Learn more
- * about {@glink builds/guides/integration/configuration#toolbar-setup toolbar setup}.
+ * about the {@glink features/toolbar/toolbar toolbar setup}.
  *
  * @member {Array.<Function>} module:core/editor/editorconfig~EditorConfig#extraPlugins
  */
 
 /**
- * The list of plugins which should not be loaded despite being available in an {@glink builds/guides/overview editor build}.
+ * The list of plugins which should not be loaded despite being available in an {@glink builds/guides/predefined-builds/overview editor build}.
  *
  *		const config = {
  *			removePlugins: [ 'Bold', 'Italic' ]
@@ -126,7 +126,7 @@
  * will become invalid. In such case you need to provide the updated
  * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
  *
- * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#removePlugins
+ * @member {Array.<String|Function>} module:core/editor/editorconfig~EditorConfig#removePlugins
  */
 
 /**
@@ -142,9 +142,7 @@
  *
  *		const config = {
  *			toolbar: {
- *				items: [ 'bold', 'italic', '|', 'undo', 'redo' ],
- *
- *				viewportTopOffset: 30,
+ *				items: [ 'bold', 'italic', '|', 'undo', 'redo', '-', 'numberedList', 'bulletedList' ],
  *
  *				shouldNotGroupWhenFull: true
  *			}
@@ -161,13 +159,41 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
- * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ *	or `'-'` to make a line break and render items in multiple lines:
+ *
+ *		toolbar: [ 'bold', 'italic', '-', 'undo', 'redo' ]
+ *
+ *	Line break will work only in the extended format when `shouldNotGroupWhenFull` option is set to `true`.
+ *
+ * * **`toolbar.viewportTopOffset` (deprecated)** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
- * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set `true`, the toolbar will stop grouping items that wrap to the next line when
- * there is not enough space to display them in a single row.
+ *
+ * 	**This property has been deprecated and will be removed in the future versions of CKEditor. Please use `{@link module:core/editor/editorconfig~EditorConfig#ui EditorConfig#ui.viewportOffset}` instead.**
+ *
+ * * **`toolbar.shouldNotGroupWhenFull`** &ndash; When set to `true`, the toolbar will stop grouping items
+ * and let them wrap to the next line if there is not enough space to display them in a single row.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
+ */
+
+/**
+ * The configuration of the editor language.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				language: ... // Editor language configuration.
+ *			} )
+ *			.then( editor => {
+ *				console.log( editor );
+ *			} )
+ *			.catch( error => {
+ *				console.error( error );
+ *			} );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface LanguageConfig
  */
 
 /**
@@ -191,7 +217,7 @@
  *				console.error( error );
  *			} );
  *
- * Use different languages for the UI and the content using the object syntax:
+ * Use different languages for the UI and the content using the {@link module:core/editor/editorconfig~LanguageConfig configuration} syntax:
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -225,7 +251,23 @@
  *
  * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
  *
- * @member {String|Object} module:core/editor/editorconfig~EditorConfig#language
+ * @member {String|module:core/editor/editorconfig~LanguageConfig} module:core/editor/editorconfig~EditorConfig#language
+ */
+
+/**
+ * Allows to use different language for the editor UI.
+ *
+ * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ *
+ * @member {String} module:core/editor/editorconfig~LanguageConfig#ui
+ */
+
+/**
+ * Allows to use different language of the editor content.
+ *
+ * The language codes are defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ *
+ * @member {String} module:core/editor/editorconfig~LanguageConfig#content
  */
 
 /**
@@ -255,4 +297,29 @@
  * See the {@glink features/editor-placeholder "Editor placeholder" guide} for more information and live examples.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#placeholder
+ */
+
+/**
+ * The editor UI configuration.
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				ui: { ... }
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * Options which can be set using the UI config:
+ *
+ * * **`ui.viewportOffset`** &ndash; The offset (in pixels) of the viewport from every direction used when positioning a sticky toolbar or other absolutely positioned UI elements.
+ * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
+ * (e.g. the top menu). Thanks to setting the UI viewport offset the toolbar and other contextual balloons will not be positioned underneath or above the page's UI.
+ *
+ *		ui: {
+ *			viewportOffset: { top: 10, right: 10, bottom: 10, left: 10 }
+ *		}
+ *
+ * 	**Note:** If you want to modify the viewport offset in runtime (after editor was created), you can do that by overriding {@link module:core/editor/editorui~EditorUI#viewportOffset `editor.ui.viewportOffset`}.
+ *
+ * @member {Object} module:core/editor/editorconfig~EditorConfig#ui
  */

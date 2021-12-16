@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -68,23 +68,25 @@ describe( 'HorizontalLineCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other horizontal line element', () => {
+		it( 'should be true when the selection is on another horizontal line element', () => {
 			setModelData( model, '[<horizontalLine></horizontalLine>]' );
-			expect( command.isEnabled ).to.be.false;
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false when the selection is on other object', () => {
+		it( 'should be true when the selection is on other object', () => {
 			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
 			setModelData( model, '[<object></object>]' );
 
-			expect( command.isEnabled ).to.be.false;
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be true when the selection is inside block element inside isLimit element which allows horizontal line', () => {
 			model.schema.register( 'table', { allowWhere: '$block', isLimit: true, isObject: true, isBlock: true } );
 			model.schema.register( 'tableRow', { allowIn: 'table', isLimit: true } );
-			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true } );
+			model.schema.register( 'tableCell', { allowIn: 'tableRow', isLimit: true, isSelectable: true } );
 			model.schema.extend( '$block', { allowIn: 'tableCell' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'table', view: 'table' } );
 			editor.conversion.for( 'downcast' ).elementToElement( { model: 'tableRow', view: 'tableRow' } );
@@ -273,6 +275,29 @@ describe( 'HorizontalLineCommand', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>foo</heading1><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing selected object with a horizontal line', () => {
+			model.schema.register( 'object', { isObject: true, allowIn: '$root' } );
+			editor.conversion.for( 'downcast' ).elementToElement( { model: 'object', view: 'object' } );
+
+			setModelData( model, '<paragraph>foo</paragraph>[<object></object>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
+			);
+		} );
+
+		it( 'should replace an existing horizontal line with another horizontal line', () => {
+			setModelData( model, '<paragraph>foo</paragraph>[<horizontalLine></horizontalLine>]<paragraph>bar</paragraph>' );
+
+			command.execute();
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo</paragraph><horizontalLine></horizontalLine><paragraph>[]bar</paragraph>'
 			);
 		} );
 	} );

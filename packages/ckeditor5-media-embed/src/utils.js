@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module media-embed/utils
  */
 
-import { isWidget, toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { isWidget, toWidget } from 'ckeditor5/src/widget';
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a media embed widget:
@@ -52,13 +52,13 @@ export function isMediaWidget( viewElement ) {
 }
 
 /**
- * Creates a view element representing the media. Either "semantic" one for the data pipeline:
+ * Creates a view element representing the media. Either a "semantic" one for the data pipeline:
  *
  *		<figure class="media">
  *			<oembed url="foo"></oembed>
  *		</figure>
  *
- * or "non-semantic" (for the editing view pipeline):
+ * or a "non-semantic" (for the editing view pipeline):
  *
  *		<figure class="media">
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
@@ -68,8 +68,9 @@ export function isMediaWidget( viewElement ) {
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
- * @param {String} [options.useSemanticWrapper]
- * @param {String} [options.renderForEditingView]
+ * @param {String} [options.elementName]
+ * @param {Boolean} [options.useSemanticWrapper]
+ * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {
@@ -104,15 +105,15 @@ export function getSelectedMediaModelWidget( selection ) {
  *
  * @param {module:engine/model/model~Model} model
  * @param {String} url An URL of an embeddable media.
- * @param {module:engine/model/position~Position} [insertPosition] Position to insert media. If not specified,
+ * @param {module:engine/model/range~Range} [insertRange] The range to insert the media. If not specified,
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
  */
-export function insertMedia( model, url, insertPosition ) {
+export function insertMedia( model, url, insertRange ) {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
-		model.insertContent( mediaElement, insertPosition );
+		model.insertContent( mediaElement, insertRange );
 
 		writer.setSelection( mediaElement, 'on' );
 	} );

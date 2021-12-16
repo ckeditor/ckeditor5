@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -42,10 +42,10 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
-				insert( new Element( 'image' ), position );
+				insert( new Element( 'imageBlock' ), position );
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position }
 				] );
 			} );
 		} );
@@ -55,12 +55,12 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				insert(
-					new Element( 'image', { src: 'foo.jpg' }, new Element( 'caption', null, new Text( 'bar' ) ) ),
+					new Element( 'imageBlock', { src: 'foo.jpg' }, new Element( 'caption', null, new Text( 'bar' ) ) ),
 					position
 				);
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position }
 				] );
 			} );
 		} );
@@ -69,10 +69,10 @@ describe( 'Differ', () => {
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
-				insert( [ new Element( 'image' ), new Element( 'paragraph' ) ], position );
+				insert( [ new Element( 'imageBlock' ), new Element( 'paragraph' ) ], position );
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position },
+					{ type: 'insert', name: 'imageBlock', length: 1, position },
 					{ type: 'insert', name: 'paragraph', length: 1, position: position.getShiftedBy( 1 ) }
 				] );
 			} );
@@ -132,7 +132,7 @@ describe( 'Differ', () => {
 
 		// Combined.
 		it( 'node in a new element', () => {
-			const image = new Element( 'image' );
+			const image = new Element( 'imageBlock' );
 			const position = new Position( root, [ 1 ] );
 
 			model.change( () => {
@@ -144,7 +144,7 @@ describe( 'Differ', () => {
 				insert( new Text( 'foo' ), Position._createAt( caption, 0 ) );
 
 				expectChanges( [
-					{ type: 'insert', name: 'image', length: 1, position }
+					{ type: 'insert', name: 'imageBlock', length: 1, position }
 				] );
 			} );
 		} );
@@ -1407,7 +1407,9 @@ describe( 'Differ', () => {
 
 			model.change( () => {
 				const position = new Position( root, [ 0, 3 ] );
-				const operation = new SplitOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), doc.version );
+				const insertionPosition = SplitOperation.getInsertionPosition( position );
+
+				const operation = new SplitOperation( position, 3, insertionPosition, new Position( doc.graveyard, [ 0 ] ), doc.version );
 
 				model.applyOperation( operation );
 
@@ -1677,7 +1679,7 @@ describe( 'Differ', () => {
 	} );
 
 	describe( 'other cases', () => {
-		// #1309.
+		// See https://github.com/ckeditor/ckeditor5/issues/4284.
 		it( 'multiple inserts and removes in one element', () => {
 			model.change( () => {
 				insert( new Text( 'x' ), new Position( root, [ 0, 2 ] ) );
@@ -1691,19 +1693,19 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		// ckeditor5#733.
+		// See https://github.com/ckeditor/ckeditor5/issues/733.
 		it( 'proper filtering of changes in removed elements', () => {
 			// Before fix there was a buggy scenario described in ckeditor5#733.
-			// There was this structure: `<paragraph>foo[</paragraph><image /><blockQuote><p>te]xt</p></blockQuote>`
+			// There was this structure: `<paragraph>foo[</paragraph><imageBlock /><blockQuote><p>te]xt</p></blockQuote>`
 			// On delete of above selection `image` and `paragraph` inside `blockQuote` are removed (it gets merged).
 			// However, since `image` was removed first, when checking if `paragraph` is in a removed element,
-			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<image>`.
+			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<imageBlock>`.
 			// In a result, removing `paragraph` was discarded.
 			// The mistake was that the checking for removing was done at incorrect moment.
 			root._removeChildren( 0, root.childCount );
 			root._appendChild( [
 				new Element( 'paragraph', null, new Text( 'foo' ) ),
-				new Element( 'image' ),
+				new Element( 'imageBlock' ),
 				new Element( 'blockQuote', null, [
 					new Element( 'paragraph', null, new Text( 'text' ) )
 				] )
@@ -1721,7 +1723,7 @@ describe( 'Differ', () => {
 
 				expectChanges( [
 					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0, 3 ] ) },
-					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 1 ] ) },
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 1 ] ) },
 					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1, 0 ] ) }
 				] );
 			} );
@@ -1732,7 +1734,7 @@ describe( 'Differ', () => {
 		// inserted children should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements', () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChild( new Element( 'image' ) );
+			root._appendChild( new Element( 'imageBlock' ) );
 
 			const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
 
@@ -1745,7 +1747,7 @@ describe( 'Differ', () => {
 				insert( new Text( 'foo' ), new Position( root, [ 0, 0, 0 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ) },
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
@@ -1756,7 +1758,7 @@ describe( 'Differ', () => {
 		// Since we are inserting into a new element, the insertion of moved element should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements #2', () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChild( new Element( 'image' ) );
+			root._appendChild( new Element( 'imageBlock' ) );
 
 			model.change( () => {
 				// Insert `div` after `image`.
@@ -1765,7 +1767,7 @@ describe( 'Differ', () => {
 				move( new Position( root, [ 0 ] ), 1, new Position( root, [ 1, 0 ] ) );
 
 				expectChanges( [
-					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'imageBlock', length: 1, position: new Position( root, [ 0 ] ) },
 					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
@@ -1991,7 +1993,8 @@ describe( 'Differ', () => {
 
 	function split( position ) {
 		const howMany = position.parent.maxOffset - position.offset;
-		const operation = new SplitOperation( position, howMany, null, doc.version );
+		const insertionPosition = SplitOperation.getInsertionPosition( position );
+		const operation = new SplitOperation( position, howMany, insertionPosition, null, doc.version );
 
 		model.applyOperation( operation );
 	}

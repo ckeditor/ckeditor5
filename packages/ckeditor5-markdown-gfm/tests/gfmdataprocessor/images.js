@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,7 +35,7 @@ describe( 'GFMDataProcessor', () => {
 
 		it( 'should process referenced images', () => {
 			testDataProcessor(
-				'![alt text][logo]\n' +
+				'![alt text][logo]\n\n' +
 				'[logo]: http://example.com/image.png "title text"',
 
 				'<p><img alt="alt text" src="http://example.com/image.png" title="title text"></img></p>',
@@ -47,7 +47,7 @@ describe( 'GFMDataProcessor', () => {
 
 		it( 'should process referenced images without title', () => {
 			testDataProcessor(
-				'![alt text][logo]\n' +
+				'![alt text][logo]\n\n' +
 				'[logo]: http://example.com/image.png',
 
 				'<p><img alt="alt text" src="http://example.com/image.png"></img></p>',
@@ -59,7 +59,7 @@ describe( 'GFMDataProcessor', () => {
 
 		it( 'should process referenced images without alt text', () => {
 			testDataProcessor(
-				'![][logo]\n' +
+				'![][logo]\n\n' +
 				'[logo]: http://example.com/image.png "title text"',
 
 				'<p><img alt="" src="http://example.com/image.png" title="title text"></img></p>',

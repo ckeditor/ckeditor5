@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -32,6 +32,9 @@
 
 	&[data-oembed-url*="twitter.com"],
 	&[data-oembed-url*="google.com/maps"],
+	&[data-oembed-url*="goo.gl/maps"],
+	&[data-oembed-url*="maps.google.com"],
+	&[data-oembed-url*="maps.app.goo.gl"],
 	&[data-oembed-url*="facebook.com"],
 	&[data-oembed-url*="instagram.com"] {
 		& .ck-media__placeholder__icon * {

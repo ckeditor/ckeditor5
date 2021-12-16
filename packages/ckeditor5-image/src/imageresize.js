@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module image/imageresize
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
 import ImageResizeButtons from './imageresize/imageresizebuttons';
 import ImageResizeEditing from './imageresize/imageresizeediting';
 import ImageResizeHandles from './imageresize/imageresizehandles';
@@ -67,7 +67,7 @@ export default class ImageResize extends Plugin {
  * {@link module:core/editor/editorui~EditorUI#componentFactory component factory} of the editor,
  * representing the button a user can click to change the size of an image,
  * * value: An actual image width applied when a user clicks the mentioned button
- * ({@link module:image/imageresize/imageresizecommand~ImageResizeCommand} gets executed).
+ * ({@link module:image/imageresize/resizeimagecommand~ResizeImageCommand} gets executed).
  * The value property is combined with the {@link module:image/image~ImageConfig#resizeUnit `config.image.resizeUnit`} (`%` by default).
  * For instance: `value: '50'` and `resizeUnit: '%'` will render as `'50%'` in the UI.
  *
@@ -82,15 +82,15 @@ export default class ImageResize extends Plugin {
  *				image: {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
- *						name: 'imageResize:original',
+ *						name: 'resizeImage:original',
  *						value: null
  *					},
  *					{
- *						name: 'imageResize:50',
+ *						name: 'resizeImage:50',
  *						value: '50'
  *					},
  *					{
- *						name: 'imageResize:75',
+ *						name: 'resizeImage:75',
  *						value: '75'
  *					} ]
  *				}
@@ -101,7 +101,7 @@ export default class ImageResize extends Plugin {
  * **Resizing images using a dropdown**
  *
  * With resize options defined, you can decide whether you want to display them as a dropdown or as standalone buttons.
- * For the dropdown, you need to pass only the `imageResize` token to the
+ * For the dropdown, you need to pass only the `resizeImage` token to the
 {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}. The dropdown contains all defined options by default:
  *
  *		ClassicEditor
@@ -109,18 +109,18 @@ export default class ImageResize extends Plugin {
  *				image: {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
- *						name: 'imageResize:original',
+ *						name: 'resizeImage:original',
  *						value: null
  *					},
  *					{
- *						name: 'imageResize:50',
+ *						name: 'resizeImage:50',
  *						value: '50'
  *					},
  *					{
- *						name: 'imageResize:75',
+ *						name: 'resizeImage:75',
  *						value: '75'
  *					} ],
- *					toolbar: [ 'imageResize', ... ],
+ *					toolbar: [ 'resizeImage', ... ],
  *				}
  *			} )
  *			.then( ... )
@@ -138,26 +138,26 @@ export default class ImageResize extends Plugin {
  *				image: {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
- *						name: 'imageResize:original',
+ *						name: 'resizeImage:original',
  *						value: null,
  *						icon: 'original'
  *					},
  *					{
- *						name: 'imageResize:25',
+ *						name: 'resizeImage:25',
  *						value: '25',
  *						icon: 'small'
  *					},
  *					{
- *						name: 'imageResize:50',
+ *						name: 'resizeImage:50',
  *						value: '50',
  *						icon: 'medium'
  *					},
  *					{
- *						name: 'imageResize:75',
+ *						name: 'resizeImage:75',
  *						value: '75',
  *						icon: 'large'
  *					} ],
- *					toolbar: [ 'imageResize:25', 'imageResize:50', 'imageResize:75', 'imageResize:original', ... ],
+ *					toolbar: [ 'resizeImage:25', 'resizeImage:50', 'resizeImage:75', 'resizeImage:original', ... ],
  *				}
  *			} )
  *			.then( ... )
@@ -175,19 +175,19 @@ export default class ImageResize extends Plugin {
  *				image: {
  *					resizeUnit: "%",
  *					resizeOptions: [ {
- *						name: 'imageResize:original',
+ *						name: 'resizeImage:original',
  *						value: null,
  *						label: 'Original size'
  *						// Note: add the "icon" property if you're configuring a standalone button.
  *					},
  *					{
- *						name: 'imageResize:50',
+ *						name: 'resizeImage:50',
  *						value: '50',
  *						label: 'Medium size'
  *						// Note: add the "icon" property if you're configuring a standalone button.
  *					},
  *					{
- *						name: 'imageResize:75',
+ *						name: 'resizeImage:75',
  *						value: '75',
  *						label: 'Large size'
  *						// Note: add the "icon" property if you're configuring a standalone button.
@@ -203,22 +203,22 @@ export default class ImageResize extends Plugin {
  *
  *		resizeOptions = [
  *			{
- *				name: 'imageResize:original',
+ *				name: 'resizeImage:original',
  *				value: null,
  *				icon: 'original'
  *			},
  *			{
- *				name: 'imageResize:25',
+ *				name: 'resizeImage:25',
  *				value: '25',
  *				icon: 'small'
  *			},
  *			{
- *				name: 'imageResize:50',
+ *				name: 'resizeImage:50',
  *				value: '50',
  *				icon: 'medium'
  *			},
  *			{
- *				name: 'imageResize:75',
+ *				name: 'resizeImage:75',
  *				value: '75',
  *				icon: 'large'
  *			}

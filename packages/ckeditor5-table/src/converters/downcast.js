@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,7 @@
  */
 
 import TableWalker from './../tablewalker';
-import { toWidget, toWidgetEditable, setHighlightHandling } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
 
 /**
  * Model table element to view table element conversion helper.
@@ -73,7 +73,8 @@ export function downcastInsertTable( options = {} ) {
 		for ( const tableRow of table.getChildren() ) {
 			const rowIndex = tableRow.index;
 
-			if ( !viewRows.has( rowIndex ) ) {
+			// Make sure that this is a table row and not some other element (i.e., caption).
+			if ( tableRow.is( 'element', 'tableRow' ) && !viewRows.has( rowIndex ) ) {
 				viewRows.set( rowIndex, createTr( tableElement, tableRow, rowIndex, tableAttributes, conversionApi ) );
 			}
 		}
@@ -235,6 +236,52 @@ export function downcastRemoveRow() {
 	}, { priority: 'higher' } );
 }
 
+/**
+ * Overrides paragraph inside table cell conversion.
+ *
+ * This converter:
+ * * should be used to override default paragraph conversion in the editing view.
+ * * It will only convert <paragraph> placed directly inside <tableCell>.
+ * * For a single paragraph without attributes it returns `<span>` to simulate data table.
+ * * For all other cases it returns `<p>` element.
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+ * @returns {module:engine/view/containerelement~ContainerElement|undefined}
+ */
+export function convertParagraphInTableCell( modelElement, conversionApi ) {
+	const { writer } = conversionApi;
+
+	if ( !modelElement.parent.is( 'element', 'tableCell' ) ) {
+		return;
+	}
+
+	if ( isSingleParagraphWithoutAttributes( modelElement ) ) {
+		return writer.createContainerElement( 'span', { class: 'ck-table-bogus-paragraph' } );
+	} else {
+		return writer.createContainerElement( 'p' );
+	}
+}
+
+/**
+ * Checks if given model `<paragraph>` is an only child of a parent (`<tableCell>`) and if it has any attribute set.
+ *
+ * The paragraph should be converted in the editing view to:
+ *
+ * * If returned `true` - to a `<span class="ck-table-bogus-paragraph">`
+ * * If returned `false` - to a `<p>`
+ *
+ * @param {module:engine/model/element~Element} modelElement
+ * @returns {Boolean}
+ */
+export function isSingleParagraphWithoutAttributes( modelElement ) {
+	const tableCell = modelElement.parent;
+
+	const isSingleParagraph = tableCell.childCount === 1;
+
+	return isSingleParagraph && !hasAnyAttribute( modelElement );
+}
+
 // Converts a given {@link module:engine/view/element~Element} to a table widget:
 // * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
 // * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
@@ -262,13 +309,6 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi )
 
 	const editable = viewWriter.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
 	const renamedCell = toWidgetEditable( editable, viewWriter );
-
-	setHighlightHandling(
-		renamedCell,
-		viewWriter,
-		( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
-		( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
-	);
 
 	viewWriter.insert( viewWriter.createPositionAfter( viewCell ), renamedCell );
 	viewWriter.move( viewWriter.createRangeIn( viewCell ), viewWriter.createPositionAt( renamedCell, 0 ) );
@@ -311,15 +351,6 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 		toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
 		conversionApi.writer.createContainerElement( cellElementName );
 
-	if ( asWidget ) {
-		setHighlightHandling(
-			cellElement,
-			conversionApi.writer,
-			( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
-			( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
-		);
-	}
-
 	const tableCell = tableSlot.cell;
 
 	const firstChild = tableCell.getChild( 0 );
@@ -327,27 +358,15 @@ function createViewTableCellElement( tableSlot, tableAttributes, insertPosition,
 
 	conversionApi.writer.insert( insertPosition, cellElement );
 
-	if ( isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
+	conversionApi.mapper.bindElements( tableCell, cellElement );
+
+	// Additional requirement for data pipeline to have backward compatible data tables.
+	if ( !asWidget && isSingleParagraph && !hasAnyAttribute( firstChild ) ) {
 		const innerParagraph = tableCell.getChild( 0 );
-		const paragraphInsertPosition = conversionApi.writer.createPositionAt( cellElement, 'end' );
 
 		conversionApi.consumable.consume( innerParagraph, 'insert' );
 
-		if ( asWidget ) {
-			// Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
-			// See #6062.
-			const fakeParagraph = conversionApi.writer.createContainerElement( 'span', { style: 'display:inline-block' } );
-
-			conversionApi.mapper.bindElements( innerParagraph, fakeParagraph );
-			conversionApi.writer.insert( paragraphInsertPosition, fakeParagraph );
-
-			conversionApi.mapper.bindElements( tableCell, cellElement );
-		} else {
-			conversionApi.mapper.bindElements( tableCell, cellElement );
-			conversionApi.mapper.bindElements( innerParagraph, cellElement );
-		}
-	} else {
-		conversionApi.mapper.bindElements( tableCell, cellElement );
+		conversionApi.mapper.bindElements( innerParagraph, cellElement );
 	}
 }
 
@@ -484,8 +503,4 @@ function getViewTable( viewFigure ) {
 // @returns {Boolean}
 function hasAnyAttribute( element ) {
 	return !![ ...element.getAttributeKeys() ].length;
-}
-
-function normalizeToArray( classes ) {
-	return Array.isArray( classes ) ? classes : [ classes ];
 }

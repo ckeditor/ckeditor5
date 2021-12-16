@@ -23,7 +23,6 @@ import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
-import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
 // Interfaces to extend the basic Editor API.
@@ -69,9 +68,6 @@ export default class BootstrapEditor extends Editor {
 
 		// Remember the element the editor is created with.
 		this.sourceElement = element;
-
-		// Use the HTML data processor in this editor.
-		this.data.processor = new HtmlDataProcessor( this.data.viewDocument );
 
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
@@ -272,6 +268,10 @@ class BootstrapEditorUI extends EditorUI {
 		const editor = this.editor;
 		const view = this.view;
 		const editingView = editor.editing.view;
+
+		// Make sure the EditorUIView is rendered. This will, for instance, create a place for UI elements
+		// like floating panels detached from the main editor UI in DOM.
+		this._view.render();
 
 		// Create an editing root in the editing layer. It will correspond with the
 		// document root created in the constructor().
@@ -501,4 +501,4 @@ BootstrapEditor
 	} );
 ```
 
-Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link builds/guides/development/custom-builds Creating custom builds} guide.
+Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link builds/guides/development/custom-builds Creating custom builds guide}.

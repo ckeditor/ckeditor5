@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -77,7 +77,12 @@ export default class FocusTracker {
 	 */
 	add( element ) {
 		if ( this._elements.has( element ) ) {
-			throw new CKEditorError( 'focusTracker-add-element-already-exist', this );
+			/**
+			 * This element is already tracked by {@link module:utils/focustracker~FocusTracker}.
+			 *
+			 * @error focustracker-add-element-already-exist
+			 */
+			throw new CKEditorError( 'focustracker-add-element-already-exist', this );
 		}
 
 		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );

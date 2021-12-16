@@ -556,3 +556,7 @@ Pressing <kbd>Ctrl</kbd>+<kbd>A</kbd> will only log:
 ```
 "A high priority listener."
 ```
+
+<info-box>
+	Check out the {@link framework/guides/deep-dive/event-system#listener-priorities event system deep dive guide} to learn more about event listener priorities.
+</info-box>

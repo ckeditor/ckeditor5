@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,15 +10,14 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import WidgetTypeAround from './widgettypearound/widgettypearound';
-import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
-import {
-	isArrowKeyCode,
-	isForwardArrowKeyCode
-} from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { getLocalizedArrowKeyCodeDirection } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+import verticalNavigationHandler from './verticalnavigation';
+import { getLabel, isWidget, WIDGET_SELECTED_CLASS_NAME } from './utils';
 
 import '../theme/widget.css';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
  * The widget plugin. It enables base support for widgets.
@@ -47,14 +46,15 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ WidgetTypeAround ];
+		return [ WidgetTypeAround, Delete ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		const view = this.editor.editing.view;
+		const editor = this.editor;
+		const view = editor.editing.view;
 		const viewDocument = view.document;
 
 		/**
@@ -66,31 +66,76 @@ export default class Widget extends Plugin {
 		this._previouslySelected = new Set();
 
 		// Model to view selection converter.
-		// Converts selection placed over widget element to fake selection
+		// Converts selection placed over widget element to fake selection.
+		//
+		// By default, the selection is downcasted by the engine to surround the attribute element, even though its only
+		// child is an inline widget. A similar thing also happens when a collapsed marker is rendered as a UI element
+		// next to an inline widget: the view selection contains both the widget and the marker.
+		//
+		// This prevents creating a correct fake selection when this inline widget is selected. Normalize the selection
+		// in these cases based on the model:
+		//
+		//		[<attributeElement><inlineWidget /></attributeElement>] -> <attributeElement>[<inlineWidget />]</attributeElement>
+		//		[<uiElement></uiElement><inlineWidget />] -> <uiElement></uiElement>[<inlineWidget />]
+		//
+		// Thanks to this:
+		//
+		// * fake selection can be set correctly,
+		// * any logic depending on (View)Selection#getSelectedElement() also works OK.
+		//
+		// See https://github.com/ckeditor/ckeditor5/issues/9524.
+		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+			const viewWriter = conversionApi.writer;
+			const modelSelection = data.selection;
+
+			// The collapsed selection can't contain any widget.
+			if ( modelSelection.isCollapsed ) {
+				return;
+			}
+
+			const selectedModelElement = modelSelection.getSelectedElement();
+
+			if ( !selectedModelElement ) {
+				return;
+			}
+
+			const selectedViewElement = editor.editing.mapper.toViewElement( selectedModelElement );
+
+			if ( !isWidget( selectedViewElement ) ) {
+				return;
+			}
+
+			if ( !conversionApi.consumable.consume( modelSelection, 'selection' ) ) {
+				return;
+			}
+
+			viewWriter.setSelection( viewWriter.createRangeOn( selectedViewElement ), {
+				fake: true,
+				label: getLabel( selectedViewElement )
+			} );
+		} );
+
+		// Mark all widgets inside the selection with the css class.
+		// This handler is registered at the 'low' priority so it's triggered after the real selection conversion.
 		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
 			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
-			const selectedElement = viewSelection.getSelectedElement();
+
 			let lastMarked = null;
 
 			for ( const range of viewSelection.getRanges() ) {
+				// Note: There could be multiple selected widgets in a range but no fake selection.
+				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
-
-					// Do not mark nested widgets in selected one. See: #57.
+					// Do not mark nested widgets in selected one. See: #4594
 					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
-
 						this._previouslySelected.add( node );
 						lastMarked = node;
-
-						// Check if widget is a single element selected.
-						if ( node == selectedElement ) {
-							viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: getLabel( selectedElement ) } );
-						}
 					}
 				}
 			}
@@ -111,13 +156,15 @@ export default class Widget extends Plugin {
 		// * The second (late) listener makes sure the default browser action on arrow key press is
 		// prevented when a widget is selected. This prevents the selection from being moved
 		// from a fake selection container.
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => {
 			this._handleSelectionChangeOnArrowKeyPress( ...args );
-		}, { priority: 'high' } );
+		}, { context: [ isWidget, '$text' ] } );
 
-		this.listenTo( viewDocument, 'keydown', ( ...args ) => {
+		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => {
 			this._preventDefaultOnArrowKeyPress( ...args );
-		}, { priority: priorities.get( 'high' ) - 20 } );
+		}, { context: '$root' } );
+
+		this.listenTo( viewDocument, 'arrowKey', verticalNavigationHandler( this.editor.editing ), { context: '$text' } );
 
 		// Handle custom delete behaviour.
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
@@ -125,7 +172,7 @@ export default class Widget extends Plugin {
 				data.preventDefault();
 				evt.stop();
 			}
-		}, { priority: 'high' } );
+		}, { context: '$root' } );
 	}
 
 	/**
@@ -171,7 +218,11 @@ export default class Widget extends Plugin {
 			}
 		}
 
-		domEventData.preventDefault();
+		// On Android selection would jump to the first table cell, on other devices
+		// we can't block it (and don't need to) because of drag and drop support.
+		if ( env.isAndroid ) {
+			domEventData.preventDefault();
+		}
 
 		// Focus editor if is not focused already.
 		if ( !viewDocument.isFocused ) {
@@ -200,17 +251,13 @@ export default class Widget extends Plugin {
 	_handleSelectionChangeOnArrowKeyPress( eventInfo, domEventData ) {
 		const keyCode = domEventData.keyCode;
 
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 		const schema = model.schema;
 		const modelSelection = model.document.selection;
 		const objectElement = modelSelection.getSelectedElement();
-		const isForward = isForwardArrowKeyCode( keyCode, this.editor.locale.contentLanguageDirection );
+		const direction = getLocalizedArrowKeyCodeDirection( keyCode, this.editor.locale.contentLanguageDirection );
+		const isForward = direction == 'down' || direction == 'right';
+		const isVerticalNavigation = direction == 'up' || direction == 'down';
 
 		// If object element is selected.
 		if ( objectElement && schema.isObject( objectElement ) ) {
@@ -229,15 +276,42 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		// If selection is next to object element.
+		// Handle collapsing of the selection when there is any widget on the edge of selection.
+		// This is needed because browsers have problems with collapsing such selection.
+		if ( !modelSelection.isCollapsed && !domEventData.shiftKey ) {
+			const firstPosition = modelSelection.getFirstPosition();
+			const lastPosition = modelSelection.getLastPosition();
+
+			const firstSelectedNode = firstPosition.nodeAfter;
+			const lastSelectedNode = lastPosition.nodeBefore;
+
+			if ( firstSelectedNode && schema.isObject( firstSelectedNode ) || lastSelectedNode && schema.isObject( lastSelectedNode ) ) {
+				model.change( writer => {
+					writer.setSelection( isForward ? lastPosition : firstPosition );
+				} );
+
+				domEventData.preventDefault();
+				eventInfo.stop();
+			}
+
+			return;
+		}
+
 		// Return if not collapsed.
 		if ( !modelSelection.isCollapsed ) {
 			return;
 		}
 
+		// If selection is next to object element.
+
 		const objectElementNextToSelection = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElementNextToSelection && schema.isObject( objectElementNextToSelection ) ) {
+			// Do not select an inline widget while handling up/down arrow.
+			if ( schema.isInline( objectElementNextToSelection ) && isVerticalNavigation ) {
+				return;
+			}
+
 			this._setSelectionOverElement( objectElementNextToSelection );
 
 			domEventData.preventDefault();
@@ -257,14 +331,6 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_preventDefaultOnArrowKeyPress( eventInfo, domEventData ) {
-		const keyCode = domEventData.keyCode;
-
-		// Checks if the keys were handled and then prevents the default event behaviour and stops
-		// the propagation.
-		if ( !isArrowKeyCode( keyCode ) ) {
-			return;
-		}
-
 		const model = this.editor.model;
 		const schema = model.schema;
 		const objectElement = model.document.selection.getSelectedElement();
@@ -348,6 +414,12 @@ export default class Widget extends Plugin {
 		// to its current state after undo.
 		const probe = model.createSelection( modelSelection );
 		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+
+		// The selection didn't change so there is nothing there.
+		if ( probe.isEqual( modelSelection ) ) {
+			return null;
+		}
+
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
 		if ( !!objectElement && schema.isObject( objectElement ) ) {

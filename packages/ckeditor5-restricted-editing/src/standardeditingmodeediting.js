@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,8 @@
  * @module restricted-editing/standardeditingmodeediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+
 import RestrictedEditingExceptionCommand from './restrictededitingexceptioncommand';
 
 /**
@@ -45,10 +46,10 @@ export default class StandardEditingModeEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' ).attributeToElement( {
 			model: 'restrictedEditingException',
-			view: ( modelAttributeValue, viewWriter ) => {
+			view: ( modelAttributeValue, { writer } ) => {
 				if ( modelAttributeValue ) {
 					// Make the restricted editing <span> outer-most in the view.
-					return viewWriter.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
+					return writer.createAttributeElement( 'span', { class: 'restricted-editing-exception' }, { priority: -10 } );
 				}
 			}
 		} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,8 +7,8 @@
  * @module list/indentcommand
  */
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
-import first from '@ckeditor/ckeditor5-utils/src/first';
+import { Command } from 'ckeditor5/src/core';
+import { first } from 'ckeditor5/src/utils';
 
 /**
  * The list indent command. It is used by the {@link module:list/list~List list feature}.
@@ -47,6 +47,7 @@ export default class IndentCommand extends Command {
 	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
+	 * @fires _executeCleanup
 	 */
 	execute() {
 		const model = this.editor.model;
@@ -90,6 +91,17 @@ export default class IndentCommand extends Command {
 					writer.setAttribute( 'listIndent', indent, item );
 				}
 			}
+
+			/**
+			 * Event fired by the {@link #execute} method.
+			 *
+			 * It allows to execute an action after executing the {@link ~IndentCommand#execute} method, for example adjusting
+			 * attributes of changed list items.
+			 *
+			 * @protected
+			 * @event _executeCleanup
+			 */
+			this.fire( '_executeCleanup', itemsToChange );
 		} );
 	}
 

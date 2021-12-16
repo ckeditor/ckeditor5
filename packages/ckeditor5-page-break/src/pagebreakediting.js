@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,9 +7,10 @@
  * @module page-break/pagebreakediting
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { Plugin } from 'ckeditor5/src/core';
+import { toWidget } from 'ckeditor5/src/widget';
+
 import PageBreakCommand from './pagebreakcommand';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import '../theme/pagebreak.css';
 
@@ -42,8 +43,8 @@ export default class PageBreakEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'pageBreak',
-			view: ( modelElement, viewWriter ) => {
-				const divElement = viewWriter.createContainerElement( 'div', {
+			view: ( modelElement, { writer } ) => {
+				const divElement = writer.createContainerElement( 'div', {
 					class: 'page-break',
 					// If user has no `.ck-content` styles, it should always break a page during print.
 					style: 'page-break-after: always'
@@ -51,11 +52,11 @@ export default class PageBreakEditing extends Plugin {
 
 				// For a rationale of using span inside a div see:
 				// https://github.com/ckeditor/ckeditor5-page-break/pull/1#discussion_r328934062.
-				const spanElement = viewWriter.createContainerElement( 'span', {
+				const spanElement = writer.createContainerElement( 'span', {
 					style: 'display: none'
 				} );
 
-				viewWriter.insert( viewWriter.createPositionAt( divElement, 0 ), spanElement );
+				writer.insert( writer.createPositionAt( divElement, 0 ), spanElement );
 
 				return divElement;
 			}
@@ -63,21 +64,21 @@ export default class PageBreakEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'pageBreak',
-			view: ( modelElement, viewWriter ) => {
+			view: ( modelElement, { writer } ) => {
 				const label = t( 'Page break' );
-				const viewWrapper = viewWriter.createContainerElement( 'div' );
-				const viewLabelElement = viewWriter.createContainerElement( 'span' );
-				const innerText = viewWriter.createText( t( 'Page break' ) );
+				const viewWrapper = writer.createContainerElement( 'div' );
+				const viewLabelElement = writer.createRawElement(
+					'span',
+					{ class: 'page-break__label' },
+					function( domElement ) {
+						domElement.innerText = t( 'Page break' );
+					}
+				);
 
-				viewWriter.addClass( 'page-break', viewWrapper );
-				viewWriter.setCustomProperty( 'pageBreak', true, viewWrapper );
+				writer.addClass( 'page-break', viewWrapper );
+				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewLabelElement );
 
-				viewWriter.addClass( 'page-break__label', viewLabelElement );
-
-				viewWriter.insert( viewWriter.createPositionAt( viewWrapper, 0 ), viewLabelElement );
-				viewWriter.insert( viewWriter.createPositionAt( viewLabelElement, 0 ), innerText );
-
-				return toPageBreakWidget( viewWrapper, viewWriter, label );
+				return toPageBreakWidget( viewWrapper, writer, label );
 			}
 		} );
 
@@ -98,14 +99,8 @@ export default class PageBreakEditing extends Plugin {
 					if ( element.childCount == 1 ) {
 						const viewSpan = element.getChild( 0 );
 
-						// The child must be the "span" element that is not displayed and has a space inside.
-						if ( !viewSpan.is( 'element', 'span' ) || viewSpan.getStyle( 'display' ) != 'none' || viewSpan.childCount != 1 ) {
-							return;
-						}
-
-						const text = viewSpan.getChild( 0 );
-
-						if ( !text.is( '$text' ) || text.data !== ' ' ) {
+						// The child must be the "span" element that is not displayed.
+						if ( !viewSpan.is( 'element', 'span' ) || viewSpan.getStyle( 'display' ) != 'none' ) {
 							return;
 						}
 					} else if ( element.childCount > 1 ) {

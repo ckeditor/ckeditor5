@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -119,6 +119,28 @@ describe( 'DomEventObserver', () => {
 
 		domElement.dispatchEvent( domEvent );
 
+		expect( evtSpy.called ).to.be.false;
+	} );
+
+	it( 'should not fire event if the target is ignored', () => {
+		const domElement = document.createElement( 'p' );
+		const domEvent = new MouseEvent( 'click' );
+		const evtSpy = sinon.spy();
+
+		const ignoreEventFromTargetStub = sinon
+			.stub( Observer.prototype, 'checkShouldIgnoreEventFromTarget' )
+			.returns( true );
+
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		view.addObserver( ClickObserver );
+		viewDocument.on( 'click', evtSpy );
+
+		domElement.dispatchEvent( domEvent );
+
+		ignoreEventFromTargetStub.restore();
+
+		expect( ignoreEventFromTargetStub.called ).to.be.true;
 		expect( evtSpy.called ).to.be.false;
 	} );
 

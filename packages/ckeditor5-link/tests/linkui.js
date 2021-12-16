@@ -1,27 +1,31 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
+import isRange from '@ckeditor/ckeditor5-utils/src/dom/isrange';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
+import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import View from '@ckeditor/ckeditor5-ui/src/view';
+import { toWidget } from '@ckeditor/ckeditor5-widget';
+
 import LinkEditing from '../src/linkediting';
 import LinkUI from '../src/linkui';
 import LinkFormView from '../src/ui/linkformview';
 import LinkActionsView from '../src/ui/linkactionsview';
-import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import View from '@ckeditor/ckeditor5-ui/src/view';
-
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 describe( 'LinkUI', () => {
 	let editor, linkUIFeature, linkButton, balloon, formView, actionsView, editorElement;
@@ -134,32 +138,37 @@ describe( 'LinkUI', () => {
 
 		it( 'should add #formView to the balloon and attach the balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
-			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			linkUIFeature._showUI();
+
+			const expectedRange = getMarkersRange( editor );
 
 			expect( balloon.visibleView ).to.equal( formView );
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: selectedRange
+					target: sinon.match( isRange )
 				}
 			} );
+
+			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
 		} );
 
-		it( 'should add #formView to the balloon and attach the balloon to the selection when selection is collapsed', () => {
+		it( 'should add #formView to the balloon and attach the balloon to the marker element when selection is collapsed', () => {
+			// (#7926)
 			setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
-			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
-
 			linkUIFeature._showUI();
+
+			const expectedRange = getMarkersRange( editor );
 
 			expect( balloon.visibleView ).to.equal( formView );
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: formView,
 				position: {
-					target: selectedRange
+					target: sinon.match( isRange )
 				}
 			} );
+			assertDomRange( expectedRange, balloonAddSpy.args[ 0 ][ 0 ].position.target );
 		} );
 
 		it( 'should add #actionsView to the balloon and attach the balloon to the link element when collapsed selection is inside ' +
@@ -171,12 +180,12 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: actionsView,
-				position: {
-					target: linkElement
-				}
-			} );
+
+			const addSpyCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+
+			expect( addSpyCallArgs.view ).to.equal( actionsView );
+			expect( addSpyCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		// #https://github.com/ckeditor/ckeditor5-link/issues/181
@@ -187,22 +196,20 @@ describe( 'LinkUI', () => {
 			linkUIFeature._showUI();
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: actionsView,
-				position: {
-					target: linkElement
-				}
-			} );
+
+			const addSpyFirstCallArgs = balloonAddSpy.firstCall.args[ 0 ];
+
+			expect( addSpyFirstCallArgs.view ).to.equal( actionsView );
+			expect( addSpyFirstCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyFirstCallArgs.position.target() ).to.equal( linkElement );
 
 			linkUIFeature._showUI();
 
-			expect( balloon.visibleView ).to.equal( formView );
-			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: formView,
-				position: {
-					target: linkElement
-				}
-			} );
+			const addSpyCallSecondCallArgs = balloonAddSpy.secondCall.args[ 0 ];
+
+			expect( addSpyCallSecondCallArgs.view ).to.equal( formView );
+			expect( addSpyCallSecondCallArgs.position.target ).to.be.a( 'function' );
+			expect( addSpyCallSecondCallArgs.position.target() ).to.equal( linkElement );
 		} );
 
 		it( 'should disable #formView and #actionsView elements when link and unlink commands are disabled', () => {
@@ -275,7 +282,7 @@ describe( 'LinkUI', () => {
 			const linkDomElement = editor.editing.view.domConverter.mapViewToDom( linkViewElement );
 
 			expect( balloon.visibleView ).to.equal( actionsView );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( linkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( linkDomElement );
 
 			balloon.add( {
 				stackId: 'custom',
@@ -293,12 +300,12 @@ describe( 'LinkUI', () => {
 
 			expect( balloon.visibleView ).to.equal( actionsView );
 			expect( balloon.hasView( customView ) ).to.equal( true );
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.not.equal( linkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.not.equal( linkDomElement );
 
 			const newLinkViewElement = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 ).getChild( 1 );
 			const newLinkDomElement = editor.editing.view.domConverter.mapViewToDom( newLinkViewElement );
 
-			expect( balloon.view.pin.lastCall.args[ 0 ].target ).to.equal( newLinkDomElement );
+			expect( balloon.view.pin.lastCall.args[ 0 ].target() ).to.equal( newLinkDomElement );
 		} );
 
 		describe( 'response to ui#update', () => {
@@ -344,9 +351,8 @@ describe( 'LinkUI', () => {
 				} );
 
 				sinon.assert.calledOnce( spy );
-				sinon.assert.calledWithExactly( spy, {
-					target: view.domConverter.mapViewToDom( linkElement )
-				} );
+
+				expect( spy.firstCall.args[ 0 ].target() ).to.equal( view.domConverter.mapViewToDom( linkElement ) );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
@@ -363,10 +369,14 @@ describe( 'LinkUI', () => {
 					writer.setSelection( text, 1, true );
 				} );
 
+				const expectedRange = getMarkersRange( editor );
+
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: editorElement.ownerDocument.getSelection().getRangeAt( 0 )
+					target: sinon.match( isRange )
 				} );
+
+				assertDomRange( expectedRange, spy.args[ 0 ][ 0 ].target );
 			} );
 
 			it( 'not update the position when is in not visible stack', () => {
@@ -466,47 +476,248 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
-		it( 'should display a fake visual selection when a text fragment is selected', () => {
-			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+		describe( 'fake visual selection', () => {
+			describe( 'non-collapsed', () => {
+				it( 'should be displayed when a text fragment is selected', () => {
+					setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
-			linkUIFeature._showUI();
+					linkUIFeature._showUI();
 
-			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
 
-			const paragraph = editor.model.document.getRoot().getChild( 0 );
-			const expectedRange = editor.model.createRange(
-				editor.model.createPositionAt( paragraph, 1 ),
-				editor.model.createPositionAt( paragraph, 2 )
-			);
-			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+					const paragraph = editor.model.document.getRoot().getChild( 0 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( paragraph, 1 ),
+						editor.model.createPositionAt( paragraph, 2 )
+					);
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
 
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
 
-			expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
-			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+					expect( getViewData( editor.editing.view ) ).to.equal( '<p>f{<span class="ck-fake-link-selection">o</span>}o</p>' );
+					expect( editor.getData() ).to.equal( '<p>foo</p>' );
+				} );
+
+				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+					'of the empty block in the multiline selection', () => {
+					setModelData( editor.model, '<paragraph>[</paragraph><paragraph>foo]</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( secondParagraph, 0 ),
+						editor.model.createPositionAt( secondParagraph, 3 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal(
+						'<p>[</p>' +
+						'<p><span class="ck-fake-link-selection">foo</span>]</p>'
+					);
+					expect( editor.getData() ).to.equal( '<p>&nbsp;</p><p>foo</p>' );
+				} );
+
+				it( 'should display a fake visual selection on the next non-empty text node when selection starts at the end ' +
+					'of the first block in the multiline selection', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph><paragraph>bar]</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const secondParagraph = editor.model.document.getRoot().getChild( 1 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( secondParagraph, 0 ),
+						editor.model.createPositionAt( secondParagraph, 3 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal(
+						'<p>foo{</p>' +
+						'<p><span class="ck-fake-link-selection">bar</span>]</p>'
+					);
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
+				} );
+
+				it( 'should be displayed on first text node in non-empty element when selection contains few empty elements', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>bar</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]baz</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const firstNonEmptyElementInTheSelection = editor.model.document.getRoot().getChild( 3 );
+					const rangeEnd = editor.model.document.selection.getFirstRange().end;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( firstNonEmptyElementInTheSelection, 0 ),
+						editor.model.createPositionAt( rangeEnd, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p></p>' +
+						'<p><span class="ck-fake-link-selection">bar</span></p>' +
+						'<p></p>' +
+						'<p></p>' +
+						'<p>}baz</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal(
+						'<p>foo</p>' +
+						'<p>&nbsp;</p><p>&nbsp;</p>' +
+						'<p>bar</p>' +
+						'<p>&nbsp;</p><p>&nbsp;</p>' +
+						'<p>baz</p>'
+					);
+				} );
+			} );
+
+			describe( 'collapsed', () => {
+				it( 'should be displayed on a collapsed selection', () => {
+					setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const paragraph = editor.model.document.getRoot().getChild( 0 );
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( paragraph, 1 ),
+						editor.model.createPositionAt( paragraph, 1 )
+					);
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					expect( getViewData( editor.editing.view ) ).to.equal(
+						'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
+					);
+					expect( editor.getData() ).to.equal( '<p>fo</p>' );
+				} );
+
+				it( 'should be displayed on selection focus when selection contains only one empty element ' +
+					'(selection focus is at the beginning of the first non-empty element)', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]bar</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const focus = editor.model.document.selection.focus;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( focus, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>bar</p>' );
+				} );
+
+				it( 'should be displayed on selection focus when selection contains few empty elements ' +
+					'(selection focus is at the beginning of the first non-empty element)', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]bar</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const focus = editor.model.document.selection.focus;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( focus, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p></p>' +
+						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>bar</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+				} );
+
+				it( 'should be displayed on selection focus when selection contains few empty elements ' +
+					'(selection focus is inside an empty element)', () => {
+					setModelData( editor.model, '<paragraph>foo[</paragraph>' +
+						'<paragraph></paragraph>' +
+						'<paragraph>]</paragraph>' +
+						'<paragraph>bar</paragraph>' );
+
+					linkUIFeature._showUI();
+
+					expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+
+					const focus = editor.model.document.selection.focus;
+					const expectedRange = editor.model.createRange(
+						editor.model.createPositionAt( focus, 0 )
+					);
+
+					const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
+
+					expect( markerRange.isEqual( expectedRange ) ).to.be.true;
+
+					const expectedViewData = '<p>foo{</p>' +
+						'<p></p>' +
+						'<p>]<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span></p>' +
+						'<p>bar</p>';
+
+					expect( getViewData( editor.editing.view ) ).to.equal( expectedViewData );
+					expect( editor.getData() ).to.equal( '<p>foo</p><p>&nbsp;</p><p>&nbsp;</p><p>bar</p>' );
+				} );
+			} );
 		} );
 
-		it( 'should display a fake visual selection on a collapsed selection', () => {
-			setModelData( editor.model, '<paragraph>f[]o</paragraph>' );
+		function getMarkersRange( editor ) {
+			const markerElements = editor.ui.view.element.querySelectorAll( '.ck-fake-link-selection' );
+			const lastMarkerElement = markerElements[ markerElements.length - 1 ];
 
-			linkUIFeature._showUI();
+			const range = document.createRange();
+			range.setStart( markerElements[ 0 ].parentElement, indexOf( markerElements[ 0 ] ) );
+			range.setEnd( lastMarkerElement.parentElement, indexOf( lastMarkerElement ) + 1 );
 
-			expect( editor.model.markers.has( 'link-ui' ) ).to.be.true;
+			return range;
+		}
 
-			const paragraph = editor.model.document.getRoot().getChild( 0 );
-			const expectedRange = editor.model.createRange(
-				editor.model.createPositionAt( paragraph, 1 ),
-				editor.model.createPositionAt( paragraph, 1 )
-			);
-			const markerRange = editor.model.markers.get( 'link-ui' ).getRange();
-
-			expect( markerRange.isEqual( expectedRange ) ).to.be.true;
-
-			expect( getViewData( editor.editing.view ) ).to.equal(
-				'<p>f{}<span class="ck-fake-link-selection ck-fake-link-selection_collapsed"></span>o</p>'
-			);
-			expect( editor.getData() ).to.equal( '<p>fo</p>' );
-		} );
+		function assertDomRange( expected, actual ) {
+			expect( actual, 'startContainer' ).to.have.property( 'startContainer', expected.startContainer );
+			expect( actual, 'startOffset' ).to.have.property( 'startOffset', expected.startOffset );
+			expect( actual, 'endContainer' ).to.have.property( 'endContainer', expected.endContainer );
+			expect( actual, 'endOffset' ).to.have.property( 'endOffset', expected.endOffset );
+		}
 	} );
 
 	describe( '_hideUI()', () => {
@@ -576,11 +787,28 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
 			sinon.assert.calledWithExactly( spy, true );
+		} );
+
+		it( 'should not show the UI on Ctrl+K keystroke on content with LinkCommand disabled', () => {
+			const spy = testUtils.sinon.stub( linkUIFeature, '_showUI' ).returns( {} );
+			const command = editor.commands.get( 'link' );
+			command.isEnabled = false;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.k,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should prevent default action on Ctrl+K keystroke', () => {
@@ -589,7 +817,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: preventDefaultSpy,
 				stopPropagation: stopPropagationSpy
 			} );
@@ -610,7 +839,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -632,7 +862,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -641,7 +872,8 @@ describe( 'LinkUI', () => {
 
 			editor.keystrokes.press( {
 				keyCode: keyCodes.k,
-				ctrlKey: true,
+				ctrlKey: !env.isMac,
+				metaKey: env.isMac,
 				preventDefault: sinon.spy(),
 				stopPropagation: sinon.spy()
 			} );
@@ -805,6 +1037,33 @@ describe( 'LinkUI', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
+			it( 'should show the UI when the selection spans over a link which only child is a widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isObject: true,
+					isInline: true,
+					allowAttributesOf: '$text'
+				} );
+
+				// The view element has no children.
+				editor.conversion.for( 'downcast' )
+					.elementToElement( {
+						model: 'inlineWidget',
+						view: ( modelItem, { writer } ) => toWidget(
+							writer.createContainerElement( 'inlineWidget', {}, {
+								isAllowedInsideAttributeElement: true
+							} ),
+							writer,
+							{ label: 'inline widget' }
+						)
+					} );
+
+				setModelData( editor.model, '<paragraph>[<inlineWidget linkHref="url"></inlineWidget>]</paragraph>' );
+
+				observer.fire( 'click', { target: {} } );
+				sinon.assert.calledWithExactly( spy );
+			} );
+
 			it( 'should do nothing when selection is not inside link element', () => {
 				setModelData( editor.model, '[]' );
 
@@ -846,6 +1105,35 @@ describe( 'LinkUI', () => {
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
+
+			// See: #9607.
+			it( 'should show the UI when clicking on the linked inline widget', () => {
+				editor.model.schema.register( 'inlineWidget', {
+					allowWhere: '$text',
+					isInline: true,
+					isObject: true,
+					allowAttributesOf: '$text'
+				} );
+
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'inlineWidget',
+					view: ( modelItem, { writer } ) => {
+						const spanView = writer.createContainerElement( 'span', {}, {
+							isAllowedInsideAttributeElement: true
+						} );
+
+						const innerText = writer.createText( '{' + modelItem.name + '}' );
+						writer.insert( writer.createPositionAt( spanView, 0 ), innerText );
+
+						return toWidget( spanView, writer );
+					}
+				} );
+
+				setModelData( editor.model, '<paragraph>Foo [<inlineWidget linkHref="foo"></inlineWidget>] Foo.</paragraph>' );
+
+				observer.fire( 'click', { target: document.body } );
+				sinon.assert.calledWithExactly( spy );
+			} );
 		} );
 	} );
 
@@ -878,6 +1166,18 @@ describe( 'LinkUI', () => {
 
 				expect( balloon.visibleView ).to.equal( formView );
 				sinon.assert.calledOnce( selectSpy );
+			} );
+
+			it( 'should disable CSS transitions before showing the form to avoid unnecessary animations' +
+				'(and then enable them again)', () => {
+				const addSpy = sinon.spy( balloon, 'add' );
+				const disableCssTransitionsSpy = sinon.spy( formView, 'disableCssTransitions' );
+				const enableCssTransitionsSpy = sinon.spy( formView, 'enableCssTransitions' );
+				const selectSpy = sinon.spy( formView.urlInputView.fieldView, 'select' );
+
+				actionsView.fire( 'edit' );
+
+				sinon.assert.callOrder( disableCssTransitionsSpy, addSpy, selectSpy, enableCssTransitionsSpy );
 			} );
 
 			it( 'should execute unlink command on actionsView#unlink event', () => {
@@ -923,7 +1223,8 @@ describe( 'LinkUI', () => {
 			it( 'should add the #formView upon Ctrl+K keystroke press', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.k,
-					ctrlKey: true,
+					ctrlKey: !env.isMac,
+					metaKey: env.isMac,
 					preventDefault: sinon.spy(),
 					stopPropagation: sinon.spy()
 				};
@@ -1092,6 +1393,19 @@ describe( 'LinkUI', () => {
 
 					return editor.destroy();
 				} );
+			} );
+
+			it( 'should detect an email on submitting the form and add "mailto:" protocol automatically to the provided value ' +
+				'even when defaultProtocol is undefined', () => {
+				setModelData( editor.model, '<paragraph>[email@example.com]</paragraph>' );
+
+				formView.urlInputView.fieldView.value = 'email@example.com';
+				formView.fire( 'submit' );
+
+				expect( formView.urlInputView.fieldView.value ).to.equal( 'mailto:email@example.com' );
+				expect( getModelData( editor.model ) ).to.equal(
+					'<paragraph>[<$text linkHref="mailto:email@example.com">email@example.com</$text>]</paragraph>'
+				);
 			} );
 
 			it( 'should not add an email protocol when given provided within the value' +

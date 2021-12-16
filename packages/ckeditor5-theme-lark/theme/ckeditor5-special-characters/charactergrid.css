@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,6 +16,7 @@
 	max-height: 200px;
 
 	& .ck-character-grid__tiles {
+		grid-template-columns: repeat(auto-fit, minmax(var(--ck-character-grid-tile-size), 1fr));
 		margin: var(--ck-spacing-standard) var(--ck-spacing-large);
 		grid-gap: var(--ck-spacing-standard);
 	}

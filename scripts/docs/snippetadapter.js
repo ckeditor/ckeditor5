@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* eslint-env node */
 
 const path = require( 'path' );
+const upath = require( 'upath' );
 const fs = require( 'fs' );
 const minimatch = require( 'minimatch' );
 const webpack = require( 'webpack' );
@@ -14,6 +15,7 @@ const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' 
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
 const ProgressBarPlugin = require( 'progress-bar-webpack-plugin' );
+const glob = require( 'glob' );
 
 const DEFAULT_LANGUAGE = 'en';
 const MULTI_LANGUAGE = 'multi-language';
@@ -91,6 +93,8 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 	const groupedSnippetsByLanguage = {};
 
+	const constantDefinitions = getConstantDefinitions( snippets );
+
 	// Group snippets by language. There is no way to build different languages in a single Webpack process.
 	// Webpack must be called as many times as different languages are being used in snippets.
 	for ( const snippetData of snippets ) {
@@ -113,7 +117,10 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 			return getWebpackConfig( groupedSnippetsByLanguage[ language ], {
 				language,
 				production: options.production,
-				definitions: options.definitions || {}
+				definitions: {
+					...( options.definitions || {} ),
+					...constantDefinitions
+				}
 			} );
 		} );
 
@@ -129,6 +136,14 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 	}
 
 	return promise
+		.then( () => {
+			const webpackConfig = getWebpackConfigForAssets( {
+				production: options.production,
+				snippetWebpackConfig: webpackConfigs[ 0 ]
+			} );
+
+			return runWebpack( webpackConfig );
+		} )
 		.then( () => {
 			// Group snippets by destination path in order to attach required HTML code and assets (CSS and JS).
 			const groupedSnippetsByDestinationPath = {};
@@ -179,14 +194,23 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 
 					content = content.replace( getSnippetPlaceholder( snippetData.snippetName ), snippetHTML );
 
+					// This file is copied by Umberto itself.
 					jsFiles.push( path.join( snippetData.basePath, 'assets', 'snippet.js' ) );
-					jsFiles.push( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.js' ) );
 
-					cssFiles.push( path.join( snippetData.basePath, 'assets', 'snippet-styles.css' ) );
+					// This file is produced by the snippet adapter.
+					jsFiles.push( path.join( snippetData.relativeOutputPath, 'assets.js' ) );
+
+					// The snippet source.
+					jsFiles.push( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.js' ) );
 
 					if ( wasCSSGenerated ) {
 						cssFiles.unshift( path.join( snippetData.relativeOutputPath, snippetData.snippetName, 'snippet.css' ) );
 					}
+
+					cssFiles.push( path.join( snippetData.basePath, 'assets', 'snippet-styles.css' ) );
+
+					// This file is produced by the snippet adapter.
+					cssFiles.push( path.join( snippetData.relativeOutputPath, 'assets.css' ) );
 
 					// Additional languages must be imported by the HTML code.
 					if ( snippetData.snippetConfig.additionalLanguages ) {
@@ -197,7 +221,7 @@ module.exports = function snippetAdapter( snippets, options, umbertoHelpers ) {
 				}
 
 				const cssImportsHTML = getHTMLImports( cssFiles, importPath => {
-					return `    <link rel="stylesheet" href="${ importPath }" type="text/css">`;
+					return `    <link rel="stylesheet" href="${ importPath }" type="text/css" data-cke="true">`;
 				} );
 
 				const jsImportsHTML = getHTMLImports( jsFiles, importPath => {
@@ -255,6 +279,57 @@ function filterAllowedSnippets( snippets, allowedSnippets ) {
 }
 
 /**
+ * Adds constants to the webpack process from external repositories containing `docs/constants.js` files.
+ *
+ * @param {Array.<Object>} snippets
+ * @returns {Object}
+ */
+function getConstantDefinitions( snippets ) {
+	const knownPaths = new Set();
+	const constantDefinitions = {};
+	const constantOrigins = new Map();
+
+	for ( const snippet of snippets ) {
+		if ( !snippet.pageSourcePath ) {
+			continue;
+		}
+
+		let directory = path.dirname( snippet.pageSourcePath );
+
+		while ( !knownPaths.has( directory ) ) {
+			knownPaths.add( directory );
+
+			const absolutePathToConstants = path.join( directory, 'docs', 'constants.js' );
+			const importPathToConstants = path.relative( __dirname, absolutePathToConstants );
+
+			if ( fs.existsSync( absolutePathToConstants ) ) {
+				const packageConstantDefinitions = require( './' + importPathToConstants );
+
+				for ( const constantName in packageConstantDefinitions ) {
+					const constantValue = packageConstantDefinitions[ constantName ];
+
+					if ( constantDefinitions[ constantName ] && constantDefinitions[ constantName ] !== constantValue ) {
+						throw new Error(
+							`Definition for the '${ constantName }' constant is duplicated` +
+							` (${ importPathToConstants }, ${ constantOrigins.get( constantName ) }).`
+						);
+					}
+
+					constantDefinitions[ constantName ] = constantValue;
+					constantOrigins.set( constantName, importPathToConstants );
+				}
+
+				Object.assign( constantDefinitions, packageConstantDefinitions );
+			}
+
+			directory = path.dirname( directory );
+		}
+	}
+
+	return constantDefinitions;
+}
+
+/**
  * Prepares configuration for Webpack.
  *
  * @param {Set.<Snippet>} snippets Snippet collection extracted from documentation files.
@@ -300,8 +375,6 @@ function getWebpackConfig( snippets, config ) {
 	const webpackConfig = {
 		mode: config.production ? 'production' : 'development',
 
-		devtool: 'source-map',
-
 		entry: {},
 
 		output: {
@@ -339,7 +412,10 @@ function getWebpackConfig( snippets, config ) {
 		// Configure the paths so building CKEditor 5 snippets work even if the script
 		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
 		resolve: {
-			modules: getModuleResolvePaths()
+			modules: [
+				...getPackageDependenciesPaths(),
+				...getModuleResolvePaths()
+			]
 		},
 
 		resolveLoader: {
@@ -359,12 +435,14 @@ function getWebpackConfig( snippets, config ) {
 						'css-loader',
 						{
 							loader: 'postcss-loader',
-							options: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: config.production
-							} )
+							options: {
+								postcssOptions: styles.getPostCssConfig( {
+									themeImporter: {
+										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+									},
+									minify: config.production
+								} )
+							}
 						}
 					]
 				}
@@ -374,7 +452,7 @@ function getWebpackConfig( snippets, config ) {
 
 	for ( const snippetData of snippets ) {
 		if ( !webpackConfig.output.path ) {
-			webpackConfig.output.path = snippetData.outputPath;
+			webpackConfig.output.path = path.normalize( snippetData.outputPath );
 		}
 
 		if ( webpackConfig.entry[ snippetData.snippetName ] ) {
@@ -418,6 +496,25 @@ function getModuleResolvePaths() {
 }
 
 /**
+ * Returns an array that contains paths to packages' dependencies.
+ * The snippet adapter should use packages' dependencies instead of the documentation builder dependencies.
+ *
+ * See #7916.
+ *
+ * @returns {Array.<String>}
+ */
+function getPackageDependenciesPaths() {
+	const globOptions = {
+		cwd: path.resolve( __dirname, '..', '..' ),
+		absolute: true
+	};
+
+	return glob.sync( 'packages/*/node_modules', globOptions )
+		.concat( glob.sync( 'external/*/packages/*/node_modules', globOptions ) )
+		.map( p => path.normalize( p ) );
+}
+
+/**
  * Reads the snippet's configuration.
  *
  * @param {String} snippetSourcePath An absolute path to the file.
@@ -436,7 +533,8 @@ function readSnippetConfig( snippetSourcePath ) {
 }
 
 /**
- * Removes duplicated entries specified in `files` array and map those entires using `mapFunction`.
+ * Removes duplicated entries specified in `files` array, unifies path separators to always be `/`
+ * and then maps those entries using `mapFunction`.
  *
  * @param {Array.<String>} files Paths collection.
  * @param {Function} mapFunction Function that should return a string.
@@ -444,6 +542,7 @@ function readSnippetConfig( snippetSourcePath ) {
  */
 function getHTMLImports( files, mapFunction ) {
 	return [ ...new Set( files ) ]
+		.map( path => upath.normalize( path ) )
 		.map( mapFunction )
 		.join( '\n' )
 		.replace( /^\s+/, '' );
@@ -457,6 +556,82 @@ function getHTMLImports( files, mapFunction ) {
  */
 function countUniqueSnippets( snippets ) {
 	return new Set( Array.from( snippets, snippet => snippet.snippetName ) ).size;
+}
+
+/**
+ * Returns a configuration for webpack that parses the `/docs/_snippets/assets.js` file.
+ * Thanks to that, we're able to load libraries from the `node_modules` directory in our snippets.
+ *
+ * @param {Object} config
+ * @param {Boolean} config.production Whether to build for production.
+ * @param {Object} config.snippetWebpackConfig The configuration returned by the `getWebpackConfig()` function.
+ * It is used to configure the output path for the asset file.
+ * @returns {Object}
+ */
+function getWebpackConfigForAssets( config ) {
+	return {
+		mode: config.production ? 'production' : 'development',
+
+		entry: {
+			assets: path.join( __dirname, '..', '..', 'docs', '_snippets', 'assets.js' )
+		},
+
+		output: {
+			filename: '[name].js',
+			path: config.snippetWebpackConfig.output.path
+		},
+
+		optimization: {
+			minimizer: [
+				new TerserPlugin( {
+					sourceMap: true,
+					terserOptions: {
+						output: {
+							// Preserve CKEditor 5 license comments.
+							comments: /^!/
+						}
+					},
+					extractComments: false
+				} )
+			]
+		},
+
+		plugins: [
+			new MiniCssExtractPlugin( { filename: '[name].css' } ),
+			new webpack.BannerPlugin( {
+				banner: bundler.getLicenseBanner(),
+				raw: true
+			} ),
+			new ProgressBarPlugin( {
+				format: 'Building assets for snippets: :percent (:msg)'
+			} )
+		],
+
+		// Configure the paths so building CKEditor 5 snippets work even if the script
+		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
+		resolve: {
+			modules: [
+				...getPackageDependenciesPaths(),
+				...getModuleResolvePaths()
+			]
+		},
+
+		resolveLoader: {
+			modules: getModuleResolvePaths()
+		},
+
+		module: {
+			rules: [
+				{
+					test: /\.css$/,
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader'
+					]
+				}
+			]
+		}
+	};
 }
 
 /**

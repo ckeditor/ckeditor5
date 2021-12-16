@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -71,6 +71,30 @@ describe( 'ColorInputView', () => {
 			expect( view.hasError ).to.be.false;
 		} );
 
+		it( 'should set #isFocused', () => {
+			expect( view.isFocused ).to.be.false;
+		} );
+
+		it( 'should set #isEmpty', () => {
+			expect( view.isEmpty ).to.be.true;
+		} );
+
+		it( 'should have #isEmpty bound to the text input', () => {
+			inputView.isEmpty = true;
+			expect( view.isEmpty ).to.be.true;
+
+			inputView.isEmpty = false;
+			expect( view.isEmpty ).to.be.false;
+		} );
+
+		it( 'should have #isFocused bound to the text input', () => {
+			inputView.isFocused = true;
+			expect( view.isFocused ).to.be.true;
+
+			inputView.isFocused = false;
+			expect( view.isFocused ).to.be.false;
+		} );
+
 		describe( 'dropdown', () => {
 			it( 'should be created', () => {
 				expect( view._dropdownView ).to.be.instanceOf( DropdownView );
@@ -107,7 +131,10 @@ describe( 'ColorInputView', () => {
 			} );
 
 			it( 'should have the remove color button', () => {
-				expect( view._dropdownView.panelView.children.first ).to.be.instanceOf( ButtonView );
+				const removeColorButton = view._dropdownView.panelView.children.first;
+
+				expect( removeColorButton ).to.be.instanceOf( ButtonView );
+				expect( removeColorButton.label ).to.equal( 'Remove color' );
 			} );
 
 			describe( 'position', () => {
@@ -352,8 +379,8 @@ describe( 'ColorInputView', () => {
 		it( 'should set the template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input-color' ) ).to.be.true;
-			expect( view.element.firstChild ).to.equal( inputView.element );
-			expect( view.element.lastChild ).to.equal( view._dropdownView.element );
+			expect( view.element.firstChild ).to.equal( view._dropdownView.element );
+			expect( view.element.lastChild ).to.equal( inputView.element );
 		} );
 
 		describe( 'options', () => {
@@ -413,6 +440,47 @@ describe( 'ColorInputView', () => {
 
 				view.ariaDescribedById = 'foo';
 				expect( view.element.getAttribute( 'aria-describedby' ) ).to.equal( 'foo' );
+			} );
+		} );
+
+		describe( 'defaultColorValue option', () => {
+			let view, locale;
+
+			beforeEach( () => {
+				locale = { t: val => val };
+				view = new ColorInputView( locale, {
+					colorDefinitions: DEFAULT_COLORS,
+					columns: 5,
+					defaultColorValue: 'rgb(255,0,0)'
+				} );
+				view.render();
+			} );
+
+			afterEach( () => {
+				view.destroy();
+			} );
+
+			describe( 'dropdown', () => {
+				describe( 'Remove color / Restore default', () => {
+					let removeColorButton;
+
+					beforeEach( () => {
+						removeColorButton = view._dropdownView.panelView.children.first;
+					} );
+
+					it( 'should replace "Remove color" with "Restore default"', () => {
+						expect( removeColorButton ).to.be.instanceOf( ButtonView );
+						expect( removeColorButton.label ).to.equal( 'Restore default' );
+					} );
+
+					it( 'should set the empty #value upon #execute', () => {
+						view.value = 'foo';
+
+						removeColorButton.fire( 'execute' );
+
+						expect( view.value ).to.equal( 'rgb(255,0,0)' );
+					} );
+				} );
 			} );
 		} );
 	} );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
@@ -17,6 +18,9 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class EnterObserver extends Observer {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( view ) {
 		super( view );
 
@@ -24,17 +28,15 @@ export default class EnterObserver extends Observer {
 
 		doc.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
-				// Save the event object to check later if it was stopped or not.
-				let event;
-				doc.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
+				const event = new BubblingEventInfo( doc, 'enter', doc.selection.getFirstRange() );
 
-				doc.fire( 'enter', new DomEventData( doc, data.domEvent, {
+				doc.fire( event, new DomEventData( doc, data.domEvent, {
 					isSoft: data.shiftKey
 				} ) );
 
 				// Stop `keydown` event if `enter` event was stopped.
 				// https://github.com/ckeditor/ckeditor5/issues/753
-				if ( event && event.stop.called ) {
+				if ( event.stop.called ) {
 					evt.stop();
 				}
 			}

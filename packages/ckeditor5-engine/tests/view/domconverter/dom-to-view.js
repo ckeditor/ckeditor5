@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
+import ViewUIElement from '../../../src/view/uielement';
 import ViewDocument from '../../../src/view/document';
 import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
@@ -171,10 +172,38 @@ describe( 'DomConverter', () => {
 			expect( converter.domToView( textNode ) ).to.be.null;
 		} );
 
-		it( 'should return null for a comment', () => {
-			const comment = document.createComment( 'abc' );
+		it( 'should create UIElement for comment', () => {
+			const domComment = document.createComment( 'abc' );
 
-			expect( converter.domToView( comment ) ).to.be.null;
+			const viewComment = converter.domToView( domComment );
+
+			expect( viewComment ).to.be.an.instanceof( ViewUIElement );
+			expect( viewComment.name ).to.equal( '$comment' );
+
+			expect( viewComment.getCustomProperty( '$rawContent' ) ).to.equal( 'abc' );
+
+			expect( converter.mapViewToDom( viewComment ) ).to.not.equal( domComment );
+		} );
+
+		it( 'should create UIElement for comment and bind elements', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { bind: true } );
+
+			expect( viewComment ).to.be.an.instanceof( ViewUIElement );
+			expect( viewComment.name ).to.equal( '$comment' );
+
+			expect( viewComment.getCustomProperty( '$rawContent' ) ).to.equal( 'abc' );
+
+			expect( converter.mapViewToDom( viewComment ) ).to.equal( domComment );
+		} );
+
+		it( 'should return `null` for a comment when the `skipComments` option is set to `true`', () => {
+			const domComment = document.createComment( 'abc' );
+
+			const viewComment = converter.domToView( domComment, { skipComments: true } );
+
+			expect( viewComment ).to.be.null;
 		} );
 
 		describe( 'it should clear whitespaces', () => {
@@ -202,7 +231,7 @@ describe( 'DomConverter', () => {
 						document.createTextNode( 'foo ' )
 					] ),
 					createElement( document, 'p', {}, [
-						document.createTextNode( 'foo ' )
+						document.createTextNode( 'bar ' )
 					] ),
 					document.createTextNode( ' ' )
 				] );
@@ -211,7 +240,7 @@ describe( 'DomConverter', () => {
 
 				expect( viewDiv.childCount ).to.equal( 2 );
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
-				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'foo' );
+				expect( viewDiv.getChild( 1 ).getChild( 0 ).data ).to.equal( 'bar' );
 			} );
 
 			it( 'after a block element', () => {
@@ -421,7 +450,7 @@ describe( 'DomConverter', () => {
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'f o o' );
 			} );
 
-			function test( inputTexts, output ) {
+			function testTexts( inputTexts, output ) {
 				if ( typeof inputTexts == 'string' ) {
 					inputTexts = [ inputTexts ];
 				}
@@ -446,75 +475,75 @@ describe( 'DomConverter', () => {
 			}
 
 			// At the beginning.
-			test( '_x', ' x' );
-			test( '_ x', '  x' );
-			test( '_ _x', '   x' );
-			test( '_ _ x', '    x' );
+			testTexts( '_x', ' x' );
+			testTexts( '_ x', '  x' );
+			testTexts( '_ _x', '   x' );
+			testTexts( '_ _ x', '    x' );
 
 			// At the end.
-			test( 'x_', 'x ' );
-			test( 'x _', 'x  ' );
-			test( 'x __', 'x   ' );
-			test( 'x _ _', 'x    ' );
+			testTexts( 'x_', 'x ' );
+			testTexts( 'x _', 'x  ' );
+			testTexts( 'x __', 'x   ' );
+			testTexts( 'x _ _', 'x    ' );
 
 			// In the middle.
-			test( 'x x', 'x x' );
-			test( 'x _x', 'x  x' );
-			test( 'x _ x', 'x   x' );
-			test( 'x _ _x', 'x    x' );
+			testTexts( 'x x', 'x x' );
+			testTexts( 'x _x', 'x  x' );
+			testTexts( 'x _ x', 'x   x' );
+			testTexts( 'x _ _x', 'x    x' );
 
 			// Complex.
-			test( '_x_', ' x ' );
-			test( '_ x _x _', '  x  x  ' );
-			test( '_ _x x _', '   x x  ' );
-			test( '_ _x x __', '   x x   ' );
-			test( '_ _x _ _x_', '   x    x ' );
-			test( '_', ' ' );
+			testTexts( '_x_', ' x ' );
+			testTexts( '_ x _x _', '  x  x  ' );
+			testTexts( '_ _x x _', '   x x  ' );
+			testTexts( '_ _x x __', '   x x   ' );
+			testTexts( '_ _x _ _x_', '   x    x ' );
+			testTexts( '_', ' ' );
 
 			// With hard &nbsp;
-			test( '_x', ' x' );
-			test( '__x', ' _x' );
-			test( '___x', ' __x' );
-			test( '__ x', ' _ x' );
+			testTexts( '_x', ' x' );
+			testTexts( '__x', ' _x' );
+			testTexts( '___x', ' __x' );
+			testTexts( '__ x', ' _ x' );
 
-			test( 'x_', 'x ' );
-			test( 'x__', 'x_ ' );
-			test( 'x___', 'x__ ' );
+			testTexts( 'x_', 'x ' );
+			testTexts( 'x__', 'x_ ' );
+			testTexts( 'x___', 'x__ ' );
 
-			test( 'x_x', 'x_x' );
-			test( 'x___x', 'x___x' );
-			test( 'x____x', 'x____x' );
-			test( 'x__ x', 'x__ x' );
-			test( 'x___ x', 'x___ x' );
-			test( 'x_ _x', 'x_  x' );
-			test( 'x __x', 'x  _x' );
-			test( 'x _ x', 'x   x' );
-			test( 'x __ _x', 'x  _  x' );
+			testTexts( 'x_x', 'x_x' );
+			testTexts( 'x___x', 'x___x' );
+			testTexts( 'x____x', 'x____x' );
+			testTexts( 'x__ x', 'x__ x' );
+			testTexts( 'x___ x', 'x___ x' );
+			testTexts( 'x_ _x', 'x_  x' );
+			testTexts( 'x __x', 'x  _x' );
+			testTexts( 'x _ x', 'x   x' );
+			testTexts( 'x __ _x', 'x  _  x' );
 
 			// Two text nodes.
-			test( [ 'x', 'y' ], 'xy' );
-			test( [ 'x ', 'y' ], 'x y' );
-			test( [ 'x _', 'y' ], 'x  y' );
-			test( [ 'x __', 'y' ], 'x   y' );
-			test( [ 'x _  _', 'y' ], 'x    y' );
+			testTexts( [ 'x', 'y' ], 'xy' );
+			testTexts( [ 'x ', 'y' ], 'x y' );
+			testTexts( [ 'x _', 'y' ], 'x  y' );
+			testTexts( [ 'x __', 'y' ], 'x   y' );
+			testTexts( [ 'x _  _', 'y' ], 'x    y' );
 
-			test( [ 'x', ' y' ], 'x y' );
-			test( [ 'x_', ' y' ], 'x  y' );
-			test( [ 'x _', ' y' ], 'x   y' );
-			test( [ 'x __', ' y' ], 'x    y' );
-			test( [ 'x _ _', ' y' ], 'x     y' );
+			testTexts( [ 'x', ' y' ], 'x y' );
+			testTexts( [ 'x_', ' y' ], 'x  y' );
+			testTexts( [ 'x _', ' y' ], 'x   y' );
+			testTexts( [ 'x __', ' y' ], 'x    y' );
+			testTexts( [ 'x _ _', ' y' ], 'x     y' );
 
-			test( [ 'x', ' _y' ], 'x  y' );
-			test( [ 'x_', ' _y' ], 'x   y' );
-			test( [ 'x _', ' _y' ], 'x    y' );
-			test( [ 'x __', ' _y' ], 'x     y' );
-			test( [ 'x _ _', ' _y' ], 'x      y' );
+			testTexts( [ 'x', ' _y' ], 'x  y' );
+			testTexts( [ 'x_', ' _y' ], 'x   y' );
+			testTexts( [ 'x _', ' _y' ], 'x    y' );
+			testTexts( [ 'x __', ' _y' ], 'x     y' );
+			testTexts( [ 'x _ _', ' _y' ], 'x      y' );
 
 			// Some tests with hard &nbsp;
-			test( [ 'x', '_y' ], 'x_y' );
-			test( [ 'x_', 'y' ], 'x_y' );
-			test( [ 'x__', ' y' ], 'x_  y' );
-			test( [ 'x_ _', ' y' ], 'x_   y' );
+			testTexts( [ 'x', '_y' ], 'x_y' );
+			testTexts( [ 'x_', 'y' ], 'x_y' );
+			testTexts( [ 'x__', ' y' ], 'x_  y' );
+			testTexts( [ 'x_ _', ' y' ], 'x_   y' );
 
 			it( 'not in preformatted blocks', () => {
 				const domDiv = createElement( document, 'div', {}, [

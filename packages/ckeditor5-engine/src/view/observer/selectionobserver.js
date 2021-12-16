@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,11 +14,13 @@ import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
 
 /**
- * Selection observer class observes selection changes in the document. If selection changes on the document this
- * observer checks if there are any mutations and if DOM selection is different than the
- * {@link module:engine/view/document~Document#selection view selection}. Selection observer fires
- * {@link module:engine/view/document~Document#event:selectionChange} event only if selection change was the only change in the document
- * and DOM selection is different then the view selection.
+ * Selection observer class observes selection changes in the document. If a selection changes on the document this
+ * observer checks if there are any mutations and if the DOM selection is different from the
+ * {@link module:engine/view/document~Document#selection view selection}. The selection observer fires
+ * {@link module:engine/view/document~Document#event:selectionChange} event only if a selection change was the only change in the document
+ * and the DOM selection is different then the view selection.
+ *
+ * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
@@ -61,7 +63,7 @@ export default class SelectionObserver extends Observer {
 		this.domConverter = view.domConverter;
 
 		/**
-		 * Set of documents which have added "selectionchange" listener to avoid adding listener twice to the same
+		 * A set of documents which have added `selectionchange` listener to avoid adding a listener twice to the same
 		 * document.
 		 *
 		 * @private
@@ -78,7 +80,25 @@ export default class SelectionObserver extends Observer {
 		 */
 		this._fireSelectionChangeDoneDebounced = debounce( data => this.document.fire( 'selectionChangeDone', data ), 200 );
 
+		/**
+		 * When called, starts clearing the {@link #_loopbackCounter} counter in time intervals. When the number of selection
+		 * changes exceeds a certain limit within the interval of time, the observer will not fire `selectionChange` but warn about
+		 * possible infinite selection loop.
+		 *
+		 * @private
+		 * @member {Number} #_clearInfiniteLoopInterval
+		 */
 		this._clearInfiniteLoopInterval = setInterval( () => this._clearInfiniteLoop(), 1000 );
+
+		/**
+		 * Unlocks the `isSelecting` state of the view document in case the selection observer did not record this fact
+		 * correctly (for whatever reason). It is a safeguard (paranoid check), that returns document to the normal state
+		 * after a certain period of time (debounced, postponed by each selectionchange event).
+		 *
+		 * @private
+		 * @method #_documentIsSelectingInactivityTimeoutDebounced
+		 */
+		this._documentIsSelectingInactivityTimeoutDebounced = debounce( () => ( this.document.isSelecting = false ), 5000 );
 
 		/**
 		 * Private property to check if the code does not enter infinite loop.
@@ -95,13 +115,39 @@ export default class SelectionObserver extends Observer {
 	observe( domElement ) {
 		const domDocument = domElement.ownerDocument;
 
-		// Add listener once per each document.
+		const startDocumentIsSelecting = () => {
+			this.document.isSelecting = true;
+
+			// Let's activate the safety timeout each time the document enters the "is selecting" state.
+			this._documentIsSelectingInactivityTimeoutDebounced();
+		};
+
+		const endDocumentIsSelecting = () => {
+			this.document.isSelecting = false;
+
+			// The safety timeout can be canceled when the document leaves the "is selecting" state.
+			this._documentIsSelectingInactivityTimeoutDebounced.cancel();
+		};
+
+		// The document has the "is selecting" state while the user keeps making (extending) the selection
+		// (e.g. by holding the mouse button and moving the cursor). The state resets when they either released
+		// the mouse button or interrupted the process by pressing or releasing any key.
+		this.listenTo( domElement, 'selectstart', startDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keydown', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domElement, 'keyup', endDocumentIsSelecting, { priority: 'highest' } );
+
+		// Add document-wide listeners only once. This method could be called for multiple editing roots.
 		if ( this._documents.has( domDocument ) ) {
 			return;
 		}
 
-		this.listenTo( domDocument, 'selectionchange', () => {
-			this._handleSelectionChange( domDocument );
+		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
+		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
+			this._handleSelectionChange( domEvent, domDocument );
+
+			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
+			// using their mouse).
+			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
 
 		this._documents.add( domDocument );
@@ -115,27 +161,34 @@ export default class SelectionObserver extends Observer {
 
 		clearInterval( this._clearInfiniteLoopInterval );
 		this._fireSelectionChangeDoneDebounced.cancel();
+		this._documentIsSelectingInactivityTimeoutDebounced.cancel();
 	}
 
 	/**
 	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
-	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when selection stop changing.
+	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
+	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
+	 * @param {Event} domEvent DOM event.
 	 * @param {Document} domDocument DOM document.
 	 */
-	_handleSelectionChange( domDocument ) {
+	_handleSelectionChange( domEvent, domDocument ) {
 		if ( !this.isEnabled ) {
+			return;
+		}
+
+		const domSelection = domDocument.defaultView.getSelection();
+
+		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
 		}
 
 		// Ensure the mutation event will be before selection event on all browsers.
 		this.mutationObserver.flush();
 
-		// If there were mutations then the view will be re-rendered by the mutation observer and selection
-		// will be updated, so selections will equal and event will not be fired, as expected.
-		const domSelection = domDocument.defaultView.getSelection();
+		// If there were mutations then the view will be re-rendered by the mutation observer and the selection
+		// will be updated, so the selections will equal and the event will not be fired, as expected.
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.
@@ -182,7 +235,7 @@ export default class SelectionObserver extends Observer {
 			// Prepare data for new selection and fire appropriate events.
 			this.document.fire( 'selectionChange', data );
 
-			// Call` #_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
+			// Call `#_fireSelectionChangeDoneDebounced` every time when `selectionChange` event is fired.
 			// This function is debounced what means that `selectionChangeDone` event will be fired only when
 			// defined int the function time will elapse since the last time the function was called.
 			// So `selectionChangeDone` will be fired when selection will stop changing.
@@ -201,8 +254,8 @@ export default class SelectionObserver extends Observer {
 }
 
 /**
- * Fired when selection has changed. This event is fired only when the selection change was the only change that happened
- * in the document, and old selection is different then the new selection.
+ * Fired when a selection has changed. This event is fired only when the selection change was the only change that happened
+ * in the document, and the old selection is different then the new selection.
  *
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *

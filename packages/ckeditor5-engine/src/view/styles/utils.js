@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,6 +36,11 @@ const COLOR_NAMES = new Set( [
 	'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon',
 	'sandybrown', 'seagreen', 'seashell', 'sienna', 'skyblue', 'slateblue', 'slategray', 'slategrey', 'snow',
 	'springgreen', 'steelblue', 'tan', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'whitesmoke', 'yellowgreen',
+	// CSS Color Module Level 3 (System Colors)
+	'activeborder', 'activecaption', 'appworkspace', 'background', 'buttonface', 'buttonhighlight', 'buttonshadow',
+	'buttontext', 'captiontext', 'graytext', 'highlight', 'highlighttext', 'inactiveborder', 'inactivecaption',
+	'inactivecaptiontext', 'infobackground', 'infotext', 'menu', 'menutext', 'scrollbar', 'threeddarkshadow',
+	'threedface', 'threedhighlight', 'threedlightshadow', 'threedshadow', 'window', 'windowframe', 'windowtext',
 	// CSS Color Module Level 4
 	'rebeccapurple',
 	// Keywords
@@ -86,7 +91,7 @@ export function isLineStyle( string ) {
 	return lineStyleValues.includes( string );
 }
 
-const lengthRegExp = /^([+-]?[0-9]*[.]?[0-9]+(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax)|0)$/;
+const lengthRegExp = /^([+-]?[0-9]*([.][0-9]+)?(px|cm|mm|in|pc|pt|ch|em|ex|rem|vh|vw|vmin|vmax)|0)$/;
 
 /**
  * Checks if string contains [length](https://developer.mozilla.org/en-US/docs/Web/CSS/length) CSS value.
@@ -98,7 +103,7 @@ export function isLength( string ) {
 	return lengthRegExp.test( string );
 }
 
-const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*[.]?[0-9]+%$/;
+const PERCENTAGE_VALUE_REGEXP = /^[+-]?[0-9]*([.][0-9]+)?%$/;
 
 /**
  * Checks if string contains [percentage](https://developer.mozilla.org/en-US/docs/Web/CSS/percentage) CSS value.
@@ -220,7 +225,7 @@ export function getBoxSidesValueReducer( styleShorthand ) {
  *		// will return '1px 1px 2px'
  *
  * @param {module:engine/view/stylesmap~BoxSides} styleShorthand
- * @returns {Function}
+ * @returns {String}
  */
 export function getBoxSidesShorthandValue( { top, right, bottom, left } ) {
 	const out = [];

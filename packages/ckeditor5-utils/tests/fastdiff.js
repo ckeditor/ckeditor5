@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -317,14 +317,14 @@ describe( 'fastDiff', () => {
 				], false );
 			} );
 
-			it( 'should diff insertion of duplicated content', () => {
+			it( 'should diff insertion of duplicated content (case 1)', () => {
 				expectDiff( '1234', '123123', [
 					{ index: 3, type: 'insert', values: [ '1', '2', '3' ] },
 					{ index: 6, type: 'delete', howMany: 1 }
 				], false );
 			} );
 
-			it( 'should diff insertion of duplicated content', () => {
+			it( 'should diff insertion of duplicated content (case 2)', () => {
 				expectDiff( '1234', '13424', [
 					{ index: 1, type: 'insert', values: [ '3', '4', '2' ] },
 					{ index: 4, type: 'delete', howMany: 2 }
@@ -584,11 +584,11 @@ describe( 'fastDiff', () => {
 				expectDiffLinear( '12345', '1231234', 'eeeiiiidd', false );
 			} );
 
-			it( 'should diff insertion of duplicated content', () => {
+			it( 'should diff insertion of duplicated content - case 1', () => {
 				expectDiffLinear( '1234', '123123', 'eeeiiid' );
 			} );
 
-			it( 'should diff insertion of duplicated content', () => {
+			it( 'should diff insertion of duplicated content - case 2', () => {
 				expectDiffLinear( '1234', '13424', 'eiiidde', false );
 			} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,7 +63,7 @@ export default class CommandCollection {
 			 * @error commandcollection-command-not-found
 			 * @param {String} commandName Name of the command.
 			 */
-			throw new CKEditorError( 'commandcollection-command-not-found: Command does not exist.', this, { commandName } );
+			throw new CKEditorError( 'commandcollection-command-not-found', this, { commandName } );
 		}
 
 		return command.execute( ...args );

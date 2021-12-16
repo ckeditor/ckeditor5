@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -104,7 +104,7 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.
-		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'high' } );
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 

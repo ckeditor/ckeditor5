@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -105,6 +105,30 @@ describe( 'ImageLoadObserver', () => {
 		const img = domRoot.querySelector( 'p' );
 
 		img.dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.notCalled( spy );
+	} );
+
+	it( 'should not fire `loadImage` event if an image has `data-cke-ignore-events` attribute', () => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		setData( view, '<img src="/assets/sample.png" data-cke-ignore-events="true" />' );
+
+		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.notCalled( spy );
+	} );
+
+	it( 'should not fire `loadImage` event if an image has an ancestor with `data-cke-ignore-events` attribute', () => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		setData( view, '<div data-cke-ignore-events="true"><p><img src="/assets/sample.png" /></p></div>' );
+
+		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
 		sinon.assert.notCalled( spy );
 	} );

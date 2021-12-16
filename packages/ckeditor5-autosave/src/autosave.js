@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,11 +7,8 @@
  * @module autosave/autosave
  */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import { Plugin, PendingActions } from 'ckeditor5/src/core';
+import { DomEmitterMixin, ObservableMixin, mix } from 'ckeditor5/src/utils';
 import { debounce } from 'lodash-es';
 
 /* globals window */
@@ -29,7 +26,7 @@ import { debounce } from 'lodash-es';
  *				plugins: [ ArticlePluginSet, Autosave ],
  *				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
  *				image: {
- *					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
+ *					toolbar: [ 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ],
  *				},
  *				autosave: {
  *					save( editor ) {
@@ -105,7 +102,7 @@ export default class Autosave extends Plugin {
 		this._debouncedSave = debounce( this._save.bind( this ), waitingTime );
 
 		/**
-		 * The last document version.
+		 * The last saved document version.
 		 *
 		 * @private
 		 * @type {Number}
@@ -153,25 +150,28 @@ export default class Autosave extends Plugin {
 
 		this._pendingActions = editor.plugins.get( PendingActions );
 
-		this.listenTo( doc, 'change:data', () => {
-			if ( !this._saveCallbacks.length ) {
-				return;
-			}
+		// Add the listener only after the editor is initialized to prevent firing save callback on data init.
+		this.listenTo( editor, 'ready', () => {
+			this.listenTo( doc, 'change:data', () => {
+				if ( !this._saveCallbacks.length ) {
+					return;
+				}
 
-			if ( this.state == 'synchronized' ) {
-				this._action = this._pendingActions.add( t( 'Saving changes' ) );
-				this.state = 'waiting';
+				if ( this.state == 'synchronized' ) {
+					this._action = this._pendingActions.add( t( 'Saving changes' ) );
+					this.state = 'waiting';
 
-				this._debouncedSave();
-			}
+					this._debouncedSave();
+				}
 
-			else if ( this.state == 'waiting' ) {
-				this._debouncedSave();
-			}
+				else if ( this.state == 'waiting' ) {
+					this._debouncedSave();
+				}
 
-			// If the plugin is in `saving` state, it will change its state later basing on the `document.version`.
-			// If the `document.version` will be higher than stored `#_lastDocumentVersion`, then it means, that some `change:data`
-			// event has fired in the meantime.
+				// If the plugin is in `saving` state, it will change its state later basing on the `document.version`.
+				// If the `document.version` will be higher than stored `#_lastDocumentVersion`, then it means, that some `change:data`
+				// event has fired in the meantime.
+			} );
 		} );
 
 		// Flush on the editor's destroy listener with the highest priority to ensure that
@@ -200,6 +200,14 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
+	 * Calls autosave plugin callback and cancels any delayed callbacks that may have been already triggered.
+	 */
+	save() {
+		this._debouncedSave.cancel();
+		this._save();
+	}
+
+	/**
 	 * Invokes the remaining `_save()` method call.
 	 *
 	 * @protected
@@ -216,22 +224,8 @@ export default class Autosave extends Plugin {
 	 * @private
 	 */
 	_save() {
-		const version = this.editor.model.document.version;
-
-		// Change may not produce an operation, so the document's version
-		// can be the same after that change.
-		if (
-			version < this._lastDocumentVersion ||
-			this.editor.state === 'initializing'
-		) {
-			this._debouncedSave.cancel();
-
-			return;
-		}
-
-		this._lastDocumentVersion = version;
-
 		this.state = 'saving';
+		this._lastDocumentVersion = this.editor.model.document.version;
 
 		// Wait one promise cycle to be sure that save callbacks are not called
 		// inside a conversion or when the editor's state changes.

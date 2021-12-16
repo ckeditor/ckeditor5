@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -76,16 +76,27 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should autoparagraph any inline element', () => {
-				editor.model.schema.register( 'span', { allowWhere: '$text' } );
-				editor.model.schema.extend( '$text', { allowIn: 'span' } );
+				editor.model.schema.register( 'inline', { allowWhere: '$text', allowChildren: '$text' } );
 
-				editor.conversion.for( 'downcast' ).elementToElement( { model: 'span', view: 'span' } );
-				editor.conversion.for( 'upcast' ).elementToElement( { model: 'span', view: 'span' } );
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'inline', view: 'span' } );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'inline', view: 'span' } );
 
 				editor.setData( '<span>foo</span>' );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph><span>foo</span></paragraph>' );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph><inline>foo</inline></paragraph>' );
 				expect( editor.getData() ).to.equal( '<p><span>foo</span></p>' );
+			} );
+
+			it( 'should autoparagraph any inline element with children', () => {
+				editor.model.schema.register( 'inline', { allowWhere: '$text', allowChildren: '$text' } );
+
+				editor.conversion.for( 'downcast' ).elementToElement( { model: 'inline', view: 'span' } );
+				editor.conversion.for( 'upcast' ).elementToElement( { model: 'inline', view: 'span' } );
+
+				editor.setData( '<span>f<b>123</b>oo</span>' );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph><inline>f123oo</inline></paragraph>' );
+				expect( editor.getData() ).to.equal( '<p><span>f123oo</span></p>' );
 			} );
 
 			it( 'should not autoparagraph text (in clipboard holder)', () => {

@@ -272,6 +272,9 @@ export default class PlaceholderEditing extends Plugin {
 			// The inline widget is self-contained so it cannot be split by the caret and can be selected:
 			isObject: true,
 
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			allowAttributesOf: '$text',
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
 		} );
@@ -325,7 +328,7 @@ export default class PlaceholderEditing extends Plugin {
 				name: 'span',
 				classes: [ 'placeholder' ]
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Extract the "name" from "{name}".
 				const name = viewElement.getChild( 0 ).data.slice( 1, -1 );
 
@@ -335,7 +338,7 @@ export default class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
+			view: ( modelItem, { writer: viewWriter } ) => {
 				const widgetElement = createPlaceholderView( modelItem, viewWriter );
 
 				// Enable widget handling on a placeholder element inside the editing view.
@@ -345,7 +348,7 @@ export default class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: createPlaceholderView
+			view: ( modelItem, { writer: viewWriter } ) => createPlaceholderView( modelItem, viewWriter )
 		} );
 
 		// Helper method for both downcast converters.
@@ -354,6 +357,8 @@ export default class PlaceholderEditing extends Plugin {
 
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'placeholder'
+			}, {
+				isAllowedInsideAttributeElement: true
 			} );
 
 			// Insert the placeholder name (as a text).
@@ -398,10 +403,14 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 export default class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+                name: value
+			} );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -767,10 +776,14 @@ class Placeholder extends Plugin {
 class PlaceholderCommand extends Command {
 	execute( { value } ) {
 		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
 		editor.model.change( writer => {
-			// Create a <placeholder> elment with the "name" attribute...
-			const placeholder = writer.createElement( 'placeholder', { name: value } );
+			// Create a <placeholder> elment with the "name" attribute (and all the selection attributes)...
+			const placeholder = writer.createElement( 'placeholder', {
+				...Object.fromEntries( selection.getAttributes() ),
+				name: value
+			} );
 
 			// ... and insert it into the document.
 			editor.model.insertContent( placeholder );
@@ -882,6 +895,9 @@ class PlaceholderEditing extends Plugin {
 			// The inline widget is self-contained so it cannot be split by the caret and it can be selected:
 			isObject: true,
 
+			// The inline widget can have the same attributes as text (for example linkHref, bold).
+			allowAttributesOf: '$text',
+
 			// The placeholder can have many types, like date, name, surname, etc:
 			allowAttributes: [ 'name' ]
 		} );
@@ -895,7 +911,7 @@ class PlaceholderEditing extends Plugin {
 				name: 'span',
 				classes: [ 'placeholder' ]
 			},
-			model: ( viewElement, modelWriter ) => {
+			model: ( viewElement, { writer: modelWriter } ) => {
 				// Extract the "name" from "{name}".
 				const name = viewElement.getChild( 0 ).data.slice( 1, -1 );
 
@@ -905,7 +921,7 @@ class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: ( modelItem, viewWriter ) => {
+			view: ( modelItem, { writer: viewWriter } ) => {
 				const widgetElement = createPlaceholderView( modelItem, viewWriter );
 
 				// Enable widget handling on a placeholder element inside the editing view.
@@ -915,7 +931,7 @@ class PlaceholderEditing extends Plugin {
 
 		conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'placeholder',
-			view: createPlaceholderView
+			view: ( modelItem, { writer: viewWriter } ) => createPlaceholderView( modelItem, viewWriter )
 		} );
 
 		// Helper method for both downcast converters.
@@ -924,6 +940,8 @@ class PlaceholderEditing extends Plugin {
 
 			const placeholderView = viewWriter.createContainerElement( 'span', {
 				class: 'placeholder'
+			}, {
+				isAllowedInsideAttributeElement: true
 			} );
 
 			// Insert the placeholder name (as a text).

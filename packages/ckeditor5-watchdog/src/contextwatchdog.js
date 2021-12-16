@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2020, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -234,9 +234,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	add( itemConfigurationOrItemConfigurations ) {
-		const itemConfigurations = Array.isArray( itemConfigurationOrItemConfigurations ) ?
-			itemConfigurationOrItemConfigurations :
-			[ itemConfigurationOrItemConfigurations ];
+		const itemConfigurations = toArray( itemConfigurationOrItemConfigurations );
 
 		return this._actionQueue.enqueue( () => {
 			if ( this.state === 'destroyed' ) {
@@ -310,9 +308,7 @@ export default class ContextWatchdog extends Watchdog {
 	 * @returns {Promise}
 	 */
 	remove( itemIdOrItemIds ) {
-		const itemIds = Array.isArray( itemIdOrItemIds ) ?
-			itemIdOrItemIds :
-			[ itemIdOrItemIds ];
+		const itemIds = toArray( itemIdOrItemIds );
 
 		return this._actionQueue.enqueue( () => {
 			return Promise.all( itemIds.map( itemId => {
@@ -519,16 +515,18 @@ class ActionQueue {
 	}
 }
 
+// Transforms any value to an array. If the provided value is already an array, it is returned unchanged.
+//
+// @param {*} data The value to transform to an array.
+// @returns {Array} An array created from data.
+function toArray( data ) {
+	return Array.isArray( data ) ? data : [ data ];
+}
+
 /**
  * The watchdog item configuration interface.
  *
- * @typedef {module:watchdog/contextwatchdog~EditorWatchdogConfiguration} module:watchdog/contextwatchdog~WatchdogItemConfiguration
- */
-
-/**
- * The editor watchdog configuration interface specifies how editors should be created and destroyed.
- *
- * @typedef {Object} module:watchdog/contextwatchdog~EditorWatchdogConfiguration
+ * @typedef {Object} module:watchdog/contextwatchdog~WatchdogItemConfiguration
  *
  * @property {String} id A unique item identificator.
  *
