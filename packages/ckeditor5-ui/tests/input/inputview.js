@@ -23,7 +23,7 @@ describe( 'InputView', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should creates element from template', () => {
+		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'INPUT' );
 			expect( view.element.type ).to.equal( 'text' );
 			expect( view.element.getAttribute( 'type' ) ).to.be.null;
