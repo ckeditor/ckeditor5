@@ -22,7 +22,8 @@ const DEFAULT_LIST_TYPE = 'default';
  * It sets the value for the `listItem` attribute of the {@link module:list/list~List `<listItem>`} element that
  * allows modifying the list style type.
  *
- * It registers the `'listStyle'` command.
+ * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they're enabled in config.
+ * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -48,7 +49,7 @@ export default class ListStyleEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'list', {
-			numberedProperties: {
+			properties: {
 				styles: true,
 				startIndex: false,
 				reversed: false
@@ -63,8 +64,8 @@ export default class ListStyleEditing extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 
-		const enabledAttributes = editor.config.get( 'list.numberedProperties' );
-		const strategies = createAttributeStrategies( enabledAttributes );
+		const enabledProperties = editor.config.get( 'list.properties' );
+		const strategies = createAttributeStrategies( enabledProperties );
 
 		// Extend schema.
 		model.schema.extend( 'listItem', {
@@ -235,28 +236,31 @@ export default class ListStyleEditing extends Plugin {
 	}
 }
 
-// Strategy for dealing with listItem attributes supported by this plugin.
-//
-// @typedef {Object} module:list/liststyleediting~AttributeStrategy
-// @private
-// @member {String} attributeName
-// @member {*} defaultValue
-// @member {Function} addCommand
-// @member {Function} appliesToListItem
-// @member {Function} setAttributeOnDowncast
-// @member {Function} getAttributeOnUpcast
+/**
+ * Strategy for dealing with listItem attributes supported by this plugin.
+ *
+ * @typedef {Object} AttributeStrategy
+ * @private
+ * @property {String} #attributeName
+ * @property {*} #defaultValue
+ * @property {Function} #addCommand
+ * @property {Function} #appliesToListItem
+ * @property {Function} #setAttributeOnDowncast
+ * @property {Function} #getAttributeOnUpcast
+*/
 
 // Creates an array of strategies for dealing with enabled listItem attributes.
 //
-// @param {Object} enabledAttributes
-// @param {Boolean} enabledAttributes.styles
-// @param {Boolean} enabledAttributes.reversed
+// @param {Object} enabledProperties
+// @param {Boolean} enabledProperties.styles
+// @param {Boolean} enabledProperties.reversed
+// @param {Boolean} enabledProperties.startIndex
 // @returns {Array.<module:list/liststyleediting~AttributeStrategy>}
-function createAttributeStrategies( enabledAttributes ) {
-	const result = [];
+function createAttributeStrategies( enabledProperties ) {
+	const strategies = [];
 
-	if ( enabledAttributes.styles ) {
-		result.push( {
+	if ( enabledProperties.styles ) {
+		strategies.push( {
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
 
@@ -282,8 +286,8 @@ function createAttributeStrategies( enabledAttributes ) {
 		} );
 	}
 
-	if ( enabledAttributes.reversed ) {
-		result.push( {
+	if ( enabledProperties.reversed ) {
+		strategies.push( {
 			attributeName: 'listReversed',
 			defaultValue: false,
 
@@ -309,8 +313,8 @@ function createAttributeStrategies( enabledAttributes ) {
 		} );
 	}
 
-	if ( enabledAttributes.startIndex ) {
-		result.push( {
+	if ( enabledProperties.startIndex ) {
+		strategies.push( {
 			attributeName: 'listStart',
 			defaultValue: 1,
 
@@ -336,7 +340,7 @@ function createAttributeStrategies( enabledAttributes ) {
 		} );
 	}
 
-	return result;
+	return strategies;
 }
 
 // Returns a converter consumes the `style`, `reversed` and `start` attribute.

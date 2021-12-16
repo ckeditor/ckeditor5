@@ -16,7 +16,7 @@ describe( 'ListStartCommand', () => {
 			.create( {
 				plugins: [ Paragraph, ListStyleEditing ],
 				list: {
-					numberedProperties: { styles: false, startIndex: true, reversed: false }
+					properties: { styles: false, startIndex: true, reversed: false }
 				}
 			} )
 			.then( newEditor => {

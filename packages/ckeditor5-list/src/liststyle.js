@@ -34,3 +34,55 @@ export default class ListStyle extends Plugin {
 		return 'ListStyle';
 	}
 }
+
+/**
+ * The configuration of the {@link module:list/liststyle~ListStyle list properties} feature.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				list: {
+ *					properties: {
+ *						styles: true,
+ *						startIndex: true,
+ *						reversed: true
+ *					}
+ *				}
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @interface ListPropertiesConfig
+ */
+
+/**
+ * Wheter to enable list style feature (i.e. setting `list-style-type` style on lists).
+ *
+ * @default true
+ * @member {Boolean} module:list/liststyle~ListPropertiesConfig#styles
+ */
+
+/**
+ * Wheter to enable list start index feature.
+ *
+ * This configuration doesn't affect bulleted and todo lists.
+ *
+ * @default false
+ * @member {Boolean} module:list/liststyle~ListPropertiesConfig#startIndex
+ */
+
+/**
+ * Wheter to enable reversed list feature.
+ *
+ * This configuration doesn't affect bulleted and todo lists.
+ *
+ * @default false
+ * @member {Boolean} module:list/liststyle~ListPropertiesConfig#reversed
+ */
+
+/**
+ * The configuration of the {@link module:list/liststyle~ListStyle} feature.
+ *
+ * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
+ *
+ * @member {module:list/liststyle~ListPropertiesConfig} module:list/lilst~ListConfig#properties
+ */

@@ -287,7 +287,7 @@ export function findNestedList( viewElement ) {
 /**
  * Returns an array with all `listItem` elements that represents the same list.
  *
- * It means that values for `listIndent`, `listType`, and `listStyle` for all items are equal.
+ * It means that values of `listIndent`, `listType`, `listStyle`, `listReversed` and `listStart` for all items are equal.
  *
  * @param {module:engine/model/position~Position} position Starting position.
  * @param {'forward'|'backward'} direction Walking direction.
@@ -378,14 +378,15 @@ export function getSiblingNodes( position, direction ) {
 /**
  * Returns an array with all `listItem` elements in the model selection.
  *
- * It returns all the items even if only part of the list is selected.
+ * It returns all the items even if only part of the list is selected, including items that belong to nested lists.
  * If no list is selected, returns an empty array.
  * The order of elements is not specified.
  *
+ * @protected
  * @param {module:engine/model/model~Model} model
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItemsOfSelectedList( model ) {
+export function getSelectedListItems( model ) {
 	const document = model.document;
 
 	// For all selected blocks find all list items that are being selected

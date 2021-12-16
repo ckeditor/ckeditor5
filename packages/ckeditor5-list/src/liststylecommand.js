@@ -8,10 +8,11 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getListItemsOfSelectedList } from './utils';
+import { getSelectedListItems } from './utils';
 
 /**
- * The list style command. It is used by the {@link module:list/liststyle~ListStyle list style feature}.
+ * The list style command. It changes `listStyle` attribute of the selected list items.
+ * It is used by the {@link module:list/liststyle~ListStyle list style feature}.
  *
  * @extends module:core/command~Command
  */
@@ -53,7 +54,7 @@ export default class ListStyleCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const listItems = getListItemsOfSelectedList( model );
+		const listItems = getSelectedListItems( model );
 
 		if ( !listItems.length ) {
 			return;

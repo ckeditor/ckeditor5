@@ -8,17 +8,18 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getListItemsOfSelectedList } from './utils';
+import { getSelectedListItems } from './utils';
 
 /**
- * The list reversed command. It is used by the {@link module:list/liststyle~ListStyle list style feature}.
+ * The list start index command. It changes `listStart` attribute of the selected list items.
+ * It is used by the {@link module:list/liststyle~ListStyle list style feature}.
  *
  * @extends module:core/command~Command
  */
 export default class ListStartCommand extends Command {
 	/**
-	* @inheritDoc
-	*/
+	 * @inheritDoc
+	 */
 	refresh() {
 		const value = this._getValue();
 		this.value = value;
@@ -26,15 +27,15 @@ export default class ListStartCommand extends Command {
 	}
 
 	/**
-	* Executes the command.
-	*
-	* @param {Object} options
-	* @param {Number} [options.startIndex=1] Whether the list should be reversed.
-	* @protected
-	*/
+	 * Executes the command.
+	 *
+	 * @param {Object} options
+	 * @param {Number} [options.startIndex=1] Whether the list should be reversed.
+	 * @protected
+	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const listItems = getListItemsOfSelectedList( model )
+		const listItems = getSelectedListItems( model )
 			.filter( item => item.getAttribute( 'listType' ) == 'numbered' );
 
 		model.change( writer => {
@@ -45,11 +46,11 @@ export default class ListStartCommand extends Command {
 	}
 
 	/**
-	* Checks the command's {@link #value}.
-	*
-	* @private
-	* @returns {Boolean|null} The current value.
-	*/
+	 * Checks the command's {@link #value}.
+	 *
+	 * @private
+	 * @returns {Boolean|null} The current value.
+	 */
 	_getValue() {
 		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
 
