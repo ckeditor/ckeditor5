@@ -56,5 +56,5 @@ export default class List extends Plugin {
  *
  * Read more in {@link module:list/list~ListConfig}.
  *
- * @member {module:module:list/lilst~ListConfig} module:core/editor/editorconfig~EditorConfig#list
+ * @member {module:module:list/list~ListConfig} module:core/editor/editorconfig~EditorConfig#list
  */
