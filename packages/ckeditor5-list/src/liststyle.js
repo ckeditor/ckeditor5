@@ -38,6 +38,12 @@ export default class ListStyle extends Plugin {
 /**
  * The configuration of the {@link module:list/liststyle~ListStyle list properties} feature.
  *
+ * This configuration controls the individual list properties. For instance, it enables or disables specific editor commands
+ * operating on lists ({@link module:list/liststylecommand~ListStyleCommand `'listStyle'`},
+ * {@link module:list/liststartcommand~ListStartCommand `'listStart'`},
+ * {@link module:list/listreversedcommand~ListReversedCommand `'listReversed'`}), the look of the UI
+ * (`'numberedList'` and `'bulletedList'` dropdowns), and editor data pipeline (allowed HTML attributes).
+ *
  *		ClassicEditor
  *			.create( editorElement, {
  *				list: {
@@ -55,25 +61,25 @@ export default class ListStyle extends Plugin {
  */
 
 /**
- * Wheter to enable list style feature (i.e. setting `list-style-type` style on lists).
+ * When set, the list style feature will be enabled. It allows changing the `list-style-type` HTML attribute of the lists.
  *
  * @default true
  * @member {Boolean} module:list/liststyle~ListPropertiesConfig#styles
  */
 
 /**
- * Wheter to enable list start index feature.
+ * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists.
  *
- * This configuration doesn't affect bulleted and todo lists.
+ * **Note**: This configuration doesn't affect bulleted and todo lists.
  *
  * @default false
  * @member {Boolean} module:list/liststyle~ListPropertiesConfig#startIndex
  */
 
 /**
- * Wheter to enable reversed list feature.
+ * When set, the list reversed feature will be enabled. It allows changing the `reversed` HTML attribute of the numbered lists.
  *
- * This configuration doesn't affect bulleted and todo lists.
+ * **Note**: This configuration doesn't affect bulleted and todo lists.
  *
  * @default false
  * @member {Boolean} module:list/liststyle~ListPropertiesConfig#reversed
@@ -84,5 +90,5 @@ export default class ListStyle extends Plugin {
  *
  * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
  *
- * @member {module:list/liststyle~ListPropertiesConfig} module:list/lilst~ListConfig#properties
+ * @member {module:list/liststyle~ListPropertiesConfig} module:list/list~ListConfig#properties
  */

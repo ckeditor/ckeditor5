@@ -237,7 +237,7 @@ export default class ListStyleEditing extends Plugin {
 }
 
 /**
- * Strategy for dealing with listItem attributes supported by this plugin.
+ * Strategy for dealing with `listItem` attributes supported by this plugin.
  *
  * @typedef {Object} AttributeStrategy
  * @private
