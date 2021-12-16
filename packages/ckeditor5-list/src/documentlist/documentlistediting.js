@@ -12,6 +12,7 @@ import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
+import DocumentListIndentCommand from './documentlistindentcommand';
 import {
 	listItemDowncastConverter,
 	listItemParagraphDowncastConverter,
@@ -72,6 +73,28 @@ export default class DocumentListEditing extends Plugin {
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		this._setupConversion();
+
+		// Register commands for indenting.
+		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
+		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const commands = this.editor.commands;
+
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentList' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
 	}
 
 	/**

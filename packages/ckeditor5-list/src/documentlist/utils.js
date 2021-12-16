@@ -165,12 +165,16 @@ export function getSiblingListItem( modelElement, options ) {
 	) {
 		const itemIndent = item.getAttribute( 'listIndent' );
 
+		if ( itemIndent > indent ) {
+			continue;
+		}
+
 		if ( sameIndent && itemIndent == indent ) {
 			return item;
 		}
 
-		if ( smallerIndent && itemIndent < indent ) {
-			return item;
+		if ( itemIndent < indent ) {
+			return smallerIndent ? item : null;
 		}
 	}
 
@@ -216,14 +220,16 @@ export function getListItemElements( listItem, direction ) {
 		item && item.hasAttribute( 'listItemId' );
 		item = isForward ? item.nextSibling : item.previousSibling
 	) {
+		const itemIndent = item.getAttribute( 'listIndent' );
+
 		// If current parsed item has lower indent that element that the element that was a starting point,
 		// it means we left a nested list. Abort searching items.
-		if ( item.getAttribute( 'listIndent' ) < limitIndent ) {
+		if ( itemIndent < limitIndent ) {
 			break;
 		}
 
 		// Ignore nested lists.
-		if ( item.getAttribute( 'listIndent' ) > limitIndent ) {
+		if ( itemIndent > limitIndent ) {
 			continue;
 		}
 
@@ -236,6 +242,28 @@ export function getListItemElements( listItem, direction ) {
 	}
 
 	return isForward ? items : items.reverse();
+}
+
+/**
+ * TODO
+ */
+export function getNestedListItems( listItem ) {
+	const indent = listItem.getAttribute( 'listIndent' );
+	const items = [];
+
+	for (
+		let item = listItem.nextSibling;
+		item && item.hasAttribute( 'listItemId' );
+		item = item.nextSibling
+	) {
+		if ( item.getAttribute( 'listIndent' ) <= indent ) {
+			break;
+		}
+
+		items.push( item );
+	}
+
+	return items;
 }
 
 /**
