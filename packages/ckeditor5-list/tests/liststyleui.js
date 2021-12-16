@@ -39,7 +39,7 @@ describe( 'ListStyleUI', () => {
 		return ClassicTestEditor.create( editorElement, {
 			plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
 			list: {
-				numberedProperties: {
+				properties: {
 					styles: true,
 					startIndex: true,
 					reversed: true
@@ -304,7 +304,7 @@ describe( 'ListStyleUI', () => {
 				expect( numberedListDropdown.class ).to.equal( 'ck-list-styles-dropdown' );
 			} );
 
-			describe( 'support of config.list.numberedProperties', () => {
+			describe( 'support of config.list.properties', () => {
 				it( 'should have styles grid, start index, and reversed fields when all properties are enabled in the config', async () => {
 					const editorElement = document.createElement( 'div' );
 					document.body.appendChild( editorElement );
@@ -312,7 +312,7 @@ describe( 'ListStyleUI', () => {
 					const editor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
 						list: {
-							numberedProperties: {
+							properties: {
 								styles: true,
 								startIndex: true,
 								reversed: true
@@ -338,7 +338,7 @@ describe( 'ListStyleUI', () => {
 					const editor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
 						list: {
-							numberedProperties: {
+							properties: {
 								styles: true,
 								startIndex: false,
 								reversed: false
@@ -364,7 +364,7 @@ describe( 'ListStyleUI', () => {
 					const editor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
 						list: {
-							numberedProperties: {
+							properties: {
 								styles: false,
 								startIndex: true,
 								reversed: true

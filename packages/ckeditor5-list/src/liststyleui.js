@@ -250,7 +250,7 @@ function createListPropertiesView( {
 	styleGridAriaLabel
 } ) {
 	const locale = editor.locale;
-	const enabledProperties = editor.config.get( 'list.numberedProperties' );
+	const enabledProperties = editor.config.get( 'list.properties' );
 	let styleButtonViews;
 
 	if ( parentCommandName != 'numberedList' ) {

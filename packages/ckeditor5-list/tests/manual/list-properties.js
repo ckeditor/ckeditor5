@@ -63,7 +63,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-a' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: true,
 				startIndex: true,
 				reversed: true
@@ -78,7 +78,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-b' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: true,
 				startIndex: true,
 				reversed: false
@@ -93,7 +93,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-c' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: true,
 				startIndex: false,
 				reversed: true
@@ -110,7 +110,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-d' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: false,
 				startIndex: true,
 				reversed: true
@@ -125,7 +125,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-e' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: false,
 				startIndex: true,
 				reversed: false
@@ -140,7 +140,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-f' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: false,
 				startIndex: false,
 				reversed: true
@@ -157,7 +157,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor-g' ), {
 		...config,
 		list: {
-			numberedProperties: {
+			properties: {
 				styles: true,
 				startIndex: false,
 				reversed: false
