@@ -32,6 +32,7 @@ export { default as FormHeaderView } from './formheader/formheaderview';
 export { default as FocusCycler } from './focuscycler';
 
 export { default as IconView } from './icon/iconview';
+export { default as InputView } from './input/inputview';
 export { default as InputTextView } from './inputtext/inputtextview';
 
 export { default as IframeView } from './iframe/iframeview';

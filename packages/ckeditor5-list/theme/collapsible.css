@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-.ck.ck-list-styles-list {
-	display: grid;
+.ck.ck-collapsible.ck-collapsible_collapsed {
+	& > .ck-collapsible__children {
+		display: none;
+	}
 }

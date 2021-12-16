@@ -12,7 +12,8 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^31.1.0"
+    "ckeditor5": "^31.1.0",
+    "@ckeditor/ckeditor5-ui": "^31.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
@@ -34,7 +35,6 @@
     "@ckeditor/ckeditor5-table": "^31.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
     "@ckeditor/ckeditor5-typing": "^31.1.0",
-    "@ckeditor/ckeditor5-ui": "^31.1.0",
     "@ckeditor/ckeditor5-undo": "^31.1.0",
     "@ckeditor/ckeditor5-utils": "^31.1.0",
     "webpack": "^5.58.1",
