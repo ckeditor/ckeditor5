@@ -88,6 +88,7 @@ export default class Autosave extends Plugin {
 		 * * error &ndash When the provided save method will throw an error. This state immediately changes to the `saving` state and
 		 * the save method will be called again in the short period of time.
 		 *
+		 * @readonly
 		 * @member {'synchronized'|'waiting'|'saving'} #state
 		 */
 		this.set( 'state', 'synchronized' );
@@ -108,6 +109,17 @@ export default class Autosave extends Plugin {
 		 * @type {Number}
 		 */
 		this._lastDocumentVersion = editor.model.document.version;
+
+		/**
+		 * Promised used for asynchronous save calls.
+		 *
+		 * Created to handle the autosave call to an external data source. It resolves when that call is finished. It is re-used if
+		 * save is called before the promise has resolved. It is set to `null` if there is no call in progress.
+		 *
+		 * @type {Promise|null}
+		 * @private
+		 */
+		this._savePromise = null;
 
 		/**
 		 * DOM emitter.
@@ -138,6 +150,7 @@ export default class Autosave extends Plugin {
 		 * @private
 		 * @member {module:core/pendingactions~PendingActions} #_pendingActions
 		 */
+		this._pendingActions = editor.plugins.get( PendingActions );
 	}
 
 	/**
@@ -146,25 +159,25 @@ export default class Autosave extends Plugin {
 	init() {
 		const editor = this.editor;
 		const doc = editor.model.document;
-		const t = editor.t;
-
-		this._pendingActions = editor.plugins.get( PendingActions );
 
 		// Add the listener only after the editor is initialized to prevent firing save callback on data init.
 		this.listenTo( editor, 'ready', () => {
-			this.listenTo( doc, 'change:data', () => {
+			this.listenTo( doc, 'change:data', ( evt, batch ) => {
 				if ( !this._saveCallbacks.length ) {
 					return;
 				}
 
-				if ( this.state == 'synchronized' ) {
-					this._action = this._pendingActions.add( t( 'Saving changes' ) );
-					this.state = 'waiting';
-
-					this._debouncedSave();
+				if ( !batch.isLocal ) {
+					return;
 				}
 
-				else if ( this.state == 'waiting' ) {
+				if ( this.state === 'synchronized' ) {
+					this.state = 'waiting';
+					// Set pending action already when we are waiting for the autosave callback.
+					this._setPendingAction();
+				}
+
+				if ( this.state === 'waiting' ) {
 					this._debouncedSave();
 				}
 
@@ -200,11 +213,14 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Calls autosave plugin callback and cancels any delayed callbacks that may have been already triggered.
+	 * Immediately calls autosave callback. All previously queued (debounced) callbacks are cleared.
+	 *
+	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
 	 */
 	save() {
 		this._debouncedSave.cancel();
-		this._save();
+
+		return this._save();
 	}
 
 	/**
@@ -224,12 +240,19 @@ export default class Autosave extends Plugin {
 	 * @private
 	 */
 	_save() {
+		if ( this._savePromise ) {
+			return this._savePromise;
+		}
+
+		// Make sure there is a pending action (in case if `_save()` was called through manual `save()` call).
+		this._setPendingAction();
+
 		this.state = 'saving';
 		this._lastDocumentVersion = this.editor.model.document.version;
 
 		// Wait one promise cycle to be sure that save callbacks are not called
 		// inside a conversion or when the editor's state changes.
-		Promise.resolve()
+		this._savePromise = Promise.resolve()
 			.then( () => Promise.all(
 				this._saveCallbacks.map( cb => cb( this.editor ) )
 			) )
@@ -254,7 +277,25 @@ export default class Autosave extends Plugin {
 					this._pendingActions.remove( this._action );
 					this._action = null;
 				}
+			} )
+			.finally( () => {
+				this._savePromise = null;
 			} );
+
+		return this._savePromise;
+	}
+
+	/**
+	 * Creates a pending action if it is not set already.
+	 *
+	 * @private
+	 */
+	_setPendingAction() {
+		const t = this.editor.t;
+
+		if ( !this._action ) {
+			this._action = this._pendingActions.add( t( 'Saving changes' ) );
+		}
 	}
 
 	/**

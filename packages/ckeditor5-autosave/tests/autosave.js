@@ -635,7 +635,7 @@ describe( 'Autosave', () => {
 				} );
 		} );
 
-		it( 'should handle a situration when the save callback throws an error', () => {
+		it( 'should handle a situation when the save callback throws an error', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const successServerActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
@@ -673,6 +673,22 @@ describe( 'Autosave', () => {
 					sinon.assert.calledOnce( successServerActionSpy );
 				} );
 		} );
+
+		it( 'should ignore non-local changes', () => {
+			autosave.adapter = {
+				save: sinon.spy()
+			};
+
+			editor.model.enqueueChange( { isLocal: false }, writer => {
+				writer.insertElement( 'paragraph', null, editor.model.document.getRoot(), 0 );
+			} );
+
+			sinon.clock.tick( 2000 );
+
+			return runPromiseCycles().then( () => {
+				sinon.assert.notCalled( autosave.adapter.save );
+			} );
+		} );
 	} );
 
 	describe( 'save()', () => {
@@ -688,7 +704,7 @@ describe( 'Autosave', () => {
 				.create( element, {
 					plugins: [ Autosave, Paragraph ],
 					autosave: {
-						save: spy
+						save: async () => { spy(); }
 					},
 					initialData: '<p>Foo</p>'
 				} )
@@ -704,23 +720,26 @@ describe( 'Autosave', () => {
 			return editor.destroy();
 		} );
 
-		it( 'shout not call autosave callback if nothing changed', () => {
-			expect( spy.called ).to.be.false;
-
-			autosave.save();
-
-			expect( spy.called ).to.be.false;
-		} );
-
-		it( 'should call autosave callback', () => {
+		it( 'should call autosave callback and return a promise that is resolved when the autosave callback is finished', () => {
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			autosave.save();
+			const promise = autosave.save();
 
-			return Promise.resolve().then( () => {
+			return promise.then( () => {
+				expect( spy.calledOnce ).to.be.true;
+			} );
+		} );
+
+		it( 'should use one autosave call and one promise if called multiple times', () => {
+			const promiseA = autosave.save();
+			const promiseB = autosave.save();
+
+			expect( promiseA ).to.equal( promiseB );
+
+			return promiseA.then( () => {
 				expect( spy.calledOnce ).to.be.true;
 			} );
 		} );
@@ -733,7 +752,7 @@ describe( 'Autosave', () => {
 
 			autosave.save();
 
-			sinon.clock.tick( 1000 );
+			sinon.clock.tick( 2000 );
 
 			return Promise.resolve().then( () => {
 				expect( spy.calledOnce ).to.be.true;
