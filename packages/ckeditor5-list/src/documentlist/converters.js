@@ -178,7 +178,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 					type: item.getAttribute( 'listType' )
 				};
 
-				const blocks = getListItemBlocks( item, 'forward' );
+				const blocks = getListItemBlocks( item, { direction: 'forward' } );
 
 				for ( const block of blocks ) {
 					visited.add( block );

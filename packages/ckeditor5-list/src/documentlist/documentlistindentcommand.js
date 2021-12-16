@@ -58,8 +58,7 @@ export default class DocumentListIndentCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const doc = model.document;
-		const blocks = Array.from( doc.selection.getSelectedBlocks() );
+		const blocks = Array.from( model.document.selection.getSelectedBlocks() );
 
 		model.change( writer => {
 			// Handle selection contained in the single list item and starting in the following blocks.

@@ -192,27 +192,29 @@ export function getSiblingListBlock( modelElement, options ) {
  */
 export function getAllListItemBlocks( listItem ) {
 	return [
-		...getListItemBlocks( listItem, 'backward' ),
-		...getListItemBlocks( listItem, 'forward' )
+		...getListItemBlocks( listItem, { direction: 'backward' } ),
+		...getListItemBlocks( listItem, { direction: 'forward' } )
 	];
 }
 
 /**
  * Returns an array with elements that represents the same list item in the specified direction.
  *
- * It means that values for `listIndent`, and `listItemId` for all items are equal.
+ * It means that values for `listIndent` and `listItemId` for all items are equal.
  *
  * **Note**: For backward search the provided item is not included, but for forward search it is included in the result.
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {'forward'|'backward'} [direction='backward'] Walking direction.
+ * @param {Object} [options]
+ * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItemBlocks( listItem, direction ) {
+export function getListItemBlocks( listItem, options = {} ) {
 	const limitIndent = listItem.getAttribute( 'listIndent' );
 	const listItemId = listItem.getAttribute( 'listItemId' );
-	const isForward = direction == 'forward';
+	const isForward = options.direction == 'forward';
+	const includeNested = !!options.includeNested;
 	const items = [];
 
 	for (
@@ -229,12 +231,12 @@ export function getListItemBlocks( listItem, direction ) {
 		}
 
 		// Ignore nested lists.
-		if ( itemIndent > limitIndent ) {
+		if ( !includeNested && itemIndent > limitIndent ) {
 			continue;
 		}
 
 		// Abort if item has a different ID.
-		if ( item.getAttribute( 'listItemId' ) != listItemId ) {
+		if ( itemIndent == limitIndent && item.getAttribute( 'listItemId' ) != listItemId ) {
 			break;
 		}
 
@@ -287,7 +289,11 @@ export function isFirstBlockOfListItem( listBlock ) {
 		return true;
 	}
 
-	return previousSibling.getAttribute( 'listItemId' ) != listBlock.getAttribute( 'listItemId' );
+	if ( previousSibling.getAttribute( 'listItemId' ) != listBlock.getAttribute( 'listItemId' ) ) {
+		return true;
+	}
+
+	return false;
 }
 
 /**
@@ -322,12 +328,10 @@ export function expandListBlocksToCompleteItems( blocks ) {
 	const lastBlock = blocks[ blocks.length - 1 ];
 
 	// Add missing blocks of the first selected list item.
-	for ( const item of getListItemBlocks( firstBlock, 'backward' ) ) {
-		blocks.unshift( item );
-	}
+	blocks.splice( 0, 0, ...getListItemBlocks( firstBlock, { direction: 'backward', includeNested: true } ) );
 
 	// Add missing blocks of the last selected list item.
-	for ( const item of getListItemBlocks( lastBlock, 'forward' ) ) {
+	for ( const item of getListItemBlocks( lastBlock, { direction: 'forward', includeNested: true } ) ) {
 		if ( item != lastBlock ) {
 			blocks.push( item );
 		}
@@ -344,7 +348,7 @@ export function expandListBlocksToCompleteItems( blocks ) {
 export function splitListItemBefore( listBlock, writer ) {
 	const id = uid();
 
-	for ( const item of getListItemBlocks( listBlock, 'forward' ) ) {
+	for ( const item of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
 		writer.setAttribute( 'listItemId', id, item );
 	}
 }
@@ -498,7 +502,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 
 		seenIds.add( listItemId );
 
-		for ( const block of getListItemBlocks( item, 'forward' ) ) {
+		for ( const block of getListItemBlocks( item, { direction: 'forward' } ) ) {
 			visited.add( block );
 
 			// Use a new ID if a block of a bigger list item has different type.
