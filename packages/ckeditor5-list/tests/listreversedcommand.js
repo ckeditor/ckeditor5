@@ -16,7 +16,7 @@ describe( 'ListReversedCommand', () => {
 			.create( {
 				plugins: [ Paragraph, ListStyleEditing ],
 				list: {
-					numberedProperties: { styles: false, startIndex: false, reversed: true }
+					properties: { styles: false, startIndex: false, reversed: true }
 				}
 			} )
 			.then( newEditor => {

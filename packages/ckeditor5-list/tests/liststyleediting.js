@@ -45,7 +45,7 @@ describe( 'ListStyleEditing', () => {
 
 		it( 'should have default values', () => {
 			expect( editor.config.get( 'list' ) ).to.deep.equal( {
-				numberedProperties: {
+				properties: {
 					styles: true,
 					startIndex: false,
 					reversed: false
@@ -64,7 +64,7 @@ describe( 'ListStyleEditing', () => {
 				.create( {
 					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
 					list: {
-						numberedProperties: { styles: true, startIndex: false, reversed: false }
+						properties: { styles: true, startIndex: false, reversed: false }
 					}
 				} )
 				.then( newEditor => {
@@ -386,7 +386,7 @@ describe( 'ListStyleEditing', () => {
 							.create( {
 								plugins: [ Paragraph, ListStyleEditing ],
 								list: {
-									numberedProperties: { styles: true, startIndex: false, reversed: false }
+									properties: { styles: true, startIndex: false, reversed: false }
 								}
 							} )
 							.then( newEditor => {
@@ -1074,7 +1074,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
 							list: {
-								numberedProperties: { styles: true, startIndex: false, reversed: false }
+								properties: { styles: true, startIndex: false, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -1169,7 +1169,7 @@ describe( 'ListStyleEditing', () => {
 						// TodoListEditing is at the end by design. Check `ListStyleEditing.afterInit()` call.
 							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
 							list: {
-								numberedProperties: { styles: true, startIndex: false, reversed: false }
+								properties: { styles: true, startIndex: false, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -1245,7 +1245,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, Typing ],
 							list: {
-								numberedProperties: { styles: true, startIndex: false, reversed: false }
+								properties: { styles: true, startIndex: false, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -1552,7 +1552,7 @@ describe( 'ListStyleEditing', () => {
 						.create( element, {
 							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
 							list: {
-								numberedProperties: { styles: true, startIndex: false, reversed: false }
+								properties: { styles: true, startIndex: false, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -1763,7 +1763,7 @@ describe( 'ListStyleEditing', () => {
 				.create( {
 					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
 					list: {
-						numberedProperties: { styles: false, startIndex: false, reversed: true }
+						properties: { styles: false, startIndex: false, reversed: true }
 					}
 				} )
 				.then( newEditor => {
@@ -2029,7 +2029,7 @@ describe( 'ListStyleEditing', () => {
 							.create( {
 								plugins: [ Paragraph, ListStyleEditing ],
 								list: {
-									numberedProperties: { styles: false, startIndex: false, reversed: true }
+									properties: { styles: false, startIndex: false, reversed: true }
 								}
 							} )
 							.then( newEditor => {
@@ -2764,7 +2764,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: false, reversed: true }
+								properties: { styles: false, startIndex: false, reversed: true }
 							}
 						} )
 						.then( newEditor => {
@@ -2858,7 +2858,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: false, reversed: true }
+								properties: { styles: false, startIndex: false, reversed: true }
 							}
 						} )
 						.then( newEditor => {
@@ -2934,7 +2934,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, Typing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: false, reversed: true }
+								properties: { styles: false, startIndex: false, reversed: true }
 							}
 						} )
 						.then( newEditor => {
@@ -3244,7 +3244,7 @@ describe( 'ListStyleEditing', () => {
 						.create( element, {
 							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: false, reversed: true }
+								properties: { styles: false, startIndex: false, reversed: true }
 							}
 						} )
 						.then( newEditor => {
@@ -3402,7 +3402,7 @@ describe( 'ListStyleEditing', () => {
 				.create( {
 					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
 					list: {
-						numberedProperties: { styles: false, startIndex: true, reversed: false }
+						properties: { styles: false, startIndex: true, reversed: false }
 					}
 				} )
 				.then( newEditor => {
@@ -3659,7 +3659,7 @@ describe( 'ListStyleEditing', () => {
 							.create( {
 								plugins: [ Paragraph, ListStyleEditing ],
 								list: {
-									numberedProperties: { styles: false, startIndex: true, reversed: false }
+									properties: { styles: false, startIndex: true, reversed: false }
 								}
 							} )
 							.then( newEditor => {
@@ -4394,7 +4394,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: true, reversed: false }
+								properties: { styles: false, startIndex: true, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -4488,7 +4488,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: true, reversed: false }
+								properties: { styles: false, startIndex: true, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -4564,7 +4564,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, Typing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: true, reversed: false }
+								properties: { styles: false, startIndex: true, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -4874,7 +4874,7 @@ describe( 'ListStyleEditing', () => {
 						.create( element, {
 							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: true, reversed: false }
+								properties: { styles: false, startIndex: true, reversed: false }
 							}
 						} )
 						.then( newEditor => {
@@ -5032,7 +5032,7 @@ describe( 'ListStyleEditing', () => {
 				.create( {
 					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
 					list: {
-						numberedProperties: { styles: true, startIndex: true, reversed: true }
+						properties: { styles: true, startIndex: true, reversed: true }
 					}
 				} )
 				.then( newEditor => {
@@ -5547,7 +5547,7 @@ describe( 'ListStyleEditing', () => {
 						.create( {
 							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
 							list: {
-								numberedProperties: { styles: false, startIndex: true, reversed: false }
+								properties: { styles: false, startIndex: true, reversed: false }
 							}
 						} )
 						.then( newEditor => {
