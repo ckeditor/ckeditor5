@@ -59,7 +59,7 @@ describe( 'ListPropertiesView', () => {
 				expect( view.element.classList.contains( 'ck-list-properties_with-numbered-properties' ) ).to.be.true;
 			} );
 
-			describe( 'when both styles grid and numbered properties are enabled', () => {
+			describe( 'when styles, start index, and reversed properties are enabled', () => {
 				it( 'should use collapsible to host property fields', () => {
 					expect( view.children.first ).to.equal( view.stylesView );
 					expect( view.children.last ).to.be.instanceOf( CollapsibleView );
@@ -70,7 +70,7 @@ describe( 'ListPropertiesView', () => {
 				} );
 			} );
 
-			describe( 'when styles grid is disabled and numbered properties are enabled', () => {
+			describe( 'when styles are disabled but start index and reversed properties are enabled', () => {
 				it( 'should have no #stylesView and get a specific CSS class', () => {
 					const view = new ListPropertiesView( locale, {
 						enabledProperties: {
@@ -112,7 +112,7 @@ describe( 'ListPropertiesView', () => {
 				} );
 			} );
 
-			describe( 'when styles grid is enabled but numbered properties are not', () => {
+			describe( 'when only styles property is enabled', () => {
 				it( 'should not have no #startIndexFieldView, no #reversedSwitchButtonView, and no specific CSS class', () => {
 					const view = new ListPropertiesView( locale, {
 						enabledProperties: {
@@ -136,7 +136,7 @@ describe( 'ListPropertiesView', () => {
 				} );
 			} );
 
-			describe( 'when only start index field is enabled', () => {
+			describe( 'when only start index property is enabled', () => {
 				it( 'should not have no #stylesView, no #reversedSwitchButtonView', () => {
 					const view = new ListPropertiesView( locale, {
 						enabledProperties: {
@@ -161,7 +161,7 @@ describe( 'ListPropertiesView', () => {
 				} );
 			} );
 
-			describe( 'when only reversed field is enabled', () => {
+			describe( 'when only reversed property is enabled', () => {
 				it( 'should not have no #stylesView, no #startIndexFieldView', () => {
 					const view = new ListPropertiesView( locale, {
 						enabledProperties: {

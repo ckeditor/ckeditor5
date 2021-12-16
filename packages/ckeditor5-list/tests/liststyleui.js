@@ -305,7 +305,7 @@ describe( 'ListStyleUI', () => {
 			} );
 
 			describe( 'support of config.list.numberedProperties', () => {
-				it( 'should have styles grid and all numbered list property fields when all enabled in the config', async () => {
+				it( 'should have styles grid, start index, and reversed fields when all properties are enabled in the config', async () => {
 					const editorElement = document.createElement( 'div' );
 					document.body.appendChild( editorElement );
 
@@ -331,7 +331,7 @@ describe( 'ListStyleUI', () => {
 					await editor.destroy();
 				} );
 
-				it( 'should have only the styles grid UI when numbered properties are disabled', async () => {
+				it( 'should have only the styles grid when start index and reversed properties are disabled', async () => {
 					const editorElement = document.createElement( 'div' );
 					document.body.appendChild( editorElement );
 
