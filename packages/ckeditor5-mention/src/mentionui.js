@@ -703,7 +703,7 @@ function _getLastValidMarkerInText( feedsWithRegexp, text ) {
 //
 // @param {String} marker
 // @param {Number} minimumCharacters
-// @returns {Object}
+// @returns {RegExp}
 export function createRegExp( marker, minimumCharacters ) {
 	const numberOfCharacters = minimumCharacters == 0 ? '*' : `{${ minimumCharacters },}`;
 
