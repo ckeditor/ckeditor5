@@ -68,6 +68,51 @@ describe( 'ListPropertiesView', () => {
 					expect( view.children.last.children.first ).to.equal( view.startIndexFieldView );
 					expect( view.children.last.children.last ).to.equal( view.reversedSwitchButtonView );
 				} );
+
+				it( 'should keep the collapsible button enabled as longs as either start index or reversed field is enabled', () => {
+					const collapsibleView = view.children.last;
+
+					expect( collapsibleView.buttonView.isEnabled, 'A' ).to.be.true;
+
+					view.startIndexFieldView.isEnabled = false;
+					view.reversedSwitchButtonView.isEnabled = true;
+					expect( collapsibleView.buttonView.isEnabled, 'B' ).to.be.true;
+
+					view.startIndexFieldView.isEnabled = true;
+					view.reversedSwitchButtonView.isEnabled = false;
+					expect( collapsibleView.buttonView.isEnabled, 'C' ).to.be.true;
+
+					view.startIndexFieldView.isEnabled = true;
+					view.reversedSwitchButtonView.isEnabled = true;
+					expect( collapsibleView.buttonView.isEnabled, 'D' ).to.be.true;
+
+					view.startIndexFieldView.isEnabled = false;
+					view.reversedSwitchButtonView.isEnabled = false;
+					expect( collapsibleView.buttonView.isEnabled, 'E' ).to.be.false;
+				} );
+
+				it( 'should automatically collapse the collapsible when its button gets gets disabled', () => {
+					const collapsibleView = view.children.last;
+
+					collapsibleView.isCollapsed = false;
+
+					view.startIndexFieldView.isEnabled = false;
+					view.reversedSwitchButtonView.isEnabled = true;
+					expect( collapsibleView.isCollapsed, 'A' ).to.be.false;
+
+					view.startIndexFieldView.isEnabled = true;
+					view.reversedSwitchButtonView.isEnabled = false;
+					expect( collapsibleView.isCollapsed, 'B' ).to.be.false;
+
+					view.startIndexFieldView.isEnabled = false;
+					view.reversedSwitchButtonView.isEnabled = false;
+					expect( collapsibleView.isCollapsed, 'C' ).to.be.true;
+
+					// It should work only one way. It should not uncollapse when property fields get enabled.
+					view.startIndexFieldView.isEnabled = true;
+					view.reversedSwitchButtonView.isEnabled = true;
+					expect( collapsibleView.isCollapsed, 'D' ).to.be.true;
+				} );
 			} );
 
 			describe( 'when styles are disabled but start index and reversed properties are enabled', () => {

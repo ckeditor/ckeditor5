@@ -63,9 +63,23 @@ export default class ListPropertiesView extends View {
 		 * A view that renders the grid of list styles.
 		 *
 		 * @readonly
-		 * @member {module:ui/view~View}
+		 * @member {module:ui/view~View|null}
 		 */
 		this.stylesView = null;
+
+		/**
+		 * A collapsible view that hosts additional list property fields ({@link #startIndexFieldView} and
+		 * {@link #reversedSwitchButtonView}) to visually separate them from the {@link #stylesView grid of styles}.
+		 *
+		 * **Note**: Only present when
+		 * * the view represents **numbered** list properties,
+		 * * and the {@link #stylesView} is rendered,
+		 * * and either {@link #startIndexFieldView} or {@link #reversedSwitchButtonView} is rendered.
+		 *
+		 * @readonly
+		 * @member {module:list/ui/collapsibleview~CollapsibleView|null}
+		 */
+		this.additionalPropertiesCollapsibleView = null;
 
 		/**
 		 * A labeled number field allowing the user to set the start index of the list.
@@ -73,7 +87,7 @@ export default class ListPropertiesView extends View {
 		 * **Note**: Only present when the view represents **numbered** list properties.
 		 *
 		 * @readonly
-		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView}
+		 * @member {module:ui/labeledfield/labeledfieldview~LabeledFieldView|null}
 		 */
 		this.startIndexFieldView = null;
 
@@ -83,7 +97,7 @@ export default class ListPropertiesView extends View {
 		 * **Note**: Only present when the view represents **numbered** list properties.
 		 *
 		 * @readonly
-		 * @member {module:ui/button/switchbuttonview~SwitchButtonView}
+		 * @member {module:ui/button/switchbuttonview~SwitchButtonView|null}
 		 */
 		this.reversedSwitchButtonView = null;
 
@@ -288,14 +302,25 @@ export default class ListPropertiesView extends View {
 
 		// When there are some style buttons, pack the numbered list properties into a collapsible to separate them.
 		if ( enabledProperties.styles ) {
-			const collapsibleView = new CollapsibleView( this.locale, numberedPropertyViews );
+			this.additionalPropertiesCollapsibleView = new CollapsibleView( this.locale, numberedPropertyViews );
 
-			collapsibleView.set( {
+			this.additionalPropertiesCollapsibleView.set( {
 				label: t( 'List properties' ),
 				isCollapsed: true
 			} );
 
-			this.children.add( collapsibleView );
+			// Don't enable the collapsible view unless either start index or reversed field is enabled (e.g. when no list is selected).
+			this.additionalPropertiesCollapsibleView.buttonView.bind( 'isEnabled' ).toMany(
+				numberedPropertyViews, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
+
+			// Automatically collapse the additional properties collapsible when either start index or reversed field gets disabled.
+			this.additionalPropertiesCollapsibleView.buttonView.on( 'change:isEnabled', ( evt, data, isEnabled ) => {
+				if ( !isEnabled ) {
+					this.additionalPropertiesCollapsibleView.isCollapsed = true;
+				}
+			} );
+
+			this.children.add( this.additionalPropertiesCollapsibleView );
 		} else {
 			this.children.addMany( numberedPropertyViews );
 		}
