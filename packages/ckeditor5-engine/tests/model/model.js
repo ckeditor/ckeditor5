@@ -334,6 +334,22 @@ describe( 'Model', () => {
 			} );
 		} );
 
+		it( 'should create a batch with the default type if empty value is passed', () => {
+			model.enqueueChange( null, writer => {
+				expect( writer.batch.isUndoable ).to.be.true;
+				expect( writer.batch.isLocal ).to.be.true;
+				expect( writer.batch.isTyping ).to.be.false;
+				expect( writer.batch.isUndo ).to.be.false;
+			} );
+
+			model.enqueueChange( undefined, writer => {
+				expect( writer.batch.isUndoable ).to.be.true;
+				expect( writer.batch.isLocal ).to.be.true;
+				expect( writer.batch.isTyping ).to.be.false;
+				expect( writer.batch.isUndo ).to.be.false;
+			} );
+		} );
+
 		it( 'should rethrow native errors as they are in the dubug=true mode in the model.change() block', () => {
 			const error = new TypeError( 'foo' );
 
