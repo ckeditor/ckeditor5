@@ -23,6 +23,20 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
 const config = {
+	initialData: `
+		<h3>Ordered list</h3>
+		<ol>
+			<li>First item</li>
+			<li>Second item</li>
+			<li>Third item</li>
+		</ol>
+		<h3>Unordered list</h3>
+		<ul>
+			<li>First item</li>
+			<li>Second item</li>
+			<li>Third item</li>
+		</ul>
+	`,
 	plugins: [
 		Essentials,
 		Bold,
