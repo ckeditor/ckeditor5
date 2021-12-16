@@ -24,7 +24,7 @@ describe( 'InputNumberView', () => {
 			expect( view ).to.be.instanceOf( InputView );
 		} );
 
-		it( 'should creates element from template', () => {
+		it( 'should create element from template', () => {
 			expect( view.element.getAttribute( 'type' ) ).to.equal( 'number' );
 			expect( view.element.type ).to.equal( 'number' );
 			expect( view.element.classList.contains( 'ck-input-number' ) ).to.be.true;
