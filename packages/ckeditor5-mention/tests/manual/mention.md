@@ -13,6 +13,7 @@ The feeds:
     - Marshall
     - Robin
     - Ted
+    - Thomas Reeves
 
 2. Static list of 20 items (`#` marker)
 
