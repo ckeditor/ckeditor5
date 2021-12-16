@@ -6,12 +6,12 @@
 import {
 	createListElement,
 	createListItemElement,
-	getAllListItemElements,
+	getAllListItemBlocks,
 	getIndent,
-	getSiblingListItem,
+	getSiblingListBlock,
 	isListView,
 	isListItemView,
-	getListItemElements,
+	getListItemBlocks,
 	findAndAddListHeadToMap,
 	getViewElementNameForListType
 } from './utils';
@@ -178,7 +178,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 					type: item.getAttribute( 'listType' )
 				};
 
-				const blocks = getListItemElements( item, 'forward' );
+				const blocks = getListItemBlocks( item, 'forward' );
 
 				for ( const block of blocks ) {
 					visited.add( block );
@@ -448,7 +448,7 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 			break;
 		}
 
-		currentListItem = getSiblingListItem( currentListItem, { smallerIndent: true, listIndent: indent } );
+		currentListItem = getSiblingListBlock( currentListItem, { smallerIndent: true, listIndent: indent } );
 
 		// There is no list item with smaller indent, this means this is a document fragment containing
 		// only a part of nested list (like copy to clipboard) so we don't need to try to wrap it further.
@@ -500,7 +500,7 @@ function getListItemFillerOffset() {
 }
 
 // Whether the given item should be rendered as a bogus paragraph.
-function shouldUseBogusParagraph( item, blocks = getAllListItemElements( item ) ) {
+function shouldUseBogusParagraph( item, blocks = getAllListItemBlocks( item ) ) {
 	if ( !item.hasAttribute( 'listItemId' ) ) {
 		return false;
 	}

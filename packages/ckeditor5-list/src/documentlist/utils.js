@@ -152,7 +152,7 @@ export function getViewElementNameForListType( type ) {
  * @param {'forward'|'backward'} [options.direction='backward'] The search direction.
  * @return {module:engine/model/element~Element|null}
  */
-export function getSiblingListItem( modelElement, options ) {
+export function getSiblingListBlock( modelElement, options ) {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
 	const indent = options.listIndent;
@@ -190,10 +190,10 @@ export function getSiblingListItem( modelElement, options ) {
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @return {Array.<module:engine/model/element~Element>}
  */
-export function getAllListItemElements( listItem ) {
+export function getAllListItemBlocks( listItem ) {
 	return [
-		...getListItemElements( listItem, 'backward' ),
-		...getListItemElements( listItem, 'forward' )
+		...getListItemBlocks( listItem, 'backward' ),
+		...getListItemBlocks( listItem, 'forward' )
 	];
 }
 
@@ -206,10 +206,10 @@ export function getAllListItemElements( listItem ) {
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {'forward'|'backward'} direction Walking direction.
+ * @param {'forward'|'backward'} [direction='backward'] Walking direction.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItemElements( listItem, direction ) {
+export function getListItemBlocks( listItem, direction ) {
 	const limitIndent = listItem.getAttribute( 'listIndent' );
 	const listItemId = listItem.getAttribute( 'listItemId' );
 	const isForward = direction == 'forward';
@@ -245,9 +245,13 @@ export function getListItemElements( listItem, direction ) {
 }
 
 /**
- * TODO
+ * Returns a list items nested inside the given list item.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listItem Starting list item element.
+ * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getNestedListItems( listItem ) {
+export function getNestedListBlocks( listItem ) {
 	const indent = listItem.getAttribute( 'listIndent' );
 	const items = [];
 
@@ -264,6 +268,109 @@ export function getNestedListItems( listItem ) {
 	}
 
 	return items;
+}
+
+/**
+ * Check if the given block is the first in the list item.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listBlock The list block element.
+ * @returns {Boolean}
+ */
+export function isFirstBlockOfListItem( listBlock ) {
+	const previousSibling = getSiblingListBlock( listBlock.previousSibling, {
+		listIndent: listBlock.getAttribute( 'listIndent' ),
+		sameIndent: true
+	} );
+
+	if ( !previousSibling ) {
+		return true;
+	}
+
+	return previousSibling.getAttribute( 'listItemId' ) != listBlock.getAttribute( 'listItemId' );
+}
+
+/**
+ * Check if the given block is the last in the list item.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listBlock The list block element.
+ * @returns {Boolean}
+ */
+export function isLastBlockOfListItem( listBlock ) {
+	const nextSibling = getSiblingListBlock( listBlock.nextSibling, {
+		listIndent: listBlock.getAttribute( 'listIndent' ),
+		direction: 'forward',
+		sameIndent: true
+	} );
+
+	if ( !nextSibling ) {
+		return true;
+	}
+
+	return nextSibling.getAttribute( 'listItemId' ) != listBlock.getAttribute( 'listItemId' );
+}
+
+/**
+ * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
+ *
+ * @protected
+ * @param {Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ */
+export function expandListBlocksToCompleteItems( blocks ) {
+	const firstBlock = blocks[ 0 ];
+	const lastBlock = blocks[ blocks.length - 1 ];
+
+	// Add missing blocks of the first selected list item.
+	for ( const item of getListItemBlocks( firstBlock, 'backward' ) ) {
+		blocks.unshift( item );
+	}
+
+	// Add missing blocks of the last selected list item.
+	for ( const item of getListItemBlocks( lastBlock, 'forward' ) ) {
+		if ( item != lastBlock ) {
+			blocks.push( item );
+		}
+	}
+}
+
+/**
+ * Splits the list item just before the provided list block.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listBlock The list block element.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ */
+export function splitListItemBefore( listBlock, writer ) {
+	const id = uid();
+
+	for ( const item of getListItemBlocks( listBlock, 'forward' ) ) {
+		writer.setAttribute( 'listItemId', id, item );
+	}
+}
+
+/**
+ * Updates indentation of given list blocks.
+ *
+ * @protected
+ * @param {Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ * @param {Number} indentBy The indentation level difference.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ */
+export function indentBlocks( blocks, indentBy, writer ) {
+	for ( const item of blocks ) {
+		const indent = item.getAttribute( 'listIndent' ) + indentBy;
+
+		if ( indent < 0 ) {
+			for ( const attributeKey of item.getAttributeKeys() ) {
+				if ( attributeKey.startsWith( 'list' ) ) {
+					writer.removeAttribute( attributeKey, item );
+				}
+			}
+		} else {
+			writer.setAttribute( 'listIndent', indent, item );
+		}
+	}
 }
 
 /**
@@ -391,7 +498,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 
 		seenIds.add( listItemId );
 
-		for ( const block of getListItemElements( item, 'forward' ) ) {
+		for ( const block of getListItemBlocks( item, 'forward' ) ) {
 			visited.add( block );
 
 			// Use a new ID if a block of a bigger list item has different type.

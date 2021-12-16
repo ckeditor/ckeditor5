@@ -8,8 +8,14 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { first } from 'ckeditor5/src/utils';
-import { getNestedListItems, getSiblingListItem } from './utils';
+import {
+	expandListBlocksToCompleteItems,
+	getNestedListBlocks,
+	getSiblingListBlock,
+	indentBlocks,
+	isFirstBlockOfListItem,
+	splitListItemBefore
+} from './utils';
 
 /**
  * The document list indent command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
@@ -55,32 +61,27 @@ export default class DocumentListIndentCommand extends Command {
 		const doc = model.document;
 		const blocks = Array.from( doc.selection.getSelectedBlocks() );
 
-		// TODO outdent of the following block of list item should split it from previous block
-		// TODO intdent of the following block of list item should do nothing
-
 		model.change( writer => {
-			// const firstItem = blocks[ 0 ];
-			const lastItem = blocks[ blocks.length - 1 ];
+			// Handle selection contained in the single list item and starting in the following blocks.
+			if ( startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) ) {
+				// Do nothing while indenting, but split list item on outdent.
+				if ( this._indentBy < 0 ) {
+					splitListItemBefore( blocks[ 0 ], writer );
+				}
+
+				return;
+			}
+
+			// Expand the selected blocks to contain the whole list items.
+			expandListBlocksToCompleteItems( blocks );
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
-			for ( const block of getNestedListItems( lastItem ) ) {
+			for ( const block of getNestedListBlocks( blocks[ blocks.length - 1 ] ) ) {
 				blocks.push( block );
 			}
 
-			for ( const item of blocks ) {
-				const indent = item.getAttribute( 'listIndent' ) + this._indentBy;
-
-				if ( indent < 0 ) {
-					for ( const attributeKey of item.getAttributeKeys() ) {
-						if ( attributeKey.startsWith( 'list' ) ) {
-							writer.removeAttribute( attributeKey, item );
-						}
-					}
-				} else {
-					writer.setAttribute( 'listIndent', indent, item );
-					// TODO alter the listItemId
-				}
-			}
+			// Now just update the attributes of blocks.
+			indentBlocks( blocks, this._indentBy, writer );
 
 			/**
 			 * Event fired by the {@link #execute} method.
@@ -103,10 +104,11 @@ export default class DocumentListIndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
+		const blocks = Array.from( this.editor.model.document.selection.getSelectedBlocks() );
+		let firstBlock = blocks[ 0 ];
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !listItem || !listItem.hasAttribute( 'listItemId' ) ) {
+		if ( !firstBlock || !firstBlock.hasAttribute( 'listItemId' ) ) {
 			return false;
 		}
 
@@ -115,8 +117,17 @@ export default class DocumentListIndentCommand extends Command {
 			return true;
 		}
 
-		const siblingItem = getSiblingListItem( listItem.previousSibling, {
-			listIndent: listItem.getAttribute( 'listIndent' ),
+		// Indenting of the following blocks of a list item is not allowed.
+		if ( startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) ) {
+			return false;
+		}
+
+		expandListBlocksToCompleteItems( blocks );
+		firstBlock = blocks[ 0 ];
+
+		// Check if there is any list item before selected items that could become a parent of selected items.
+		const siblingItem = getSiblingListBlock( firstBlock.previousSibling, {
+			listIndent: firstBlock.getAttribute( 'listIndent' ),
 			sameIndent: true
 		} );
 
@@ -124,6 +135,22 @@ export default class DocumentListIndentCommand extends Command {
 			return false;
 		}
 
-		return siblingItem.getAttribute( 'listType' ) == listItem.getAttribute( 'listType' );
+		return siblingItem.getAttribute( 'listType' ) == firstBlock.getAttribute( 'listType' );
 	}
+}
+
+// Checks whether the given blocks are related to a single list item and does not include the first block of the list item.
+function startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) {
+	const firstItem = blocks[ 0 ];
+
+	// It's not a middle block;
+	if ( isFirstBlockOfListItem( firstItem ) ) {
+		return false;
+	}
+
+	const firstItemId = firstItem.getAttribute( 'listItemId' );
+	const isSingleListItemSelected = !blocks.some( item => item.getAttribute( 'listItemId' ) != firstItemId );
+
+	// Is only one list item is selected?
+	return isSingleListItemSelected;
 }

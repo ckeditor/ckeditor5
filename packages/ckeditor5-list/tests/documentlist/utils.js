@@ -9,10 +9,10 @@ import {
 	findAndAddListHeadToMap,
 	fixListIndents,
 	fixListItemIds,
-	getAllListItemElements,
+	getAllListItemBlocks,
 	getIndent,
-	getListItemElements,
-	getSiblingListItem,
+	getListItemBlocks,
+	getSiblingListBlock,
 	getViewElementNameForListType,
 	isListItemView,
 	isListView
@@ -330,7 +330,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListItem( listItem, {
+			const foundElement = getSiblingListBlock( listItem, {
 				sameIndent: true,
 				listIndent: 0
 			} );
@@ -346,7 +346,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListItem( listItem, {
+			const foundElement = getSiblingListBlock( listItem, {
 				sameIndent: true,
 				listIndent: 0,
 				direction: 'forward'
@@ -355,7 +355,7 @@ describe( 'DocumentList - utils', () => {
 			expect( foundElement ).to.equal( fragment.getChild( 1 ) );
 		} );
 
-		it( 'should return the first listItem that matches criteria (sameIndent, listIndent=1)', () => {
+		it( 'should not return the listItem if there is an outdented item before (sameIndent, listIndent=1)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
@@ -367,15 +367,15 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 5 );
-			const foundElement = getSiblingListItem( listItem.previousSibling, {
+			const foundElement = getSiblingListBlock( listItem.previousSibling, {
 				sameIndent: true,
 				listIndent: 1
 			} );
 
-			expect( foundElement ).to.equal( fragment.getChild( 3 ) );
+			expect( foundElement ).to.be.null;
 		} );
 
-		it( 'should return the first listItem that matches criteria (sameIndent, listIndent=1, direction="forward")', () => {
+		it( 'should not return the listItem if there is an outdented item before (sameIndent, listIndent=1, direction="forward")', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item.
@@ -385,13 +385,13 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListItem( listItem.nextSibling, {
+			const foundElement = getSiblingListBlock( listItem.nextSibling, {
 				sameIndent: true,
 				listIndent: 1,
 				direction: 'forward'
 			} );
 
-			expect( foundElement ).to.equal( fragment.getChild( 3 ) );
+			expect( foundElement ).to.be.null;
 		} );
 
 		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1)', () => {
@@ -404,7 +404,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 4 );
-			const foundElement = getSiblingListItem( listItem, {
+			const foundElement = getSiblingListBlock( listItem, {
 				smallerIndent: true,
 				listIndent: 1
 			} );
@@ -422,7 +422,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListItem( listItem, {
+			const foundElement = getSiblingListBlock( listItem, {
 				smallerIndent: true,
 				listIndent: 1,
 				direction: 'forward'
@@ -439,7 +439,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListItem( listItem, {
+			const foundElement = getSiblingListBlock( listItem, {
 				smallerIndent: true,
 				listIndent: 0
 			} );
@@ -458,7 +458,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElements = getAllListItemElements( listItem );
+			const foundElements = getAllListItemBlocks( listItem );
 
 			expect( foundElements.length ).to.equal( 1 );
 			expect( foundElements[ 0 ] ).to.be.equal( listItem );
@@ -475,7 +475,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const foundElements = getAllListItemElements( listItem );
+			const foundElements = getAllListItemBlocks( listItem );
 
 			expect( foundElements.length ).to.equal( 3 );
 			expect( foundElements[ 0 ] ).to.be.equal( listItem );
@@ -494,7 +494,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 3 );
-			const foundElements = getAllListItemElements( listItem );
+			const foundElements = getAllListItemBlocks( listItem );
 
 			expect( foundElements.length ).to.equal( 3 );
 			expect( foundElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
@@ -513,7 +513,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
-			const foundElements = getAllListItemElements( listItem );
+			const foundElements = getAllListItemBlocks( listItem );
 
 			expect( foundElements.length ).to.equal( 3 );
 			expect( foundElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
@@ -535,7 +535,7 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 4 );
-			const foundElements = getAllListItemElements( listItem );
+			const foundElements = getAllListItemBlocks( listItem );
 
 			expect( foundElements.length ).to.equal( 3 );
 			expect( foundElements[ 0 ] ).to.be.equal( fragment.getChild( 2 ) );
@@ -554,8 +554,8 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const backwardElements = getListItemElements( listItem, 'backward' );
-			const forwardElements = getListItemElements( listItem, 'forward' );
+			const backwardElements = getListItemBlocks( listItem, 'backward' );
+			const forwardElements = getListItemBlocks( listItem, 'forward' );
 
 			expect( backwardElements.length ).to.equal( 0 );
 			expect( forwardElements.length ).to.equal( 1 );
@@ -573,8 +573,8 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
-			const backwardElements = getListItemElements( listItem, 'backward' );
-			const forwardElements = getListItemElements( listItem, 'forward' );
+			const backwardElements = getListItemBlocks( listItem, 'backward' );
+			const forwardElements = getListItemBlocks( listItem, 'forward' );
 
 			expect( backwardElements.length ).to.equal( 0 );
 			expect( forwardElements.length ).to.equal( 3 );
@@ -594,8 +594,8 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 3 );
-			const backwardElements = getListItemElements( listItem, 'backward' );
-			const forwardElements = getListItemElements( listItem, 'forward' );
+			const backwardElements = getListItemBlocks( listItem, 'backward' );
+			const forwardElements = getListItemBlocks( listItem, 'forward' );
 
 			expect( backwardElements.length ).to.equal( 2 );
 			expect( backwardElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
@@ -616,8 +616,8 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
-			const backwardElements = getListItemElements( listItem, 'backward' );
-			const forwardElements = getListItemElements( listItem, 'forward' );
+			const backwardElements = getListItemBlocks( listItem, 'backward' );
+			const forwardElements = getListItemBlocks( listItem, 'forward' );
 
 			expect( backwardElements.length ).to.equal( 1 );
 			expect( backwardElements[ 0 ] ).to.be.equal( fragment.getChild( 1 ) );
@@ -641,8 +641,8 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 4 );
-			const backwardElements = getListItemElements( listItem, 'backward' );
-			const forwardElements = getListItemElements( listItem, 'forward' );
+			const backwardElements = getListItemBlocks( listItem, 'backward' );
+			const forwardElements = getListItemBlocks( listItem, 'forward' );
 
 			expect( backwardElements.length ).to.equal( 1 );
 			expect( backwardElements[ 0 ] ).to.be.equal( fragment.getChild( 2 ) );
@@ -663,8 +663,8 @@ describe( 'DocumentList - utils', () => {
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
-			const backwardElements = getListItemElements( listItem, 'backward' );
-			const forwardElements = getListItemElements( listItem, 'forward' );
+			const backwardElements = getListItemBlocks( listItem, 'backward' );
+			const forwardElements = getListItemBlocks( listItem, 'forward' );
 
 			expect( backwardElements.length ).to.equal( 0 );
 
