@@ -25,7 +25,7 @@ import {
 	findAndAddListHeadToMap,
 	fixListIndents,
 	fixListItemIds
-} from './utils';
+} from './utils/postfixers';
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.

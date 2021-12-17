@@ -4,17 +4,20 @@
  */
 
 import {
+	getAllListItemBlocks,
+	getSiblingListBlock,
+	getListItemBlocks
+} from './utils/model';
+import {
 	createListElement,
 	createListItemElement,
-	getAllListItemBlocks,
 	getIndent,
-	getSiblingListBlock,
 	isListView,
 	isListItemView,
-	getListItemBlocks,
-	findAndAddListHeadToMap,
 	getViewElementNameForListType
-} from './utils';
+} from './utils/view';
+import { findAndAddListHeadToMap } from './utils/postfixers';
+
 import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 

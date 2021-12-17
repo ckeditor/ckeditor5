@@ -10,12 +10,11 @@
 import { Command } from 'ckeditor5/src/core';
 import {
 	expandListBlocksToCompleteItems,
-	getNestedListBlocks,
 	getSiblingListBlock,
 	indentBlocks,
 	isFirstBlockOfListItem,
 	splitListItemBefore
-} from './utils';
+} from './utils/model';
 
 /**
  * The document list indent command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
@@ -73,11 +72,6 @@ export default class DocumentListIndentCommand extends Command {
 
 			// Expand the selected blocks to contain the whole list items.
 			expandListBlocksToCompleteItems( blocks );
-
-			// Indenting a list item should also indent all the items that are already sub-items of indented item.
-			for ( const block of getNestedListBlocks( blocks[ blocks.length - 1 ] ) ) {
-				blocks.push( block );
-			}
 
 			// Now just update the attributes of blocks.
 			indentBlocks( blocks, this._indentBy, writer );
@@ -155,6 +149,7 @@ function getSelectedListBlocks( selection ) {
 }
 
 // Checks whether the given blocks are related to a single list item and does not include the first block of the list item.
+// TODO split into 2 helpers
 function startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) {
 	const firstItem = blocks[ 0 ];
 

@@ -125,7 +125,7 @@ describe( 'DocumentListEditing', () => {
 			const indentListCommand = editor.commands.get( 'indentList' );
 			const indentCommand = editor.commands.get( 'indent' );
 
-			const spy = sinon.spy( indentListCommand, 'execute' );
+			const spy = sinon.stub( indentListCommand, 'execute' );
 
 			indentListCommand.isEnabled = true;
 			indentCommand.execute();
@@ -143,7 +143,7 @@ describe( 'DocumentListEditing', () => {
 			const outdentListCommand = editor.commands.get( 'outdentList' );
 			const outdentCommand = editor.commands.get( 'outdent' );
 
-			const spy = sinon.spy( outdentListCommand, 'execute' );
+			const spy = sinon.stub( outdentListCommand, 'execute' );
 
 			outdentListCommand.isEnabled = true;
 			outdentCommand.execute();
