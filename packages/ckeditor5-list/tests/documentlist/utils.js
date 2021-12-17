@@ -695,6 +695,48 @@ describe( 'DocumentList - utils', () => {
 			expect( backwardElements.length ).to.equal( 1 );
 			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 2 ) );
 		} );
+
+		it( 'should include nested blocks if requested', () => {
+			const input =
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="1">c</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="0">e</paragraph>';
+
+			const fragment = parseModel( input, schema );
+			const forwardElements = getListItemBlocks( fragment.getChild( 1 ), { direction: 'forward', includeNested: true } );
+			const backwardElements = getListItemBlocks( fragment.getChild( 4 ), { direction: 'backward', includeNested: true } );
+
+			expect( forwardElements.length ).to.equal( 2 );
+			expect( forwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( forwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+
+			expect( backwardElements.length ).to.equal( 1 );
+			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 3 ) );
+		} );
+
+		it( 'should include nested blocks if requested (multi block item with nested item inside)', () => {
+			const input =
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="1">c</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0">d</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="0">e</paragraph>';
+
+			const fragment = parseModel( input, schema );
+			const forwardElements = getListItemBlocks( fragment.getChild( 1 ), { direction: 'forward', includeNested: true } );
+			const backwardElements = getListItemBlocks( fragment.getChild( 3 ), { direction: 'backward', includeNested: true } );
+
+			expect( forwardElements.length ).to.equal( 3 );
+			expect( forwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( forwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( forwardElements[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+
+			expect( backwardElements.length ).to.equal( 2 );
+			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( backwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+		} );
 	} );
 
 	describe( 'getNestedListBlocks()', () => {
@@ -1062,6 +1104,26 @@ describe( 'DocumentList - utils', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
 			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
 			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
+		} );
+
+		it( 'should not include nested items from other item', () => {
+			const input =
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="1">3</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="e" listIndent="0">4</paragraph>';
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 2 )
+			];
+
+			expandListBlocksToCompleteItems( blocks );
+
+			expect( blocks.length ).to.equal( 2 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
 		} );
 	} );
 

@@ -216,6 +216,7 @@ export function getListItemBlocks( listItem, options = {} ) {
 	const isForward = options.direction == 'forward';
 	const includeNested = !!options.includeNested;
 	const items = [];
+	const nestedItems = [];
 
 	for (
 		let item = isForward ? listItem : listItem.previousSibling;
@@ -230,14 +231,29 @@ export function getListItemBlocks( listItem, options = {} ) {
 			break;
 		}
 
-		// Ignore nested lists.
-		if ( !includeNested && itemIndent > limitIndent ) {
-			continue;
+		if ( itemIndent > limitIndent ) {
+			// Ignore nested lists.
+			if ( !includeNested ) {
+				continue;
+			}
+
+			// Collect nested items to verify if they are really nested, or it's a different item.
+			if ( !isForward ) {
+				nestedItems.push( item );
+
+				continue;
+			}
 		}
 
 		// Abort if item has a different ID.
 		if ( itemIndent == limitIndent && item.getAttribute( 'listItemId' ) != listItemId ) {
 			break;
+		}
+
+		// There is another block for the same list item so the nested items were in the same list item.
+		if ( nestedItems.length ) {
+			items.push( ...nestedItems );
+			nestedItems.length = 0;
 		}
 
 		items.push( item );
