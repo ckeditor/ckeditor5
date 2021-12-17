@@ -58,7 +58,7 @@ export default class DocumentListIndentCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const blocks = Array.from( model.document.selection.getSelectedBlocks() );
+		const blocks = getSelectedListBlocks( model.document.selection );
 
 		model.change( writer => {
 			// Handle selection contained in the single list item and starting in the following blocks.
@@ -103,11 +103,11 @@ export default class DocumentListIndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const blocks = Array.from( this.editor.model.document.selection.getSelectedBlocks() );
+		const blocks = getSelectedListBlocks( this.editor.model.document.selection );
 		let firstBlock = blocks[ 0 ];
 
 		// If selection is not in a list item, the command is disabled.
-		if ( !firstBlock || !firstBlock.hasAttribute( 'listItemId' ) ) {
+		if ( !firstBlock ) {
 			return false;
 		}
 
@@ -134,8 +134,24 @@ export default class DocumentListIndentCommand extends Command {
 			return false;
 		}
 
-		return siblingItem.getAttribute( 'listType' ) == firstBlock.getAttribute( 'listType' );
+		if ( siblingItem.getAttribute( 'listType' ) == firstBlock.getAttribute( 'listType' ) ) {
+			return true;
+		}
+
+		return false;
 	}
+}
+
+// Returns an array of selected blocks truncated to the first non list block element.
+function getSelectedListBlocks( selection ) {
+	const blocks = Array.from( selection.getSelectedBlocks() );
+	const firstNonListBlockIndex = blocks.findIndex( block => !block.hasAttribute( 'listItemId' ) );
+
+	if ( firstNonListBlockIndex != -1 ) {
+		blocks.length = firstNonListBlockIndex;
+	}
+
+	return blocks;
 }
 
 // Checks whether the given blocks are related to a single list item and does not include the first block of the list item.
