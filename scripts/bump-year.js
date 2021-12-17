@@ -22,11 +22,23 @@ git commit -am "Internal: Bumped the year." && git push
 
 require( '@ckeditor/ckeditor5-dev-env' )
 	.bumpYear( {
+		cwd: process.cwd(),
 		initialYear: '2003',
 		globPatterns: [
-			{ pattern: '*', options: { dot: true } }, // LICENSE.md, .eslintrc.js, etc.
-			{ pattern: '!(build|coverage|node_modules|external)/**' }
-		],
-		cwd: process.cwd(),
-		callback: string => string.replace( /CKSource - Frederico Knabben./, 'CKSource Holding sp. z o.o.' )
+			{ // LICENSE.md, .eslintrc.js, etc.
+				pattern: '*',
+				options: {
+					dot: true
+				}
+			},
+			{
+				pattern: '!(build|coverage|node_modules|external)/**',
+				options: {
+					ignore: [
+						'**/ckeditor5-build-*/**',
+						'**/src/lib/**'
+					]
+				}
+			}
+		]
 	} );
