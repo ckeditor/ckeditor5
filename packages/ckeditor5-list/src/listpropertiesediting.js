@@ -91,7 +91,7 @@ export default class ListPropertiesEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).add( downcastListItemAttributes( strategies ) );
 
 		// Handle merging two separated lists into the single one.
-		this._mergeListStyleAttributeWhileMergingLists( strategies );
+		this._mergeListAttributesWhileMergingLists( strategies );
 	}
 
 	/**
@@ -135,7 +135,7 @@ export default class ListPropertiesEditing extends Plugin {
 	 * @private
 	 * @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies Strategies for the enabled attributes.
 	 */
-	_mergeListStyleAttributeWhileMergingLists( attributeStrategies ) {
+	_mergeListAttributesWhileMergingLists( attributeStrategies ) {
 		const editor = this.editor;
 		const model = editor.model;
 

@@ -41,7 +41,7 @@ The {@link module:list/listproperties~ListProperties list style} feature introdu
 
 ### Demo
 
-Use the editor below to see the list style plugin in action.
+Use the editor below to see the list properties plugin in action.
 
 {@snippet features/lists-style}
 
