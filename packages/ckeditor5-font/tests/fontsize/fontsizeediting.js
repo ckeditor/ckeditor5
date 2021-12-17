@@ -94,10 +94,28 @@ describe( 'FontSizeEditing', () => {
 			} );
 
 			describe( 'editing pipeline conversion', () => {
-				it( 'should pass fontSize to data', () => {
+				it( 'should pass pixel fontSize to data', () => {
 					setModelData( doc, '<paragraph>f<$text fontSize="10px">o</$text>o</paragraph>' );
 
 					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:10px;">o</span>o</p>' );
+				} );
+
+				it( 'should pass number fontSize to data', () => {
+					setModelData( doc, '<paragraph>f<$text fontSize="12">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:12;">o</span>o</p>' );
+				} );
+
+				it( 'should pass percentage fontSize to data', () => {
+					setModelData( doc, '<paragraph>f<$text fontSize="6.25%">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:6.25%;">o</span>o</p>' );
+				} );
+
+				it( 'should pass em fontSize to data', () => {
+					setModelData( doc, '<paragraph>f<$text fontSize="8em">o</$text>o</paragraph>' );
+
+					expect( editor.getData() ).to.equal( '<p>f<span style="font-size:8em;">o</span>o</p>' );
 				} );
 			} );
 
