@@ -12,7 +12,7 @@ import ListPropertiesEditing from './listpropertiesediting';
 import ListPropertiesUI from './listpropertiesui';
 
 /**
- * The list style feature.
+ * The list properties feature.
  *
  * This is a "glue" plugin that loads the {@link module:list/listpropertiesediting~ListPropertiesEditing list style editing feature}
  * and the {@link module:list/listpropertiesui~ListPropertiesUI list style UI feature}.

@@ -1,0 +1,42 @@
+/**
+ * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @module list/liststyle
+ */
+
+import { Plugin } from 'ckeditor5/src/core';
+import ListProperties from './listproperties';
+import { logWarning } from 'ckeditor5/src/utils';
+
+/**
+ * The list style feature.
+ *
+ * This is an obsolete plugin that exists for backward-compatibility.
+ * Use {@link module:list/listproperties~ListProperties list properties plugin} instead.
+ *
+ * @extends module:core/plugin~Plugin
+ */
+export default class ListStyle extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ ListProperties ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'ListStyle';
+	}
+
+	constructor() {
+		super();
+
+		logWarning( '`ListStyle` plugin is obsolete. User `ListProperties` instead.' );
+	}
+}
