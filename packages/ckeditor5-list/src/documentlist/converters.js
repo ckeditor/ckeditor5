@@ -5,7 +5,6 @@
 
 import {
 	getAllListItemBlocks,
-	getSiblingListBlock,
 	getListItemBlocks
 } from './utils/model';
 import {
@@ -16,6 +15,7 @@ import {
 	isListItemView,
 	getViewElementNameForListType
 } from './utils/view';
+import ListWalker from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
 
 import { uid } from 'ckeditor5/src/utils';
@@ -451,7 +451,10 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 			break;
 		}
 
-		currentListItem = getSiblingListBlock( currentListItem, { smallerIndent: true, listIndent: indent } );
+		currentListItem = ListWalker.first( currentListItem, {
+			smallerIndent: true,
+			includeSelf: false
+		} );
 
 		// There is no list item with smaller indent, this means this is a document fragment containing
 		// only a part of nested list (like copy to clipboard) so we don't need to try to wrap it further.

@@ -10,11 +10,11 @@
 import { Command } from 'ckeditor5/src/core';
 import {
 	expandListBlocksToCompleteItems,
-	getSiblingListBlock,
 	indentBlocks,
 	isFirstBlockOfListItem,
 	splitListItemBefore
 } from './utils/model';
+import ListWalker from './utils/listwalker';
 
 /**
  * The document list indent command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
@@ -119,8 +119,7 @@ export default class DocumentListIndentCommand extends Command {
 		firstBlock = blocks[ 0 ];
 
 		// Check if there is any list item before selected items that could become a parent of selected items.
-		const siblingItem = getSiblingListBlock( firstBlock.previousSibling, {
-			listIndent: firstBlock.getAttribute( 'listIndent' ),
+		const siblingItem = ListWalker.first( firstBlock, {
 			sameIndent: true
 		} );
 

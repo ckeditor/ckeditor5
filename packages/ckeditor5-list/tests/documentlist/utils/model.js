@@ -34,7 +34,8 @@ describe( 'DocumentList - utils', () => {
 		schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 	} );
 
-	describe( 'getSiblingListBlock()', () => {
+	// TODO ListWalker
+	describe.skip( 'getSiblingListBlock()', () => {
 		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +

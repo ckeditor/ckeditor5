@@ -8,49 +8,7 @@
  */
 
 import { uid } from 'ckeditor5/src/utils';
-
-/**
- * Returns the closest list item model element according to the specified options.
- *
- * Note that if the provided model element satisfies the provided options then it's returned.
- *
- * @protected
- * @param {module:engine/model/element~Element} modelElement
- * @param {Object} options
- * @param {Number} options.listIndent The reference list indent.
- * @param {Boolean} [options.sameIndent=false] Whether to return list item model element with the same indent as specified.
- * @param {Boolean} [options.smallerIndent=false] Whether to return list item model element with the smaller indent as specified.
- * @param {'forward'|'backward'} [options.direction='backward'] The search direction.
- * @return {module:engine/model/element~Element|null}
- */
-export function getSiblingListBlock( modelElement, options ) {
-	const sameIndent = !!options.sameIndent;
-	const smallerIndent = !!options.smallerIndent;
-	const indent = options.listIndent;
-	const isForward = options.direction == 'forward';
-
-	for (
-		let item = modelElement;
-		item && item.hasAttribute( 'listItemId' );
-		item = isForward ? item.nextSibling : item.previousSibling
-	) {
-		const itemIndent = item.getAttribute( 'listIndent' );
-
-		if ( itemIndent > indent ) {
-			continue;
-		}
-
-		if ( sameIndent && itemIndent == indent ) {
-			return item;
-		}
-
-		if ( itemIndent < indent ) {
-			return smallerIndent ? item : null;
-		}
-	}
-
-	return null;
-}
+import ListWalker from './listwalker';
 
 /**
  * Returns an array with all elements that represents the same list item.
@@ -83,54 +41,16 @@ export function getAllListItemBlocks( listItem ) {
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItemBlocks( listItem, options = {} ) {
-	const limitIndent = listItem.getAttribute( 'listIndent' );
-	const listItemId = listItem.getAttribute( 'listItemId' );
 	const isForward = options.direction == 'forward';
 	const includeNested = !!options.includeNested;
-	const items = [];
-	const nestedItems = [];
 
-	// TODO use generator instead of for loop (ListWalker)
-	for (
-		let item = isForward ? listItem : listItem.previousSibling;
-		item && item.hasAttribute( 'listItemId' );
-		item = isForward ? item.nextSibling : item.previousSibling
-	) {
-		const itemIndent = item.getAttribute( 'listIndent' );
-
-		// If current parsed item has lower indent that element that the element that was a starting point,
-		// it means we left a nested list. Abort searching items.
-		if ( itemIndent < limitIndent ) {
-			break;
-		}
-
-		if ( itemIndent > limitIndent ) {
-			// Ignore nested lists.
-			if ( !includeNested ) {
-				continue;
-			}
-
-			// Collect nested items to verify if they are really nested, or it's a different item.
-			if ( !isForward ) {
-				nestedItems.push( item );
-
-				continue;
-			}
-		}
-
-		// Abort if item has a different ID.
-		if ( itemIndent == limitIndent && item.getAttribute( 'listItemId' ) != listItemId ) {
-			break;
-		}
-
-		// There is another block for the same list item so the nested items were in the same list item.
-		if ( nestedItems.length ) {
-			items.push( ...nestedItems );
-			nestedItems.length = 0;
-		}
-
-		items.push( item );
-	}
+	const items = Array.from( new ListWalker( listItem, {
+		direction: options.direction,
+		biggerIndent: includeNested,
+		includeSelf: isForward,
+		sameIndent: true,
+		sameItem: true
+	} ) );
 
 	return isForward ? items : items.reverse();
 }
@@ -143,22 +63,10 @@ export function getListItemBlocks( listItem, options = {} ) {
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getNestedListBlocks( listItem ) {
-	const indent = listItem.getAttribute( 'listIndent' );
-	const items = [];
-
-	for (
-		let item = listItem.nextSibling;
-		item && item.hasAttribute( 'listItemId' );
-		item = item.nextSibling
-	) {
-		if ( item.getAttribute( 'listIndent' ) <= indent ) {
-			break;
-		}
-
-		items.push( item );
-	}
-
-	return items;
+	return Array.from( new ListWalker( listItem, {
+		direction: 'forward',
+		biggerIndent: true
+	} ) );
 }
 
 /**
@@ -169,16 +77,13 @@ export function getNestedListBlocks( listItem ) {
  * @returns {Boolean}
  */
 export function isFirstBlockOfListItem( listBlock ) {
-	const previousSibling = getSiblingListBlock( listBlock.previousSibling, {
-		listIndent: listBlock.getAttribute( 'listIndent' ),
-		sameIndent: true
+	const previousSibling = ListWalker.first( listBlock, {
+		direction: 'backward',
+		sameIndent: true,
+		sameItem: true
 	} );
 
 	if ( !previousSibling ) {
-		return true;
-	}
-
-	if ( previousSibling.getAttribute( 'listItemId' ) != listBlock.getAttribute( 'listItemId' ) ) {
 		return true;
 	}
 
@@ -193,17 +98,17 @@ export function isFirstBlockOfListItem( listBlock ) {
  * @returns {Boolean}
  */
 export function isLastBlockOfListItem( listBlock ) {
-	const nextSibling = getSiblingListBlock( listBlock.nextSibling, {
-		listIndent: listBlock.getAttribute( 'listIndent' ),
+	const nextSibling = ListWalker.first( listBlock, {
 		direction: 'forward',
-		sameIndent: true
+		sameIndent: true,
+		sameItem: true
 	} );
 
 	if ( !nextSibling ) {
 		return true;
 	}
 
-	return nextSibling.getAttribute( 'listItemId' ) != listBlock.getAttribute( 'listItemId' );
+	return false;
 }
 
 /**
