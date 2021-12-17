@@ -58,11 +58,11 @@ export default class ListWalker {
 			else /* if ( indent == this._startIndent ) */ {
 				// Ignore same indent block.
 				if ( !this._sameIndent ) {
-					if ( this._smallerIndent ) {
-						continue;
-					} else if ( this._biggerIndent ) {
+					if ( this._biggerIndent ) {
 						break;
 					}
+
+					continue;
 				}
 
 				// Abort if item has a different ID.
