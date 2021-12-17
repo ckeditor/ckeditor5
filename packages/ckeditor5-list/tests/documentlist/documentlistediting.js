@@ -21,6 +21,7 @@ import { getData as getModelData, parse as parseModel, setData as setModelData }
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import ListEditing from '../../src/list/listediting';
+import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import stubUid from './_utils/uid';
 import { prepareTest } from './_utils/utils';
 
@@ -31,7 +32,7 @@ describe( 'DocumentListEditing', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
+			plugins: [ Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
 				BlockQuoteEditing, TableEditing, HeadingEditing ]
 		} );
 
@@ -101,6 +102,56 @@ describe( 'DocumentListEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listItemId' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listIndent' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).to.be.false;
+	} );
+
+	describe( 'commands', () => {
+		it( 'should register indent list command', () => {
+			const command = editor.commands.get( 'indentList' );
+
+			expect( command ).to.be.instanceOf( DocumentListIndentCommand );
+		} );
+
+		it( 'should register outdent list command', () => {
+			const command = editor.commands.get( 'outdentList' );
+
+			expect( command ).to.be.instanceOf( DocumentListIndentCommand );
+		} );
+
+		it( 'should add indent list command to indent command', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, IndentEditing, DocumentListEditing ]
+			} );
+
+			const indentListCommand = editor.commands.get( 'indentList' );
+			const indentCommand = editor.commands.get( 'indent' );
+
+			const spy = sinon.spy( indentListCommand, 'execute' );
+
+			indentListCommand.isEnabled = true;
+			indentCommand.execute();
+
+			sinon.assert.calledOnce( spy );
+
+			await editor.destroy();
+		} );
+
+		it( 'should add outdent list command to outdent command', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, IndentEditing, DocumentListEditing ]
+			} );
+
+			const outdentListCommand = editor.commands.get( 'outdentList' );
+			const outdentCommand = editor.commands.get( 'outdent' );
+
+			const spy = sinon.spy( outdentListCommand, 'execute' );
+
+			outdentListCommand.isEnabled = true;
+			outdentCommand.execute();
+
+			sinon.assert.calledOnce( spy );
+
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'post fixer', () => {
