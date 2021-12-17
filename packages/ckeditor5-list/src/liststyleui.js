@@ -36,12 +36,12 @@ import '../theme/liststyles.css';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListStyleUI extends Plugin {
+export default class ListPropertiesUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ListStyleUI';
+		return 'ListPropertiesUI';
 	}
 
 	init() {

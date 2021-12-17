@@ -5,14 +5,14 @@
 
 import ListStyle from '../src/liststyle';
 import ListPropertiesEditing from '../src/listpropertiesediting';
-import ListStyleUI from '../src/liststyleui';
+import ListPropertiesUI from '../src/liststyleui';
 
 describe( 'ListStyle', () => {
 	it( 'should be named', () => {
 		expect( ListStyle.pluginName ).to.equal( 'ListStyle' );
 	} );
 
-	it( 'should require ListPropertiesEditing and ListStyleUI', () => {
-		expect( ListStyle.requires ).to.deep.equal( [ ListPropertiesEditing, ListStyleUI ] );
+	it( 'should require ListPropertiesEditing and ListPropertiesUI', () => {
+		expect( ListStyle.requires ).to.deep.equal( [ ListPropertiesEditing, ListPropertiesUI ] );
 	} );
 } );
