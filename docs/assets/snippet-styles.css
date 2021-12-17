@@ -4,7 +4,7 @@
 
 :root {
 	/* This custom property is read by the JS and passed to editor configurations
-	as config.toolbar.viewportTopOffset. */
+	as config.ui.viewportOffset.top. */
 	--ck-snippet-viewport-top-offset: 100
 }
 
@@ -220,10 +220,6 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin: 0 auto;
 }
 
-.live-snippet blockquote p:first-of-type {
-	margin-bottom: 1.5rem;
-}
-
 /* https://github.com/ckeditor/ckeditor5/issues/899 */
 .live-snippet .ck-dropdown .ck.ck-list {
 	margin: 0;
@@ -284,7 +280,6 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 
 #snippet-inline-editor header.ck-content h3 {
 	color: hsla(212, 79%, 9%, 0.59);
-	font-weight: 600;
 	font-size: 1.6rem;
 }
 
@@ -292,4 +287,10 @@ https://github.com/ckeditor/ckeditor5/issues/1545 */
 
 .live-snippet .document-editor {
 	margin: 1.5em 0;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/10731 */
+.live-snippet .ck-source-editing-area textarea {
+	width: 100%;
+	overflow: auto;
 }

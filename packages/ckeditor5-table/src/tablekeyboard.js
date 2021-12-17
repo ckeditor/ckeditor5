@@ -218,10 +218,25 @@ export default class TableKeyboard extends Plugin {
 			return false;
 		}
 
-		// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
-		// Selection for sure will not approach cell edge.
-		if ( expandSelection && !selection.isCollapsed && selection.isBackward == isForward ) {
-			return false;
+		// When the selection is not collapsed.
+		if ( !selection.isCollapsed ) {
+			if ( expandSelection ) {
+				// Navigation is in the opposite direction than the selection direction so this is shrinking of the selection.
+				// Selection for sure will not approach cell edge.
+				//
+				// With a special case when all cell content is selected - then selection should expand to the other cell.
+				// Note: When the entire cell gets selected using CTRL+A, the selection is always forward.
+				if ( selection.isBackward == isForward && !selection.containsEntireContent( tableCell ) ) {
+					return false;
+				}
+			} else {
+				const selectedElement = selection.getSelectedElement();
+
+				// It will collapse for non-object selected so it's not going to move to other cell.
+				if ( !selectedElement || !model.schema.isObject( selectedElement ) ) {
+					return false;
+				}
+			}
 		}
 
 		// Let's check if the selection is at the beginning/end of the cell.

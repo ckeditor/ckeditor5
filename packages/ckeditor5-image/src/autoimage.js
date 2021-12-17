@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import { Clipboard } from 'ckeditor5/src/clipboard';
 import { LivePosition, LiveRange } from 'ckeditor5/src/engine';
 import { Undo } from 'ckeditor5/src/undo';
+import { Delete } from 'ckeditor5/src/typing';
 import { global } from 'ckeditor5/src/utils';
 
 import ImageUtils from './imageutils';
@@ -32,7 +33,7 @@ export default class AutoImage extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Clipboard, ImageUtils, Undo ];
+		return [ Clipboard, ImageUtils, Undo, Delete ];
 	}
 
 	/**
@@ -173,6 +174,8 @@ export default class AutoImage extends Plugin {
 				this._positionToInsert.detach();
 				this._positionToInsert = null;
 			} );
+
+			editor.plugins.get( 'Delete' ).requestUndoOnBackspace();
 		}, 100 );
 	}
 }

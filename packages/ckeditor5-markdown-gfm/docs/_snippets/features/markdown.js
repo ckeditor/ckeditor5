@@ -62,7 +62,12 @@ ClassicEditor
 				{ language: 'php', label: 'PHP' }
 			]
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

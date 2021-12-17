@@ -8,31 +8,35 @@
 @import "@ckeditor/ckeditor5-theme-lark/theme/mixins/_shadow.css";
 
 .ck-source-editing-area {
-	display: inline-grid;
-	width: 100%;
-	font-family: monospace;
+	position: relative;
+	overflow: hidden;
 }
 
 .ck-source-editing-area::after,
 .ck-source-editing-area textarea {
-	grid-area: 1/1;
 	padding: var(--ck-spacing-large);
 	margin: 0;
 	border: 1px solid transparent;
 	line-height: var(--ck-line-height-base);
 	font-size: var(--ck-font-size-normal);
+	font-family: monospace;
 	white-space: pre-wrap;
 }
 
 .ck-source-editing-area::after {
 	content: attr(data-value) " ";
 	visibility: hidden;
+	display: block;
 }
 
 .ck-source-editing-area textarea {
+	position: absolute;
+	width: 100%;
+	height: 100%;
 	resize: none;
 	outline: none;
 	overflow: hidden;
+	box-sizing: border-box;
 
 	border-color: var(--ck-color-base-border);
 

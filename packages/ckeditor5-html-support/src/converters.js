@@ -11,24 +11,6 @@ import { toWidget } from 'ckeditor5/src/widget';
 import { setViewAttributes, mergeViewElementAttributes } from './conversionutils';
 
 /**
- * Conversion helper consuming all disallowed attributes from the definition view element.
- *
- * This converter listenes on `high` priority to ensure that all attributes are consumed
- * before standard priority converters.
- *
- * @param {module:html-support/dataschema~DataSchemaDefinition} definition
- * @param {module:html-support/datafilter~DataFilter} dataFilter
- * @returns {Function} Returns a conversion callback.
-*/
-export function disallowedAttributesConverter( { view: viewName }, dataFilter ) {
-	return dispatcher => {
-		dispatcher.on( `element:${ viewName }`, ( evt, data, conversionApi ) => {
-			dataFilter._consumeDisallowedAttributes( data.viewItem, conversionApi );
-		}, { priority: 'high' } );
-	};
-}
-
-/**
  * View-to-model conversion helper for object elements.
  *
  * Preserves object element content in `htmlContent` attribute.
@@ -90,8 +72,8 @@ export function toObjectWidgetConverter( editor, { view: viewName, isInline } ) 
 * @returns {module:engine/view/element~Element}
 */
 export function createObjectView( viewName, modelElement, writer ) {
-	return writer.createRawElement( viewName, null, function( domElement ) {
-		domElement.innerHTML = modelElement.getAttribute( 'htmlContent' );
+	return writer.createRawElement( viewName, null, ( domElement, domConverter ) => {
+		domConverter.setContentOf( domElement, modelElement.getAttribute( 'htmlContent' ) );
 	} );
 }
 

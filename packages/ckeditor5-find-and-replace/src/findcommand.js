@@ -20,6 +20,7 @@ export default class FindCommand extends Command {
 	 * Creates a new `FindCommand` instance.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
+	 * @param {module:find-and-replace/findandreplacestate~FindAndReplaceState} state An object to hold plugin state.
 	 */
 	constructor( editor, state ) {
 		super( editor );
@@ -27,14 +28,16 @@ export default class FindCommand extends Command {
 		// The find command is always enabled.
 		this.isEnabled = true;
 
-		this.state = state;
+		// It does not affect data so should be enabled in read-only mode.
+		this.affectsData = false;
 
-		// Do not block the command if the editor goes into the read-only mode as it does not impact the data. See #9975.
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
-			if ( value ) {
-				this.clearForceDisabled( 'readOnlyMode' );
-			}
-		} );
+		/**
+		 * The find and replace state object used for command operations.
+		 *
+		 * @private
+		 * @member {module:find-and-replace/findandreplacestate~FindAndReplaceState} #_state
+		 */
+		this._state = state;
 	}
 
 	/**
@@ -44,6 +47,7 @@ export default class FindCommand extends Command {
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.matchCase=false] If set to `true`, the letter case will be matched.
 	 * @param {Boolean} [options.wholeWords=false] If set to `true`, only whole words that match `callbackOrText` will be matched.
+	 *
 	 * @fires execute
 	 */
 	execute( callbackOrText, { matchCase, wholeWords } = {} ) {
@@ -56,7 +60,7 @@ export default class FindCommand extends Command {
 		if ( typeof callbackOrText === 'string' ) {
 			findCallback = findByTextCallback( callbackOrText, { matchCase, wholeWords } );
 
-			this.state.searchText = callbackOrText;
+			this._state.searchText = callbackOrText;
 		} else {
 			findCallback = callbackOrText;
 		}
@@ -70,16 +74,16 @@ export default class FindCommand extends Command {
 				currentResults
 			) ), null );
 
-		this.state.clear( model );
-		this.state.results.addMany( Array.from( results ) );
-		this.state.highlightedResult = results.get( 0 );
+		this._state.clear( model );
+		this._state.results.addMany( Array.from( results ) );
+		this._state.highlightedResult = results.get( 0 );
 
 		if ( typeof callbackOrText === 'string' ) {
-			this.state.searchText = callbackOrText;
+			this._state.searchText = callbackOrText;
 		}
 
-		this.state.matchCase = !!matchCase;
-		this.state.matchWholeWords = !!wholeWords;
+		this._state.matchCase = !!matchCase;
+		this._state.matchWholeWords = !!wholeWords;
 
 		return {
 			results,

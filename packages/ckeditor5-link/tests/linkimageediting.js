@@ -229,11 +229,11 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
-				it( 'should not convert without src attribute', () => {
+				it( 'should convert without src attribute', () => {
 					editor.setData( '<figure class="image"><a href="http://ckeditor.com"><img alt="alt text" /></a></figure>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<paragraph></paragraph>' );
+						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
 				it( 'should not convert in wrong context', () => {
@@ -307,11 +307,11 @@ describe( 'LinkImageEditing', () => {
 						.to.equal( '<imageBlock linkHref="http://ckeditor.com" src="/assets/sample.png"></imageBlock>' );
 				} );
 
-				it( 'should not convert an image surrounded by a link without src attribute', () => {
+				it( 'should convert an image surrounded by a link without src attribute', () => {
 					editor.setData( '<a href="http://ckeditor.com"><img alt="alt text" /></a>' );
 
 					expect( getModelData( model, { withoutSelection: true } ) )
-						.to.equal( '<paragraph></paragraph>' );
+						.to.equal( '<imageBlock alt="alt text" linkHref="http://ckeditor.com"></imageBlock>' );
 				} );
 
 				it( 'should not convert in wrong context', () => {
@@ -975,6 +975,44 @@ describe( 'LinkImageEditing', () => {
 						'</$text>' +
 					'</paragraph>'
 				);
+			} );
+
+			it( 'should properly upcast manual decorators for linked inline images', async () => {
+				const newEditor = await VirtualTestEditor.create( {
+					plugins: [ Paragraph, ImageBlockEditing, ImageInlineEditing, LinkImageEditing ],
+					link: {
+						decorators: {
+							isGallery: {
+								mode: 'manual',
+								classes: 'gallery'
+							}
+						}
+					}
+				} );
+
+				newEditor.setData(
+					'<p>' +
+						'foo ' +
+						'<a class="gallery" href="https://cksource.com">' +
+							'abc ' +
+							'<img src="sample.jpg" alt="bar">' +
+							' 123' +
+						'</a>' +
+						' bar' +
+					'</p>'
+				);
+
+				expect( getModelData( newEditor.model, { withoutSelection: true } ) ).to.equal(
+					'<paragraph>' +
+						'foo ' +
+						'<$text linkHref="https://cksource.com" linkIsGallery="true">abc </$text>' +
+						'<imageInline alt="bar" linkHref="https://cksource.com" linkIsGallery="true" src="sample.jpg"></imageInline>' +
+						'<$text linkHref="https://cksource.com" linkIsGallery="true"> 123</$text>' +
+						' bar' +
+					'</paragraph>'
+				);
+
+				await newEditor.destroy();
 			} );
 		} );
 

@@ -16,7 +16,7 @@ Code blocks is a perfect feature to present programming- or software-related iss
 
 ## Demo
 
-Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just use the double caret function (press <kbd>Enter</kbd> twice).
+Use the code block toolbar button {@icon @ckeditor/ckeditor5-code-block/theme/icons/codeblock.svg Insert code block} and the type dropdown to insert a desired code block. Alternatively, start the line with `` ``` `` to format it as a code block thanks to the {@link features/autoformat autoformatting feature}. To add a paragraph underneath a code block, just press <kbd>Enter</kbd> three times.
 
 {@snippet features/code-block}
 
@@ -100,7 +100,7 @@ There could be situations when there is no obvious way to set the caret before o
 
 	{@img assets/img/code-blocks-typing-before.gif 770 The animation shows typing before the code blocks in CKEditor 5 rich text editor.}
 
-* To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> twice. A new paragraph that you can type in will be created after the code block.
+* To type **after the code block**: Put the selection at the end of the last line of the code block and press <kbd>Enter</kbd> three times. A new paragraph that you can type in will be created after the code block.
 
 	{@img assets/img/code-blocks-typing-after.gif 770 The animation shows typing after the code blocks in CKEditor 5 rich text editor.}
 

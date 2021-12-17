@@ -2,7 +2,7 @@
 menu-title: Features' HTML output
 category: builds-integration
 order: 90
-modified_at: 2021-06-07
+modified_at: 2021-12-03
 ---
 
 # Features' HTML output overview
@@ -38,6 +38,30 @@ The data used to generate the following tables comes from the package metadata. 
 
 	table.features-html-output td.html-output > code + * {
 		margin-top: 1em;
+	}
+
+	table.features-html-output td.html-output.html-output-default {
+		position: relative;
+		box-shadow: inset 2px 0px 0px 0px hsl(225deg 47% 46%);
+
+		/* Additional space for the "default" badge */
+		padding-right: 60px;
+	}
+
+	table.features-html-output td.html-output.html-output-default::after {
+		content: "Default";
+		border: 1px solid hsl(224deg 72% 43%);
+		color: hsl(225deg 85% 30%);
+		opacity: 0.7;
+		border-radius: 2px;
+		display: inline-block;
+		padding: 0px 3px;
+		font-weight: bold;
+		text-transform: uppercase;
+		font-size: 10px;
+		position: absolute;
+		right: 8px;
+		top: 8px;
 	}
 </style>
 

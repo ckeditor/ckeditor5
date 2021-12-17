@@ -19,14 +19,14 @@ import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockedi
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import ImageInline from '@ckeditor/ckeditor5-image/src/imageinline';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isLinkElement } from '../src/utils';
+import { env } from 'ckeditor5/src/utils';
 
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
-
-/* global document */
+/* global document, window */
 
 describe( 'LinkEditing', () => {
 	let element, editor, model, view;
@@ -36,7 +36,7 @@ describe( 'LinkEditing', () => {
 		document.body.appendChild( element );
 
 		editor = await ClassicTestEditor.create( element, {
-			plugins: [ Paragraph, LinkEditing, Enter, Clipboard ],
+			plugins: [ Paragraph, LinkEditing, Enter, Clipboard, ImageInline ],
 			link: {
 				decorators: {
 					isExternal: {
@@ -937,6 +937,215 @@ describe( 'LinkEditing', () => {
 
 				await editor.destroy();
 			} );
+		} );
+	} );
+
+	describe( 'link following', () => {
+		let stub, eventPreventDefault;
+
+		beforeEach( () => {
+			stub = sinon.stub( window, 'open' );
+
+			stub.returns( undefined );
+		} );
+
+		afterEach( () => {
+			stub.restore();
+		} );
+
+		describe( 'using mouse', () => {
+			const initialEnvMac = env.isMac;
+
+			afterEach( () => {
+				env.isMac = initialEnvMac;
+			} );
+
+			describe( 'on Mac', () => {
+				beforeEach( () => {
+					env.isMac = true;
+				} );
+
+				it( 'should follow the link after CMD+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: true, ctrlKey: false } );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.true;
+				} );
+
+				it( 'should not follow the link after CTRL+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+					expect( stub.notCalled ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.false;
+				} );
+
+				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: false } );
+
+					expect( stub.notCalled ).to.be.true;
+					expect( eventPreventDefault.calledOnce ).to.be.false;
+				} );
+			} );
+
+			describe( 'on non-Mac', () => {
+				beforeEach( () => {
+					env.isMac = false;
+				} );
+
+				it( 'should follow the link after CTRL+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: true } );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+
+				it( 'should not follow the link after CMD+click', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: true, ctrlKey: false } );
+
+					expect( stub.notCalled ).to.be.true;
+				} );
+
+				it( 'should not follow the link after click with neither CMD nor CTRL pressed', () => {
+					setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>' );
+
+					fireClickEvent( { metaKey: false, ctrlKey: false } );
+
+					expect( stub.notCalled ).to.be.true;
+				} );
+			} );
+
+			it( 'should follow the inline image link', () => {
+				setModelData( model, '<paragraph>[<imageInline linkHref="http://www.ckeditor.com"></imageInline>]</paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, 'img' );
+
+				expect( stub.calledOnce ).to.be.true;
+				expect( stub.calledOn( window ) ).to.be.true;
+				expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.true;
+			} );
+
+			it( 'should not follow the link if "a" element doesn\'t have "href" attribute', () => {
+				editor.conversion.attributeToElement( {
+					model: 'customLink',
+					view: 'a'
+				} );
+
+				setModelData( model, '<paragraph><$text customLink="">Bar[]</$text></paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac } );
+
+				expect( stub.notCalled ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.false;
+			} );
+
+			it( 'should not follow the link if no link is clicked', () => {
+				editor.conversion.attributeToElement( {
+					model: 'customLink',
+					view: 'span'
+				} );
+
+				setModelData( model, '<paragraph><$text customLink="">Bar[]</$text></paragraph>' );
+
+				fireClickEvent( { metaKey: env.isMac, ctrlKey: !env.isMac }, 'span' );
+
+				expect( stub.notCalled ).to.be.true;
+				expect( eventPreventDefault.calledOnce ).to.be.false;
+			} );
+
+			function fireClickEvent( options, tagName = 'a' ) {
+				const linkElement = editor.ui.getEditableElement().getElementsByTagName( tagName )[ 0 ];
+
+				eventPreventDefault = sinon.spy();
+
+				view.document.fire( 'click', {
+					domTarget: linkElement,
+					domEvent: options,
+					preventDefault: eventPreventDefault
+				} );
+			}
+		} );
+
+		describe( 'using keyboard', () => {
+			const positiveScenarios = [
+				{
+					condition: 'selection is collapsed inside the link',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">Ba[]r</$text></paragraph>'
+				},
+				{
+					condition: 'selection is collapsed at the end of the link',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">Bar[]</$text></paragraph>'
+				},
+				{
+					condition: 'selection is collapsed at the begining of the link',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">[]Bar</$text></paragraph>'
+				},
+				{
+					condition: 'part of the link is selected',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">B[a]r</$text></paragraph>'
+				},
+				{
+					condition: 'the whole link is selected',
+					modelData: '<paragraph><$text linkHref="http://www.ckeditor.com">[Bar]</$text></paragraph>'
+				},
+				{
+					condition: 'linked image is selected',
+					modelData: '<paragraph>[<imageInline linkHref="http://www.ckeditor.com"></imageInline>]</paragraph>'
+				}
+			];
+
+			for ( const { condition, modelData } of positiveScenarios ) {
+				it( `should open link after pressing ALT+ENTER if ${ condition }`, () => {
+					setModelData( model, modelData );
+
+					fireEnterPressedEvent( { altKey: true } );
+
+					expect( stub.calledOnce ).to.be.true;
+					expect( stub.calledOn( window ) ).to.be.true;
+					expect( stub.calledWith( 'http://www.ckeditor.com', '_blank', 'noopener' ) ).to.be.true;
+				} );
+			}
+
+			it( 'should not open link after pressing ENTER without ALT', () => {
+				setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Ba[]r</$text></paragraph>' );
+
+				fireEnterPressedEvent( { altKey: false } );
+
+				expect( stub.notCalled ).to.be.true;
+			} );
+
+			it( 'should not open link after pressing ALT+ENTER if not inside a link', () => {
+				setModelData( model, '<paragraph><$text linkHref="http://www.ckeditor.com">Bar</$text>Baz[]</paragraph>' );
+
+				fireEnterPressedEvent( { altKey: true } );
+
+				expect( stub.notCalled ).to.be.true;
+			} );
+
+			function fireEnterPressedEvent( options ) {
+				view.document.fire( 'keydown', {
+					keyCode: keyCodes.enter,
+					domEvent: {
+						keyCode: keyCodes.enter,
+						preventDefault: () => {},
+						target: document.body,
+						...options
+					}
+				} );
+			}
 		} );
 	} );
 

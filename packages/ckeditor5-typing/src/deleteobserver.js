@@ -12,6 +12,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { isShiftDeleteOnNonCollapsedSelection } from './utils/utils';
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
@@ -35,6 +36,15 @@ export default class DeleteObserver extends Observer {
 		} );
 
 		document.on( 'keydown', ( evt, data ) => {
+			// Do not fire the `delete` event, if Shift + Delete key combination was pressed on a non-collapsed selection on Windows.
+			//
+			// The Shift + Delete key combination should work in the same way as the `cut` event on a non-collapsed selection on Windows.
+			// In fact, the native `cut` event is actually emitted in this case, but with lower priority. Therefore, in order to handle the
+			// Shift + Delete key combination correctly, it is enough not to emit the `delete` event.
+			if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( data, document ) ) {
+				return;
+			}
+
 			const deleteData = {};
 
 			if ( data.keyCode == keyCodes.delete ) {
@@ -111,7 +121,7 @@ export default class DeleteObserver extends Observer {
  * @event module:engine/view/document~Document#event:delete
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
  * @param {'forward'|'delete'} data.direction The direction in which the deletion should happen.
- * @param {'character'|'word'} data.unit The "amount" of content that should be deleted.
+ * @param {'character'|'codePoint'|'word'} data.unit The "amount" of content that should be deleted.
  * @param {Number} data.sequence A number describing which subsequent delete event it is without the key being released.
  * If it's 2 or more it means that the key was pressed and hold.
  * @param {module:engine/view/selection~Selection} [data.selectionToRemove] View selection which content should be removed. If not set,

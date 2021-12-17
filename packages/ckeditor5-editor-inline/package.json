@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-editor-inline",
-  "version": "29.2.0",
+  "version": "31.1.0",
   "description": "Inline editor implementation for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -11,22 +11,22 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^29.2.0",
+    "ckeditor5": "^31.1.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^29.2.0",
-    "@ckeditor/ckeditor5-core": "^29.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^25.4.0",
-    "@ckeditor/ckeditor5-engine": "^29.2.0",
-    "@ckeditor/ckeditor5-enter": "^29.2.0",
-    "@ckeditor/ckeditor5-heading": "^29.2.0",
-    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
-    "@ckeditor/ckeditor5-theme-lark": "^29.2.0",
-    "@ckeditor/ckeditor5-typing": "^29.2.0",
-    "@ckeditor/ckeditor5-ui": "^29.2.0",
-    "@ckeditor/ckeditor5-undo": "^29.2.0",
-    "@ckeditor/ckeditor5-utils": "^29.2.0",
+    "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
+    "@ckeditor/ckeditor5-core": "^31.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^27.0.0",
+    "@ckeditor/ckeditor5-engine": "^31.1.0",
+    "@ckeditor/ckeditor5-enter": "^31.1.0",
+    "@ckeditor/ckeditor5-heading": "^31.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^31.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
+    "@ckeditor/ckeditor5-typing": "^31.1.0",
+    "@ckeditor/ckeditor5-ui": "^31.1.0",
+    "@ckeditor/ckeditor5-undo": "^31.1.0",
+    "@ckeditor/ckeditor5-utils": "^31.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },

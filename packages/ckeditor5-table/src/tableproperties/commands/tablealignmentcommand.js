@@ -31,6 +31,6 @@ export default class TableAlignmentCommand extends TablePropertyCommand {
 	 * @param {String} defaultValue The default value for the "alignment" attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'alignment', defaultValue );
+		super( editor, 'tableAlignment', defaultValue );
 	}
 }

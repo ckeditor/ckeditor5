@@ -11,7 +11,7 @@ branches:
 services:
 - xvfb
 node_js:
-- "12"
+- "14"
 cache: yarn
 before_install:
 - export START_TIME=$( date +%s )

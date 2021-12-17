@@ -40,7 +40,7 @@ export default class TableCellBorderWidthCommand extends TableCellPropertyComman
 	 * @param {String} defaultValue The default value of the attribute.
 	 */
 	constructor( editor, defaultValue ) {
-		super( editor, 'borderWidth', defaultValue );
+		super( editor, 'tableCellBorderWidth', defaultValue );
 	}
 
 	/**

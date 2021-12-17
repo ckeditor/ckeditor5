@@ -52,6 +52,9 @@ export default class Editor {
 	 * @param {Object} [config={}] The editor configuration.
 	 */
 	constructor( config = {} ) {
+		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
+		const language = config.language || ( this.constructor.defaultConfig && this.constructor.defaultConfig.language );
+
 		/**
 		 * The editor context.
 		 * When it is not provided through the configuration, the editor creates it.
@@ -59,7 +62,7 @@ export default class Editor {
 		 * @protected
 		 * @type {module:core/context~Context}
 		 */
-		this._context = config.context || new Context( { language: config.language } );
+		this._context = config.context || new Context( { language } );
 		this._context._addEditor( this, !config.context );
 
 		// Clone the plugins to make sure that the plugin array will not be shared
@@ -357,7 +360,8 @@ mix( Editor, ObservableMixin );
 /**
  * This error is thrown when trying to pass a `<textarea>` element to a `create()` function of an editor class.
  *
- * The only editor type which can be initialized on `<textarea>` elements is {@glink builds/guides/overview#classic-editor classic editor}.
+ * The only editor type which can be initialized on `<textarea>` elements is
+ * the {@glink builds/guides/predefined-builds/overview#classic-editor classic editor}.
  * This editor hides the passed element and inserts its own UI next to it. Other types of editors reuse the passed element as their root
  * editable element and therefore `<textarea>` is not appropriate for them. Use a `<div>` or another text container instead:
  *

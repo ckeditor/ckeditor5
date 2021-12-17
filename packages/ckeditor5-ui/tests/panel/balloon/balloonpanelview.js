@@ -6,9 +6,10 @@
 /* global window, document, Event */
 
 import ViewCollection from '../../../src/viewcollection';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
+import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Rect } from '@ckeditor/ckeditor5-utils';
 
 describe( 'BalloonPanelView', () => {
 	let view;
@@ -189,7 +190,8 @@ describe( 'BalloonPanelView', () => {
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleWest,
 					BalloonPanelView.defaultPositions.northArrowSouthMiddleEast,
 					BalloonPanelView.defaultPositions.northArrowSouthWest,
-					BalloonPanelView.defaultPositions.northArrowSouthEast
+					BalloonPanelView.defaultPositions.northArrowSouthEast,
+					BalloonPanelView.defaultPositions.viewportStickyNorth
 				],
 				limiter: document.body,
 				fitInViewport: true
@@ -207,6 +209,38 @@ describe( 'BalloonPanelView', () => {
 
 			expect( view.top ).to.equal( 10 );
 			expect( view.left ).to.equal( 10 );
+		} );
+
+		it( 'should set and override withArrow property', () => {
+			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+				top: 10.345,
+				left: 10.345,
+				name: 'position'
+			} );
+
+			view.withArrow = false;
+			view.attachTo( { target, limiter } );
+
+			expect( view.withArrow ).to.be.true;
+
+			view.set( 'withArrow', false );
+			view.attachTo( { target, limiter } );
+
+			expect( view.withArrow ).to.be.true;
+
+			BalloonPanelView._getOptimalPosition.restore();
+
+			testUtils.sinon.stub( BalloonPanelView, '_getOptimalPosition' ).returns( {
+				top: 10.345,
+				left: 10.345,
+				name: 'position',
+				config: {
+					withArrow: false
+				}
+			} );
+
+			view.attachTo( { target, limiter } );
+			expect( view.withArrow ).to.be.false;
 		} );
 
 		describe( 'limited by limiter element', () => {
@@ -688,34 +722,43 @@ describe( 'BalloonPanelView', () => {
 	} );
 
 	describe( 'defaultPositions', () => {
-		let positions, balloonRect, targetRect, arrowHOffset, arrowVOffset;
+		let positions, balloonRect, targetRect, viewportRect, arrowHOffset, arrowVOffset;
 
 		beforeEach( () => {
 			positions = BalloonPanelView.defaultPositions;
 			arrowHOffset = BalloonPanelView.arrowHorizontalOffset;
 			arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 
-			targetRect = {
+			viewportRect = new Rect( {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 200,
+				height: 200
+			} );
+
+			targetRect = new Rect( {
 				top: 100,
 				bottom: 200,
 				left: 100,
 				right: 200,
 				width: 100,
 				height: 100
-			};
+			} );
 
-			balloonRect = {
+			balloonRect = new Rect( {
 				top: 0,
 				bottom: 0,
 				left: 0,
 				right: 0,
 				width: 50,
 				height: 50
-			};
+			} );
 		} );
 
 		it( 'should have a proper length', () => {
-			expect( Object.keys( positions ) ).to.have.length( 30 );
+			expect( Object.keys( positions ) ).to.have.length( 31 );
 		} );
 
 		// ------- North
@@ -968,6 +1011,204 @@ describe( 'BalloonPanelView', () => {
 				left: 187.5 - arrowHOffset,
 				name: 'arrow_nmw'
 			} );
+		} );
+
+		// ------- Sticky
+
+		it( 'should define the "viewportStickyNorth" position and return null if not sticky', () => {
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
+		} );
+	} );
+
+	describe( 'stickyPositions', () => {
+		let positions, balloonRect, targetRect, viewportRect, stickyOffset;
+
+		beforeEach( () => {
+			positions = BalloonPanelView.defaultPositions;
+			stickyOffset = BalloonPanelView.stickyVerticalOffset;
+
+			balloonRect = new Rect( {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 50,
+				height: 50
+			} );
+		} );
+
+		it( 'should stick position to the top when top position of the element is above the viewport and the element' +
+			'area intersects with the viewport area', () => {
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 0,
+				height: 0
+			} );
+
+			targetRect = new Rect( {
+				top: 200,
+				bottom: 400,
+				left: 50,
+				right: 100,
+				width: 0,
+				height: 0
+			} );
+
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.deep.equal( {
+				top: 300 + stickyOffset,
+				left: 25,
+				name: 'arrowless',
+				config: {
+					withArrow: false
+				}
+			} );
+		} );
+
+		it( 'should return null if not sticky because element is fully outside of the viewport', () => {
+			viewportRect = new Rect( {
+				top: 200,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 200,
+				height: 200
+			} );
+
+			targetRect = new Rect( {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 100,
+				height: 100
+			} );
+
+			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
+		} );
+	} );
+
+	describe( 'generatePositions()', () => {
+		let defaultPositions, balloonRect, targetRect, viewportRect;
+
+		beforeEach( () => {
+			defaultPositions = BalloonPanelView.defaultPositions;
+
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 0,
+				height: 0
+			} );
+
+			targetRect = new Rect( {
+				top: 200,
+				bottom: 400,
+				left: 50,
+				right: 100,
+				width: 0,
+				height: 0
+			} );
+
+			balloonRect = new Rect( {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 50,
+				height: 50
+			} );
+		} );
+
+		it( 'should generate the same set of positions as BalloonPanelView#defaultPositions when no options specified', () => {
+			const generatedPositions = generatePositions();
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "horizontalOffset" option', () => {
+			const generatedPositions = generatePositions( {
+				horizontalOffset: BalloonPanelView.arrowHorizontalOffset + 100
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				if ( name.match( /Arrow(South|North)(.+)?East/ ) ) {
+					generatedResult.left -= 100;
+				} else if ( name.match( /Arrow(South|North)(.+)?West/ ) ) {
+					generatedResult.left += 100;
+				}
+
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "verticalOffset" option', () => {
+			const generatedPositions = generatePositions( {
+				verticalOffset: BalloonPanelView.arrowVerticalOffset + 100
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				if ( name.match( /^south/ ) ) {
+					generatedResult.top -= 100;
+				} else if ( name.match( /^north/ ) ) {
+					generatedResult.top += 100;
+				}
+
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "stickyVerticalOffset" option', () => {
+			const generatedPositions = generatePositions( {
+				stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset + 100
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				if ( name.match( /sticky/i ) ) {
+					generatedResult.top -= 100;
+				}
+
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "config" option', () => {
+			const generatedPositions = generatePositions( {
+				config: {
+					foo: 'bar',
+					withArrow: true
+				}
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult.config ).to.deep.equal( {
+					foo: 'bar',
+					withArrow: true
+				}, name );
+			}
 		} );
 	} );
 } );

@@ -9,7 +9,6 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { modelTable, viewTable } from './_utils/utils';
 
 import TableEditing from '../src/tableediting';
@@ -287,8 +286,8 @@ describe( 'table clipboard', () => {
 			assertClipboardContentOnMethod( 'copy', viewTable( [
 				[ '11', '12', '13' ],
 				[ '21', '22', '23' ],
-				[ { contents: '31', isHeading: true }, '32', '33' ] // TODO: bug in viewTable
-			], { headingRows: 2, headingColumns: 1 } ) );
+				[ { contents: '31', isHeading: true }, '32', '33' ]
+			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should update table heading attributes (selection without headings)', () => {
@@ -343,7 +342,7 @@ describe( 'table clipboard', () => {
 				preventDefault: sinon.spy()
 			} );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
+			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ { contents: '00', isSelected: true }, { contents: '01', isSelected: true }, '02' ],
 				[ { contents: '10', isSelected: true }, { contents: '11', isSelected: true }, '12' ],
 				[ '20', '21', '22' ]
@@ -365,7 +364,7 @@ describe( 'table clipboard', () => {
 				preventDefault: sinon.spy()
 			} );
 
-			assertEqualMarkup( getModelData( model ), modelTable( [
+			expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 				[ '', '', '02' ],
 				[ '', '[]', '12' ],
 				[ '20', '21', '22' ]
@@ -412,7 +411,7 @@ describe( 'table clipboard', () => {
 			editor.isReadOnly = false;
 
 			expect( data.dataTransfer.getData( 'text/html' ) ).to.be.undefined;
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]

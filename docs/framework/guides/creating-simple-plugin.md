@@ -1,5 +1,5 @@
 ---
-category: framework-guides
+category: framework-plugins
 order: 30
 ---
 
@@ -8,7 +8,7 @@ order: 30
 This guide will show you how to create a simple rich-text editor plugin for CKEditor 5.
 
 <info-box>
-	Before you get to work, you should check out the {@link framework/guides/quick-start Quick start} guide first to set up the framework and building tools.
+	Before you get to work, you should check out the {@link framework/guides/quick-start Quick start} guide first to set up the framework and building tools. Be sure to check out the {@link framework/guides/package-generator package generator guide} as well.
 </info-box>
 
 CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from the {@link module:core/plugin~Plugin base `Plugin` class}. However, you can also write simple constructor functions. This guide uses the former method.

@@ -6,7 +6,6 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 import TableCaptionEditing from '../../src/tablecaption/tablecaptionediting';
@@ -53,7 +52,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -98,7 +97,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -163,7 +162,7 @@ describe( 'Table caption post-fixer', () => {
 				expect( slots[ 3 ].column ).to.equal( 1 );
 			} );
 
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -206,7 +205,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( parsed, root );
 			} );
 
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +
@@ -241,7 +240,7 @@ describe( 'Table caption post-fixer', () => {
 				writer.insert( caption, writer.createPositionFromPath( editor.model.document.getRoot(), [ 0, 0 ] ) );
 			} );
 
-			assertEqualMarkup( getModelData( model, { withoutSelection: true } ),
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 				'<table>' +
 					'<tableRow>' +
 						'<tableCell>' +

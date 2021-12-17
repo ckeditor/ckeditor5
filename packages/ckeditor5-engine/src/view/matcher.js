@@ -235,7 +235,7 @@ function isElementMatching( element, pattern ) {
 function matchName( pattern, name ) {
 	// If pattern is provided as RegExp - test against this regexp.
 	if ( pattern instanceof RegExp ) {
-		return pattern.test( name );
+		return !!name.match( pattern );
 	}
 
 	return pattern === name;
@@ -394,7 +394,7 @@ function normalizePatterns( patterns ) {
 function isKeyMatched( patternKey, itemKey ) {
 	return patternKey === true ||
 		patternKey === itemKey ||
-		patternKey instanceof RegExp && patternKey.test( itemKey );
+		patternKey instanceof RegExp && itemKey.match( patternKey );
 }
 
 // @param {String|RegExp} patternValue A pattern representing a value we want to match.
@@ -408,7 +408,11 @@ function isValueMatched( patternValue, itemKey, valueGetter ) {
 
 	const itemValue = valueGetter( itemKey );
 
-	return patternValue === itemValue || patternValue instanceof RegExp && patternValue.test( itemValue );
+	// For now, the reducers are not returning the full tree of properties.
+	// Casting to string preserves the old behavior until the root cause is fixed.
+	// More can be found in https://github.com/ckeditor/ckeditor5/issues/10399.
+	return patternValue === itemValue ||
+		patternValue instanceof RegExp && !!String( itemValue ).match( patternValue );
 }
 
 // Checks if attributes of provided element can be matched against provided patterns.
@@ -527,7 +531,7 @@ function matchStyles( patterns, element ) {
  *			name: 'figure',
  *			attributes: [
  *				'title',    // Match `title` attribute (can be empty).
- *				/^data-*$/, // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
+ *				/^data-*$/ // Match attributes starting with `data-` e.g. `data-foo` with any value (can be empty).
  *			]
  *		};
  *
@@ -537,7 +541,8 @@ function matchStyles( patterns, element ) {
  *			attributes: [
  *				{
  *					key: 'type',                     // Match `type` as an attribute key.
- *					value: /^(text|number|date)$/ }, // Match `text`, `number` or `date` values.
+ *					value: /^(text|number|date)$/	 // Match `text`, `number` or `date` values.
+ *				},
  *				{
  *					key: /^data-.*$/,                // Match attributes starting with `data-` e.g. `data-foo`.
  *					value: true                      // Match any value (can be empty).
@@ -568,7 +573,7 @@ function matchStyles( patterns, element ) {
  *		// Match view element which has matching styles (Object).
  *		const pattern = {
  *			name: 'p',
- *			attributes: {
+ *			styles: {
  *				color: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/, // Match `color` in RGB format only.
  *				'font-weight': 600,                              // Match `font-weight` only if it's `600`.
  *				'text-decoration': true                          // Match any text decoration.
@@ -578,19 +583,20 @@ function matchStyles( patterns, element ) {
  *		// Match view element which has matching styles (Array).
  *		const pattern = {
  *			name: 'p',
- *			attributes: [
+ *			styles: [
  *				'color',      // Match `color` with any value.
- *				/^border.*$/, // Match all border properties.
+ *				/^border.*$/ // Match all border properties.
  *			]
  *		};
  *
  *		// Match view element which has matching styles (key-value pairs).
  *		const pattern = {
  *			name: 'p',
- *			attributes: [
+ *			styles: [
  *				{
- *					key: 'color',                                    // Match `color` as an property key.
- *					value: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/, // Match RGB format only.
+ *					key: 'color',                                  		// Match `color` as an property key.
+ *					value: /rgb\((\d{1,3}), (\d{1,3}), (\d{1,3})\)/		// Match RGB format only.
+ *				},
  *				{
  *					key: /^border.*$/, // Match any border style.
  *					value: true        // Match any value.
@@ -643,6 +649,7 @@ function matchStyles( patterns, element ) {
  *				{
  *					key: 'image', // Match `image` class.
  *					value: true
+ *				},
  *				{
  *					key: /^image-side-(left|right)$/, // Match `image-side-left` or `image-side-right` class.
  *					value: true
@@ -696,11 +703,9 @@ function matchStyles( patterns, element ) {
  * @typedef {String|RegExp|Object|Function} module:engine/view/matcher~MatcherPattern
  *
  * @property {String|RegExp} [name] View element name to match.
- * @property {String|RegExp|Array.<String|RegExp>} [classes] View element's class name(s) to match.
- * @property {Object} [styles] Object with key-value pairs representing styles to match.
- * Each object key represents style name. Value can be given as `String` or `RegExp`.
- * @property {Object} [attributes] Object with key-value pairs representing attributes to match.
- * Each object key represents attribute name. Value can be given as `String` or `RegExp`.
+ * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [classes] View element's classes to match.
+ * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [styles] View element's styles to match.
+ * @property {Boolean|String|RegExp|Object|Array.<String|RegExp|Object>} [attributes] View element's attributes to match.
  */
 
 /**

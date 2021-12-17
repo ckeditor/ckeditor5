@@ -431,6 +431,16 @@ export default class TableCellPropertiesView extends View {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
+	}
+
+	/**
 	 * Focuses the fist focusable field in the form.
 	 */
 	focus() {
@@ -799,7 +809,6 @@ export default class TableCellPropertiesView extends View {
 			label: t( 'Cancel' ),
 			icon: icons.cancel,
 			class: 'ck-button-cancel',
-			type: 'cancel',
 			withText: true
 		} );
 

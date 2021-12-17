@@ -25,29 +25,29 @@ const THIRD_PARTY_PACKAGES_LOCAL_DIR = 'scripts/docs/features-html-output/third-
  * - use the parsed data to create tables for each package, that contains all plugins and their possible HTML output.
  *
  * Each generated table contains 2 columns: "Plugin" and "HTML output". Each table cell in the "Plugin" column has a human-readable name of
- * the plugin (which is a link to the feature documentation) and the name of the class used to create the plugin (which is a link to the API
- * documentation). For each row in the "Plugin" column there is at least one row in the "HTML output" column. If given plugin does not
- * generate any output, the one and only row in the "HTML output" column contains the word "None". Each item from the `htmlOutput` property
- * from the package metadata file corresponds to a separate row in the "HTML output" column. It contains one or more preformatted paragraphs
- * describing the possible HTML output: HTML elements, their CSS classes, inline styles, other attributes and comments.
+ * the plugin, a link to the feature documentation, and a link to the API documentation. For each row in the "Plugin" column there is at
+ * least one row in the "HTML output" column. If given plugin does not generate any output, the one and only row in the "HTML output"
+ * column contains the word "None". Each item from the `htmlOutput` property from the package metadata file corresponds to a separate row
+ * in the "HTML output" column. It contains one or more preformatted paragraphs describing the possible HTML output: HTML elements, their
+ * CSS classes, inline styles, other attributes and comments.
  *
- * ┏━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
- * ┃    Plugin    ┃           HTML output          ┃
- * ┣━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
- * ┃ first plugin │ output #1 for the first plugin ┃
- * ┃              ├────────────────────────────────┨
- * ┃              ┄                                ┄
- * ┃              ├────────────────────────────────┨
- * ┃              │ output #N for the first plugin ┃
- * ┃──────────────┼────────────────────────────────┨
- * ┄              ┄                                ┄
- * ┃──────────────┼────────────────────────────────┨
- * ┃ last plugin  │ output #1 for the last plugin  ┃
- * ┃              ├────────────────────────────────┨
- * ┃              ┄                                ┄
- * ┃              ├────────────────────────────────┨
- * ┃              │ output #N for the last plugin  ┃
- * ┗━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+ * ┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+ * ┃         Plugin         ┃         HTML output         ┃
+ * ┣━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫
+ * ┃ #1 plugin name         │ output #1 for the #1 plugin ┃
+ * ┃ Feature guide link     ├─────────────────────────────┨
+ * ┃ API documentation link ┄                             ┄
+ * ┃                        ├─────────────────────────────┨
+ * ┃                        │ output #N for the #1 plugin ┃
+ * ┃────────────────────────┼─────────────────────────────┨
+ * ┄                        ┄                             ┄
+ * ┃────────────────────────┼─────────────────────────────┨
+ * ┃ #N plugin name         │ output #1 for the #N plugin ┃
+ * ┃ Feature guide link     ├─────────────────────────────┨
+ * ┃ API documentation link ┄                             ┄
+ * ┃                        ├─────────────────────────────┨
+ * ┃                        │ output #N for the #N plugin ┃
+ * ┗━━━━━━━━━━━━━━━━━━━━━━━━┷━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
  *
  * Generated table is preceded by the package name as a heading and the link to a source package metadata file on GitHub.
  *
@@ -60,22 +60,27 @@ module.exports = function createHtmlOutputMarkup() {
 		.map( packageMetadata => {
 			const outputRows = packageMetadata.plugins
 				.map( plugin => {
-					const numberOfRowsPerPlugin = plugin.htmlOutputMarkup.length;
+					const numberOfRowsPerPlugin = plugin.htmlOutput.length;
 
 					const pluginNameRowspan = numberOfRowsPerPlugin > 1 ?
 						`rowspan="${ numberOfRowsPerPlugin }"` :
 						'';
 
-					return plugin.htmlOutputMarkup
-						.map( ( htmlOutputMarkup, htmlOutputIndex ) => {
+					return plugin.htmlOutput
+						.map( ( htmlOutput, htmlOutputIndex ) => {
 							const pluginNameCell = htmlOutputIndex === 0 ?
 								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
+							const classNames = [
+								'html-output',
+								htmlOutput.isAlternative ? '' : 'html-output-default'
+							].filter( className => !!className ).join( ' ' );
+
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="html-output">${ htmlOutputMarkup }</td>` +
+									`<td class="${ classNames }">${ htmlOutput.markup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -235,23 +240,45 @@ function createSourceFileMarkupForThirdPartyPackage( filePath ) {
 function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 	return plugins
 		.map( plugin => {
-			const pluginNameLink = createFeatureLink( packageData, plugin );
+			const links = [
+				createFeatureLink( packageData, plugin ),
+				createApiLink( packageData, plugin )
+			];
 
-			const pluginClassNameLink = createApiLink( packageData, plugin );
+			let pluginNameMarkup = `<p><b>${ plugin.name }</b></p>`;
 
-			const htmlOutputMarkup = plugin.htmlOutput ?
-				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
-				[ '<p>None.</p>' ];
+			for ( const link of links ) {
+				if ( link ) {
+					pluginNameMarkup += `<p>${ link }</p>`;
+				}
+			}
+
+			if ( !plugin.htmlOutput ) {
+				const htmlOutput = [
+					{
+						// This value dictates whether or not the "None" output is considered to be default.
+						isAlternative: true,
+						markup: '<p>None.</p>'
+					}
+				];
+
+				return {
+					pluginNameMarkup,
+					htmlOutput
+				};
+			}
+
+			const htmlOutput = createHtmlOutputMarkupForPlugin( plugin.htmlOutput );
 
 			return {
-				pluginNameMarkup: `<p>${ pluginNameLink }</p><p>${ pluginClassNameLink }</p>`,
-				htmlOutputMarkup
+				pluginNameMarkup,
+				htmlOutput
 			};
 		} );
 }
 
 /**
- * Creates link to the plugin's feature documentation. If the feature documentation is missing, just the plugin name is returned.
+ * Creates link to the plugin's feature documentation. If the feature documentation is missing, it returns undefined.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
@@ -259,7 +286,7 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
  */
 function createFeatureLink( packageData, plugin ) {
 	if ( !plugin.docs ) {
-		return plugin.name;
+		return;
 	}
 
 	const link = /http(s)?:/.test( plugin.docs ) ?
@@ -268,21 +295,21 @@ function createFeatureLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ plugin.name }</a>`;
+	const docImg = '<img src="%BASE_PATH%/assets/img/document.svg" alt="Book" class="output-overview-table-icon">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.name }">${ docImg } Feature guide</a>`;
 }
 
 /**
- * Creates link to the plugin's API documentation. If given package is a third-party one, just the plugin class name is returned.
+ * Creates link to the plugin's API documentation. If given package is a third-party one, it returns undefined.
  *
  * @param {Package} packageData Package properties.
  * @param {Plugin} plugin Plugin definition.
  * @returns {String}
  */
 function createApiLink( packageData, plugin ) {
-	const pluginClassName = `<code>${ plugin.className }</code>`;
-
 	if ( packageData.isThirdPartyPackage ) {
-		return pluginClassName;
+		return;
 	}
 
 	const shortPackageName = packageData.packageName.replace( /^ckeditor5-/g, '' );
@@ -295,15 +322,20 @@ function createApiLink( packageData, plugin ) {
 
 	const skipLinkValidation = packageData.isExternalPackage ? 'data-skip-validation' : '';
 
-	return `<a href="${ link }" ${ skipLinkValidation }>${ pluginClassName }</a>`;
+	const cogImg = '<img src="%BASE_PATH%/assets/img/cog.svg" alt="Cog" class="output-overview-table-icon">';
+
+	return `<a href="${ link }" ${ skipLinkValidation } alt="${ plugin.className }">${ cogImg } API documentation</a>`;
 }
 
 /**
- * Prepares the HTML output to a format, that is ready to be displayed. The generated array of strings contains preformatted paragraphs with
- * applied visual formatting (i.e. <strong> or <code> tags).
- *
+ * Prepares the HTML output to a format, that is ready to be displayed. In the generated array of objects each object contains two keys:
+ * <String> markup: All elements, classes, styles, attributes and comment combined together with applied visual formatting
+ * (i.e. working links, visual emphasis, etc.) and ready to be displayed.
+ * <Boolean> isAlternative: If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  * @param {HtmlOutput} htmlOutput
- * @returns {Array.<String>}
+ * @returns {Array.<ParsedHtmlOutput>}
  */
 function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 	const appendClasses = ( classes, separators ) => output => {
@@ -396,9 +428,17 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 				}</p>` :
 				'';
 
-			return [ elements, others, comment ]
+			const markup = [ elements, others, comment ]
 				.filter( item => !!item )
 				.join( '' );
+
+			const isAlternative = entry.isAlternative || false;
+
+			return { markup, isAlternative };
+		} )
+		.sort( ( a, b ) => {
+			const shift = a.isAlternative ? 1 : -1;
+			return a.isAlternative === b.isAlternative ? 0 : shift;
 		} );
 }
 
@@ -431,6 +471,9 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  * @property {String|Array.<String>} styles Inline CSS styles, that may be applied to the HTML elements.
  * @property {String|Array.<String>} attributes Other HTML attributes, that may be applied to the HTML elements.
  * @property {String} implements A name of an element or a pseudo-element, which classes, styles or attributes may be inherited from.
+ * @property {Boolean} isAlternative If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  * @property {String} _comment A human-readable description.
  */
 
@@ -446,9 +489,17 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 /**
  * @typedef {Object} ParsedPlugin
  * @property {String} pluginNameMarkup HTML markup containing plugin name.
- * @property {Array.<String>} htmlOutputMarkup Each item in this array contains a separate output definition. This output definition is
- * a string with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links,
- * visual emphasis, etc.) and ready to be displayed.
+ * @property {Array.<ParsedHtmlOutput>} htmlOutput An array of objects, each containing string with HTML markup and boolean defining
+ * whether this output is alternative or default.
+ */
+
+/**
+ * @typedef {Object} ParsedHtmlOutput
+ * @property {String} markup All elements, classes, styles, attributes and comment combined together with applied visual formatting
+ * (i.e. working links, visual emphasis, etc.) and ready to be displayed.
+ * @property {Boolean} isAlternative If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  */
 
 /**

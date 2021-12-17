@@ -202,4 +202,32 @@ describe( 'EditorUI', () => {
 			sinon.assert.calledWithMatch( stub, 'editor-ui-deprecated-editable-elements' );
 		} );
 	} );
+
+	describe( 'viewportOffset', () => {
+		it( 'should return offset object', () => {
+			const stub = testUtils.sinon.stub( editor.config, 'get' )
+				.withArgs( 'ui.viewportOffset' )
+				.returns( { top: 200 } );
+
+			const ui = new EditorUI( editor );
+
+			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
+			sinon.assert.calledOnce( stub );
+		} );
+
+		it( 'should warn about deprecation', () => {
+			testUtils.sinon.stub( editor.config, 'get' )
+				.withArgs( 'ui.viewportOffset' )
+				.returns( null )
+				.withArgs( 'toolbar.viewportTopOffset' )
+				.returns( 200 );
+
+			const consoleStub = testUtils.sinon.stub( console, 'warn' );
+
+			const ui = new EditorUI( editor );
+
+			expect( ui.viewportOffset ).to.deep.equal( { top: 200 } );
+			sinon.assert.calledWithMatch( consoleStub, 'editor-ui-deprecated-viewport-offset-config' );
+		} );
+	} );
 } );

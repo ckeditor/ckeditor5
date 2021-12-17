@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-autosave",
-  "version": "29.2.0",
+  "version": "31.1.0",
   "description": "Autosave feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,15 +12,16 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^29.2.0",
+    "ckeditor5": "^31.1.0",
     "lodash-es": "^4.17.15"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^29.2.0",
-    "@ckeditor/ckeditor5-dev-utils": "^25.4.0",
-    "@ckeditor/ckeditor5-editor-classic": "^29.2.0",
-    "@ckeditor/ckeditor5-paragraph": "^29.2.0",
-    "@ckeditor/ckeditor5-theme-lark": "^29.2.0",
+    "@ckeditor/ckeditor5-core": "^31.1.0",
+    "@ckeditor/ckeditor5-dev-utils": "^27.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
+    "@ckeditor/ckeditor5-paragraph": "^31.1.0",
+    "@ckeditor/ckeditor5-source-editing": "^31.1.0",
+    "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },

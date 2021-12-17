@@ -184,7 +184,7 @@ export default class ButtonView extends View {
 		this.children.add( this.tooltipView );
 		this.children.add( this.labelView );
 
-		if ( this.withKeystroke ) {
+		if ( this.withKeystroke && this.keystroke ) {
 			this.children.add( this.keystrokeView );
 		}
 	}

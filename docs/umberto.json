@@ -49,10 +49,13 @@
 		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
+		"latest/features/pagination.html": "latest/features/pagination/pagination.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
-		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html"
+		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
+		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
+		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -100,7 +103,7 @@
 	},
 	"groups": [
 		{
-			"name": "Builds",
+			"name": "Installation",
 			"id": "builds",
 			"slug": "builds",
 			"categories": [
@@ -110,16 +113,22 @@
 					"slug": "guides",
 					"categories": [
 						{
+							"name": "Predefined builds",
+							"id": "builds-predefined",
+							"slug": "predefined-builds",
+							"order": 100
+						},
+						{
 							"name": "Integration",
 							"id": "builds-integration",
 							"slug": "integration",
-							"order": 100,
+							"order": 200,
 							"categories": [
 								{
 									"name": "Frameworks",
 									"id": "builds-integration-frameworks",
 									"slug": "frameworks",
-									"order": 100
+									"order": 200
 								}
 							]
 						},
@@ -127,19 +136,19 @@
 							"name": "Development",
 							"id": "builds-development",
 							"slug": "development",
-							"order": 200
+							"order": 300
 						},
 						{
-							"name": "Migration",
+							"name": "Migration / update",
 							"id": "builds-migration",
 							"slug": "migration",
-							"order": 300
+							"order": 400
 						},
 						{
 							"name": "Support",
 							"id": "builds-support",
 							"slug": "support",
-							"order": 400
+							"order": 500
 						}
 					]
 				}
@@ -167,7 +176,12 @@
 							"slug": "tutorials",
 							"order": 200
 						},
-
+						{
+							"name": "Developing custom plugins",
+							"id": "framework-plugins",
+							"slug": "plugins",
+							"order": 250
+						},
 						{
 							"name": "Deep dive",
 							"id": "framework-deep-dive",
@@ -205,23 +219,6 @@
 			]
 		},
 		{
-			"name": "Examples",
-			"id": "examples",
-			"slug": "examples",
-			"categories": [
-				{
-					"name": "Builds",
-					"id": "examples-builds",
-					"slug": "builds"
-				},
-				{
-					"name": "Framework",
-					"id": "examples-framework",
-					"slug": "framework"
-				}
-			]
-		},
-		{
 			"name": "Features",
 			"id": "features",
 			"slug": "features",
@@ -230,24 +227,28 @@
 					"name": "Collaboration",
 					"id": "features-collaboration",
 					"slug": "collaboration",
+					"badges": [ "premium" ],
 					"categories": [
 						{
 							"name": "Comments",
 							"id": "features-comments",
 							"slug": "comments",
-							"order": 100
+							"order": 100,
+							"badges": [ "premium" ]
 						},
 						{
 							"name": "Track changes",
 							"id": "features-track-changes",
 							"slug": "track-changes",
-							"order": 200
+							"order": 200,
+							"badges": [ "premium" ]
 						},
 						{
 							"name": "Real-time collaboration",
 							"id": "features-real-time-collaboration",
 							"slug": "real-time-collaboration",
-							"order": 300
+							"order": 300,
+							"badges": [ "premium" ]
 						},
 						{
 							"name": "Annotations",
@@ -278,7 +279,8 @@
 				{
 					"name": "Pagination",
 					"id": "features-pagination",
-					"slug": "pagination"
+					"slug": "pagination",
+					"badges": [ "premium" ]
 				},
 				{
 					"name": "Pasting",
@@ -288,12 +290,38 @@
 				{
 					"name": "Revision history",
 					"id": "features-revision-history",
-					"slug": "revision-history"
+					"slug": "revision-history",
+					"badges": [ "premium" ]
 				},
 				{
 					"name": "Toolbar",
 					"id": "features-toolbar",
 					"slug": "toolbar"
+				}
+			]
+		},
+		{
+			"name": "Examples",
+			"id": "examples",
+			"slug": "examples",
+			"categories": [
+				{
+					"name": "Predefined builds",
+					"id": "examples-builds",
+					"slug": "builds",
+					"order": 100
+				},
+				{
+					"name": "Custom builds",
+					"id": "examples-builds-custom",
+					"slug": "builds-custom",
+					"order": 200
+				},
+				{
+					"name": "Framework",
+					"id": "examples-framework",
+					"slug": "framework",
+					"order": 300
 				}
 			]
 		},

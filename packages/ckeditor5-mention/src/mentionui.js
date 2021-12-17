@@ -170,6 +170,9 @@ export default class MentionUI extends Plugin {
 			this._mentionsConfigurations.set( marker, definition );
 		}
 
+		this.listenTo( editor, 'change:isReadOnly', () => {
+			this._hideUIAndRemoveMarker();
+		} );
 		this.on( 'requestFeed:response', ( evt, data ) => this._handleFeedResponse( data ) );
 		this.on( 'requestFeed:error', () => this._hideUIAndRemoveMarker() );
 
@@ -219,6 +222,13 @@ export default class MentionUI extends Plugin {
 
 		mentionsView.items.bindTo( this._items ).using( data => {
 			const { item, marker } = data;
+
+			// Set to 10 by default for backwards compatibility. See: #10479
+			const dropdownLimit = this.editor.config.get( 'mention.dropdownLimit' ) || 10;
+
+			if ( mentionsView.items.length >= dropdownLimit ) {
+				return;
+			}
 
 			const listItemView = new MentionListItemView( locale );
 
@@ -463,7 +473,6 @@ export default class MentionUI extends Plugin {
 			this._balloon.add( {
 				view: this._mentionsView,
 				position: this._getBalloonPanelPositionData( markerMarker, this._mentionsView.position ),
-				withArrow: false,
 				singleViewMode: true
 			} );
 		}
@@ -586,7 +595,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right,
-				name: 'caret_se'
+				name: 'caret_se',
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -595,7 +607,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right,
-				name: 'caret_ne'
+				name: 'caret_ne',
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -604,7 +619,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.bottom + VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
-				name: 'caret_sw'
+				name: 'caret_sw',
+				config: {
+					withArrow: false
+				}
 			};
 		},
 
@@ -613,7 +631,10 @@ function getBalloonPanelPositions( preferredPosition ) {
 			return {
 				top: targetRect.top - balloonRect.height - VERTICAL_SPACING,
 				left: targetRect.right - balloonRect.width,
-				name: 'caret_nw'
+				name: 'caret_nw',
+				config: {
+					withArrow: false
+				}
 			};
 		}
 	};
@@ -693,10 +714,7 @@ function createFeedCallback( feedItems ) {
 
 				// The default feed is case insensitive.
 				return itemId.toLowerCase().includes( feedText.toLowerCase() );
-			} )
-			// Do not return more than 10 items.
-			.slice( 0, 10 );
-
+			} );
 		return filteredItems;
 	};
 }

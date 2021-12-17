@@ -1,6 +1,6 @@
 ---
 category: features
-modified_at: 2021-07-14
+modified_at: 2021-10-25
 ---
 
 # General HTML Support
@@ -198,17 +198,131 @@ htmlSupport: {
 
 The above configuration will work similarly to [`allowedContent: true`](/docs/ckeditor4/latest/api/CKEDITOR_config.html#cfg-allowedContent) option from CKEditor 4.
 
+### Security
+
+When you set up the GHS to allow elements like `<script>` or attributes like `onclick`, you expose the users of your application to a possibly malicious markup &mdash; whether it is a code mistakenly copied from a risky website or purposely provided by a bad actor. An example of that could be: `<div onclick="leakUserData()">`.
+
+The content inside the editor (what you see in the editing area) is filtered by default from typical content that could break the editor. However, the editor does not feature a full XSS filter. Thus, we recommend configuring GHS to enable specific HTML markup, instead of enabling all markup at once.
+
+Moreover, as a general rule, not exclusive to GHS, there should always be a sanitization process present on the back-end side of your application. Even the best filtering done on the browser side of your application can be mitigated and every network call can be manipulated, thus bypassing the front-end filtering. This can quickly become a security risk.
+
+In addition to the sanitization process and safe GHS configuration, it is highly recommended to set strict {@link builds/guides/integration/csp Content Security Policy} rules.
+
+### Enabling custom elements
+
+Custom HTML elements with attributes and classes can be defined.
+
+To use a new element, it has to be registered by {@link module:html-support/dataschema~DataSchema} as one of the types below:
+
+* Inline element.
+* Block element.
+
+To enable such elements and add attributes or classes to them, you need to use the {@link module:html-support/datafilter~DataFilter#allowElement allowElement} and {@link module:html-support/datafilter~DataFilter#allowAttributes allowAttributes} methods from the {@link module:html-support/datafilter~DataFilter DataFilter} API.
+
+Base implementation example:
+
+```js
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
+
+/**
+ * A plugin extending General HTML Support for example custom HTML elements.
+ */
+class ExtendHTMLSupport extends Plugin {
+	static get requires() {
+		return [ GeneralHtmlSupport ];
+	}
+
+	init() {
+		// Extend schema with custom HTML elements.
+		const dataFilter = this.editor.plugins.get( 'DataFilter' );
+		const dataSchema = this.editor.plugins.get( 'DataSchema' );
+
+		// Inline element
+		dataSchema.registerInlineElement( {
+			view: 'element-inline',
+			model: 'myElementInline'
+		} );
+
+		// Custom elements need to be registered using direct API instead of config.
+		dataFilter.allowElement( 'element-inline' );
+		dataFilter.allowAttributes( { name: 'element-inline', attributes: { 'data-foo': false }, classes: [ 'foo' ] } );
+
+		// Block element
+		dataSchema.registerBlockElement( {
+			view: 'element-block',
+			model: 'myElementBlock',
+			modelSchema: {
+				inheritAllFrom: '$block'
+			}
+		} );
+
+		dataFilter.allowElement( 'element-block' );
+	}
+}
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Essentials,
+			Paragraph,
+			ExtendHTMLSupport
+		],
+		htmlSupport: {
+			allow: [
+				{
+					name: /.*/,
+					attributes: true,
+					classes: true,
+					styles: true
+				}
+			]
+		}
+	} )
+```
+
+Both inline and block elements can be treated as object elements. To make it possible, it is necessary to set the {@link module:html-support/dataschema~DataSchemaDefinition#isObject isObject} property to `true`.
+
+```js
+// Inline object element
+dataSchema.registerInlineElement( {
+	view: 'object-inline',
+	model: 'myObjectInline',
+	isObject: true,
+	modelSchema: {
+		inheritAllFrom: '$htmlObjectInline'
+	}
+} );
+
+dataFilter.allowElement( 'object-inline' );
+
+// Block object element
+dataSchema.registerBlockElement( {
+	view: 'object-block',
+	model: 'myObjectBlock',
+	isObject: true,
+	modelSchema: {
+		inheritAllFrom: '$htmlObjectBlock'
+	}
+} );
+
+dataFilter.allowElement( 'object-block' );
+
+```
+
 ## Known issues
 
 It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.).
 
 Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes:
 
-* Some of the image features' markup [#9916](https://github.com/ckeditor/ckeditor5/issues/9916).
-* Some of the media embed features' markup [#9918](https://github.com/ckeditor/ckeditor5/issues/9918).
 * The `<ul>` and `<ol>` elements of the list feature [#9917](https://github.com/ckeditor/ckeditor5/issues/9917).
 
-We're open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
+We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 
 ## HTML comments
 
