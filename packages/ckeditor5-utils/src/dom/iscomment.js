@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils/dom/istext
+ * @module utils/dom/iscomment
  */
 
 /**
