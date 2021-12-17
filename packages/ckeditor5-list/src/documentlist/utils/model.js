@@ -49,7 +49,7 @@ export function getListItemBlocks( listItem, options = {} ) {
 		biggerIndent: includeNested,
 		includeSelf: isForward,
 		sameIndent: true,
-		sameItem: true
+		sameItemId: true
 	} ) );
 
 	return isForward ? items : items.reverse();
@@ -80,7 +80,7 @@ export function isFirstBlockOfListItem( listBlock ) {
 	const previousSibling = ListWalker.first( listBlock, {
 		direction: 'backward',
 		sameIndent: true,
-		sameItem: true
+		sameItemId: true
 	} );
 
 	if ( !previousSibling ) {
@@ -101,7 +101,7 @@ export function isLastBlockOfListItem( listBlock ) {
 	const nextSibling = ListWalker.first( listBlock, {
 		direction: 'forward',
 		sameIndent: true,
-		sameItem: true
+		sameItemId: true
 	} );
 
 	if ( !nextSibling ) {

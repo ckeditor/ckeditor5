@@ -10,21 +10,49 @@
 import { first } from 'ckeditor5/src/utils';
 
 export default class ListWalker {
+	/**
+	 * TODO
+	 *
+	 * @param {module:engine/model/element~Element} startElement Starting list item block element.
+	 * @param {Object} options
+	 * @param {'forward'|'backward'} [options.direction='backward']
+	 * @param {Boolean} [options.includeSelf=false]
+	 * @param {Boolean} [options.sameItem=false]
+	 * @param {Boolean} [options.sameIndent=false]
+	 * @param {Boolean} [options.smallerIndent=false]
+	 * @param {Boolean} [options.biggerIndent=false]
+	 */
 	constructor( startElement, options ) {
 		this._startElement = startElement;
-		this._startItemId = startElement.getAttribute( 'listItemId' );
 		this._startIndent = startElement.getAttribute( 'listIndent' );
+		this._startItemId = startElement.getAttribute( 'listItemId' );
 
 		this._isForward = options.direction == 'forward';
 		this._includeSelf = !!options.includeSelf;
-		this._sameItem = !!options.sameItem;
+		this._sameItemId = !!options.sameItemId;
 		this._sameIndent = !!options.sameIndent;
 		this._smallerIndent = !!options.smallerIndent;
 		this._biggerIndent = !!options.biggerIndent;
 	}
 
+	/**
+	 * TODO
+	 *
+	 * @param {module:engine/model/element~Element} startElement Starting list item block element.
+	 * @param {Object} options
+	 * @param {'forward'|'backward'} [options.direction='backward']
+	 * @param {Boolean} [options.includeSelf=false]
+	 * @param {Boolean} [options.sameItem=false]
+	 * @param {Boolean} [options.sameIndent=false]
+	 * @param {Boolean} [options.smallerIndent=false]
+	 * @param {Boolean} [options.biggerIndent=false]
+	 * @returns {module:engine/model/element~Element|null}
+	 */
 	static first( startElement, options ) {
-		return first( new this( startElement, options )[ Symbol.iterator ]() );
+		const walker = new this( startElement, options );
+		const iterator = walker[ Symbol.iterator ]();
+
+		return first( iterator );
 	}
 
 	* [ Symbol.iterator ]() {
@@ -66,7 +94,7 @@ export default class ListWalker {
 				}
 
 				// Abort if item has a different ID.
-				if ( this._sameItem && node.getAttribute( 'listItemId' ) != this._startItemId ) {
+				if ( this._sameItemId && node.getAttribute( 'listItemId' ) != this._startItemId ) {
 					break;
 				}
 			}
