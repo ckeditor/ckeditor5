@@ -21,7 +21,7 @@ import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import ListProperties from '@ckeditor/ckeditor5-list/src/liststyle';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';

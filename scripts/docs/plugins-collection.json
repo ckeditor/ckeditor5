@@ -121,7 +121,7 @@
   "packages/ckeditor5-link/src/linkui.js": "Linkui",
   "packages/ckeditor5-list/src/list.js": "List",
   "packages/ckeditor5-list/src/listediting.js": "Listediting",
-  "packages/ckeditor5-list/src/liststyle.js": "Liststyle",
+  "packages/ckeditor5-list/src/listproperties.js": "Liststyle",
   "packages/ckeditor5-list/src/listpropertiesediting.js": "Liststyleediting",
   "packages/ckeditor5-list/src/listpropertiesui.js": "Liststyleui",
   "packages/ckeditor5-list/src/listui.js": "Listui",

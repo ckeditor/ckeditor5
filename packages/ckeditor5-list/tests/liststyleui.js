@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ListProperties from '../src/liststyle';
+import ListProperties from '../src/listproperties';
 import ListPropertiesUI from '../src/listpropertiesui';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';

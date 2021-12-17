@@ -23,7 +23,7 @@ const DEFAULT_LIST_TYPE = 'default';
  * allows modifying the list style type.
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they're enabled in config.
- * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
+ * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
  */

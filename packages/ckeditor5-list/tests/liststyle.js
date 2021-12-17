@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import ListProperties from '../src/liststyle';
+import ListProperties from '../src/listproperties';
 import ListPropertiesEditing from '../src/listpropertiesediting';
 import ListPropertiesUI from '../src/listpropertiesui';
 

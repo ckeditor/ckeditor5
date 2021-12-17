@@ -13,7 +13,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ListProperties from '@ckeditor/ckeditor5-list/src/liststyle';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';

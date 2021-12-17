@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/liststyle
+ * @module list/listproperties
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -36,7 +36,7 @@ export default class ListProperties extends Plugin {
 }
 
 /**
- * The configuration of the {@link module:list/liststyle~ListProperties list properties} feature.
+ * The configuration of the {@link module:list/listproperties~ListProperties list properties} feature.
  *
  * This configuration controls the individual list properties. For instance, it enables or disables specific editor commands
  * operating on lists ({@link module:list/liststylecommand~ListStyleCommand `'listStyle'`},
@@ -64,7 +64,7 @@ export default class ListProperties extends Plugin {
  * When set, the list style feature will be enabled. It allows changing the `list-style-type` HTML attribute of the lists.
  *
  * @default true
- * @member {Boolean} module:list/liststyle~ListPropertiesConfig#styles
+ * @member {Boolean} module:list/listproperties~ListPropertiesConfig#styles
  */
 
 /**
@@ -73,7 +73,7 @@ export default class ListProperties extends Plugin {
  * **Note**: This configuration doesn't affect bulleted and todo lists.
  *
  * @default false
- * @member {Boolean} module:list/liststyle~ListPropertiesConfig#startIndex
+ * @member {Boolean} module:list/listproperties~ListPropertiesConfig#startIndex
  */
 
 /**
@@ -82,13 +82,13 @@ export default class ListProperties extends Plugin {
  * **Note**: This configuration doesn't affect bulleted and todo lists.
  *
  * @default false
- * @member {Boolean} module:list/liststyle~ListPropertiesConfig#reversed
+ * @member {Boolean} module:list/listproperties~ListPropertiesConfig#reversed
  */
 
 /**
- * The configuration of the {@link module:list/liststyle~ListProperties} feature.
+ * The configuration of the {@link module:list/listproperties~ListProperties} feature.
  *
- * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
+ * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
- * @member {module:list/liststyle~ListPropertiesConfig} module:list/list~ListConfig#properties
+ * @member {module:list/listproperties~ListPropertiesConfig} module:list/list~ListConfig#properties
  */
