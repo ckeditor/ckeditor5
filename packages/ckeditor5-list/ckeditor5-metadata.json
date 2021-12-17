@@ -72,7 +72,7 @@
 		},
 		{
 			"name": "List style",
-			"className": "ListStyle",
+			"className": "ListProperties",
 			"description": "Enables styling the list item markers for both ordered and unordered lists. You can choose various types of numerals and letters or visual markers to use with these lists.",
 			"docs": "features/lists/lists.html#list-styles",
 			"path": "src/liststyle.js",

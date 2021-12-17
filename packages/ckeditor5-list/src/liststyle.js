@@ -19,7 +19,7 @@ import ListPropertiesUI from './listpropertiesui';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListStyle extends Plugin {
+export default class ListProperties extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -31,12 +31,12 @@ export default class ListStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ListStyle';
+		return 'ListProperties';
 	}
 }
 
 /**
- * The configuration of the {@link module:list/liststyle~ListStyle list properties} feature.
+ * The configuration of the {@link module:list/liststyle~ListProperties list properties} feature.
  *
  * This configuration controls the individual list properties. For instance, it enables or disables specific editor commands
  * operating on lists ({@link module:list/liststylecommand~ListStyleCommand `'listStyle'`},
@@ -86,7 +86,7 @@ export default class ListStyle extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:list/liststyle~ListStyle} feature.
+ * The configuration of the {@link module:list/liststyle~ListProperties} feature.
  *
  * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
  *

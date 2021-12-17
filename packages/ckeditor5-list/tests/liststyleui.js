@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ListStyle from '../src/liststyle';
+import ListProperties from '../src/liststyle';
 import ListPropertiesUI from '../src/listpropertiesui';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
@@ -37,7 +37,7 @@ describe( 'ListPropertiesUI', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+			plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 			list: {
 				properties: {
 					styles: true,
@@ -310,7 +310,7 @@ describe( 'ListPropertiesUI', () => {
 					document.body.appendChild( editorElement );
 
 					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 						list: {
 							properties: {
 								styles: true,
@@ -336,7 +336,7 @@ describe( 'ListPropertiesUI', () => {
 					document.body.appendChild( editorElement );
 
 					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 						list: {
 							properties: {
 								styles: true,
@@ -362,7 +362,7 @@ describe( 'ListPropertiesUI', () => {
 					document.body.appendChild( editorElement );
 
 					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 						list: {
 							properties: {
 								styles: false,
