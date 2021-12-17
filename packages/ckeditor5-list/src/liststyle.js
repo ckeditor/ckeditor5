@@ -8,13 +8,13 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ListPropertiesEditing from './liststyleediting';
+import ListPropertiesEditing from './listpropertiesediting';
 import ListStyleUI from './liststyleui';
 
 /**
  * The list style feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/liststyleediting~ListPropertiesEditing list style editing feature}
+ * This is a "glue" plugin that loads the {@link module:list/listpropertiesediting~ListPropertiesEditing list style editing feature}
  * and the {@link module:list/liststyleui~ListStyleUI list style UI feature}.
  *
  * @extends module:core/plugin~Plugin

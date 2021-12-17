@@ -14,7 +14,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import ListPropertiesEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/listpropertiesediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
 import ListReversedCommand from '../src/listreversedcommand';

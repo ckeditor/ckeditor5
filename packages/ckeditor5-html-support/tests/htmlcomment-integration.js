@@ -30,7 +30,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
-import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/liststyleediting';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listpropertiesediting';
 import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
 
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';

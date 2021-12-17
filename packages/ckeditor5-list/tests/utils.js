@@ -9,7 +9,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import ListEditing from '../src/listediting';
-import ListPropertiesEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/listpropertiesediting';
 
 import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';

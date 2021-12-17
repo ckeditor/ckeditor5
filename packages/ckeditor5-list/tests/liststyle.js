@@ -4,7 +4,7 @@
  */
 
 import ListStyle from '../src/liststyle';
-import ListPropertiesEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/listpropertiesediting';
 import ListStyleUI from '../src/liststyleui';
 
 describe( 'ListStyle', () => {
