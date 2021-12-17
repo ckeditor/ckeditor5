@@ -27,7 +27,7 @@ const DEFAULT_LIST_TYPE = 'default';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListStyleEditing extends Plugin {
+export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -39,7 +39,7 @@ export default class ListStyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ListStyleEditing';
+		return 'ListPropertiesEditing';
 	}
 
 	/**
@@ -101,7 +101,7 @@ export default class ListStyleEditing extends Plugin {
 		const editor = this.editor;
 
 		// Enable post-fixer that removes the attributes from to-do list items only if the "TodoList" plugin is on.
-		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListStyleEditing`.
+		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListPropertiesEditing`.
 		if ( editor.commands.get( 'todoList' ) ) {
 			editor.model.document.registerPostFixer( removeListItemAttributesFromTodoList( editor ) );
 		}

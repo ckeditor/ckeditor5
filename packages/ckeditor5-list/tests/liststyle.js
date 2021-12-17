@@ -4,7 +4,7 @@
  */
 
 import ListStyle from '../src/liststyle';
-import ListStyleEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/liststyleediting';
 import ListStyleUI from '../src/liststyleui';
 
 describe( 'ListStyle', () => {
@@ -12,7 +12,7 @@ describe( 'ListStyle', () => {
 		expect( ListStyle.pluginName ).to.equal( 'ListStyle' );
 	} );
 
-	it( 'should require ListStyleEditing and ListStyleUI', () => {
-		expect( ListStyle.requires ).to.deep.equal( [ ListStyleEditing, ListStyleUI ] );
+	it( 'should require ListPropertiesEditing and ListStyleUI', () => {
+		expect( ListStyle.requires ).to.deep.equal( [ ListPropertiesEditing, ListStyleUI ] );
 	} );
 } );

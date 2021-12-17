@@ -14,25 +14,25 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import ListStyleEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/liststyleediting';
 import TodoListEditing from '../src/todolistediting';
 import ListStyleCommand from '../src/liststylecommand';
 import ListReversedCommand from '../src/listreversedcommand';
 import ListStartCommand from '../src/liststartcommand';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 
-describe( 'ListStyleEditing', () => {
+describe( 'ListPropertiesEditing', () => {
 	let editor, model, view;
 
 	it( 'should have pluginName', () => {
-		expect( ListStyleEditing.pluginName ).to.equal( 'ListStyleEditing' );
+		expect( ListPropertiesEditing.pluginName ).to.equal( 'ListPropertiesEditing' );
 	} );
 
 	describe( 'config', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ListStyleEditing ]
+					plugins: [ ListPropertiesEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -54,7 +54,7 @@ describe( 'ListStyleEditing', () => {
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( ListStyleEditing ) ).to.be.instanceOf( ListStyleEditing );
+			expect( editor.plugins.get( ListPropertiesEditing ) ).to.be.instanceOf( ListPropertiesEditing );
 		} );
 	} );
 
@@ -62,7 +62,7 @@ describe( 'ListStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: true, startIndex: false, reversed: false }
 					}
@@ -384,7 +384,7 @@ describe( 'ListStyleEditing', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, ListStyleEditing ],
+								plugins: [ Paragraph, ListPropertiesEditing ],
 								list: {
 									properties: { styles: true, startIndex: false, reversed: false }
 								}
@@ -1072,7 +1072,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
+							plugins: [ Paragraph, ListPropertiesEditing, Typing, UndoEditing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1166,8 +1166,8 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-						// TodoListEditing is at the end by design. Check `ListStyleEditing.afterInit()` call.
-							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+						// TodoListEditing is at the end by design. Check `ListPropertiesEditing.afterInit()` call.
+							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1243,7 +1243,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing ],
+							plugins: [ Paragraph, ListPropertiesEditing, Typing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1550,7 +1550,7 @@ describe( 'ListStyleEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
+							plugins: [ Paragraph, Clipboard, ListPropertiesEditing, UndoEditing ],
 							list: {
 								properties: { styles: true, startIndex: false, reversed: false }
 							}
@@ -1711,7 +1711,7 @@ describe( 'ListStyleEditing', () => {
 
 					return ClassicTestEditor
 						.create( container, {
-							plugins: [ Paragraph, ListStyleEditing, FontColor, Typing ]
+							plugins: [ Paragraph, ListPropertiesEditing, FontColor, Typing ]
 						} )
 						.then( newEditor => {
 							editor = newEditor;
@@ -1761,7 +1761,7 @@ describe( 'ListStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: false, startIndex: false, reversed: true }
 					}
@@ -2027,7 +2027,7 @@ describe( 'ListStyleEditing', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, ListStyleEditing ],
+								plugins: [ Paragraph, ListPropertiesEditing ],
 								list: {
 									properties: { styles: false, startIndex: false, reversed: true }
 								}
@@ -2762,7 +2762,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
+							plugins: [ Paragraph, ListPropertiesEditing, Typing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -2856,7 +2856,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -2932,7 +2932,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing ],
+							plugins: [ Paragraph, ListPropertiesEditing, Typing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -3242,7 +3242,7 @@ describe( 'ListStyleEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
+							plugins: [ Paragraph, Clipboard, ListPropertiesEditing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: false, reversed: true }
 							}
@@ -3400,7 +3400,7 @@ describe( 'ListStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: false, startIndex: true, reversed: false }
 					}
@@ -3657,7 +3657,7 @@ describe( 'ListStyleEditing', () => {
 					beforeEach( () => {
 						return VirtualTestEditor
 							.create( {
-								plugins: [ Paragraph, ListStyleEditing ],
+								plugins: [ Paragraph, ListPropertiesEditing ],
 								list: {
 									properties: { styles: false, startIndex: true, reversed: false }
 								}
@@ -4392,7 +4392,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing, UndoEditing ],
+							plugins: [ Paragraph, ListPropertiesEditing, Typing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -4486,7 +4486,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -4562,7 +4562,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, Typing ],
+							plugins: [ Paragraph, ListPropertiesEditing, Typing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -4872,7 +4872,7 @@ describe( 'ListStyleEditing', () => {
 
 					return ClassicTestEditor
 						.create( element, {
-							plugins: [ Paragraph, Clipboard, ListStyleEditing, UndoEditing ],
+							plugins: [ Paragraph, Clipboard, ListPropertiesEditing, UndoEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
@@ -5030,7 +5030,7 @@ describe( 'ListStyleEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Paragraph, ListStyleEditing, UndoEditing ],
+					plugins: [ Paragraph, ListPropertiesEditing, UndoEditing ],
 					list: {
 						properties: { styles: true, startIndex: true, reversed: true }
 					}
@@ -5545,7 +5545,7 @@ describe( 'ListStyleEditing', () => {
 				beforeEach( () => {
 					return VirtualTestEditor
 						.create( {
-							plugins: [ Paragraph, ListStyleEditing, TodoListEditing ],
+							plugins: [ Paragraph, ListPropertiesEditing, TodoListEditing ],
 							list: {
 								properties: { styles: false, startIndex: true, reversed: false }
 							}
