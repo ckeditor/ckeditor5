@@ -6,7 +6,7 @@
 /* globals document */
 
 import ListStyle from '../src/liststyle';
-import ListPropertiesUI from '../src/liststyleui';
+import ListPropertiesUI from '../src/listpropertiesui';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';

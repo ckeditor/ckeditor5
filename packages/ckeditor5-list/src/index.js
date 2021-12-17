@@ -12,7 +12,7 @@ export { default as ListEditing } from './listediting';
 export { default as ListUI } from './listui';
 export { default as ListStyle } from './liststyle';
 export { default as ListPropertiesEditing } from './listpropertiesediting';
-export { default as ListPropertiesUI } from './liststyleui';
+export { default as ListPropertiesUI } from './listpropertiesui';
 export { default as TodoList } from './todolist';
 export { default as TodoListEditing } from './todolistediting';
 export { default as TodoListUI } from './todolistui';

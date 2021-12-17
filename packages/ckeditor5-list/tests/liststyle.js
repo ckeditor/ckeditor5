@@ -5,7 +5,7 @@
 
 import ListStyle from '../src/liststyle';
 import ListPropertiesEditing from '../src/listpropertiesediting';
-import ListPropertiesUI from '../src/liststyleui';
+import ListPropertiesUI from '../src/listpropertiesui';
 
 describe( 'ListStyle', () => {
 	it( 'should be named', () => {

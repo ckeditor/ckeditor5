@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/liststyleui
+ * @module list/listpropertiesui
  */
 
 import { Plugin } from 'ckeditor5/src/core';

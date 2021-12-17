@@ -123,7 +123,7 @@
   "packages/ckeditor5-list/src/listediting.js": "Listediting",
   "packages/ckeditor5-list/src/liststyle.js": "Liststyle",
   "packages/ckeditor5-list/src/listpropertiesediting.js": "Liststyleediting",
-  "packages/ckeditor5-list/src/liststyleui.js": "Liststyleui",
+  "packages/ckeditor5-list/src/listpropertiesui.js": "Liststyleui",
   "packages/ckeditor5-list/src/listui.js": "Listui",
   "packages/ckeditor5-list/src/todolist.js": "Todolist",
   "packages/ckeditor5-list/src/todolistediting.js": "Todolistediting",
