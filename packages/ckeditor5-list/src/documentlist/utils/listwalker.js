@@ -24,9 +24,9 @@ export default class ListWalker {
 	 * as the start element.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level then the start block should be included
+	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level than the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level then the start block should be included
+	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level than the start block should be included
 	 * in the result.
 	 */
 	constructor( startElement, options ) {
@@ -87,7 +87,7 @@ export default class ListWalker {
 		this._sameIndent = !!options.sameIndent;
 
 		/**
-		 * Whether blocks with a smaller indent level then the start block should be included in the result.
+		 * Whether blocks with a smaller indent level than the start block should be included in the result.
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -95,7 +95,7 @@ export default class ListWalker {
 		this._smallerIndent = !!options.smallerIndent;
 
 		/**
-		 * Whether blocks with a bigger indent level then the start block should be included in the result.
+		 * Whether blocks with a bigger indent level than the start block should be included in the result.
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -114,9 +114,9 @@ export default class ListWalker {
 	 * as the start element.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level then the start block should be included
+	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level than the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level then the start block should be included
+	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level than the start block should be included
 	 * in the result.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
