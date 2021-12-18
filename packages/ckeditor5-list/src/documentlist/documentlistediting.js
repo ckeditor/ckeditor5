@@ -26,6 +26,7 @@ import {
 	fixListIndents,
 	fixListItemIds
 } from './utils/postfixers';
+import { iterateSiblingListBlocks } from './utils/listwalker';
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
@@ -242,7 +243,7 @@ function createModelIndentPasteFixer( model ) {
 		// that list will be broken.
 		// Note: we also need to handle singular elements because inserting item with indent 0 into 0,1,[],2
 		// would create incorrect model.
-		let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
+		const item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
 
 		if ( !item || !item.hasAttribute( 'listItemId' ) ) {
 			return;
@@ -283,10 +284,8 @@ function createModelIndentPasteFixer( model ) {
 
 		model.change( writer => {
 			// Adjust indent of all "first" list items in inserted data.
-			while ( item && item.hasAttribute( 'listItemId' ) ) {
-				writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange, item );
-
-				item = item.nextSibling;
+			for ( const { node } of iterateSiblingListBlocks( item, 'forward' ) ) {
+				writer.setAttribute( 'listIndent', node.getAttribute( 'listIndent' ) + indentChange, node );
 			}
 		} );
 	};

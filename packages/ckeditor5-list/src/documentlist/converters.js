@@ -15,7 +15,7 @@ import {
 	isListItemView,
 	getViewElementNameForListType
 } from './utils/view';
-import ListWalker from './utils/listwalker';
+import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
 
 import { uid } from 'ckeditor5/src/utils';
@@ -161,27 +161,23 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			const visited = new Set();
 			const stack = [];
 
-			for (
-				let prev = null, item = listHead;
-				item && item.hasAttribute( 'listItemId' );
-				prev = item, item = item.nextSibling
-			) {
-				if ( visited.has( item ) ) {
+			for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+				if ( visited.has( node ) ) {
 					continue;
 				}
 
-				const itemIndent = item.getAttribute( 'listIndent' );
+				const itemIndent = node.getAttribute( 'listIndent' );
 
-				if ( prev && itemIndent < prev.getAttribute( 'listIndent' ) ) {
+				if ( previous && itemIndent < previous.getAttribute( 'listIndent' ) ) {
 					stack.length = itemIndent + 1;
 				}
 
 				stack[ itemIndent ] = {
-					id: item.getAttribute( 'listItemId' ),
-					type: item.getAttribute( 'listType' )
+					id: node.getAttribute( 'listItemId' ),
+					type: node.getAttribute( 'listType' )
 				};
 
-				const blocks = getListItemBlocks( item, { direction: 'forward' } );
+				const blocks = getListItemBlocks( node, { direction: 'forward' } );
 
 				for ( const block of blocks ) {
 					visited.add( block );

@@ -7,8 +7,9 @@
  * @module list/documentlist/utils/postfixers
  */
 
-import { uid } from 'ckeditor5/src/utils';
+import { iterateSiblingListBlocks } from './listwalker';
 import { getListItemBlocks } from './model';
+import { uid } from 'ckeditor5/src/utils';
 
 /**
  * Based on the provided positions looks for the list head and stores it in the provided map.
@@ -30,17 +31,7 @@ export function findAndAddListHeadToMap( position, itemToListHead ) {
 	} else {
 		let listHead = previousNode;
 
-		if ( itemToListHead.has( listHead ) ) {
-			return;
-		}
-
-		for (
-			let previousSibling = listHead.previousSibling;
-			previousSibling && previousSibling.hasAttribute( 'listItemId' );
-			previousSibling = listHead.previousSibling
-		) {
-			listHead = previousSibling;
-
+		for ( { node: listHead } of iterateSiblingListBlocks( listHead, 'backward' ) ) {
 			if ( itemToListHead.has( listHead ) ) {
 				return;
 			}
@@ -64,12 +55,8 @@ export function fixListIndents( listHead, writer ) {
 	let fixBy = null;
 	let applied = false;
 
-	for (
-		let item = listHead;
-		item && item.hasAttribute( 'listItemId' );
-		item = item.nextSibling
-	) {
-		const itemIndent = item.getAttribute( 'listIndent' );
+	for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+		const itemIndent = node.getAttribute( 'listIndent' );
 
 		if ( itemIndent > maxIndent ) {
 			let newIndent;
@@ -89,7 +76,7 @@ export function fixListIndents( listHead, writer ) {
 				newIndent = prevIndent + 1;
 			}
 
-			writer.setAttribute( 'listIndent', newIndent, item );
+			writer.setAttribute( 'listIndent', newIndent, node );
 
 			applied = true;
 			prevIndent = newIndent;
@@ -116,17 +103,13 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 	const visited = new Set();
 	let applied = false;
 
-	for (
-		let item = listHead;
-		item && item.hasAttribute( 'listItemId' );
-		item = item.nextSibling
-	) {
-		if ( visited.has( item ) ) {
+	for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+		if ( visited.has( node ) ) {
 			continue;
 		}
 
-		let listType = item.getAttribute( 'listType' );
-		let listItemId = item.getAttribute( 'listItemId' );
+		let listType = node.getAttribute( 'listType' );
+		let listItemId = node.getAttribute( 'listItemId' );
 
 		// Use a new ID if this one was spot earlier (even in other list).
 		if ( seenIds.has( listItemId ) ) {
@@ -135,7 +118,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 
 		seenIds.add( listItemId );
 
-		for ( const block of getListItemBlocks( item, { direction: 'forward' } ) ) {
+		for ( const block of getListItemBlocks( node, { direction: 'forward' } ) ) {
 			visited.add( block );
 
 			// Use a new ID if a block of a bigger list item has different type.

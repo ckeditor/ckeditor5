@@ -135,7 +135,7 @@ export default class ListWalker {
 	* [ Symbol.iterator ]() {
 		const nestedItems = [];
 
-		for ( const node of iterateSiblingListBlocks( this._getStartNode(), this._isForward ) ) {
+		for ( const { node } of iterateSiblingListBlocks( this._getStartNode(), this._isForward ? 'forward' : 'backward' ) ) {
 			const indent = node.getAttribute( 'listIndent' );
 
 			// Leaving a nested list.
@@ -213,11 +213,22 @@ export default class ListWalker {
 	}
 }
 
-// Iterates sibling list blocks starting from the given node.
-function* iterateSiblingListBlocks( node, isForward ) {
-	while ( node && node.hasAttribute( 'listItemId' ) ) {
-		yield node;
+/**
+ * Iterates sibling list blocks starting from the given node.
+ *
+ * @protected
+ * @param {module:engine/model/node~Node} node The model node.
+ * @param {'backward'|'forward'} direction Iteration direction.
+ * @returns {Iterable.<Object>} The object with `node` and `previous` {@link module:engine/model/element~Element blocks}.
+ */
+export function* iterateSiblingListBlocks( node, direction ) {
+	const isForward = direction == 'forward';
+	let previous = null;
 
+	while ( node && node.hasAttribute( 'listItemId' ) ) {
+		yield { node, previous };
+
+		previous = node;
 		node = isForward ? node.nextSibling : node.previousSibling;
 	}
 }
