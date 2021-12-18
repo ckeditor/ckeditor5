@@ -451,10 +451,7 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 			break;
 		}
 
-		currentListItem = ListWalker.first( currentListItem, {
-			smallerIndent: true,
-			includeSelf: false
-		} );
+		currentListItem = ListWalker.first( currentListItem, { smallerIndent: true } );
 
 		// There is no list item with smaller indent, this means this is a document fragment containing
 		// only a part of nested list (like copy to clipboard) so we don't need to try to wrap it further.

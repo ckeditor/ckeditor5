@@ -8,7 +8,6 @@ import {
 	getAllListItemBlocks,
 	getListItemBlocks,
 	getNestedListBlocks,
-	getSiblingListBlock,
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
@@ -20,7 +19,7 @@ import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'DocumentList - utils', () => {
+describe( 'DocumentList - utils - model', () => {
 	let model, schema;
 
 	testUtils.createSinonSandbox();
@@ -35,132 +34,132 @@ describe( 'DocumentList - utils', () => {
 	} );
 
 	// TODO ListWalker
-	describe.skip( 'getSiblingListBlock()', () => {
-		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item, wanted item.
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListBlock( listItem, {
-				sameIndent: true,
-				listIndent: 0
-			} );
-
-			expect( foundElement ).to.equal( fragment.getChild( 1 ) );
-		} );
-
-		it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0, direction="forward")', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item, wanted item.
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListBlock( listItem, {
-				sameIndent: true,
-				listIndent: 0,
-				direction: 'forward'
-			} );
-
-			expect( foundElement ).to.equal( fragment.getChild( 1 ) );
-		} );
-
-		it( 'should not return the listItem if there is an outdented item before (sameIndent, listIndent=1)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">1.1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">1.2</paragraph>' + // Wanted item.
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">2.</paragraph>' + // Starting item.
-				'<paragraph listType="bulleted" listItemId="f" listIndent="1">2.1.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="g" listIndent="1">2.2.</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 5 );
-			const foundElement = getSiblingListBlock( listItem.previousSibling, {
-				sameIndent: true,
-				listIndent: 1
-			} );
-
-			expect( foundElement ).to.be.null;
-		} );
-
-		it( 'should not return the listItem if there is an outdented item before (sameIndent, listIndent=1, direction="forward")', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item.
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">2.1.</paragraph>' + // Wanted item.
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">2.2.</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListBlock( listItem.nextSibling, {
-				sameIndent: true,
-				listIndent: 1,
-				direction: 'forward'
-			} );
-
-			expect( foundElement ).to.be.null;
-		} );
-
-		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>' + // Wanted item.
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">2.1.</paragraph>' + // Starting item.
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">2.2.</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 4 );
-			const foundElement = getSiblingListBlock( listItem, {
-				smallerIndent: true,
-				listIndent: 1
-			} );
-
-			expect( foundElement ).to.equal( fragment.getChild( 2 ) );
-		} );
-
-		it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1, direction="forward")', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">0.1.</paragraph>' + // Starting item.
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">0.2.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">0.3.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">1.</paragraph>'; // Wanted item.
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListBlock( listItem, {
-				smallerIndent: true,
-				listIndent: 1,
-				direction: 'forward'
-			} );
-
-			expect( foundElement ).to.equal( fragment.getChild( 4 ) );
-		} );
-
-		it( 'should return null if there were no items matching options', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const listItem = fragment.getChild( 1 );
-			const foundElement = getSiblingListBlock( listItem, {
-				smallerIndent: true,
-				listIndent: 0
-			} );
-
-			expect( foundElement ).to.be.null;
-		} );
-	} );
+	// describe( 'getSiblingListBlock()', () => {
+	// 	it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0)', () => {
+	// 		const input =
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item, wanted item.
+	// 			'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>';
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 1 );
+	// 		const foundElement = getSiblingListBlock( listItem, {
+	// 			sameIndent: true,
+	// 			listIndent: 0
+	// 		} );
+	//
+	// 		expect( foundElement ).to.equal( fragment.getChild( 1 ) );
+	// 	} );
+	//
+	// 	it( 'should return the passed element if it matches the criteria (sameIndent, listIndent=0, direction="forward")', () => {
+	// 		const input =
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item, wanted item.
+	// 			'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>';
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 1 );
+	// 		const foundElement = getSiblingListBlock( listItem, {
+	// 			sameIndent: true,
+	// 			listIndent: 0,
+	// 			direction: 'forward'
+	// 		} );
+	//
+	// 		expect( foundElement ).to.equal( fragment.getChild( 1 ) );
+	// 	} );
+	//
+	// 	it( 'should not return the listItem if there is an outdented item before (sameIndent, listIndent=1)', () => {
+	// 		const input =
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="c" listIndent="1">1.1</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="d" listIndent="1">1.2</paragraph>' + // Wanted item.
+	// 			'<paragraph listType="bulleted" listItemId="e" listIndent="0">2.</paragraph>' + // Starting item.
+	// 			'<paragraph listType="bulleted" listItemId="f" listIndent="1">2.1.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="g" listIndent="1">2.2.</paragraph>';
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 5 );
+	// 		const foundElement = getSiblingListBlock( listItem.previousSibling, {
+	// 			sameIndent: true,
+	// 			listIndent: 1
+	// 		} );
+	//
+	// 		expect( foundElement ).to.be.null;
+	// 	} );
+	//
+	// 	it( 'should not return the listItem if there is an outdented item before (sameIndent, listIndent=1, direction="forward")', () => {
+	// 		const input =
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' + // Starting item.
+	// 			'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="d" listIndent="1">2.1.</paragraph>' + // Wanted item.
+	// 			'<paragraph listType="bulleted" listItemId="e" listIndent="1">2.2.</paragraph>';
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 1 );
+	// 		const foundElement = getSiblingListBlock( listItem.nextSibling, {
+	// 			sameIndent: true,
+	// 			listIndent: 1,
+	// 			direction: 'forward'
+	// 		} );
+	//
+	// 		expect( foundElement ).to.be.null;
+	// 	} );
+	//
+	// 	it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1)', () => {
+	// 		const input =
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="c" listIndent="0">2.</paragraph>' + // Wanted item.
+	// 			'<paragraph listType="bulleted" listItemId="d" listIndent="1">2.1.</paragraph>' + // Starting item.
+	// 			'<paragraph listType="bulleted" listItemId="e" listIndent="1">2.2.</paragraph>';
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 4 );
+	// 		const foundElement = getSiblingListBlock( listItem, {
+	// 			smallerIndent: true,
+	// 			listIndent: 1
+	// 		} );
+	//
+	// 		expect( foundElement ).to.equal( fragment.getChild( 2 ) );
+	// 	} );
+	//
+	// 	it( 'should return the first listItem that matches criteria (smallerIndent, listIndent=1, direction="forward")', () => {
+	// 		const input =
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="1">0.1.</paragraph>' + // Starting item.
+	// 			'<paragraph listType="bulleted" listItemId="c" listIndent="1">0.2.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="d" listIndent="1">0.3.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="e" listIndent="0">1.</paragraph>'; // Wanted item.
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 1 );
+	// 		const foundElement = getSiblingListBlock( listItem, {
+	// 			smallerIndent: true,
+	// 			listIndent: 1,
+	// 			direction: 'forward'
+	// 		} );
+	//
+	// 		expect( foundElement ).to.equal( fragment.getChild( 4 ) );
+	// 	} );
+	//
+	// 	it( 'should return null if there were no items matching options', () => {
+	// 		const input =
+	// 			'<paragraph>foo</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
+	// 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>';
+	//
+	// 		const fragment = parseModel( input, schema );
+	// 		const listItem = fragment.getChild( 1 );
+	// 		const foundElement = getSiblingListBlock( listItem, {
+	// 			smallerIndent: true,
+	// 			listIndent: 0
+	// 		} );
+	//
+	// 		expect( foundElement ).to.be.null;
+	// 	} );
+	// } );
 
 	describe( 'getAllListItemBlocks()', () => {
 		it( 'should return a single item if it meets conditions', () => {
@@ -404,47 +403,48 @@ describe( 'DocumentList - utils', () => {
 			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 2 ) );
 		} );
 
-		it( 'should include nested blocks if requested', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">e</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const forwardElements = getListItemBlocks( fragment.getChild( 1 ), { direction: 'forward', includeNested: true } );
-			const backwardElements = getListItemBlocks( fragment.getChild( 4 ), { direction: 'backward', includeNested: true } );
-
-			expect( forwardElements.length ).to.equal( 2 );
-			expect( forwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( forwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-
-			expect( backwardElements.length ).to.equal( 1 );
-			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 3 ) );
-		} );
-
-		it( 'should include nested blocks if requested (multi block item with nested item inside)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">e</paragraph>';
-
-			const fragment = parseModel( input, schema );
-			const forwardElements = getListItemBlocks( fragment.getChild( 1 ), { direction: 'forward', includeNested: true } );
-			const backwardElements = getListItemBlocks( fragment.getChild( 3 ), { direction: 'backward', includeNested: true } );
-
-			expect( forwardElements.length ).to.equal( 3 );
-			expect( forwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( forwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-			expect( forwardElements[ 2 ] ).to.equal( fragment.getChild( 3 ) );
-
-			expect( backwardElements.length ).to.equal( 2 );
-			expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
-			expect( backwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
-		} );
+		// TODO ListWalker
+		// it( 'should include nested blocks if requested', () => {
+		// 	const input =
+		// 		'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="c" listIndent="1">c</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="d" listIndent="0">e</paragraph>';
+		//
+		// 	const fragment = parseModel( input, schema );
+		// 	const forwardElements = getListItemBlocks( fragment.getChild( 1 ), { direction: 'forward', includeNested: true } );
+		// 	const backwardElements = getListItemBlocks( fragment.getChild( 4 ), { direction: 'backward', includeNested: true } );
+		//
+		// 	expect( forwardElements.length ).to.equal( 2 );
+		// 	expect( forwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+		// 	expect( forwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+		//
+		// 	expect( backwardElements.length ).to.equal( 1 );
+		// 	expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 3 ) );
+		// } );
+		//
+		// it( 'should include nested blocks if requested (multi block item with nested item inside)', () => {
+		// 	const input =
+		// 		'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="c" listIndent="1">c</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="b" listIndent="0">d</paragraph>' +
+		// 		'<paragraph listType="bulleted" listItemId="d" listIndent="0">e</paragraph>';
+		//
+		// 	const fragment = parseModel( input, schema );
+		// 	const forwardElements = getListItemBlocks( fragment.getChild( 1 ), { direction: 'forward', includeNested: true } );
+		// 	const backwardElements = getListItemBlocks( fragment.getChild( 3 ), { direction: 'backward', includeNested: true } );
+		//
+		// 	expect( forwardElements.length ).to.equal( 3 );
+		// 	expect( forwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+		// 	expect( forwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+		// 	expect( forwardElements[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+		//
+		// 	expect( backwardElements.length ).to.equal( 2 );
+		// 	expect( backwardElements[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+		// 	expect( backwardElements[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+		// } );
 	} );
 
 	describe( 'getNestedListBlocks()', () => {

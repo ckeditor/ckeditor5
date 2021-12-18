@@ -9,43 +9,115 @@
 
 import { first } from 'ckeditor5/src/utils';
 
+/**
+ * Document list blocks iterator.
+ */
 export default class ListWalker {
 	/**
-	 * TODO
+	 * Creates a document list iterator.
 	 *
-	 * @param {module:engine/model/element~Element} startElement Starting list item block element.
+	 * @param {module:engine/model/element~Element} startElement The start list item block element.
 	 * @param {Object} options
-	 * @param {'forward'|'backward'} [options.direction='backward']
-	 * @param {Boolean} [options.includeSelf=false]
-	 * @param {Boolean} [options.sameItem=false]
-	 * @param {Boolean} [options.sameIndent=false]
-	 * @param {Boolean} [options.smallerIndent=false]
-	 * @param {Boolean} [options.biggerIndent=false]
+	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
+	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
+	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
+	 * as the start element.
+	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
+	 * in the result.
+	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level then the start block should be included
+	 * in the result.
+	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level then the start block should be included
+	 * in the result.
 	 */
 	constructor( startElement, options ) {
+		/**
+		 * The start list item block element.
+		 *
+		 * @private
+		 * @type {module:engine/model/element~Element}
+		 */
 		this._startElement = startElement;
+
+		/**
+		 * The indent of the start block.
+		 *
+		 * @private
+		 * @type {Number}
+		 */
 		this._startIndent = startElement.getAttribute( 'listIndent' );
+
+		/**
+		 * The `listItemId` of the start block.
+		 *
+		 * @private
+		 * @type {String}
+		 */
 		this._startItemId = startElement.getAttribute( 'listItemId' );
 
+		/**
+		 * The iterating direction.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._isForward = options.direction == 'forward';
+
+		/**
+		 * Whether should return only blocks with the same `listItemId` attribute as the start element.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._includeSelf = !!options.includeSelf;
+
+		/**
+		 * Whether only blocks with the `listItemId` attribute same as the start element should be included.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._sameItemId = !!options.sameItemId;
+
+		/**
+		 * Whether blocks with the same indent level as the start block should be included in the result.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._sameIndent = !!options.sameIndent;
+
+		/**
+		 * Whether blocks with a smaller indent level then the start block should be included in the result.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._smallerIndent = !!options.smallerIndent;
+
+		/**
+		 * Whether blocks with a bigger indent level then the start block should be included in the result.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
 		this._biggerIndent = !!options.biggerIndent;
 	}
 
 	/**
-	 * TODO
+	 * Performs only first step of iteration and returns the result.
 	 *
-	 * @param {module:engine/model/element~Element} startElement Starting list item block element.
+	 * @param {module:engine/model/element~Element} startElement The start list item block element.
 	 * @param {Object} options
-	 * @param {'forward'|'backward'} [options.direction='backward']
-	 * @param {Boolean} [options.includeSelf=false]
-	 * @param {Boolean} [options.sameItem=false]
-	 * @param {Boolean} [options.sameIndent=false]
-	 * @param {Boolean} [options.smallerIndent=false]
-	 * @param {Boolean} [options.biggerIndent=false]
+	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
+	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
+	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
+	 * as the start element.
+	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
+	 * in the result.
+	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level then the start block should be included
+	 * in the result.
+	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level then the start block should be included
+	 * in the result.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
 	static first( startElement, options ) {
@@ -55,6 +127,11 @@ export default class ListWalker {
 		return first( iterator );
 	}
 
+	/**
+	 * Iterable interface.
+	 *
+	 * @returns {Iterable.<module:engine/model/element~Element>}
+	 */
 	* [ Symbol.iterator ]() {
 		const nestedItems = [];
 
@@ -82,10 +159,11 @@ export default class ListWalker {
 					continue;
 				}
 			}
-			// Same indent level item.
-			else /* if ( indent == this._startIndent ) */ {
+			// Same indent level block.
+			else {
 				// Ignore same indent block.
 				if ( !this._sameIndent ) {
+					// While looking for nested blocks, stop iterating while encountering first same indent block.
 					if ( this._biggerIndent ) {
 						break;
 					}
@@ -109,6 +187,12 @@ export default class ListWalker {
 		}
 	}
 
+	/**
+	 * Returns the model element to start iterating.
+	 *
+	 * @private
+	 * @returns {module:engine/model/element~Element}
+	 */
 	_getStartNode() {
 		if ( this._includeSelf ) {
 			return this._startElement;
@@ -120,6 +204,7 @@ export default class ListWalker {
 	}
 }
 
+// Iterates sibling list blocks starting from the given node.
 function* iterateSiblingListBlocks( node, isForward ) {
 	while ( node && node.hasAttribute( 'listItemId' ) ) {
 		yield node;

@@ -14,7 +14,7 @@ import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { stringify as stringifyModel, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'DocumentList - utils', () => {
+describe( 'DocumentList - utils - postfixers', () => {
 	let model, schema;
 
 	testUtils.createSinonSandbox();

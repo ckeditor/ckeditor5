@@ -19,7 +19,7 @@ import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'DocumentList - utils', () => {
+describe( 'DocumentList - utils - view', () => {
 	let viewUpcastWriter, viewDowncastWriter;
 
 	testUtils.createSinonSandbox();

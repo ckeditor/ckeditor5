@@ -119,9 +119,7 @@ export default class DocumentListIndentCommand extends Command {
 		firstBlock = blocks[ 0 ];
 
 		// Check if there is any list item before selected items that could become a parent of selected items.
-		const siblingItem = ListWalker.first( firstBlock, {
-			sameIndent: true
-		} );
+		const siblingItem = ListWalker.first( firstBlock, { sameIndent: true } );
 
 		if ( !siblingItem ) {
 			return false;

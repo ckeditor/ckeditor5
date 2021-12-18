@@ -37,16 +37,13 @@ export function getAllListItemBlocks( listItem ) {
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
- * @param {Boolean} [options.includeNested=false] Whether nested blocks should be included.
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItemBlocks( listItem, options = {} ) {
 	const isForward = options.direction == 'forward';
-	const includeNested = !!options.includeNested;
 
 	const items = Array.from( new ListWalker( listItem, {
 		direction: options.direction,
-		biggerIndent: includeNested,
 		includeSelf: isForward,
 		sameIndent: true,
 		sameItemId: true
@@ -78,7 +75,6 @@ export function getNestedListBlocks( listItem ) {
  */
 export function isFirstBlockOfListItem( listBlock ) {
 	const previousSibling = ListWalker.first( listBlock, {
-		direction: 'backward',
 		sameIndent: true,
 		sameItemId: true
 	} );
@@ -118,17 +114,29 @@ export function isLastBlockOfListItem( listBlock ) {
  * @param {Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
  */
 export function expandListBlocksToCompleteItems( blocks ) {
-	const firstBlock = blocks[ 0 ];
-	const lastBlock = blocks[ blocks.length - 1 ];
+	const walkerOptions = {
+		biggerIndent: true,
+		sameIndent: true,
+		sameItemId: true
+	};
 
 	// Add missing blocks of the first selected list item.
-	blocks.splice( 0, 0, ...getListItemBlocks( firstBlock, { direction: 'backward', includeNested: true } ) );
+	const firstBlock = blocks[ 0 ];
+	const backwardWalker = new ListWalker( firstBlock, walkerOptions );
+
+	for ( const block of backwardWalker ) {
+		blocks.unshift( block );
+	}
 
 	// Add missing blocks of the last selected list item.
-	for ( const item of getListItemBlocks( lastBlock, { direction: 'forward', includeNested: true } ) ) {
-		if ( item != lastBlock ) {
-			blocks.push( item );
-		}
+	const lastBlock = blocks[ blocks.length - 1 ];
+	const forwardWalker = new ListWalker( lastBlock, {
+		...walkerOptions,
+		direction: 'forward'
+	} );
+
+	for ( const block of forwardWalker ) {
+		blocks.push( block );
 	}
 }
 
