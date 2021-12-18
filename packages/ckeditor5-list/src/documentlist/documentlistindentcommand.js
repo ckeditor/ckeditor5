@@ -61,7 +61,7 @@ export default class DocumentListIndentCommand extends Command {
 
 		model.change( writer => {
 			// Handle selection contained in the single list item and starting in the following blocks.
-			if ( startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) ) {
+			if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 				// Do nothing while indenting, but split list item on outdent.
 				if ( this._indentBy < 0 ) {
 					splitListItemBefore( blocks[ 0 ], writer );
@@ -111,7 +111,7 @@ export default class DocumentListIndentCommand extends Command {
 		}
 
 		// Indenting of the following blocks of a list item is not allowed.
-		if ( startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) ) {
+		if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 			return false;
 		}
 
@@ -145,19 +145,9 @@ function getSelectedListBlocks( selection ) {
 	return blocks;
 }
 
-// Checks whether the given blocks are related to a single list item and does not include the first block of the list item.
-// TODO split into 2 helpers
-function startsInTheMiddleOfTheOnlyOneSelectedListItem( blocks ) {
-	const firstItem = blocks[ 0 ];
+// Checks whether the given blocks are related to a single list item.
+function isOnlyOneListItemSelected( blocks ) {
+	const firstItemId = blocks[ 0 ].getAttribute( 'listItemId' );
 
-	// It's not a middle block;
-	if ( isFirstBlockOfListItem( firstItem ) ) {
-		return false;
-	}
-
-	const firstItemId = firstItem.getAttribute( 'listItemId' );
-	const isSingleListItemSelected = !blocks.some( item => item.getAttribute( 'listItemId' ) != firstItemId );
-
-	// Is only one list item is selected?
-	return isSingleListItemSelected;
+	return !blocks.some( item => item.getAttribute( 'listItemId' ) != firstItemId );
 }
