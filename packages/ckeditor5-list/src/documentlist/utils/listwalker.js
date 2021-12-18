@@ -39,12 +39,12 @@ export default class ListWalker {
 		this._startElement = startElement;
 
 		/**
-		 * The indent of the start block.
+		 * The reference indent. Initialized by the indent of the start block.
 		 *
 		 * @private
 		 * @type {Number}
 		 */
-		this._startIndent = startElement.getAttribute( 'listIndent' );
+		this._referenceIndent = startElement.getAttribute( 'listIndent' );
 
 		/**
 		 * The `listItemId` of the start block.
@@ -139,14 +139,17 @@ export default class ListWalker {
 			const indent = node.getAttribute( 'listIndent' );
 
 			// Leaving a nested list.
-			if ( indent < this._startIndent ) {
+			if ( indent < this._referenceIndent ) {
 				// Abort searching blocks.
 				if ( !this._smallerIndent ) {
 					break;
 				}
+
+				// While searching for smaller indents, update the reference indent to find another parent in the next step.
+				this._referenceIndent = indent;
 			}
 			// Entering a nested list.
-			else if ( indent > this._startIndent ) {
+			else if ( indent > this._referenceIndent ) {
 				// Ignore nested blocks.
 				if ( !this._biggerIndent ) {
 					continue;
@@ -165,6 +168,12 @@ export default class ListWalker {
 				if ( !this._sameIndent ) {
 					// While looking for nested blocks, stop iterating while encountering first same indent block.
 					if ( this._biggerIndent ) {
+						// No more nested blocks so yield nested items.
+						if ( nestedItems.length ) {
+							yield* nestedItems;
+							nestedItems.length = 0;
+						}
+
 						break;
 					}
 
