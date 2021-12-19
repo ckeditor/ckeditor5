@@ -23,7 +23,6 @@ git commit -am "Internal: Bumped the year." && git push
 require( '@ckeditor/ckeditor5-dev-env' )
 	.bumpYear( {
 		cwd: process.cwd(),
-		initialYear: '2003',
 		globPatterns: [
 			{ // LICENSE.md, .eslintrc.js, etc.
 				pattern: '*',
