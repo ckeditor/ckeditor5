@@ -31,11 +31,10 @@ require( '@ckeditor/ckeditor5-dev-env' )
 				}
 			},
 			{
-				pattern: '!(build|coverage|node_modules|external)/**',
+				pattern: '!(build|coverage|external)/**',
 				options: {
 					ignore: [
-						'**/ckeditor5-build-*/**',
-						'**/src/lib/**'
+						'**/ckeditor5-build-*/build/**'
 					]
 				}
 			}
