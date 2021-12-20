@@ -111,53 +111,42 @@
 	"groups": [
 		{
 			"name": "Installation",
-			"id": "builds",
-			"slug": "builds",
+			"id": "installation",
+			"slug": "installation",
 			"categories": [
 				{
-					"name": "Guides",
-					"id": "builds-guides",
-					"slug": "guides",
+					"name": "Getting started",
+					"id": "getting-started",
+					"slug": "getting-started",
+					"order": 10,
 					"categories": [
 						{
-							"name": "Predefined builds",
-							"id": "builds-predefined",
-							"slug": "predefined-builds",
-							"order": 100
-						},
-						{
-							"name": "Integration",
-							"id": "builds-integration",
-							"slug": "integration",
-							"order": 200,
-							"categories": [
-								{
-									"name": "Frameworks",
-									"id": "builds-integration-frameworks",
-									"slug": "frameworks",
-									"order": 200
-								}
-							]
-						},
-						{
-							"name": "Development",
-							"id": "builds-development",
-							"slug": "development",
-							"order": 300
-						},
-						{
-							"name": "Migration",
-							"id": "builds-migration",
-							"slug": "migration",
-							"order": 400
-						},
-						{
-							"name": "Support",
-							"id": "builds-support",
-							"slug": "support",
-							"order": 500
+							"name": "Frameworks",
+							"id": "frameworks",
+							"slug": "frameworks",
+							"order": 50
 						}
 					]
+				},
+				{
+					"name": "Advanced",
+					"id": "advanced",
+					"slug": "advanced",
+					"order": 20,
+					"categories": [
+						{
+							"name": "Alternative setups",
+							"id": "alternative-setups",
+							"slug": "alternative-setups",
+							"order": 100
+						}
+					]
+				},
+				{
+					"name": "Support",
+					"id": "support",
+					"slug": "support",
+					"order": 30
 				}
 			]
 		},

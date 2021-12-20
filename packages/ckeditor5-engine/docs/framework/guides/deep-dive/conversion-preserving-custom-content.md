@@ -20,7 +20,7 @@ It is recommended for the code that customizes the editor data and editing pipel
 
 Also for the sake of simplicity all examples use the same {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`}, but keep in mind that code snippets will work with other editors, too.
 
-Finally, none of the converters covered in this guide requires to import any modules from CKEditor 5 Framework, hence, you can write them without rebuilding the editor. In other words, such converters can easily be added to existing {@link builds/guides/overview CKEditor 5 builds}.
+Finally, none of the converters covered in this guide requires to import any modules from CKEditor 5 Framework, hence, you can write them without rebuilding the editor. In other words, such converters can easily be added to existing {@link installation/predefined-builds CKEditor 5 builds}.
 
 ### CKEditor 5 inspector
 

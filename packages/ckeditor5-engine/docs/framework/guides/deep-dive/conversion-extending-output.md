@@ -20,11 +20,11 @@ It is recommended for the code that customizes the editor data and editing pipel
 
 Also for the sake of simplicity all examples use the same {@link module:editor-classic/classiceditor~ClassicEditor `ClassicEditor`}, but keep in mind that code snippets will work with other editors, too.
 
-Finally, none of the converters covered in this guide requires to import any modules from CKEditor 5 Framework, hence, you can write them without rebuilding the editor. In other words, such converters can easily be added to existing {@link builds/guides/overview CKEditor 5 builds}.
+Finally, none of the converters covered in this guide requires to import any modules from CKEditor 5 Framework, hence, you can write them without rebuilding the editor. In other words, such converters can easily be added to existing {@link installation/predefined-builds CKEditor 5 builds}.
 
 ### Granular converters
 
-You can create separate converters for the data and editing (downcast) pipelines. The former (`dataDowncast`) will customize the data in the editor output (e.g. when {@link builds/guides/integration/saving-data#manually-retrieving-the-data obtaining the editor data}). The latter (`editingDowncast`) will only work for the content of the editor when editing.
+You can create separate converters for the data and editing (downcast) pipelines. The former (`dataDowncast`) will customize the data in the editor output (e.g. when {@link installation/advanced/saving-data#manually-retrieving-the-data obtaining the editor data}). The latter (`editingDowncast`) will only work for the content of the editor when editing.
 
 If you do not want to complicate your conversion, you can just add a single (`downcast`) converter which will apply both to the data and the editing view. We did that in all the examples to keep them simple but keep in mind you have several options:
 

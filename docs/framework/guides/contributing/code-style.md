@@ -859,7 +859,7 @@ throw new CKEditorError( 'editor-wrong-element', this );
 
 To make CKEditor 5 plugins compatible with each other, we needed to introduce limitations when importing files from packages.
 
-Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link builds/guides/development/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
+Packages marked as "Base DLL build" can import between themselves without any restrictions. Names of these packages are specified in the {@link installation/advanced/dll-builds#anatomy-of-a-dll-build DLL builds} guide.
 
 The other CKEditor 5 features (non-DLL) can import "Base DLL" packages using the `ckeditor5` package.
 
