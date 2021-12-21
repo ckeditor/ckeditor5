@@ -679,7 +679,7 @@ function getLastValidMarkerInText( feedsWithPattern, text ) {
 		const currentMarkerLastIndex = text.lastIndexOf( feed.marker );
 
 		if ( currentMarkerLastIndex > 0 && !text.substring( currentMarkerLastIndex - 1 ).match( feed.pattern ) ) {
-			return;
+			continue;
 		}
 
 		if ( !lastValidMarker || currentMarkerLastIndex >= lastValidMarker.position ) {
@@ -737,11 +737,9 @@ function createTestCallback( feedsWithPattern ) {
 			splitStringFrom = markerDefinition.position - 1;
 		}
 
-		const minimumCharacters = markerDefinition.minimumCharacters || 0;
-		const regExp = createRegExp( markerDefinition.marker, minimumCharacters );
-		const textToTest = text.substr( splitStringFrom );
+		const textToTest = text.substring( splitStringFrom );
 
-		return regExp.test( textToTest );
+		return markerDefinition.pattern.test( textToTest );
 	};
 
 	return textMatcher;
