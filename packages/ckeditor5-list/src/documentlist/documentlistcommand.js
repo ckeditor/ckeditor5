@@ -9,7 +9,7 @@
 
 import { Command } from 'ckeditor5/src/core';
 import { first, uid } from 'ckeditor5/src/utils';
-import { getAllListItemBlocks, getListItemBlocks, getNestedListBlocks, indentBlocks, isFirstBlockOfListItem, mergeListItemBlocksIntoParentListItem } from './utils/model';
+import { getAllListItemBlocks, isLastBlockOfListItem, getListItemBlocks, getNestedListBlocks, indentBlocks, isFirstBlockOfListItem, mergeListItemBlocksIntoParentListItem } from './utils/model';
 
 /**
  * The list command. It is used by the {@link TODO document list feature}.
@@ -74,8 +74,20 @@ export default class DocumentListCommand extends Command {
 				if ( turnOff ) {
 					// Blocks in top-level list items simply outdent when turning off.
 					if ( block.getAttribute( 'listIndent' ) === 0 ) {
-						console.log( [ block, ...getNestedListBlocks( block ) ].length );
-						indentBlocks( [ block, ...getNestedListBlocks( block ) ], -1, writer );
+						if ( isFirstBlockOfListItem( block ) ) {
+							// If the only block in the list item, outdent this block only.
+							if ( isLastBlockOfListItem( block ) ) {
+								indentBlocks( [ block, ...getNestedListBlocks( block ) ], -1, writer );
+							}
+							// If the first block in the list item but some follow, outdent them too.
+							else {
+								indentBlocks( Array.from( getListItemBlocks( block, { direction: 'forward' } ) ), -1, writer );
+							}
+						}
+						// If not the first block in the list item, indent all blocks that follow.
+						else {
+							indentBlocks( [ block, ...getNestedListBlocks( block ) ], -1, writer );
+						}
 					} else {
 						mergeListItemBlocksIntoParentListItem( block, writer );
 					}

@@ -173,7 +173,7 @@ describe.only( 'DocumentListCommand', () => {
 			} );
 
 			describe( 'collapsed selection', () => {
-				describe( 'when turning on', () => {
+				describe.only( 'when turning on', () => {
 					it( 'should turn the closest block into a list item', () => {
 						setData( model, '<paragraph>fo[]o</paragraph>' );
 
@@ -193,69 +193,139 @@ describe.only( 'DocumentListCommand', () => {
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">fo[]o</paragraph>'
 						);
 					} );
+
+					describe( 'with blocks inside list items', () => {
+						it( 'should turn the closest block into a list item (middle block of the list item)', () => {
+							// * foo
+							//   b[]ar
+							//   baz
+							setData( model,
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">b[]ar</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">baz</paragraph>'
+							);
+
+							command.execute();
+
+							// * foo
+							//   * b[]ar
+							//   b[]az
+							expect( getData( model ) ).to.equal(
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+								'<paragraph listIndent="1" listItemId="b" listType="bulleted">b[]ar</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">baz</paragraph>'
+							);
+						} );
+
+						it( 'should turn the closest block into a list item (last block of the list item)', () => {
+							// * foo
+							//   bar
+							//   b[]az
+							setData( model,
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">b[]az</paragraph>'
+							);
+
+							command.execute();
+
+							// * foo
+							//   bar
+							//   * b[]az
+							expect( getData( model ) ).to.equal(
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>' +
+								'<paragraph listIndent="1" listItemId="b" listType="bulleted">b[]az</paragraph>'
+							);
+						} );
+					} );
 				} );
 
 				describe.only( 'when turning off', () => {
 					it( 'should strip the list attributes from the closest list item (single list item)', () => {
+						// * f[]oo
 						setData( model, '<paragraph listIndent="0" listItemId="a" listType="bulleted">fo[]o</paragraph>' );
 
 						command.execute();
 
+						// f[]oo
 						expect( getData( model ) ).to.equal( '<paragraph>fo[]o</paragraph>' );
 					} );
 
 					it( 'should strip the list attributes from the closest item (multiple list items, selection in first item)', () => {
+						// * f[]oo
+						// * bar
+						// * baz
 						setData( model,
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">f[o]o</paragraph>' +
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">f[]oo</paragraph>' +
 							'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
 							'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
 						);
 
 						command.execute();
 
+						// f[]oo
+						// * bar
+						// * baz
 						expect( getData( model ) ).to.equal(
-							'<paragraph>f[o]o</paragraph>' +
+							'<paragraph>f[]oo</paragraph>' +
 							'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
 							'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
 						);
 					} );
 
 					it( 'should strip the list attributes from the closest item (multiple list items, selection in the middle item)', () => {
+						// * foo
+						// * b[]ar
+						// * baz
 						setData( model,
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="b" listType="bulleted">b[a]r</paragraph>' +
+							'<paragraph listIndent="0" listItemId="b" listType="bulleted">b[]ar</paragraph>' +
 							'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
 						);
 
 						command.execute();
 
+						// * foo
+						// b[]ar
+						// * baz
 						expect( getData( model ) ).to.equal(
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-							'<paragraph>b[a]r</paragraph>' +
+							'<paragraph>b[]ar</paragraph>' +
 							'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
 						);
 					} );
 
 					it( 'should strip the list attributes from the closest item (multiple list items, selection in the last item)', () => {
+						// * foo
+						// * bar
+						// * b[]az
 						setData( model,
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
 							'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
-							'<paragraph listIndent="0" listItemId="c" listType="bulleted">b[a]z</paragraph>'
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">b[]az</paragraph>'
 						);
 
 						command.execute();
 
+						// * foo
+						// * bar
+						// b[]az
 						expect( getData( model ) ).to.equal(
 							'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
 							'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
-							'<paragraph>b[a]z</paragraph>'
+							'<paragraph>b[]az</paragraph>'
 						);
 					} );
 
 					describe( 'with nested lists inside', () => {
 						it( 'should strip the list attributes from the closest item and decrease indent of children (selection in the first item)', () => {
+							// * f[]oo
+							// * bar
+							//   * baz
+							//     * qux
 							setData( model,
-								'<paragraph listIndent="0" listItemId="a" listType="bulleted">f[o]o</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">f[]oo</paragraph>' +
 								'<paragraph listIndent="1" listItemId="a.a" listType="bulleted">bar</paragraph>' +
 								'<paragraph listIndent="1" listItemId="a.a.a" listType="bulleted">baz</paragraph>' +
 								'<paragraph listIndent="2" listItemId="a.a.a.a" listType="bulleted">qux</paragraph>'
@@ -263,8 +333,12 @@ describe.only( 'DocumentListCommand', () => {
 
 							command.execute();
 
+							// f[]oo
+							// * bar
+							//   * baz
+							//     * qux
 							expect( getData( model ) ).to.equal(
-								'<paragraph>f[o]o</paragraph>' +
+								'<paragraph>f[]oo</paragraph>' +
 								'<paragraph listIndent="0" listItemId="a.a" listType="bulleted">bar</paragraph>' +
 								'<paragraph listIndent="0" listItemId="a.a.a" listType="bulleted">baz</paragraph>' +
 								'<paragraph listIndent="1" listItemId="a.a.a.a" listType="bulleted">qux</paragraph>'
@@ -272,18 +346,26 @@ describe.only( 'DocumentListCommand', () => {
 						} );
 
 						it( 'should strip the list attributes from the closest item and decrease indent of children (selection in the middle item)', () => {
+							// * foo
+							// * b[]ar
+							//   * baz
+							//     * qux
 							setData( model,
 								'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-								'<paragraph listIndent="0" listItemId="a" listType="bulleted">b[a]r</paragraph>' +
+								'<paragraph listIndent="0" listItemId="a" listType="bulleted">b[]ar</paragraph>' +
 								'<paragraph listIndent="1" listItemId="a.a" listType="bulleted">baz</paragraph>' +
 								'<paragraph listIndent="2" listItemId="a.a.a" listType="bulleted">qux</paragraph>'
 							);
 
 							command.execute();
 
+							// * foo
+							// b[]ar
+							// * baz
+							//   * qux
 							expect( getData( model ) ).to.equal(
 								'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-								'<paragraph>b[a]r</paragraph>' +
+								'<paragraph>b[]ar</paragraph>' +
 								'<paragraph listIndent="0" listItemId="a.a" listType="bulleted">baz</paragraph>' +
 								'<paragraph listIndent="1" listItemId="a.a.a" listType="bulleted">qux</paragraph>'
 							);
@@ -291,7 +373,10 @@ describe.only( 'DocumentListCommand', () => {
 					} );
 
 					describe( 'with blocks inside list items', () => {
-						it( 'should strip the list attributes from the closest list item and all blocks inside (selection in the first item)', () => {
+						it( 'should strip the list attributes from the closest list item and all blocks inside (selection in the first block)', () => {
+							// * fo[]o
+							//   bar
+							//   baz
 							setData( model,
 								'<paragraph listIndent="0" listItemId="a" listType="bulleted">fo[]o</paragraph>' +
 								'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>' +
@@ -300,6 +385,9 @@ describe.only( 'DocumentListCommand', () => {
 
 							command.execute();
 
+							// fo[]o
+							// bar
+							// baz
 							expect( getData( model ) ).to.equal(
 								'<paragraph>fo[]o</paragraph>' +
 								'<paragraph>bar</paragraph>' +
