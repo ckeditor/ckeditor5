@@ -70,7 +70,7 @@
 		"builds/guides/integration/saving-data.html": "installation/advanced/saving-data.html",
 		"builds/guides/integration/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/csp.html": "installation/advanced/csp.html",
-		"builds/guides/integration/content-styles.html": "installation/advanced/content-styles.html",
+		"installation/advanced/content-styles.html": "installation/advanced/content-styles.html",
 		"builds/guides/integration/features-html-output-overview.html": "installation/advanced/features-html-output-overview.html",
 		"builds/guides/integration/frameworks/overview.html": "installation/getting-started/frameworks/overview.html",
 		"builds/guides/integration/frameworks/angular.html": "installation/getting-started/frameworks/angular.html",
