@@ -25,9 +25,9 @@ const path = require( 'path' );
 // Available arguments:
 // --dry-run:   Prevents the script from committing, and instead displays detailed list of changes from each file that was changed.
 
-const CKEDITOR5_PATH = path.resolve( __dirname, '..', '..' );
-const CKEDITOR5_INTERNAL_PATH = path.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
-const COLLABORATION_FEATURES_PATH = path.resolve( __dirname, '..', '..', 'external', 'collaboration-features' );
+const CKEDITOR5_PATH = path.posix.resolve( __dirname, '..', '..' );
+const CKEDITOR5_INTERNAL_PATH = path.posix.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
+const COLLABORATION_FEATURES_PATH = path.posix.resolve( __dirname, '..', '..', 'external', 'collaboration-features' );
 
 if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
 	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
@@ -38,15 +38,17 @@ if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
 }
 
 require( '@ckeditor/ckeditor5-dev-env' )
-	.updatePackageVersions( {
-		cwd: process.cwd(),
-		dryRun: process.argv.includes( '--dry-run' ),
-		pathsToUpdate: [
+	.updatePackageVersions(
+		// paths to update
+		[
 			{ path: CKEDITOR5_PATH + '/packages', commit: true },
 			{ path: CKEDITOR5_PATH + '/release', commit: false },
 			{ path: CKEDITOR5_INTERNAL_PATH + '/packages', commit: true },
 			{ path: CKEDITOR5_INTERNAL_PATH + '/release', commit: false },
 			{ path: COLLABORATION_FEATURES_PATH + '/packages', commit: true },
 			{ path: COLLABORATION_FEATURES_PATH + '/release', commit: false }
-		]
-	} );
+		],
+
+		// dry run flag
+		process.argv.includes( '--dry-run' )
+	);
