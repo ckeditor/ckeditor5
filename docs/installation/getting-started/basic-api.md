@@ -18,7 +18,7 @@ Each CKEditor 5 **build** provides a different **editor class** that handles the
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 
 <info-box>
-	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/integration/advanced-setup#scenario-2-building-from-source use the editor classes and plugins directly} for greater flexibility.
+	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link installation/advanced/integrating-from-source use the editor classes and plugins directly} for greater flexibility.
 </info-box>
 
 ## Creating an editor
@@ -35,7 +35,7 @@ Add an element that CKEditor should replace to your HTML page:
 </div>
 ```
 
-Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link installation/predefined-builds#classic-editor Classic editor}:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link installation/advanced/predefined-builds#classic-editor Classic editor}:
 
 ```js
 ClassicEditor
@@ -60,7 +60,7 @@ Similarly to the previous example, add an element where CKEditor should initiali
 </div>
 ```
 
-Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link installation/predefined-builds#inline-editor Inline editor} to the `<div>` element:
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#inline-editor Inline editor} to the `<div>` element:
 
 ```js
 InlineEditor
@@ -85,7 +85,7 @@ Add an element where CKEditor should initialize to your page:
 </div>
 ```
 
-Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link installation/predefined-builds#balloon-editor Balloon editor} to the `<div>` element:
+Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#balloon-editor Balloon editor} to the `<div>` element:
 
 ```js
 BalloonEditor

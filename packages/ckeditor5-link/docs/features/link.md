@@ -7,7 +7,7 @@ category: features
 
 The {@link module:link/link~Link} feature brings support for link editing to the rich-text editor. It allows for inserting hyperlinks into the edited content and offers the UI to create and edit them.
 
-Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses will be automatically turned into working links as you type. The plugin is enabled in all {@link installation/predefined-builds predefined builds}.
+Thanks to the [autolink](#autolink-feature) plugin, typed or pasted URLs and e-mail addresses will be automatically turned into working links as you type. The plugin is enabled in all {@link installation/advanced/predefined-builds predefined builds}.
 
 ## Demo
 

@@ -1,11 +1,11 @@
 ---
 category: alternative-setups
-order: 10
+order: 100
 ---
 
-# Advanced setup
+# Advanced setup (for deletion)
 
-The {@link installation/getting-started/quick-start Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link  link-removed Custom builds} guide explains how to add or remove features from the build or change webpack configuration.
+The {@link installation/getting-started/quick-start Installation} guide describes the easiest ways to run CKEditor builds in your project and the {@link installation/getting-started/quick-start#creating-custom-builds Custom builds} guide explains how to add or remove features from the build or change webpack configuration.
 
 In this guide, we would like to show you ways to closer integrate CKEditor 5 with your application. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
 
@@ -25,7 +25,7 @@ Therefore, **a prerequisite to this guide is that you are using webpack as your 
 
 ## Scenario 1: Integrating existing builds
 
-This is the simplest scenario. It assumes that you want to use {@link installation/predefined-builds#available-builds one of the existing builds} "as-is" (you can, of course, still {@link installation/configuration configure the rich text editor}). It also gives the fastest build times.
+This is the simplest scenario. It assumes that you want to use {@link installation/advanced/predefined-builds#available-builds one of the existing builds} "as-is" (you can, of course, still {@link installation/getting-started/configuration configure the rich text editor}). It also gives the fastest build times.
 
 First, install the build of your choice {@link installation/getting-started/quick-start#npm from npm}:
 
@@ -63,7 +63,7 @@ Since you are using an already built editor (so a result of passing CKEditor 5 s
 This scenario allows you to fully control the building process of CKEditor. This means that you will not actually use the builds anymore, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
 <info-box>
-	Similar results to what this method allows can be achieved by {@link  link-removed customizing an existing build} and integrating your custom build like in scenario 1. This will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
+	Similar results to what this method allows can be achieved by {@link installation/getting-started/quick-start#creating-custom-builds customizing an existing build} and integrating your custom build like in scenario 1. This will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
 First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5/blob/master/packages/ckeditor5-build-classic/package.json)). At this moment you can choose the editor creator and the features you want. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
@@ -499,7 +499,7 @@ entry: [
 
 ## Scenario 3: Using two different editors
 
-The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the {@link installation/predefined-builds#classic-editor classic editor} next to a couple of {@link installation/predefined-builds#inline-editor inline editors}.
+The ability to use two or more types of rich text editors on one page is a common requirement. For instance, you may want to use the {@link installation/advanced/predefined-builds#classic-editor classic editor} next to a couple of {@link installation/advanced/predefined-builds#inline-editor inline editors}.
 
 **Do not load two builds on one page.** This is a mistake which leads to:
 
@@ -518,7 +518,7 @@ If you want to load two different editors on one page you need to make sure that
 
 There is no limit for how many editor classes a single build can export. By default, the official builds export a single editor class only. However, they can easily import more.
 
-You can start from forking (or copying) an existing build like in the {@link  link-removed "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor/ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
+You can start from forking (or copying) an existing build like in the {@link installation/getting-started/quick-start#creating-custom-builds "Creating custom builds"} guide. Let's say you forked and cloned the [`ckeditor5`](http://github.com/ckeditor/ckeditor5) repository and want to add {@link module:editor-inline/inlineeditor~InlineEditor} to the classic build:
 
 ```bash
 git clone -b stable git@github.com:<your-username>/ckeditor5.git

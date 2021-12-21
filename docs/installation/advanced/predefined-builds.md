@@ -32,7 +32,7 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
 
-To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link installation/quick-start#classic-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link installation/getting-started/quick-start#classic-editor Quick start} to start using it.
 
 ### Inline editor
 
@@ -42,7 +42,7 @@ A common scenario for using inline editor is offering users the possibility to e
 
 {@img assets/img/editor-inline.png 776 Screenshot of an inline editor.}
 
-To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link installation/quick-start#inline-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link installation/getting-started/quick-start#inline-editor Quick start} to start using it.
 
 ### Balloon editor
 
@@ -50,7 +50,7 @@ Balloon editor is very similar to inline editor. The difference between them is 
 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
-To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link installation/quick-start#balloon-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link installation/getting-started/quick-start#balloon-editor Quick start} to start using it.
 
 ### Balloon block editor
 
@@ -58,7 +58,7 @@ Balloon block is essentially the [balloon editor](#balloon-editor) with an extra
 
 {@img assets/img/editor-balloon-block.png 813 Screenshot of a balloon block toolbar editor.}
 
-To try it out online, check the {@link examples/builds/balloon-block-editor balloon block editor example}. Jump to {@link installation/quick-start#balloon-block-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/balloon-block-editor balloon block editor example}. Jump to {@link installation/getting-started/quick-start#balloon-block-editor Quick start} to start using it.
 
 ### Document editor
 
@@ -66,7 +66,7 @@ The document editor is focused on rich text editing experience similar to the na
 
 {@img assets/img/editor-document.png 843 Screenshot of the user interface of the document editor.}
 
-To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link installation/quick-start#document-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link installation/getting-started/quick-start#document-editor Quick start} to start using it.
 
 ## Build customization
 
@@ -76,9 +76,9 @@ Every build comes with a default set of features and their default configuration
  * You can change the default **toolbar configuration** (e.g. remove undo/redo buttons).
  * You can also **remove features** (plugins).
 
-Read more in the {@link installation/configuration Configuration guide}.
+Read more in the {@link installation/getting-started/configuration Configuration guide}.
 
-If a build does not provide all the necessary features or you want to create a highly optimized build of the editor which will contain only the features that you require, you need to customize the build or create a brand new one. Check {@link  link-removed Custom builds} for details on how to change the default builds to match your preferences.
+If a build does not provide all the necessary features or you want to create a highly optimized build of the editor which will contain only the features that you require, you need to customize the build or create a brand new one. Check {@link installation/getting-started/quick-start#creating-custom-builds Custom builds} for details on how to change the default builds to match your preferences.
 
 ## Additional information
 

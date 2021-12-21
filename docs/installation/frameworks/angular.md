@@ -14,12 +14,12 @@ order: 20
 	</a>
 </p>
 
-CKEditor 5 consists of {@link installation/predefined-builds ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of {@link installation/advanced/predefined-builds ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/integration/advanced-setup#scenario-2-building-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
-	While there is no support to integrate CKEditor 5 from source yet, you can still {@link  link-removed create a custom build of CKEditor 5} and include it in your Angular application.
+	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start#creating-custom-builds create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
 ## Supported Angular versions
@@ -39,7 +39,7 @@ In your existing Angular project, install the [CKEditor 5 WYSIWYG editor compone
 npm install --save @ckeditor/ckeditor5-angular
 ```
 
-Install one of the {@link installation/predefined-builds#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
+Install one of the {@link installation/advanced/predefined-builds#available-builds official editor builds} or [create a custom one](#using-a-custom-ckeditor-5-build).
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -113,7 +113,7 @@ And then, in the template:
 
 ### Using a custom CKEditor 5 build
 
-If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link installation/configuration editor configuration} you should create a custom build first, using the {@link  link-removed create a custom build guide}.
+If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link installation/getting-started/configuration editor configuration} you should create a custom build first, using the {@link installation/getting-started/quick-start#creating-custom-builds create a custom build guide}.
 
 You should finish the above tutorial with the generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 

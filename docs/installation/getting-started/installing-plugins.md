@@ -11,7 +11,7 @@ CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages
 
 In this guide you can learn how to add plugins to your editor in the two most common scenarios:
 
-* When you use an {@link installation/predefined-builds editor build},
+* When you use an {@link installation/advanced/predefined-builds editor build},
 * When you {@link framework/guides/quick-start build your editor from source}.
 
 <info-box hint>
@@ -146,7 +146,7 @@ If everything worked, the editor build (which is available in the `build/` direc
 
 You can open the `sample/index.html` file in your browser to see whether the plugin was installed correctly.
 
-This was a quick version of how a build can be customized. Read more about {@link  link-removed customizing existing editor builds} in a separate guide.
+This was a quick version of how a build can be customized. Read more about {@link installation/getting-started/quick-start#creating-custom-builds customizing existing editor builds} in a separate guide.
 
 ## Adding a plugin to an editor
 

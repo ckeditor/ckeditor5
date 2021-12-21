@@ -22,7 +22,7 @@ All that with virtually zero server setup.
 
 ## Demo
 
-The demo below uses the {@link installation/predefined-builds#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
+The demo below uses the {@link installation/advanced/predefined-builds#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
 
 {@snippet build-classic-source}
 

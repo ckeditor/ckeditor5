@@ -8,6 +8,6 @@ classes: main__content--no-toc
 
 {@snippet build-classic-source}
 
-{@link installation/predefined-builds#classic-editor Classic editor} shows a boxed editing area with a toolbar, placed in a specific position on the page.
+{@link installation/advanced/predefined-builds#classic-editor Classic editor} shows a boxed editing area with a toolbar, placed in a specific position on the page.
 
 {@snippet examples/classic-editor}

@@ -18,9 +18,9 @@ order: 50
 	**Important**: This guide is about the CKEditor 5 integration with Vue.js 3+. To learn more about the integration with Vue.js 2.x, check out the {@link installation/frameworks/vuejs-v2 "Rich text editor component for Vue.js 2.x"} guide.
 </info-box>
 
-CKEditor 5 consists of the {@link installation/predefined-builds ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of the {@link installation/advanced/predefined-builds ready-to-use editor builds} and the {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link installation/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.
+The easiest way to use CKEditor 5 in your Vue.js application is by choosing one of the {@link installation/advanced/predefined-builds#available-builds rich text editor builds} and simply passing it to the configuration of the Vue.js component. Read more about this solution in the [Quick start](#quick-start) section of this guide.
 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
@@ -30,7 +30,7 @@ Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-so
 
 ## Quick start
 
-Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link installation/predefined-builds#available-builds editor build of your choice}.
+Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link installation/advanced/predefined-builds#available-builds editor build of your choice}.
 
 Assuming that you picked [`@ckeditor/ckeditor5-build-classic`](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic):
 
@@ -186,7 +186,7 @@ Integrating the rich text editor from source allows you to use the full power of
 This guide assumes that you are using [Vue CLI 4.5.0+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/integration/advanced-setup Advanced setup} guide.
+	Learn more about building CKEditor from source in the {@link installation/advanced/advanced-setup Advanced setup} guide.
 </info-box>
 
 ### Configuring `vue.config.js`
@@ -406,7 +406,7 @@ CKEditor 5 supports {@link features/ui-language multiple UI languages}, and so d
 
 ### Ready-to-use builds
 
-When using one of the {@link installation/predefined-builds#available-builds official editor builds}, you need to import the translations first.
+When using one of the {@link installation/advanced/predefined-builds#available-builds official editor builds}, you need to import the translations first.
 
 * When using a [direct script include](#direct-script-include):
 	```html
@@ -423,7 +423,7 @@ When using one of the {@link installation/predefined-builds#available-builds off
 	import '@ckeditor/ckeditor5-build-classic/build/translations/de';
 	```
 
-Then, {@link installation/configuration configure} the language of the editor in the component:
+Then, {@link installation/getting-started/configuration configure} the language of the editor in the component:
 
 ```html
 <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
@@ -513,7 +513,7 @@ This directive specifies the editor to be used by the component. It must directl
 ```
 
 <info-box>
-	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link installation/integration/advanced-setup#scenario-3-using-two-different-editors "super build"}.
+	To use more than one rich text editor build in your application, you will need to configure it [from source](#using-ckeditor-from-source) or use a {@link installation/advanced/using-two-editors "super build"}.
 </info-box>
 
 ### `tag-name`

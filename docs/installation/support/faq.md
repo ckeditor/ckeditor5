@@ -22,7 +22,7 @@ The {@link features/source-editing source editing} feature provides basic suppor
 
 There is no such thing as the `contents.css` file because in CKEditor 5 features bring their own content styles, which are by default included in the JavaScript build and {@link framework/guides/theme-customization#styles-processing-and-bundling loaded by the style loader}. It optimizes the size of the builds as the styles of unused features are simply excluded.
 
-You can get the full list of editor content styles in a {@link installation/content-styles dedicated guide}. You can also {@link installation/integration/advanced-setup#option-extracting-css extract all CSS} brought by CKEditor 5 (content and UI) to a separate file when creating a custom editor build.
+You can get the full list of editor content styles in a {@link installation/advanced/content-styles dedicated guide}. You can also {@link installation/advanced/integrating-from-source#option-extracting-css extract all CSS} brought by CKEditor 5 (content and UI) to a separate file when creating a custom editor build.
 
 ## The build I downloaded is missing some features. How do I add them?
 
@@ -84,7 +84,7 @@ We plan to provide more official integrations with time. [Your feedback on what 
 
 We believe each editor build should serve its purpose. Including features that are not used makes little sense because they increase the size of the editor and make the website heavier for no good reason. This is why we do not provide a full editor package similar to what we offer in CKEditor 4.
 
-At the same time, we recommend you to {@link installation/getting-started/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link  link-removed custom build} to make sure you make the most out of CKEditor 5.
+At the same time, we recommend you to {@link installation/getting-started/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link installation/getting-started/quick-start#creating-custom-builds custom build} to make sure you make the most out of CKEditor 5.
 
 ## How to customize the CKEditor 5 icons?
 
@@ -102,7 +102,7 @@ plugins: [
 
 You can also use the relative path which is resolved relative to the resource that imports `bold.svg` (the {@link module:basic-styles/bold/boldui~BoldUI `BoldUI`} class file in this scenario).
 
-Learn more about {@link installation/integration/advanced-setup#webpack-configuration building CKEditor 5 using webpack}.
+Learn more about {@link installation/advanced/advanced-setup#webpack-configuration building CKEditor 5 using webpack}.
 
 ## How to get the editor instance object from the DOM element?
 

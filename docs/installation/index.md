@@ -36,9 +36,9 @@ Get to know the supported {@link installation/frameworks/overview integrations w
 
 ## CKEditor 5 development
 
-Find out more about the {@link installation/advanced/plugins plugin development}, learn to {@link  link-removed create custom builds} and keep your CKEditor 5 updated on the go with the {@link installation/advanced/dll-builds DLL webpack} solution.
+Find out more about the {@link installation/advanced/plugins plugin development}, learn to {@link installation/getting-started/quick-start#creating-custom-builds create custom builds} and keep your CKEditor 5 updated on the go with the {@link installation/advanced/dll-builds DLL webpack} solution.
 
 ## Related links
 
- * {@link examples/index Examples} &ndash; Try live demos of all available builds.
+ * {@link examples/index Examples} &ndash; Try live demos of all available predefined builds.
  * {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 builds.

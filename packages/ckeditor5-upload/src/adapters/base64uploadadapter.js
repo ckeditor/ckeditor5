@@ -14,7 +14,7 @@ import FileRepository from '../filerepository';
 
 /**
  * A plugin that converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64)
- * in the {@glink builds/guides/integration/saving-data editor output}.
+ * in the {@glink installation/advanced/saving-data editor output}.
  *
  * This kind of image upload does not require server processing – images are stored with the rest of the text and
  * displayed by the web browser without additional requests.
