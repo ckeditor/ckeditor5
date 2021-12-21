@@ -167,7 +167,7 @@ export default class MentionUI extends Plugin {
 			this._mentionsConfigurations.set( marker, definition );
 		}
 
-		this._setupTextWatcherForFeed( feeds );
+		this._setupTextWatcher( feeds );
 		this.listenTo( editor, 'change:isReadOnly', () => {
 			this._hideUIAndRemoveMarker();
 		} );
@@ -371,22 +371,21 @@ export default class MentionUI extends Plugin {
 	 * Registers a text watcher for the marker.
 	 *
 	 * @private
-	 * @param {String} marker
-	 * @param {Number} minimumCharacters
+	 * @param {Array.<Object>} feeds Feeds of mention plugin configured in editor
 	 * @returns {module:typing/textwatcher~TextWatcher}
 	 */
-	_setupTextWatcherForFeed( feeds ) {
+	_setupTextWatcher( feeds ) {
 		const editor = this.editor;
 
-		const feedsWithRegexp = feeds.map( feed => ( {
+		const feedsWithPattern = feeds.map( feed => ( {
 			...feed,
 			pattern: createRegExp( feed.marker, feed.minimumCharacters || 0 )
 		} ) );
 
-		const watcher = new TextWatcher( editor.model, createTestCallback( feedsWithRegexp ) );
+		const watcher = new TextWatcher( editor.model, createTestCallback( feedsWithPattern ) );
 
 		watcher.on( 'matched', ( evt, data ) => {
-			const markerDefinition = _getLastValidMarkerInText( feedsWithRegexp, data.text );
+			const markerDefinition = getLastValidMarkerInText( feedsWithPattern, data.text );
 			const selection = editor.model.document.selection;
 			const focus = selection.focus;
 
@@ -659,26 +658,24 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
-/**
- * Returns a marker definition of the last valid occuring marker in given string.
- * If there is no valid marker in string it returns undefined.
- *
- * Example of returned object:
- *
- *		{
- *			marker: '@',
- *			position: 4,
- *			minimumCharacters: 0
- *		}
- *
- * @param {Array.<Object>} feedsWithRegexp Registered feeds in editor for mention plugin with created RegExp for matching marker.
- * @param {String} text String to find marker in
- * @returns {Object} Matched marker definition
- */
-function _getLastValidMarkerInText( feedsWithRegexp, text ) {
+// Returns a marker definition of the last valid occuring marker in given string.
+// If there is no valid marker in string it returns undefined.
+//
+// Example of returned object:
+//
+//		{
+//			marker: '@',
+//			position: 4,
+//			minimumCharacters: 0
+//		}
+//
+// @param {Array.<Object>} feedsWithPattern Registered feeds in editor for mention plugin with created RegExp for matching marker.
+// @param {String} text String to find marker in
+// @returns {Object} Matched marker's definition
+function getLastValidMarkerInText( feedsWithPattern, text ) {
 	let lastValidMarker;
 
-	feedsWithRegexp.forEach( feed => {
+	for ( const feed of feedsWithPattern ) {
 		const currentMarkerLastIndex = text.lastIndexOf( feed.marker );
 
 		if ( currentMarkerLastIndex > 0 && !text.substring( currentMarkerLastIndex - 1 ).match( feed.pattern ) ) {
@@ -689,10 +686,11 @@ function _getLastValidMarkerInText( feedsWithRegexp, text ) {
 			lastValidMarker = {
 				marker: feed.marker,
 				position: currentMarkerLastIndex,
-				minimumCharacters: feed.minimumCharacters
+				minimumCharacters: feed.minimumCharacters,
+				pattern: feed.pattern
 			};
 		}
-	} );
+	}
 
 	return lastValidMarker;
 }
@@ -723,12 +721,11 @@ export function createRegExp( marker, minimumCharacters ) {
 
 // Creates a test callback for the marker to be used in the text watcher instance.
 //
-// @param {String} marker
-// @param {Number} minimumCharacters
+// @param {Array.<Object>} feedsWithPattern Feeds of mention plugin configured in editor with RegExp to match marker in text
 // @returns {Function}
-function createTestCallback( feedsWithRegexp ) {
-	const textRegexp = text => {
-		const markerDefinition = _getLastValidMarkerInText( feedsWithRegexp, text );
+function createTestCallback( feedsWithPattern ) {
+	const textMatcher = text => {
+		const markerDefinition = getLastValidMarkerInText( feedsWithPattern, text );
 
 		if ( !markerDefinition ) {
 			return false;
@@ -747,12 +744,13 @@ function createTestCallback( feedsWithRegexp ) {
 		return regExp.test( textToTest );
 	};
 
-	return textRegexp;
+	return textMatcher;
 }
 
 // Creates a text matcher from the marker.
 //
-// @param {String} marker
+// @param {Object} markerDefinition
+// @param {String} text
 // @returns {Function}
 function requestFeedText( markerDefinition, text ) {
 	let splitStringFrom = 0;
@@ -762,7 +760,7 @@ function requestFeedText( markerDefinition, text ) {
 	}
 
 	const regExp = createRegExp( markerDefinition.marker, 0 );
-	const textToMatch = text.substr( splitStringFrom );
+	const textToMatch = text.substring( splitStringFrom );
 	const match = textToMatch.match( regExp );
 
 	return match[ 2 ];
