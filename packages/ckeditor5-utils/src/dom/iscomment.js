@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* globals Node */
+
 /**
  * @module utils/dom/iscomment
  */
@@ -14,5 +16,5 @@
  * @returns {Boolean}
  */
 export default function isComment( obj ) {
-	return Object.prototype.toString.call( obj ) == '[object Comment]';
+	return obj && obj.nodeType === Node.COMMENT_NODE;
 }
