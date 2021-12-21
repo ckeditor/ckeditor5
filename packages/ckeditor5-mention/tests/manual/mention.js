@@ -157,7 +157,7 @@ ClassicEditor
 			feeds: [
 				{
 					marker: '@',
-					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted', '@Thomas Reeves' ]
+					feed: [ '@Barney Stinson', '@Lily Aldrin', '@Marshall Eriksen', '@Robin Sherbatsky', '@Ted Mosby' ]
 				},
 				{
 					marker: '#',
