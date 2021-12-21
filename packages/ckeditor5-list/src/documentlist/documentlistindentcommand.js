@@ -12,6 +12,7 @@ import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
 	isFirstBlockOfListItem,
+	mergeListItemBefore,
 	splitListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -72,6 +73,25 @@ export default class DocumentListIndentCommand extends Command {
 
 			// Expand the selected blocks to contain the whole list items.
 			expandListBlocksToCompleteItems( blocks );
+
+			// Merge with parent list item while outdenting.
+			if ( this._indentBy < 0 ) {
+				const firstBlockIndent = blocks[ 0 ].getAttribute( 'listIndent' );
+
+				for ( const block of blocks ) {
+					const blockIndent = block.getAttribute( 'listIndent' );
+
+					// Don't merge nested lists (those should keep their structure).
+					// Merge only if there is any parent list item.
+					if ( blockIndent < 1 || blockIndent > firstBlockIndent ) {
+						continue;
+					}
+
+					const parentBlock = ListWalker.first( block, { smallerIndent: true } );
+
+					mergeListItemBefore( block, parentBlock, writer );
+				}
+			}
 
 			// Now just update the attributes of blocks.
 			indentBlocks( blocks, this._indentBy, writer );

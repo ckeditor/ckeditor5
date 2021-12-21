@@ -156,6 +156,29 @@ export function splitListItemBefore( listBlock, writer ) {
 }
 
 /**
+ * Merges the list item with the parent list item.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listBlock The list block element.
+ * @param {module:engine/model/element~Element} parentBlock The list block element to merge with.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ */
+export function mergeListItemBefore( listBlock, parentBlock, writer ) {
+	const attributes = {};
+
+	for ( const [ key, value ] of parentBlock.getAttributes() ) {
+		// TODO skip listIndent or exclude blocks from indentation change?
+		if ( key != 'listIndent' && key.startsWith( 'list' ) ) {
+			attributes[ key ] = value;
+		}
+	}
+
+	for ( const item of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
+		writer.setAttributes( attributes, item );
+	}
+}
+
+/**
  * Updates indentation of given list blocks.
  *
  * @protected
