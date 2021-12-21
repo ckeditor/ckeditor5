@@ -16,7 +16,7 @@ Learn how to install CKEditor 5 from scratch or using predefined builds. Integra
 
 ## Installing CKEditor 5
 
-Learn to {@link installation/getting-started/quick-start install the editor} from scratch, {@link installation/getting-started/configuration configure it}, and {@link installation/advanced/csp secure}. Find out how to {@link installation/advanced/saving-data handle and save the data} and what the {@link installation/advanced/features-html-output-overview features' HTML output} is for each plugin.
+Learn to {@link installation/getting-started/quick-start install the editor} from scratch, learn to {@link installation/getting-started/quick-start#creating-custom-builds create custom builds}, {@link installation/getting-started/configuration configure it}, and {@link installation/advanced/csp secure}.
 
 ## Predefined CKEditor 5 builds
 
@@ -36,7 +36,7 @@ Refer to the {@link installation/getting-started/migration-from-ckeditor-4 CKEdi
 
 ## CKEditor 5 development
 
-Find out more about the {@link installation/advanced/plugins plugin development}, learn to {@link installation/getting-started/quick-start#creating-custom-builds create custom builds} and keep your CKEditor 5 updated on the go with the {@link installation/advanced/dll-builds DLL webpack} solution.
+Find out more about the {@link installation/advanced/plugins plugin development}, how to {@link installation/advanced/saving-data handle and save the data} and what the {@link installation/advanced/features-html-output-overview features' HTML output} is for each plugin. Learn to keep your CKEditor 5 updated on the go with the {@link installation/advanced/dll-builds DLL webpack} solution.
 
 ## Related links
 
