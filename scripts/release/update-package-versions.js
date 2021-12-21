@@ -25,17 +25,26 @@ const path = require( 'path' );
 // Available arguments:
 // --dry-run:   Prevents the script from committing, and instead displays detailed list of changes from each file that was changed.
 
-const CKEDITOR5_PATH = path.posix.resolve( __dirname, '..', '..' );
-const CKEDITOR5_INTERNAL_PATH = path.posix.resolve( __dirname, '..', '..', 'external', 'ckeditor5-internal' );
-const COLLABORATION_FEATURES_PATH = path.posix.resolve( __dirname, '..', '..', 'external', 'collaboration-features' );
+const [
+	CKEDITOR5_PATH,
+	CKEDITOR5_INTERNAL_PATH,
+	COLLABORATION_FEATURES_PATH
+] = [
+	[ __dirname, '..', '..' ],
+	[ __dirname, '..', '..', 'external', 'ckeditor5-internal' ],
+	[ __dirname, '..', '..', 'external', 'collaboration-features' ]
+].map( directoryPath => {
+	directoryPath = path
+		.resolve( ...directoryPath )
+		.split( path.sep )
+		.join( path.posix.sep );
 
-if ( !fs.existsSync( CKEDITOR5_INTERNAL_PATH ) ) {
-	throw new Error( `The script assumes that the directory "${ CKEDITOR5_INTERNAL_PATH }" exists.` );
-}
+	if ( !fs.existsSync( directoryPath ) ) {
+		throw new Error( `The script assumes that the directory "${ directoryPath }" exists.` );
+	}
 
-if ( !fs.existsSync( COLLABORATION_FEATURES_PATH ) ) {
-	throw new Error( `The script assumes that the directory "${ COLLABORATION_FEATURES_PATH }" exists.` );
-}
+	return directoryPath;
+} );
 
 require( '@ckeditor/ckeditor5-dev-env' )
 	.updatePackageVersions(
