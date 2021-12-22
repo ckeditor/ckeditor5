@@ -105,17 +105,17 @@ To get to know the new editor UI for the image features, visit the {@link featur
 
 ### Inline images
 
-Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins: {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link builds/guides/overview#available-builds predefined editor builds} by default.
+Starting from v29.0.0, the existing {@link module:image/image~Image} plugin loads two independent plugins: {@link module:image/imageinline~ImageInline} and {@link module:image/imageblock~ImageBlock}, therefore both of them are included in all of the {@link installation/advanced/predefined-builds#available-builds predefined editor builds} by default.
 * The {@link module:image/imageinline~ImageInline} is a newly introduced plugin supporting the inline `<img>` tag nested in text (e.g. inside a paragraph).
 * The {@link module:image/imageblock~ImageBlock} maintains the functionality of the previous {@link module:image/image~Image} plugin before v29.0.0. In the model, it uses the `imageBlock` element (known as `image` before v29.0.0).
 
 <info-box>
-	**Note:** It is possible to load only one of these plugins, but only when {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source building the editor from source}.
+	**Note:** It is possible to load only one of these plugins, but only when {@link installation/advanced/integrating-from-source building the editor from source}.
 </info-box>
 
 ### Image caption
 
-An image caption is no longer automatically shown when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link builds/guides/overview#available-builds predefined editor builds}.
+An image caption is no longer automatically shown when selecting the image widget. Its visibility can now be toggled with a {@link module:image/imagecaption/toggleimagecaptioncommand~ToggleImageCaptionCommand} executed by the `'toggleImageCaption'` toolbar button, both registered by the {@link module:image/imagecaption~ImageCaption} plugin. The button is added to the default image toolbar in all of the {@link installation/advanced/predefined-builds#available-builds predefined editor builds}.
 
 <info-box>
 	To provide a valid data output, captions can be added to block images only. Adding a caption to an inline image will automatically convert it to a block image (which can be undone by the user).
@@ -131,7 +131,7 @@ Since the appearance of the image in the document depends on the image type (blo
 	* A few {@link module:image/imagestyle/utils#DEFAULT_DROPDOWN_DEFINITIONS default dropdowns} are provided.
 	* In the editor configuration, {@link module:image/imagestyle/imagestyleui~ImageStyleDropdownDefinition a custom dropdown} can be declared.
 
-* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link builds/guides/integration/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying the existing image style}.
+* The name of the default block image style has changed from `full` to `block` (as the default style for the inline images is called `inline`), the default {@link installation/advanced/content-styles content styles} for these images remain the same. The button label has also changed and now reads `Centered image` so that it reflects the actual appearance of the image. If you customized the default appearance of the block images, you can change the button label by {@link module:image/image~ImageConfig#styles modifying the existing image style}.
 
 * The format of the `config.image.styles` has changed. The list of the styles must be wrapped with the `options` array. Read more about the {@link module:image/image~ImageConfig#styles `image.styles` configuration}.
 
@@ -205,12 +205,12 @@ Since v29.0.0, {@link features/images-styles image styles} and {@link features/i
 The user experience will degrade if either of these features is missing and this makes the {@link module:image/image~ImageConfig#toolbar image toolbar} configuration essential.
 
 <info-box>
-	{@link builds/guides/overview Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link builds/guides/integration/advanced-setup custom editor builds} in their integrations.
+	{@link installation/advanced/predefined-builds Pre-configured editor builds} come with {@link module:image/imagestyle~ImageStyle} and {@link module:image/imagetoolbar~ImageToolbar} plugins (and configuration) out-of-the-box. This information is mainly for developers who use {@link installation/advanced/advanced-setup custom editor builds} in their integrations.
 </info-box>
 
 We recommended one of the following configurations as the minimum set-up for the image toolbar:
 
-* For the purposes of the structured content editing (implemented by default in the classic, balloon, balloon-block, and inline {@link builds/guides/overview editor builds}):
+* For the purposes of the structured content editing (implemented by default in the classic, balloon, balloon-block, and inline {@link installation/advanced/predefined-builds editor builds}):
 
 	```js
 	Editor.create( document.querySelector( '#editor' ), {
@@ -228,7 +228,7 @@ We recommended one of the following configurations as the minimum set-up for the
 	} );
 	```
 
-* For the purposes of the document-like editing (implemented by default in the {@link builds/guides/overview#document-editor decoupled document build}).
+* For the purposes of the document-like editing (implemented by default in the {@link installation/advanced/predefined-builds#document-editor decoupled document build}).
 
 	```js
 	Editor.create( document.querySelector( '#editor' ), {
@@ -316,9 +316,9 @@ The following helpers were removed from the public API:
 
 Please note that the {@link module:easy-image/easyimage~EasyImage} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link builds/guides/overview#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/advanced/predefined-builds#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-However, for integrations that {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that {@link installation/advanced/integrating-from-source build the editor from source}, this means that in order to get Easy Image working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -340,9 +340,9 @@ Check out the comprehensive {@link features/images-installation installation gui
 
 Please note that the {@link module:ckfinder/ckfinder~CKFinder} plugin is no longer automatically importing the {@link module:image/image~Image} plugin as a dependency. This allows using it alone with either {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} without loading the other one.
 
-This decoupling does not have an impact on integrations based on {@link builds/guides/overview#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+This decoupling does not have an impact on integrations based on {@link installation/advanced/predefined-builds#available-builds official editor builds} or using [the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-However, for integrations that {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
+However, for integrations that {@link installation/advanced/integrating-from-source build the editor from source}, this means that in order to get CKFinder working properly, the `Image` plugin (or either the {@link module:image/imageblock~ImageBlock} or {@link module:image/imageinline~ImageInline} plugin) must be imported separately:
 
 ```js
 import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfider';

@@ -4,4 +4,4 @@ order: 30
 title: Getting support
 ---
 
-{@importguide builds/guides/support/getting-support}
+{@importguide installation/support/getting-support}
