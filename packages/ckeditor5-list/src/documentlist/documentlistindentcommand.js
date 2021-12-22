@@ -74,6 +74,10 @@ export default class DocumentListIndentCommand extends Command {
 			// Expand the selected blocks to contain the whole list items.
 			expandListBlocksToCompleteItems( blocks );
 
+			// The set of all blocks that require indent update.
+			// Some of those will be handled by merging with parent item.
+			const blocksToUpdateIndent = new Set( blocks );
+
 			// Merge with parent list item while outdenting.
 			if ( this._indentBy < 0 ) {
 				const firstBlockIndent = blocks[ 0 ].getAttribute( 'listIndent' );
@@ -89,12 +93,14 @@ export default class DocumentListIndentCommand extends Command {
 
 					const parentBlock = ListWalker.first( block, { smallerIndent: true } );
 
-					mergeListItemBefore( block, parentBlock, writer );
+					for ( const updatedBlock of mergeListItemBefore( block, parentBlock, writer ) ) {
+						blocksToUpdateIndent.delete( updatedBlock );
+					}
 				}
 			}
 
 			// Now just update the attributes of blocks.
-			indentBlocks( blocks, this._indentBy, writer );
+			indentBlocks( blocksToUpdateIndent, this._indentBy, writer );
 
 			/**
 			 * Event fired by the {@link #execute} method.
