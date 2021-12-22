@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getData as getModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import { getData as getModelData, parse as parseModel, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ListWalker from '../../../src/documentlist/utils/listwalker';
 
 /**
  * Sets the editor model according to the specified input string.
@@ -199,4 +201,100 @@ export function setupTestHelpers( editor ) {
 	};
 
 	return test;
+}
+
+/**
+ * TODO
+ *
+ * @param {Iterable.<String>} lines
+ * @returns {String}
+ */
+export function modelList( lines ) {
+	const items = [];
+	const stack = [];
+
+	let idx = 0;
+	let prevIndent = -1;
+
+	for ( const line of lines ) {
+		const [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#]) )?)(.*)/ );
+		const listIndent = pad.length / 2 - 1;
+
+		if ( listIndent < 0 ) {
+			stack.length = 0;
+		} else if ( prevIndent > listIndent ) {
+			stack.length = listIndent + 1;
+		}
+
+		if ( listIndent < 0 ) {
+			items.push( stringifyElement( content ) );
+		} else {
+			if ( !stack[ listIndent ] && !marker ) {
+				throw new Error( 'Invalid indent: ' + line );
+			}
+
+			if ( !stack[ listIndent ] || marker ) {
+				stack[ listIndent ] = {
+					listItemId: String( idx++ ).padStart( 3, '0' ),
+					listType: marker == '#' ? 'numbered' : 'bulleted'
+				};
+			}
+
+			items.push( stringifyElement( content, { listIndent, ...stack[ listIndent ] } ) );
+		}
+
+		prevIndent = listIndent;
+	}
+
+	return items.join( '' );
+}
+
+/**
+ * TODO
+ *
+ * @param fragment
+ * @returns {String}
+ */
+export function stringifyList( fragment ) {
+	const model = new Model();
+	const lines = [];
+
+	model.change( writer => {
+		for ( let node = fragment.getChild( 0 ); node; node = node.nextSibling ) {
+			let pad = '';
+
+			if ( node.hasAttribute( 'listItemId' ) ) {
+				const marker = node.getAttribute( 'listType' ) == 'numbered' ? '#' : '*';
+				const indentSpaces = ( node.getAttribute( 'listIndent' ) + 1 ) * 2;
+				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameItemId: true } );
+
+				pad = isFollowing ? ' '.repeat( indentSpaces ) : marker.padStart( indentSpaces - 1 ) + ' ';
+			}
+
+			lines.push( `${ pad }${ stringifyNode( node, writer ) }` );
+		}
+	} );
+
+	return lines.join( '\n' );
+}
+
+function stringifyNode( node, writer ) {
+	const fragment = writer.createDocumentFragment();
+
+	if ( node.is( 'element', 'paragraph' ) ) {
+		for ( const child of node.getChildren() ) {
+			writer.append( child, fragment );
+		}
+	} else {
+		writer.append( node, fragment );
+	}
+
+	return stringifyModel( fragment );
+}
+
+function stringifyElement( content, attributes = {}, name = 'paragraph' ) {
+	[ , name, content ] = content.match( /^<([^>]+)>([^<]*)?/ ) || [ null, name, content ];
+	attributes = Object.entries( attributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+
+	return `<${ name }${ attributes }>${ content }</${ name.replace( /\s.*/, '' ) }>`;
 }

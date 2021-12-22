@@ -5,6 +5,7 @@
 
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import stubUid from './_utils/uid';
+import { modelList } from './_utils/utils';
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
@@ -222,7 +223,7 @@ describe( 'DocumentListIndentCommand', () => {
 					);
 
 					model.change( writer => {
-						expect( writer.batch.operations.length ).to.equal( 0 );
+						expect( writer.batch.operations.length ).to.equalMarkup( 0 );
 
 						command.execute();
 
@@ -231,27 +232,27 @@ describe( 'DocumentListIndentCommand', () => {
 				} );
 
 				it( 'should increment indent attribute by 1', () => {
-					setData( model,
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-						'<paragraph listIndent="1" listItemId="f" listType="bulleted">[]5</paragraph>' +
-						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-					);
+					setData( model, modelList( [
+						'* 0',
+						'* 1',
+						'  * 2',
+						'    * 3',
+						'    * 4',
+						'  * []5',
+						'* 6'
+					] ) );
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-						'<paragraph listIndent="2" listItemId="f" listType="bulleted">5</paragraph>' +
-						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-					);
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'* 1',
+						'  * 2',
+						'    * 3',
+						'    * 4',
+						'    * []5',
+						'* 6'
+					] ) );
 				} );
 
 				it( 'should increment indent of all sub-items of indented item', () => {
@@ -267,7 +268,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -291,7 +292,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -314,7 +315,7 @@ describe( 'DocumentListIndentCommand', () => {
 					);
 
 					command.on( 'afterExecute', ( evt, data ) => {
-						expect( data ).to.deep.equal( [
+						expect( data ).to.deep.equalMarkup( [
 							root.getChild( 1 ),
 							root.getChild( 2 ),
 							root.getChild( 3 ),
@@ -341,7 +342,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
@@ -362,7 +363,7 @@ describe( 'DocumentListIndentCommand', () => {
 					command.isEnabled = true;
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="0" listItemId="b" listType="bulleted">2</paragraph>' +
@@ -385,7 +386,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -411,7 +412,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
@@ -435,7 +436,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
@@ -456,7 +457,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 					command.execute();
 
-					expect( getData( model, { withoutSelection: true } ) ).to.equal(
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
 						'<paragraph>2</paragraph>' +
@@ -477,7 +478,7 @@ describe( 'DocumentListIndentCommand', () => {
 					);
 
 					command.on( 'afterExecute', ( evt, data ) => {
-						expect( data ).to.deep.equal( [
+						expect( data ).to.deep.equalMarkup( [
 							root.getChild( 1 ),
 							root.getChild( 2 ),
 							root.getChild( 3 ),
@@ -593,7 +594,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -617,7 +618,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph>0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -641,7 +642,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph>1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -665,7 +666,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph>1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -689,7 +690,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">2</paragraph>' +
@@ -711,7 +712,7 @@ describe( 'DocumentListIndentCommand', () => {
 				stubUid();
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">2</paragraph>' +
@@ -730,7 +731,7 @@ describe( 'DocumentListIndentCommand', () => {
 				stubUid();
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">2</paragraph>' +
