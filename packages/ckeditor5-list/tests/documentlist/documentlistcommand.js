@@ -11,7 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import stubUid from './_utils/uid';
 
-describe.only( 'DocumentListCommand', () => {
+describe.skip( 'DocumentListCommand', () => {
 	let editor, command, model, doc, root;
 
 	testUtils.createSinonSandbox();
@@ -173,7 +173,7 @@ describe.only( 'DocumentListCommand', () => {
 			} );
 
 			describe( 'collapsed selection', () => {
-				describe.only( 'when turning on', () => {
+				describe( 'when turning on', () => {
 					it( 'should turn the closest block into a list item', () => {
 						setData( model, '<paragraph>fo[]o</paragraph>' );
 
@@ -241,7 +241,7 @@ describe.only( 'DocumentListCommand', () => {
 					} );
 				} );
 
-				describe.only( 'when turning off', () => {
+				describe( 'when turning off', () => {
 					it( 'should strip the list attributes from the closest list item (single list item)', () => {
 						// * f[]oo
 						setData( model, '<paragraph listIndent="0" listItemId="a" listType="bulleted">fo[]o</paragraph>' );

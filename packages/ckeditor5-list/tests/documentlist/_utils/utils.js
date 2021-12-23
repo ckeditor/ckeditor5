@@ -213,10 +213,9 @@ export function modelList( lines ) {
 	const items = [];
 	const stack = [];
 
-	let idx = 0;
 	let prevIndent = -1;
 
-	for ( const line of lines ) {
+	for ( const [ idx, line ] of lines.entries() ) {
 		const [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#]) )?)(.*)/ );
 		const listIndent = pad.length / 2 - 1;
 
@@ -235,7 +234,7 @@ export function modelList( lines ) {
 
 			if ( !stack[ listIndent ] || marker ) {
 				stack[ listIndent ] = {
-					listItemId: String( idx++ ).padStart( 3, '0' ),
+					listItemId: String( idx ).padStart( 3, '0' ),
 					listType: marker == '#' ? 'numbered' : 'bulleted'
 				};
 			}

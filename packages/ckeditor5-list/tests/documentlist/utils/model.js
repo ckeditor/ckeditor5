@@ -13,6 +13,7 @@ import {
 	isLastBlockOfListItem,
 	splitListItemBefore
 } from '../../../src/documentlist/utils/model';
+import { modelList } from '../_utils/utils';
 import stubUid from '../_utils/uid';
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
@@ -459,7 +460,7 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 	} );
 
-	describe( 'expandListBlocksToCompleteItems()', () => {
+	describe.only( 'expandListBlocksToCompleteItems()', () => {
 		it( 'should not modify list for a single block of a single-block list item', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
@@ -468,11 +469,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 0 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 1 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
@@ -485,11 +486,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">2</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 0 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
@@ -506,11 +507,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 1 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
@@ -527,11 +528,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 3 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
@@ -548,11 +549,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 2 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
@@ -569,11 +570,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 2 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
@@ -588,11 +589,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">2</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 0 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
@@ -607,11 +608,11 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">2</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 2 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 3 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
@@ -629,12 +630,12 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="y" listIndent="0">y</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 4 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
@@ -652,15 +653,45 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph listType="bulleted" listItemId="e" listIndent="0">4</paragraph>';
 
 			const fragment = parseModel( input, schema );
-			const blocks = [
+			let blocks = [
 				fragment.getChild( 2 )
 			];
 
-			expandListBlocksToCompleteItems( blocks );
+			blocks = expandListBlocksToCompleteItems( blocks );
 
 			expect( blocks.length ).to.equal( 2 );
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+		} );
+
+		it( 'should include all blocks even if not at the same indent level from the edge block', () => {
+			const fragment = parseModel( modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    3',
+				'  * 4',
+				'    * 5',
+				'    6',
+				'  * 7'
+			] ), schema );
+
+			let blocks = [
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 ),
+				fragment.getChild( 4 ),
+				fragment.getChild( 5 )
+			];
+
+			blocks = expandListBlocksToCompleteItems( blocks );
+
+			expect( blocks.length ).to.equal( 6 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 5 ) );
+			expect( blocks[ 5 ] ).to.equal( fragment.getChild( 6 ) );
 		} );
 	} );
 

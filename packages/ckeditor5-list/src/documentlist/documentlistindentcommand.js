@@ -12,7 +12,7 @@ import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
 	isFirstBlockOfListItem,
-	mergeListItemBefore,
+	isOnlyOneListItemSelected,
 	splitListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -71,36 +71,8 @@ export default class DocumentListIndentCommand extends Command {
 				return;
 			}
 
-			// Expand the selected blocks to contain the whole list items.
-			expandListBlocksToCompleteItems( blocks );
-
-			// The set of all blocks that require indent update.
-			// Some of those will be handled by merging with parent item.
-			const blocksToUpdateIndent = new Set( blocks );
-
-			// Merge with parent list item while outdenting.
-			if ( this._indentBy < 0 ) {
-				const firstBlockIndent = blocks[ 0 ].getAttribute( 'listIndent' );
-
-				for ( const block of blocks ) {
-					const blockIndent = block.getAttribute( 'listIndent' );
-
-					// Don't merge nested lists (those should keep their structure).
-					// Merge only if there is any parent list item.
-					if ( blockIndent < 1 || blockIndent > firstBlockIndent ) {
-						continue;
-					}
-
-					const parentBlock = ListWalker.first( block, { smallerIndent: true } );
-
-					for ( const updatedBlock of mergeListItemBefore( block, parentBlock, writer ) ) {
-						blocksToUpdateIndent.delete( updatedBlock );
-					}
-				}
-			}
-
 			// Now just update the attributes of blocks.
-			indentBlocks( blocksToUpdateIndent, this._indentBy, writer );
+			const changedBlocks = indentBlocks( blocks, this._indentBy, { expand: true }, writer );
 
 			/**
 			 * Event fired by the {@link #execute} method.
@@ -111,7 +83,7 @@ export default class DocumentListIndentCommand extends Command {
 			 * @protected
 			 * @event afterExecute
 			 */
-			this.fire( 'afterExecute', blocks );
+			this.fire( 'afterExecute', changedBlocks );
 		} );
 	}
 
@@ -123,7 +95,7 @@ export default class DocumentListIndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const blocks = getSelectedListBlocks( this.editor.model.document.selection );
+		let blocks = getSelectedListBlocks( this.editor.model.document.selection );
 		let firstBlock = blocks[ 0 ];
 
 		// If selection is not in a list item, the command is disabled.
@@ -141,7 +113,7 @@ export default class DocumentListIndentCommand extends Command {
 			return false;
 		}
 
-		expandListBlocksToCompleteItems( blocks );
+		blocks = expandListBlocksToCompleteItems( blocks );
 		firstBlock = blocks[ 0 ];
 
 		// Check if there is any list item before selected items that could become a parent of selected items.
@@ -171,9 +143,3 @@ function getSelectedListBlocks( selection ) {
 	return blocks;
 }
 
-// Checks whether the given blocks are related to a single list item.
-function isOnlyOneListItemSelected( blocks ) {
-	const firstItemId = blocks[ 0 ].getAttribute( 'listItemId' );
-
-	return !blocks.some( item => item.getAttribute( 'listItemId' ) != firstItemId );
-}

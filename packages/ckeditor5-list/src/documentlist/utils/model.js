@@ -17,12 +17,13 @@ import ListWalker from './listwalker';
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
+ * @param {Object} options TODO
  * @return {Array.<module:engine/model/element~Element>}
  */
-export function getAllListItemBlocks( listItem ) {
+export function getAllListItemBlocks( listItem, options = {} ) {
 	return [
-		...getListItemBlocks( listItem, { direction: 'backward' } ),
-		...getListItemBlocks( listItem, { direction: 'forward' } )
+		...getListItemBlocks( listItem, { ...options, direction: 'backward' } ),
+		...getListItemBlocks( listItem, { ...options, direction: 'forward' } )
 	];
 }
 
@@ -37,13 +38,14 @@ export function getAllListItemBlocks( listItem ) {
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
+ * TODO all options
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItemBlocks( listItem, options = {} ) {
 	const isForward = options.direction == 'forward';
 
 	const items = Array.from( new ListWalker( listItem, {
-		direction: options.direction,
+		...options,
 		includeSelf: isForward,
 		sameIndent: true,
 		sameItemId: true
@@ -112,32 +114,18 @@ export function isLastBlockOfListItem( listBlock ) {
  *
  * @protected
  * @param {Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ * @returns {Array.<module:engine/model/element~Element>}
  */
 export function expandListBlocksToCompleteItems( blocks ) {
-	const walkerOptions = {
-		biggerIndent: true,
-		sameIndent: true,
-		sameItemId: true
-	};
+	const allBlocks = new Set();
 
-	// Add missing blocks of the first selected list item.
-	const firstBlock = blocks[ 0 ];
-	const backwardWalker = new ListWalker( firstBlock, walkerOptions );
-
-	for ( const block of backwardWalker ) {
-		blocks.unshift( block );
+	for ( const block of blocks ) {
+		for ( const itemBlock of getAllListItemBlocks( block, { biggerIndent: true } ) ) {
+			allBlocks.add( itemBlock );
+		}
 	}
 
-	// Add missing blocks of the last selected list item.
-	const lastBlock = blocks[ blocks.length - 1 ];
-	const forwardWalker = new ListWalker( lastBlock, {
-		...walkerOptions,
-		direction: 'forward'
-	} );
-
-	for ( const block of forwardWalker ) {
-		blocks.push( block );
-	}
+	return Array.from( allBlocks.values() ).sort( ( a, b ) => a.index - b.index );
 }
 
 /**
@@ -218,20 +206,113 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
  * @protected
  * @param {Iterable.<module:engine/model/element~Element>} blocks The iterable of selected blocks.
  * @param {Number} indentBy The indentation level difference.
+ * @param {Boolean} expand TODO
  * @param {module:engine/model/writer~Writer} writer The model writer.
  */
-export function indentBlocks( blocks, indentBy, writer ) {
-	for ( const item of blocks ) {
-		const indent = item.getAttribute( 'listIndent' ) + indentBy;
+export function indentBlocks( blocks, indentBy, { expand, alwaysMerge }, writer ) {
+	// Expand the selected blocks to contain the whole list items.
+	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
+	const visited = new Set();
 
-		if ( indent < 0 ) {
-			for ( const attributeKey of item.getAttributeKeys() ) {
-				if ( attributeKey.startsWith( 'list' ) ) {
-					writer.removeAttribute( attributeKey, item );
-				}
-			}
-		} else {
-			writer.setAttribute( 'listIndent', indent, item );
+	const referenceIndex = allBlocks.reduce( ( indent, block ) => {
+		const blockIndent = block.getAttribute( 'listIndent' );
+
+		return blockIndent < indent ? blockIndent : indent;
+	}, Number.POSITIVE_INFINITY );
+
+	const parentBlocks = new Map();
+
+	// Collect parent blocks before the list structure gets altered.
+	if ( indentBy < 0 ) {
+		for ( const block of allBlocks ) {
+			parentBlocks.set( block, ListWalker.first( block, { smallerIndent: true } ) );
 		}
 	}
+
+	for ( const block of allBlocks ) {
+		if ( visited.has( block ) ) {
+			continue;
+		}
+
+		visited.add( block );
+
+		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;
+
+		if ( blockIndent < 0 ) {
+			for ( const attributeKey of block.getAttributeKeys() ) {
+				if ( attributeKey.startsWith( 'list' ) ) {
+					writer.removeAttribute( attributeKey, block );
+				}
+			}
+
+			continue;
+		}
+
+		// Merge with parent list item while outdenting.
+		if ( indentBy < 0 ) {
+			const atReferenceIndent = block.getAttribute( 'listIndent' ) == referenceIndex;
+
+			// Merge if the block indent matches reference indent or the block was passed directly with alwaysMerge flag.
+			if ( atReferenceIndent || alwaysMerge && blocks.includes( block ) ) {
+				const parentBlock = parentBlocks.get( block );
+
+				// The parent block could become a non-list block.
+				if ( parentBlock.hasAttribute( 'listIndent' ) ) {
+					const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
+
+					// Merge with parent only if it wasn't the last item.
+					// Merge:
+					// * a
+					//   * b <- outdent
+					//   c
+					// Don't merge:
+					// * a
+					//   * b <- outdent
+					// * c
+					if ( alwaysMerge || parentItemBlocks.pop().index > block.index ) {
+						for ( const mergedBlock of mergeListItemBefore( block, parentBlock, writer ) ) {
+							visited.add( mergedBlock );
+						}
+
+						continue;
+					}
+				}
+			}
+		}
+
+		writer.setAttribute( 'listIndent', blockIndent, block );
+	}
+
+	return allBlocks;
+}
+
+/**
+ * Checks whether the given blocks are related to a single list item.
+ * TODO
+ */
+export function isOnlyOneListItemSelected( blocks ) {
+	if ( !blocks.length ) {
+		return false;
+	}
+
+	const firstItemId = blocks[ 0 ].getAttribute( 'listItemId' );
+
+	if ( !firstItemId ) {
+		return false;
+	}
+
+	return !blocks.some( item => item.getAttribute( 'listItemId' ) != firstItemId );
+}
+
+/**
+ * TODO
+ */
+export function getSameIndentBlocks( blocks ) {
+	if ( !blocks.length ) {
+		return [];
+	}
+
+	const firstIndent = blocks[ 0 ].getAttribute( 'listIndent' );
+
+	return blocks.filter( block => block.getAttribute( 'listIndent' ) == firstIndent );
 }

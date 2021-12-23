@@ -32,7 +32,7 @@ describe( 'mockList()', () => {
 			'* bar'
 		] ) ).to.equalMarkup(
 			'<paragraph>foo</paragraph>' +
-			'<paragraph listIndent="0" listItemId="000" listType="bulleted">bar</paragraph>'
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
 		);
 	} );
 
@@ -44,7 +44,7 @@ describe( 'mockList()', () => {
 		] ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted"> foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted"> bar</paragraph>' +
-			'<paragraph listIndent="0" listItemId="001" listType="bulleted">  baz</paragraph>'
+			'<paragraph listIndent="0" listItemId="002" listType="bulleted">  baz</paragraph>'
 		);
 	} );
 
@@ -78,7 +78,7 @@ describe( 'mockList()', () => {
 		] ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">bar</paragraph>' +
-			'<paragraph listIndent="0" listItemId="001" listType="bulleted">baz</paragraph>'
+			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
 		);
 	} );
 
@@ -197,8 +197,8 @@ describe( 'mockList()', () => {
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
 			'<paragraph listIndent="1" listItemId="001" listType="bulleted">bar</paragraph>' +
 			'<paragraph>baz</paragraph>' +
-			'<paragraph listIndent="0" listItemId="002" listType="bulleted">abc</paragraph>' +
-			'<paragraph listIndent="1" listItemId="003" listType="bulleted">123</paragraph>'
+			'<paragraph listIndent="0" listItemId="003" listType="bulleted">abc</paragraph>' +
+			'<paragraph listIndent="1" listItemId="004" listType="bulleted">123</paragraph>'
 		);
 	} );
 

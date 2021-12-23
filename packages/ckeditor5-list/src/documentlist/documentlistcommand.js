@@ -8,8 +8,15 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { first, uid } from 'ckeditor5/src/utils';
-import { getAllListItemBlocks, isLastBlockOfListItem, getListItemBlocks, getNestedListBlocks, indentBlocks, isFirstBlockOfListItem, mergeListItemBlocksIntoParentListItem } from './utils/model';
+import { uid } from 'ckeditor5/src/utils';
+import {
+	indentBlocks,
+	isFirstBlockOfListItem,
+	isOnlyOneListItemSelected,
+	splitListItemBefore,
+	expandListBlocksToCompleteItems,
+	getSameIndentBlocks
+} from './utils/model';
 
 /**
  * The list command. It is used by the {@link TODO document list feature}.
@@ -64,61 +71,60 @@ export default class DocumentListCommand extends Command {
 		const model = this.editor.model;
 		const document = model.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => isListItemOrCanBeListItem( block, model.schema ) );
+			.filter( block => model.schema.checkAttribute( block, 'listType' ) );
 
 		// Whether we are turning off some items.
 		const turnOff = options.forceValue !== undefined ? !options.forceValue : this.value;
 
 		model.change( writer => {
-			for ( const block of blocks.reverse() ) {
-				if ( turnOff ) {
-					// Blocks in top-level list items simply outdent when turning off.
-					if ( block.getAttribute( 'listIndent' ) === 0 ) {
-						if ( isFirstBlockOfListItem( block ) ) {
-							// If the only block in the list item, outdent this block only.
-							if ( isLastBlockOfListItem( block ) ) {
-								indentBlocks( [ block, ...getNestedListBlocks( block ) ], -1, writer );
-							}
-							// If the first block in the list item but some follow, outdent them too.
-							else {
-								indentBlocks( Array.from( getListItemBlocks( block, { direction: 'forward' } ) ), -1, writer );
-							}
-						}
-						// If not the first block in the list item, indent all blocks that follow.
-						else {
-							indentBlocks( [ block, ...getNestedListBlocks( block ) ], -1, writer );
-						}
-					} else {
-						mergeListItemBlocksIntoParentListItem( block, writer );
+			if ( turnOff ) {
+				// Outdent.
+				indentBlocks( blocks, -1, { expand: true, alwaysMerge: true }, writer );
+			} else {
+				// Case of selection:
+				// * a
+				//   * [b
+				//   c]
+				// Should be treated as only "c" selected to make it:
+				// * a
+				//   * b
+				//   * c
+				const completeItemsBlocks = expandListBlocksToCompleteItems( blocks );
+				const sameIndentBlocks = getSameIndentBlocks( completeItemsBlocks );
+				const originallySelectedBlocks = sameIndentBlocks.filter( block => blocks.includes( block ) );
+
+				if ( isOnlyOneListItemSelected( originallySelectedBlocks ) && !isFirstBlockOfListItem( originallySelectedBlocks[ 0 ] ) ) {
+					indentBlocks( originallySelectedBlocks, 1, {}, writer );
+
+					for ( const block of originallySelectedBlocks.reverse() ) {
+						splitListItemBefore( block, writer );
 					}
-				}
-				// Turning on and the block is not a list item - it should get the full set of necessary attributes.
-				else if ( !turnOff && !block.hasAttribute( 'listType' ) ) {
-					writer.setAttributes( {
-						listType: this.type,
-						listIndent: 0,
-						listItemId: uid()
-					}, block );
-				}
-				// Turning on and the block is already a list items but has different type - change it's type and
-				// type of it's all siblings that have same indent.
-				else if ( !turnOff && block.hasAttribute( 'listType' ) && block.getAttribute( 'listType' ) != this.type ) {
-					writer.setAttributes( {
-						listType: this.type
-					}, block );
+				} else {
+					for ( const block of blocks ) {
+						if ( !block.hasAttribute( 'listType' ) ) {
+							writer.setAttributes( {
+								listIndent: 0,
+								listItemId: uid(),
+								listType: this.type
+							}, block );
+						} else {
+							expandListBlocksToCompleteItems( [ block ] );
+							writer.setAttribute( 'listType', this.type, block );
+						}
+					}
 				}
 			}
 
 			/**
 			 * Event fired by the {@link #execute} method.
 			 *
-			 * It allows to execute an action after executing the {@link ~ListCommand#execute} method, for example adjusting
-			 * attributes of changed blocks.
+			 * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
+			 * for example adjusting attributes of changed list items.
 			 *
 			 * @protected
-			 * @event _executeCleanup
+			 * @event afterExecute
 			 */
-			this.fire( '_executeCleanup', blocks );
+			this.fire( 'afterExecute', blocks );
 		} );
 	}
 
@@ -129,10 +135,25 @@ export default class DocumentListCommand extends Command {
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue() {
-		// Check whether closest `listItem` ancestor of the position has a correct type.
-		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
+		const selection = this.editor.model.document.selection;
+		const blocks = Array.from( selection.getSelectedBlocks() );
 
-		return !!listItem && listItem.getAttribute( 'listType' ) == this.type;
+		for ( const block of blocks ) {
+			if ( block.getAttribute( 'listType' ) != this.type ) {
+				return false;
+			}
+		}
+
+		// TODO this is same as in execute
+		const completeItemsBlocks = expandListBlocksToCompleteItems( blocks );
+		const sameIndentBlocks = getSameIndentBlocks( completeItemsBlocks );
+		const originallySelectedBlocks = sameIndentBlocks.filter( block => blocks.includes( block ) );
+
+		if ( isOnlyOneListItemSelected( originallySelectedBlocks ) && !isFirstBlockOfListItem( originallySelectedBlocks[ 0 ] ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -142,31 +163,25 @@ export default class DocumentListCommand extends Command {
 	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
+		const selection = this.editor.model.document.selection;
+		const schema = this.editor.model.schema;
+		const blocks = Array.from( selection.getSelectedBlocks() );
+
+		if ( !blocks.length ) {
+			return false;
+		}
+
 		// If command value is true it means that we are in list item, so the command should be enabled.
 		if ( this.value ) {
 			return true;
 		}
 
-		const selection = this.editor.model.document.selection;
-		const schema = this.editor.model.schema;
-
-		const firstBlock = first( selection.getSelectedBlocks() );
-
-		if ( !firstBlock ) {
-			return false;
+		for ( const block of blocks ) {
+			if ( schema.checkAttribute( block, 'listType' ) ) {
+				return true;
+			}
 		}
 
-		// Otherwise, check if list item can be inserted at the position start.
-		return isListItemOrCanBeListItem( firstBlock, schema );
+		return false;
 	}
-}
-
-// Checks whether the given block can get the `listType` attribute and become a document list item.
-//
-// @private
-// @param {module:engine/model/element~Element} block A block to be tested.
-// @param {module:engine/model/schema~Schema} schema The schema of the document.
-// @returns {Boolean}
-function isListItemOrCanBeListItem( block, schema ) {
-	return schema.checkAttribute( block, 'listType' ) && !schema.isObject( block );
 }
