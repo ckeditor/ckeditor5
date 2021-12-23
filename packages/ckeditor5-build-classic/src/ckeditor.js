@@ -66,6 +66,7 @@ ClassicEditor.builtinPlugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
+	Clipboard,
 	TextTransformation
 ];
 
@@ -82,6 +83,7 @@ ClassicEditor.defaultConfig = {
 			'alignment',
 			'numberedList',
 			'ckfinder',
+			'pastePlainText',
 			'findAndReplace',
 			'|',
 			'outdent',
@@ -92,6 +94,7 @@ ClassicEditor.defaultConfig = {
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
+			'clipboard',
 			'undo',
 			'redo',
 			'fontFamily',
