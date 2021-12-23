@@ -58,12 +58,12 @@ export function listItemUpcastConverter() {
 
 		if ( items.length > 1 ) {
 			// Make sure that list item that contain only nested list will preserve paragraph for itself:
-			// 	<ul>
-			// 		<li>
+			//	<ul>
+			//		<li>
 			//			<p></p>  <-- this one must be kept
-			// 			<ul>
-			// 				<li></li>
-			// 			</ul>
+			//			<ul>
+			//				<li></li>
+			//			</ul>
 			//		</li>
 			//	</ul>
 			if ( items[ 1 ].getAttribute( 'listItemId' ) != attributes.listItemId ) {
