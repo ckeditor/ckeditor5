@@ -150,8 +150,8 @@ export function expandListBlocksToCompleteItems( blocks ) {
 export function splitListItemBefore( listBlock, writer ) {
 	const id = uid();
 
-	for ( const item of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
-		writer.setAttribute( 'listItemId', id, item );
+	for ( const block of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
+		writer.setAttribute( 'listItemId', id, block );
 	}
 }
 
@@ -186,10 +186,37 @@ export function mergeListItemBlocksIntoParentListItem( listBlock, writer ) {
 }
 
 /**
+ * Merges the list item with the parent list item.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listBlock The list block element.
+ * @param {module:engine/model/element~Element} parentBlock The list block element to merge with.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Iterable.<module:engine/model/element~Element>} The iterable of updated blocks.
+ */
+export function mergeListItemBefore( listBlock, parentBlock, writer ) {
+	const attributes = {};
+
+	for ( const [ key, value ] of parentBlock.getAttributes() ) {
+		if ( key.startsWith( 'list' ) ) {
+			attributes[ key ] = value;
+		}
+	}
+
+	const blocks = new Set( getListItemBlocks( listBlock, { direction: 'forward' } ) );
+
+	for ( const block of blocks ) {
+		writer.setAttributes( attributes, block );
+	}
+
+	return blocks;
+}
+
+/**
  * Updates indentation of given list blocks.
  *
  * @protected
- * @param {Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ * @param {Iterable.<module:engine/model/element~Element>} blocks The iterable of selected blocks.
  * @param {Number} indentBy The indentation level difference.
  * @param {module:engine/model/writer~Writer} writer The model writer.
  */

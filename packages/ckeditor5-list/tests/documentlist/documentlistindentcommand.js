@@ -4,13 +4,18 @@
  */
 
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
+import stubUid from './_utils/uid';
+import { modelList } from './_utils/utils';
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DocumentListIndentCommand', () => {
 	let editor, model, doc, root;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editor = new Editor();
@@ -112,6 +117,16 @@ describe( 'DocumentListIndentCommand', () => {
 
 					expect( command.isEnabled ).to.be.false;
 				} );
+
+				it( 'should be false if selection starts before a list item', () => {
+					setData( model,
+						'<paragraph>[]x</paragraph>' +
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>'
+					);
+
+					expect( command.isEnabled ).to.be.false;
+				} );
 			} );
 
 			describe( 'multiple blocks per list item', () => {
@@ -179,128 +194,303 @@ describe( 'DocumentListIndentCommand', () => {
 				} );
 
 				describe( 'multiple list items selection', () => {
-					// TODO
+					it( 'should be true if selection starts in the middle block of list item and spans multiple items', () => {
+						setData( model,
+							'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+							'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+							'<paragraph listIndent="0" listItemId="b" listType="bulleted">[2</paragraph>' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">3]</paragraph>' +
+							'<paragraph listIndent="0" listItemId="c" listType="bulleted">4</paragraph>'
+						);
+
+						expect( command.isEnabled ).to.be.true;
+					} );
 				} );
 			} );
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should use parent batch', () => {
-				setData( model,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">[]5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
+			describe( 'single block per list item', () => {
+				it( 'should use parent batch', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="f" listType="bulleted">[]5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
 
-				model.change( writer => {
-					expect( writer.batch.operations.length ).to.equal( 0 );
+					model.change( writer => {
+						expect( writer.batch.operations.length ).to.equalMarkup( 0 );
+
+						command.execute();
+
+						expect( writer.batch.operations.length ).to.be.above( 0 );
+					} );
+				} );
+
+				it( 'should increment indent attribute by 1', () => {
+					setData( model, modelList( [
+						'* 0',
+						'* 1',
+						'  * 2',
+						'    * 3',
+						'    * 4',
+						'  * []5',
+						'* 6'
+					] ) );
 
 					command.execute();
 
-					expect( writer.batch.operations.length ).to.be.above( 0 );
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'* 1',
+						'  * 2',
+						'    * 3',
+						'    * 4',
+						'    * []5',
+						'* 6'
+					] ) );
+				} );
+
+				it( 'should increment indent of all sub-items of indented item', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="3" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="2" listItemId="f" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
+				} );
+
+				it( 'should increment indent of all selected item when multiple items are selected', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3]</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
+				} );
+
+				it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
+
+					command.on( 'afterExecute', ( evt, data ) => {
+						expect( data ).to.deep.equalMarkup( [
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 ),
+							root.getChild( 5 )
+						] );
+
+						done();
+					} );
+
+					command.execute();
 				} );
 			} );
 
-			it( 'should increment indent attribute by 1', () => {
-				setData( model,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">[]5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
+			describe( 'multiple blocks per list item', () => {
+				it( 'should change indent of all blocks of a list item', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">4</paragraph>'
+					);
 
-				command.execute();
+					command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="2" listItemId="f" listType="bulleted">5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
-			} );
-
-			it( 'should increment indent of all sub-items of indented item', () => {
-				setData( model,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
-
-				command.execute();
-
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="3" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="3" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="2" listItemId="f" listType="bulleted">5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
-			} );
-
-			it( 'should increment indent of all selected item when multiple items are selected', () => {
-				setData( model,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">[1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">3]</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
-
-				command.execute();
-
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="3" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
-			} );
-
-			it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
-				setData( model,
-					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
-					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-					'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-					'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
-					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-				);
-
-				command.on( 'afterExecute', ( evt, data ) => {
-					expect( data ).to.deep.equal( [
-						root.getChild( 1 ),
-						root.getChild( 2 ),
-						root.getChild( 3 ),
-						root.getChild( 4 ),
-						root.getChild( 5 )
-					] );
-
-					done();
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">4</paragraph>'
+					);
 				} );
 
-				command.execute();
+				it( 'should do nothing if the following block of bigger list item is selected', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">4</paragraph>'
+					);
+
+					command.isEnabled = true;
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">4</paragraph>'
+					);
+				} );
+
+				it( 'should increment indent of all sub-items of indented item', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">6</paragraph>' +
+						'<paragraph listIndent="0" listItemId="f" listType="bulleted">6</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">6</paragraph>' +
+						'<paragraph listIndent="0" listItemId="f" listType="bulleted">6</paragraph>'
+					);
+				} );
+
+				it( 'should increment indent of all sub-items of indented item (at end of list item)', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e" listType="bulleted">6</paragraph>' +
+						'<paragraph listIndent="0" listItemId="f" listType="bulleted">8</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="3" listItemId="d" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">6</paragraph>' +
+						'<paragraph listIndent="0" listItemId="f" listType="bulleted">8</paragraph>'
+					);
+				} );
+
+				it( 'should increment indent of all selected list items when multiple items are selected partially', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">3]</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">5</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">5</paragraph>'
+					);
+				} );
+
+				it( 'should not increment indent of items from the following list even if it was selected', () => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[1</paragraph>' +
+						'<paragraph>2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">3]</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">4</paragraph>'
+					);
+
+					command.execute();
+
+					expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+						'<paragraph>2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted">4</paragraph>'
+					);
+				} );
+
+				it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
+					setData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
+						'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
+						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+					);
+
+					command.on( 'afterExecute', ( evt, data ) => {
+						expect( data ).to.deep.equalMarkup( [
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 ),
+							root.getChild( 4 ),
+							root.getChild( 5 )
+						] );
+
+						done();
+					} );
+
+					command.execute();
+				} );
 			} );
 		} );
 	} );
@@ -358,6 +548,36 @@ describe( 'DocumentListIndentCommand', () => {
 
 				expect( command.isEnabled ).to.be.true;
 			} );
+
+			it( 'should be false if selection starts before a list', () => {
+				setData( model,
+					'<paragraph>[0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">1]</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>'
+				);
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true with selection in the middle block of a list item', () => {
+				setData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>'
+				);
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be true with selection in the last block of a list item', () => {
+				setData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]2</paragraph>'
+				);
+
+				expect( command.isEnabled ).to.be.true;
+			} );
 		} );
 
 		describe( 'execute()', () => {
@@ -374,7 +594,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -398,7 +618,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph>0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -422,7 +642,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph>1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -446,7 +666,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 					'<paragraph>1</paragraph>' +
 					'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>' +
@@ -454,6 +674,68 @@ describe( 'DocumentListIndentCommand', () => {
 					'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
 					'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
 					'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
+				);
+			} );
+
+			it( 'should outdent all blocks of partly selected item when multiple items are selected', () => {
+				setData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="1" listItemId="b" listType="bulleted">[2</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">3]</paragraph>' +
+					'<paragraph listIndent="2" listItemId="c" listType="bulleted">4</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">5</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e" listType="bulleted">6</paragraph>'
+				);
+
+				command.execute();
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">3</paragraph>' +
+					'<paragraph listIndent="1" listItemId="c" listType="bulleted">4</paragraph>' +
+					'<paragraph listIndent="1" listItemId="d" listType="bulleted">5</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e" listType="bulleted">6</paragraph>'
+				);
+			} );
+
+			it( 'should split list item if selection is in the following list item block', () => {
+				setData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>'
+				);
+
+				stubUid();
+				command.execute();
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>'
+				);
+			} );
+
+			it( 'should split list item if selection is in the last list item block', () => {
+				setData( model,
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">[]2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>'
+				);
+
+				stubUid();
+				command.execute();
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup(
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="b" listType="bulleted">3</paragraph>'
 				);
 			} );
 		} );
