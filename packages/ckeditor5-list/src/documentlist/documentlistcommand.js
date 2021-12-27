@@ -10,12 +10,12 @@
 import { Command } from 'ckeditor5/src/core';
 import { uid } from 'ckeditor5/src/utils';
 import {
-	indentBlocks,
-	isFirstBlockOfListItem,
-	isOnlyOneListItemSelected,
 	splitListItemBefore,
 	expandListBlocksToCompleteItems,
-	getSameIndentBlocks
+	getListItemBlocks,
+	getListItems,
+	removeListAttributes,
+	outdentItemsAfterItemRemoved
 } from './utils/model';
 
 /**
@@ -78,54 +78,79 @@ export default class DocumentListCommand extends Command {
 
 		model.change( writer => {
 			if ( turnOff ) {
-				// Outdent.
-				indentBlocks( blocks, -1, { expand: true, alwaysMerge: true }, writer );
-			} else {
-				// Case of selection:
-				// * a
-				//   * [b
-				//   c]
-				// Should be treated as only "c" selected to make it:
-				// * a
-				//   * b
-				//   * c
-				const completeItemsBlocks = expandListBlocksToCompleteItems( blocks );
-				const sameIndentBlocks = getSameIndentBlocks( completeItemsBlocks );
-				const originallySelectedBlocks = sameIndentBlocks.filter( block => blocks.includes( block ) );
+				const lastBlock = blocks[ blocks.length - 1 ];
 
-				if ( isOnlyOneListItemSelected( originallySelectedBlocks ) && !isFirstBlockOfListItem( originallySelectedBlocks[ 0 ] ) ) {
-					indentBlocks( originallySelectedBlocks, 1, {}, writer );
+				// Split the first block from the list item.
+				const itemBlocks = getListItemBlocks( lastBlock, { direction: 'forward' } );
 
-					for ( const block of originallySelectedBlocks.reverse() ) {
-						splitListItemBefore( block, writer );
+				if ( itemBlocks.length > 1 ) {
+					splitListItemBefore( itemBlocks[ 1 ], writer );
+				}
+
+				// Convert list blocks to plain blocks.
+				const changedBlocks = removeListAttributes( blocks, writer );
+
+				// Outdent items following the selected list item.
+				changedBlocks.push( ...outdentItemsAfterItemRemoved( lastBlock, writer ) );
+
+				this._fireAfterExecute( changedBlocks );
+			}
+			// Turning on the list items for a collapsed selection inside a list item.
+			else if ( document.selection.isCollapsed && blocks[ 0 ].hasAttribute( 'listType' ) ) {
+				const changedBlocks = getListItems( blocks[ 0 ] );
+
+				for ( const block of changedBlocks ) {
+					writer.setAttribute( 'listType', this.type, block );
+				}
+
+				this._fireAfterExecute( changedBlocks );
+			}
+			// Turning on the list items for a non-collapsed selection.
+			else {
+				const changedBlocks = [];
+
+				for ( const block of blocks ) {
+					// Promote the given block to the list item.
+					if ( !block.hasAttribute( 'listType' ) ) {
+						writer.setAttributes( {
+							listIndent: 0,
+							listItemId: uid(),
+							listType: this.type
+						}, block );
+
+						changedBlocks.push( block );
 					}
-				} else {
-					for ( const block of blocks ) {
-						if ( !block.hasAttribute( 'listType' ) ) {
-							writer.setAttributes( {
-								listIndent: 0,
-								listItemId: uid(),
-								listType: this.type
-							}, block );
-						} else {
-							expandListBlocksToCompleteItems( [ block ] );
-							writer.setAttribute( 'listType', this.type, block );
+					// Change the type of list item.
+					else {
+						for ( const node of expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
+							writer.setAttribute( 'listType', this.type, node );
+							changedBlocks.push( node );
 						}
 					}
 				}
-			}
 
-			/**
-			 * Event fired by the {@link #execute} method.
-			 *
-			 * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
-			 * for example adjusting attributes of changed list items.
-			 *
-			 * @protected
-			 * @event afterExecute
-			 */
-			this.fire( 'afterExecute', blocks );
+				this._fireAfterExecute( changedBlocks );
+			}
 		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
+	 */
+	_fireAfterExecute( changedBlocks ) {
+		/**
+		 * Event fired by the {@link #execute} method.
+		 *
+		 * It allows to execute an action after executing the {@link ~DocumentListCommand#execute} method,
+		 * for example adjusting attributes of changed list items.
+		 *
+		 * @protected
+		 * @event afterExecute
+		 */
+		this.fire( 'afterExecute', changedBlocks );
 	}
 
 	/**
@@ -142,15 +167,6 @@ export default class DocumentListCommand extends Command {
 			if ( block.getAttribute( 'listType' ) != this.type ) {
 				return false;
 			}
-		}
-
-		// TODO this is same as in execute
-		const completeItemsBlocks = expandListBlocksToCompleteItems( blocks );
-		const sameIndentBlocks = getSameIndentBlocks( completeItemsBlocks );
-		const originallySelectedBlocks = sameIndentBlocks.filter( block => blocks.includes( block ) );
-
-		if ( isOnlyOneListItemSelected( originallySelectedBlocks ) && !isFirstBlockOfListItem( originallySelectedBlocks[ 0 ] ) ) {
-			return false;
 		}
 
 		return true;

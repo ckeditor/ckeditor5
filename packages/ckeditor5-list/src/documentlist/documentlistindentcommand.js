@@ -13,6 +13,7 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isOnlyOneListItemSelected,
+	outdentBlocks,
 	splitListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -40,7 +41,7 @@ export default class DocumentListIndentCommand extends Command {
 		 * @private
 		 * @member {Number}
 		 */
-		this._indentBy = indentDirection == 'forward' ? 1 : -1;
+		this._direction = indentDirection;
 	}
 
 	/**
@@ -64,8 +65,8 @@ export default class DocumentListIndentCommand extends Command {
 			// Handle selection contained in the single list item and starting in the following blocks.
 			if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 				// Allow increasing indent of following list item blocks.
-				if ( this._indentBy > 0 ) {
-					indentBlocks( blocks, this._indentBy, {}, writer );
+				if ( this._direction == 'forward' ) {
+					indentBlocks( blocks, writer );
 				}
 
 				// For indent make sure that indented blocks have a new ID.
@@ -77,7 +78,9 @@ export default class DocumentListIndentCommand extends Command {
 			// More than a single list item is selected, or the first block of list item is selected.
 			else {
 				// Now just update the attributes of blocks.
-				const changedBlocks = indentBlocks( blocks, this._indentBy, { expand: true }, writer );
+				const changedBlocks = this._direction == 'forward' ?
+					indentBlocks( blocks, writer, { expand: true } ) :
+					outdentBlocks( blocks, writer, { expand: true } );
 
 				this._fireAfterExecute( changedBlocks );
 			}
@@ -86,6 +89,7 @@ export default class DocumentListIndentCommand extends Command {
 
 	/**
 	 * TODO
+	 *
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
 	 */
@@ -119,7 +123,7 @@ export default class DocumentListIndentCommand extends Command {
 		}
 
 		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.
-		if ( this._indentBy < 0 ) {
+		if ( this._direction == 'backward' ) {
 			return true;
 		}
 

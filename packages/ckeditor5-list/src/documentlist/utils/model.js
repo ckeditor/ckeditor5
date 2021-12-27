@@ -7,8 +7,8 @@
  * @module list/documentlist/utils/model
  */
 
-import { uid } from 'ckeditor5/src/utils';
-import ListWalker from './listwalker';
+import { uid, toArray } from 'ckeditor5/src/utils';
+import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 
 /**
  * Returns an array with all elements that represents the same list item.
@@ -69,6 +69,32 @@ export function getNestedListBlocks( listItem ) {
 }
 
 /**
+ * Returns array of all blocks/items of the same list as given block (same indent, same type).
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} listItem Starting list item element.
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function getListItems( listItem ) {
+	const backwardBlocks = new ListWalker( listItem, {
+		sameIndent: true,
+		sameItemType: true
+	} );
+
+	const forwardBlocks = new ListWalker( listItem, {
+		sameIndent: true,
+		sameItemType: true,
+		includeSelf: true,
+		direction: 'forward'
+	} );
+
+	return [
+		...Array.from( backwardBlocks ).reverse(),
+		...forwardBlocks
+	];
+}
+
+/**
  * Check if the given block is the first in the list item.
  *
  * @protected
@@ -113,19 +139,24 @@ export function isLastBlockOfListItem( listBlock ) {
  * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
  *
  * @protected
- * @param {Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ * @param {Object} [options]
+ * @param {Boolean} [options.withNested=true] Whether should include nested list items.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function expandListBlocksToCompleteItems( blocks ) {
+export function expandListBlocksToCompleteItems( blocks, options = {} ) {
+	blocks = toArray( blocks );
+
+	const biggerIndent = options.withNested !== false;
 	const allBlocks = new Set();
 
 	for ( const block of blocks ) {
-		for ( const itemBlock of getAllListItemBlocks( block, { biggerIndent: true } ) ) {
+		for ( const itemBlock of getAllListItemBlocks( block, { biggerIndent } ) ) {
 			allBlocks.add( itemBlock );
 		}
 	}
 
-	return Array.from( allBlocks.values() ).sort( ( a, b ) => a.index - b.index );
+	return sortBlocks( allBlocks );
 }
 
 /**
@@ -140,36 +171,6 @@ export function splitListItemBefore( listBlock, writer ) {
 
 	for ( const block of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
 		writer.setAttribute( 'listItemId', id, block );
-	}
-}
-
-/**
- * Splits the list item just before the provided list block.
- *
- * @protected
- * @param {module:engine/model/element~Element} listBlock The list block element.
- * @param {module:engine/model/writer~Writer} writer The model writer.
- */
-export function mergeListItemBlocksIntoParentListItem( listBlock, writer ) {
-	const blocks = getAllListItemBlocks( listBlock );
-	const firstBlock = blocks[ 0 ];
-	const parentListItem = firstBlock.previousSibling;
-
-	// TODO remove paranoid check that should not be necessary.
-	if ( !parentListItem || !parentListItem.hasAttribute( 'listItemId' ) ) {
-		throw 'Cannot merge when there is nothing to merge into.';
-	}
-
-	const parentListAttributes = {};
-
-	for ( const attributeKey of parentListItem.getAttributeKeys() ) {
-		if ( attributeKey.startsWith( 'list' ) ) {
-			parentListAttributes[ attributeKey ] = parentListItem.getAttribute( attributeKey );
-		}
-	}
-
-	for ( const block of blocks ) {
-		writer.setAttributes( parentListAttributes, block );
 	}
 }
 
@@ -201,32 +202,51 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
 }
 
 /**
- * Updates indentation of given list blocks.
+ * Increases indentation of given list blocks.
  *
  * @protected
- * @param {Iterable.<module:engine/model/element~Element>} blocks The iterable of selected blocks.
- * @param {Number} indentBy The indentation level difference.
- * @param {Boolean} expand TODO
+ * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
  * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @param {Object} [options]
+ * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
+ * (all blocks of given list items).
  */
-export function indentBlocks( blocks, indentBy, { expand, alwaysMerge }, writer ) {
+export function indentBlocks( blocks, writer, { expand } = {} ) {
+	blocks = toArray( blocks );
+
+	// Expand the selected blocks to contain the whole list items.
+	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
+
+	for ( const block of allBlocks ) {
+		writer.setAttribute( 'listIndent', block.getAttribute( 'listIndent' ) + 1, block );
+	}
+
+	return allBlocks;
+}
+
+/**
+ * Decreases indentation of given list blocks.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @param {Object} [options]
+ * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
+ * (all blocks of given list items).
+ */
+export function outdentBlocks( blocks, writer, { expand } = {} ) {
+	blocks = toArray( blocks );
+
 	// Expand the selected blocks to contain the whole list items.
 	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
 	const visited = new Set();
 
-	const referenceIndex = allBlocks.reduce( ( indent, block ) => {
-		const blockIndent = block.getAttribute( 'listIndent' );
-
-		return blockIndent < indent ? blockIndent : indent;
-	}, Number.POSITIVE_INFINITY );
-
+	const referenceIndex = Math.min( ...allBlocks.map( block => block.getAttribute( 'listIndent' ) ) );
 	const parentBlocks = new Map();
 
 	// Collect parent blocks before the list structure gets altered.
-	if ( indentBy < 0 ) {
-		for ( const block of allBlocks ) {
-			parentBlocks.set( block, ListWalker.first( block, { smallerIndent: true } ) );
-		}
+	for ( const block of allBlocks ) {
+		parentBlocks.set( block, ListWalker.first( block, { smallerIndent: true } ) );
 	}
 
 	for ( const block of allBlocks ) {
@@ -236,59 +256,61 @@ export function indentBlocks( blocks, indentBy, { expand, alwaysMerge }, writer 
 
 		visited.add( block );
 
-		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;
+		const blockIndent = block.getAttribute( 'listIndent' ) - 1;
 
 		if ( blockIndent < 0 ) {
-			for ( const attributeKey of block.getAttributeKeys() ) {
-				if ( attributeKey.startsWith( 'list' ) ) {
-					writer.removeAttribute( attributeKey, block );
-				}
-			}
+			removeListAttributes( block, writer );
 
 			continue;
 		}
 
-		// Merge with parent list item while outdenting.
-		if ( indentBy < 0 ) {
-			const atReferenceIndent = block.getAttribute( 'listIndent' ) == referenceIndex;
+		// Merge with parent list item while outdenting and indent matches reference indent.
+		if ( block.getAttribute( 'listIndent' ) == referenceIndex ) {
+			const mergedBlocks = mergeListItemIfNotLast( block, parentBlocks.get( block ), writer );
 
-			// Merge if the block indent matches reference indent or the block was passed directly with alwaysMerge flag.
-			if ( atReferenceIndent || alwaysMerge && blocks.includes( block ) ) {
-				const parentBlock = parentBlocks.get( block );
+			// All list item blocks are updated while merging so add those to visited set.
+			for ( const mergedBlock of mergedBlocks ) {
+				visited.add( mergedBlock );
+			}
 
-				// The parent block could become a non-list block.
-				if ( parentBlock.hasAttribute( 'listIndent' ) ) {
-					const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
-
-					// Merge with parent only if it wasn't the last item.
-					// Merge:
-					// * a
-					//   * b <- outdent
-					//   c
-					// Don't merge:
-					// * a
-					//   * b <- outdent
-					// * c
-					if ( alwaysMerge || parentItemBlocks.pop().index > block.index ) {
-						for ( const mergedBlock of mergeListItemBefore( block, parentBlock, writer ) ) {
-							visited.add( mergedBlock );
-						}
-
-						continue;
-					}
-				}
+			// The indent level was updated while merging so continue to next block.
+			if ( mergedBlocks.length ) {
+				continue;
 			}
 		}
 
 		writer.setAttribute( 'listIndent', blockIndent, block );
 	}
 
-	return allBlocks;
+	return sortBlocks( visited );
+}
+
+/**
+ * Removes list attributes from the fiven blocks.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
+ */
+export function removeListAttributes( blocks, writer ) {
+	blocks = toArray( blocks );
+
+	for ( const block of blocks ) {
+		for ( const attributeKey of block.getAttributeKeys() ) {
+			if ( attributeKey.startsWith( 'list' ) ) {
+				writer.removeAttribute( attributeKey, block );
+			}
+		}
+	}
+
+	return blocks;
 }
 
 /**
  * Checks whether the given blocks are related to a single list item.
  * TODO
+ * @protected
  */
 export function isOnlyOneListItemSelected( blocks ) {
 	if ( !blocks.length ) {
@@ -306,13 +328,119 @@ export function isOnlyOneListItemSelected( blocks ) {
 
 /**
  * TODO
+ *
+ * @protected
  */
-export function getSameIndentBlocks( blocks ) {
-	if ( !blocks.length ) {
+export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
+	const changedBlocks = [];
+
+	// Start from the model item that is just after the last turned-off item.
+	let currentIndent = Number.POSITIVE_INFINITY;
+
+	// Correct indent of all items after the last turned off item.
+	// Rules that should be followed:
+	// 1. All direct sub-items of turned-off item should become indent 0, because the first item after it
+	//    will be the first item of a new list. Other items are at the same level, so should have same 0 index.
+	// 2. All items with indent lower than indent of turned-off item should become indent 0, because they
+	//    should not end up as a child of any of list items that they were not children of before.
+	// 3. All other items should have their indent changed relatively to it's parent.
+	//
+	// For example:
+	// 1  * --------
+	// 2     * --------
+	// 3        * --------			<-- this is turned off.
+	// 4           * --------		<-- this has to become indent = 0, because it will be first item on a new list.
+	// 5              * --------	<-- this should be still be a child of item above, so indent = 1.
+	// 6        * --------			<-- this has to become indent = 0, because it should not be a child of any of items above.
+	// 7           * --------		<-- this should be still be a child of item above, so indent = 1.
+	// 8     * --------				<-- this has to become indent = 0.
+	// 9        * --------			<-- this should still be a child of item above, so indent = 1.
+	// 10          * --------		<-- this should still be a child of item above, so indent = 2.
+	// 11          * --------		<-- this should still be at the same level as item above, so indent = 2.
+	// 12 * --------				<-- this and all below are left unchanged.
+	// 13    * --------
+	// 14       * --------
+	//
+	// After turning off 3 the list becomes:
+	//
+	// 1  * --------
+	// 2     * --------
+	//
+	// 3  --------
+	//
+	// 4  * --------
+	// 5     * --------
+	// 6  * --------
+	// 7     * --------
+	// 8  * --------
+	// 9     * --------
+	// 10       * --------
+	// 11       * --------
+	// 12 * --------
+	// 13    * --------
+	// 14       * --------
+	//
+	// Thanks to this algorithm no lists are mismatched and no items get unexpected children/parent, while
+	// those parent-child connection which are possible to maintain are still maintained. It's worth noting
+	// that this is the same effect that we would be get by multiple use of outdent command. However doing
+	// it like this is much more efficient because it's less operation (less memory usage, easier OT) and
+	// less conversion (faster).
+	for ( const { node } of iterateSiblingListBlocks( lastBlock.nextSibling, 'forward' ) ) {
+		// Check each next list item, as long as its indent is bigger than 0.
+		const indent = node.getAttribute( 'listIndent' );
+
+		// If the indent is 0 we are not going to change anything anyway.
+		if ( indent == 0 ) {
+			break;
+		}
+
+		// We check if that's item indent is lower as current relative indent.
+		if ( indent < currentIndent ) {
+			// If it is, current relative indent becomes that indent.
+			currentIndent = indent;
+		}
+
+		// Fix indent relatively to current relative indent.
+		// Note, that if we just changed the current relative indent, the newIndent will be equal to 0.
+		const newIndent = indent - currentIndent;
+
+		// Save the entry in changes array. We do not apply it at the moment, because we will need to
+		// reverse the changes so the last item is changed first.
+		// This is to keep model in correct state all the time.
+		writer.setAttribute( 'listIndent', newIndent, node );
+		changedBlocks.push( node );
+	}
+
+	return changedBlocks;
+}
+
+// Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
+function mergeListItemIfNotLast( block, parentBlock, writer ) {
+	// The parent block could become a non-list block.
+	if ( !parentBlock.hasAttribute( 'listIndent' ) ) {
 		return [];
 	}
 
-	const firstIndent = blocks[ 0 ].getAttribute( 'listIndent' );
+	const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
 
-	return blocks.filter( block => block.getAttribute( 'listIndent' ) == firstIndent );
+	// Merge with parent only if outdented item wasn't the last one in its parent.
+	// Merge:
+	// * a			->		* a
+	//   * [b]		->		  b
+	//   c			->		  c
+	// Don't merge:
+	// * a			->		* a
+	//   * [b]		-> 		* b
+	// * c			->		* c
+	if ( parentItemBlocks.pop().index > block.index ) {
+		return mergeListItemBefore( block, parentBlock, writer );
+	}
+
+	return [];
 }
+
+// TODO
+function sortBlocks( blocks ) {
+	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
+}
+

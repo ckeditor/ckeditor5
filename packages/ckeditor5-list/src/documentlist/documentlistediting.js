@@ -29,6 +29,8 @@ import {
 } from './utils/postfixers';
 import { iterateSiblingListBlocks } from './utils/listwalker';
 
+import '../../theme/documentlist.css';
+
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
  *

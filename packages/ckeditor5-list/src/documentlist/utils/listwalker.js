@@ -22,6 +22,7 @@ export default class ListWalker {
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
 	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
 	 * as the start element.
+	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks wit the same `listType` attribute.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level than the start block should be included
@@ -55,6 +56,14 @@ export default class ListWalker {
 		this._startItemId = startElement.getAttribute( 'listItemId' );
 
 		/**
+		 * The `listType` of the start block.
+		 *
+		 * @private
+		 * @type {String}
+		 */
+		this._startItemType = startElement.getAttribute( 'listType' );
+
+		/**
 		 * The iterating direction.
 		 *
 		 * @private
@@ -77,6 +86,14 @@ export default class ListWalker {
 		 * @type {Boolean}
 		 */
 		this._sameItemId = !!options.sameItemId;
+
+		/**
+		 * Whether should return only blocks wit the same `listType` attribute.
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._sameItemType = !!options.sameItemType;
 
 		/**
 		 * Whether blocks with the same indent level as the start block should be included in the result.
@@ -112,6 +129,7 @@ export default class ListWalker {
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
 	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
 	 * as the start element.
+	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks wit the same `listType` attribute.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level than the start block should be included
@@ -182,6 +200,11 @@ export default class ListWalker {
 
 				// Abort if item has a different ID.
 				if ( this._sameItemId && node.getAttribute( 'listItemId' ) != this._startItemId ) {
+					break;
+				}
+
+				// Abort if item has a different type.
+				if ( this._sameItemType && node.getAttribute( 'listType' ) != this._startItemType ) {
 					break;
 				}
 			}
