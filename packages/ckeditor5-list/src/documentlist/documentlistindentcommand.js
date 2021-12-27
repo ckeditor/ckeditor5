@@ -63,28 +63,43 @@ export default class DocumentListIndentCommand extends Command {
 		model.change( writer => {
 			// Handle selection contained in the single list item and starting in the following blocks.
 			if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
-				// Do nothing while indenting, but split list item on outdent.
-				if ( this._indentBy < 0 ) {
-					splitListItemBefore( blocks[ 0 ], writer );
+				// Allow increasing indent of following list item blocks.
+				if ( this._indentBy > 0 ) {
+					indentBlocks( blocks, this._indentBy, {}, writer );
 				}
 
-				return;
+				// For indent make sure that indented blocks have a new ID.
+				// For outdent just split blocks from the list item (give them a new IDs).
+				splitListItemBefore( blocks[ 0 ], writer );
+
+				this._fireAfterExecute( blocks );
 			}
+			// More than a single list item is selected, or the first block of list item is selected.
+			else {
+				// Now just update the attributes of blocks.
+				const changedBlocks = indentBlocks( blocks, this._indentBy, { expand: true }, writer );
 
-			// Now just update the attributes of blocks.
-			const changedBlocks = indentBlocks( blocks, this._indentBy, { expand: true }, writer );
-
-			/**
-			 * Event fired by the {@link #execute} method.
-			 *
-			 * It allows to execute an action after executing the {@link ~DocumentListIndentCommand#execute} method,
-			 * for example adjusting attributes of changed list items.
-			 *
-			 * @protected
-			 * @event afterExecute
-			 */
-			this.fire( 'afterExecute', changedBlocks );
+				this._fireAfterExecute( changedBlocks );
+			}
 		} );
+	}
+
+	/**
+	 * TODO
+	 * @private
+	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
+	 */
+	_fireAfterExecute( changedBlocks ) {
+		/**
+		 * Event fired by the {@link #execute} method.
+		 *
+		 * It allows to execute an action after executing the {@link ~DocumentListIndentCommand#execute} method,
+		 * for example adjusting attributes of changed list items.
+		 *
+		 * @protected
+		 * @event afterExecute
+		 */
+		this.fire( 'afterExecute', changedBlocks );
 	}
 
 	/**
@@ -108,9 +123,9 @@ export default class DocumentListIndentCommand extends Command {
 			return true;
 		}
 
-		// Indenting of the following blocks of a list item is not allowed.
+		// A single block of a list item is selected, so it could be indented as a sublist.
 		if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
-			return false;
+			return true;
 		}
 
 		blocks = expandListBlocksToCompleteItems( blocks );

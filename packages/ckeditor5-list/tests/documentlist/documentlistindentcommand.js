@@ -467,15 +467,6 @@ describe( 'DocumentListIndentCommand', () => {
 				} );
 
 				it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
-					setData( model,
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">[]1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="c" listType="bulleted">2</paragraph>' +
-						'<paragraph listIndent="2" listItemId="d" listType="bulleted">3</paragraph>' +
-						'<paragraph listIndent="2" listItemId="e" listType="bulleted">4</paragraph>' +
-						'<paragraph listIndent="1" listItemId="f" listType="bulleted">5</paragraph>' +
-						'<paragraph listIndent="0" listItemId="g" listType="bulleted">6</paragraph>'
-					);
 					setData( model, modelList( [
 						'* 0',
 						'* []1',
@@ -651,7 +642,7 @@ describe( 'DocumentListIndentCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equalMarkup(modelList( [
+				expect( getData( model ) ).to.equalMarkup( modelList( [
 					'* 0',
 					'[]1',
 					'* 2',

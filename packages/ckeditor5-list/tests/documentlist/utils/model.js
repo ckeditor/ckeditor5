@@ -460,7 +460,7 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 	} );
 
-	describe.only( 'expandListBlocksToCompleteItems()', () => {
+	describe( 'expandListBlocksToCompleteItems()', () => {
 		it( 'should not modify list for a single block of a single-block list item', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
