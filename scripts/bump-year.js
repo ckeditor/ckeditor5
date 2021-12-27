@@ -34,7 +34,7 @@ require( '@ckeditor/ckeditor5-dev-env' )
 				pattern: '!(build|coverage|external)/**',
 				options: {
 					ignore: [
-						'**/ckeditor5-build-*/build/**'
+						'**/ckeditor5-*/build/**'
 					]
 				}
 			}
