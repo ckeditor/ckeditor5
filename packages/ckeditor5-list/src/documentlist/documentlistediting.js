@@ -108,7 +108,7 @@ export default class DocumentListEditing extends Plugin {
 }
 
 /**
- * Post-fixer that reacts to changes on document and fixes incorrect model states.
+ * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
  *
  * In the example below, there is a correct list structure.
  * Then the middle element is removed so the list structure will become incorrect:
