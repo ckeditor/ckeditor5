@@ -55,7 +55,7 @@ export default class DocumentListEditing extends Plugin {
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
-			 * The DocumentList feature can not be loaded together with List plugin.
+			 * The `DocumentList` feature can not be loaded together with the `List` plugin.
 			 *
 			 * @error document-list-feature-conflict
 			 * @param {String} conflictPlugin Name of the plugin.
