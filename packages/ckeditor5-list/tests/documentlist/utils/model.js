@@ -15,6 +15,7 @@ import {
 	isOnlyOneListItemSelected,
 	mergeListItemBefore,
 	outdentBlocks,
+	outdentItemsAfterItemRemoved,
 	removeListAttributes,
 	splitListItemBefore
 } from '../../../src/documentlist/utils/model';
@@ -1468,6 +1469,60 @@ describe( 'DocumentList - utils - model', () => {
 	} );
 
 	describe( 'outdentItemsAfterItemRemoved()', () => {
-		// TODO
+		it( 'should outdent all items and keep nesting structure where possible', () => {
+			const input = modelList( [
+				'0',
+				'* 1',
+				'  * 2',
+				'    * 3', 			// <- this is turned off.
+				'      * 4', 		// <- this has to become indent = 0, because it will be first item on a new list.
+				'        * 5', 		// <- this should be still be a child of item above, so indent = 1.
+				'    * 6', 			// <- this has to become indent = 0, because it should not be a child of any of items above.
+				'      * 7', 		// <- this should be still be a child of item above, so indent = 1.
+				'  * 8', 			// <- this has to become indent = 0.
+				'    * 9', 			// <- this should still be a child of item above, so indent = 1.
+				'      * 10', 		// <- this should still be a child of item above, so indent = 2.
+				'      * 11', 		// <- this should still be at the same level as item above, so indent = 2.
+				'* 12', 			// <- this and all below are left unchanged.
+				'  * 13',
+				'    * 14'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = outdentItemsAfterItemRemoved( fragment.getChild( 3 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'0',
+				'* 1',
+				'  * 2',
+				'    * 3',
+				'* 4',
+				'  * 5',
+				'* 6',
+				'  * 7',
+				'* 8',
+				'  * 9',
+				'    * 10',
+				'    * 11',
+				'* 12',
+				'  * 13',
+				'    * 14'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 4 ),
+				fragment.getChild( 5 ),
+				fragment.getChild( 6 ),
+				fragment.getChild( 7 ),
+				fragment.getChild( 8 ),
+				fragment.getChild( 9 ),
+				fragment.getChild( 10 ),
+				fragment.getChild( 11 )
+			] );
+		} );
 	} );
 } );
