@@ -17,7 +17,8 @@ import {
 	getIndent,
 	isListView,
 	isListItemView,
-	getViewElementNameForListType
+	getViewElementNameForListType,
+	getViewElementIdForListType
 } from './utils/view';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
@@ -111,7 +112,7 @@ export function listUpcastCleanList() {
 export function reconvertItemsOnDataChange( model, editing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
-		const itemsToRefresh = new Set();
+		const itemsToRefresh = [];
 		const itemToListHead = new Map();
 		const changedItems = new Set();
 
@@ -139,112 +140,142 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 					if ( entry.attributeNewValue === null ) {
 						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
-						refreshItemParagraphIfNeeded( item, [] );
+
+						// Check if paragraph should be converted from bogus to plain paragraph.
+						// Passing empty array to not look for other blocks because it's already gone from the model.
+						if ( doesItemParagraphRequiresRefresh( item, [] ) ) {
+							itemsToRefresh.push( item );
+						}
 					} else {
 						changedItems.add( item );
 					}
 				} else if ( item.hasAttribute( 'listItemId' ) ) {
-					refreshItemParagraphIfNeeded( item );
+					// Some other attribute was changed on the list item,
+					// check if paragraph does not need to be converted to bogus or back.
+					if ( doesItemParagraphRequiresRefresh( item ) ) {
+						itemsToRefresh.push( item );
+					}
 				}
 			}
 		}
 
 		for ( const listHead of itemToListHead.values() ) {
-			checkList( listHead );
+			itemsToRefresh.push( ...collectListItemsToRefresh( listHead, changedItems ) );
 		}
 
-		for ( const item of itemsToRefresh ) {
+		for ( const item of new Set( itemsToRefresh ) ) {
 			editing.reconvertItem( item );
 		}
-
-		function checkList( listHead ) {
-			const visited = new Set();
-			const stack = [];
-
-			for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
-				if ( visited.has( node ) ) {
-					continue;
-				}
-
-				const itemIndent = node.getAttribute( 'listIndent' );
-
-				if ( previous && itemIndent < previous.getAttribute( 'listIndent' ) ) {
-					stack.length = itemIndent + 1;
-				}
-
-				stack[ itemIndent ] = {
-					id: node.getAttribute( 'listItemId' ),
-					type: node.getAttribute( 'listType' )
-				};
-
-				const blocks = getListItemBlocks( node, { direction: 'forward' } );
-
-				for ( const block of blocks ) {
-					visited.add( block );
-
-					refreshItemParagraphIfNeeded( block, blocks );
-					refreshItemWrappingIfNeeded( block, stack );
-				}
-			}
-		}
-
-		function refreshItemParagraphIfNeeded( item, blocks ) {
-			if ( !item.is( 'element', 'paragraph' ) ) {
-				return;
-			}
-
-			const viewElement = editing.mapper.toViewElement( item );
-
-			if ( !viewElement ) {
-				return;
-			}
-
-			const useBogus = shouldUseBogusParagraph( item, blocks );
-
-			if ( useBogus && viewElement.is( 'element', 'p' ) ) {
-				itemsToRefresh.add( item );
-			} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
-				itemsToRefresh.add( item );
-			}
-		}
-
-		function refreshItemWrappingIfNeeded( item, stack ) {
-			// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
-			if ( changedItems.has( item ) ) {
-				return;
-			}
-
-			const viewElement = editing.mapper.toViewElement( item );
-			let stackIdx = stack.length - 1;
-
-			for (
-				let element = viewElement.parent;
-				!element.is( 'editableElement' );
-				element = element.parent
-			) {
-				if ( isListItemView( element ) ) {
-					if ( element.id != stack[ stackIdx ].id ) {
-						break;
-					}
-				} else if ( isListView( element ) ) {
-					const expectedElementName = getViewElementNameForListType( stack[ stackIdx ].type );
-
-					if ( element.name != expectedElementName ) {
-						break;
-					}
-
-					stackIdx--;
-
-					// Don't need to iterate further if we already know that the item is wrapped appropriately.
-					if ( stackIdx < 0 ) {
-						return;
-					}
-				}
-			}
-
-			itemsToRefresh.add( item );
-		}
 	};
+
+	function collectListItemsToRefresh( listHead, changedItems ) {
+		const itemsToRefresh = [];
+		const visited = new Set();
+		const stack = [];
+
+		for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+			if ( visited.has( node ) ) {
+				continue;
+			}
+
+			const itemIndent = node.getAttribute( 'listIndent' );
+
+			// Current node is at the lower indent so trim the stack.
+			if ( previous && itemIndent < previous.getAttribute( 'listIndent' ) ) {
+				stack.length = itemIndent + 1;
+			}
+
+			// Update the stack for the current indent level.
+			stack[ itemIndent ] = {
+				id: node.getAttribute( 'listItemId' ),
+				type: node.getAttribute( 'listType' )
+			};
+
+			// Find all blocks of the current node.
+			const blocks = getListItemBlocks( node, { direction: 'forward' } );
+
+			for ( const block of blocks ) {
+				visited.add( block );
+
+				// Check if bogus vs plain paragraph needs refresh.
+				if ( doesItemParagraphRequiresRefresh( block, blocks ) ) {
+					itemsToRefresh.push( block );
+				}
+				// Check if wrapping with UL, OL, LIs needs refresh.
+				else if ( doesItemWrappingRequiresRefresh( block, stack, changedItems ) ) {
+					itemsToRefresh.push( block );
+				}
+			}
+		}
+
+		return itemsToRefresh;
+	}
+
+	function doesItemParagraphRequiresRefresh( item, blocks ) {
+		if ( !item.is( 'element', 'paragraph' ) ) {
+			return false;
+		}
+
+		const viewElement = editing.mapper.toViewElement( item );
+
+		if ( !viewElement ) {
+			return false;
+		}
+
+		const useBogus = shouldUseBogusParagraph( item, blocks );
+
+		if ( useBogus && viewElement.is( 'element', 'p' ) ) {
+			return true;
+		} else if ( !useBogus && viewElement.is( 'element', 'span' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	function doesItemWrappingRequiresRefresh( item, stack, changedItems ) {
+		// Items directly affected by some "change" don't need a refresh, they will be converted by their own changes.
+		if ( changedItems.has( item ) ) {
+			return false;
+		}
+
+		const viewElement = editing.mapper.toViewElement( item );
+		let indent = stack.length - 1;
+
+		// Traverse down the stack to the root to verify if all ULs, OLs, and LIs are as expected.
+		for (
+			let element = viewElement.parent;
+			!element.is( 'editableElement' );
+			element = element.parent
+		) {
+			if ( isListItemView( element ) ) {
+				const expectedElementId = stack[ indent ].id;
+
+				// For LI verify if an ID of the attribute element is correct.
+				if ( element.id != expectedElementId ) {
+					break;
+				}
+			} else if ( isListView( element ) ) {
+				const type = stack[ indent ].type;
+				const expectedElementName = getViewElementNameForListType( type );
+				const expectedElementId = getViewElementIdForListType( type, indent );
+
+				// For UL and OL check if the name and ID of element is correct.
+				if ( element.name != expectedElementName || element.id != expectedElementId ) {
+					break;
+				}
+
+				indent--;
+
+				// Don't need to iterate further if we already know that the item is wrapped appropriately.
+				if ( indent < 0 ) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
 }
 
 /**
@@ -379,14 +410,15 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 		// Find the range over the bogus paragraph (or just an inline content in the data pipeline).
 		let viewRange;
 
-		if ( !dataPipeline ) {
-			viewRange = writer.createRangeOn( paragraphElement );
-		} else {
+		if ( dataPipeline ) {
 			// Unwrap paragraph content from bogus paragraph.
 			viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
 
 			writer.remove( paragraphElement );
 			mapper.unbindViewElement( paragraphElement );
+		} else {
+			// Use range on the bogus paragraph to wrap it with ULs and LIs.
+			viewRange = writer.createRangeOn( paragraphElement );
 		}
 
 		// Then wrap it with the list wrappers.
