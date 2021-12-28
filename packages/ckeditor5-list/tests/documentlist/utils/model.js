@@ -12,8 +12,10 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
+	isOnlyOneListItemSelected,
 	mergeListItemBefore,
 	outdentBlocks,
+	removeListAttributes,
 	splitListItemBefore
 } from '../../../src/documentlist/utils/model';
 import { modelList } from '../_utils/utils';
@@ -1341,11 +1343,128 @@ describe( 'DocumentList - utils - model', () => {
 	} );
 
 	describe( 'removeListAttributes()', () => {
-		// TODO
+		it( 'should remove all list attributes on a given blocks', () => {
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  * 2',
+				'    3',
+				'  * 4',
+				'* 5'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 ),
+				fragment.getChild( 4 )
+			];
+
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = removeListAttributes( blocks, writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'2',
+				'3',
+				'4',
+				'* 5'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( blocks );
+		} );
+
+		it( 'should not remove non-list attributes', () => {
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  * <paragraph alignmnent="right">2</paragraph>',
+				'    3',
+				'  * 4',
+				'* 5'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 ),
+				fragment.getChild( 4 )
+			];
+
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = removeListAttributes( blocks, writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'<paragraph alignmnent="right">2</paragraph>',
+				'3',
+				'4',
+				'* 5'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( blocks );
+		} );
 	} );
 
 	describe( 'isOnlyOneListItemSelected()', () => {
-		// TODO
+		it( 'should return false if no blocks are given', () => {
+			expect( isOnlyOneListItemSelected( [] ) ).to.be.false;
+		} );
+
+		it( 'should return false if first block is not a list item', () => {
+			const input = modelList( [
+				'0',
+				'1'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 1 )
+			];
+
+			expect( isOnlyOneListItemSelected( blocks ) ).to.be.false;
+		} );
+
+		it( 'should return false if any block has a different ID', () => {
+			const input = modelList( [
+				'* 0',
+				'  1',
+				'* 2'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 0 ),
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 )
+			];
+
+			expect( isOnlyOneListItemSelected( blocks ) ).to.be.false;
+		} );
+
+		it( 'should return true if all block has the same ID', () => {
+			const input = modelList( [
+				'* 0',
+				'  1',
+				'* 2'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 0 ),
+				fragment.getChild( 1 )
+			];
+
+			expect( isOnlyOneListItemSelected( blocks ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'outdentItemsAfterItemRemoved()', () => {
