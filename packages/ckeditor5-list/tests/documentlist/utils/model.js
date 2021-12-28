@@ -7,6 +7,7 @@ import {
 	expandListBlocksToCompleteItems,
 	getAllListItemBlocks,
 	getListItemBlocks,
+	getListItems,
 	getNestedListBlocks,
 	indentBlocks,
 	isFirstBlockOfListItem,
@@ -345,7 +346,139 @@ describe( 'DocumentList - utils - model', () => {
 	} );
 
 	describe( 'getListItems()', () => {
-		// TODO
+		it( 'should return all list items for a single flat list (when given the first list item)', () => {
+			const input = modelList( [
+				'0',
+				'* 1',
+				'* 2',
+				'* 3',
+				'4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 1 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
+		it( 'should return all list items for a single flat list (when given the last list item)', () => {
+			const input = modelList( [
+				'0',
+				'* 1',
+				'* 2',
+				'* 3',
+				'4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 3 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
+		it( 'should return all list items for a single flat list (when given the middle list item)', () => {
+			const input = modelList( [
+				'0',
+				'* 1',
+				'* 2',
+				'* 3',
+				'4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 2 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
+		it( 'should return all list items for a nested list', () => {
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'  * 3',
+				'* 4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 2 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
+		it( 'should return all list items of the same type', () => {
+			const input = modelList( [
+				'# 0',
+				'* 1',
+				'* 2',
+				'* 3',
+				'# 4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 2 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
+		it( 'should return all list items and ignore nested lists', () => {
+			const input = modelList( [
+				'0',
+				'* 1',
+				'  * 2',
+				'* 3',
+				'4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 1 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
+		it( 'should return all list items with following blocks belonging to the same item', () => {
+			const input = modelList( [
+				'0',
+				'* 1',
+				'  2',
+				'* 3',
+				'  4',
+				'5'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 2 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 ),
+				fragment.getChild( 4 )
+			] );
+		} );
 	} );
 
 	describe( 'isFirstBlockOfListItem()', () => {
