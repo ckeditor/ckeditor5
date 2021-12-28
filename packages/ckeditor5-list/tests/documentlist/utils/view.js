@@ -75,8 +75,8 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should return 0 for flat list', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>a</li>' +
-				'<li>b</li>' +
+					'<li>a</li>' +
+					'<li>b</li>' +
 				'</ul>'
 			);
 
@@ -87,18 +87,18 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should return 1 for first level nested items', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>' +
-				'<ul>' +
-				'<li>a</li>' +
-				'<li>b</li>' +
-				'</ul>' +
-				'</li>' +
-				'<li>' +
-				'<ol>' +
-				'<li>c</li>' +
-				'<li>d</li>' +
-				'</ol>' +
-				'</li>' +
+					'<li>' +
+						'<ul>' +
+							'<li>a</li>' +
+							'<li>b</li>' +
+						'</ul>' +
+					'</li>' +
+					'<li>' +
+						'<ol>' +
+							'<li>c</li>' +
+							'<li>d</li>' +
+						'</ol>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -111,20 +111,20 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should ignore container elements', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>' +
-				'<div>' +
-				'<ul>' +
-				'<li>a</li>' +
-				'<li>b</li>' +
-				'</ul>' +
-				'</div>' +
-				'</li>' +
-				'<li>' +
-				'<ul>' +
-				'<li>c</li>' +
-				'<li>d</li>' +
-				'</ul>' +
-				'</li>' +
+					'<li>' +
+						'<div>' +
+							'<ul>' +
+								'<li>a</li>' +
+								'<li>b</li>' +
+							'</ul>' +
+						'</div>' +
+					'</li>' +
+					'<li>' +
+						'<ul>' +
+							'<li>c</li>' +
+							'<li>d</li>' +
+						'</ul>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -137,16 +137,16 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should handle deep nesting', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>' +
-				'<ol>' +
-				'<li>' +
-				'<ul>' +
-				'<li>a</li>' +
-				'<li>b</li>' +
-				'</ul>' +
-				'</li>' +
-				'</ol>' +
-				'</li>' +
+					'<li>' +
+						'<ol>' +
+							'<li>' +
+								'<ul>' +
+									'<li>a</li>' +
+									'<li>b</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ol>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -159,18 +159,18 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should ignore superfluous OLs', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>' +
-				'<ol>' +
-				'<ol>' +
-				'<ol>' +
-				'<ol>' +
-				'<li>a</li>' +
-				'</ol>' +
-				'</ol>' +
-				'</ol>' +
-				'<li>b</li>' +
-				'</ol>' +
-				'</li>' +
+					'<li>' +
+						'<ol>' +
+							'<ol>' +
+								'<ol>' +
+									'<ol>' +
+										'<li>a</li>' +
+									'</ol>' +
+								'</ol>' +
+							'</ol>' +
+							'<li>b</li>' +
+						'</ol>' +
+					'</li>' +
 				'</ul>'
 			);
 
@@ -183,10 +183,10 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should handle broken structure', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>a</li>' +
-				'<ul>' +
-				'<li>b</li>' +
-				'</ul>' +
+					'<li>a</li>' +
+					'<ul>' +
+						'<li>b</li>' +
+					'</ul>' +
 				'</ul>'
 			);
 
@@ -197,13 +197,13 @@ describe( 'DocumentList - utils - view', () => {
 		it( 'should handle broken deeper structure', () => {
 			const viewElement = parseView(
 				'<ul>' +
-				'<li>a</li>' +
-				'<ol>' +
-				'<li>b</li>' +
-				'<ul>' +
-				'<li>c</li>' +
-				'</ul>' +
-				'</ol>' +
+					'<li>a</li>' +
+					'<ol>' +
+						'<li>b</li>' +
+						'<ul>' +
+							'<li>c</li>' +
+						'</ul>' +
+					'</ol>' +
 				'</ul>'
 			);
 

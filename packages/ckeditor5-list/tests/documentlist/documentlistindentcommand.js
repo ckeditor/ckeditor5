@@ -141,7 +141,7 @@ describe( 'DocumentListIndentCommand', () => {
 					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be false if selection starts in the second block of list item', () => {
+				it( 'should be true if selection starts in the second block of list item', () => {
 					setData( model, modelList( [
 						'* 0',
 						'* 1',
@@ -149,10 +149,10 @@ describe( 'DocumentListIndentCommand', () => {
 						'  3'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 
-				it( 'should be false if selection starts in the last block of list item', () => {
+				it( 'should be true if selection starts in the last block of list item', () => {
 					setData( model, modelList( [
 						'* 0',
 						'* 1',
@@ -160,7 +160,7 @@ describe( 'DocumentListIndentCommand', () => {
 						'  []3'
 					] ) );
 
-					expect( command.isEnabled ).to.be.false;
+					expect( command.isEnabled ).to.be.true;
 				} );
 
 				it( 'should be false if selection starts in first list item', () => {
@@ -351,7 +351,7 @@ describe( 'DocumentListIndentCommand', () => {
 					] ) );
 				} );
 
-				it( 'should do nothing if the following block of bigger list item is selected', () => {
+				it( 'should change indent (with new ID) if the following block of bigger list item is selected', () => {
 					setData( model, modelList( [
 						'* 0',
 						'* 1',
@@ -360,16 +360,17 @@ describe( 'DocumentListIndentCommand', () => {
 						'* 4'
 					] ) );
 
+					stubUid();
 					command.isEnabled = true;
 					command.execute();
 
-					expect( getData( model ) ).to.equalMarkup( modelList( [
-						'* 0',
-						'* 1',
-						'  []2',
-						'  3',
-						'* 4'
-					] ) );
+					expect( getData( model ) ).to.equalMarkup(
+						'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
+						'<paragraph listIndent="0" listItemId="001" listType="bulleted">1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">[]2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="001" listType="bulleted">3</paragraph>' +
+						'<paragraph listIndent="0" listItemId="004" listType="bulleted">4</paragraph>'
+					);
 				} );
 
 				it( 'should increment indent of all sub-items of indented item', () => {

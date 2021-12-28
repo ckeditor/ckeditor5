@@ -11,6 +11,7 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
+	outdentBlocks,
 	splitListItemBefore
 } from '../../../src/documentlist/utils/model';
 import { modelList } from '../_utils/utils';
@@ -341,6 +342,10 @@ describe( 'DocumentList - utils - model', () => {
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 1 ) );
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
 		} );
+	} );
+
+	describe( 'getListItems()', () => {
+		// TODO
 	} );
 
 	describe( 'isFirstBlockOfListItem()', () => {
@@ -797,6 +802,10 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 	} );
 
+	describe( 'mergeListItemBefore()', () => {
+		// TODO
+	} );
+
 	describe( 'indentBlocks()', () => {
 		it( 'flat items', () => {
 			const input =
@@ -813,7 +822,7 @@ describe( 'DocumentList - utils - model', () => {
 
 			stubUid();
 
-			model.change( writer => indentBlocks( blocks, 1, writer ) );
+			model.change( writer => indentBlocks( blocks, writer ) );
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -840,7 +849,7 @@ describe( 'DocumentList - utils - model', () => {
 
 			stubUid();
 
-			model.change( writer => indentBlocks( blocks, 1, writer ) );
+			model.change( writer => indentBlocks( blocks, writer ) );
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
@@ -851,13 +860,44 @@ describe( 'DocumentList - utils - model', () => {
 			);
 		} );
 
+		it( 'should apply indentation on all blocks of given items (expand = true)', () => {
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  2',
+				'* 3',
+				'  4',
+				'* 5'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			];
+
+			model.change( writer => indentBlocks( blocks, writer, { expand: true } ) );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'  * 1',
+				'    2',
+				'  * 3',
+				'    4',
+				'* 5'
+			] ) );
+		} );
+	} );
+
+	describe( 'outdentBlocks()', () => {
 		it( 'should handle outdenting', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'  * 3',
+				'* 4'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const blocks = [
@@ -868,24 +908,25 @@ describe( 'DocumentList - utils - model', () => {
 
 			stubUid();
 
-			model.change( writer => indentBlocks( blocks, -1, writer ) );
+			model.change( writer => outdentBlocks( blocks, writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="0" listItemId="d" listType="bulleted">d</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e" listType="bulleted">e</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'  * 2',
+				'* 3',
+				'* 4'
+			] ) );
 		} );
 
 		it( 'should remove list attributes if outdented below 0', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0" listFoo="bar">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1" listFoo="bar">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2" listFoo="bar">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1" listFoo="bar">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="2" listFoo="bar">e</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'* 2',
+				'  * 3',
+				'* 4'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const blocks = [
@@ -896,24 +937,24 @@ describe( 'DocumentList - utils - model', () => {
 
 			stubUid();
 
-			model.change( writer => indentBlocks( blocks, -2, writer ) );
+			model.change( writer => outdentBlocks( blocks, writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listFoo="bar" listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listFoo="bar" listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listFoo="bar" listIndent="0" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph>d</paragraph>' +
-				'<paragraph listFoo="bar" listIndent="0" listItemId="e" listType="bulleted">e</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'2',
+				'* 3',
+				'4'
+			] ) );
 		} );
 
 		it( 'should not remove attributes other than lists if outdented below 0', () => {
 			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0" alignment="right">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1" alignment="right">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2" alignment="right">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1" alignment="right">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="2" alignment="right">e</paragraph>';
+				'<paragraph listType="bulleted" listItemId="a" listIndent="0" alignment="right">0</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="b" listIndent="0" alignment="right">1</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="c" listIndent="1" alignment="right">2</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="d" listIndent="0" alignment="right">3</paragraph>' +
+				'<paragraph listType="bulleted" listItemId="e" listIndent="1" alignment="right">4</paragraph>';
 
 			const fragment = parseModel( input, schema );
 			const blocks = [
@@ -924,15 +965,55 @@ describe( 'DocumentList - utils - model', () => {
 
 			stubUid();
 
-			model.change( writer => indentBlocks( blocks, -2, writer ) );
+			model.change( writer => outdentBlocks( blocks, writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph alignment="right" listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph alignment="right" listIndent="0" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph alignment="right">d</paragraph>' +
-				'<paragraph alignment="right" listIndent="0" listItemId="e" listType="bulleted">e</paragraph>'
+			expect( stringifyModel( fragment ) ).to.equalMarkup(
+				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+				'<paragraph alignment="right" listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
+				'<paragraph alignment="right" listIndent="0" listItemId="c" listType="bulleted">2</paragraph>' +
+				'<paragraph alignment="right">3</paragraph>' +
+				'<paragraph alignment="right" listIndent="0" listItemId="e" listType="bulleted">4</paragraph>'
 			);
 		} );
+
+		it( 'should apply indentation on all blocks of given items (expand = true)', () => {
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    2',
+				'  * 3',
+				'    4',
+				'  * 5'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			];
+
+			model.change( writer => outdentBlocks( blocks, writer, { expand: true } ) );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'  2',
+				'* 3',
+				'  4',
+				'  * 5'
+			] ) );
+		} );
+	} );
+
+	describe( 'removeListAttributes()', () => {
+		// TODO
+	} );
+
+	describe( 'isOnlyOneListItemSelected()', () => {
+		// TODO
+	} );
+
+	describe( 'outdentItemsAfterItemRemoved()', () => {
+		// TODO
 	} );
 } );
