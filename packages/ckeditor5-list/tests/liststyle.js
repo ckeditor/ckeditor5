@@ -13,7 +13,7 @@ describe( 'ListStyle', () => {
 		expect( ListStyle.pluginName ).to.equal( 'ListStyle' );
 	} );
 
-	it( 'should require ListPropertiesEditing and ListPropertiesUI', () => {
+	it( 'should require ListProperties', () => {
 		expect( ListStyle.requires ).to.deep.equal( [ ListProperties ] );
 	} );
 
