@@ -12,6 +12,7 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
+	mergeListItemBefore,
 	outdentBlocks,
 	splitListItemBefore
 } from '../../../src/documentlist/utils/model';
@@ -936,7 +937,82 @@ describe( 'DocumentList - utils - model', () => {
 	} );
 
 	describe( 'mergeListItemBefore()', () => {
-		// TODO
+		it( 'should apply parent list attributes to the given list block', () => {
+			const input = modelList( [
+				'* 0',
+				'  # 1',
+				'* 2'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'  1',
+				'* 2'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 )
+			] );
+		} );
+
+		it( 'should apply parent list attributes to the given list block and all blocks of the same item', () => {
+			const input = modelList( [
+				'* 0',
+				'  # 1',
+				'    2',
+				'* 3'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'  1',
+				'  2',
+				'* 3'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 )
+			] );
+		} );
+
+		it( 'should not apply non-list attributes', () => {
+			const input =
+				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>';
+
+			const fragment = parseModel( input, schema );
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup(
+				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>'
+			);
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 )
+			] );
+		} );
 	} );
 
 	describe( 'indentBlocks()', () => {
