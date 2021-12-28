@@ -181,7 +181,7 @@ export function splitListItemBefore( listBlock, writer ) {
  * @param {module:engine/model/element~Element} listBlock The list block element.
  * @param {module:engine/model/element~Element} parentBlock The list block element to merge with.
  * @param {module:engine/model/writer~Writer} writer The model writer.
- * @returns {Iterable.<module:engine/model/element~Element>} The iterable of updated blocks.
+ * @returns {Array.<module:engine/model/element~Element>} The array of updated blocks.
  */
 export function mergeListItemBefore( listBlock, parentBlock, writer ) {
 	const attributes = {};
@@ -192,7 +192,7 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
 		}
 	}
 
-	const blocks = new Set( getListItemBlocks( listBlock, { direction: 'forward' } ) );
+	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
 
 	for ( const block of blocks ) {
 		writer.setAttributes( attributes, block );
@@ -416,11 +416,6 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
 function mergeListItemIfNotLast( block, parentBlock, writer ) {
-	// The parent block could become a non-list block.
-	if ( !parentBlock.hasAttribute( 'listIndent' ) ) {
-		return [];
-	}
-
 	const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
 
 	// Merge with parent only if outdented item wasn't the last one in its parent.

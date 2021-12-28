@@ -906,9 +906,11 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 3 )
 			];
 
-			stubUid();
+			let changedBlocks;
 
-			model.change( writer => outdentBlocks( blocks, writer ) );
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer );
+			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* 0',
@@ -917,6 +919,8 @@ describe( 'DocumentList - utils - model', () => {
 				'* 3',
 				'* 4'
 			] ) );
+
+			expect( changedBlocks ).to.deep.equal( blocks );
 		} );
 
 		it( 'should remove list attributes if outdented below 0', () => {
@@ -935,9 +939,11 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 4 )
 			];
 
-			stubUid();
+			let changedBlocks;
 
-			model.change( writer => outdentBlocks( blocks, writer ) );
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer );
+			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* 0',
@@ -946,6 +952,8 @@ describe( 'DocumentList - utils - model', () => {
 				'* 3',
 				'4'
 			] ) );
+
+			expect( changedBlocks ).to.deep.equal( blocks );
 		} );
 
 		it( 'should not remove attributes other than lists if outdented below 0', () => {
@@ -963,9 +971,11 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 4 )
 			];
 
-			stubUid();
+			let changedBlocks;
 
-			model.change( writer => outdentBlocks( blocks, writer ) );
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer );
+			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup(
 				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
@@ -974,6 +984,8 @@ describe( 'DocumentList - utils - model', () => {
 				'<paragraph alignment="right">3</paragraph>' +
 				'<paragraph alignment="right" listIndent="0" listItemId="e" listType="bulleted">4</paragraph>'
 			);
+
+			expect( changedBlocks ).to.deep.equal( blocks );
 		} );
 
 		it( 'should apply indentation on all blocks of given items (expand = true)', () => {
@@ -992,7 +1004,11 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 3 )
 			];
 
-			model.change( writer => outdentBlocks( blocks, writer, { expand: true } ) );
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* 0',
@@ -1002,6 +1018,116 @@ describe( 'DocumentList - utils - model', () => {
 				'  4',
 				'  * 5'
 			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 ),
+				fragment.getChild( 4 )
+			] );
+		} );
+
+		it( 'should merge nested items to the parent item if nested block is not the last block of parent list item', () => {
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    2',
+				'  3',
+				'* 4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 1 )
+			];
+
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'  1',
+				'  2',
+				'  3',
+				'* 4'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 )
+			] );
+		} );
+
+		it( 'should not merge nested items to the parent item if nested block is the last block of parent list item', () => {
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    2',
+				'* 3',
+				'* 4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 1 )
+			];
+
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'  2',
+				'* 3',
+				'* 4'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 )
+			] );
+		} );
+
+		it( 'should merge nested items but not deeper nested lists', () => {
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'* 4'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const blocks = [
+				fragment.getChild( 1 )
+			];
+
+			let changedBlocks;
+
+			model.change( writer => {
+				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+			} );
+
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0',
+				'* 1',
+				'  * 2',
+				'  * 3',
+				'* 4'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
 		} );
 	} );
 
