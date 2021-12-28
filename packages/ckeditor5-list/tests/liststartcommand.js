@@ -6,7 +6,7 @@
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListStyleEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/listpropertiesediting';
 
 describe( 'ListStartCommand', () => {
 	let editor, model, listStartCommand;
@@ -14,7 +14,7 @@ describe( 'ListStartCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ListStyleEditing ],
+				plugins: [ Paragraph, ListPropertiesEditing ],
 				list: {
 					properties: { styles: false, startIndex: true, reversed: false }
 				}

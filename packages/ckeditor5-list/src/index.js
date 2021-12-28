@@ -10,9 +10,9 @@
 export { default as List } from './list';
 export { default as ListEditing } from './listediting';
 export { default as ListUI } from './listui';
-export { default as ListStyle } from './liststyle';
-export { default as ListStyleEditing } from './liststyleediting';
-export { default as ListStyleUI } from './liststyleui';
+export { default as ListProperties } from './listproperties';
+export { default as ListPropertiesEditing } from './listpropertiesediting';
+export { default as ListPropertiesUI } from './listpropertiesui';
 export { default as TodoList } from './todolist';
 export { default as TodoListEditing } from './todolistediting';
 export { default as TodoListUI } from './todolistui';

@@ -5,8 +5,8 @@
 
 /* globals document */
 
-import ListStyle from '../src/liststyle';
-import ListStyleUI from '../src/liststyleui';
+import ListProperties from '../src/listproperties';
+import ListPropertiesUI from '../src/listpropertiesui';
 
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
@@ -29,7 +29,7 @@ import listStyleUpperLatinIcon from '../theme/icons/liststyleupperlatin.svg';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
-describe( 'ListStyleUI', () => {
+describe( 'ListPropertiesUI', () => {
 	let editorElement, editor, model, listStyleCommand, listPropertiesView;
 
 	beforeEach( () => {
@@ -37,7 +37,7 @@ describe( 'ListStyleUI', () => {
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+			plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 			list: {
 				properties: {
 					styles: true,
@@ -60,11 +60,11 @@ describe( 'ListStyleUI', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( ListStyleUI.pluginName ).to.equal( 'ListStyleUI' );
+		expect( ListPropertiesUI.pluginName ).to.equal( 'ListPropertiesUI' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListStyleUI ) ).to.be.instanceOf( ListStyleUI );
+		expect( editor.plugins.get( ListPropertiesUI ) ).to.be.instanceOf( ListPropertiesUI );
 	} );
 
 	describe( 'init()', () => {
@@ -310,7 +310,7 @@ describe( 'ListStyleUI', () => {
 					document.body.appendChild( editorElement );
 
 					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 						list: {
 							properties: {
 								styles: true,
@@ -336,7 +336,7 @@ describe( 'ListStyleUI', () => {
 					document.body.appendChild( editorElement );
 
 					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 						list: {
 							properties: {
 								styles: true,
@@ -362,7 +362,7 @@ describe( 'ListStyleUI', () => {
 					document.body.appendChild( editorElement );
 
 					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ],
+						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
 						list: {
 							properties: {
 								styles: false,

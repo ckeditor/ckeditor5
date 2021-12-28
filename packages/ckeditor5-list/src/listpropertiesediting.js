@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/liststyleediting
+ * @module list/listpropertiesediting
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -23,11 +23,11 @@ const DEFAULT_LIST_TYPE = 'default';
  * allows modifying the list style type.
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they're enabled in config.
- * Read more in {@link module:list/liststyle~ListPropertiesConfig}.
+ * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListStyleEditing extends Plugin {
+export default class ListPropertiesEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -39,7 +39,7 @@ export default class ListStyleEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ListStyleEditing';
+		return 'ListPropertiesEditing';
 	}
 
 	/**
@@ -91,7 +91,7 @@ export default class ListStyleEditing extends Plugin {
 		editor.conversion.for( 'downcast' ).add( downcastListItemAttributes( strategies ) );
 
 		// Handle merging two separated lists into the single one.
-		this._mergeListStyleAttributeWhileMergingLists( strategies );
+		this._mergeListAttributesWhileMergingLists( strategies );
 	}
 
 	/**
@@ -101,7 +101,7 @@ export default class ListStyleEditing extends Plugin {
 		const editor = this.editor;
 
 		// Enable post-fixer that removes the attributes from to-do list items only if the "TodoList" plugin is on.
-		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListStyleEditing`.
+		// We need to registry the hook here since the `TodoList` plugin can be added after the `ListPropertiesEditing`.
 		if ( editor.commands.get( 'todoList' ) ) {
 			editor.model.document.registerPostFixer( removeListItemAttributesFromTodoList( editor ) );
 		}
@@ -133,9 +133,9 @@ export default class ListStyleEditing extends Plugin {
 	 * See https://github.com/ckeditor/ckeditor5/issues/7879.
 	 *
 	 * @private
-	 * @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies Strategies for the enabled attributes.
+	 * @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies Strategies for the enabled attributes.
 	 */
-	_mergeListStyleAttributeWhileMergingLists( attributeStrategies ) {
+	_mergeListAttributesWhileMergingLists( attributeStrategies ) {
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -255,7 +255,7 @@ export default class ListStyleEditing extends Plugin {
 // @param {Boolean} enabledProperties.styles
 // @param {Boolean} enabledProperties.reversed
 // @param {Boolean} enabledProperties.startIndex
-// @returns {Array.<module:list/liststyleediting~AttributeStrategy>}
+// @returns {Array.<module:list/listpropertiesediting~AttributeStrategy>}
 function createAttributeStrategies( enabledProperties ) {
 	const strategies = [];
 
@@ -347,7 +347,7 @@ function createAttributeStrategies( enabledProperties ) {
 // In `style` it searches for the `list-style-type` definition.
 // If not found, the `"default"` value will be used.
 //
-// @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies
+// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
 // @returns {Function}
 function upcastListItemAttributes( attributeStrategies ) {
 	return dispatcher => {
@@ -375,7 +375,7 @@ function upcastListItemAttributes( attributeStrategies ) {
 // Returns a converter that adds `reversed`, `start` attributes and adds `list-style-type` definition as a value for the `style` attribute.
 // The `"default"` values are removed and not present in the view/data.
 //
-// @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies
+// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
 // @returns {Function}
 function downcastListItemAttributes( attributeStrategies ) {
 	return dispatcher => {
@@ -428,7 +428,7 @@ function downcastListItemAttributes( attributeStrategies ) {
 // ■ List item 3.
 //
 // @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies
+// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
 // @returns {Function}
 function fixListAfterIndentListCommand( editor, attributeStrategies ) {
 	return ( evt, changedItems ) => {
@@ -483,7 +483,7 @@ function fixListAfterIndentListCommand( editor, attributeStrategies ) {
 // ■ List item 3.
 //
 // @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies
+// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
 // @returns {Function}
 function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 	return ( evt, changedItems ) => {
@@ -591,7 +591,7 @@ function fixListAfterOutdentListCommand( editor, attributeStrategies ) {
 // ■ List item 3.  // ...
 //
 // @param {module:core/editor/editor~Editor} editor
-// @param {Array.<module:list/liststyleediting~AttributeStrategy>} attributeStrategies
+// @param {Array.<module:list/listpropertiesediting~AttributeStrategy>} attributeStrategies
 // @returns {Function}
 function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 	return writer => {
@@ -700,7 +700,7 @@ function fixListAttributesOnListItemElements( editor, attributeStrategies ) {
 //
 // @param {module:engine/model/element~Element|null} baseItem
 // @param {module:engine/model/element~Element} itemToChange
-// @param {module:list/liststyleediting~AttributeStrategy} attributeStrategy
+// @param {module:list/listpropertiesediting~AttributeStrategy} attributeStrategy
 // @returns {Boolean}
 function shouldInheritListType( baseItem, itemToChange, attributeStrategy ) {
 	if ( !baseItem ) {

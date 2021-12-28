@@ -14,7 +14,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TablePropertiesEditing from '@ckeditor/ckeditor5-table/src/tableproperties/tablepropertiesediting';
 import TableCellPropertiesEditing from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting';
 import List from '../../src/list';
-import ListStyle from '../../src/liststyle';
+import ListProperties from '../../src/listproperties';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TodoList from '../../src/todolist';
@@ -46,7 +46,7 @@ const config = {
 		List,
 		TodoList,
 		Paragraph,
-		ListStyle,
+		ListProperties,
 		Table,
 		TablePropertiesEditing,
 		TableCellPropertiesEditing,
