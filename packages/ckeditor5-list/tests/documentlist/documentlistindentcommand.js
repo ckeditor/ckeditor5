@@ -104,7 +104,7 @@ describe( 'DocumentListIndentCommand', () => {
 					expect( command.isEnabled ).to.be.false;
 				} );
 
-				it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
+				it( 'should be false if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
 					setData( model, modelList( [
 						'* 0',
 						'* 1',
@@ -536,7 +536,7 @@ describe( 'DocumentListIndentCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 
-			it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
+			it( 'should be true if selection starts in a list item that has higher indent than it\'s previous sibling', () => {
 				setData( model, modelList( [
 					'* 0',
 					'* 1',
@@ -582,7 +582,7 @@ describe( 'DocumentListIndentCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
+			it( 'should decrement indent attribute by 1 (if it is higher than 0)', () => {
 				setData( model, modelList( [
 					'* 0',
 					'* 1',
@@ -772,7 +772,7 @@ describe( 'DocumentListIndentCommand', () => {
 				] ) );
 			} );
 
-			it( 'should handle bigger indent drop between items', () => {
+			it( 'should handle higher indent drop between items', () => {
 				setData( model, modelList( [
 					'* 0',
 					'  * 1',

@@ -519,7 +519,7 @@ describe( 'DocumentList - utils - model', () => {
 			expect( isFirstBlockOfListItem( listItem ) ).to.be.false;
 		} );
 
-		it( 'should return true if the previous block has smaller indent', () => {
+		it( 'should return true if the previous block has lower indent', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>';
@@ -530,7 +530,7 @@ describe( 'DocumentList - utils - model', () => {
 			expect( isFirstBlockOfListItem( listItem ) ).to.be.true;
 		} );
 
-		it( 'should return false if the previous block has bigger indent but it is a part of bigger list item', () => {
+		it( 'should return false if the previous block has higher indent but it is a part of bigger list item', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
@@ -577,7 +577,7 @@ describe( 'DocumentList - utils - model', () => {
 			expect( isLastBlockOfListItem( listItem ) ).to.be.false;
 		} );
 
-		it( 'should return true if the next block has smaller indent', () => {
+		it( 'should return true if the next block has lower indent', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
@@ -589,7 +589,7 @@ describe( 'DocumentList - utils - model', () => {
 			expect( isLastBlockOfListItem( listItem ) ).to.be.true;
 		} );
 
-		it( 'should return false if the next block has bigger indent but it is a part of bigger list item', () => {
+		it( 'should return false if the next block has higher indent but it is a part of bigger list item', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +

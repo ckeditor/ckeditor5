@@ -25,9 +25,9 @@ export default class ListWalker {
 	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks wit the same `listType` attribute.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level than the start block should be included
+	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level than the start block should be included
+	 * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
 	 * in the result.
 	 */
 	constructor( startElement, options ) {
@@ -104,20 +104,20 @@ export default class ListWalker {
 		this._sameIndent = !!options.sameIndent;
 
 		/**
-		 * Whether blocks with a smaller indent level than the start block should be included in the result.
+		 * Whether blocks with a lower indent level than the start block should be included in the result.
 		 *
 		 * @private
 		 * @type {Boolean}
 		 */
-		this._smallerIndent = !!options.smallerIndent;
+		this._lowerIndent = !!options.lowerIndent;
 
 		/**
-		 * Whether blocks with a bigger indent level than the start block should be included in the result.
+		 * Whether blocks with a higher indent level than the start block should be included in the result.
 		 *
 		 * @private
 		 * @type {Boolean}
 		 */
-		this._biggerIndent = !!options.biggerIndent;
+		this._higherIndent = !!options.higherIndent;
 	}
 
 	/**
@@ -132,9 +132,9 @@ export default class ListWalker {
 	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks wit the same `listType` attribute.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.smallerIndent=false] Whether blocks with a smaller indent level than the start block should be included
+	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
 	 * in the result.
-	 * @param {Boolean} [options.biggerIndent=false] Whether blocks with a bigger indent level than the start block should be included
+	 * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
 	 * in the result.
 	 * @returns {module:engine/model/element~Element|null}
 	 */
@@ -159,17 +159,17 @@ export default class ListWalker {
 			// Leaving a nested list.
 			if ( indent < this._referenceIndent ) {
 				// Abort searching blocks.
-				if ( !this._smallerIndent ) {
+				if ( !this._lowerIndent ) {
 					break;
 				}
 
-				// While searching for smaller indents, update the reference indent to find another parent in the next step.
+				// While searching for lower indents, update the reference indent to find another parent in the next step.
 				this._referenceIndent = indent;
 			}
 			// Entering a nested list.
 			else if ( indent > this._referenceIndent ) {
 				// Ignore nested blocks.
-				if ( !this._biggerIndent ) {
+				if ( !this._higherIndent ) {
 					continue;
 				}
 
@@ -185,7 +185,7 @@ export default class ListWalker {
 				// Ignore same indent block.
 				if ( !this._sameIndent ) {
 					// While looking for nested blocks, stop iterating while encountering first same indent block.
-					if ( this._biggerIndent ) {
+					if ( this._higherIndent ) {
 						// No more nested blocks so yield nested items.
 						if ( nestedItems.length ) {
 							yield* nestedItems;

@@ -170,7 +170,7 @@ describe( 'mockList()', () => {
 		);
 	} );
 
-	it( 'list with bigger indent drop', () => {
+	it( 'list with higher indent drop', () => {
 		expect( modelList( [
 			'* foo',
 			'  * bar',

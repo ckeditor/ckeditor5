@@ -64,7 +64,7 @@ export function getListItemBlocks( listItem, options = {} ) {
 export function getNestedListBlocks( listItem ) {
 	return Array.from( new ListWalker( listItem, {
 		direction: 'forward',
-		biggerIndent: true
+		higherIndent: true
 	} ) );
 }
 
@@ -147,11 +147,11 @@ export function isLastBlockOfListItem( listBlock ) {
 export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 	blocks = toArray( blocks );
 
-	const biggerIndent = options.withNested !== false;
+	const higherIndent = options.withNested !== false;
 	const allBlocks = new Set();
 
 	for ( const block of blocks ) {
-		for ( const itemBlock of getAllListItemBlocks( block, { biggerIndent } ) ) {
+		for ( const itemBlock of getAllListItemBlocks( block, { higherIndent } ) ) {
 			allBlocks.add( itemBlock );
 		}
 	}
@@ -246,7 +246,7 @@ export function outdentBlocks( blocks, writer, { expand } = {} ) {
 
 	// Collect parent blocks before the list structure gets altered.
 	for ( const block of allBlocks ) {
-		parentBlocks.set( block, ListWalker.first( block, { smallerIndent: true } ) );
+		parentBlocks.set( block, ListWalker.first( block, { lowerIndent: true } ) );
 	}
 
 	for ( const block of allBlocks ) {
@@ -386,7 +386,7 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 	// it like this is much more efficient because it's less operation (less memory usage, easier OT) and
 	// less conversion (faster).
 	for ( const { node } of iterateSiblingListBlocks( lastBlock.nextSibling, 'forward' ) ) {
-		// Check each next list item, as long as its indent is bigger than 0.
+		// Check each next list item, as long as its indent is higher than 0.
 		const indent = node.getAttribute( 'listIndent' );
 
 		// If the indent is 0 we are not going to change anything anyway.

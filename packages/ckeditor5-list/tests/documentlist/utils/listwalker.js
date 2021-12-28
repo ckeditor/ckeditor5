@@ -4,6 +4,7 @@
  */
 
 import ListWalker from '../../../src/documentlist/utils/listwalker';
+import { modelList } from '../_utils/utils';
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import { parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -20,7 +21,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 	} );
 
-	it( 'should return no blocks (sameIndent = false, smallerIndent = false, biggerIndent = false)', () => {
+	it( 'should return no blocks (sameIndent = false, lowerIndent = false, higherIndent = false)', () => {
 		const input =
 			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
@@ -31,8 +32,8 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			direction: 'forward',
 			includeSelf: true
 			// sameIndent: false -> default
-			// smallerIndent: false -> default
-			// biggerIndent: false -> default
+			// lowerIndent: false -> default
+			// higherIndent: false -> default
 
 		} );
 		const blocks = Array.from( walker );
@@ -155,6 +156,27 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
 		} );
 
+		it( 'should return items of the same type', () => {
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'# 2'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const walker = new ListWalker( fragment.getChild( 0 ), {
+				direction: 'forward',
+				sameIndent: true,
+				includeSelf: true,
+				sameItemType: true
+			} );
+			const blocks = Array.from( walker );
+
+			expect( blocks.length ).to.equal( 2 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+		} );
+
 		it( 'should return items while iterating over a nested list', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
@@ -175,7 +197,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 2 ) );
 		} );
 
-		it( 'should skip nested items (biggerIndent = false)', () => {
+		it( 'should skip nested items (higherIndent = false)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -195,7 +217,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
 		} );
 
-		it( 'should include nested items (biggerIndent = true)', () => {
+		it( 'should include nested items (higherIndent = true)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -208,7 +230,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
 				sameIndent: true,
-				biggerIndent: true,
+				higherIndent: true,
 				includeSelf: true
 			} );
 			const blocks = Array.from( walker );
@@ -220,7 +242,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
 		} );
 
-		it( 'should include nested items (biggerIndent = true, sameItemId = true, forward)', () => {
+		it( 'should include nested items (higherIndent = true, sameItemId = true, forward)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -233,7 +255,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
 				sameIndent: true,
-				biggerIndent: true,
+				higherIndent: true,
 				includeSelf: true,
 				sameItemId: true
 			} );
@@ -246,7 +268,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
 		} );
 
-		it( 'should include nested items (biggerIndent = true, sameItemId = true, backward)', () => {
+		it( 'should include nested items (higherIndent = true, sameItemId = true, backward)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -259,7 +281,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const walker = new ListWalker( fragment.getChild( 4 ), {
 				direction: 'backward',
 				sameIndent: true,
-				biggerIndent: true,
+				higherIndent: true,
 				includeSelf: true,
 				sameItemId: true
 			} );
@@ -272,7 +294,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 1 ) );
 		} );
 
-		it( 'should not include nested items from other item (biggerIndent = true, sameItemId = true, backward)', () => {
+		it( 'should not include nested items from other item (higherIndent = true, sameItemId = true, backward)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -285,7 +307,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const walker = new ListWalker( fragment.getChild( 4 ), {
 				direction: 'backward',
 				sameIndent: true,
-				biggerIndent: true,
+				higherIndent: true,
 				includeSelf: true,
 				sameItemId: true
 			} );
@@ -295,7 +317,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 4 ) );
 		} );
 
-		it( 'should return all list blocks (biggerIndent = true, sameIndent = true, smallerIndent = true)', () => {
+		it( 'should return all list blocks (higherIndent = true, sameIndent = true, lowerIndent = true)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -308,8 +330,8 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
 				sameIndent: true,
-				smallerIndent: true,
-				biggerIndent: true,
+				lowerIndent: true,
+				higherIndent: true,
 				includeSelf: true
 			} );
 			const blocks = Array.from( walker );
@@ -379,8 +401,8 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 	} );
 
-	describe( 'nested level iterating (biggerIndent = true )', () => {
-		it( 'should return nested list blocks (biggerIndent = true, sameIndent = false)', () => {
+	describe( 'nested level iterating (higherIndent = true )', () => {
+		it( 'should return nested list blocks (higherIndent = true, sameIndent = false)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -392,7 +414,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -401,7 +423,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
 		} );
 
-		it( 'should return all nested blocks (biggerIndent = true, sameIndent = false)', () => {
+		it( 'should return all nested blocks (higherIndent = true, sameIndent = false)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -413,7 +435,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
 				direction: 'forward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -424,7 +446,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
 		} );
 
-		it( 'should return all nested blocks (biggerIndent = true, sameIndent = false, backward)', () => {
+		it( 'should return all nested blocks (higherIndent = true, sameIndent = false, backward)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
 				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
@@ -436,7 +458,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 5 ), {
 				direction: 'backward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -459,7 +481,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
 				direction: 'forward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -480,7 +502,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 5 ), {
 				direction: 'backward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -499,7 +521,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -516,7 +538,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
 				direction: 'backward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -533,7 +555,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
 				direction: 'forward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -550,7 +572,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'backward',
-				biggerIndent: true
+				higherIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -570,7 +592,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 1 ), {
 					direction: 'forward',
-					biggerIndent: true
+					higherIndent: true
 				} );
 
 				expect( block ).to.equal( fragment.getChild( 2 ) );
@@ -588,7 +610,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 4 ), {
 					direction: 'backward',
-					biggerIndent: true
+					higherIndent: true
 				} );
 
 				expect( block ).to.equal( fragment.getChild( 3 ) );
@@ -596,7 +618,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 	} );
 
-	describe( 'parent level iterating (smallerIndent = true )', () => {
+	describe( 'parent level iterating (lowerIndent = true )', () => {
 		it( 'should return nothing if at the start of top level list (backward)', () => {
 			const input =
 				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
@@ -607,7 +629,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
 				direction: 'backward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -624,7 +646,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'backward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -641,7 +663,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -658,7 +680,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'backward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -676,7 +698,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
 				direction: 'backward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -696,7 +718,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 4 ), {
 				direction: 'backward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -716,7 +738,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
 				direction: 'forward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -736,7 +758,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 4 ), {
 				direction: 'backward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -759,7 +781,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 3 ), {
 				direction: 'forward',
-				smallerIndent: true
+				lowerIndent: true
 			} );
 			const blocks = Array.from( walker );
 
@@ -781,7 +803,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 4 ), {
 					direction: 'backward',
-					smallerIndent: true
+					lowerIndent: true
 				} );
 
 				expect( block ).to.equal( fragment.getChild( 1 ) );
