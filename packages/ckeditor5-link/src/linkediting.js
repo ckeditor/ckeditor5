@@ -194,6 +194,7 @@ export default class LinkEditing extends Plugin {
 			editor.conversion.for( 'downcast' ).attributeToElement( {
 				model: decorator.id,
 				view: ( manualDecoratorValue, { writer, schema }, { item } ) => {
+					// Manual decorators for block links are handled e.g. in LinkImageEditing.
 					if ( !schema.isInline( item ) ) {
 						return;
 					}
