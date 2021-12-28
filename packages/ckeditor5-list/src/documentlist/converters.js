@@ -3,6 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/**
+ * @module list/documentlist/converters
+ */
+
 import {
 	getAllListItemBlocks,
 	getListItemBlocks
@@ -20,10 +24,6 @@ import { findAndAddListHeadToMap } from './utils/postfixers';
 
 import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
-
-/**
- * @module list/documentlist/converters
- */
 
 /**
  * Returns the upcast converter for list items. It's supposed to work after the block converters (content inside list items) is converted.
