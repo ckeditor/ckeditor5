@@ -3,33 +3,21 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import { ListItemUid } from '../../../src/documentlist/utils/model';
+
 /**
  * Mocks the `uid()` with sequential numbers.
  *
- * @param {Number} [start=0] The uid start number.
+ * @param {Number} [start=0xa00] The uid start number.
  */
-export default function stubUid( start = 0 ) {
+export default function stubUid( start = 0xa00 ) {
 	const seq = sequence( start );
 
-	sinon.stub( Math, 'random' ).callsFake( () => seq.next().value );
+	sinon.stub( ListItemUid, 'next' ).callsFake( () => seq.next().value );
 }
 
-function* sequence( start ) {
-	let num = start << 2;
-
+function* sequence( num ) {
 	while ( true ) {
-		if ( num % 4 == 3 ) {
-			const flipped =
-				( num >> 2 & 0xff000000 ) >>> 24 |
-				( num >> 2 & 0x00ff0000 ) >> 8 |
-				( num >> 2 & 0x0000ff00 ) << 8 |
-				( num >> 2 & 0x000000ff ) << 24;
-
-			yield flipped / 0xffffffff;
-		} else {
-			yield 0;
-		}
-
-		num++;
+		yield ( num++ ).toString( 16 ).padStart( 3, '000' );
 	}
 }

@@ -70,7 +70,7 @@ export function setupTestHelpers( editor ) {
 			actionCallback( callbackSelection );
 			test.reconvertSpy.restore();
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
 
 			if ( testUndo ) {
 				const modelAfter = getModelData( model );
@@ -78,13 +78,13 @@ export function setupTestHelpers( editor ) {
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ), 'after undo' ).to.equal( modelBefore );
-				expect( getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equal( viewBefore );
+				expect( getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
+				expect( getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( getModelData( model ), 'after redo' ).to.equal( modelAfter );
-				expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equal( viewAfter );
+				expect( getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
+				expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
 			}
 		},
 
@@ -195,8 +195,8 @@ export function setupTestHelpers( editor ) {
 		data( input, modelData, output = input ) {
 			editor.setData( input );
 
-			expect( editor.getData(), 'output data' ).to.equal( output );
-			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
+			expect( editor.getData(), 'output data' ).to.equalMarkup( output );
+			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
 		}
 	};
 

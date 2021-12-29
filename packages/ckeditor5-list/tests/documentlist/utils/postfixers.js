@@ -336,9 +336,9 @@ describe( 'DocumentList - utils - postfixers', () => {
 		it( 'list nested in blockquote', () => {
 			const input =
 				'<paragraph>foo</paragraph>' +
-				'<blockQuote listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000001" listType="bulleted">bar</paragraph>' +
+				'<blockQuote listIndent="0" listItemId="a02" listType="bulleted">' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">bar</paragraph>' +
 				'</blockQuote>';
 
 			const fragment = parseModel( input, schema );
@@ -349,9 +349,9 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
-				'<blockQuote listIndent="0" listItemId="e00000000000000000000000000000002" listType="bulleted">' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">bar</paragraph>' +
+				'<blockQuote listIndent="0" listItemId="a02" listType="bulleted">' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">bar</paragraph>' +
 				'</blockQuote>'
 			);
 		} );
@@ -374,7 +374,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>'
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>'
 			);
 		} );
 
@@ -395,7 +395,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>'
 			);
 		} );
@@ -417,8 +417,8 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">2</paragraph>'
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">2</paragraph>'
 			);
 		} );
 
@@ -439,8 +439,8 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">2</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">2</paragraph>'
 			);
 		} );
 
@@ -461,8 +461,8 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">2</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">2</paragraph>'
 			);
 		} );
 
@@ -484,9 +484,9 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">1</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">1</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">3</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">3</paragraph>'
 			);
 		} );
 
@@ -513,12 +513,12 @@ describe( 'DocumentList - utils - postfixers', () => {
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="numbered">3</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">4</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">5</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="numbered">6</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000002" listType="numbered">7</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">2</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="numbered">3</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">4</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">5</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="numbered">6</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a02" listType="numbered">7</paragraph>'
 			);
 		} );
 
@@ -541,7 +541,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">1</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>'
 			);
 		} );

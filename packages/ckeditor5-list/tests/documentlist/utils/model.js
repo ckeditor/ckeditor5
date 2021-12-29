@@ -887,9 +887,9 @@ describe( 'DocumentList - utils - model', () => {
 			model.change( writer => splitListItemBefore( fragment.getChild( 0 ), writer ) );
 
 			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">c</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>'
 			);
 		} );
 
@@ -907,8 +907,8 @@ describe( 'DocumentList - utils - model', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">c</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>'
 			);
 		} );
 
@@ -929,8 +929,8 @@ describe( 'DocumentList - utils - model', () => {
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">c</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>' +
 				'<paragraph listIndent="0" listItemId="y" listType="bulleted">y</paragraph>'
 			);
 		} );
@@ -950,9 +950,9 @@ describe( 'DocumentList - utils - model', () => {
 
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">d</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">d</paragraph>'
 			);
 		} );
 
@@ -972,8 +972,8 @@ describe( 'DocumentList - utils - model', () => {
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">d</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">c</paragraph>' +
+				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">d</paragraph>' +
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">e</paragraph>'
 			);
 		} );

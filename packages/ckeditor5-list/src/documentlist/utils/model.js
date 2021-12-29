@@ -11,6 +11,21 @@ import { uid, toArray } from 'ckeditor5/src/utils';
 import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 
 /**
+ * The list item ID generator.
+ */
+export class ListItemUid {
+	/**
+	 * Returns the next ID.
+	 *
+	 * @protected
+	 * @returns {String}
+	 */
+	static next() {
+		return uid();
+	}
+}
+
+/**
  * Returns an array with all elements that represents the same list item.
  *
  * It means that values for `listIndent`, and `listItemId` for all items are equal.
@@ -167,7 +182,7 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  */
 export function splitListItemBefore( listBlock, writer ) {
-	const id = uid();
+	const id = ListItemUid.next();
 
 	for ( const block of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
 		writer.setAttribute( 'listItemId', id, block );
