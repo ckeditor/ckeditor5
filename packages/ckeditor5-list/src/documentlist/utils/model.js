@@ -12,8 +12,6 @@ import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 
 /**
  * The list item ID generator.
- *
- * @class
  */
 export class ListItemUid {
 	/**
