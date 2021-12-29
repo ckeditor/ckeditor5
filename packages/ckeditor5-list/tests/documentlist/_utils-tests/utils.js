@@ -226,6 +226,42 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should allow to customize the list item id (suffix)', () => {
+		expect( modelList( [
+			'* foo{abc}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should allow to customize the list item id (prefix)', () => {
+		expect( modelList( [
+			'* foo',
+			'* {abc}bar',
+			'  baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="abc" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should not parse the custom list item ID if provided in the following block of a list item', () => {
+		expect( modelList( [
+			'* foo',
+			'  {abc}bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">{abc}bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
 	it( 'should throw when indent is invalid', () => {
 		expect( () => modelList( [
 			'* foo',

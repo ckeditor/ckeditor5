@@ -216,7 +216,7 @@ export function modelList( lines ) {
 	let prevIndent = -1;
 
 	for ( const [ idx, line ] of lines.entries() ) {
-		const [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#]) )?)(.*)/ );
+		let [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#]) )?)(.*)/ );
 		const listIndent = pad.length / 2 - 1;
 
 		if ( listIndent < 0 ) {
@@ -233,8 +233,16 @@ export function modelList( lines ) {
 			}
 
 			if ( !stack[ listIndent ] || marker ) {
+				let listItemId = String( idx ).padStart( 3, '0' );
+
+				content = content.replace( /{([^}]+)}/, ( match, id ) => {
+					listItemId = id;
+
+					return '';
+				} );
+
 				stack[ listIndent ] = {
-					listItemId: String( idx ).padStart( 3, '0' ),
+					listItemId,
 					listType: marker == '#' ? 'numbered' : 'bulleted'
 				};
 			}
