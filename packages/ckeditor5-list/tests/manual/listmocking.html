@@ -1,0 +1,36 @@
+<style>
+	textarea#model-data {
+		white-space: pre-wrap;
+		font-family: monospace;
+		display: block;
+		width: 100%;
+		height: 100px;
+		box-sizing: border-box;
+		margin: 10px 0;
+		height: 200px;
+	}
+
+	#ascii-art {
+		border: 1px black solid;
+		height: 200px;
+	}
+</style>
+
+<div style="display: flex;">
+	<div style="flex:1;">
+		<h2>Model data</h2>
+		<textarea id="model-data"></textarea>
+	</div>
+	<div style="display: flex; flex-direction: column;justify-content: center;margin:0px 16px;">
+		<h2>&nbsp;</h2>
+		<button id="asciify">🠒</button>
+	</div>
+	<div style="flex:1;">
+		<h2>ASCII</h2>
+		<pre id="ascii-art"></pre>
+	</div>
+</div>
+
+<div id="editor">
+
+</div>
