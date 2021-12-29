@@ -139,6 +139,7 @@ export function getViewElementNameForListType( type ) {
 /**
  * Returns a view element ID for the given list type and indent.
  *
+ * @protected
  * @param {'bulleted'|'numbered'} type The list type.
  * @param {Number} indent The list indent level.
  * @returns {String}
