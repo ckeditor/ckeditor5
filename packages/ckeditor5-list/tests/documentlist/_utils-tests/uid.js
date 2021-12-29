@@ -4,44 +4,44 @@
  */
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { uid } from '@ckeditor/ckeditor5-utils';
 
 import stubUid from '../_utils/uid';
+import { ListItemUid } from '../../../src/documentlist/utils/model';
 
 describe( 'stubUid()', () => {
 	testUtils.createSinonSandbox();
 
 	it( 'Should start from 0', () => {
-		stubUid();
+		stubUid( 0 );
 
-		expect( uid() ).to.equal( 'e00000000000000000000000000000000' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000001' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000002' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000003' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000004' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000005' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000006' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000007' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000008' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000000009' );
-		expect( uid() ).to.equal( 'e0000000000000000000000000000000a' );
-		expect( uid() ).to.equal( 'e0000000000000000000000000000000b' );
+		expect( ListItemUid.next() ).to.equal( '000' );
+		expect( ListItemUid.next() ).to.equal( '001' );
+		expect( ListItemUid.next() ).to.equal( '002' );
+		expect( ListItemUid.next() ).to.equal( '003' );
+		expect( ListItemUid.next() ).to.equal( '004' );
+		expect( ListItemUid.next() ).to.equal( '005' );
+		expect( ListItemUid.next() ).to.equal( '006' );
+		expect( ListItemUid.next() ).to.equal( '007' );
+		expect( ListItemUid.next() ).to.equal( '008' );
+		expect( ListItemUid.next() ).to.equal( '009' );
+		expect( ListItemUid.next() ).to.equal( '00a' );
+		expect( ListItemUid.next() ).to.equal( '00b' );
 	} );
 
-	it( 'Should start from 0x10000', () => {
-		stubUid( 0x10000 );
+	it( 'Should start from 0xa00 (default)', () => {
+		stubUid();
 
-		expect( uid() ).to.equal( 'e00000000000000000000000000010000' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010001' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010002' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010003' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010004' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010005' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010006' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010007' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010008' );
-		expect( uid() ).to.equal( 'e00000000000000000000000000010009' );
-		expect( uid() ).to.equal( 'e0000000000000000000000000001000a' );
-		expect( uid() ).to.equal( 'e0000000000000000000000000001000b' );
+		expect( ListItemUid.next() ).to.equal( 'a00' );
+		expect( ListItemUid.next() ).to.equal( 'a01' );
+		expect( ListItemUid.next() ).to.equal( 'a02' );
+		expect( ListItemUid.next() ).to.equal( 'a03' );
+		expect( ListItemUid.next() ).to.equal( 'a04' );
+		expect( ListItemUid.next() ).to.equal( 'a05' );
+		expect( ListItemUid.next() ).to.equal( 'a06' );
+		expect( ListItemUid.next() ).to.equal( 'a07' );
+		expect( ListItemUid.next() ).to.equal( 'a08' );
+		expect( ListItemUid.next() ).to.equal( 'a09' );
+		expect( ListItemUid.next() ).to.equal( 'a0a' );
+		expect( ListItemUid.next() ).to.equal( 'a0b' );
 	} );
 } );

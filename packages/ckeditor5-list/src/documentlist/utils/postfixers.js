@@ -8,8 +8,7 @@
  */
 
 import { iterateSiblingListBlocks } from './listwalker';
-import { getListItemBlocks } from './model';
-import { uid } from 'ckeditor5/src/utils';
+import { getListItemBlocks, ListItemUid } from './model';
 
 /**
  * Based on the provided positions looks for the list head and stores it in the provided map.
@@ -113,7 +112,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 
 		// Use a new ID if this one was spot earlier (even in other list).
 		if ( seenIds.has( listItemId ) ) {
-			listItemId = uid();
+			listItemId = ListItemUid.next();
 		}
 
 		seenIds.add( listItemId );
@@ -123,7 +122,7 @@ export function fixListItemIds( listHead, seenIds, writer ) {
 
 			// Use a new ID if a block of a bigger list item has different type.
 			if ( block.getAttribute( 'listType' ) != listType ) {
-				listItemId = uid();
+				listItemId = ListItemUid.next();
 				listType = block.getAttribute( 'listType' );
 			}
 

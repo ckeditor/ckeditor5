@@ -9,7 +9,8 @@
 
 import {
 	getAllListItemBlocks,
-	getListItemBlocks
+	getListItemBlocks,
+	ListItemUid
 } from './utils/model';
 import {
 	createListElement,
@@ -23,7 +24,6 @@ import {
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
 
-import { uid } from 'ckeditor5/src/utils';
 import { UpcastWriter } from 'ckeditor5/src/engine';
 
 /**
@@ -48,7 +48,7 @@ export function listItemUpcastConverter() {
 		}
 
 		const attributes = {
-			listItemId: uid(),
+			listItemId: ListItemUid.next(),
 			listIndent: getIndent( data.viewItem ),
 			listType: data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted'
 		};

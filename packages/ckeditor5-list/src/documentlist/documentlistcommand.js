@@ -8,14 +8,14 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { uid } from 'ckeditor5/src/utils';
 import {
 	splitListItemBefore,
 	expandListBlocksToCompleteItems,
 	getListItemBlocks,
 	getListItems,
 	removeListAttributes,
-	outdentItemsAfterItemRemoved
+	outdentItemsAfterItemRemoved,
+	ListItemUid
 } from './utils/model';
 
 /**
@@ -114,7 +114,7 @@ export default class DocumentListCommand extends Command {
 					if ( !block.hasAttribute( 'listType' ) ) {
 						writer.setAttributes( {
 							listIndent: 0,
-							listItemId: uid(),
+							listItemId: ListItemUid.next(),
 							listType: this.type
 						}, block );
 

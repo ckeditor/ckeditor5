@@ -367,7 +367,7 @@ describe( 'DocumentListIndentCommand', () => {
 					expect( getData( model ) ).to.equalMarkup(
 						'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
 						'<paragraph listIndent="0" listItemId="001" listType="bulleted">1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="e00000000000000000000000000000000" listType="bulleted">[]2</paragraph>' +
+						'<paragraph listIndent="1" listItemId="a00" listType="bulleted">[]2</paragraph>' +
 						'<paragraph listIndent="0" listItemId="001" listType="bulleted">3</paragraph>' +
 						'<paragraph listIndent="0" listItemId="004" listType="bulleted">4</paragraph>'
 					);
@@ -715,8 +715,8 @@ describe( 'DocumentListIndentCommand', () => {
 
 				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">[]1</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]1</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">2</paragraph>' +
 					'<paragraph listIndent="0" listItemId="003" listType="bulleted">3</paragraph>'
 				);
 			} );
@@ -735,7 +735,7 @@ describe( 'DocumentListIndentCommand', () => {
 				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">0</paragraph>' +
 					'<paragraph listIndent="0" listItemId="000" listType="bulleted">1</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">[]2</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">[]2</paragraph>' +
 					'<paragraph listIndent="0" listItemId="003" listType="bulleted">3</paragraph>'
 				);
 			} );
