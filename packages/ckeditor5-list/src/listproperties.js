@@ -14,8 +14,8 @@ import ListPropertiesUI from './listpropertiesui';
 /**
  * The list properties feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/listpropertiesediting~ListPropertiesEditing list style editing feature}
- * and the {@link module:list/listpropertiesui~ListPropertiesUI list style UI feature}.
+ * This is a "glue" plugin that loads the {@link module:list/listpropertiesediting~ListPropertiesEditing list properties editing feature}
+ * and the {@link module:list/listpropertiesui~ListPropertiesUI list properties UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
