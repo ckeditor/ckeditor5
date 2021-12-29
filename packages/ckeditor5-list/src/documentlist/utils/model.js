@@ -20,6 +20,7 @@ export class ListItemUid {
 	 * @protected
 	 * @returns {String}
 	 */
+	/* istanbul ignore next: static function definition */
 	static next() {
 		return uid();
 	}
@@ -180,13 +181,18 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
  * @protected
  * @param {module:engine/model/element~Element} listBlock The list block element.
  * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Array.<module:engine/model/element~Element>} The array of updated blocks.
  */
+// TODO add test for return value.
 export function splitListItemBefore( listBlock, writer ) {
+	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
 	const id = ListItemUid.next();
 
-	for ( const block of getListItemBlocks( listBlock, { direction: 'forward' } ) ) {
+	for ( const block of blocks ) {
 		writer.setAttribute( 'listItemId', id, block );
 	}
+
+	return blocks;
 }
 
 /**
@@ -429,6 +435,18 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 	return changedBlocks;
 }
 
+/**
+ * Returns the sorted array of given blocks.
+ *
+ * @protected
+ * @param {Iterable.<module:engine/model/element~Element>} blocks The array of blocks.
+ * @returns {Array.<module:engine/model/element~Element>} The sorted array of blocks.
+ */
+// TODO add tests.
+export function sortBlocks( blocks ) {
+	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
+}
+
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
 function mergeListItemIfNotLast( block, parentBlock, writer ) {
 	const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
@@ -448,9 +466,3 @@ function mergeListItemIfNotLast( block, parentBlock, writer ) {
 
 	return [];
 }
-
-// TODO
-function sortBlocks( blocks ) {
-	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
-}
-

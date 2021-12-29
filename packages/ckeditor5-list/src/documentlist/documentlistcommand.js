@@ -15,7 +15,8 @@ import {
 	getListItems,
 	removeListAttributes,
 	outdentItemsAfterItemRemoved,
-	ListItemUid
+	ListItemUid,
+	sortBlocks
 } from './utils/model';
 
 /**
@@ -82,18 +83,19 @@ export default class DocumentListCommand extends Command {
 
 				// Split the first block from the list item.
 				const itemBlocks = getListItemBlocks( lastBlock, { direction: 'forward' } );
+				const changedBlocks = [];
 
 				if ( itemBlocks.length > 1 ) {
-					splitListItemBefore( itemBlocks[ 1 ], writer );
+					changedBlocks.push( ...splitListItemBefore( itemBlocks[ 1 ], writer ) );
 				}
 
 				// Convert list blocks to plain blocks.
-				const changedBlocks = removeListAttributes( blocks, writer );
+				changedBlocks.push( ...removeListAttributes( blocks, writer ) );
 
 				// Outdent items following the selected list item.
 				changedBlocks.push( ...outdentItemsAfterItemRemoved( lastBlock, writer ) );
 
-				this._fireAfterExecute( changedBlocks );
+				this._fireAfterExecute( sortBlocks( new Set( changedBlocks ) ) );
 			}
 			// Turning on the list items for a collapsed selection inside a list item.
 			else if ( document.selection.isCollapsed && blocks[ 0 ].hasAttribute( 'listType' ) ) {

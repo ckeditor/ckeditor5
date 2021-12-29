@@ -72,6 +72,7 @@ export default class DocumentListIndentCommand extends Command {
 				// For indent make sure that indented blocks have a new ID.
 				// For outdent just split blocks from the list item (give them a new IDs).
 				splitListItemBefore( blocks[ 0 ], writer );
+				// TODO add split result to changed blocks.
 
 				this._fireAfterExecute( blocks );
 			}

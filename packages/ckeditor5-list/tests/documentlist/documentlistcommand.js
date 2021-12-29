@@ -13,7 +13,7 @@ import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe.only( 'DocumentListCommand', () => {
+describe( 'DocumentListCommand', () => {
 	let editor, command, model, doc, root, changedBlocks;
 
 	testUtils.createSinonSandbox();
@@ -230,7 +230,7 @@ describe.only( 'DocumentListCommand', () => {
 			} );
 		} );
 
-		describe.only( 'execute()', () => {
+		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
 				setData( model, '<paragraph>[0]</paragraph>' );
 
@@ -484,410 +484,460 @@ describe.only( 'DocumentListCommand', () => {
 				} );
 			} );
 
-			// TODO
-			describe.only( 'when turning off', () => {
+			describe( 'when turning off', () => {
 				it( 'should strip the list attributes from the closest list item (single list item)', () => {
-					// * f[]oo
-					setData( model, '<paragraph listIndent="0" listItemId="a" listType="bulleted">fo[]o</paragraph>' );
+					setData( model, modelList( [
+						'* fo[]o'
+					] ) );
 
 					command.execute();
 
-					// f[]oo
-					expect( getData( model ) ).to.equalMarkup( '<paragraph>fo[]o</paragraph>' );
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'fo[]o'
+					] ) );
+
+					expect( changedBlocks.length ).to.equal( 1 );
+					expect( changedBlocks ).to.deep.equal( [
+						root.getChild( 0 )
+					] );
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in first item)', () => {
-					// * f[]oo
-					// * bar
-					// * baz
-					setData( model,
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">f[]oo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
-						'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
-					);
+					setData( model, modelList( [
+						'* f[]oo',
+						'* bar',
+						'* baz'
+					] ) );
 
 					command.execute();
 
-					// f[]oo
-					// * bar
-					// * baz
-					expect( getData( model ) ).to.equalMarkup(
-						'<paragraph>f[]oo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
-						'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
-					);
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'f[]oo',
+						'* bar',
+						'* baz'
+					] ) );
+
+					expect( changedBlocks.length ).to.equal( 1 );
+					expect( changedBlocks ).to.deep.equal( [
+						root.getChild( 0 )
+					] );
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in the middle item)', () => {
-					// * foo
-					// * b[]ar
-					// * baz
-					setData( model,
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">b[]ar</paragraph>' +
-						'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
-					);
+					setData( model, modelList( [
+						'* foo',
+						'* b[]ar',
+						'* baz'
+					] ) );
 
 					command.execute();
 
-					// * foo
-					// b[]ar
-					// * baz
-					expect( getData( model ) ).to.equalMarkup(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-						'<paragraph>b[]ar</paragraph>' +
-						'<paragraph listIndent="0" listItemId="c" listType="bulleted">baz</paragraph>'
-					);
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* foo',
+						'b[]ar',
+						'* baz'
+					] ) );
+
+					expect( changedBlocks.length ).to.equal( 1 );
+					expect( changedBlocks ).to.deep.equal( [
+						root.getChild( 1 )
+					] );
 				} );
 
 				it( 'should strip the list attributes from the closest item (multiple list items, selection in the last item)', () => {
-					// * foo
-					// * bar
-					// * b[]az
-					setData( model,
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
-						'<paragraph listIndent="0" listItemId="c" listType="bulleted">b[]az</paragraph>'
-					);
+					setData( model, modelList( [
+						'* foo',
+						'* bar',
+						'* b[]az'
+					] ) );
 
 					command.execute();
 
-					// * foo
-					// * bar
-					// b[]az
-					expect( getData( model ) ).to.equalMarkup(
-						'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted">bar</paragraph>' +
-						'<paragraph>b[]az</paragraph>'
-					);
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* foo',
+						'* bar',
+						'b[]az'
+					] ) );
+
+					expect( changedBlocks.length ).to.equal( 1 );
+					expect( changedBlocks ).to.deep.equal( [
+						root.getChild( 2 )
+					] );
 				} );
 
 				describe( 'with nested lists inside', () => {
-					it( 'should strip the list attributes from the closest item and decrease indent of children (selection in the first item)', () => {
-						// * f[]oo
-						// * bar
-						//   * baz
-						//     * qux
-						setData( model,
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">f[]oo</paragraph>' +
-							'<paragraph listIndent="1" listItemId="a.a" listType="bulleted">bar</paragraph>' +
-							'<paragraph listIndent="1" listItemId="a.a.a" listType="bulleted">baz</paragraph>' +
-							'<paragraph listIndent="2" listItemId="a.a.a.a" listType="bulleted">qux</paragraph>'
-						);
+					it( 'should strip the list attributes from the closest item and decrease indent of children (first item)', () => {
+						setData( model, modelList( [
+							'* f[]oo',
+							'  * bar',
+							'  * baz',
+							'    * qux'
+						] ) );
 
 						command.execute();
 
-						// f[]oo
-						// * bar
-						//   * baz
-						//     * qux
-						expect( getData( model ) ).to.equalMarkup(
-							'<paragraph>f[]oo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="a.a" listType="bulleted">bar</paragraph>' +
-							'<paragraph listIndent="0" listItemId="a.a.a" listType="bulleted">baz</paragraph>' +
-							'<paragraph listIndent="1" listItemId="a.a.a.a" listType="bulleted">qux</paragraph>'
-						);
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'f[]oo',
+							'* bar',
+							'* baz',
+							'  * qux'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 4 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 0 ),
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 )
+						] );
 					} );
 
-					it( 'should strip the list attributes from the closest item and decrease indent of children (selection in the middle item)', () => {
-						// * foo
-						// * b[]ar
-						//   * baz
-						//     * qux
-						setData( model,
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">b[]ar</paragraph>' +
-							'<paragraph listIndent="1" listItemId="a.a" listType="bulleted">baz</paragraph>' +
-							'<paragraph listIndent="2" listItemId="a.a.a" listType="bulleted">qux</paragraph>'
-						);
+					it( 'should strip the list attributes from the closest item and decrease indent of children (middle item)', () => {
+						setData( model, modelList( [
+							'* foo',
+							'* b[]ar',
+							'  * baz',
+							'    * qux'
+						] ) );
 
 						command.execute();
 
-						// * foo
-						// b[]ar
-						// * baz
-						//   * qux
-						expect( getData( model ) ).to.equalMarkup(
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">foo</paragraph>' +
-							'<paragraph>b[]ar</paragraph>' +
-							'<paragraph listIndent="0" listItemId="a.a" listType="bulleted">baz</paragraph>' +
-							'<paragraph listIndent="1" listItemId="a.a.a" listType="bulleted">qux</paragraph>'
-						);
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'b[]ar',
+							'* baz',
+							'  * qux'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 3 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 1 ),
+							root.getChild( 2 ),
+							root.getChild( 3 )
+						] );
+					} );
+
+					it( 'should strip the list attributes from the selected items and decrease indent of nested list', () => {
+						setData( model, modelList( [
+							'0',
+							'* 1',
+							'  * 2',
+							'    * 3[]', 		// <- this is turned off.
+							'      * 4', 		// <- this has to become indent = 0, because it will be first item on a new list.
+							'        * 5', 		// <- this should be still be a child of item above, so indent = 1.
+							'    * 6', 			// <- this has to become indent = 0, because it should not be a child of any of items above.
+							'      * 7', 		// <- this should be still be a child of item above, so indent = 1.
+							'  * 8', 			// <- this has to become indent = 0.
+							'    * 9', 			// <- this should still be a child of item above, so indent = 1.
+							'      * 10', 		// <- this should still be a child of item above, so indent = 2.
+							'      * 11', 		// <- this should still be at the same level as item above, so indent = 2.
+							'* 12', 			// <- this and all below are left unchanged.
+							'  * 13',
+							'    * 14'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'0',
+							'* 1',
+							'  * 2',
+							'3[]',
+							'* 4',
+							'  * 5',
+							'* 6',
+							'  * 7',
+							'* 8',
+							'  * 9',
+							'    * 10',
+							'    * 11',
+							'* 12',
+							'  * 13',
+							'    * 14'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 9 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 3 ),
+							root.getChild( 4 ),
+							root.getChild( 5 ),
+							root.getChild( 6 ),
+							root.getChild( 7 ),
+							root.getChild( 8 ),
+							root.getChild( 9 ),
+							root.getChild( 10 ),
+							root.getChild( 11 )
+						] );
 					} );
 				} );
 
 				describe( 'with blocks inside list items', () => {
-					it( 'should strip the list attributes from the closest list item and all blocks inside (selection in the first block)', () => {
-						// * fo[]o
-						//   bar
-						//   baz
-						setData( model,
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">fo[]o</paragraph>' +
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">bar</paragraph>' +
-							'<paragraph listIndent="0" listItemId="a" listType="bulleted">baz</paragraph>'
-						);
+					it( 'should strip the list attributes from the first list item block', () => {
+						setData( model, modelList( [
+							'* fo[]o',
+							'  bar',
+							'  baz'
+						] ) );
 
 						command.execute();
 
-						// fo[]o
-						// bar
-						// baz
-						expect( getData( model ) ).to.equalMarkup(
-							'<paragraph>fo[]o</paragraph>' +
-							'<paragraph>bar</paragraph>' +
-							'<paragraph>baz</paragraph>'
-						);
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'fo[]o',
+							'* bar {id:a00}',
+							'  baz'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 3 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 0 ),
+							root.getChild( 1 ),
+							root.getChild( 2 )
+						] );
+					} );
+
+					it( 'should strip the list attributes from the middle list item block', () => {
+						setData( model, modelList( [
+							'* foo',
+							'  ba[]r',
+							'  baz'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* foo',
+							'ba[]r',
+							'* baz {id:a00}'
+						] ) );
+
+						expect( changedBlocks.length ).to.equal( 2 );
+						expect( changedBlocks ).to.deep.equal( [
+							root.getChild( 1 ),
+							root.getChild( 2 )
+						] );
 					} );
 
 					describe( 'with nested list items', () => {
-
+						// TODO
 					} );
 				} );
 			} );
 
-			beforeEach( () => {
-				setData(
-					model,
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph>---</paragraph>' +
-					'<paragraph>---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="bulleted">---</paragraph>'
-				);
-			} );
-
-			// https://github.com/ckeditor/ckeditor5-list/issues/62
-			it( 'should not rename blocks which cannot become listItems (list item is not allowed in their parent)', () => {
-				model.schema.register( 'restricted' );
-				model.schema.extend( 'restricted', { allowIn: '$root' } );
-
-				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
-				model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
-
-				setData(
-					model,
-					'<paragraph>a[bc</paragraph>' +
-					'<restricted><fooBlock></fooBlock></restricted>' +
-					'<paragraph>de]f</paragraph>'
-				);
-
-				command.execute();
-
-				expect( getData( model ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listType="bulleted">a[bc</paragraph>' +
-					'<restricted><fooBlock></fooBlock></restricted>' +
-					'<paragraph listIndent="0" listType="bulleted">de]f</paragraph>'
-				);
-			} );
-
-			it( 'should not rename blocks which cannot become listItems (block is an object)', () => {
-				model.schema.register( 'imageBlock', {
-					isBlock: true,
-					isObject: true,
-					allowIn: '$root'
-				} );
-
-				setData(
-					model,
-					'<paragraph>a[bc</paragraph>' +
-					'<imageBlock></imageBlock>' +
-					'<paragraph>de]f</paragraph>'
-				);
-
-				command.execute();
-
-				expect( getData( model ) ).to.equalMarkup(
-					'<paragraph listIndent="0" listType="bulleted">a[bc</paragraph>' +
-					'<imageBlock></imageBlock>' +
-					'<paragraph listIndent="0" listType="bulleted">de]f</paragraph>'
-				);
-			} );
-
-			it( 'should rename closest block to listItem and set correct attributes', () => {
-				// From first paragraph to second paragraph.
-				// Command value=false, we are turning on list items.
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( root.getChild( 2 ), 0 ),
-						writer.createPositionAt( root.getChild( 3 ), 'end' )
-					) );
-				} );
-
-				command.execute();
-
-				const expectedData =
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">---]</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="bulleted">---</paragraph>';
-
-				expect( getData( model ) ).to.equalMarkup( expectedData );
-			} );
-
-			it( 'should rename closest listItem to paragraph', () => {
-				// From second bullet list item to first numbered list item.
-				// Command value=true, we are turning off list items.
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( root.getChild( 1 ), 0 ),
-						writer.createPositionAt( root.getChild( 4 ), 'end' )
-					) );
-				} );
-
-				// Convert paragraphs, leave numbered list items.
-				command.execute();
-
-				const expectedData =
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
-					'<paragraph>---</paragraph>' +
-					'<paragraph>---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="bulleted">---</paragraph>';
-
-				expect( getData( model ) ).to.equalMarkup( expectedData );
-			} );
-
-			it( 'should change closest listItem\'s type', () => {
-				// From first numbered lsit item to third bulleted list item.
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( root.getChild( 4 ), 0 ),
-						writer.createPositionAt( root.getChild( 6 ), 0 )
-					) );
-				} );
-
-				// Convert paragraphs, leave numbered list items.
-				command.execute();
-
-				const expectedData =
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph>---</paragraph>' +
-					'<paragraph>---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">]---</paragraph>' +
-					'<paragraph listIndent="2" listType="bulleted">---</paragraph>';
-
-				expect( getData( model ) ).to.equalMarkup( expectedData );
-			} );
-
-			it( 'should handle outdenting sub-items when list item is turned off', () => {
-				// From first numbered list item to third bulleted list item.
-				model.change( writer => {
-					writer.setSelection( writer.createRange(
-						writer.createPositionAt( root.getChild( 1 ), 0 ),
-						writer.createPositionAt( root.getChild( 5 ), 'end' )
-					) );
-				} );
-
-				// Convert paragraphs, leave numbered list items.
-				command.execute();
-
-				const expectedData =
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
-					'<paragraph>---</paragraph>' +
-					'<paragraph>---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
-					'<paragraph listIndent="0" listType="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>';
-
-				expect( getData( model ) ).to.equalMarkup( expectedData );
-			} );
-
-			// Example from docs.
-			it( 'should change type of all items in nested list if one of items changed', () => {
-				setData(
-					model,
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="2" listType="numbered">-[-</paragraph>' +
-					'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="numbered">-]-</paragraph>' +
-					'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>'
-				);
-
-				// * ------				<-- do not fix, top level item
-				//   * ------			<-- fix, because latter list item of this item's list is changed
-				//      * ------		<-- do not fix, item is not affected (different list)
-				//   * ------			<-- fix, because latter list item of this item's list is changed
-				//      * ------		<-- fix, because latter list item of this item's list is changed
-				//      * ---[--		<-- already in selection
-				//   * ------			<-- already in selection
-				//   * ------			<-- already in selection
-				// * ------				<-- already in selection, but does not cause other list items to change because is top-level
-				//   * ---]--			<-- already in selection
-				//   * ------			<-- fix, because preceding list item of this item's list is changed
-				//      * ------		<-- do not fix, item is not affected (different list)
-				// * ------				<-- do not fix, top level item
-
-				command.execute();
-
-				const expectedData =
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="bulleted">-[-</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">-]-</paragraph>' +
-					'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
-					'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
-					'<paragraph listIndent="0" listType="numbered">---</paragraph>';
-
-				expect( getData( model ) ).to.equalMarkup( expectedData );
-			} );
-
-			it.skip( 'should fire "_executeCleanup" event after finish all operations with all changed items', done => {
-				setData( model,
-					'<paragraph>Foo 1.</paragraph>' +
-					'<paragraph>[Foo 2.</paragraph>' +
-					'<paragraph>Foo 3.]</paragraph>' +
-					'<paragraph>Foo 4.</paragraph>'
-				);
-
-				command.execute();
-
-				expect( getData( model ) ).to.equal(
-					'<paragraph>Foo 1.</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">[Foo 2.</paragraph>' +
-					'<paragraph listIndent="0" listType="bulleted">Foo 3.]</paragraph>' +
-					'<paragraph>Foo 4.</paragraph>'
-				);
-
-				command.on( '_executeCleanup', ( evt, data ) => {
-					expect( data ).to.deep.equal( [
-						root.getChild( 2 ),
-						root.getChild( 1 )
-					] );
-
-					done();
-				} );
-
-				command.execute();
-			} );
+			// TODO
+			// beforeEach( () => {
+			// 	setData(
+			// 		model,
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="bulleted">---</paragraph>'
+			// 	);
+			// } );
+			//
+			// // https://github.com/ckeditor/ckeditor5-list/issues/62
+			// it( 'should not rename blocks which cannot become listItems (list item is not allowed in their parent)', () => {
+			// 	model.schema.register( 'restricted' );
+			// 	model.schema.extend( 'restricted', { allowIn: '$root' } );
+			//
+			// 	model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
+			// 	model.schema.extend( 'fooBlock', { allowIn: 'restricted' } );
+			//
+			// 	setData(
+			// 		model,
+			// 		'<paragraph>a[bc</paragraph>' +
+			// 		'<restricted><fooBlock></fooBlock></restricted>' +
+			// 		'<paragraph>de]f</paragraph>'
+			// 	);
+			//
+			// 	command.execute();
+			//
+			// 	expect( getData( model ) ).to.equalMarkup(
+			// 		'<paragraph listIndent="0" listType="bulleted">a[bc</paragraph>' +
+			// 		'<restricted><fooBlock></fooBlock></restricted>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">de]f</paragraph>'
+			// 	);
+			// } );
+			//
+			// it( 'should not rename blocks which cannot become listItems (block is an object)', () => {
+			// 	model.schema.register( 'imageBlock', {
+			// 		isBlock: true,
+			// 		isObject: true,
+			// 		allowIn: '$root'
+			// 	} );
+			//
+			// 	setData(
+			// 		model,
+			// 		'<paragraph>a[bc</paragraph>' +
+			// 		'<imageBlock></imageBlock>' +
+			// 		'<paragraph>de]f</paragraph>'
+			// 	);
+			//
+			// 	command.execute();
+			//
+			// 	expect( getData( model ) ).to.equalMarkup(
+			// 		'<paragraph listIndent="0" listType="bulleted">a[bc</paragraph>' +
+			// 		'<imageBlock></imageBlock>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">de]f</paragraph>'
+			// 	);
+			// } );
+			//
+			// it( 'should rename closest block to listItem and set correct attributes', () => {
+			// 	// From first paragraph to second paragraph.
+			// 	// Command value=false, we are turning on list items.
+			// 	model.change( writer => {
+			// 		writer.setSelection( writer.createRange(
+			// 			writer.createPositionAt( root.getChild( 2 ), 0 ),
+			// 			writer.createPositionAt( root.getChild( 3 ), 'end' )
+			// 		) );
+			// 	} );
+			//
+			// 	command.execute();
+			//
+			// 	const expectedData =
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">---]</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="bulleted">---</paragraph>';
+			//
+			// 	expect( getData( model ) ).to.equalMarkup( expectedData );
+			// } );
+			//
+			// it( 'should rename closest listItem to paragraph', () => {
+			// 	// From second bullet list item to first numbered list item.
+			// 	// Command value=true, we are turning off list items.
+			// 	model.change( writer => {
+			// 		writer.setSelection( writer.createRange(
+			// 			writer.createPositionAt( root.getChild( 1 ), 0 ),
+			// 			writer.createPositionAt( root.getChild( 4 ), 'end' )
+			// 		) );
+			// 	} );
+			//
+			// 	// Convert paragraphs, leave numbered list items.
+			// 	command.execute();
+			//
+			// 	const expectedData =
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="bulleted">---</paragraph>';
+			//
+			// 	expect( getData( model ) ).to.equalMarkup( expectedData );
+			// } );
+			//
+			// it( 'should change closest listItem\'s type', () => {
+			// 	// From first numbered lsit item to third bulleted list item.
+			// 	model.change( writer => {
+			// 		writer.setSelection( writer.createRange(
+			// 			writer.createPositionAt( root.getChild( 4 ), 0 ),
+			// 			writer.createPositionAt( root.getChild( 6 ), 0 )
+			// 		) );
+			// 	} );
+			//
+			// 	// Convert paragraphs, leave numbered list items.
+			// 	command.execute();
+			//
+			// 	const expectedData =
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">]---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="bulleted">---</paragraph>';
+			//
+			// 	expect( getData( model ) ).to.equalMarkup( expectedData );
+			// } );
+			//
+			// it( 'should handle outdenting sub-items when list item is turned off', () => {
+			// 	// From first numbered list item to third bulleted list item.
+			// 	model.change( writer => {
+			// 		writer.setSelection( writer.createRange(
+			// 			writer.createPositionAt( root.getChild( 1 ), 0 ),
+			// 			writer.createPositionAt( root.getChild( 5 ), 'end' )
+			// 		) );
+			// 	} );
+			//
+			// 	// Convert paragraphs, leave numbered list items.
+			// 	command.execute();
+			//
+			// 	const expectedData =
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph>---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
+			// 		'<paragraph listIndent="0" listType="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>';
+			//
+			// 	expect( getData( model ) ).to.equalMarkup( expectedData );
+			// } );
+			//
+			// // Example from docs.
+			// it( 'should change type of all items in nested list if one of items changed', () => {
+			// 	setData(
+			// 		model,
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="numbered">-[-</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="numbered">-]-</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>'
+			// 	);
+			//
+			// 	// * ------				<-- do not fix, top level item
+			// 	//   * ------			<-- fix, because latter list item of this item's list is changed
+			// 	//      * ------		<-- do not fix, item is not affected (different list)
+			// 	//   * ------			<-- fix, because latter list item of this item's list is changed
+			// 	//      * ------		<-- fix, because latter list item of this item's list is changed
+			// 	//      * ---[--		<-- already in selection
+			// 	//   * ------			<-- already in selection
+			// 	//   * ------			<-- already in selection
+			// 	// * ------				<-- already in selection, but does not cause other list items to change because is top-level
+			// 	//   * ---]--			<-- already in selection
+			// 	//   * ------			<-- fix, because preceding list item of this item's list is changed
+			// 	//      * ------		<-- do not fix, item is not affected (different list)
+			// 	// * ------				<-- do not fix, top level item
+			//
+			// 	command.execute();
+			//
+			// 	const expectedData =
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="bulleted">-[-</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">-]-</paragraph>' +
+			// 		'<paragraph listIndent="1" listType="bulleted">---</paragraph>' +
+			// 		'<paragraph listIndent="2" listType="numbered">---</paragraph>' +
+			// 		'<paragraph listIndent="0" listType="numbered">---</paragraph>';
+			//
+			// 	expect( getData( model ) ).to.equalMarkup( expectedData );
+			// } );
 		} );
 	} );
 } );
