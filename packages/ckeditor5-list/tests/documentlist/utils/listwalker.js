@@ -22,10 +22,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 	} );
 
 	it( 'should return no blocks (sameIndent = false, lowerIndent = false, higherIndent = false)', () => {
-		const input =
-			'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-			'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-			'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>';
+		const input = modelList( [
+			'* 0',
+			'* 1',
+			'* 2'
+		] );
 
 		const fragment = parseModel( input, schema );
 		const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -43,10 +44,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 
 	describe( 'same level iterating (sameIndent = true)', () => {
 		it( 'should iterate on nodes with `listItemId` attribute', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'* 2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -63,10 +65,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should stop iterating on first node without `listItemId` attribute', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph>2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -82,10 +85,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should not iterate over nodes without `listItemId` attribute', () => {
-			const input =
-				'<paragraph>x</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>';
+			const input = modelList( [
+				'x',
+				'* 0',
+				'* 1'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -99,10 +103,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should skip start block (includeSelf = false, direction = forward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'* 2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -118,10 +123,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should skip start block (includeSelf = false, direction = backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'* 2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
@@ -137,10 +143,11 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return items with the same ID', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  1',
+				'* 2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -178,11 +185,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return items while iterating over a nested list', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -198,11 +206,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should skip nested items (higherIndent = false)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -218,13 +227,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should include nested items (higherIndent = true)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -243,13 +253,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should include nested items (higherIndent = true, sameItemId = true, forward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'    4',
+				'  * 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -269,13 +280,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should include nested items (higherIndent = true, sameItemId = true, backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'    4',
+				'  * 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 4 ), {
@@ -295,13 +307,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should not include nested items from other item (higherIndent = true, sameItemId = true, backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="1">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'  * 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 4 ), {
@@ -318,13 +331,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return all list blocks (higherIndent = true, sameIndent = true, lowerIndent = true)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -346,13 +360,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 
 		describe( 'first()', () => {
 			it( 'should return first sibling block', () => {
-				const input =
-					'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    * 2',
+					'    * 3',
+					'  * 4',
+					'* 5'
+				] );
 
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 2 ), {
@@ -364,13 +379,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			} );
 
 			it( 'should return first block on the same indent level (forward)', () => {
-				const input =
-					'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    * 2',
+					'    * 3',
+					'  * 4',
+					'* 5'
+				] );
 
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 1 ), {
@@ -382,13 +398,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			} );
 
 			it( 'should return first block on the same indent level (backward)', () => {
-				const input =
-					'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    * 2',
+					'    * 3',
+					'  * 4',
+					'* 5'
+				] );
 
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 4 ), {
@@ -403,13 +420,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 
 	describe( 'nested level iterating (higherIndent = true )', () => {
 		it( 'should return nested list blocks (higherIndent = true, sameIndent = false)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -424,13 +442,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return all nested blocks (higherIndent = true, sameIndent = false)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -447,13 +466,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return all nested blocks (higherIndent = true, sameIndent = false, backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 5 ), {
@@ -470,13 +490,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nested blocks next to the start element', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="1">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3',
+				'  * 4',
+				'  * 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -491,13 +512,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nested blocks next to the start element (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'* 2',
+				'  * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 5 ), {
@@ -512,11 +534,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nothing there is no nested sibling', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -529,11 +552,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nothing there is no nested sibling (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
@@ -546,11 +570,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nothing if a the end of nested list', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
@@ -563,11 +588,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nothing if a the start of nested list (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -581,13 +607,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 
 		describe( 'first()', () => {
 			it( 'should return nested sibling block', () => {
-				const input =
-					'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    * 2',
+					'    * 3',
+					'  * 4',
+					'* 5'
+				] );
 
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 1 ), {
@@ -599,13 +626,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			} );
 
 			it( 'should return nested sibling block (backward)', () => {
-				const input =
-					'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    * 2',
+					'    * 3',
+					'  * 4',
+					'* 5'
+				] );
 
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 4 ), {
@@ -620,11 +648,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 
 	describe( 'parent level iterating (lowerIndent = true )', () => {
 		it( 'should return nothing if at the start of top level list (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 0 ), {
@@ -637,11 +666,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nothing if at top level list (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'* 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -654,11 +684,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return nothing if at top level list (forward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'* 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -671,11 +702,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return parent block if at the first block of nested list (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -689,11 +721,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return parent block if at the following block of nested list (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  * 2',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 2 ), {
@@ -707,13 +740,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return parent block even when there is a nested list (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 4 ), {
@@ -727,13 +761,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return parent block even when there is a nested list (forward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'    * 3',
+				'  * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 1 ), {
@@ -747,13 +782,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return parent blocks (backward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="3">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  * 2',
+				'    * 3',
+				'      * 4',
+				'* 5'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 4 ), {
@@ -769,14 +805,15 @@ describe( 'DocumentList - utils - ListWalker', () => {
 		} );
 
 		it( 'should return parent blocks (forward)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="3">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="2">4</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="f" listIndent="2">5</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="g" listIndent="0">6</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    * 2',
+				'      * 3',
+				'    * 4',
+				'    * 5',
+				'* 6'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const walker = new ListWalker( fragment.getChild( 3 ), {
@@ -792,13 +829,14 @@ describe( 'DocumentList - utils - ListWalker', () => {
 
 		describe( 'first()', () => {
 			it( 'should return nested sibling block', () => {
-				const input =
-					'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="c" listIndent="1">2</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="d" listIndent="2">3</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="e" listIndent="1">4</paragraph>' +
-					'<paragraph listType="bulleted" listItemId="f" listIndent="0">5</paragraph>';
+				const input = modelList( [
+					'* 0',
+					'* 1',
+					'  * 2',
+					'    * 3',
+					'  * 4',
+					'* 5'
+				] );
 
 				const fragment = parseModel( input, schema );
 				const block = ListWalker.first( fragment.getChild( 4 ), {

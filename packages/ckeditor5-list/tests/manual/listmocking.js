@@ -29,26 +29,41 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-const asciifyModelData = event => {
-	const paste = ( event.clipboardData || window.clipboardData ).getData( 'text' );
-	let modelDataString = paste || document.getElementById( 'model-data' ).value;
-	modelDataString = modelDataString.replace( /[+|'|\t|\r|\n]/g, '' );
+const copyAscii = () => {
+	const ascii = document.getElementById( 'ascii-art' ).innerText;
+	window.navigator.clipboard.writeText( ascii );
+};
+
+const asciifyModelData = () => {
+	let modelDataString = document.getElementById( 'model-data' ).value;
+
+	modelDataString = modelDataString.replace( /[+|'|\t|\r|\n|;]/g, '' );
 	modelDataString = modelDataString.replace( /> </g, '><' );
+
 	const parsedModel = parseModel( modelDataString, window.editor.model.schema );
-	document.getElementById( 'ascii-art' ).innerText = stringifyList( parsedModel );
+	const listArray = stringifyList( parsedModel ).split( '\n' );
+
+	const test = listArray.map( ( element, index ) => {
+		if ( index === listArray.length - 1 ) {
+			return `'${ element }'`;
+		}
+
+		return `'${ element }',`;
+	} );
+
+	document.getElementById( 'ascii-art' ).innerText = 'modelList( [\n\t' +
+														test.join( '\n\t' ) +
+														'\n] );';
 	setModelData( window.editor.model, modelDataString );
+	copyAscii();
+};
+
+const onPaste = () => {
+	window.setTimeout( () => {
+		asciifyModelData();
+	}, 0 );
 };
 
 document.getElementById( 'asciify' ).addEventListener( 'click', asciifyModelData );
-document.getElementById( 'model-data' ).addEventListener( 'paste', asciifyModelData );
-// document.getElementById( 'model-data' ).innerText = stringifyList( );
-
-// document.getElementById( 'ascii-art' ).innerText = [
-// 	'* 0',
-// 	'* 1',
-// 	'  * 2',
-// 	'    * 3',
-// 	'    * 4',
-// 	'  * []5',
-// 	'* 6'
-// ].join( '\n' );
+document.getElementById( 'btn-copy-ascii' ).addEventListener( 'click', copyAscii );
+document.getElementById( 'model-data' ).addEventListener( 'paste', onPaste );

@@ -42,11 +42,12 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'getAllListItemBlocks()', () => {
 		it( 'should return a single item if it meets conditions', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0.',
+				'* 1.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -57,13 +58,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return a items if started looking from the first list item block', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0a.',
+				'  1b.',
+				'  1c.',
+				'* 2.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -76,13 +78,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return a items if started looking from the last list item block', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0a.',
+				'  1b.',
+				'  1c.',
+				'* 2.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 3 );
@@ -95,13 +98,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return a items if started looking from the middle list item block', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0a.',
+				'  1b.',
+				'  1c.',
+				'* 2.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
@@ -114,16 +118,17 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should ignore nested list blocks', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">b1.c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">b2.d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b1',
+				'  * b1.c',
+				'  b2',
+				'  * b2.d',
+				'  b3',
+				'* e',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 4 );
@@ -138,11 +143,12 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'getListItemBlocks()', () => {
 		it( 'should return a single item if it meets conditions', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0.',
+				'* 1.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -155,13 +161,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return a items if started looking from the first list item block', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0a.',
+				'  1b.',
+				'  1c.',
+				'* 2.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -176,13 +183,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return a items if started looking from the last list item block', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0a.',
+				'  1b.',
+				'  1c.',
+				'* 2.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 3 );
@@ -198,13 +206,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return a items if started looking from the middle list item block', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0a.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1b.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1c.</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2.</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* 0a.',
+				'  1b.',
+				'  1c.',
+				'* 2.',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
@@ -220,16 +229,17 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should ignore nested list blocks', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1">b1.c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">b2.d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b1',
+				'  * b1.c',
+				'  b2',
+				'  * b2.d',
+				'  b3',
+				'* e',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 4 );
@@ -245,13 +255,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should break if exited nested list', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'  * b',
+				'    b',
+				'* c',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
@@ -266,13 +277,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should search backward by default', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>' +
-				'<paragraph>bar</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b',
+				'  b',
+				'* c',
+				'bar'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 3 );
@@ -285,9 +297,10 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'getNestedListBlocks()', () => {
 		it( 'should return empty array if there is no nested blocks', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -297,12 +310,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return blocks that have a greater indent than the given item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'    * c',
+				'    * d',
+				'* e'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -315,12 +329,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return blocks that have a greater indent than the given item (nested one)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="2">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'    * c',
+				'    * d',
+				'* e'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -332,12 +347,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should not include items from other subtrees', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1">e</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'    * c',
+				'* d',
+				'  * e'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -487,9 +503,10 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'isFirstBlockOfListItem()', () => {
 		it( 'should return true for the first list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -498,9 +515,10 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return true for the second list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -509,9 +527,10 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return false for the second block of list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -520,9 +539,10 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return true if the previous block has lower indent', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -531,10 +551,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return false if the previous block has higher indent but it is a part of bigger list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'  c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
@@ -545,9 +566,10 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'isLastBlockOfListItem()', () => {
 		it( 'should return true for the last list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -556,9 +578,10 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return true for the first list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -567,9 +590,10 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return false for the first block of list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -578,10 +602,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return true if the next block has lower indent', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'* c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 1 );
@@ -590,10 +615,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should return false if the next block has higher indent but it is a part of bigger list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'  c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 0 );
@@ -604,11 +630,12 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'expandListBlocksToCompleteItems()', () => {
 		it( 'should not modify list for a single block of a single-block list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b',
+				'* c',
+				'* d'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -622,10 +649,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks for single list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  1',
+				'  2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -641,12 +669,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks for only first list item block', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  2',
+				'  3',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -662,12 +691,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks for only last list item block', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  2',
+				'  3',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -683,12 +713,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks for only middle list item block', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  2',
+				'  3',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -704,12 +735,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks in nested list item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">3</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    2',
+				'    3',
+				'* 3'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -725,10 +757,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks including nested items (start from first item)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -744,10 +777,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should include all blocks including nested items (start from last item)', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -763,13 +797,14 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should expand first and last items', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="x" listIndent="0">x</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="y" listIndent="0">y</paragraph>';
+			const input = modelList( [
+				'* x',
+				'* 0',
+				'  1',
+				'* 2',
+				'  3',
+				'* y'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -787,12 +822,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should not include nested items from other item', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">4</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'* 2',
+				'  * 3',
+				'* 4'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let blocks = [
@@ -839,10 +875,11 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'splitListItemBefore()', () => {
 		it( 'should replace all blocks ids for first block given', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  b',
+				'  c'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -857,10 +894,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should replace blocks ids for second block given', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  b',
+				'  c'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -875,12 +913,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should not modify other items', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="x" listIndent="0">x</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="y" listIndent="0">y</paragraph>';
+			const input = modelList( [
+				'* x',
+				'* a',
+				'  b',
+				'  c',
+				'* y'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -897,11 +936,12 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should not modify nested items', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">d</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'  d'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -994,10 +1034,11 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should not apply non-list attributes', () => {
-			const input =
-				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'* 2'
+			] );
 
 			const fragment = parseModel( input, schema );
 			let changedBlocks;
@@ -1020,11 +1061,12 @@ describe( 'DocumentList - utils - model', () => {
 
 	describe( 'indentBlocks()', () => {
 		it( 'flat items', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">d</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  b',
+				'* c',
+				'  d'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const blocks = [
@@ -1045,12 +1087,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'nested lists should keep structure', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="2">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="1">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="0">e</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'    * c',
+				'  * d',
+				'* e'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const blocks = [
@@ -1169,12 +1212,13 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 
 		it( 'should not remove attributes other than lists if outdented below 0', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0" alignment="right">0</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0" alignment="right">1</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="1" alignment="right">2</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0" alignment="right">3</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="e" listIndent="1" alignment="right">4</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'* 1',
+				'  * 2',
+				'* 3',
+				'  * 4'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const blocks = [
