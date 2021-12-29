@@ -235,7 +235,7 @@ export function modelList( lines ) {
 			if ( !stack[ listIndent ] || marker ) {
 				let listItemId = String( idx ).padStart( 3, '0' );
 
-				content = content.replace( /{([^}]+)}/, ( match, id ) => {
+				content = content.replace( /\s*{(?:id:)?([^}]+)}\s*/, ( match, id ) => {
 					listItemId = id;
 
 					return '';

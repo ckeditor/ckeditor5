@@ -123,8 +123,10 @@ export default class DocumentListCommand extends Command {
 					// Change the type of list item.
 					else {
 						for ( const node of expandListBlocksToCompleteItems( block, { withNested: false } ) ) {
-							writer.setAttribute( 'listType', this.type, node );
-							changedBlocks.push( node );
+							if ( node.getAttribute( 'listType' ) != this.type ) {
+								writer.setAttribute( 'listType', this.type, node );
+								changedBlocks.push( node );
+							}
 						}
 					}
 				}
@@ -162,6 +164,10 @@ export default class DocumentListCommand extends Command {
 	_getValue() {
 		const selection = this.editor.model.document.selection;
 		const blocks = Array.from( selection.getSelectedBlocks() );
+
+		if ( !blocks.length ) {
+			return false;
+		}
 
 		for ( const block of blocks ) {
 			if ( block.getAttribute( 'listType' ) != this.type ) {

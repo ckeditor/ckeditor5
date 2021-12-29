@@ -9,11 +9,14 @@ import { modelList } from './_utils/utils';
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DocumentListIndentCommand', () => {
 	let editor, model, doc, root;
+
+	// TODO check changed blocks (afterExecute event)
 
 	testUtils.createSinonSandbox();
 
