@@ -23,7 +23,7 @@
 
 			/* Match the box model of the link editor form's input so the balloon
 			does not change width when moving between actions and the form. */
-			max-width: var(--ck-input-text-width);
+			max-width: var(--ck-input-width);
 			min-width: 3em;
 			text-align: center;
 

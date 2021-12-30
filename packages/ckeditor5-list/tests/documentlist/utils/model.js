@@ -13,6 +13,7 @@ import {
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
 	isOnlyOneListItemSelected,
+	ListItemUid,
 	mergeListItemBefore,
 	outdentBlocks,
 	outdentItemsAfterItemRemoved,
@@ -38,6 +39,19 @@ describe( 'DocumentList - utils - model', () => {
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+	} );
+
+	describe( 'ListItemUid.next()', () => {
+		it( 'should generate UIDs', () => {
+			stubUid( 0 );
+
+			expect( ListItemUid.next() ).to.equal( '000' );
+			expect( ListItemUid.next() ).to.equal( '001' );
+			expect( ListItemUid.next() ).to.equal( '002' );
+			expect( ListItemUid.next() ).to.equal( '003' );
+			expect( ListItemUid.next() ).to.equal( '004' );
+			expect( ListItemUid.next() ).to.equal( '005' );
+		} );
 	} );
 
 	describe( 'getAllListItemBlocks()', () => {

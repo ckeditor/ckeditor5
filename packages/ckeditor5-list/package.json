@@ -12,7 +12,8 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^31.1.0"
+    "ckeditor5": "^31.1.0",
+    "@ckeditor/ckeditor5-ui": "^31.1.0"
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^31.1.0",
@@ -22,7 +23,7 @@
     "@ckeditor/ckeditor5-cloud-services": "^31.1.0",
     "@ckeditor/ckeditor5-code-block": "^31.1.0",
     "@ckeditor/ckeditor5-core": "^31.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^27.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^27.1.0",
     "@ckeditor/ckeditor5-easy-image": "^31.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
     "@ckeditor/ckeditor5-engine": "^31.1.0",
@@ -45,7 +46,6 @@
     "@ckeditor/ckeditor5-table": "^31.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
     "@ckeditor/ckeditor5-typing": "^31.1.0",
-    "@ckeditor/ckeditor5-ui": "^31.1.0",
     "@ckeditor/ckeditor5-undo": "^31.1.0",
     "@ckeditor/ckeditor5-utils": "^31.1.0",
     "webpack": "^5.58.1",

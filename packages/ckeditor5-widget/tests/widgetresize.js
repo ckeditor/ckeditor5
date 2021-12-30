@@ -10,6 +10,7 @@ import WidgetResize from '../src/widgetresize';
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 import { toWidget } from '../src/utils';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -162,11 +163,6 @@ describe( 'WidgetResize', () => {
 				expect( isVisible( resizer ) ).to.be.true;
 			}
 		} );
-
-		function isVisible( element ) {
-			// Checks if the DOM element is visible to the end user.
-			return element.offsetParent !== null && !element.classList.contains( 'ck-hidden' );
-		}
 	} );
 
 	describe( 'integration (pixels)', () => {

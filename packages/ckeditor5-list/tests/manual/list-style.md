@@ -13,5 +13,5 @@ The editor should display 4 headers and tables.
 4. **Nested/mixed lists**
     A table with two columns that contains nested and mixed `<ol>` and `<ul>` elements with
     different values for `list-style-type`.
-    
+
 Check whether the `list-style-type` value is the same as the table or the list item describes.
