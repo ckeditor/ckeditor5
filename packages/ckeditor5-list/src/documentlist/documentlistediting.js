@@ -60,7 +60,7 @@ export default class DocumentListEditing extends Plugin {
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
-			 * The DocumentList feature can not be loaded together with List plugin.
+			 * The `DocumentList` feature can not be loaded together with the `List` plugin.
 			 *
 			 * @error document-list-feature-conflict
 			 * @param {String} conflictPlugin Name of the plugin.
@@ -137,7 +137,7 @@ export default class DocumentListEditing extends Plugin {
 	}
 }
 
-// Post-fixer that reacts to changes on document and fixes incorrect model states.
+// Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
 //
 // In the example below, there is a correct list structure.
 // Then the middle element is removed so the list structure will become incorrect:

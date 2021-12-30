@@ -67,6 +67,7 @@ export default class AutomaticDecorators {
 					return;
 				}
 
+				// Automatic decorators for block links are handled e.g. in LinkImageEditing.
 				if ( !( data.item.is( 'selection' ) || conversionApi.schema.isInline( data.item ) ) ) {
 					return;
 				}
