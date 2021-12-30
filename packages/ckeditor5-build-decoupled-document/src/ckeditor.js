@@ -133,6 +133,13 @@ DecoupledEditor.defaultConfig = {
 			'mergeTableCells'
 		]
 	},
+	list: {
+		properties: {
+			styles: true,
+			startIndex: true,
+			reversed: true
+		}
+	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
