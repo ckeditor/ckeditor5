@@ -32,7 +32,7 @@
 
 	@mixin ck-media-phone {
 		padding: 0;
-		width: calc(.8 * var(--ck-input-text-width));
+		width: calc(.8 * var(--ck-input-width));
 
 		& .ck-labeled-field-view {
 			margin: var(--ck-spacing-large) var(--ck-spacing-large) 0;

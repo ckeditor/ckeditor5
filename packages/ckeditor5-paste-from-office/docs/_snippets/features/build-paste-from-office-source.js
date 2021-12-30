@@ -7,7 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice';
-import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
@@ -42,4 +42,4 @@ ClassicEditor.builtinPlugins.push(
 ClassicEditor.defaultConfig.table.contentToolbar.push( 'tableProperties', 'tableCellProperties' );
 
 window.ClassicEditor = ClassicEditor;
-window.ListStyle = ListStyle;
+window.ListProperties = ListProperties;
