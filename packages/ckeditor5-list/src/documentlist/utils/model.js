@@ -230,16 +230,17 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @param {Object} [options]
  * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
+ * @param {Number} [options.indentBy=1] TODO
  * (all blocks of given list items).
  */
-export function indentBlocks( blocks, writer, { expand } = {} ) {
+export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
 	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
 
 	for ( const block of allBlocks ) {
-		writer.setAttribute( 'listIndent', block.getAttribute( 'listIndent' ) + 1, block );
+		writer.setAttribute( 'listIndent', block.getAttribute( 'listIndent' ) + indentBy, block );
 	}
 
 	return allBlocks;
@@ -352,7 +353,7 @@ export function isOnlyOneListItemSelected( blocks ) {
  *
  * @protected
  */
-export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
+export function outdentItemsAfterItemRemoved( lastBlock, writer, { baseIndent = 0 } = {} ) {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.
@@ -411,11 +412,11 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 		const indent = node.getAttribute( 'listIndent' );
 
 		// If the indent is 0 we are not going to change anything anyway.
-		if ( indent == 0 ) {
+		if ( indent == baseIndent ) {
 			break;
 		}
 
-		// We check if that's item indent is lower as current relative indent.
+		// We check if that's item indent is lower than current relative indent.
 		if ( indent < currentIndent ) {
 			// If it is, current relative indent becomes that indent.
 			currentIndent = indent;
@@ -423,13 +424,15 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 
 		// Fix indent relatively to current relative indent.
 		// Note, that if we just changed the current relative indent, the newIndent will be equal to 0.
-		const newIndent = indent - currentIndent;
+		const newIndent = indent - currentIndent + baseIndent;
 
 		// Save the entry in changes array. We do not apply it at the moment, because we will need to
 		// reverse the changes so the last item is changed first.
 		// This is to keep model in correct state all the time.
-		writer.setAttribute( 'listIndent', newIndent, node );
-		changedBlocks.push( node );
+		if ( node.getAttribute( 'listIndent' ) != newIndent ) {
+			writer.setAttribute( 'listIndent', newIndent, node );
+			changedBlocks.push( node );
+		}
 	}
 
 	return changedBlocks;

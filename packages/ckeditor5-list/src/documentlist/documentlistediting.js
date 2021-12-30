@@ -14,6 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
+import DocumentListMergeCommand from './documentlistmergecommand';
 import {
 	listItemDowncastConverter,
 	listItemParagraphDowncastConverter,
@@ -84,6 +85,27 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
+
+		editor.commands.add( 'mergeListItem', new DocumentListMergeCommand( editor ) );
+
+		// Backspace handling
+		// - Collapsed selection at the beginning of the first item of list
+		//   -> outdent command
+		// - Collapsed selection at the beginning of the first block of an item
+		//   - Item before is empty
+		//     -> change indent to match previous
+		//     -> standard delete command
+		//   - Item before is not empty
+		//     -> change indent to match previous
+		//     -> merge block with previous item
+		// - Non-collapsed selection with first position in the first block of a list item and the last position in other item
+		//   - first position in empty block
+		//     -> change indent of the last block to match the first block
+		//     -> standard delete command
+		//   - first position in non-empty block
+		//     -> change indent of the last block to match the first block
+		//     -> standard delete command
+		//     -> merge last block with the first block
 	}
 
 	/**
