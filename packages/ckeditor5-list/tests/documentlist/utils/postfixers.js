@@ -9,6 +9,7 @@ import {
 	fixListItemIds
 } from '../../../src/documentlist/utils/postfixers';
 import stubUid from '../_utils/uid';
+import { modelList } from '../_utils/utils';
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -30,10 +31,11 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 	describe( 'findAndAddListHeadToMap()', () => {
 		it( 'should find list that starts just after the given position', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 1 );
@@ -48,10 +50,11 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should find list that starts just before the given position', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 2 );
@@ -66,10 +69,11 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should find list that ends just before the given position', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
@@ -84,11 +88,12 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should reuse data from map if first item was previously mapped to head', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b',
+				'* c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
@@ -105,11 +110,12 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should reuse data from map if found some item that was previously mapped to head', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'* b',
+				'* c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
@@ -126,11 +132,12 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should not mix 2 lists separated by some non-list element', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'foo',
+				'* b',
+				'* c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 4 );
@@ -145,12 +152,13 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should find list head even for mixed indents, ids, and types', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="numbered" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>';
+			const input = modelList( [
+				'foo',
+				'* a',
+				'  a',
+				'  # b',
+				'* c'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 5 );
@@ -165,13 +173,14 @@ describe( 'DocumentList - utils - postfixers', () => {
 		} );
 
 		it( 'should not find a list if position is between plain paragraphs', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="0">b</paragraph>' +
-				'<paragraph>foo</paragraph>' +
-				'<paragraph>bar</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="c" listIndent="0">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="d" listIndent="0">d</paragraph>';
+			const input = modelList( [
+				'* a',
+				'* b',
+				'foo',
+				'bar',
+				'* c',
+				'* d'
+			] );
 
 			const fragment = parseModel( input, schema );
 			const position = model.createPositionAt( fragment, 3 );
@@ -187,9 +196,10 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 	describe( 'fixListIndents()', () => {
 		it( 'should fix indentation of first list item', () => {
-			const input =
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">a</paragraph>';
+			const input = modelList( [
+				'foo',
+				'  * a'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -197,17 +207,18 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 1 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph>foo</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'foo',
+				'* a'
+			] ) );
 		} );
 
 		it( 'should fix indentation of to deep nested items', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="4" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="4" listItemId="c" listType="bulleted">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'        * b',
+				'        * c'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -215,18 +226,19 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* a',
+				'  * b',
+				'  * c'
+			] ) );
 		} );
 
 		it( 'should not affect properly indented items after fixed item', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="4" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>';
+			const input = modelList( [
+				'* a',
+				'        * b',
+				'  * c'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -234,18 +246,19 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* a',
+				'  * b',
+				'  * c'
+			] ) );
 		} );
 
 		it( 'should fix rapid indent spikes', () => {
-			const input =
-				'<paragraph listIndent="10" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="3" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="10" listItemId="c" listType="bulleted">c</paragraph>';
+			const input = modelList( [
+				'                    * a',
+				'      * b',
+				'                    * c'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -253,19 +266,20 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* a',
+				'* b',
+				'  * c'
+			] ) );
 		} );
 
 		it( 'should fix rapid indent spikes after some item', () => {
-			const input =
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="10" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="15" listItemId="d" listType="bulleted">d</paragraph>';
+			const input = modelList( [
+				'  * a',
+				'                    * b',
+				'    * c',
+				'                              * d'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -273,23 +287,24 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* a',
+				'  * b',
+				'  * c',
+				'    * d'
+			] ) );
 		} );
 
 		it( 'should fix indentation keeping the relative indentations', () => {
-			const input =
-				'<paragraph listIndent="10" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="11" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="12" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="13" listItemId="d" listType="bulleted">d</paragraph>' +
-				'<paragraph listIndent="12" listItemId="e" listType="bulleted">e</paragraph>' +
-				'<paragraph listIndent="11" listItemId="f" listType="bulleted">f</paragraph>' +
-				'<paragraph listIndent="10" listItemId="g" listType="bulleted">g</paragraph>';
+			const input = modelList( [
+				'                    * a',
+				'                      * b',
+				'                        * c',
+				'                          * d',
+				'                        * e',
+				'                      * f',
+				'                    * g'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -297,25 +312,26 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="2" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="3" listItemId="d" listType="bulleted">d</paragraph>' +
-				'<paragraph listIndent="2" listItemId="e" listType="bulleted">e</paragraph>' +
-				'<paragraph listIndent="1" listItemId="f" listType="bulleted">f</paragraph>' +
-				'<paragraph listIndent="0" listItemId="g" listType="bulleted">g</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* a',
+				'  * b',
+				'    * c',
+				'      * d',
+				'    * e',
+				'  * f',
+				'* g'
+			] ) );
 		} );
 
 		it( 'should flatten the leading indentation spike', () => {
-			const input =
-				'<paragraph listIndent="3" listItemId="e" listType="numbered">e</paragraph>' +
-				'<paragraph listIndent="2" listItemId="f" listType="bulleted">f</paragraph>' +
-				'<paragraph listIndent="3" listItemId="g" listType="bulleted">g</paragraph>' +
-				'<paragraph listIndent="1" listItemId="h" listType="bulleted">h</paragraph>' +
-				'<paragraph listIndent="2" listItemId="i" listType="numbered">i</paragraph>' +
-				'<paragraph listIndent="0" listItemId="j" listType="numbered">j</paragraph>';
+			const input = modelList( [
+				'      # e',
+				'    * f',
+				'      * g',
+				'  * h',
+				'    # i',
+				'# j'
+			] );
 
 			const fragment = parseModel( input, schema );
 
@@ -323,22 +339,24 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListIndents( fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="e" listType="numbered">e</paragraph>' +
-				'<paragraph listIndent="0" listItemId="f" listType="bulleted">f</paragraph>' +
-				'<paragraph listIndent="1" listItemId="g" listType="bulleted">g</paragraph>' +
-				'<paragraph listIndent="0" listItemId="h" listType="bulleted">h</paragraph>' +
-				'<paragraph listIndent="1" listItemId="i" listType="numbered">i</paragraph>' +
-				'<paragraph listIndent="0" listItemId="j" listType="numbered">j</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'# e',
+				'* f',
+				'  * g',
+				'* h',
+				'  # i',
+				'# j'
+			] ) );
 		} );
 
 		it( 'list nested in blockquote', () => {
 			const input =
 				'<paragraph>foo</paragraph>' +
 				'<blockQuote listIndent="0" listItemId="a02" listType="bulleted">' +
-					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">foo</paragraph>' +
-					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">bar</paragraph>' +
+					modelList( [
+						'  * foo',
+						'  * bar'
+					] ) +
 				'</blockQuote>';
 
 			const fragment = parseModel( input, schema );
@@ -350,8 +368,10 @@ describe( 'DocumentList - utils - postfixers', () => {
 			expect( stringifyModel( fragment ) ).to.equal(
 				'<paragraph>foo</paragraph>' +
 				'<blockQuote listIndent="0" listItemId="a02" listType="bulleted">' +
-					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
-					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">bar</paragraph>' +
+					modelList( [
+						'* foo',
+						'* bar'
+					] ) +
 				'</blockQuote>'
 			);
 		} );
@@ -359,9 +379,10 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 	describe( 'fixListItemIds()', () => {
 		it( 'should update nested item ID', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">1</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -372,17 +393,18 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* 0',
+				'  * 1'
+			] ) );
 		} );
 
 		it( 'should update nested item ID (middle element of bigger list item)', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'  2'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -393,18 +415,19 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* 0',
+				'  * 1',
+				'  2'
+			] ) );
 		} );
 
 		it( 'should use same new ID if multiple items were indented', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">2</paragraph>';
+			const input = modelList( [
+				'* 0',
+				'  * 1',
+				'    2'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -415,18 +438,19 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">2</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* 0',
+				'  * 1',
+				'    2'
+			] ) );
 		} );
 
 		it( 'should update item ID if middle item of bigger block changed type', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>';
+			const input = modelList( [
+				'* 0{a}',
+				'# 1{a}',
+				'* 2{a}'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -437,18 +461,19 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">2</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0{a}',
+				'# 1{a00}',
+				'* 2{a01}'
+			] ) );
 		} );
 
 		it( 'should use same new ID if multiple items changed type', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">2</paragraph>';
+			const input = modelList( [
+				'* 0{a}',
+				'# 1{a}',
+				'# 2{a}'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -459,19 +484,20 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">2</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0{a}',
+				'# 1{a00}',
+				'  2'
+			] ) );
 		} );
 
 		it( 'should fix ids of list with nested lists', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">3</paragraph>';
+			const input = modelList( [
+				'* 0{a}',
+				'# 1{a}',
+				'  * 2{b}',
+				'# 3{a}'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -482,24 +508,25 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">1</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">3</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0{a}',
+				'# 1{a00}',
+				'  * 2{b}',
+				'  3'
+			] ) );
 		} );
 
 		it( 'should fix ids of list with altered types of multiple items of a single bigger list item', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">3</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">4</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">5</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">6</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="numbered">7</paragraph>';
+			const input = modelList( [
+				'* 0{a}',
+				'  1',
+				'# 2{a}',
+				'  3',
+				'* 4{a}',
+				'  5',
+				'# 6{a}',
+				'  7'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -510,23 +537,24 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">2</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="numbered">3</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">4</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">5</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a02" listType="numbered">6</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a02" listType="numbered">7</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0{a}',
+				'  1',
+				'# 2{a00}',
+				'  3',
+				'* 4{a01}',
+				'  5',
+				'# 6{a02}',
+				'  7'
+			] ) );
 		} );
 
 		it( 'should use new ID if some ID was spot before in the other list', () => {
-			const input =
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>';
+			const input = modelList( [
+				'* 0{a}',
+				'  * 1{b}',
+				'  2'
+			] );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -539,11 +567,11 @@ describe( 'DocumentList - utils - postfixers', () => {
 				fixListItemIds( fragment.getChild( 0 ), seenIds, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">2</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* 0{a}',
+				'  * 1{a00}',
+				'  2'
+			] ) );
 		} );
 	} );
 } );

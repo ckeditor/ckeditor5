@@ -876,7 +876,7 @@ describe( 'DocumentList - utils - model', () => {
 	describe( 'splitListItemBefore()', () => {
 		it( 'should replace all blocks ids for first block given', () => {
 			const input = modelList( [
-				'* a',
+				'* a{a}',
 				'  b',
 				'  c'
 			] );
@@ -886,16 +886,16 @@ describe( 'DocumentList - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 0 ), writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* a{a00}',
+				'  b',
+				'  c'
+			] ) );
 		} );
 
 		it( 'should replace blocks ids for second block given', () => {
 			const input = modelList( [
-				'* a',
+				'* a{a}',
 				'  b',
 				'  c'
 			] );
@@ -905,11 +905,11 @@ describe( 'DocumentList - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 1 ), writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* a{a}',
+				'* b{a00}',
+				'  c'
+			] ) );
 		} );
 
 		it( 'should not modify other items', () => {
@@ -926,13 +926,13 @@ describe( 'DocumentList - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 2 ), writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="x" listType="bulleted">x</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="0" listItemId="y" listType="bulleted">y</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* x',
+				'* a',
+				'* b{a00}',
+				'  c',
+				'* y'
+			] ) );
 		} );
 
 		it( 'should not modify nested items', () => {
@@ -948,34 +948,35 @@ describe( 'DocumentList - utils - model', () => {
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 1 ), writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">d</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* a',
+				'* b{a00}',
+				'  * c',
+				'  d'
+			] ) );
 		} );
 
 		it( 'should not modify parent items', () => {
-			const input =
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">a</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">b</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">c</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="b" listIndent="1">d</paragraph>' +
-				'<paragraph listType="bulleted" listItemId="a" listIndent="0">e</paragraph>';
+			const input = modelList( [
+				'* a',
+				'  * b',
+				'    c',
+				'    d',
+				'  e'
+			] );
 
 			const fragment = parseModel( input, schema );
 
 			stubUid();
 			model.change( writer => splitListItemBefore( fragment.getChild( 2 ), writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a00" listType="bulleted">d</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">e</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  * b',
+				'  * c{a00}',
+				'    d',
+				'  e'
+			] ) );
 		} );
 	} );
 
@@ -1035,7 +1036,7 @@ describe( 'DocumentList - utils - model', () => {
 
 		it( 'should not apply non-list attributes', () => {
 			const input = modelList( [
-				'* 0',
+				'* <paragraph alignment="right">0</paragraph>{a}',
 				'  * 1',
 				'* 2'
 			] );
@@ -1047,11 +1048,11 @@ describe( 'DocumentList - utils - model', () => {
 				changedBlocks = mergeListItemBefore( fragment.getChild( 1 ), fragment.getChild( 0 ), writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equalMarkup(
-				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
-				'<paragraph listIndent="0" listItemId="c" listType="bulleted">2</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* <paragraph alignment="right">0</paragraph>{a}',
+				'* 1{a}',
+				'* 2'
+			] ) );
 
 			expect( changedBlocks ).to.deep.equal( [
 				fragment.getChild( 1 )
@@ -1078,12 +1079,12 @@ describe( 'DocumentList - utils - model', () => {
 
 			model.change( writer => indentBlocks( blocks, writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="1" listItemId="a" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="1" listItemId="b" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="0" listItemId="b" listType="bulleted">d</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  * b{000}',
+				'  * c',
+				'* d{002}'
+			] ) );
 		} );
 
 		it( 'nested lists should keep structure', () => {
@@ -1106,13 +1107,13 @@ describe( 'DocumentList - utils - model', () => {
 
 			model.change( writer => indentBlocks( blocks, writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="2" listItemId="b" listType="bulleted">b</paragraph>' +
-				'<paragraph listIndent="3" listItemId="c" listType="bulleted">c</paragraph>' +
-				'<paragraph listIndent="2" listItemId="d" listType="bulleted">d</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e" listType="bulleted">e</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equal( modelList( [
+				'* a',
+				'    * b',
+				'      * c',
+				'    * d',
+				'* e'
+			] ) );
 		} );
 
 		it( 'should apply indentation on all blocks of given items (expand = true)', () => {
@@ -1213,11 +1214,11 @@ describe( 'DocumentList - utils - model', () => {
 
 		it( 'should not remove attributes other than lists if outdented below 0', () => {
 			const input = modelList( [
-				'* 0',
-				'* 1',
-				'  * 2',
-				'* 3',
-				'  * 4'
+				'* <paragraph alignment="right">0</paragraph>',
+				'* <paragraph alignment="right">1</paragraph>',
+				'  * <paragraph alignment="right">2</paragraph>',
+				'* <paragraph alignment="right">3</paragraph>',
+				'  * <paragraph alignment="right">4</paragraph>'
 			] );
 
 			const fragment = parseModel( input, schema );
@@ -1233,13 +1234,13 @@ describe( 'DocumentList - utils - model', () => {
 				changedBlocks = outdentBlocks( blocks, writer );
 			} );
 
-			expect( stringifyModel( fragment ) ).to.equalMarkup(
-				'<paragraph alignment="right" listIndent="0" listItemId="a" listType="bulleted">0</paragraph>' +
-				'<paragraph alignment="right" listIndent="0" listItemId="b" listType="bulleted">1</paragraph>' +
-				'<paragraph alignment="right" listIndent="0" listItemId="c" listType="bulleted">2</paragraph>' +
-				'<paragraph alignment="right">3</paragraph>' +
-				'<paragraph alignment="right" listIndent="0" listItemId="e" listType="bulleted">4</paragraph>'
-			);
+			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+				'* <paragraph alignment="right">0</paragraph>',
+				'* <paragraph alignment="right">1</paragraph>',
+				'* <paragraph alignment="right">2</paragraph>',
+				'<paragraph alignment="right">3</paragraph>',
+				'* <paragraph alignment="right">4</paragraph>'
+			] ) );
 
 			expect( changedBlocks ).to.deep.equal( blocks );
 		} );
