@@ -19,9 +19,11 @@ describe( 'ListView', () => {
 	beforeEach( () => {
 		view = new ListView();
 		view.render();
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
+		view.element.remove();
 		view.destroy();
 	} );
 

@@ -30,7 +30,7 @@ import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import LinkImageEditing from '@ckeditor/ckeditor5-link/src/linkimageediting';
 
 import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
-import ListStyleEditing from '@ckeditor/ckeditor5-list/src/liststyle/liststyleediting';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting';
 import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
 
 import MediaEmbedEditing from '@ckeditor/ckeditor5-media-embed/src/mediaembedediting';
@@ -611,7 +611,7 @@ describe( 'HtmlComment integration', () => {
 		function createEditor( initialData = '' ) {
 			return ClassicTestEditor
 				.create( initialData, {
-					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListStyleEditing, TodoListEditing ]
+					plugins: [ HtmlComment, Essentials, Paragraph, ListEditing, ListPropertiesEditing, TodoListEditing ]
 				} );
 		}
 

@@ -653,7 +653,7 @@ Plugins should follow the **feature** or the **feature + sub-feature** conventio
 	* `SpecialCharacters`
 * The **feature + sub-feature** convention:
 	* `ImageResize`
-	* `ListStyle`
+	* `ListProperties`
 	* `TableClipboard`
 
 Plugins must be named in [UpperCamelCase](http://en.wikipedia.org/wiki/CamelCase).

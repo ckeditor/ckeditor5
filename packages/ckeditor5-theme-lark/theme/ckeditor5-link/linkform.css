@@ -11,7 +11,7 @@
  */
 .ck.ck-link-form_layout-vertical {
 	padding: 0;
-	min-width: var(--ck-input-text-width);
+	min-width: var(--ck-input-width);
 
 	& .ck-labeled-field-view {
 		margin: var(--ck-spacing-large) var(--ck-spacing-large) var(--ck-spacing-small);

@@ -177,19 +177,6 @@ describe( 'DomConverter', () => {
 				expect( converter.isDocumentFragment( {} ) ).to.be.false;
 			} );
 		} );
-
-		describe( 'isComment()', () => {
-			it( 'should return true for HTML comments', () => {
-				expect( converter.isComment( comment ) ).to.be.true;
-			} );
-
-			it( 'should return false for other arguments', () => {
-				expect( converter.isComment( text ) ).to.be.false;
-				expect( converter.isComment( element ) ).to.be.false;
-				expect( converter.isComment( documentFragment ) ).to.be.false;
-				expect( converter.isComment( {} ) ).to.be.false;
-			} );
-		} );
 	} );
 
 	describe( 'isDomSelectionCorrect()', () => {

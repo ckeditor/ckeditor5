@@ -123,7 +123,7 @@ const imageConfiguration = {
 	toolbar: [
 		...,
 		'resizeImage:50',
-		'resizeImage:75'
+		'resizeImage:75',
 		'resizeImage:original',
 	]
 }

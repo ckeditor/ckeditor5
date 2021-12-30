@@ -9,7 +9,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import ListEditing from '../../src/list/listediting';
-import ListStyleEditing from '../../src/liststyle/liststyleediting';
+import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting';
 
 import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -271,7 +271,7 @@ describe( 'utils', () => {
 		let editor, model, document;
 
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, ListStyleEditing ] } )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, ListPropertiesEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;
