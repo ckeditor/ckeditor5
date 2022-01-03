@@ -68,6 +68,68 @@ describe( 'ListPropertiesUI', () => {
 	} );
 
 	describe( 'init()', () => {
+		describe( 'component registration', () => {
+			it( 'should register a dropdown as "bulletedList" in the component factory when `styles` property is enabled', () => {
+				return withEditor( { styles: true }, editor => {
+					const componentFactory = editor.ui.componentFactory;
+
+					expect( componentFactory.has( 'bulletedList' ) ).to.be.true;
+
+					const bulletedListDropdown = componentFactory.create( 'bulletedList' );
+
+					expect( bulletedListDropdown ).to.be.instanceOf( DropdownView );
+				} );
+			} );
+
+			it( 'should not register a dropdown as "bulletedList" in the component factory when `styles` property is not enabled', () => {
+				return withEditor( {
+					styles: false,
+					startIndex: true,
+					reversed: true
+				}, editor => {
+					const componentFactory = editor.ui.componentFactory;
+
+					expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+				} );
+			} );
+
+			for ( const property of [ 'styles', 'startIndex', 'reversed' ] ) {
+				const listPropertiesConfig = {
+					styles: false,
+					startIndex: false,
+					reversed: false
+				};
+				listPropertiesConfig[ property ] = true;
+
+				it(
+					`should register a dropdown as "numberedList" in the component factory when \`${ property }\` property is enabled`,
+					() => {
+						return withEditor( listPropertiesConfig, editor => {
+							const componentFactory = editor.ui.componentFactory;
+
+							expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+
+							const numberedListDropdown = componentFactory.create( 'numberedList' );
+
+							expect( numberedListDropdown ).to.be.instanceOf( DropdownView );
+						} );
+					}
+				);
+			}
+
+			it( 'should not register a dropdown as "numberedList" in the component factory when no property is enabled', () => {
+				return withEditor( {
+					styles: false,
+					startIndex: false,
+					reversed: false
+				}, editor => {
+					const componentFactory = editor.ui.componentFactory;
+
+					expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+				} );
+			} );
+		} );
+
 		describe( 'bulleted list dropdown', () => {
 			let bulletedListCommand, bulletedListDropdown;
 
@@ -286,10 +348,6 @@ describe( 'ListPropertiesUI', () => {
 				listPropertiesView = numberedListDropdown.panelView.children.first;
 			} );
 
-			it( 'should registered as "numberedList" in the component factory', () => {
-				expect( numberedListDropdown ).to.be.instanceOf( DropdownView );
-			} );
-
 			it( 'should have #isEnabled bound to the "numberedList" command state', () => {
 				expect( numberedListDropdown.isEnabled ).to.be.true;
 
@@ -305,82 +363,49 @@ describe( 'ListPropertiesUI', () => {
 			} );
 
 			describe( 'support of config.list.properties', () => {
-				it( 'should have styles grid, start index, and reversed fields when all properties are enabled in the config', async () => {
-					const editorElement = document.createElement( 'div' );
-					document.body.appendChild( editorElement );
+				it( 'should have styles grid, start index, and reversed fields when all properties are enabled in the config', () => {
+					return withEditor( {
+						styles: true,
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
-						list: {
-							properties: {
-								styles: true,
-								startIndex: true,
-								reversed: true
-							}
-						}
+						expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+						expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+						expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
 					} );
-
-					const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
-					const listPropertiesView = numberedListDropdown.panelView.children.first;
-
-					expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-					expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-					expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
-
-					editorElement.remove();
-					await editor.destroy();
 				} );
 
-				it( 'should have only the styles grid when start index and reversed properties are disabled', async () => {
-					const editorElement = document.createElement( 'div' );
-					document.body.appendChild( editorElement );
+				it( 'should have only the styles grid when start index and reversed properties are disabled', () => {
+					return withEditor( {
+						styles: true,
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
-						list: {
-							properties: {
-								styles: true,
-								startIndex: false,
-								reversed: false
-							}
-						}
+						expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+						expect( listPropertiesView.startIndexFieldView ).to.be.null;
+						expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
 					} );
-
-					const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
-					const listPropertiesView = numberedListDropdown.panelView.children.first;
-
-					expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
-					expect( listPropertiesView.startIndexFieldView ).to.be.null;
-					expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
-
-					editorElement.remove();
-					await editor.destroy();
 				} );
 
 				it( 'should have only the numbered list property UI when styles are disabled', async () => {
-					const editorElement = document.createElement( 'div' );
-					document.body.appendChild( editorElement );
+					return withEditor( {
+						styles: false,
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
 
-					const editor = await ClassicTestEditor.create( editorElement, {
-						plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
-						list: {
-							properties: {
-								styles: false,
-								startIndex: true,
-								reversed: true
-							}
-						}
+						expect( listPropertiesView.stylesView ).to.be.null;
+						expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+						expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
 					} );
-
-					const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
-					const listPropertiesView = numberedListDropdown.panelView.children.first;
-
-					expect( listPropertiesView.stylesView ).to.be.null;
-					expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
-					expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
-
-					editorElement.remove();
-					await editor.destroy();
 				} );
 			} );
 
@@ -659,4 +684,21 @@ describe( 'ListPropertiesUI', () => {
 			} );
 		} );
 	} );
+
+	async function withEditor( listPropertiesConfig, callback ) {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ ListProperties ],
+			list: {
+				properties: listPropertiesConfig
+			}
+		} );
+
+		callback( editor );
+
+		editorElement.remove();
+		await editor.destroy();
+	}
 } );

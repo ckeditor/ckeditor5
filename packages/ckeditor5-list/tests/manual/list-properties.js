@@ -181,3 +181,20 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+// ------------------------------------------------------------------
+
+ClassicEditor
+	.create( document.querySelector( '#editor-h' ), {
+		...config,
+		list: {
+			properties: {
+				styles: false,
+				startIndex: false,
+				reversed: false
+			}
+		}
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
