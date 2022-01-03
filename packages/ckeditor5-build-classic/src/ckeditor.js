@@ -34,6 +34,9 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Font from "@ckeditor/ckeditor5-font/src/font";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import PastePlainText from '@ckeditor/ckeditor5-clipboard/src/pasteplaintext';
+
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
@@ -64,6 +67,7 @@ ClassicEditor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
+	PastePlainText,
 	Table,
 	TableToolbar,
 	Clipboard,
