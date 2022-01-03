@@ -250,12 +250,12 @@ msgstr "Seletor de cor"
 
 msgctxt "The button label for the table toolbar hiding caption attached to the table."
 msgid "Toggle caption off"
-msgstr ""
+msgstr "Desabilitar legenda"
 
 msgctxt "The button label for the table toolbar showing caption attached to the table."
 msgid "Toggle caption on"
-msgstr ""
+msgstr "Habilitar legenda"
 
 msgctxt "The placeholder text for the table caption displayed when the caption is empty."
 msgid "Enter table caption"
-msgstr ""
+msgstr "Inserir legenda da tabela"

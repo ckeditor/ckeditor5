@@ -11,7 +11,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import HtmlEmbedUI from '../src/htmlembedui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-describe( 'HtmlEmbedEditing', () => {
+describe( 'HtmlEmbedUI', () => {
 	let element, editor, htmlEmbedView;
 
 	testUtils.createSinonSandbox();
@@ -43,17 +43,17 @@ describe( 'HtmlEmbedEditing', () => {
 		expect( htmlEmbedView.isToggleable ).to.be.false;
 	} );
 
-	it( 'should execute insertHtmlEmbed command on model execute event', () => {
+	it( 'should execute htmlEmbed command on model execute event', () => {
 		const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
 		htmlEmbedView.fire( 'execute' );
 
 		sinon.assert.calledOnce( executeSpy );
-		sinon.assert.calledWithExactly( executeSpy, 'insertHtmlEmbed' );
+		sinon.assert.calledWithExactly( executeSpy, 'htmlEmbed' );
 	} );
 
-	it( 'should bind model to insertHtmlEmbed command', () => {
-		const command = editor.commands.get( 'insertHtmlEmbed' );
+	it( 'should bind model to htmlEmbed command', () => {
+		const command = editor.commands.get( 'htmlEmbed' );
 
 		expect( htmlEmbedView.isEnabled ).to.be.true;
 

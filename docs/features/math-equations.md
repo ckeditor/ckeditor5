@@ -1,6 +1,7 @@
 ---
 category: features
 menu-title: Math and chemical formulas
+badges: [ premium ]
 ---
 
 # Math equations and chemical formulas
@@ -67,7 +68,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 ## Customizing MathType service
@@ -206,3 +207,10 @@ To install the Ruby on Rails service, follow the steps below:
             }
     }
     ```
+
+## Displaying equations on your website
+
+By default, MathType returns equations in MathML which is [not supported by all browsers](https://developer.mozilla.org/en-US/docs/Web/MathML#browser_compatibility). In order to display equations on a page, you will need to use some engine that will handle the rendering process.
+
+Fortunately, MathType introduces the full MathML mode that handles the unsupported markup and converts it into a form that could be properly recognized by browsers. You can read more about the full MathML mode [in the documentation](https://docs.wiris.com/en/mathtype/mathtype_web/integrations/mathml-mode).
+

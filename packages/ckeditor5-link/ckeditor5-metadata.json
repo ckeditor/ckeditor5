@@ -34,6 +34,7 @@
 						"rel",
 						"target"
 					],
+					"isAlternative": true,
 					"_comment": "If `config.link.addTargetToExternalLinks` is enabled, then the external links are decorated with `rel` and `target` attributes."
 				},
 				{
@@ -41,6 +42,7 @@
 					"classes": "*",
 					"styles": "*",
 					"attributes": "*",
+					"isAlternative": true,
 					"_comment": "The plugin can be configured to set any classes, styles or attributes on the `<a>` tag via custom `config.link.decorators` configuration."
 				}
 			]

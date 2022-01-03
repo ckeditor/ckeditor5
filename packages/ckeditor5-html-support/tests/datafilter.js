@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document, console */
+
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -12,12 +14,11 @@ import DataFilter from '../src/datafilter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getModelDataWithAttributes } from './_utils/utils';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
-
-/* global document */
 
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
@@ -168,6 +169,41 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p><video>' +
 				'<source src="https://example.com/video.mp4" type="video/mp4">' +
 				' Your browser does not support the video tag.</video>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should filter the editing view', () => {
+			testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
+
+			dataFilter.allowElement( 'video' );
+
+			editor.setData( '<p><video>' +
+				'<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
+					'Your browser does not support the video tag.</video>' +
+				'</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+					'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
+					'Your browser does not support the video tag."></htmlVideo>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( editor.editing.view, {
+				withoutSelection: true,
+				renderRawElements: true,
+				domConverter: editor.editing.view.domConverter
+			} ) ).to.equal(
+				'<p>' +
+					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
+						'<video class="html-object-embed__content">' +
+							'<source src="https://example.com/video.mp4" type="video/mp4" data-ck-unsafe-attribute-onclick="action()">' +
+							'Your browser does not support the video tag.' +
+						'</video>' +
+					'</span>' +
 				'</p>'
 			);
 		} );

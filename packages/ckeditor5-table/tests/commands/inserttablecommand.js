@@ -6,7 +6,6 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 import { modelTable } from '../_utils/utils';
@@ -91,7 +90,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ), modelTable( [
+				expect( getData( model ) ).to.equalMarkup( modelTable( [
 					[ '[]', '' ],
 					[ '', '' ]
 				] ) );
@@ -102,7 +101,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '' ],
@@ -116,7 +115,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -131,7 +130,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4, headingRows: 1, headingColumns: 2 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>' +
 					modelTable( [
 						[ '[]', '', '', '' ],
@@ -146,7 +145,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					modelTable( [
 						[ '[]', '' ],
 						[ '', '' ]
@@ -160,7 +159,7 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				assertEqualMarkup( getData( model ),
+				expect( getData( model ) ).to.equalMarkup(
 					modelTable( [
 						[ '[]', '', '', '' ],
 						[ '', '', '', '' ],

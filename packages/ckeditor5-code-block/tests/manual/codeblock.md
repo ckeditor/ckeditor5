@@ -14,9 +14,9 @@
 
 ### Block end
 
-- Create an empty line at the end of the block and put the selection there.
+- Create two empty lines at the end of the block and put the selection there.
 - Press <kbd>Enter</kbd> again.
-- The new line created in the code block should no longer be there.
+- The new lines created in the code block should no longer be there.
 - A new empty paragraph should be created after the code block.
 - The selection should be in that paragraph.
 

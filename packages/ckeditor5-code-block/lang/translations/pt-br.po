@@ -22,4 +22,4 @@ msgstr "Inserir bloco de código"
 
 msgctxt "A language of the code block in the editor content when no specific programming language is associated with it."
 msgid "Plain text"
-msgstr "Texto plano"
+msgstr "Texto sem formatação"

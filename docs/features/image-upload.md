@@ -15,8 +15,8 @@ Inserting {@link features/images-overview images} into content created with CKEd
 * **Pasting** and URL to an image, either into the editor dialog or directly into the content.
 
 With the exception of pasting URLs, all other solutions require the image to be uploaded to a server. The server will then be responsible for providing the image URL used by CKEditor 5 to display the image in the document.
-<!-- This image basically does nothing for the user except some distraction and we could drop it. -->
-{@img assets/img/image-upload-animation.svg 650 The visualization of the image upload process in a WYSIWYG editor.}
+<!-- This image basically does nothing for the user except some distraction and we could drop it.
+{@img assets/img/image-upload-animation.svg 650 The visualization of the image upload process in a WYSIWYG editor.}-->
 
 The software that makes the image upload possible is called an **upload adapter**. It is a callback that tells the WYSIWYG editor how to send the file to the server. There are two main strategies of getting the image upload to work that you can adopt in your project:
 
@@ -31,7 +31,7 @@ Read our comprehensive blog post about [Managing images with CKEditor 5](https:/
 
 ## Demo
 
-The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
+The demo below uses the {@link installation/advanced/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
 
 {@snippet build-classic-source}
 
@@ -79,7 +79,7 @@ The {@link features/simple-upload-adapter Simple upload adapter} allows uploadin
 
 ### Base64 adapter
 
-The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
+The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/advanced/saving-data editor output}.
 
 <info-box warning>
 	Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. We recommend using alternative ways to upload images into CKEditor 5.

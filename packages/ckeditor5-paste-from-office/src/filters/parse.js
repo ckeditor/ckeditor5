@@ -63,7 +63,7 @@ export function parseHtml( htmlString, stylesProcessor ) {
 // @returns {module:engine/view/documentfragment~DocumentFragment}
 function documentToView( htmlDocument, stylesProcessor ) {
 	const viewDocument = new ViewDocument( stylesProcessor );
-	const domConverter = new DomConverter( viewDocument, { blockFillerMode: 'nbsp' } );
+	const domConverter = new DomConverter( viewDocument, { renderingMode: 'data' } );
 	const fragment = htmlDocument.createDocumentFragment();
 	const nodes = htmlDocument.body.childNodes;
 

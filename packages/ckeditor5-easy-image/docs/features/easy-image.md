@@ -9,7 +9,7 @@ order: 20
 CKEditor 5 introduces a new way of handling images, with a strong focus on the end–user experience. This feature is called [Easy Image](https://ckeditor.com/ckeditor-cloud-services/easy-image/) and its goal is to make the image upload as effortless and intuitive as possible.
 
 <info-box info>
-	This feature is enabled by default in all builds.
+	Easy Image is part of the commercial [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. This feature is enabled by default in all builds for convenience, but the editor will still work properly without activating it.
 </info-box>
 
 Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) offer. It is a <abbr title="Software as a service">SaaS</abbr> product which:
@@ -20,13 +20,9 @@ Easy Image is part of the [CKEditor Cloud Services](https://ckeditor.com/ckedito
 
 All that with virtually zero server setup.
 
-<info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images in CKEditor 5.
-</info-box>
-
 ## Demo
 
-The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
+The demo below uses the {@link installation/advanced/predefined-builds#classic-editor Classic editor} configured to use the Easy Image service provided by CKEditor Cloud Services:
 
 {@snippet build-classic-source}
 

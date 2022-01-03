@@ -17,7 +17,7 @@ const ROOT_DIRECTORY = path.join( __dirname, '..', '..' );
 const DESTINATION_DIRECTORY = path.join( __dirname, '..', '..', 'build', 'content-styles' );
 const OUTPUT_FILE_PATH = path.join( DESTINATION_DIRECTORY, 'content-styles.css' );
 
-const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/content-styles.html';
+const DOCUMENTATION_URL = 'https://ckeditor.com/docs/ckeditor5/latest/installation/advanced/content-styles.html';
 
 const VARIABLE_DEFINITION_REGEXP = /(--[\w-]+):\s+(.*);/g;
 const VARIABLE_USAGE_REGEXP = /var\((--[\w-]+)\)/g;
@@ -187,9 +187,12 @@ function getWebpackConfig() {
 					test: /\.css$/,
 					use: [
 						'style-loader',
+						'css-loader',
 						{
 							loader: 'postcss-loader',
-							options: postCssConfig
+							options: {
+								postcssOptions: postCssConfig
+							}
 						}
 					]
 				}

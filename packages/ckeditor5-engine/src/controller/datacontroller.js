@@ -145,6 +145,7 @@ export default class DataController {
 
 		this.decorate( 'init' );
 		this.decorate( 'set' );
+		this.decorate( 'get' );
 
 		// Fire the `ready` event when the initialization has completed. Such low-level listener gives possibility
 		// to plug into the initialization pipeline without interrupting the initialization flow.
@@ -163,6 +164,7 @@ export default class DataController {
 	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
+	 * @fires get
 	 * @param {Object} [options] Additional configuration for the retrieved data. `DataController` provides two optional
 	 * properties: `rootName` and `trim`. Other properties of this object are specified by various editor features.
 	 * @param {String} [options.rootName='main'] Root name.
@@ -523,6 +525,15 @@ export default class DataController {
 	 *
 	 * @event set
 	 */
+
+	/**
+	 * Event fired after the {@link #get get() method} has been run.
+	 *
+	 * The `get` event is fired by decorated {@link #get} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin#decorate} for more information and samples.
+	 *
+	 * @event get
+	 */
 }
 
 mix( DataController, ObservableMixin );
@@ -559,5 +570,43 @@ function _getMarkersRelativeToElement( element ) {
 		}
 	}
 
-	return result;
+	// Sort the markers in a stable fashion to ensure that the order in which they are
+	// added to the model's marker collection does not affect how they are
+	// downcast. One particular use case that we are targeting here, is one where
+	// two markers are adjacent but not overlapping, such as an insertion/deletion
+	// suggestion pair representing the replacement of a range of text. In this
+	// case, putting the markers in DOM order causes the first marker's end to be
+	// serialized right after the second marker's start, while putting the markers
+	// in reverse DOM order causes it to be right before the second marker's
+	// start. So, we sort these in a way that ensures non-intersecting ranges are in
+	// reverse DOM order, and intersecting ranges are in something approximating
+	// reverse DOM order (since reverse DOM order doesn't have a precise meaning
+	// when working with intersecting ranges).
+	return result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
+		if ( r1.end.compareWith( r2.start ) !== 'after' ) {
+			// m1.end <= m2.start -- m1 is entirely <= m2
+			return 1;
+		} else if ( r1.start.compareWith( r2.end ) !== 'before' ) {
+			// m1.start >= m2.end -- m1 is entirely >= m2
+			return -1;
+		} else {
+			// they overlap, so use their start positions as the primary sort key and
+			// end positions as the secondary sort key
+			switch ( r1.start.compareWith( r2.start ) ) {
+				case 'before':
+					return 1;
+				case 'after':
+					return -1;
+				default:
+					switch ( r1.end.compareWith( r2.end ) ) {
+						case 'before':
+							return 1;
+						case 'after':
+							return -1;
+						default:
+							return n2.localeCompare( n1 );
+					}
+			}
+		}
+	} );
 }

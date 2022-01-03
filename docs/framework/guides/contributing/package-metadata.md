@@ -8,7 +8,7 @@ modified_at: 2021-06-07
 
 The package metadata is a set of CKEditor 5-related data describing plugins that the package delivers. It allows for an automated detection of plugins and building them by an external builder.
 
-In case of official CKEditor 5 packages (as well as some partner ones), this data is used by the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/) and allows for building the {@link builds/guides/integration/features-html-output-overview Features' HTML output} page presenting all official CKEditor 5 plugins.
+In case of official CKEditor 5 packages (as well as some partner ones), this data is used by the [CKEditor 5 Online Builder](https://ckeditor.com/ckeditor-5/online-builder/) and allows for building the {@link installation/advanced/features-html-output-overview Features' HTML output} page presenting all official CKEditor 5 plugins.
 
 The package metadata should be saved in the special `ckeditor5-metadata.json` file in the root of the package published on npm.
 
@@ -39,6 +39,7 @@ The `ckeditor5-metadata.json` file is a JSON object that holds the `plugins` arr
 	* `styles` &ndash; Inline CSS styles (a single one or an array of these) that may be applied to the HTML elements defined in the `elements` property.
 	* `attributes` &ndash; HTML attributes (a single one or an array of these) other than `class` and `styles` (covered separately) that might be applied to the HTML elements defined in the `elements` property.
 	* `implements` &ndash; The name of an element or a pseudo-element which indicates that HTML elements defined in the `elements` property may contain classes, styles or attributes that are created by other plugins. For example, `implements` equal to `$block` means that HTML elements may contain classes, styles or attributes that are defined by another plugin, which has `elements` equal to `$block`.
+	* `isAlternative` &ndash; If the plugin output depends on its configuration, this value should be set to `true` to mark outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be considered as default output.
 	* `_comment` &ndash; A human-readable description to explain more complicated cases, for example: the conditions when a given element, class or style can be created.
 
 Below is an example showing how the `Bold` plugin can be documented using this format:

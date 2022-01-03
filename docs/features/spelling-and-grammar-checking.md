@@ -2,6 +2,7 @@
 category: features
 menu-title: Spelling and grammar checking
 modified_at: 2021-05-07
+badges: [ premium ]
 ---
 
 # Proofreading, spelling and grammar checking
@@ -85,7 +86,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 At this step, it is required to provide a proper configuration. The proofreader can be used either as a [cloud solution](#wproofreader-cloud) or [hosted on your own server](#wproofreader-server).

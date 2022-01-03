@@ -34,7 +34,7 @@ const initialData =
 <ul>
 	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html">Installation</a> for how to install this package and what it contains.</li>
 	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/basic-api.html">Basic API</a> for how to create an editor and interact with it.</li>
-	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/configuration.html">Configuration</a> for how to configure the editor.</li>
+	<li><a href="https://ckeditor.com/docs/ckeditor5/latest/installation/getting-started/configuration.html">Configuration</a> for how to configure the editor.</li>
 </ul>
 
 <h2>Quick start</h2>

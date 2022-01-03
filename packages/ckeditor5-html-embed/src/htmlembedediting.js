@@ -12,8 +12,7 @@ import { ButtonView } from 'ckeditor5/src/ui';
 import { toWidget } from 'ckeditor5/src/widget';
 import { logWarning, createElement } from 'ckeditor5/src/utils';
 
-import InsertHtmlEmbedCommand from './inserthtmlembedcommand';
-import UpdateHtmlEmbedCommand from './updatehtmlembedcommand';
+import HtmlEmbedCommand from './htmlembedcommand';
 
 import '../theme/htmlembed.css';
 
@@ -55,6 +54,15 @@ export default class HtmlEmbedEditing extends Plugin {
 				};
 			}
 		} );
+
+		/**
+		 * Keeps references to {@link module:ui/button/buttonview~ButtonView edit, save, and cancel} button instances created for
+		 * each widget so they can be destroyed if they are no longer in DOM after the editing view was re-rendered.
+		 *
+		 * @private
+		 * @member {Set.<module:ui/button/buttonview~ButtonView>} #_widgetButtonViewReferences
+		 */
+		this._widgetButtonViewReferences = new Set();
 	}
 
 	/**
@@ -70,8 +78,7 @@ export default class HtmlEmbedEditing extends Plugin {
 			allowAttributes: [ 'value' ]
 		} );
 
-		editor.commands.add( 'updateHtmlEmbed', new UpdateHtmlEmbedCommand( editor ) );
-		editor.commands.add( 'insertHtmlEmbed', new InsertHtmlEmbedCommand( editor ) );
+		editor.commands.add( 'htmlEmbed', new HtmlEmbedCommand( editor ) );
 
 		this._setupConversion();
 	}
@@ -85,8 +92,22 @@ export default class HtmlEmbedEditing extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 		const view = editor.editing.view;
+		const widgetButtonViewReferences = this._widgetButtonViewReferences;
 
 		const htmlEmbedConfig = editor.config.get( 'htmlEmbed' );
+
+		// Destroy UI buttons created for widgets that have been removed from the view document (e.g. in the previous conversion).
+		// This prevents unexpected memory leaks from UI views.
+		this.editor.editing.view.on( 'render', () => {
+			for ( const buttonView of widgetButtonViewReferences ) {
+				if ( buttonView.element.isConnected ) {
+					return;
+				}
+
+				buttonView.destroy();
+				widgetButtonViewReferences.delete( buttonView );
+			}
+		}, { priority: 'lowest' } );
 
 		// Register div.raw-html-embed as a raw content element so all of it's content will be provided
 		// as a view element's custom property while data upcasting.
@@ -176,7 +197,7 @@ export default class HtmlEmbedEditing extends Plugin {
 						// If the value didn't change, we just cancel. If it changed,
 						// it's enough to update the model – the entire widget will be reconverted.
 						if ( newValue !== state.getRawHtmlValue() ) {
-							editor.execute( 'updateHtmlEmbed', newValue );
+							editor.execute( 'htmlEmbed', newValue );
 							editor.editing.view.focus();
 						} else {
 							this.cancel();
@@ -275,36 +296,18 @@ export default class HtmlEmbedEditing extends Plugin {
 			const domButtonsWrapper = createElement( domDocument, 'div', {
 				class: 'raw-html-embed__buttons-wrapper'
 			} );
-			// TODO these should be cached and we should only clone here these cached nodes!
-			const domEditButton = createDomButton( editor, 'edit' );
-			const domSaveButton = createDomButton( editor, 'save' );
-			const domCancelButton = createDomButton( editor, 'cancel' );
 
 			if ( state.isEditable ) {
-				const clonedDomSaveButton = domSaveButton.cloneNode( true );
-				const clonedDomCancelButton = domCancelButton.cloneNode( true );
+				const saveButtonView = createUIButton( editor, 'save', props.onSaveClick );
+				const cancelButtonView = createUIButton( editor, 'cancel', props.onCancelClick );
 
-				clonedDomSaveButton.addEventListener( 'click', evt => {
-					evt.preventDefault();
-					props.onSaveClick( );
-				} );
-
-				clonedDomCancelButton.addEventListener( 'click', evt => {
-					evt.preventDefault();
-					props.onCancelClick( );
-				} );
-
-				domButtonsWrapper.appendChild( clonedDomSaveButton );
-				domButtonsWrapper.appendChild( clonedDomCancelButton );
+				domButtonsWrapper.append( saveButtonView.element, cancelButtonView.element );
+				widgetButtonViewReferences.add( saveButtonView ).add( cancelButtonView );
 			} else {
-				const clonedDomEditButton = domEditButton.cloneNode( true );
+				const editButtonView = createUIButton( editor, 'edit', props.onEditClick );
 
-				clonedDomEditButton.addEventListener( 'click', evt => {
-					evt.preventDefault();
-					props.onEditClick();
-				} );
-
-				domButtonsWrapper.appendChild( clonedDomEditButton );
+				domButtonsWrapper.append( editButtonView.element );
+				widgetButtonViewReferences.add( editButtonView );
 			}
 
 			return domButtonsWrapper;
@@ -355,20 +358,22 @@ export default class HtmlEmbedEditing extends Plugin {
 	}
 }
 
-// Returns a toggle mode button DOM element that can be cloned and used in conversion.
+// Returns a UI button view that can be used in conversion.
 //
 //  @param {module:utils/locale~Locale} locale Editor locale.
 //  @param {'edit'|'save'|'cancel'} type Type of button to create.
-//  @returns {HTMLElement}
-function createDomButton( editor, type ) {
+//  @param {Function} onClick The callback executed on button click.
+//  @returns {module:ui/button/buttonview~ButtonView}
+function createUIButton( editor, type, onClick ) {
 	const t = editor.locale.t;
 	const buttonView = new ButtonView( editor.locale );
-	const command = editor.commands.get( 'updateHtmlEmbed' );
+	const command = editor.commands.get( 'htmlEmbed' );
 
 	buttonView.set( {
-		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w',
+		class: `raw-html-embed__${ type }-button`,
 		icon: icons.pencil,
-		tooltip: true
+		tooltip: true,
+		tooltipPosition: editor.locale.uiLanguageDirection === 'rtl' ? 'e' : 'w'
 	} );
 
 	buttonView.render();
@@ -376,25 +381,25 @@ function createDomButton( editor, type ) {
 	if ( type === 'edit' ) {
 		buttonView.set( {
 			icon: icons.pencil,
-			label: t( 'Edit source' ),
-			class: 'raw-html-embed__edit-button'
+			label: t( 'Edit source' )
 		} );
+
+		buttonView.bind( 'isEnabled' ).to( command );
 	} else if ( type === 'save' ) {
 		buttonView.set( {
 			icon: icons.check,
-			label: t( 'Save changes' ),
-			class: 'raw-html-embed__save-button'
+			label: t( 'Save changes' )
 		} );
-		buttonView.bind( 'isEnabled' ).to( command, 'isEnabled' );
+
+		buttonView.bind( 'isEnabled' ).to( command );
 	} else {
 		buttonView.set( {
 			icon: icons.cancel,
-			label: t( 'Cancel' ),
-			class: 'raw-html-embed__cancel-button'
+			label: t( 'Cancel' )
 		} );
 	}
 
-	buttonView.destroy();
+	buttonView.on( 'execute', onClick );
 
-	return buttonView.element.cloneNode( true );
+	return buttonView;
 }

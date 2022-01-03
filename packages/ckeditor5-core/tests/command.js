@@ -34,6 +34,10 @@ describe( 'Command', () => {
 			expect( command.isEnabled ).to.be.false;
 		} );
 
+		it( 'sets the affectsData property', () => {
+			expect( command ).to.have.property( 'affectsData', true );
+		} );
+
 		it( 'adds a listener which refreshes the command on editor.model.Document#event:change', () => {
 			sinon.spy( command, 'refresh' );
 
@@ -66,7 +70,8 @@ describe( 'Command', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'is always falsy when the editor is in read-only mode', () => {
+		it( 'is falsy when the editor is in read-only mode and command affects data', () => {
+			command.affectsData = true;
 			editor.isReadOnly = false;
 			command.isEnabled = true;
 
@@ -79,6 +84,27 @@ describe( 'Command', () => {
 
 			// Still false.
 			expect( command.isEnabled ).to.false;
+
+			editor.isReadOnly = false;
+
+			// And is back to true.
+			expect( command.isEnabled ).to.true;
+		} );
+
+		it( 'doesn\'t depend on the editor read-only mode when command doesn\'t affect data', () => {
+			command.affectsData = false;
+			editor.isReadOnly = false;
+			command.isEnabled = true;
+
+			editor.isReadOnly = true;
+
+			// Is true.
+			expect( command.isEnabled ).to.true;
+
+			command.refresh();
+
+			// Still true.
+			expect( command.isEnabled ).to.true;
 
 			editor.isReadOnly = false;
 

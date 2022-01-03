@@ -65,14 +65,14 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be set if selected table has borderColor property (single string)', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
 
 					it( 'should be set if selected table has borderColor property object with same values', () => {
 						setTableWithObjectAttributes( model, {
-							borderColor: {
+							tableBorderColor: {
 								top: 'blue',
 								right: 'blue',
 								bottom: 'blue',
@@ -84,7 +84,7 @@ describe( 'table properties', () => {
 
 					it( 'should be undefined if selected table has borderColor property object with different values', () => {
 						setTableWithObjectAttributes( model, {
-							borderColor: {
+							tableBorderColor: {
 								top: 'blue',
 								right: 'red',
 								bottom: 'blue',
@@ -104,7 +104,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should be true is selection has table', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -131,7 +131,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should change selected table borderColor to a passed value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						command.execute( { value: '#f00' } );
 
@@ -139,7 +139,7 @@ describe( 'table properties', () => {
 					} );
 
 					it( 'should remove borderColor from a selected table if no value is passed', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						command.execute();
 
@@ -194,13 +194,13 @@ describe( 'table properties', () => {
 			describe( 'value', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'red' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'red' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has borderColor property other than the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -208,13 +208,13 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should be undefined if selected table has set the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderColor: 'red' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderColor: 'red' } ) );
 
 						expect( command.value ).to.be.undefined;
 					} );
 
 					it( 'should be set if selected table has borderColor property other than the default value', () => {
-						setData( model, modelTable( [ [ 'f[o]o' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ 'f[o]o' ] ], { tableBorderColor: 'blue' } ) );
 
 						expect( command.value ).to.equal( 'blue' );
 					} );
@@ -224,7 +224,7 @@ describe( 'table properties', () => {
 			describe( 'execute()', () => {
 				describe( 'collapsed selection', () => {
 					it( 'should remove borderColor from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[]foo' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[]foo' ] ], { tableBorderColor: 'blue' } ) );
 
 						command.execute( { value: 'red' } );
 
@@ -234,7 +234,7 @@ describe( 'table properties', () => {
 
 				describe( 'non-collapsed selection', () => {
 					it( 'should remove borderColor from a selected table if passed the default value', () => {
-						setData( model, modelTable( [ [ '[foo]' ] ], { borderColor: 'blue' } ) );
+						setData( model, modelTable( [ [ '[foo]' ] ], { tableBorderColor: 'blue' } ) );
 
 						command.execute( { value: 'red' } );
 

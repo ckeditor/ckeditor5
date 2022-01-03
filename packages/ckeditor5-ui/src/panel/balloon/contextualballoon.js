@@ -171,6 +171,17 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.view.destroy();
+		this._rotatorView.destroy();
+		this._fakePanelsView.destroy();
+	}
+
+	/**
 	 * Returns `true` when the given view is in one of the stacks. Otherwise returns `false`.
 	 *
 	 * @param {module:ui/view~View} view
@@ -509,7 +520,7 @@ export default class ContextualBalloon extends Plugin {
 
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				viewportOffsetConfig: this.editor.config.get( 'ui.viewportOffset' )
+				viewportOffsetConfig: this.editor.ui.viewportOffset
 			} );
 		}
 
@@ -626,6 +637,15 @@ class RotatorView extends View {
 		super.render();
 
 		this.focusTracker.add( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
 	}
 
 	/**
