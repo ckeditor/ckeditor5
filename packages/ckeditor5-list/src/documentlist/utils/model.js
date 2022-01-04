@@ -309,7 +309,7 @@ export function outdentBlocks( blocks, writer, { expand } = {} ) {
 }
 
 /**
- * Removes list attributes from the fiven blocks.
+ * Removes all list attributes from the given blocks.
  *
  * @protected
  * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
