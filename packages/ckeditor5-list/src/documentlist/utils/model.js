@@ -33,7 +33,9 @@ export class ListItemUid {
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {Object} options TODO
+ * @param {Object} [options]
+ * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
+ * in the result.
  * @return {Array.<module:engine/model/element~Element>}
  */
 export function getAllListItemBlocks( listItem, options = {} ) {
@@ -54,7 +56,8 @@ export function getAllListItemBlocks( listItem, options = {} ) {
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
- * TODO all options
+ * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
+ * in the result.
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItemBlocks( listItem, options = {} ) {
@@ -183,7 +186,6 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @returns {Array.<module:engine/model/element~Element>} The array of updated blocks.
  */
-// TODO add test for return value.
 export function splitListItemBefore( listBlock, writer ) {
 	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
 	const id = ListItemUid.next();
@@ -330,8 +332,10 @@ export function removeListAttributes( blocks, writer ) {
 
 /**
  * Checks whether the given blocks are related to a single list item.
- * TODO
+ *
  * @protected
+ * @param {Array.<module:engine/model/element~Element>} blocks The list block elements.
+ * @returns {Boolean}
  */
 export function isOnlyOneListItemSelected( blocks ) {
 	if ( !blocks.length ) {
@@ -348,7 +352,8 @@ export function isOnlyOneListItemSelected( blocks ) {
 }
 
 /**
- * TODO
+ * Modifies the indents of list blocks following the given list block so the indentation is valid after
+ * the given block is no longer a list item.
  *
  * @protected
  */
@@ -442,7 +447,6 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
  * @param {Iterable.<module:engine/model/element~Element>} blocks The array of blocks.
  * @returns {Array.<module:engine/model/element~Element>} The sorted array of blocks.
  */
-// TODO add tests.
 export function sortBlocks( blocks ) {
 	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
 }

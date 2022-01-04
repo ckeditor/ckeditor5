@@ -20,7 +20,7 @@ import {
 } from './utils/model';
 
 /**
- * The list command. It is used by the {@link TODO document list feature}.
+ * The list command. It is used by the {@link module:list/documentlist~DocumentList document list feature}.
  *
  * @extends module:core/command~Command
  */
@@ -95,7 +95,7 @@ export default class DocumentListCommand extends Command {
 				// Outdent items following the selected list item.
 				changedBlocks.push( ...outdentItemsAfterItemRemoved( lastBlock, writer ) );
 
-				this._fireAfterExecute( sortBlocks( new Set( changedBlocks ) ) );
+				this._fireAfterExecute( changedBlocks );
 			}
 			// Turning on the list items for a collapsed selection inside a list item.
 			else if ( document.selection.isCollapsed && blocks[ 0 ].hasAttribute( 'listType' ) ) {
@@ -139,7 +139,7 @@ export default class DocumentListCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Fires the `afterExecute` event.
 	 *
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
@@ -154,7 +154,7 @@ export default class DocumentListCommand extends Command {
 		 * @protected
 		 * @event afterExecute
 		 */
-		this.fire( 'afterExecute', changedBlocks );
+		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**
