@@ -117,7 +117,7 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		// ------------------------------ Resolutions ----------------------------------------------
 
 		'quiz-resolution-usingBuilds': {
-			content: 'Based on you previous answers, you should check out the {@link installation/getting-started/quick-start#using-predefined-builds predefined builds}. You can also browse other installation methods listed below.',
+			content: 'Based on you previous answers, you should check out the {@link installation/advanced/predefined-builds predefined builds}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
