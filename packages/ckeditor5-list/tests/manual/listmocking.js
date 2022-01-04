@@ -95,8 +95,8 @@ const setAsciiListFromModel = () => {
 	} );
 
 	const asciiListCodeSnippet = 'modelList( [\n\t' +
-									asciiListToInsertInArray.join( '\n\t' ) +
-								'\n] );';
+		asciiListToInsertInArray.join( '\n\t' ) +
+	'\n] );';
 
 	document.getElementById( 'data-output' ).innerText = asciiListCodeSnippet;
 	setModelData( window.editor.model, cleanedEditorModelString );

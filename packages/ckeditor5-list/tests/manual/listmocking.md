@@ -3,7 +3,8 @@ Main purpose of this tool is to process editor's model to ASCII art that can be 
 It also allows to process ASCII art back to model data. You can provide your own editor's model/ASCII art to the input and parse it or you can create list in an editor and get model/ASCII from it.
 
 ### ASCII Tree
-<pre>
+
+```
 * A
   B
   # C
@@ -14,7 +15,7 @@ It also allows to process ASCII art back to model data. You can provide your own
 * - bulleted list
 # - numbered list
 Each indentation is two spaces before list type.
-</pre>
+```
 
 ## Input
 Input should be valid editor's model or an ASCII art created in this tool. Processing function tries to be a little bit smart (naively) and cleans input so it can be copied and pasted from code - it will get rid of spaces, new lines and other characters not allowed in model.
