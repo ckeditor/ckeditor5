@@ -441,7 +441,7 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 }
 
 /**
- * Returns the sorted array of given blocks.
+ * Returns the array of given blocks sorted by model indexes (document order).
  *
  * @protected
  * @param {Iterable.<module:engine/model/element~Element>} blocks The array of blocks.
