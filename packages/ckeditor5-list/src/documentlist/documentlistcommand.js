@@ -38,7 +38,7 @@ export default class DocumentListCommand extends Command {
 		 * The type of the list created by the command.
 		 *
 		 * @readonly
-		 * @member {'numbered'|'bulleted'|'todo'}
+		 * @member {'numbered'|'bulleted'}
 		 */
 		this.type = type;
 
