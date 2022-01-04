@@ -1,5 +1,5 @@
 <style>
-	textarea#model-data {
+	#data-input {
 		white-space: pre-wrap;
 		font-family: monospace;
 		display: block;
@@ -10,28 +10,58 @@
 		height: 200px;
 	}
 
-	#ascii-art {
+	#data-output {
+		font-size: 11px;
 		border: 1px black solid;
 		height: 200px;
+		font-family: Menlo, Consolas, Lucida Console, Courier New, dejavu sans mono, monospace;
+		padding: 1em;
+		background-color: rgb(246, 246, 246);
+	}
+
+	#copy-container {
+		position: absolute;
+	}
+
+	#btn-copy-output {
+		position: relative;
+	}
+
+	#btn-copy-label {
+		opacity: 1;
+		position: absolute;
+		right: -50px;
+		transition: opacity 1000ms;
+	}
+
+	#btn-copy-label.hide {
+		opacity: 0;
 	}
 </style>
 
-<div style="display: flex;">
-	<div style="flex:1;">
-		<h2>Model data</h2>
-		<textarea id="model-data"></textarea>
-	</div>
-	<div style="display: flex; flex-direction: column;justify-content: center;margin:0px 16px;">
-		<h2>&nbsp;</h2>
-		<button id="btn-copy-ascii">Copy ASCII</button>
-		<button id="asciify" style="margin-top:8px;">→</button>
-	</div>
-	<div style="flex:1;">
-		<h2>ASCII</h2>
-		<pre id="ascii-art"></pre>
-	</div>
+<h2>Input</h2>
+<div>
+	<input type="radio" id="input-model" name="input-type" value="model" checked>
+	<label for="input-model">Model</label>
+
+	<input type="radio" id="input-ascii" name="input-type" value="ascii">
+	<label for="input-ascii">ASCII tree</label>
+</div>
+<textarea id="data-input"></textarea>
+<div style="margin: 16px 0px;">
+	<button id="btn-process-input">Process input</button>
+	<button id="btn-process-editor-model">Process editor model</button>
+	<input id="chbx-process-on-paste" type="checkbox" />
+	<label for="chbx-process-on-paste">Process input on paste</label>
+	<input id="chbx-should-copy" type="checkbox" />
+	<label for="chbx-should-copy">Automatically copy output</label>
 </div>
 
 <div id="editor">
-
 </div>
+
+<h2>Output</h2>
+<div>
+	<button id="btn-copy-output">Copy</button>
+</div>
+<pre id="data-output"></pre>
