@@ -12,6 +12,8 @@ import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 
 /**
  * The list item ID generator.
+ *
+ * @protected
  */
 export class ListItemUid {
 	/**
@@ -356,6 +358,9 @@ export function isOnlyOneListItemSelected( blocks ) {
  * the given block is no longer a list item.
  *
  * @protected
+ * @param {module:engine/model/element~Element} lastBlock The last list block that has become a non-list element.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
  */
 export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
 	const changedBlocks = [];
