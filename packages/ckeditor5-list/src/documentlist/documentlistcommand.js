@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/documentlist/documentlistcinnabd
+ * @module list/documentlist/documentlistcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
