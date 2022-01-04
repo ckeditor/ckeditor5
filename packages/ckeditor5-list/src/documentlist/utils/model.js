@@ -339,7 +339,7 @@ export function removeListAttributes( blocks, writer ) {
  * @param {Array.<module:engine/model/element~Element>} blocks The list block elements.
  * @returns {Boolean}
  */
-export function isOnlyOneListItemSelected( blocks ) {
+export function isSingleListItem( blocks ) {
 	if ( !blocks.length ) {
 		return false;
 	}
@@ -362,7 +362,7 @@ export function isOnlyOneListItemSelected( blocks ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
  */
-export function outdentItemsAfterItemRemoved( lastBlock, writer ) {
+export function outdentFollowingItems( lastBlock, writer ) {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.

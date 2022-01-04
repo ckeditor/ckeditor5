@@ -12,7 +12,7 @@ import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
 	isFirstBlockOfListItem,
-	isOnlyOneListItemSelected,
+	isSingleListItem,
 	outdentBlocks,
 	sortBlocks,
 	splitListItemBefore
@@ -64,7 +64,7 @@ export default class DocumentListIndentCommand extends Command {
 
 		model.change( writer => {
 			// Handle selection contained in the single list item and starting in the following blocks.
-			if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
+			if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 				const changedBlocks = [];
 
 				// Allow increasing indent of following list item blocks.
@@ -131,7 +131,7 @@ export default class DocumentListIndentCommand extends Command {
 		}
 
 		// A single block of a list item is selected, so it could be indented as a sublist.
-		if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
+		if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 			return true;
 		}
 

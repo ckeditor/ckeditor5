@@ -14,7 +14,7 @@ import {
 	getListItemBlocks,
 	getListItems,
 	removeListAttributes,
-	outdentItemsAfterItemRemoved,
+	outdentFollowingItems,
 	ListItemUid,
 	sortBlocks
 } from './utils/model';
@@ -94,7 +94,7 @@ export default class DocumentListCommand extends Command {
 				changedBlocks.push( ...removeListAttributes( blocks, writer ) );
 
 				// Outdent items following the selected list item.
-				changedBlocks.push( ...outdentItemsAfterItemRemoved( lastBlock, writer ) );
+				changedBlocks.push( ...outdentFollowingItems( lastBlock, writer ) );
 
 				this._fireAfterExecute( changedBlocks );
 			}
