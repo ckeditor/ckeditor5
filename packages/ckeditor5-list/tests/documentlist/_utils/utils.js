@@ -204,7 +204,17 @@ export function setupTestHelpers( editor ) {
 }
 
 /**
- * TODO
+ * Returns a model representation of a document list pseudo markdown notation:
+ *
+ * 		modelList( [
+ * 			'* foo',
+ * 			'* bar'
+ * 		] );
+ *
+ * 	will output:
+ *
+ * 		'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+ * 		'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
  *
  * @param {Iterable.<String>} lines
  * @returns {String}
@@ -257,9 +267,9 @@ export function modelList( lines ) {
 }
 
 /**
- * TODO
+ * Returns document list pseudo markdown notation for a given document fragment.
  *
- * @param fragment
+ * @param {module:engine/model/documentfragment~DocumentFragment} fragment The document fragment to stringify to pseudo markdown notation.
  * @returns {String}
  */
 export function stringifyList( fragment ) {

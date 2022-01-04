@@ -16,8 +16,6 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 describe( 'DocumentListIndentCommand', () => {
 	let editor, model, doc, root;
 
-	// TODO check changed blocks (afterExecute event)
-
 	testUtils.createSinonSandbox();
 
 	beforeEach( () => {

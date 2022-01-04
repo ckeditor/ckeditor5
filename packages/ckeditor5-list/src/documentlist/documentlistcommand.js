@@ -63,6 +63,7 @@ export default class DocumentListCommand extends Command {
 	 * Executes the list command.
 	 *
 	 * @fires execute
+	 * @fires afterExecute
 	 * @param {Object} [options] Command options.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items. If set to `false` it will convert selected elements

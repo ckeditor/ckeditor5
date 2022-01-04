@@ -56,7 +56,7 @@ export default class DocumentListIndentCommand extends Command {
 	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
-	 * @fires _executeCleanup
+	 * @fires afterExecute
 	 */
 	execute() {
 		const model = this.editor.model;
