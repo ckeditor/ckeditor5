@@ -12,6 +12,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import {
 	parse as parseModel,
 	setData as setModelData,
@@ -23,8 +24,8 @@ import DocumentList from '../../src/documentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList ],
-		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent ],
+		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
