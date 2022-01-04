@@ -14,6 +14,7 @@ import {
 	isFirstBlockOfListItem,
 	isOnlyOneListItemSelected,
 	outdentBlocks,
+	sortBlocks,
 	splitListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -64,17 +65,18 @@ export default class DocumentListIndentCommand extends Command {
 		model.change( writer => {
 			// Handle selection contained in the single list item and starting in the following blocks.
 			if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
+				const changedBlocks = [];
+
 				// Allow increasing indent of following list item blocks.
 				if ( this._direction == 'forward' ) {
-					indentBlocks( blocks, writer );
+					changedBlocks.push( ...indentBlocks( blocks, writer ) );
 				}
 
 				// For indent make sure that indented blocks have a new ID.
 				// For outdent just split blocks from the list item (give them a new IDs).
-				splitListItemBefore( blocks[ 0 ], writer );
-				// TODO add split result to changed blocks.
+				changedBlocks.push( ...splitListItemBefore( blocks[ 0 ], writer ) );
 
-				this._fireAfterExecute( blocks );
+				this._fireAfterExecute( changedBlocks );
 			}
 			// More than a single list item is selected, or the first block of list item is selected.
 			else {
@@ -89,7 +91,7 @@ export default class DocumentListIndentCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Fires the `afterExecute` event.
 	 *
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
@@ -104,7 +106,7 @@ export default class DocumentListIndentCommand extends Command {
 		 * @protected
 		 * @event afterExecute
 		 */
-		this.fire( 'afterExecute', changedBlocks );
+		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**
