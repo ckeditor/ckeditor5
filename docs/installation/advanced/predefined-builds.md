@@ -32,7 +32,7 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
 
-To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link installation/getting-started/quick-start#classic-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/classic-editor classic editor example}.
 
 ### Inline editor
 
@@ -42,7 +42,7 @@ A common scenario for using inline editor is offering users the possibility to e
 
 {@img assets/img/editor-inline.png 776 Screenshot of an inline editor.}
 
-To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link installation/getting-started/quick-start#inline-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/inline-editor inline editor example}.
 
 ### Balloon editor
 
@@ -50,7 +50,7 @@ Balloon editor is very similar to inline editor. The difference between them is 
 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
-To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link installation/getting-started/quick-start#balloon-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}.
 
 ### Balloon block editor
 
@@ -58,7 +58,7 @@ Balloon block is essentially the [balloon editor](#balloon-editor) with an extra
 
 {@img assets/img/editor-balloon-block.png 813 Screenshot of a balloon block toolbar editor.}
 
-To try it out online, check the {@link examples/builds/balloon-block-editor balloon block editor example}. Jump to {@link installation/getting-started/quick-start#balloon-block-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/balloon-block-editor balloon block editor example}.
 
 ### Document editor
 
@@ -66,7 +66,7 @@ The document editor is focused on rich text editing experience similar to the na
 
 {@img assets/img/editor-document.png 843 Screenshot of the user interface of the document editor.}
 
-To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link installation/getting-started/quick-start#document-editor Quick start} to start using it.
+To try it out online, check the {@link examples/builds/document-editor document editor example}. 
 
 ## Build customization
 
@@ -79,6 +79,359 @@ Every build comes with a default set of features and their default configuration
 Read more in the {@link installation/getting-started/configuration Configuration guide}.
 
 If a build does not provide all the necessary features or you want to create a highly optimized build of the editor which will contain only the features that you require, you need to customize the build or create a brand new one. Check {@link installation/getting-started/quick-start#creating-custom-builds Custom builds} for details on how to change the default builds to match your preferences.
+
+## Installing builds
+
+## Download options
+
+There are several options to download CKEditor 5 builds:
+
+* [CDN](#cdn)
+* [npm](#npm)
+* [Online builder](#online-builder)
+* [Zip download](#zip-download)
+
+After downloading the editor jump to the {@link installation/getting-started/basic-api Basic API guide} to see how to create editors.
+
+### CDN
+
+Builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super fast content delivery. When using CDN no download is actually needed.
+
+### npm
+
+All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor) to view all official build packages available in npm.
+
+Installing a build with npm is as simple as calling one of the following commands in your project:
+
+```bash
+npm install --save @ckeditor/ckeditor5-build-classic
+# Or:
+npm install --save @ckeditor/ckeditor5-build-inline
+# Or:
+npm install --save @ckeditor/ckeditor5-build-balloon
+# Or:
+npm install --save @ckeditor/ckeditor5-build-balloon-block
+# Or:
+npm install --save @ckeditor/ckeditor5-build-decoupled-document
+```
+
+CKEditor will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
+
+### Online builder
+
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
+
+### Zip download
+
+Go to the [CKEditor 5 builds download page](https://ckeditor.com/ckeditor-5-builds/download/) and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
+
+Extract the `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor is installed.
+
+#### Included files
+
+* `ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
+* `ckeditor.js.map` &ndash; The source map for the editor bundle.
+* `translations/` &ndash; The editor UI translations (see {@link features/ui-language Setting the UI language}).
+* `README.md` and `LICENSE.md`
+
+## Installing a build
+
+1. Load the desired editor via the `<script>` tag.
+2. Call the static `create()` method to create the editor.
+
+The implementation of this method looks as follows:
+
+### Classic editor
+
+In your HTML page add an element that CKEditor should replace:
+
+```html
+<div id="editor"></div>
+```
+
+Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
+
+```html
+<script>
+	ClassicEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+#### Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – Classic editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Classic editor</h1>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
+	<script>
+		ClassicEditor
+			.create( document.querySelector( '#editor' ) )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+### Inline editor
+
+In your HTML page add an element that CKEditor should make editable:
+
+```html
+<div id="editor"></div>
+```
+
+Load the inline editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
+
+```html
+<script>
+	InlineEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+#### Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 - Inline editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Inline editor</h1>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
+	<script>
+		InlineEditor
+			.create( document.querySelector( '#editor' ) )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+### Balloon editor
+
+In your HTML page add an element that CKEditor should make editable:
+
+```html
+<div id="editor"></div>
+```
+
+Load the balloon editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
+
+```html
+<script>
+	BalloonEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+#### Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – Balloon editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Balloon editor</h1>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
+	<script>
+		BalloonEditor
+			.create( document.querySelector( '#editor' ) )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+### Balloon block editor
+
+In your HTML page add an element that CKEditor should make editable:
+
+```html
+<div id="editor"></div>
+```
+
+Load the balloon block editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
+
+```html
+<script>
+	BalloonEditor
+		.create( document.querySelector( '#editor' ) )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+**Note:** You can configure the block toolbar items using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar `config.blockToolbar`} option.
+
+#### Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – Balloon block editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Balloon editor</h1>
+	<div id="editor">
+		<p>This is some sample content.</p>
+	</div>
+	<script>
+		BalloonEditor
+			.create( document.querySelector( '#editor' ) )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+### Document editor
+
+Load the document editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+
+<info-box>
+	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the application for the best editing experience.
+</info-box>
+
+```html
+<script>
+	DecoupledEditor
+		.create( document.querySelector( '#editor' ) )
+		.then( editor => {
+			const toolbarContainer = document.querySelector( '#toolbar-container' );
+
+			toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+		} )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+#### Example
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – Document editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Document editor</h1>
+
+	<!-- The toolbar will be rendered in this container. -->
+	<div id="toolbar-container"></div>
+
+	<!-- This container will become the editable. -->
+	<div id="editor">
+		<p>This is the initial editor content.</p>
+	</div>
+
+	<script>
+		DecoupledEditor
+			.create( document.querySelector( '#editor' ) )
+			.then( editor => {
+				const toolbarContainer = document.querySelector( '#toolbar-container' );
+
+				toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+			} )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
+## Loading the API
+
+After downloading and installing a CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
+
+```html
+<script src="[ckeditor-build-path]/ckeditor.js"></script>
+```
+
+Once the CKEditor script is loaded, you can {@link installation/getting-started/basic-api use the API} to create editors in your page.
+
+<info-box>
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/basic-api#umd-support Basic API guide}.
+
+	Also, for a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@link installation/advanced/advanced-setup Advanced setup} for more information about it.
+</info-box>
 
 ## Additional information
 
