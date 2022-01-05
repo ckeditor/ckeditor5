@@ -5,6 +5,7 @@
 
 // The editor creator to use.
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BalloonEditorBase from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
@@ -35,13 +36,12 @@ import Font from "@ckeditor/ckeditor5-font/src/font";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import PastePlainText from '@ckeditor/ckeditor5-clipboard/src/pasteplaintext';
 
 
-export default class ClassicEditor extends ClassicEditorBase {}
+class ClassicEditor extends ClassicEditorBase {}
+class BalloonEditor extends BalloonEditorBase {}
 
-// Plugins to include in the build.
-ClassicEditor.builtinPlugins = [
+const plugins = [
 	Essentials,
 	UploadAdapter,
 	FindAndReplace,
@@ -67,15 +67,17 @@ ClassicEditor.builtinPlugins = [
 	MediaEmbed,
 	Paragraph,
 	PasteFromOffice,
-	PastePlainText,
 	Table,
 	TableToolbar,
 	Clipboard,
 	TextTransformation
 ];
 
-// Editor configuration.
-ClassicEditor.defaultConfig = {
+// Plugins to include in the build.
+ClassicEditor.builtinPlugins = plugins;
+BalloonEditor.builtinPlugins = plugins;
+
+const defaultConfig = {
 	toolbar: {
 		items: [
 			'heading',
@@ -87,7 +89,6 @@ ClassicEditor.defaultConfig = {
 			'alignment',
 			'numberedList',
 			'ckfinder',
-			'pastePlainText',
 			'findAndReplace',
 			'|',
 			'outdent',
@@ -135,3 +136,12 @@ ClassicEditor.defaultConfig = {
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
+
+// Editor configuration.
+ClassicEditor.defaultConfig = defaultConfig
+BalloonEditor.defaultConfig = defaultConfig
+
+export default {
+	ClassicEditor,
+	BalloonEditor
+}
