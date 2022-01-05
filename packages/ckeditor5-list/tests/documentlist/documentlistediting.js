@@ -23,7 +23,7 @@ import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/vie
 import ListEditing from '../../src/list/listediting';
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import stubUid from './_utils/uid';
-import { prepareTest } from './_utils/utils';
+import { prepareTest, modelList } from './_utils/utils';
 
 describe( 'DocumentListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;
@@ -1146,6 +1146,97 @@ describe( 'DocumentListEditing', () => {
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);
 			} );
+		} );
+	} );
+
+	describe( 'enter key handling', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = { preventDefault() {} };
+		} );
+
+		// TODO: Negative cases for all these tests.
+		// * non-collapsed selection,
+		// * non-last item,
+		// * non-empty item.
+
+		it( 'should outdent if the collapsed selection is anchored in an empty, last sub-list item', () => {
+			setModelData( model, modelList( [
+				'* a',
+				'  # b',
+				'  # []'
+			] ) );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			expect( getModelData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  # b',
+				'* []'
+			] ) );
+		} );
+
+		it( 'should outdent if the collapsed selection is anchored in an empty, last sub-list item (bigger indentation)', () => {
+			setModelData( model, modelList( [
+				'* a',
+				'  # b',
+				'    * c',
+				'    * []'
+			] ) );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			expect( getModelData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  # b',
+				'    * c',
+				'  # []'
+			] ) );
+		} );
+
+		it( 'should outdent if the collapsed selection is anchored in an empty, only sub-list item', () => {
+			setModelData( model, modelList( [
+				'* a',
+				'  # b',
+				'    * []',
+				'  #'
+			] ) );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			expect( getModelData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  # b',
+				'  # []',
+				'  #'
+			] ) );
+		} );
+
+		it( 'should convert the only list item which is empty into a paragraph and thus turn of the list', () => {
+			setModelData( model, modelList( [
+				'* []'
+			] ) );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			expect( getModelData( model ) ).to.equalMarkup( modelList( [
+				'[]'
+			] ) );
+		} );
+
+		it( 'should convert an empty list item at the end of the list into a paragraph', () => {
+			setModelData( model, modelList( [
+				'* a',
+				'* []'
+			] ) );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			expect( getModelData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'[]'
+			] ) );
 		} );
 	} );
 } );

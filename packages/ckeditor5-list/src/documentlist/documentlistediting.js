@@ -84,6 +84,19 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
+
+		// Overwrite default Enter key behavior.
+		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
+			const doc = model.document;
+			const positionParent = doc.selection.getLastPosition().parent;
+
+			if ( doc.selection.isCollapsed && positionParent.hasAttribute( 'listItemId' ) && positionParent.isEmpty ) {
+				editor.execute( 'outdentList' );
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li' } );
 	}
 
 	/**
