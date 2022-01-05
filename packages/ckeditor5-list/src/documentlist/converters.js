@@ -258,10 +258,10 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			} else if ( isListView( element ) ) {
 				const type = stack[ indent ].type;
 				const expectedElementName = getViewElementNameForListType( type );
-				const expectedElementId = getViewElementIdForListType( type, indent );
+				// const expectedElementId = getViewElementIdForListType( type, indent );
 
 				// For UL and OL check if the name and ID of element is correct.
-				if ( element.name != expectedElementName || element.id != expectedElementId ) {
+				if ( element.name != expectedElementName /* || element.id != expectedElementId */ ) {
 					break;
 				}
 
@@ -426,9 +426,17 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 	};
 }
 
-// Helper for mapping mode to view elements. It's using positions mapping instead of mapper.toViewElement( element )
-// to find outermost view element. This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-function findMappedViewElement( element, mapper, model ) {
+/**
+ * Helper for mapping mode to view elements. It's using positions mapping instead of mapper.toViewElement( element )
+ * to find outermost view element. This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+ *
+ * @protected
+ * @param {module:engine/model/element~Element} element The model element.
+ * @param {module:engine/conversion/mapper~Mapper} mapper The mapper instance.
+ * @param {module:engine/model/model~Model} model The model.
+ * @returns {module:engine/view/element~Element|null}
+ */
+export function findMappedViewElement( element, mapper, model ) {
 	const modelRange = model.createRangeOn( element );
 	const viewRange = mapper.toViewRange( modelRange ).getTrimmed();
 
