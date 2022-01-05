@@ -73,12 +73,19 @@ export function listPropertiesDowncastConverter( strategy, model ) {
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model );
+		let viewRange = null;
 
 		// Unwrap element from current list wrappers.
-		unwrapListItemBlock( viewElement, strategy, writer );
+		// There is no view element in the data downcast of bogus paragraph.
+		if ( viewElement ) {
+			unwrapListItemBlock( viewElement, strategy, writer );
+			viewRange = writer.createRangeOn( viewElement );
+		} else {
+			viewRange = conversionApi.mapper.toViewRange( data.range );
+		}
 
 		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
+		wrapListItemBlock( listItem, viewRange, strategy, writer );
 	};
 }
 
