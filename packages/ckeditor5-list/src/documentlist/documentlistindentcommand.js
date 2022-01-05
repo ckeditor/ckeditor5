@@ -13,7 +13,7 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isOnlyOneListItemSelected,
-	outdentBlocks,
+	outdentBlocksWithMerge,
 	splitListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -81,7 +81,7 @@ export default class DocumentListIndentCommand extends Command {
 				// Now just update the attributes of blocks.
 				const changedBlocks = this._direction == 'forward' ?
 					indentBlocks( blocks, writer, { expand: true } ) :
-					outdentBlocks( blocks, writer, { expand: true } );
+					outdentBlocksWithMerge( blocks, writer, { expand: true } );
 
 				this._fireAfterExecute( changedBlocks );
 			}

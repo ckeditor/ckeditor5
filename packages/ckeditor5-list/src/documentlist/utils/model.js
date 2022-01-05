@@ -240,13 +240,22 @@ export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
 
 	for ( const block of allBlocks ) {
-		writer.setAttribute( 'listIndent', block.getAttribute( 'listIndent' ) + indentBy, block );
+		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;
+
+		if ( blockIndent < 0 ) {
+			removeListAttributes( block, writer );
+
+			continue;
+		}
+
+		writer.setAttribute( 'listIndent', blockIndent, block );
 	}
 
 	return allBlocks;
 }
 
 /**
+ * TODO
  * Decreases indentation of given list blocks.
  *
  * @protected
@@ -256,7 +265,7 @@ export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
  * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
  * (all blocks of given list items).
  */
-export function outdentBlocks( blocks, writer, { expand } = {} ) {
+export function outdentBlocksWithMerge( blocks, writer, { expand } = {} ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.

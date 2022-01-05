@@ -88,24 +88,48 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.commands.add( 'mergeListItem', new DocumentListMergeCommand( editor ) );
 
-		// Backspace handling
-		// - Collapsed selection at the beginning of the first item of list
-		//   -> outdent command
-		// - Collapsed selection at the beginning of the first block of an item
-		//   - Item before is empty
-		//     -> change indent to match previous
-		//     -> standard delete command
-		//   - Item before is not empty
-		//     -> change indent to match previous
-		//     -> merge block with previous item
-		// - Non-collapsed selection with first position in the first block of a list item and the last position in other item
-		//   - first position in empty block
-		//     -> change indent of the last block to match the first block
-		//     -> standard delete command
-		//   - first position in non-empty block
-		//     -> change indent of the last block to match the first block
-		//     -> standard delete command
-		//     -> merge last block with the first block
+		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
+			if ( data.direction !== 'backward' ) {
+				return;
+			}
+
+			const mergeListCommand = editor.commands.get( 'mergeListItem' );
+
+			if ( mergeListCommand.isEnabled ) {
+				mergeListCommand.execute();
+
+				data.preventDefault();
+				evt.stop();
+
+				return;
+			}
+
+			const selection = editor.model.document.selection;
+
+			if ( !selection.isCollapsed ) {
+				return;
+			}
+
+			const firstPosition = selection.getFirstPosition();
+
+			if ( !firstPosition.isAtStart ) {
+				return;
+			}
+
+			const positionParent = firstPosition.parent;
+
+			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+				return;
+			}
+
+			const previousIsAListItem = positionParent.previousSibling && positionParent.previousSibling.hasAttribute( 'listItemId' );
+
+			if ( previousIsAListItem ) {
+				return;
+			}
+
+			this.editor.execute( 'outdentList' );
+		}, { context: 'li' } );
 	}
 
 	/**
