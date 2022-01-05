@@ -222,9 +222,10 @@ export default class InlineEditorUIView extends EditorUIView {
 				};
 			},
 			( editableRect, panelRect ) => {
+				const l = editableRect.left + editableRect.width - panelRect.width;
 				return {
 					top: this._getPanelPositionTop( editableRect, panelRect ),
-					left: editableRect.left + editableRect.width - panelRect.width,
+					left: l > 0 ? l : 0,
 					name: 'toolbar_east',
 					config: {
 						withArrow: false
