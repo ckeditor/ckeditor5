@@ -9,13 +9,13 @@ import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 import { getModelDataWithAttributes } from '../_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-/* global document */
+/* global console, document */
 
 describe( 'ScriptElementSupport', () => {
 	const CODE = 'console.log( "Hello World" )';
 	const CODE_CPP = 'cout << "Hello World" << endl;';
 
-	let editor, model, editorElement, dataFilter;
+	let editor, model, editorElement, dataFilter, warnStub;
 
 	beforeEach( async () => {
 		editorElement = document.createElement( 'div' );
@@ -29,9 +29,12 @@ describe( 'ScriptElementSupport', () => {
 		dataFilter = editor.plugins.get( 'DataFilter' );
 
 		dataFilter.allowElement( 'script' );
+
+		warnStub = sinon.stub( console, 'warn' );
 	} );
 
 	afterEach( () => {
+		warnStub.restore();
 		editorElement.remove();
 
 		return editor.destroy();
