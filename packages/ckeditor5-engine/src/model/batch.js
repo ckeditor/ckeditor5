@@ -7,7 +7,7 @@
  * @module engine/model/batch
  */
 
-/* global console */
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * A batch instance groups model changes ({@link module:engine/model/operation/operation~Operation operations}). All operations
@@ -45,10 +45,7 @@ export default class Batch {
 			 *
 			 * @error batch-constructor-deprecated-string-type
 			 */
-			console.warn(
-				'batch-constructor-deprecated-string-type: ' +
-				'The string value for Batch type constructor property has been deprecated and will be removed in the near future.'
-			);
+			logWarning( 'batch-constructor-deprecated-string-type' );
 		}
 
 		const { isUndoable = true, isLocal = true, isUndo = false, isTyping = false } = type;
