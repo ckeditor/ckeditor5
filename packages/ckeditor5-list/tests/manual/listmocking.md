@@ -7,14 +7,19 @@ It also allows to process ASCII art back to model data. You can provide your own
 ```
 * A
   B
-  # C
+  # C{id:50}
     # D
 * E
 * F
 
 * - bulleted list
 # - numbered list
-Each indentation is two spaces before list type.
+---
+{id:fixedId} - force given id as listItemId
+attribute in model.
+---
+Each indentation is two spaces before list
+type.
 ```
 
 ## Input

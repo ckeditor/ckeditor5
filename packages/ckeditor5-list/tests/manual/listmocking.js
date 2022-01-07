@@ -31,11 +31,11 @@ ClassicEditor
 		window.editor = editor;
 
 		const model = '<paragraph listIndent="0" listItemId="000" listType="bulleted">A</paragraph>\n' +
-		'<paragraph listIndent="0" listItemId="000" listType="bulleted">B</paragraph>\n' +
-		'<paragraph listIndent="1" listItemId="002" listType="numbered">C</paragraph>\n' +
-		'<paragraph listIndent="2" listItemId="003" listType="numbered">D</paragraph>\n' +
-		'<paragraph listIndent="0" listItemId="004" listType="bulleted">E</paragraph>\n' +
-		'<paragraph listIndent="0" listItemId="005" listType="bulleted">F</paragraph>';
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">B</paragraph>\n' +
+			'<paragraph listIndent="1" listItemId="002" listType="numbered">C</paragraph>\n' +
+			'<paragraph listIndent="2" listItemId="003" listType="numbered">D</paragraph>\n' +
+			'<paragraph listIndent="0" listItemId="004" listType="bulleted">E</paragraph>\n' +
+			'<paragraph listIndent="0" listItemId="005" listType="bulleted">F</paragraph>';
 
 		document.getElementById( 'data-input' ).value = model;
 		document.getElementById( 'btn-process-input' ).click();
@@ -58,7 +58,8 @@ const copyOutput = async () => {
 	copyButton.appendChild( label );
 
 	window.setTimeout( () => {
-		label.className = 'hide'; }
+		label.className = 'hide';
+	}
 	, 0 );
 
 	window.setTimeout( () => {
@@ -72,19 +73,20 @@ const getListModelWithNewLines = stringifiedModel => {
 
 const setModelDataFromAscii = () => {
 	const asciiList = document.getElementById( 'data-input' ).value;
-	const cleanedAsciiList = asciiList.replace( /[+|'|\t|;|,]/g, '' );
-	const modelDataArray = cleanedAsciiList.split( '\n' );
+	const modelDataArray = [];
+
+	asciiList.replace( /[^']*'(.*)'.*$/gm, ( match, content ) => {
+		modelDataArray.push( content );
+	} );
+
 	const editorModelString = modelList( modelDataArray );
 
 	setModelData( window.editor.model, editorModelString );
 	document.getElementById( 'data-output' ).innerText = getListModelWithNewLines( editorModelString );
 };
 
-const setAsciiListFromModel = () => {
-	const editorModelString = document.getElementById( 'data-input' ).value;
-	const cleanedEditorModelString = editorModelString.replace( /[+|'|\t|\r|\n|;|,]/g, '' ).replace( /> </g, '><' );
-	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
-	const asciiList = stringifyList( editorModel ).split( '\n' );
+const createAsciiListCodeSnippet = stringifiedAsciiList => {
+	const asciiList = stringifiedAsciiList.split( '\n' );
 
 	const asciiListToInsertInArray = asciiList.map( ( element, index ) => {
 		if ( index === asciiList.length - 1 ) {
@@ -96,7 +98,21 @@ const setAsciiListFromModel = () => {
 
 	const asciiListCodeSnippet = 'modelList( [\n\t' +
 		asciiListToInsertInArray.join( '\n\t' ) +
-	'\n] );';
+		'\n] );';
+
+	return asciiListCodeSnippet;
+};
+
+const setAsciiListFromModel = () => {
+	const editorModelString = document.getElementById( 'data-input' ).value;
+	let cleanedEditorModelString = '';
+
+	editorModelString.replace( /(<paragraph.*<\/paragraph>)/gm, ( match, content ) => {
+		cleanedEditorModelString += content;
+	} );
+
+	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
+	const asciiListCodeSnippet = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 
 	document.getElementById( 'data-output' ).innerText = asciiListCodeSnippet;
 	setModelData( window.editor.model, cleanedEditorModelString );
@@ -111,6 +127,10 @@ const processInput = () => {
 
 	if ( dataType === 'ascii' ) {
 		setModelDataFromAscii();
+	}
+
+	if ( document.getElementById( 'chbx-should-focus-editor' ).checked ) {
+		window.editor.editing.view.focus();
 	}
 
 	if ( document.getElementById( 'chbx-should-copy' ).checked ) {
@@ -131,7 +151,7 @@ const processEditorModel = () => {
 		const stringifiedEditorModel = getModelData( window.editor.model, { withoutSelection: true } );
 		const editorModel = parseModel( stringifiedEditorModel, window.editor.model.schema );
 
-		document.getElementById( 'data-input' ).value = stringifyList( editorModel );
+		document.getElementById( 'data-input' ).value = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 	}
 
 	processInput();
