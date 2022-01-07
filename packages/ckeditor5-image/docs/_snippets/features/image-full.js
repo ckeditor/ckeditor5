@@ -80,7 +80,7 @@ ClassicEditor
 		window.editor = editor;
 
 		window.attachTourBalloon( {
-			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.constructor.name === 'FileDialogButtonView' ),
+			target: window.findToolbarItem( editor.ui.view.toolbar, item => item.buttonView && item.buttonView.label === 'Insert image' ),
 			text: 'Click here to insert an image.',
 			tippyOptions: {
 				placement: 'top'
