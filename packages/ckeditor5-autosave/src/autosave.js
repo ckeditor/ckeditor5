@@ -111,7 +111,7 @@ export default class Autosave extends Plugin {
 		this._lastDocumentVersion = editor.model.document.version;
 
 		/**
-		 * Promised used for asynchronous save calls.
+		 * Promise used for asynchronous save calls.
 		 *
 		 * Created to handle the autosave call to an external data source. It resolves when that call is finished. It is re-used if
 		 * save is called before the promise has resolved. It is set to `null` if there is no call in progress.
@@ -238,6 +238,7 @@ export default class Autosave extends Plugin {
 	 * It waits for the result and then removes the created pending action.
 	 *
 	 * @private
+	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
 	 */
 	_save() {
 		if ( this._savePromise ) {
