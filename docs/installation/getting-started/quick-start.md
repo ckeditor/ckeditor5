@@ -16,7 +16,7 @@ Creating an editor using a {@link installation/advanced/predefined-builds predef
 1. Load the desired editor via the `<script>` tag.
 2. Call the static `create()` method to create the editor.
 
-Check the {@link installation/advanced/predefined-builds predefined build} guide for details on the builds themselves and {@link installation/advanced/predefined-builds#installing-a-build installing specific builds}.
+Check the {@link installation/advanced/predefined-builds##available-builds predefined build} guide for details on the builds builds available and how to install them.
 
 <!-- We should consider making OB into a separate guide -->
 
