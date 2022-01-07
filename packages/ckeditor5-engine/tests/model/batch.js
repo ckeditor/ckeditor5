@@ -10,8 +10,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 /* globals console */
 
 describe( 'Batch', () => {
-	describe( 'type', () => {
-		it( 'should have default value', () => {
+	describe( 'constructor', () => {
+		it( 'should set default types', () => {
 			const batch = new Batch();
 
 			expect( batch.isUndoable ).to.be.true;
@@ -20,7 +20,7 @@ describe( 'Batch', () => {
 			expect( batch.isTyping ).to.be.false;
 		} );
 
-		it( 'should set batch properties accordingly', () => {
+		it( 'should set batch types accordingly', () => {
 			const batch = new Batch( { isUndoable: false, isLocal: false, isUndo: true, isTyping: true } );
 
 			expect( batch.isUndoable ).to.be.false;
@@ -29,7 +29,7 @@ describe( 'Batch', () => {
 			expect( batch.isTyping ).to.be.true;
 		} );
 
-		it( 'can be set partially', () => {
+		it( 'should allow setting only some of the batch types', () => {
 			const batch = new Batch( { isUndoable: false, isLocal: false } );
 
 			expect( batch.isUndoable ).to.be.false;
@@ -37,37 +37,50 @@ describe( 'Batch', () => {
 			expect( batch.isUndo ).to.be.false;
 			expect( batch.isTyping ).to.be.false;
 		} );
+
+		describe( 'deprecated string type', () => {
+			let stub;
+
+			testUtils.createSinonSandbox();
+
+			beforeEach( () => {
+				stub = testUtils.sinon.stub( console, 'warn' );
+			} );
+
+			it( 'when set to "default" should set default properties and log warning on console', () => {
+				const batch = new Batch( 'default' );
+
+				expect( batch.isUndoable ).to.be.true;
+				expect( batch.isLocal ).to.be.true;
+				expect( batch.isUndo ).to.be.false;
+				expect( batch.isTyping ).to.be.false;
+
+				sinon.assert.calledWithMatch( stub, 'batch-constructor-deprecated-string-type' );
+			} );
+
+			it( 'when set to "transparent" should set isUndoable to false and log warning on console', () => {
+				const batch = new Batch( 'transparent' );
+
+				expect( batch.isUndoable ).to.be.false;
+				expect( batch.isLocal ).to.be.true;
+				expect( batch.isUndo ).to.be.false;
+				expect( batch.isTyping ).to.be.false;
+
+				sinon.assert.calledWithMatch( stub, 'batch-constructor-deprecated-string-type' );
+			} );
+		} );
 	} );
 
-	describe( 'deprecated string type', () => {
-		let stub;
+	describe( 'type', () => {
+		it( 'should return "default" and log warning on console', () => {
+			testUtils.createSinonSandbox();
 
-		testUtils.createSinonSandbox();
+			const stub = testUtils.sinon.stub( console, 'warn' );
+			const batch = new Batch();
 
-		beforeEach( () => {
-			stub = testUtils.sinon.stub( console, 'warn' );
-		} );
+			batch.type;
 
-		it( 'when set to "default" should set default properties and log warning on console', () => {
-			const batch = new Batch( 'default' );
-
-			expect( batch.isUndoable ).to.be.true;
-			expect( batch.isLocal ).to.be.true;
-			expect( batch.isUndo ).to.be.false;
-			expect( batch.isTyping ).to.be.false;
-
-			sinon.assert.calledWithMatch( stub, 'batch-constructor-deprecated-string-type' );
-		} );
-
-		it( 'when set to "transparent" should set isUndoable to false and log warning on console', () => {
-			const batch = new Batch( 'transparent' );
-
-			expect( batch.isUndoable ).to.be.false;
-			expect( batch.isLocal ).to.be.true;
-			expect( batch.isUndo ).to.be.false;
-			expect( batch.isTyping ).to.be.false;
-
-			sinon.assert.calledWithMatch( stub, 'batch-constructor-deprecated-string-type' );
+			sinon.assert.calledWithMatch( stub, 'batch-type-deprecated' );
 		} );
 	} );
 
