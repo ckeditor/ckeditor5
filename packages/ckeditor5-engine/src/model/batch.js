@@ -64,6 +64,7 @@ export default class Batch {
 		/**
 		 * Whether batch can be undone through the undo feature.
 		 *
+		 * @readonly
 		 * @type {Boolean}
 		 */
 		this.isUndoable = isUndoable;
@@ -71,6 +72,7 @@ export default class Batch {
 		/**
 		 * Whether batch includes operations created locally (`true`) or operations created on other, remote editors (`false`).
 		 *
+		 * @readonly
 		 * @type {Boolean}
 		 */
 		this.isLocal = isLocal;
@@ -78,6 +80,7 @@ export default class Batch {
 		/**
 		 * Whether batch was created by the undo feature and undoes other operations.
 		 *
+		 * @readonly
 		 * @type {Boolean}
 		 */
 		this.isUndo = isUndo;
@@ -85,6 +88,7 @@ export default class Batch {
 		/**
 		 * Whether batch includes operations connected with typing.
 		 *
+		 * @readonly
 		 * @type {Boolean}
 		 */
 		this.isTyping = isTyping;
