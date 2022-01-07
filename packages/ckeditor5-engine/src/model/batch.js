@@ -40,8 +40,9 @@ export default class Batch {
 			type = type === 'transparent' ? { isUndoable: false } : {};
 
 			/**
-			 * The string value for {@link module:engine/model/batch~Batch#type `type`} constructor property has been
-			 * deprecated and will be removed in the near future. Please refer to the API documentation for more information.
+			 * The string value for `type` property of the `Batch` constructor has been deprecated and will be removed in the near future.
+			 * Please refer to the {@link module:engine/model/batch~Batch#constructor `Batch` constructor API documentation} for more
+			 * information.
 			 *
 			 * @error batch-constructor-deprecated-string-type
 			 */
@@ -89,6 +90,31 @@ export default class Batch {
 		 * @type {Boolean}
 		 */
 		this.isTyping = isTyping;
+	}
+
+	/**
+	 * The type of the batch.
+	 *
+	 * **This property has been deprecated and is always set to `'default'` value.**
+	 *
+	 * It can be one of the following values:
+	 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.
+	 * * `'transparent'` &ndash; A batch that should be ignored by other features, i.e. an initial batch or collaborative editing
+	 * changes.
+	 *
+	 * @deprecated
+	 * @type {'default'}
+	 */
+	get type() {
+		/**
+		 * The {@link module:engine/model/batch~Batch#type `Batch#type` } property has been deprecated and will be removed in the near
+		 * future. Use `Batch#isLocal`, `Batch#isUndoable`, `Batch#isUndo` and `Batch#isTyping` instead.
+		 *
+		 * @error batch-type-deprecated
+		 */
+		logWarning( 'batch-type-deprecated' );
+
+		return 'default';
 	}
 
 	/**
