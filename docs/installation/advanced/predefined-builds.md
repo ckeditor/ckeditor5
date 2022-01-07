@@ -122,6 +122,20 @@ Extract the `.zip` file into a dedicated directory inside your project. It is re
 * `translations/` &ndash; The editor UI translations (see {@link features/ui-language Setting the UI language}).
 * `README.md` and `LICENSE.md`
 
+### Loading the API
+
+After downloading and installing a CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
+
+```html
+<script src="[ckeditor-build-path]/ckeditor.js"></script>
+```
+
+Once the CKEditor script is loaded, you can {@link installation/getting-started/basic-api use the API} to create editors in your page.
+
+<info-box>
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/basic-api#umd-support Basic API guide}.
+</info-box>
+
 ## Available builds
 
 ### Classic editor
@@ -635,20 +649,3 @@ You should handle eventual conflicts and verify the merged changes. After that, 
 If you think that your custom builds can be useful to others, it is a great idea to publish them on GitHub and npm. When doing so, just be sure to give them meaningful names that would fit the `ckeditor5-build-(the name)` pattern, making them easy to find. To avoid conflicts with other existing builds you can use [scoped packages](https://docs.npmjs.com/misc/scope). We also recommend using the "ckeditor5" and "ckeditor5-build" [keywords](https://docs.npmjs.com/files/package.json#keywords) to make your build [easier to find](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal).
 
 After your build is out, [ping us on Twitter](https://twitter.com/ckeditor)!
-
-
-## Loading the API
-
-After downloading and installing a CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
-
-```html
-<script src="[ckeditor-build-path]/ckeditor.js"></script>
-```
-
-Once the CKEditor script is loaded, you can {@link installation/getting-started/basic-api use the API} to create editors in your page.
-
-<info-box>
-	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link installation/getting-started/basic-api#umd-support Basic API guide}.
-
-	Also, for a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@link installation/advanced/advanced-setup Advanced setup} for more information about it.
-</info-box>
