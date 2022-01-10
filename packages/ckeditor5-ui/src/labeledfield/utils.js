@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -21,12 +21,12 @@ import { createDropdown } from '../dropdown/utils';
  * * It sets input's `id` and `ariaDescribedById` attributes.
  * * It binds input's `isReadOnly` to the labeled view.
  * * It binds input's `hasError` to the labeled view.
- * * It enables a logic that cleans up the error when user starts typing in the input..
+ * * It enables a logic that cleans up the error when user starts typing in the input.
  *
  * Usage:
  *
- *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
- *		console.log( labeledInputView.view ); // An input instance.
+ *		const labeledInputView = new LabeledFieldView( locale, createLabeledInputText );
+ *		console.log( labeledInputView.fieldView ); // A text input instance.
  *
  * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the
@@ -71,7 +71,7 @@ export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
  * Usage:
  *
  *		const labeledInputView = new LabeledFieldView( locale, createLabeledDropdown );
- *		console.log( labeledInputView.view ); // A dropdown instance.
+ *		console.log( labeledInputView.fieldView ); // A dropdown instance.
  *
  * @param {module:ui/labeledfield/labeledfieldview~LabeledFieldView} labeledFieldView The instance of the labeled field view.
  * @param {String} viewUid An UID string that allows DOM logical connection between the

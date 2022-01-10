@@ -158,7 +158,7 @@ The `CKEditorContext` component supports the following properties:
      * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
-	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
+	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
 </info-box>
 
 ## Customizing the builds
@@ -392,7 +392,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 
 ```
 yarn add \
-	raw-loader@3 \
+	raw-loader@4 \
 	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
@@ -433,14 +433,17 @@ Then, add two new elements to the exported object under the `module.rules` array
 				}
 			}
 		},
+		'css-loader',
 		{
 			loader: 'postcss-loader',
-			options: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
+			options: {
+				postcssOptions: styles.getPostCssConfig( {
+					themeImporter: {
+						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+					},
+					minify: true
+				} )
+			}
 		}
 	]
 },

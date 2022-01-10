@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -175,19 +175,6 @@ describe( 'DomConverter', () => {
 				expect( converter.isDocumentFragment( element ) ).to.be.false;
 				expect( converter.isDocumentFragment( comment ) ).to.be.false;
 				expect( converter.isDocumentFragment( {} ) ).to.be.false;
-			} );
-		} );
-
-		describe( 'isComment()', () => {
-			it( 'should return true for HTML comments', () => {
-				expect( converter.isComment( comment ) ).to.be.true;
-			} );
-
-			it( 'should return false for other arguments', () => {
-				expect( converter.isComment( text ) ).to.be.false;
-				expect( converter.isComment( element ) ).to.be.false;
-				expect( converter.isComment( documentFragment ) ).to.be.false;
-				expect( converter.isComment( {} ) ).to.be.false;
 			} );
 		} );
 	} );

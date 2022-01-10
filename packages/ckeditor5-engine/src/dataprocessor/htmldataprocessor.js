@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,10 +7,12 @@
  * @module engine/dataprocessor/htmldataprocessor
  */
 
-/* globals document, DOMParser, Node */
+/* globals document, DOMParser */
 
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
+
+import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 
 /**
  * The HTML data processor class.
@@ -140,7 +142,7 @@ export default class HtmlDataProcessor {
 			// node. The condition below is just to be sure we are moving only comment nodes.
 
 			/* istanbul ignore else */
-			if ( node.nodeType == Node.COMMENT_NODE ) {
+			if ( isComment( node ) ) {
 				fragment.appendChild( node );
 			}
 		}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,16 +8,19 @@
 @import "../../../mixins/_shadow.css";
 
 :root {
-	--ck-input-text-width: 18em;
+	--ck-input-width: 18em;
+
+	/* Backward compatibility. */
+	--ck-input-text-width: var(--ck-input-width);
 }
 
-.ck.ck-input-text {
+.ck.ck-input {
 	@mixin ck-rounded-corners;
 
 	background: var(--ck-color-input-background);
 	border: 1px solid var(--ck-color-input-border);
 	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
-	min-width: var(--ck-input-text-width);
+	min-width: var(--ck-input-width);
 
 	/* This is important to stay of the same height as surrounding buttons */
 	min-height: var(--ck-ui-component-min-height);
@@ -43,7 +46,7 @@
 
 	&.ck-error {
 		border-color: var(--ck-color-input-error-border);
-		animation: ck-text-input-shake .3s ease both;
+		animation: ck-input-shake .3s ease both;
 
 		&:focus {
 			@mixin ck-box-shadow var(--ck-focus-error-outer-shadow);
@@ -51,7 +54,7 @@
 	}
 }
 
-@keyframes ck-text-input-shake {
+@keyframes ck-input-shake {
 	20% {
 		transform: translateX(-2px);
 	}

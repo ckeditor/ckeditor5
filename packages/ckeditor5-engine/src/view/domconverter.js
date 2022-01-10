@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,6 +28,7 @@ import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
@@ -617,7 +618,7 @@ export default class DomConverter {
 			return hostElement;
 		}
 
-		if ( this.isComment( domNode ) && options.skipComments ) {
+		if ( isComment( domNode ) && options.skipComments ) {
 			return null;
 		}
 
@@ -662,8 +663,8 @@ export default class DomConverter {
 
 				// Treat this element's content as a raw data if it was registered as such.
 				// Comment node is also treated as an element with raw data.
-				if ( this._isViewElementWithRawContent( viewElement, options ) || this.isComment( domNode ) ) {
-					const rawContent = this.isComment( domNode ) ? domNode.data : domNode.innerHTML;
+				if ( this._isViewElementWithRawContent( viewElement, options ) || isComment( domNode ) ) {
+					const rawContent = isComment( domNode ) ? domNode.data : domNode.innerHTML;
 
 					viewElement._setCustomProperty( '$rawContent', rawContent );
 
@@ -1030,16 +1031,6 @@ export default class DomConverter {
 	 */
 	isDocumentFragment( node ) {
 		return node && node.nodeType == Node.DOCUMENT_FRAGMENT_NODE;
-	}
-
-	/**
-	 * Returns `true` when `node.nodeType` equals `Node.COMMENT_NODE`.
-	 *
-	 * @param {Node} node Node to check.
-	 * @returns {Boolean}
-	 */
-	isComment( node ) {
-		return node && node.nodeType == Node.COMMENT_NODE;
 	}
 
 	/**
@@ -1526,7 +1517,7 @@ export default class DomConverter {
 	 * @returns {Element}
 	 */
 	_createViewElement( node, options ) {
-		if ( this.isComment( node ) ) {
+		if ( isComment( node ) ) {
 			return new ViewUIElement( this.document, '$comment' );
 		}
 

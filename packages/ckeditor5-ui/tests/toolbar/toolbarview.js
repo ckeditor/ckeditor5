@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -44,11 +44,13 @@ describe( 'ToolbarView', () => {
 		locale = new Locale();
 		view = new ToolbarView( locale );
 		view.render();
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
 		sinon.restore();
 		view.destroy();
+		view.element.remove();
 	} );
 
 	describe( 'constructor()', () => {
@@ -364,10 +366,17 @@ describe( 'ToolbarView', () => {
 		describe( 'activates keyboard navigation for the RTL toolbar', () => {
 			beforeEach( () => {
 				view.destroy();
+				view.element.remove();
+
 				locale = new Locale( { uiLanguage: 'ar' } );
 
 				view = new ToolbarView( locale );
 				view.render();
+				document.body.appendChild( view.element );
+			} );
+
+			afterEach( () => {
+				view.element.remove();
 			} );
 
 			it( 'so "arrowleft" focuses next focusable item', () => {

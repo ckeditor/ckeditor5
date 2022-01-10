@@ -1,23 +1,21 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* globals document */
 
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import ListStyle from '../src/liststyle';
-import ListStyleUI from '../src/liststyleui';
+import ListProperties from '../src/listproperties';
+import ListPropertiesUI from '../src/listpropertiesui';
+
+import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import { BlockQuote } from '@ckeditor/ckeditor5-block-quote';
+import { UndoEditing } from '@ckeditor/ckeditor5-undo';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import { View, ButtonView, LabeledFieldView, SwitchButtonView } from '@ckeditor/ckeditor5-ui';
 
 import bulletedListIcon from '../theme/icons/bulletedlist.svg';
 import numberedListIcon from '../theme/icons/numberedlist.svg';
-
 import listStyleDiscIcon from '../theme/icons/liststyledisc.svg';
 import listStyleCircleIcon from '../theme/icons/liststylecircle.svg';
 import listStyleSquareIcon from '../theme/icons/liststylesquare.svg';
@@ -28,20 +26,31 @@ import listStyleUpperRomanIcon from '../theme/icons/liststyleupperroman.svg';
 import listStyleLowerLatinIcon from '../theme/icons/liststylelowerlatin.svg';
 import listStyleUpperLatinIcon from '../theme/icons/liststyleupperlatin.svg';
 
-describe( 'ListStyleUI', () => {
-	let editorElement, editor, model, listStyleCommand;
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+
+describe( 'ListPropertiesUI', () => {
+	let editorElement, editor, model, listStyleCommand, listPropertiesView;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, { plugins: [ Paragraph, BlockQuote, ListStyle, UndoEditing ] } )
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
+		return ClassicTestEditor.create( editorElement, {
+			plugins: [ Paragraph, BlockQuote, ListProperties, UndoEditing ],
+			list: {
+				properties: {
+					styles: true,
+					startIndex: true,
+					reversed: true
+				}
+			}
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
 
-				listStyleCommand = editor.commands.get( 'listStyle' );
-			} );
+			listStyleCommand = editor.commands.get( 'listStyle' );
+		} );
 	} );
 
 	afterEach( () => {
@@ -51,20 +60,83 @@ describe( 'ListStyleUI', () => {
 	} );
 
 	it( 'should be named', () => {
-		expect( ListStyleUI.pluginName ).to.equal( 'ListStyleUI' );
+		expect( ListPropertiesUI.pluginName ).to.equal( 'ListPropertiesUI' );
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListStyleUI ) ).to.be.instanceOf( ListStyleUI );
+		expect( editor.plugins.get( ListPropertiesUI ) ).to.be.instanceOf( ListPropertiesUI );
 	} );
 
 	describe( 'init()', () => {
+		describe( 'component registration', () => {
+			it( 'should register a dropdown as "bulletedList" in the component factory when `styles` property is enabled', () => {
+				return withEditor( { styles: true }, editor => {
+					const componentFactory = editor.ui.componentFactory;
+
+					expect( componentFactory.has( 'bulletedList' ) ).to.be.true;
+
+					const bulletedListDropdown = componentFactory.create( 'bulletedList' );
+
+					expect( bulletedListDropdown ).to.be.instanceOf( DropdownView );
+				} );
+			} );
+
+			it( 'should not register a dropdown as "bulletedList" in the component factory when `styles` property is not enabled', () => {
+				return withEditor( {
+					styles: false,
+					startIndex: true,
+					reversed: true
+				}, editor => {
+					const componentFactory = editor.ui.componentFactory;
+
+					expect( componentFactory.has( 'bulletedList' ) ).to.be.false;
+				} );
+			} );
+
+			for ( const property of [ 'styles', 'startIndex', 'reversed' ] ) {
+				const listPropertiesConfig = {
+					styles: false,
+					startIndex: false,
+					reversed: false
+				};
+				listPropertiesConfig[ property ] = true;
+
+				it(
+					`should register a dropdown as "numberedList" in the component factory when \`${ property }\` property is enabled`,
+					() => {
+						return withEditor( listPropertiesConfig, editor => {
+							const componentFactory = editor.ui.componentFactory;
+
+							expect( componentFactory.has( 'numberedList' ) ).to.be.true;
+
+							const numberedListDropdown = componentFactory.create( 'numberedList' );
+
+							expect( numberedListDropdown ).to.be.instanceOf( DropdownView );
+						} );
+					}
+				);
+			}
+
+			it( 'should not register a dropdown as "numberedList" in the component factory when no property is enabled', () => {
+				return withEditor( {
+					styles: false,
+					startIndex: false,
+					reversed: false
+				}, editor => {
+					const componentFactory = editor.ui.componentFactory;
+
+					expect( componentFactory.has( 'numberedList' ) ).to.be.false;
+				} );
+			} );
+		} );
+
 		describe( 'bulleted list dropdown', () => {
 			let bulletedListCommand, bulletedListDropdown;
 
 			beforeEach( () => {
 				bulletedListCommand = editor.commands.get( 'bulletedList' );
 				bulletedListDropdown = editor.ui.componentFactory.create( 'bulletedList' );
+				listPropertiesView = bulletedListDropdown.panelView.children.first;
 			} );
 
 			it( 'should registered as "bulletedList" in the component factory', () => {
@@ -83,6 +155,12 @@ describe( 'ListStyleUI', () => {
 
 			it( 'should have a specific CSS class', () => {
 				expect( bulletedListDropdown.class ).to.equal( 'ck-list-styles-dropdown' );
+			} );
+
+			it( 'should not have numbered list properties', () => {
+				expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+				expect( listPropertiesView.startIndexFieldView ).to.be.null;
+				expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
 			} );
 
 			describe( 'main split button', () => {
@@ -129,23 +207,19 @@ describe( 'ListStyleUI', () => {
 				} );
 			} );
 
-			describe( 'toolbar with style buttons', () => {
-				let toolbarView;
+			describe( 'grid with style buttons', () => {
+				let stylesView;
 
 				beforeEach( () => {
-					toolbarView = bulletedListDropdown.toolbarView;
-				} );
-
-				it( 'should be in the dropdown panel', () => {
-					expect( bulletedListDropdown.panelView.children.get( 0 ) ).to.equal( toolbarView );
+					stylesView = listPropertiesView.stylesView;
 				} );
 
 				it( 'should have a proper ARIA label', () => {
-					expect( toolbarView.ariaLabel ).to.equal( 'Bulleted list styles toolbar' );
+					expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Bulleted list styles toolbar' );
 				} );
 
 				it( 'should bring the "disc" list style button', () => {
-					const buttonView = toolbarView.items.get( 0 );
+					const buttonView = stylesView.children.first;
 
 					expect( buttonView.label ).to.equal( 'Toggle the disc list style' );
 					expect( buttonView.tooltip ).to.equal( 'Disc' );
@@ -153,7 +227,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "circle" list style button', () => {
-					const buttonView = toolbarView.items.get( 1 );
+					const buttonView = stylesView.children.get( 1 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the circle list style' );
 					expect( buttonView.tooltip ).to.equal( 'Circle' );
@@ -161,11 +235,20 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "square" list style button', () => {
-					const buttonView = toolbarView.items.get( 2 );
+					const buttonView = stylesView.children.get( 2 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the square list style' );
 					expect( buttonView.tooltip ).to.equal( 'Square' );
 					expect( buttonView.icon ).to.equal( listStyleSquareIcon );
+				} );
+
+				it( 'should close the drop-down when any button gets executed', () => {
+					const spy = sinon.spy();
+
+					bulletedListDropdown.on( 'execute', spy );
+					listPropertiesView.fire( 'execute' );
+
+					sinon.assert.calledOnce( spy );
 				} );
 
 				describe( 'style button', () => {
@@ -173,7 +256,7 @@ describe( 'ListStyleUI', () => {
 
 					beforeEach( () => {
 						// "circle"
-						styleButtonView = toolbarView.items.get( 1 );
+						styleButtonView = stylesView.children.get( 1 );
 
 						sinon.spy( editor, 'execute' );
 						sinon.spy( editor.editing.view, 'focus' );
@@ -262,10 +345,7 @@ describe( 'ListStyleUI', () => {
 			beforeEach( () => {
 				numberedListCommand = editor.commands.get( 'numberedList' );
 				numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
-			} );
-
-			it( 'should registered as "numberedList" in the component factory', () => {
-				expect( numberedListDropdown ).to.be.instanceOf( DropdownView );
+				listPropertiesView = numberedListDropdown.panelView.children.first;
 			} );
 
 			it( 'should have #isEnabled bound to the "numberedList" command state', () => {
@@ -280,6 +360,53 @@ describe( 'ListStyleUI', () => {
 
 			it( 'should have a specific CSS class', () => {
 				expect( numberedListDropdown.class ).to.equal( 'ck-list-styles-dropdown' );
+			} );
+
+			describe( 'support of config.list.properties', () => {
+				it( 'should have styles grid, start index, and reversed fields when all properties are enabled in the config', () => {
+					return withEditor( {
+						styles: true,
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
+
+						expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+						expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+						expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+					} );
+				} );
+
+				it( 'should have only the styles grid when start index and reversed properties are disabled', () => {
+					return withEditor( {
+						styles: true,
+						startIndex: false,
+						reversed: false
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
+
+						expect( listPropertiesView.stylesView ).to.be.instanceOf( View );
+						expect( listPropertiesView.startIndexFieldView ).to.be.null;
+						expect( listPropertiesView.reversedSwitchButtonView ).to.be.null;
+					} );
+				} );
+
+				it( 'should have only the numbered list property UI when styles are disabled', async () => {
+					return withEditor( {
+						styles: false,
+						startIndex: true,
+						reversed: true
+					}, editor => {
+						const numberedListDropdown = editor.ui.componentFactory.create( 'numberedList' );
+						const listPropertiesView = numberedListDropdown.panelView.children.first;
+
+						expect( listPropertiesView.stylesView ).to.be.null;
+						expect( listPropertiesView.startIndexFieldView ).to.be.instanceOf( LabeledFieldView );
+						expect( listPropertiesView.reversedSwitchButtonView ).to.be.instanceOf( SwitchButtonView );
+					} );
+				} );
 			} );
 
 			describe( 'main split button', () => {
@@ -326,23 +453,19 @@ describe( 'ListStyleUI', () => {
 				} );
 			} );
 
-			describe( 'toolbar with style buttons', () => {
-				let toolbarView;
+			describe( 'grid with style buttons', () => {
+				let stylesView;
 
 				beforeEach( () => {
-					toolbarView = numberedListDropdown.toolbarView;
-				} );
-
-				it( 'should be in the dropdown panel', () => {
-					expect( numberedListDropdown.panelView.children.get( 0 ) ).to.equal( toolbarView );
+					stylesView = listPropertiesView.stylesView;
 				} );
 
 				it( 'should have a proper ARIA label', () => {
-					expect( toolbarView.ariaLabel ).to.equal( 'Numbered list styles toolbar' );
+					expect( stylesView.element.getAttribute( 'aria-label' ) ).to.equal( 'Numbered list styles toolbar' );
 				} );
 
 				it( 'should bring the "decimal" list style button', () => {
-					const buttonView = toolbarView.items.get( 0 );
+					const buttonView = stylesView.children.first;
 
 					expect( buttonView.label ).to.equal( 'Toggle the decimal list style' );
 					expect( buttonView.tooltip ).to.equal( 'Decimal' );
@@ -350,7 +473,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "decimal-leading-zero" list style button', () => {
-					const buttonView = toolbarView.items.get( 1 );
+					const buttonView = stylesView.children.get( 1 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the decimal with leading zero list style' );
 					expect( buttonView.tooltip ).to.equal( 'Decimal with leading zero' );
@@ -358,7 +481,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "lower-roman" list style button', () => {
-					const buttonView = toolbarView.items.get( 2 );
+					const buttonView = stylesView.children.get( 2 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the lower–roman list style' );
 					expect( buttonView.tooltip ).to.equal( 'Lower–roman' );
@@ -366,7 +489,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "upper-roman" list style button', () => {
-					const buttonView = toolbarView.items.get( 3 );
+					const buttonView = stylesView.children.get( 3 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the upper–roman list style' );
 					expect( buttonView.tooltip ).to.equal( 'Upper-roman' );
@@ -374,7 +497,7 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "lower–latin" list style button', () => {
-					const buttonView = toolbarView.items.get( 4 );
+					const buttonView = stylesView.children.get( 4 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the lower–latin list style' );
 					expect( buttonView.tooltip ).to.equal( 'Lower-latin' );
@@ -382,11 +505,20 @@ describe( 'ListStyleUI', () => {
 				} );
 
 				it( 'should bring the "upper–latin" list style button', () => {
-					const buttonView = toolbarView.items.get( 5 );
+					const buttonView = stylesView.children.get( 5 );
 
 					expect( buttonView.label ).to.equal( 'Toggle the upper–latin list style' );
 					expect( buttonView.tooltip ).to.equal( 'Upper-latin' );
 					expect( buttonView.icon ).to.equal( listStyleUpperLatinIcon );
+				} );
+
+				it( 'should close the drop-down when any button gets executed', () => {
+					const spy = sinon.spy();
+
+					numberedListDropdown.on( 'execute', spy );
+					listPropertiesView.fire( 'execute' );
+
+					sinon.assert.calledOnce( spy );
 				} );
 
 				describe( 'style button', () => {
@@ -394,7 +526,7 @@ describe( 'ListStyleUI', () => {
 
 					beforeEach( () => {
 						// "decimal-leading-zero""
-						styleButtonView = toolbarView.items.get( 1 );
+						styleButtonView = stylesView.children.get( 1 );
 
 						sinon.spy( editor, 'execute' );
 						sinon.spy( editor.editing.view, 'focus' );
@@ -464,7 +596,14 @@ describe( 'ListStyleUI', () => {
 						styleButtonView.fire( 'execute' );
 
 						expect( getData( model ) ).to.equal(
-							'<listItem listIndent="0" listStyle="decimal-leading-zero" listType="numbered">foo[]</listItem>'
+							'<listItem ' +
+								'listIndent="0" ' +
+								'listReversed="false" ' +
+								'listStart="1" ' +
+								'listStyle="decimal-leading-zero" ' +
+								'listType="numbered">' +
+								'foo[]' +
+							'</listItem>'
 						);
 
 						editor.execute( 'undo' );
@@ -475,6 +614,91 @@ describe( 'ListStyleUI', () => {
 					} );
 				} );
 			} );
+
+			describe( 'list start input', () => {
+				let listStartCommand, startIndexFieldView;
+
+				beforeEach( () => {
+					listStartCommand = editor.commands.get( 'listStart' );
+					startIndexFieldView = listPropertiesView.startIndexFieldView;
+				} );
+
+				it( 'should bind #isEnabled to the list start command', () => {
+					listStartCommand.isEnabled = true;
+					expect( startIndexFieldView.isEnabled ).to.be.true;
+
+					listStartCommand.isEnabled = false;
+					expect( startIndexFieldView.isEnabled ).to.be.false;
+				} );
+
+				it( 'should bind #value to the list start command', () => {
+					listStartCommand.value = 123;
+					expect( startIndexFieldView.fieldView.value ).to.equal( 123 );
+
+					listStartCommand.value = 321;
+					expect( startIndexFieldView.fieldView.value ).to.equal( 321 );
+				} );
+
+				it( 'should execute the list start command when the list property view fires #listStart', () => {
+					const spy = sinon.spy( editor, 'execute' );
+
+					listPropertiesView.fire( 'listStart', { startIndex: 1234 } );
+
+					sinon.assert.calledOnce( spy );
+					sinon.assert.calledWithExactly( spy, 'listStart', { startIndex: 1234 } );
+				} );
+			} );
+
+			describe( 'list reversed switch button', () => {
+				let listReversedCommand, reversedSwitchButtonView;
+
+				beforeEach( () => {
+					listReversedCommand = editor.commands.get( 'listReversed' );
+					reversedSwitchButtonView = listPropertiesView.reversedSwitchButtonView;
+				} );
+
+				it( 'should bind #isEnabled to the list reversed command', () => {
+					listReversedCommand.isEnabled = true;
+					expect( reversedSwitchButtonView.isEnabled ).to.be.true;
+
+					listReversedCommand.isEnabled = false;
+					expect( reversedSwitchButtonView.isEnabled ).to.be.false;
+				} );
+
+				it( 'should bind #isOn to the list reversed command', () => {
+					listReversedCommand.value = true;
+					expect( reversedSwitchButtonView.isOn ).to.be.true;
+
+					listReversedCommand.value = false;
+					expect( reversedSwitchButtonView.isOn ).to.be.false;
+				} );
+
+				it( 'should execute the list reversed command when the list property view fires #listReversed', () => {
+					const spy = sinon.spy( editor, 'execute' );
+
+					listPropertiesView.fire( 'listReversed' );
+
+					sinon.assert.calledOnce( spy );
+					sinon.assert.calledWithExactly( spy, 'listReversed', { reversed: true } );
+				} );
+			} );
 		} );
 	} );
+
+	async function withEditor( listPropertiesConfig, callback ) {
+		const editorElement = document.createElement( 'div' );
+		document.body.appendChild( editorElement );
+
+		const editor = await ClassicTestEditor.create( editorElement, {
+			plugins: [ ListProperties ],
+			list: {
+				properties: listPropertiesConfig
+			}
+		} );
+
+		callback( editor );
+
+		editorElement.remove();
+		await editor.destroy();
+	}
 } );
