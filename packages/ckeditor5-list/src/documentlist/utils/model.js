@@ -372,7 +372,7 @@ export function isSingleListItem( blocks ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
  */
-export function outdentFollowingItems( lastBlock, writer, { baseIndent = 0 } = {} ) {
+export function outdentFollowingItems( lastBlock, writer ) {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.
@@ -431,7 +431,7 @@ export function outdentFollowingItems( lastBlock, writer, { baseIndent = 0 } = {
 		const indent = node.getAttribute( 'listIndent' );
 
 		// If the indent is 0 we are not going to change anything anyway.
-		if ( indent == baseIndent ) {
+		if ( indent == 0 ) {
 			break;
 		}
 
@@ -443,7 +443,7 @@ export function outdentFollowingItems( lastBlock, writer, { baseIndent = 0 } = {
 
 		// Fix indent relatively to current relative indent.
 		// Note, that if we just changed the current relative indent, the newIndent will be equal to 0.
-		const newIndent = indent - currentIndent + baseIndent;
+		const newIndent = indent - currentIndent;
 
 		// Save the entry in changes array. We do not apply it at the moment, because we will need to
 		// reverse the changes so the last item is changed first.
