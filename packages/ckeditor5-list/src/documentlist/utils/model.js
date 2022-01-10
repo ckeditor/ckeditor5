@@ -12,6 +12,8 @@ import ListWalker, { iterateSiblingListBlocks } from './listwalker';
 
 /**
  * The list item ID generator.
+ *
+ * @protected
  */
 export class ListItemUid {
 	/**
@@ -33,7 +35,9 @@ export class ListItemUid {
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {Object} options TODO
+ * @param {Object} [options]
+ * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
+ * in the result.
  * @return {Array.<module:engine/model/element~Element>}
  */
 export function getAllListItemBlocks( listItem, options = {} ) {
@@ -54,7 +58,8 @@ export function getAllListItemBlocks( listItem, options = {} ) {
  * @param {module:engine/model/element~Element} listItem Starting list item element.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='backward'] Walking direction.
- * TODO all options
+ * @param {Boolean} [options.higherIndent=false] Whether blocks with a higher indent level than the start block should be included
+ * in the result.
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItemBlocks( listItem, options = {} ) {
@@ -183,7 +188,6 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @returns {Array.<module:engine/model/element~Element>} The array of updated blocks.
  */
-// TODO add test for return value.
 export function splitListItemBefore( listBlock, writer ) {
 	const blocks = getListItemBlocks( listBlock, { direction: 'forward' } );
 	const id = ListItemUid.next();
@@ -317,7 +321,7 @@ export function outdentBlocksWithMerge( blocks, writer, { expand } = {} ) {
 }
 
 /**
- * Removes list attributes from the fiven blocks.
+ * Removes all list attributes from the given blocks.
  *
  * @protected
  * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
@@ -340,10 +344,12 @@ export function removeListAttributes( blocks, writer ) {
 
 /**
  * Checks whether the given blocks are related to a single list item.
- * TODO
+ *
  * @protected
+ * @param {Array.<module:engine/model/element~Element>} blocks The list block elements.
+ * @returns {Boolean}
  */
-export function isOnlyOneListItemSelected( blocks ) {
+export function isSingleListItem( blocks ) {
 	if ( !blocks.length ) {
 		return false;
 	}
@@ -358,11 +364,15 @@ export function isOnlyOneListItemSelected( blocks ) {
 }
 
 /**
- * TODO
+ * Modifies the indents of list blocks following the given list block so the indentation is valid after
+ * the given block is no longer a list item.
  *
  * @protected
+ * @param {module:engine/model/element~Element} lastBlock The last list block that has become a non-list element.
+ * @param {module:engine/model/writer~Writer} writer The model writer.
+ * @returns {Array.<module:engine/model/element~Element>} Array of altered blocks.
  */
-export function outdentItemsAfterItemRemoved( lastBlock, writer, { baseIndent = 0 } = {} ) {
+export function outdentFollowingItems( lastBlock, writer, { baseIndent = 0 } = {} ) {
 	const changedBlocks = [];
 
 	// Start from the model item that is just after the last turned-off item.
@@ -448,13 +458,12 @@ export function outdentItemsAfterItemRemoved( lastBlock, writer, { baseIndent = 
 }
 
 /**
- * Returns the sorted array of given blocks.
+ * Returns the array of given blocks sorted by model indexes (document order).
  *
  * @protected
  * @param {Iterable.<module:engine/model/element~Element>} blocks The array of blocks.
  * @returns {Array.<module:engine/model/element~Element>} The sorted array of blocks.
  */
-// TODO add tests.
 export function sortBlocks( blocks ) {
 	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
 }

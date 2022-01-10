@@ -12,11 +12,11 @@ import {
 	indentBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
-	isOnlyOneListItemSelected,
+	isSingleListItem,
 	ListItemUid,
 	mergeListItemBefore,
 	outdentBlocks,
-	outdentItemsAfterItemRemoved,
+	outdentFollowingItems,
 	removeListAttributes,
 	splitListItemBefore
 } from '../../../src/documentlist/utils/model';
@@ -1474,9 +1474,9 @@ describe( 'DocumentList - utils - model', () => {
 		} );
 	} );
 
-	describe( 'isOnlyOneListItemSelected()', () => {
+	describe( 'isSingleListItem()', () => {
 		it( 'should return false if no blocks are given', () => {
-			expect( isOnlyOneListItemSelected( [] ) ).to.be.false;
+			expect( isSingleListItem( [] ) ).to.be.false;
 		} );
 
 		it( 'should return false if first block is not a list item', () => {
@@ -1490,7 +1490,7 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 1 )
 			];
 
-			expect( isOnlyOneListItemSelected( blocks ) ).to.be.false;
+			expect( isSingleListItem( blocks ) ).to.be.false;
 		} );
 
 		it( 'should return false if any block has a different ID', () => {
@@ -1507,7 +1507,7 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 2 )
 			];
 
-			expect( isOnlyOneListItemSelected( blocks ) ).to.be.false;
+			expect( isSingleListItem( blocks ) ).to.be.false;
 		} );
 
 		it( 'should return true if all block has the same ID', () => {
@@ -1523,11 +1523,11 @@ describe( 'DocumentList - utils - model', () => {
 				fragment.getChild( 1 )
 			];
 
-			expect( isOnlyOneListItemSelected( blocks ) ).to.be.true;
+			expect( isSingleListItem( blocks ) ).to.be.true;
 		} );
 	} );
 
-	describe( 'outdentItemsAfterItemRemoved()', () => {
+	describe( 'outdentFollowingItems()', () => {
 		it( 'should outdent all items and keep nesting structure where possible', () => {
 			const input = modelList( [
 				'0',
@@ -1551,7 +1551,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentItemsAfterItemRemoved( fragment.getChild( 3 ), writer );
+				changedBlocks = outdentFollowingItems( fragment.getChild( 3 ), writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [

@@ -12,8 +12,9 @@ import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
 	isFirstBlockOfListItem,
-	isOnlyOneListItemSelected,
+	isSingleListItem,
 	outdentBlocksWithMerge,
+	sortBlocks,
 	splitListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -55,41 +56,56 @@ export default class DocumentListIndentCommand extends Command {
 	 * Indents or outdents (depending on the {@link #constructor}'s `indentDirection` parameter) selected list items.
 	 *
 	 * @fires execute
-	 * @fires _executeCleanup
+	 * @fires afterExecute
 	 */
 	execute() {
 		const model = this.editor.model;
 		const blocks = getSelectedListBlocks( model.document.selection );
 
 		model.change( writer => {
+			const changedBlocks = [];
+
 			// Handle selection contained in the single list item and starting in the following blocks.
-			if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
+			if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 				// Allow increasing indent of following list item blocks.
 				if ( this._direction == 'forward' ) {
-					indentBlocks( blocks, writer );
+					changedBlocks.push( ...indentBlocks( blocks, writer ) );
 				}
 
 				// For indent make sure that indented blocks have a new ID.
 				// For outdent just split blocks from the list item (give them a new IDs).
-				splitListItemBefore( blocks[ 0 ], writer );
-				// TODO add split result to changed blocks.
-
-				this._fireAfterExecute( blocks );
+				changedBlocks.push( ...splitListItemBefore( blocks[ 0 ], writer ) );
 			}
 			// More than a single list item is selected, or the first block of list item is selected.
 			else {
 				// Now just update the attributes of blocks.
-				const changedBlocks = this._direction == 'forward' ?
-					indentBlocks( blocks, writer, { expand: true } ) :
-					outdentBlocksWithMerge( blocks, writer, { expand: true } );
-
-				this._fireAfterExecute( changedBlocks );
+				if ( this._direction == 'forward' ) {
+					changedBlocks.push( ...indentBlocks( blocks, writer, { expand: true } ) );
+				} else {
+					changedBlocks.push( ...outdentBlocksWithMerge( blocks, writer, { expand: true } ) );
+				}
 			}
+
+			// Align the list item type to match the previous list item (from the same list).
+			for ( const block of changedBlocks ) {
+				// This block become a plain block (for example a paragraph).
+				if ( !block.hasAttribute( 'listType' ) ) {
+					continue;
+				}
+
+				const previousItemBlock = ListWalker.first( block, { sameIndent: true } );
+
+				if ( previousItemBlock ) {
+					writer.setAttribute( 'listType', previousItemBlock.getAttribute( 'listType' ), block );
+				}
+			}
+
+			this._fireAfterExecute( changedBlocks );
 		} );
 	}
 
 	/**
-	 * TODO
+	 * Fires the `afterExecute` event.
 	 *
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
@@ -104,7 +120,7 @@ export default class DocumentListIndentCommand extends Command {
 		 * @protected
 		 * @event afterExecute
 		 */
-		this.fire( 'afterExecute', changedBlocks );
+		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**
@@ -129,7 +145,7 @@ export default class DocumentListIndentCommand extends Command {
 		}
 
 		// A single block of a list item is selected, so it could be indented as a sublist.
-		if ( isOnlyOneListItemSelected( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
+		if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
 			return true;
 		}
 

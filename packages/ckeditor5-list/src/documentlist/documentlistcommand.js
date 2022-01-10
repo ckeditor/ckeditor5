@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/documentlist/documentlistcinnabd
+ * @module list/documentlist/documentlistcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
@@ -14,13 +14,13 @@ import {
 	getListItemBlocks,
 	getListItems,
 	removeListAttributes,
-	outdentItemsAfterItemRemoved,
+	outdentFollowingItems,
 	ListItemUid,
 	sortBlocks
 } from './utils/model';
 
 /**
- * The list command. It is used by the {@link TODO document list feature}.
+ * The list command. It is used by the {@link module:list/documentlist~DocumentList document list feature}.
  *
  * @extends module:core/command~Command
  */
@@ -38,7 +38,7 @@ export default class DocumentListCommand extends Command {
 		 * The type of the list created by the command.
 		 *
 		 * @readonly
-		 * @member {'numbered'|'bulleted'|'todo'}
+		 * @member {'numbered'|'bulleted'}
 		 */
 		this.type = type;
 
@@ -63,6 +63,7 @@ export default class DocumentListCommand extends Command {
 	 * Executes the list command.
 	 *
 	 * @fires execute
+	 * @fires afterExecute
 	 * @param {Object} [options] Command options.
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will try to convert the
 	 * selected items and potentially the neighbor elements to the proper list items. If set to `false` it will convert selected elements
@@ -93,9 +94,9 @@ export default class DocumentListCommand extends Command {
 				changedBlocks.push( ...removeListAttributes( blocks, writer ) );
 
 				// Outdent items following the selected list item.
-				changedBlocks.push( ...outdentItemsAfterItemRemoved( lastBlock, writer ) );
+				changedBlocks.push( ...outdentFollowingItems( lastBlock, writer ) );
 
-				this._fireAfterExecute( sortBlocks( new Set( changedBlocks ) ) );
+				this._fireAfterExecute( changedBlocks );
 			}
 			// Turning on the list items for a collapsed selection inside a list item.
 			else if ( document.selection.isCollapsed && blocks[ 0 ].hasAttribute( 'listType' ) ) {
@@ -139,7 +140,7 @@ export default class DocumentListCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Fires the `afterExecute` event.
 	 *
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
@@ -154,7 +155,7 @@ export default class DocumentListCommand extends Command {
 		 * @protected
 		 * @event afterExecute
 		 */
-		this.fire( 'afterExecute', changedBlocks );
+		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**

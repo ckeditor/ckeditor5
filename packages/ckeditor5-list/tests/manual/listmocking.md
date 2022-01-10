@@ -1,53 +1,35 @@
-### Loading
+## Description
+Main purpose of this tool is to process editor's model to ASCII art that can be used in automatic tests so they are more readable.
+It also allows to process ASCII art back to model data. You can provide your own editor's model/ASCII art to the input and parse it or you can create list in an editor and get model/ASCII from it.
 
-1. The data should be loaded with:
-  * two paragraphs,
-  * bulleted list with eight items,
-  * two paragraphs,
-  * numbered list with one item,
-  * bullet list with one item.
-2. Toolbar should have two buttons: for bullet and for numbered list.
+### ASCII Tree
 
-### Testing
+```
+* A
+  B
+  # C{id:50}
+    # D
+* E
+* F
 
-After each step test undo (whole stack) -> redo (whole stack) -> undo (whole stack).
+* - bulleted list
+# - numbered list
+---
+{id:fixedId} - force given id as listItemId
+attribute in model.
+---
+Each indentation is two spaces before list
+type.
+```
 
-Creating:
+## Input
+Input should be valid editor's model or an ASCII art created in this tool. Processing function tries to be a little bit smart (naively) and cleans input so it can be copied and pasted from code - it will get rid of spaces, new lines and other characters not allowed in model.
 
-1. Convert first paragraph to list item
-2. Create empty paragraph and convert to list item
-3. Enter in the middle of item
-4. Enter at the start of item
-5. Enter at the end of item
+## Editor
+Editor allows to inspect how the processed data renders in the editor. You can also create your list in the editor and create model/ASCII from it with 'Process editor model' button.
 
-Removing:
-
-1. Delete all contents from list item and then the list item
-2. Press enter in empty list item
-3. Click on highlighted button ("turn off" list feature)
-4. Do it for first, second and last list item
-
-Changing type:
-
-1. Change type from bulleted to numbered
-2. Do it for first, second and last item
-3. Do it for multiple items at once
-
-Merging:
-
-1. Convert paragraph before list to same type of list
-2. Convert paragraph after list to same type of list
-3. Convert paragraph before list to different type of list
-4. Convert paragraph after list to different type of list
-5. Convert first paragraph to bulleted list, then convert second paragraph to bulleted list
-6. Convert multiple items and paragraphs at once
-
-Selection deletion. Make selection between items and press delete button:
-
-1. two items from the same list
-2. all items in a list
-3. paragraph before list and second item of list
-4. paragraph after list and one-but-last item of list
-5. two paragraphs that have list between them
-6. two items from different lists of same type
-7. two items from different lists of different type
+## Output
+### When input is model
+It should create ASCII tree as a code ready to be pasted in tests.
+### When input is ASCII
+It should create correct editor's model.

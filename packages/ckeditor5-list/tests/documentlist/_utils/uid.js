@@ -6,7 +6,7 @@
 import { ListItemUid } from '../../../src/documentlist/utils/model';
 
 /**
- * Mocks the `uid()` with sequential numbers.
+ * Mocks the `ListItemUid.next()` with sequential numbers.
  *
  * @param {Number} [start=0xa00] The uid start number.
  */
