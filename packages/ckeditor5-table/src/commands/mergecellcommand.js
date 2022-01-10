@@ -9,7 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core';
 import TableWalker from '../tablewalker';
-import { getTableCellsContainingSelection } from '../utils/selection';
 import { isHeadingColumnCell } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
@@ -80,7 +79,8 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableCell = tableSelectionUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		const cellToMerge = this.value;
 		const direction = this.direction;
@@ -122,7 +122,8 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableCell = getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableCell = tableSelectionUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
 			return;

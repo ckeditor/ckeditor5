@@ -10,6 +10,7 @@ import TableSelection from '../src/tableselection';
 import TableUtils from '../src/tableutils';
 
 import TableClipboard from '../src/tableclipboard';
+import TableSelectionUtils from '../src/utils/tableselectionutils';
 
 describe( 'table clipboard', () => {
 	let editor;
@@ -25,12 +26,14 @@ describe( 'table clipboard', () => {
 	} );
 
 	describe( 'TableClipboard', () => {
-		it( 'should have pluginName', () => {
-			expect( TableClipboard.pluginName ).to.equal( 'TableClipboard' );
+		it( 'should be a named plugin', () => {
+			expect( editor.plugins.get( 'TableClipboard' ) ).to.be.instanceOf( TableClipboard );
 		} );
 
-		it( 'requires TableSelection and TableUtils ', () => {
-			expect( TableClipboard.requires ).to.deep.equal( [ TableSelection, TableUtils ] );
+		it( 'requires TableSelection plugins and utilities', () => {
+			expect( editor.plugins.has( TableSelection ) ).to.be.true;
+			expect( editor.plugins.has( TableUtils ) ).to.be.true;
+			expect( editor.plugins.has( TableSelectionUtils ) ).to.be.true;
 		} );
 	} );
 } );

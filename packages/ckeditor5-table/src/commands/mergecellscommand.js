@@ -9,7 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core';
 import TableUtils from '../tableutils';
-import { getSelectedTableCells, isSelectionRectangular } from '../utils/selection';
 import { updateNumericAttribute } from '../utils/common';
 import { removeEmptyRowsColumns } from '../utils/structure';
 
@@ -29,8 +28,10 @@ export default class MergeCellsCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedTableCells = getSelectedTableCells( this.editor.model.document.selection );
-		this.isEnabled = isSelectionRectangular( selectedTableCells, this.editor.plugins.get( TableUtils ) );
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+
+		const selectedTableCells = tableSelectionUtils.getSelectedTableCells( this.editor.model.document.selection );
+		this.isEnabled = tableSelectionUtils.isSelectionRectangular( selectedTableCells, this.editor.plugins.get( TableUtils ) );
 	}
 
 	/**
@@ -41,9 +42,10 @@ export default class MergeCellsCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( TableUtils );
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 
 		model.change( writer => {
-			const selectedTableCells = getSelectedTableCells( model.document.selection );
+			const selectedTableCells = tableSelectionUtils.getSelectedTableCells( model.document.selection );
 
 			// All cells will be merged into the first one.
 			const firstTableCell = selectedTableCells.shift();

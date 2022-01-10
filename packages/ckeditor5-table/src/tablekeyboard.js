@@ -9,10 +9,10 @@
 
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
+import TableSelectionUtils from './utils/tableselectionutils';
 
 import { Plugin } from 'ckeditor5/src/core';
 import { getLocalizedArrowKeyCodeDirection } from 'ckeditor5/src/utils';
-import { getSelectedTableCells, getTableCellsContainingSelection } from './utils/selection';
 
 /**
  * This plugin enables keyboard navigation for tables.
@@ -32,7 +32,7 @@ export default class TableKeyboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection ];
+		return [ TableSelection, TableSelectionUtils ];
 	}
 
 	/**
@@ -83,10 +83,11 @@ export default class TableKeyboard extends Plugin {
 	 */
 	_getTabHandler( isForward ) {
 		const editor = this.editor;
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 
 		return ( domEventData, cancel ) => {
 			const selection = editor.model.document.selection;
-			let tableCell = getTableCellsContainingSelection( selection )[ 0 ];
+			let tableCell = tableSelectionUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 			if ( !tableCell ) {
 				tableCell = this.editor.plugins.get( 'TableSelection' ).getFocusCell();
@@ -188,13 +189,14 @@ export default class TableKeyboard extends Plugin {
 	 * @returns {Boolean} Returns `true` if key was handled.
 	 */
 	_handleArrowKeys( direction, expandSelection ) {
+		const tableSelectionUtils = this.editor.plugins.get( TableSelectionUtils );
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const isForward = [ 'right', 'down' ].includes( direction );
 
 		// In case one or more table cells are selected (from outside),
 		// move the selection to a cell adjacent to the selected table fragment.
-		const selectedCells = getSelectedTableCells( selection );
+		const selectedCells = tableSelectionUtils.getSelectedTableCells( selection );
 
 		if ( selectedCells.length ) {
 			let focusCell;

@@ -775,6 +775,31 @@ export default class TableUtils extends Plugin {
 		return Array.from( table.getChildren() )
 			.reduce( ( rowCount, child ) => child.is( 'element', 'tableRow' ) ? rowCount + 1 : rowCount, 0 );
 	}
+
+	/**
+	 * Creates an instance of the table walker.
+	 *
+	 * The table walker iterates internally by traversing the table from row index = 0 and column index = 0.
+	 * It walks row by row and column by column in order to output values defined in the options.
+	 * By default it will output only the locations that are occupied by a cell. To include also spanned rows and columns,
+	 * pass the `includeAllSlots` option.
+	 *
+	 * @protected
+	 * @param {module:engine/model/element~Element} table A table over which the walker iterates.
+	 * @param {Object} [options={}] An object with configuration.
+	 * @param {Number} [options.row] A row index for which this iterator will output cells.
+	 * Can't be used together with `startRow` and `endRow`.
+	 * @param {Number} [options.startRow=0] A row index from which this iterator should start. Can't be used together with `row`.
+	 * @param {Number} [options.endRow] A row index at which this iterator should end. Can't be used together with `row`.
+	 * @param {Number} [options.column] A column index for which this iterator will output cells.
+	 * Can't be used together with `startColumn` and `endColumn`.
+	 * @param {Number} [options.startColumn=0] A column index from which this iterator should start. Can't be used together with `column`.
+	 * @param {Number} [options.endColumn] A column index at which this iterator should end. Can't be used together with `column`.
+	 * @param {Boolean} [options.includeAllSlots=false] Also return values for spanned cells.
+	 */
+	createTableWalker( table, options = {} ) {
+		return new TableWalker( table, options );
+	}
 }
 
 // Creates empty rows at the given index in an existing table.

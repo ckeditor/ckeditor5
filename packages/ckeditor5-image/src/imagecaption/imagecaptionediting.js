@@ -14,7 +14,7 @@ import { toWidgetEditable } from 'ckeditor5/src/widget';
 import ToggleImageCaptionCommand from './toggleimagecaptioncommand';
 
 import ImageUtils from '../imageutils';
-import { getCaptionFromImageModelElement, matchImageCaptionViewElement } from './utils';
+import ImageCaptionUtils from './imagecaptionutils';
 
 /**
  * The image caption engine plugin. It is responsible for:
@@ -30,7 +30,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageUtils ];
+		return [ ImageUtils, ImageCaptionUtils ];
 	}
 
 	/**
@@ -93,11 +93,12 @@ export default class ImageCaptionEditing extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		const t = editor.t;
 
 		// View -> model converter for the data pipeline.
 		editor.conversion.for( 'upcast' ).elementToElement( {
-			view: element => matchImageCaptionViewElement( imageUtils, element ),
+			view: element => imageCaptionUtils.matchImageCaptionViewElement( element ),
 			model: 'caption'
 		} );
 
@@ -149,6 +150,7 @@ export default class ImageCaptionEditing extends Plugin {
 	_setupImageTypeCommandsIntegration() {
 		const editor = this.editor;
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		const imageTypeInlineCommand = editor.commands.get( 'imageTypeInline' );
 		const imageTypeBlockCommand = editor.commands.get( 'imageTypeBlock' );
 
@@ -166,7 +168,7 @@ export default class ImageCaptionEditing extends Plugin {
 			}
 
 			if ( imageUtils.isBlockImage( oldElement ) ) {
-				const oldCaptionElement = getCaptionFromImageModelElement( oldElement );
+				const oldCaptionElement = imageCaptionUtils.getCaptionFromImageModelElement( oldElement );
 
 				// If the old element was a captioned block image (the caption was visible),
 				// simply save it so it can be restored.

@@ -10,7 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 
 import { updateNumericAttribute } from '../utils/common';
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 import { getVerticallyOverlappingCells, splitHorizontally } from '../utils/structure';
 
 /**
@@ -32,8 +31,9 @@ export default class SetHeaderRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 		const model = this.editor.model;
-		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
@@ -65,11 +65,14 @@ export default class SetHeaderRowCommand extends Command {
 		if ( options.forceValue === this.value ) {
 			return;
 		}
+
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 		const model = this.editor.model;
-		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+
+		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 		const table = selectedCells[ 0 ].findAncestor( 'table' );
 
-		const { first, last } = getRowIndexes( selectedCells );
+		const { first, last } = tableSelectionUtils.getRowIndexes( selectedCells );
 		const headingRowsToSet = this.value ? first : last + 1;
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 

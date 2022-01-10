@@ -10,7 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 
 import TableWalker from '../tablewalker';
-import { getSelectionAffectedTableCells } from '../utils/selection';
 
 /**
  * The select column command.
@@ -38,7 +37,8 @@ export default class SelectColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
 		this.isEnabled = selectedCells.length > 0;
 	}
@@ -47,8 +47,9 @@ export default class SelectColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 		const model = this.editor.model;
-		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
+		const referenceCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 		const firstCell = referenceCells[ 0 ];
 		const lastCell = referenceCells.pop();
 		const table = firstCell.findAncestor( 'table' );

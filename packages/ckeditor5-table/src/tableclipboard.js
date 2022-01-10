@@ -12,7 +12,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
-import { getColumnIndexes, getRowIndexes, getSelectionAffectedTableCells, isSelectionRectangular, sortRanges } from './utils/selection';
+import TableSelectionUtils from './utils/tableselectionutils';
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
@@ -43,7 +43,7 @@ export default class TableClipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection, TableUtils ];
+		return [ TableSelection, TableUtils, TableSelectionUtils ];
 	}
 
 	/**
@@ -58,6 +58,8 @@ export default class TableClipboard extends Plugin {
 		this.listenTo( editor.model, 'insertContent', ( evt, args ) => this._onInsertContent( evt, ...args ), { priority: 'high' } );
 
 		this.decorate( '_replaceTableSlotCell' );
+
+		this.tableSelectionUtils = editor.plugins.get( 'TableSelectionUtils' );
 	}
 
 	/**
@@ -122,7 +124,7 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		const selectedTableCells = getSelectionAffectedTableCells( model.document.selection );
+		const selectedTableCells = this.tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 
 		if ( !selectedTableCells.length ) {
 			removeEmptyRowsColumns( pastedTable, tableUtils );
@@ -140,7 +142,7 @@ export default class TableClipboard extends Plugin {
 			};
 
 			// Prepare the table for pasting.
-			const selection = prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils );
+			const selection = prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils, this.tableSelectionUtils );
 
 			// Beyond this point we operate on a fixed content table with rectangular selection and proper last row/column values.
 
@@ -171,7 +173,7 @@ export default class TableClipboard extends Plugin {
 			if ( this.editor.plugins.get( 'TableSelection' ).isEnabled ) {
 				// Selection ranges must be sorted because the first and last selection ranges are considered
 				// as anchor/focus cell ranges for multi-cell selection.
-				const selectionRanges = sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+				const selectionRanges = this.tableSelectionUtils.sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
 
 				writer.setSelection( selectionRanges );
 			} else {
@@ -311,17 +313,21 @@ export default class TableClipboard extends Plugin {
 
 		return cellToInsert;
 	}
+
+	/**
+	 * Extracts the table for pasting into a table.
+	 *
+	 * @protected
+	 * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
+	 * @param {module:engine/model/model~Model} model The editor model.
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	getTableIfOnlyTableInContent( content, model ) {
+		return getTableIfOnlyTableInContent( content, model );
+	}
 }
 
-/**
- * Extract table for pasting into table.
- *
- * @private
- * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/model~Model} model The editor model.
- * @returns {module:engine/model/element~Element|null}
- */
-export function getTableIfOnlyTableInContent( content, model ) {
+function getTableIfOnlyTableInContent( content, model ) {
 	if ( !content.is( 'documentFragment' ) && !content.is( 'element' ) ) {
 		return null;
 	}
@@ -378,11 +384,11 @@ export function getTableIfOnlyTableInContent( content, model ) {
 // @returns {Number} selection.firstRow
 // @returns {Number} selection.lastColumn
 // @returns {Number} selection.lastRow
-function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils ) {
+function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils, tableSelectionUtils ) {
 	const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
 
-	const columnIndexes = getColumnIndexes( selectedTableCells );
-	const rowIndexes = getRowIndexes( selectedTableCells );
+	const columnIndexes = tableSelectionUtils.getColumnIndexes( selectedTableCells );
+	const rowIndexes = tableSelectionUtils.getRowIndexes( selectedTableCells );
 
 	const selection = {
 		firstColumn: columnIndexes.first,
@@ -403,7 +409,7 @@ function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, t
 
 	// In case of expanding selection we do not reset the selection so in this case we will always try to fix selection
 	// like in the case of a non-rectangular area. This might be fixed by re-setting selected cells array but this shortcut is safe.
-	if ( shouldExpandSelection || !isSelectionRectangular( selectedTableCells, tableUtils ) ) {
+	if ( shouldExpandSelection || !tableSelectionUtils.isSelectionRectangular( selectedTableCells ) ) {
 		// For a non-rectangular selection (ie in which some cells sticks out from a virtual selection rectangle) we need to create
 		// a table layout that has a rectangular selection. This will split cells so the selection become rectangular.
 		// Beyond this point we will operate on fixed content table.

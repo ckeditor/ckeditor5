@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import FontSizeEditing from './fontsize/fontsizeediting';
 import FontSizeUI from './fontsize/fontsizeui';
+import { normalizeOptions } from './fontsize/utils';
 
 /**
  * The font size plugin.
@@ -35,6 +36,17 @@ export default class FontSize extends Plugin {
 	 */
 	static get pluginName() {
 		return 'FontSize';
+	}
+
+	/**
+	 * Normalizes and translates the {@link module:font/fontsize~FontSizeConfig#options configuration options}
+	 * to the {@link module:font/fontsize~FontSizeOption} format.
+	 *
+	 * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from the configuration.
+	 * @returns {Array.<module:font/fontsize~FontSizeOption>}
+	 */
+	normalizeSizeOptions( options ) {
+		return normalizeOptions( options );
 	}
 }
 

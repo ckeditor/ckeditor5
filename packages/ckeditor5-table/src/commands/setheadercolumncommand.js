@@ -13,7 +13,6 @@ import {
 	isHeadingColumnCell,
 	updateNumericAttribute
 } from '../utils/common';
-import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 import { getHorizontallyOverlappingCells, splitVertically } from '../utils/structure';
 
 /**
@@ -37,7 +36,9 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+
+		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isInTable = selectedCells.length > 0;
 
@@ -71,11 +72,12 @@ export default class SetHeaderColumnCommand extends Command {
 			return;
 		}
 
+		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 		const model = this.editor.model;
-		const selectedCells = getSelectionAffectedTableCells( model.document.selection );
+		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 		const table = selectedCells[ 0 ].findAncestor( 'table' );
 
-		const { first, last } = getColumnIndexes( selectedCells );
+		const { first, last } = tableSelectionUtils.getColumnIndexes( selectedCells );
 		const headingColumnsToSet = this.value ? first : last + 1;
 
 		model.change( writer => {

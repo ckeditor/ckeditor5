@@ -10,7 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 
 import ImageBlockEditing from '../image/imageblockediting';
-import { getCaptionFromImageModelElement, getCaptionFromModelSelection } from './utils';
 
 /**
  * The toggle image caption command.
@@ -41,7 +40,7 @@ export default class ToggleImageCaptionCommand extends Command {
 	 */
 	refresh() {
 		const editor = this.editor;
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 
 		// Only block images can get captions.
 		if ( !editor.plugins.has( ImageBlockEditing ) ) {
@@ -55,7 +54,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		const selectedElement = selection.getSelectedElement();
 
 		if ( !selectedElement ) {
-			const ancestorCaptionElement = getCaptionFromModelSelection( imageUtils, selection );
+			const ancestorCaptionElement = imageCaptionUtils.getCaptionFromModelSelection( selection );
 
 			this.isEnabled = !!ancestorCaptionElement;
 			this.value = !!ancestorCaptionElement;
@@ -70,7 +69,7 @@ export default class ToggleImageCaptionCommand extends Command {
 		if ( !this.isEnabled ) {
 			this.value = false;
 		} else {
-			this.value = !!getCaptionFromImageModelElement( selectedElement );
+			this.value = !!imageCaptionUtils.getCaptionFromImageModelElement( selectedElement );
 		}
 	}
 
@@ -145,14 +144,14 @@ export default class ToggleImageCaptionCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const imageCaptionEditing = editor.plugins.get( 'ImageCaptionEditing' );
-		const imageUtils = editor.plugins.get( 'ImageUtils' );
+		const imageCaptionUtils = editor.plugins.get( 'ImageCaptionUtils' );
 		let selectedImage = selection.getSelectedElement();
 		let captionElement;
 
 		if ( selectedImage ) {
-			captionElement = getCaptionFromImageModelElement( selectedImage );
+			captionElement = imageCaptionUtils.getCaptionFromImageModelElement( selectedImage );
 		} else {
-			captionElement = getCaptionFromModelSelection( imageUtils, selection );
+			captionElement = imageCaptionUtils.getCaptionFromModelSelection( selection );
 			selectedImage = captionElement.parent;
 		}
 
