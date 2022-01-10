@@ -19,7 +19,7 @@ import {
 	getData as getModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { modelList, stringifyList } from './../documentlist/_utils/utils';
+import { modelList, stringifyList } from '../documentlist/_utils/utils';
 import DocumentList from '../../src/documentlist';
 
 ClassicEditor
@@ -31,11 +31,11 @@ ClassicEditor
 		window.editor = editor;
 
 		const model = '<paragraph listIndent="0" listItemId="000" listType="bulleted">A</paragraph>\n' +
-		'<paragraph listIndent="0" listItemId="000" listType="bulleted">B</paragraph>\n' +
-		'<paragraph listIndent="1" listItemId="002" listType="numbered">C</paragraph>\n' +
-		'<paragraph listIndent="2" listItemId="003" listType="numbered">D</paragraph>\n' +
-		'<paragraph listIndent="0" listItemId="004" listType="bulleted">E</paragraph>\n' +
-		'<paragraph listIndent="0" listItemId="005" listType="bulleted">F</paragraph>';
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">B</paragraph>\n' +
+			'<paragraph listIndent="1" listItemId="002" listType="numbered">C</paragraph>\n' +
+			'<paragraph listIndent="2" listItemId="003" listType="numbered">D</paragraph>\n' +
+			'<paragraph listIndent="0" listItemId="004" listType="bulleted">E</paragraph>\n' +
+			'<paragraph listIndent="0" listItemId="005" listType="bulleted">F</paragraph>';
 
 		document.getElementById( 'data-input' ).value = model;
 		document.getElementById( 'btn-process-input' ).click();
@@ -45,6 +45,11 @@ ClassicEditor
 	} );
 
 const copyOutput = async () => {
+	if ( !window.navigator.clipboard ) {
+		console.warn( 'Cannot copy output. Clipboard API requires HTTPS or localhost.' );
+		return;
+	}
+
 	const output = document.getElementById( 'data-output' ).innerText;
 
 	await window.navigator.clipboard.writeText( output );
@@ -58,7 +63,8 @@ const copyOutput = async () => {
 	copyButton.appendChild( label );
 
 	window.setTimeout( () => {
-		label.className = 'hide'; }
+		label.className = 'hide';
+	}
 	, 0 );
 
 	window.setTimeout( () => {
@@ -67,24 +73,21 @@ const copyOutput = async () => {
 };
 
 const getListModelWithNewLines = stringifiedModel => {
-	return stringifiedModel.replace( /<\/paragraph>/g, '</paragraph>\n' );
+	return stringifiedModel.replace( /<\/(paragraph|heading\d)>/g, '</$1>\n' );
 };
 
 const setModelDataFromAscii = () => {
 	const asciiList = document.getElementById( 'data-input' ).value;
-	const cleanedAsciiList = asciiList.replace( /[+|'|\t|;|,]/g, '' );
-	const modelDataArray = cleanedAsciiList.split( '\n' );
+	const modelDataArray = asciiList.replace( /^[^']*'|'[^']*$/gm, '' ).split( '\n' );
+
 	const editorModelString = modelList( modelDataArray );
 
 	setModelData( window.editor.model, editorModelString );
 	document.getElementById( 'data-output' ).innerText = getListModelWithNewLines( editorModelString );
 };
 
-const setAsciiListFromModel = () => {
-	const editorModelString = document.getElementById( 'data-input' ).value;
-	const cleanedEditorModelString = editorModelString.replace( /[+|'|\t|\r|\n|;|,]/g, '' ).replace( /> </g, '><' );
-	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
-	const asciiList = stringifyList( editorModel ).split( '\n' );
+const createAsciiListCodeSnippet = stringifiedAsciiList => {
+	const asciiList = stringifiedAsciiList.split( '\n' );
 
 	const asciiListToInsertInArray = asciiList.map( ( element, index ) => {
 		if ( index === asciiList.length - 1 ) {
@@ -96,7 +99,17 @@ const setAsciiListFromModel = () => {
 
 	const asciiListCodeSnippet = 'modelList( [\n\t' +
 		asciiListToInsertInArray.join( '\n\t' ) +
-	'\n] );';
+		'\n] );';
+
+	return asciiListCodeSnippet;
+};
+
+const setAsciiListFromModel = () => {
+	const editorModelString = document.getElementById( 'data-input' ).value;
+	const cleanedEditorModelString = editorModelString.replace( /^[^']*'|'[^']*$|\n|\r/gm, '' );
+
+	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
+	const asciiListCodeSnippet = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 
 	document.getElementById( 'data-output' ).innerText = asciiListCodeSnippet;
 	setModelData( window.editor.model, cleanedEditorModelString );
@@ -112,6 +125,8 @@ const processInput = () => {
 	if ( dataType === 'ascii' ) {
 		setModelDataFromAscii();
 	}
+
+	window.editor.focus();
 
 	if ( document.getElementById( 'chbx-should-copy' ).checked ) {
 		copyOutput();
@@ -131,7 +146,7 @@ const processEditorModel = () => {
 		const stringifiedEditorModel = getModelData( window.editor.model, { withoutSelection: true } );
 		const editorModel = parseModel( stringifiedEditorModel, window.editor.model.schema );
 
-		document.getElementById( 'data-input' ).value = stringifyList( editorModel );
+		document.getElementById( 'data-input' ).value = createAsciiListCodeSnippet( stringifyList( editorModel ) );
 	}
 
 	processInput();
@@ -143,7 +158,13 @@ const onPaste = () => {
 	}
 };
 
+const onHighlighChange = () => {
+	document.querySelector( '.ck-editor' ).classList.toggle( 'highlight-lists' );
+};
+
 document.getElementById( 'btn-process-input' ).addEventListener( 'click', processInput );
 document.getElementById( 'btn-process-editor-model' ).addEventListener( 'click', processEditorModel );
 document.getElementById( 'btn-copy-output' ).addEventListener( 'click', copyOutput );
 document.getElementById( 'data-input' ).addEventListener( 'paste', onPaste );
+document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlighChange );
+
