@@ -35,7 +35,7 @@ ClassicEditor
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
 				item => item.buttonView && item.buttonView.label === 'Find and replace' ),
-			text: 'Click here to insert an image.',
+			text: 'Click here to search.',
 			editor
 		} );
 	} )
