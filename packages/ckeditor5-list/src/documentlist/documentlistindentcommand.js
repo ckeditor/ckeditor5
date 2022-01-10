@@ -63,10 +63,10 @@ export default class DocumentListIndentCommand extends Command {
 		const blocks = getSelectedListBlocks( model.document.selection );
 
 		model.change( writer => {
+			const changedBlocks = [];
+
 			// Handle selection contained in the single list item and starting in the following blocks.
 			if ( isSingleListItem( blocks ) && !isFirstBlockOfListItem( blocks[ 0 ] ) ) {
-				const changedBlocks = [];
-
 				// Allow increasing indent of following list item blocks.
 				if ( this._direction == 'forward' ) {
 					changedBlocks.push( ...indentBlocks( blocks, writer ) );
@@ -75,18 +75,32 @@ export default class DocumentListIndentCommand extends Command {
 				// For indent make sure that indented blocks have a new ID.
 				// For outdent just split blocks from the list item (give them a new IDs).
 				changedBlocks.push( ...splitListItemBefore( blocks[ 0 ], writer ) );
-
-				this._fireAfterExecute( changedBlocks );
 			}
 			// More than a single list item is selected, or the first block of list item is selected.
 			else {
 				// Now just update the attributes of blocks.
-				const changedBlocks = this._direction == 'forward' ?
-					indentBlocks( blocks, writer, { expand: true } ) :
-					outdentBlocks( blocks, writer, { expand: true } );
-
-				this._fireAfterExecute( changedBlocks );
+				if ( this._direction == 'forward' ) {
+					changedBlocks.push( ...indentBlocks( blocks, writer, { expand: true } ) );
+				} else {
+					changedBlocks.push( ...outdentBlocks( blocks, writer, { expand: true } ) );
+				}
 			}
+
+			// Align the list item type to match the previous list item (from the same list).
+			for ( const block of changedBlocks ) {
+				// This block become a plain block (for example a paragraph).
+				if ( !block.hasAttribute( 'listType' ) ) {
+					continue;
+				}
+
+				const previousItemBlock = ListWalker.first( block, { sameIndent: true } );
+
+				if ( previousItemBlock ) {
+					writer.setAttribute( 'listType', previousItemBlock.getAttribute( 'listType' ), block );
+				}
+			}
+
+			this._fireAfterExecute( changedBlocks );
 		} );
 	}
 
