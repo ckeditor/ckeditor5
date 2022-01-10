@@ -303,7 +303,15 @@ function stringifyNode( node, writer ) {
 			writer.append( writer.cloneElement( child ), fragment );
 		}
 	} else {
-		writer.append( writer.cloneElement( node ), fragment );
+		const contentNode = writer.cloneElement( node );
+
+		for ( const key of contentNode.getAttributeKeys() ) {
+			if ( key.startsWith( 'list' ) ) {
+				writer.removeAttribute( key, contentNode );
+			}
+		}
+
+		writer.append( contentNode, fragment );
 	}
 
 	return stringifyModel( fragment );
