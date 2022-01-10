@@ -704,7 +704,11 @@ describe( 'Autosave', () => {
 				.create( element, {
 					plugins: [ Autosave, Paragraph ],
 					autosave: {
-						save: async () => { spy(); }
+						save: async () => {
+							await wait( 100 );
+
+							spy();
+						}
 					},
 					initialData: '<p>Foo</p>'
 				} )
@@ -720,31 +724,74 @@ describe( 'Autosave', () => {
 			return editor.destroy();
 		} );
 
-		it( 'should call autosave callback and return a promise that is resolved when the autosave callback is finished', () => {
+		it( 'should call autosave callback and return a promise resolved when the callback is finished', async () => {
+			const promise = autosave.save();
+
+			// Wait for autosave's inner promise delayer. After this callback has been called.
+			await runPromiseCycles();
+
+			// "Wait" for the callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await promise;
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should use one autosave call and one promise if called multiple times', async () => {
+			const promise = autosave.save();
+			const promiseB = autosave.save();
+			const promiseC = autosave.save();
+
+			expect( promiseB ).to.equal( promise );
+			expect( promiseC ).to.equal( promise );
+
+			// Wait for autosave's inner promise delayer. After this callback has been called.
+			await runPromiseCycles();
+
+			// "Wait" for the callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await promise;
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should use two autosave calls and one promise if called another time after model changed', async () => {
+			const promise = autosave.save();
+
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
 
-			const promise = autosave.save();
-
-			return promise.then( () => {
-				expect( spy.calledOnce ).to.be.true;
-			} );
-		} );
-
-		it( 'should use one autosave call and one promise if called multiple times', () => {
-			const promiseA = autosave.save();
 			const promiseB = autosave.save();
 
-			expect( promiseA ).to.equal( promiseB );
+			expect( promise ).to.equal( promiseB );
 
-			return promiseA.then( () => {
-				expect( spy.calledOnce ).to.be.true;
-			} );
+			// Wait for autosave's inner promise delayer. After this callback has been called.
+			await runPromiseCycles();
+
+			// "Wait" for the first callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			expect( spy.calledOnce ).to.be.true;
+
+			// "Wait" for the second callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await promise;
+
+			expect( spy.calledTwice ).to.be.true;
 		} );
 
-		it( 'should cancel delayed autosave callback', () => {
+		it( 'should cancel delayed autosave callback', async () => {
 			editor.model.change( writer => {
 				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( writer.createText( 'foo' ) );
@@ -752,11 +799,67 @@ describe( 'Autosave', () => {
 
 			autosave.save();
 
+			// Wait for autosave's inner promise delayer.
+			await runPromiseCycles();
+
+			// "Wait" for the `save()` callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			// "Wait" for the debounce to finish.
 			sinon.clock.tick( 2000 );
 
-			return Promise.resolve().then( () => {
-				expect( spy.calledOnce ).to.be.true;
+			// Wait for autosave's inner promise delayer.
+			await runPromiseCycles();
+
+			// "Wait" for the autosave callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should return a promise resolved when the autosave for save() call is finished (another callback in progress)', async () => {
+			editor.model.change( writer => {
+				writer.setSelection( writer.createRangeIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( writer.createText( 'foo' ) );
 			} );
+
+			// "Wait" for the debounce to finish.
+			sinon.clock.tick( 2000 );
+
+			// Wait for autosave's inner promise delayer.
+			await runPromiseCycles();
+
+			editor.model.change( writer => {
+				editor.model.insertContent( writer.createText( 'foo' ) );
+			} );
+
+			// Call `save()` before earlier callback finishes.
+			const promise = autosave.save();
+
+			expect( spy.called ).to.be.false;
+
+			// "Wait" for the callback to finish.
+			sinon.clock.tick( 100 );
+
+			// Wait for autosave callback promise to resolve.
+			await runPromiseCycles();
+
+			// First callback (debounced) has finished.
+			expect( spy.calledOnce ).to.be.true;
+
+			// "Wait" for the second callback to finish.
+			sinon.clock.tick( 100 );
+
+			await promise;
+
+			// First callback has finished.
+			expect( spy.calledTwice ).to.be.true;
 		} );
 	} );
 

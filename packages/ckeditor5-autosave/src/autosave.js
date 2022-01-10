@@ -138,19 +138,27 @@ export default class Autosave extends Plugin {
 		this._config = config;
 
 		/**
-		 * An action that will be added to pending action manager for actions happening in that plugin.
-		 *
-		 * @private
-		 * @member {Object} #_action
-		 */
-
-		/**
 		 * Editor's pending actions manager.
 		 *
 		 * @private
 		 * @member {module:core/pendingactions~PendingActions} #_pendingActions
 		 */
 		this._pendingActions = editor.plugins.get( PendingActions );
+
+		/**
+		 * The document version
+		 *
+		 * @private
+		 * @type {Boolean}
+		 */
+		this._manualSaveVersion = null;
+
+		/**
+		 * An action that will be added to pending action manager for actions happening in that plugin.
+		 *
+		 * @private
+		 * @member {Object} #_action
+		 */
 	}
 
 	/**
@@ -213,14 +221,15 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Immediately calls autosave callback. All previously queued (debounced) callbacks are cleared.
+	 * Immediately calls autosave callback. All previously queued (debounced) callbacks are cleared. If there is already an autosave
+	 * callback in progress, then the requested save will be performed immediately after the current callback finishes.
 	 *
 	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
 	 */
 	save() {
 		this._debouncedSave.cancel();
 
-		return this._save();
+		return this._save( true );
 	}
 
 	/**
@@ -238,10 +247,16 @@ export default class Autosave extends Plugin {
 	 * It waits for the result and then removes the created pending action.
 	 *
 	 * @private
+	 * @param {Boolean} [manualSave=false] Whether the save was triggered by another plugin (`true`) or by the autosave plugin, after
+	 * the model has changed (`false`).
 	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
 	 */
-	_save() {
+	_save( manualSave = false ) {
 		if ( this._savePromise ) {
+			if ( manualSave ) {
+				this._manualSaveVersion = this.editor.model.document.version;
+			}
+
 			return this._savePromise;
 		}
 
@@ -251,36 +266,56 @@ export default class Autosave extends Plugin {
 		this.state = 'saving';
 		this._lastDocumentVersion = this.editor.model.document.version;
 
-		// Wait one promise cycle to be sure that save callbacks are not called
-		// inside a conversion or when the editor's state changes.
+		// Wait one promise cycle to be sure that save callbacks are not called inside a conversion or when the editor's state changes.
 		this._savePromise = Promise.resolve()
+			// Make autosave callback.
 			.then( () => Promise.all(
 				this._saveCallbacks.map( cb => cb( this.editor ) )
 			) )
-			// In case of an error re-try the save later and throw the original error.
-			// Being in the `saving` state ensures that the debounced save action
-			// won't be delayed further by the `change:data` event listener.
+			// When the autosave callback is finished, always clear `this._savePromise`, no matter if it was successful or not.
+			.finally( () => {
+				this._savePromise = null;
+			} )
+			// If the save was successful we have three scenarios:
+			//
+			// 1. If a save was requested (`save()`) during the callback, we need to immediately call another autosave callback.
+			// In this case, `this._savePromise` won't be cleared and won't be resolved until the next callback is done.
+			// 2. Otherwise, if changes happened to the model, make a delayed autosave callback (like the change just happened).
+			// 3. If no changes happened to the model, return to the `synchronized` state.
+			.then( () => {
+				if ( this._manualSaveVersion !== null && this._manualSaveVersion > this._lastDocumentVersion ) {
+					this._manualSaveVersion = null;
+
+					// Start another autosave callback. Return a promise that will be resolved after the new autosave callback.
+					// This way promises returned by `_save()` won't be resolved until all changes are saved.
+					//
+					// If `save()` was called when another (most often automatic) autosave callback was already processed,
+					// the promise returned by `save()` call will be resolved only after new changes has been saved.
+					//
+					// Note that it would not work correctly if `this._savePromise` is not cleared.
+					return this._save();
+				} else {
+					if ( this.editor.model.document.version > this._lastDocumentVersion ) {
+						this.state = 'waiting';
+						this._debouncedSave();
+					} else {
+						this.state = 'synchronized';
+						this._pendingActions.remove( this._action );
+						this._action = null;
+					}
+				}
+			} )
+			// In case of an error retry the autosave callback after a delay (and also throw the original error).
 			.catch( err => {
+				// Change state to `error` so that listeners handling autosave error can be called.
 				this.state = 'error';
-				// Change immediately to the `saving` state so the `change:state` event will be fired.
+				// Then, immediately change to the `saving` state as described above.
+				// Being in the `saving` state ensures that the autosave callback won't be delayed further by the `change:data` listener.
 				this.state = 'saving';
 
 				this._debouncedSave();
 
 				throw err;
-			} )
-			.then( () => {
-				if ( this.editor.model.document.version > this._lastDocumentVersion ) {
-					this.state = 'waiting';
-					this._debouncedSave();
-				} else {
-					this.state = 'synchronized';
-					this._pendingActions.remove( this._action );
-					this._action = null;
-				}
-			} )
-			.finally( () => {
-				this._savePromise = null;
 			} );
 
 		return this._savePromise;
