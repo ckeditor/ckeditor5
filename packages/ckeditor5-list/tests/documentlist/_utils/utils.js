@@ -300,10 +300,10 @@ function stringifyNode( node, writer ) {
 
 	if ( node.is( 'element', 'paragraph' ) ) {
 		for ( const child of node.getChildren() ) {
-			writer.append( child, fragment );
+			writer.append( writer.cloneElement( child ), fragment );
 		}
 	} else {
-		writer.append( node, fragment );
+		writer.append( writer.cloneElement( node ), fragment );
 	}
 
 	return stringifyModel( fragment );

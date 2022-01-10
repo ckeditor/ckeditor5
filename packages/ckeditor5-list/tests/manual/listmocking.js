@@ -19,7 +19,7 @@ import {
 	getData as getModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import { modelList, stringifyList } from './../documentlist/_utils/utils';
+import { modelList, stringifyList } from '../documentlist/_utils/utils';
 import DocumentList from '../../src/documentlist';
 
 ClassicEditor
@@ -73,16 +73,12 @@ const copyOutput = async () => {
 };
 
 const getListModelWithNewLines = stringifiedModel => {
-	return stringifiedModel.replace( /<\/paragraph>/g, '</paragraph>\n' );
+	return stringifiedModel.replace( /<\/(paragraph|heading\d)>/g, '</$1>\n' );
 };
 
 const setModelDataFromAscii = () => {
 	const asciiList = document.getElementById( 'data-input' ).value;
-	const modelDataArray = [];
-
-	asciiList.replace( /[^']*'(.*)'.*$/gm, ( match, content ) => {
-		modelDataArray.push( content );
-	} );
+	const modelDataArray = asciiList.replace( /^[^']*'|'[^']*$/gm, '' ).split( '\n' );
 
 	const editorModelString = modelList( modelDataArray );
 
@@ -110,11 +106,7 @@ const createAsciiListCodeSnippet = stringifiedAsciiList => {
 
 const setAsciiListFromModel = () => {
 	const editorModelString = document.getElementById( 'data-input' ).value;
-	let cleanedEditorModelString = '';
-
-	editorModelString.replace( /(<paragraph.*<\/paragraph>)/gm, ( match, content ) => {
-		cleanedEditorModelString += content;
-	} );
+	const cleanedEditorModelString = editorModelString.replace( /^[^']*'|'[^']*$|\n|\r/gm, '' );
 
 	const editorModel = parseModel( cleanedEditorModelString, window.editor.model.schema );
 	const asciiListCodeSnippet = createAsciiListCodeSnippet( stringifyList( editorModel ) );
@@ -134,9 +126,7 @@ const processInput = () => {
 		setModelDataFromAscii();
 	}
 
-	if ( document.getElementById( 'chbx-should-focus-editor' ).checked ) {
-		window.editor.editing.view.focus();
-	}
+	window.editor.focus();
 
 	if ( document.getElementById( 'chbx-should-copy' ).checked ) {
 		copyOutput();
@@ -168,7 +158,13 @@ const onPaste = () => {
 	}
 };
 
+const onHighlighChange = () => {
+	document.querySelector( '.ck-editor' ).classList.toggle( 'highlight-lists' );
+};
+
 document.getElementById( 'btn-process-input' ).addEventListener( 'click', processInput );
 document.getElementById( 'btn-process-editor-model' ).addEventListener( 'click', processEditorModel );
 document.getElementById( 'btn-copy-output' ).addEventListener( 'click', copyOutput );
 document.getElementById( 'data-input' ).addEventListener( 'paste', onPaste );
+document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlighChange );
+

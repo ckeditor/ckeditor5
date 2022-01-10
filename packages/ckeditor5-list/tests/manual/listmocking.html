@@ -1,4 +1,14 @@
 <style>
+	body {
+		font-family: Helvetica, Arial, sans-serif;
+		font-size: 14px;
+	}
+
+	pre, code {
+		font-size: 11px;
+		font-family: Menlo, Consolas, Lucida Console, Courier New, dejavu sans mono, monospace;
+	}
+
 	#data-input {
 		white-space: pre-wrap;
 		font-family: monospace;
@@ -11,10 +21,8 @@
 	}
 
 	#data-output {
-		font-size: 11px;
 		border: 1px black solid;
 		height: 200px;
-		font-family: Menlo, Consolas, Lucida Console, Courier New, dejavu sans mono, monospace;
 		padding: 1em;
 		background-color: rgb(246, 246, 246);
 	}
@@ -37,15 +45,28 @@
 	#btn-copy-label.hide {
 		opacity: 0;
 	}
+
+	.highlight-lists .ck-content ul, .highlight-lists .ck-content ol {
+		border: 2px dashed blue;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		margin: 5px;
+	}
+
+	.highlight-lists .ck-content li {
+		border: 2px dotted red;
+		padding: 5px;
+		margin: 5px;
+	}
 </style>
 
 <h2>Input</h2>
 <div>
 	<input type="radio" id="input-model" name="input-type" value="model" checked>
-	<label for="input-model">Model</label>
+	<label for="input-model">Stringified model</label>
 
 	<input type="radio" id="input-ascii" name="input-type" value="ascii">
-	<label for="input-ascii">ASCII tree</label>
+	<label for="input-ascii"><code>modelList()</code> helper</label>
 </div>
 <textarea id="data-input"></textarea>
 <div style="margin: 16px 0px;">
@@ -55,8 +76,8 @@
 	<label for="chbx-process-on-paste">Set model data on paste</label>
 	<input id="chbx-should-copy" type="checkbox" />
 	<label for="chbx-should-copy">Automatically copy output</label>
-	<input id="chbx-should-focus-editor" type="checkbox" />
-	<label for="chbx-should-focus-editor">Focus editor after setting model data</label>
+	<input id="chbx-highlight-lists" type="checkbox" />
+	<label for="chbx-highlight-lists">Highlight list elements</label>
 </div>
 
 <div id="editor">
