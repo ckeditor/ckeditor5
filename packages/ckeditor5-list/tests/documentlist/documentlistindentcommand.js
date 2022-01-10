@@ -280,28 +280,222 @@ describe( 'DocumentListIndentCommand', () => {
 					] ) );
 				} );
 
-				it( 'should increment indent of all selected item when multiple items are selected', () => {
+				it( 'should TODO 1', () => {
 					setData( model, modelList( [
 						'* 0',
-						'* [1',
-						'  * 2',
-						'    * 3]',
-						'    * 4',
-						'  * 5',
-						'* 6'
+						'* 1[]',
+						'  # 2',
+						'* 3'
 					] ) );
 
 					command.execute();
 
 					expect( getData( model ) ).to.equalMarkup( modelList( [
 						'* 0',
-						'  * [1',
-						'    * 2',
-						'      * 3]',
-						'      * 4',
-						'    * 5',
-						'* 6'
+						'  * 1[]',
+						'    # 2',
+						'* 3'
 					] ) );
+				} );
+
+				it( 'should TODO 1a', () => {
+					setData( model, modelList( [
+						'# 0',
+						'# 1[]',
+						'  * 2',
+						'# 3'
+					] ) );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'# 0',
+						'  # 1[]',
+						'    * 2',
+						'# 3'
+					] ) );
+				} );
+
+				it( 'should TODO 2', () => {
+					setData( model, modelList( [
+						'* 0',
+						'* 1',
+						'  # 2',
+						'* []3'
+					] ) );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'* 1',
+						'  # 2',
+						'  # []3'
+					] ) );
+				} );
+
+				it( 'should TODO 2a', () => {
+					setData( model, modelList( [
+						'* 0',
+						'  # 1',
+						'* []2',
+						'* 3'
+					] ) );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'  # 1',
+						'  # []2',
+						'* 3'
+					] ) );
+				} );
+
+				it( 'should TODO 5', () => {
+					setData( model, modelList( [
+						'* 0',
+						'* []1',
+						'  # 2',
+						'    * 3',
+						'  # 4'
+					] ) );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'  * []1',
+						'    # 2',
+						'      * 3',
+						'    # 4'
+					] ) );
+				} );
+
+				it( 'should TODO 5a', () => {
+					setData( model, modelList( [
+						'* 0',
+						'* []1',
+						'  # 2',
+						'    * 3',
+						'  # 4',
+						'* 5',
+						'  # 6'
+					] ) );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'  * []1',
+						'    # 2',
+						'      * 3',
+						'    # 4',
+						'* 5',
+						'  # 6'
+					] ) );
+				} );
+
+				describe( 'non-collapsed selection', () => {
+					it( 'should increment indent of all selected item when multiple items are selected', () => {
+						setData( model, modelList( [
+							'* 0',
+							'* [1',
+							'  * 2',
+							'    * 3]',
+							'    * 4',
+							'  * 5',
+							'* 6'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* 0',
+							'  * [1',
+							'    * 2',
+							'      * 3]',
+							'      * 4',
+							'    * 5',
+							'* 6'
+						] ) );
+					} );
+
+					it( 'should TODO ex1', () => {
+						setData( model, modelList( [
+							'* 0',
+							'* [1',
+							'  # 2]',
+							'    * 3'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* 0',
+							'  * [1',
+							'    # 2]',
+							'      * 3'
+						] ) );
+					} );
+
+					it( 'should TODO ex2', () => {
+						setData( model, modelList( [
+							'* 0',
+							'* [1',
+							'  # 2]',
+							'* 3'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* 0',
+							'  * [1',
+							'    # 2]',
+							'* 3'
+						] ) );
+					} );
+
+					it( 'should TODO ex3', () => {
+						setData( model, modelList( [
+							'* 0',
+							'* 1',
+							'  # 2',
+							'* [3',
+							'* 4]'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* 0',
+							'* 1',
+							'  # 2',
+							'  # [3',
+							'  # 4]'
+						] ) );
+					} );
+
+					it( 'should TODO ex4', () => {
+						setData( model, modelList( [
+							'* 0',
+							'* 1',
+							'  # 2',
+							'  # [3',
+							'* 4]'
+						] ) );
+
+						command.execute();
+
+						expect( getData( model ) ).to.equalMarkup( modelList( [
+							'* 0',
+							'* 1',
+							'  # 2',
+							'    # [3',
+							'  # 4]'
+						] ) );
+					} );
 				} );
 
 				it( 'should fire "afterExecute" event after finish all operations with all changed items', done => {
@@ -492,6 +686,26 @@ describe( 'DocumentListIndentCommand', () => {
 					} );
 
 					command.execute();
+				} );
+
+				it( 'TODO 1', () => {
+					setData( model, modelList( [
+						'* 0',
+						'  # 1',
+						'    * 2',
+						'    3[]',
+						'* 4'
+					] ) );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equalMarkup( modelList( [
+						'* 0',
+						'  # 1',
+						'    * 2',
+						'    * 3[]',
+						'* 4'
+					] ) );
 				} );
 			} );
 		} );
