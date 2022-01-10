@@ -45,6 +45,11 @@ ClassicEditor
 	} );
 
 const copyOutput = async () => {
+	if ( !window.navigator.clipboard ) {
+		console.warn( 'Cannot copy output. Clipboard API requires HTTPS or localhost.' );
+		return;
+	}
+
 	const output = document.getElementById( 'data-output' ).innerText;
 
 	await window.navigator.clipboard.writeText( output );
