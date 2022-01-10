@@ -102,6 +102,23 @@ ClassicEditor
 	.catch( ... );
 ```
 
+To enable chosen list properties, you need to add the following configuration (set `true` for each feature you want to enable):
+
+```js
+ClassicEditor
+	.create( editorElement, {
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
 <info-box info>
 	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
@@ -135,8 +152,10 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
-* The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plguin.
-* The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plguin.
+* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command
+* The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed`} command
+* The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plugin.
+* The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plugin.
 
 ## Contribute
 
