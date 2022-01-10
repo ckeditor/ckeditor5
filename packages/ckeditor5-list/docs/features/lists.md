@@ -35,7 +35,31 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 
 {@snippet features/lists-basic}
 
-## List styles
+## List properties
+
+Beside the basic functionality of creating the ordered and unordered list, CKEditor 5 offers additional formatting tools that allow controlling the lists.
+
+### List start index
+
+This list start index feature offers the user to choose the starting point of an ordered list. By default, this would be `1` (or `A`, or `I` &ndash; see the [list styles section](#list-styles)), but in certain situations it may be desired to start a list with some other digit or letter.
+
+Additional dropdown option is available, where the user may set the starting marker.
+
+<info-box info>
+	The feature is enabled by default in the document editor build.
+</info-box>
+
+### Reversed list
+
+This reversed list feature lets the editor reverse the numbering order of a list. This is especially useful in countdowns and thing-to-do lists that need to reproduce steps in a reversed order (for example disassembling instruction in an owners manual).
+
+Additional dropdown switch makes it easy to reverse the order of a list with a single click.
+
+<info-box info>
+	The feature is enabled by default in the document editor build.
+</info-box>
+
+### List styles
 
 The {@link module:list/liststyle~ListStyle list style} feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The styles can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
@@ -43,9 +67,9 @@ The {@link module:list/liststyle~ListStyle list style} feature introduces some m
 	The feature is enabled by default in the document editor build.
 </info-box>
 
-### Demo
+### List properties demo
 
-Use the editor below to see the list style plugin in action.
+Use the editor below to see the list properties in action.
 
 {@snippet features/lists-style}
 
