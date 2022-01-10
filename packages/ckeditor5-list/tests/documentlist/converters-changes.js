@@ -1336,7 +1336,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 	describe( 'nested lists', () => {
 		describe( 'insert', () => {
 			describe( 'same list type', () => {
-				it( 'after smaller indent', () => {
+				it( 'after lower indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1356,7 +1356,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'after smaller indent (multi block)', () => {
+				it( 'after lower indent (multi block)', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
@@ -1382,7 +1382,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'after smaller indent, before same indent', () => {
+				it( 'after lower indent, before same indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1404,7 +1404,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'after smaller indent, before same indent (multi block)', () => {
+				it( 'after lower indent, before same indent (multi block)', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
@@ -1436,7 +1436,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'after smaller indent, before smaller indent', () => {
+				it( 'after lower indent, before lower indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1458,7 +1458,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'after smaller indent, before smaller indent (multi block)', () => {
+				it( 'after lower indent, before lower indent (multi block)', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
@@ -1544,7 +1544,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				it( 'after same indent, before bigger indent', () => {
+				it( 'after same indent, before higher indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1567,7 +1567,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 3 ) );
 				} );
 
-				it( 'after same indent, before bigger indent (multi block)', () => {
+				it( 'after same indent, before higher indent (multi block)', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1a</paragraph>' +
@@ -1601,7 +1601,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.secondCall.firstArg ).to.equal( modelRoot.getChild( 6 ) );
 				} );
 
-				it( 'after bigger indent, before bigger indent', () => {
+				it( 'after higher indent, before higher indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1630,7 +1630,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					expect( test.reconvertSpy.firstCall.firstArg ).to.equal( modelRoot.getChild( 4 ) );
 				} );
 
-				it( 'after bigger indent, before bigger indent( multi block)', () => {
+				it( 'after higher indent, before higher indent( multi block)', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1702,7 +1702,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					);
 				} );
 
-				it( 'additional block before bigger indent', () => {
+				it( 'additional block before higher indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1727,7 +1727,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 			} );
 
 			describe( 'different list type', () => {
-				it( 'after smaller indent, before same indent', () => {
+				it( 'after lower indent, before same indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1771,7 +1771,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					);
 				} );
 
-				it( 'after same indent, before bigger indent', () => {
+				it( 'after same indent, before higher indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1793,7 +1793,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					);
 				} );
 
-				it( 'after bigger indent, before bigger indent', () => {
+				it( 'after higher indent, before higher indent', () => {
 					test.insert(
 						'<paragraph>p</paragraph>' +
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">1</paragraph>' +
@@ -1821,7 +1821,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 					);
 				} );
 
-				it( 'after bigger indent, in nested list, different type', () => {
+				it( 'after higher indent, in nested list, different type', () => {
 					test.insert(
 						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 						'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -2088,7 +2088,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 				);
 			} );
 
-			it( 'item that has nested lists, previous item has smaller indent', () => {
+			it( 'item that has nested lists, previous item has lower indent', () => {
 				test.remove(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'[<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>]' +
@@ -2107,7 +2107,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 				);
 			} );
 
-			it( 'item that has nested lists, previous item has bigger indent by 1', () => {
+			it( 'item that has nested lists, previous item has higher indent by 1', () => {
 				test.remove(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +
@@ -2132,7 +2132,7 @@ describe( 'DocumentListEditing - converters - changes', () => {
 				);
 			} );
 
-			it( 'item that has nested lists, previous item has bigger indent by 2', () => {
+			it( 'item that has nested lists, previous item has higher indent by 2', () => {
 				test.remove(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">b</paragraph>' +

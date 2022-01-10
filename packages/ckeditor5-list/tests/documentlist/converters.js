@@ -990,7 +990,7 @@ describe( 'DocumentListEditing - converters', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 				'<div>def</div>'
 			);
 		} );
@@ -1010,7 +1010,7 @@ describe( 'DocumentListEditing - converters', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>'
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>'
 			);
 		} );
 
@@ -1028,7 +1028,7 @@ describe( 'DocumentListEditing - converters', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">foo</paragraph>' +
 				'<div>def</div>'
 			);
 		} );
@@ -1044,8 +1044,8 @@ describe( 'DocumentListEditing - converters', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000000" listType="bulleted">a</paragraph>' +
-				'<paragraph listIndent="0" listItemId="e00000000000000000000000000000001" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a00" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a01" listType="bulleted">b</paragraph>' +
 				'<paragraph>c</paragraph>'
 			);
 		} );

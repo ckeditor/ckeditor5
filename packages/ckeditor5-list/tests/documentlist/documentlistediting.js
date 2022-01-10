@@ -21,6 +21,7 @@ import { getData as getModelData, parse as parseModel, setData as setModelData }
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import ListEditing from '../../src/list/listediting';
+import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
 import stubUid from './_utils/uid';
 import { prepareTest } from './_utils/utils';
 
@@ -31,7 +32,7 @@ describe( 'DocumentListEditing', () => {
 
 	beforeEach( async () => {
 		editor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
+			plugins: [ Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
 				BlockQuoteEditing, TableEditing, HeadingEditing ]
 		} );
 
@@ -101,6 +102,56 @@ describe( 'DocumentListEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listItemId' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listIndent' ) ).to.be.false;
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).to.be.false;
+	} );
+
+	describe( 'commands', () => {
+		it( 'should register indent list command', () => {
+			const command = editor.commands.get( 'indentList' );
+
+			expect( command ).to.be.instanceOf( DocumentListIndentCommand );
+		} );
+
+		it( 'should register outdent list command', () => {
+			const command = editor.commands.get( 'outdentList' );
+
+			expect( command ).to.be.instanceOf( DocumentListIndentCommand );
+		} );
+
+		it( 'should add indent list command to indent command', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, IndentEditing, DocumentListEditing ]
+			} );
+
+			const indentListCommand = editor.commands.get( 'indentList' );
+			const indentCommand = editor.commands.get( 'indent' );
+
+			const spy = sinon.stub( indentListCommand, 'execute' );
+
+			indentListCommand.isEnabled = true;
+			indentCommand.execute();
+
+			sinon.assert.calledOnce( spy );
+
+			await editor.destroy();
+		} );
+
+		it( 'should add outdent list command to outdent command', async () => {
+			const editor = await VirtualTestEditor.create( {
+				plugins: [ Paragraph, IndentEditing, DocumentListEditing ]
+			} );
+
+			const outdentListCommand = editor.commands.get( 'outdentList' );
+			const outdentCommand = editor.commands.get( 'outdent' );
+
+			const spy = sinon.stub( outdentListCommand, 'execute' );
+
+			outdentListCommand.isEnabled = true;
+			outdentCommand.execute();
+
+			sinon.assert.calledOnce( spy );
+
+			await editor.destroy();
+		} );
 	} );
 
 	describe( 'post fixer', () => {
@@ -262,8 +313,8 @@ describe( 'DocumentListEditing', () => {
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph>x</paragraph>' +
 					'<paragraph>x</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000010" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">d</paragraph>';
 
 				setModelData( model, input );
@@ -274,7 +325,7 @@ describe( 'DocumentListEditing', () => {
 					writer.insert( parseModel( item, model.schema ), modelRoot, 1 );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( output );
 			} );
 		} );
 
@@ -551,7 +602,7 @@ describe( 'DocumentListEditing', () => {
 					writer.removeAttribute( 'listType', element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'add list attributes', () => {
@@ -583,7 +634,7 @@ describe( 'DocumentListEditing', () => {
 					writer.setAttribute( 'listIndent', 2, element.nextSibling );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'middle block indent', () => {
@@ -594,7 +645,7 @@ describe( 'DocumentListEditing', () => {
 
 				const expectedModel =
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">b</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">c</paragraph>';
 
 				const selection = prepareTest( model, modelBefore );
@@ -604,7 +655,7 @@ describe( 'DocumentListEditing', () => {
 					writer.setAttribute( 'listIndent', 1, element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'middle blocks indent', () => {
@@ -616,8 +667,8 @@ describe( 'DocumentListEditing', () => {
 
 				const expectedModel =
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000008" listType="bulleted">c</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">c</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">d</paragraph>';
 
 				const selection = prepareTest( model, modelBefore );
@@ -628,7 +679,7 @@ describe( 'DocumentListEditing', () => {
 					}
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 
 			it( 'middle block outdent', () => {
@@ -640,7 +691,7 @@ describe( 'DocumentListEditing', () => {
 				const expectedModel =
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
 					'<paragraph listIndent="0" listItemId="b" listType="bulleted">b</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000008" listType="bulleted">c</paragraph>';
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">c</paragraph>';
 
 				const selection = prepareTest( model, modelBefore );
 				const element = selection.getFirstPosition().nodeAfter;
@@ -649,7 +700,7 @@ describe( 'DocumentListEditing', () => {
 					writer.setAttribute( 'listIndent', 0, element );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModel );
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( expectedModel );
 			} );
 		} );
 	} );
@@ -722,7 +773,7 @@ describe( 'DocumentListEditing', () => {
 					)
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
 					'<paragraph listIndent="2" listItemId="y" listType="bulleted">Y[]</paragraph>' +
@@ -749,7 +800,7 @@ describe( 'DocumentListEditing', () => {
 					)
 				);
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B[]X</paragraph>' +
 					'<paragraph listIndent="2" listItemId="y" listType="bulleted">Y</paragraph>' +
@@ -772,7 +823,7 @@ describe( 'DocumentListEditing', () => {
 					model.insertContent( paragraph );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
@@ -791,7 +842,7 @@ describe( 'DocumentListEditing', () => {
 					model.insertContent( writer.createText( 'X' ) );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX[]</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
@@ -811,10 +862,10 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);
 			} );
@@ -832,12 +883,12 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>W<ul><li>X</li></ul></li></ul><p>Y</p><ul><li>Z</li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">X</paragraph>' +
 					'<paragraph>Y</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e0000000000000000000000000000000b" listType="bulleted">Z[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a02" listType="bulleted">Z[]</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
 				);
 			} );
@@ -855,10 +906,10 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<p>X</p><ul><li>Y</li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BX</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 					'<paragraph listIndent="1" listItemId="c" listType="bulleted">C</paragraph>'
 				);
 			} );
@@ -880,11 +931,11 @@ describe( 'DocumentListEditing', () => {
 					} );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="bulleted">X</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">X</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);
 			} );
@@ -901,9 +952,9 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">AX</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>'
 				);
 			} );
@@ -920,9 +971,9 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>AX</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 					'<paragraph>B</paragraph>'
 				);
 			} );
@@ -956,11 +1007,11 @@ describe( 'DocumentListEditing', () => {
 					} );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">X[]</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">X[]</paragraph>' +
 					'<paragraph>Bar</paragraph>'
 				);
 			} );
@@ -984,12 +1035,12 @@ describe( 'DocumentListEditing', () => {
 					} );
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>Foo</paragraph>' +
 					'<paragraph listIndent="0" listItemId="a" listType="numbered">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="numbered">B</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e0000000000000000000000000000000a" listType="bulleted">X</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y[]</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a01" listType="bulleted">X</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Y[]</paragraph>' +
 					'<paragraph>Bar</paragraph>'
 				);
 			} );
@@ -1007,12 +1058,12 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">A</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">BW</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Y</paragraph>' +
-					'<paragraph listIndent="2" listItemId="e00000000000000000000000000000009" listType="bulleted">Z[]</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">X</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Y</paragraph>' +
+					'<paragraph listIndent="2" listItemId="a00" listType="bulleted">Z[]</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);
 			} );
@@ -1030,11 +1081,11 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>W<ul><li>X<p>Y</p>Z</li></ul></li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">AW</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">Y</paragraph>' +
-					'<paragraph listIndent="1" listItemId="e00000000000000000000000000000009" listType="bulleted">Z[]</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">X</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Y</paragraph>' +
+					'<paragraph listIndent="1" listItemId="a00" listType="bulleted">Z[]</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);
@@ -1053,11 +1104,11 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li><p>W</p><p>X</p><p>Y</p></li><li>Z</li></ul>' )
 				} );
 
-				expect( getModelData( model ) ).to.equal(
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">AW</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">X</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">Y</paragraph>' +
-					'<paragraph listIndent="0" listItemId="e0000000000000000000000000000000a" listType="bulleted">Z[]</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">X</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">Y</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a01" listType="bulleted">Z[]</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);
@@ -1087,10 +1138,10 @@ describe( 'DocumentListEditing', () => {
 					content: parseView( '<ul><li>a<splitBlock></splitBlock>b</li></ul>' )
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup(
 					'<paragraph listIndent="0" listItemId="a" listType="bulleted">Aa</paragraph>' +
 					'<splitBlock></splitBlock>' +
-					'<paragraph listIndent="0" listItemId="e00000000000000000000000000000009" listType="bulleted">b</paragraph>' +
+					'<paragraph listIndent="0" listItemId="a00" listType="bulleted">b</paragraph>' +
 					'<paragraph listIndent="1" listItemId="b" listType="bulleted">B</paragraph>' +
 					'<paragraph listIndent="2" listItemId="c" listType="bulleted">C</paragraph>'
 				);

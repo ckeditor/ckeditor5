@@ -14,7 +14,6 @@ import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalli
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
 import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
 import ImageResize from '@ckeditor/ckeditor5-image/src/imageresize';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
 import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
@@ -39,31 +38,26 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-import DocumentListEditing from '../../src/documentlist/documentlistediting';
+import DocumentList from '../../src/documentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
 			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
-			AutoImage, HtmlEmbed, HtmlComment, Alignment, IndentBlock, PageBreak, HorizontalLine, ImageUpload,
-			CloudServices, SourceEditing, DocumentListEditing
+			AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
+			CloudServices, SourceEditing, DocumentList
 		],
 		toolbar: [
-			'sourceEditing',
-			'|',
-			'heading',
-			'|',
-			'bold', 'italic', 'link',
-			'|',
-			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock',
-			'|',
-			'htmlEmbed',
-			'|',
-			'alignment', 'outdent', 'indent',
-			'|',
-			'pageBreak', 'horizontalLine',
-			'|',
+			'sourceEditing', '|',
+			'numberedList', 'bulletedList',
+			'outdent', 'indent', '|',
+			'heading', '|',
+			'bold', 'italic', 'link', '|',
+			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock', '|',
+			'htmlEmbed', '|',
+			'alignment', '|',
+			'pageBreak', 'horizontalLine', '|',
 			'undo', 'redo'
 		],
 		cloudServices: CS_CONFIG,

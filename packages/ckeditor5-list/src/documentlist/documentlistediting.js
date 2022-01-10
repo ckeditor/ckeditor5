@@ -12,6 +12,8 @@ import { Enter } from 'ckeditor5/src/enter';
 import { Delete } from 'ckeditor5/src/typing';
 import { CKEditorError } from 'ckeditor5/src/utils';
 
+import DocumentListIndentCommand from './documentlistindentcommand';
+import DocumentListCommand from './documentlistcommand';
 import {
 	listItemDowncastConverter,
 	listItemParagraphDowncastConverter,
@@ -24,7 +26,10 @@ import {
 	findAndAddListHeadToMap,
 	fixListIndents,
 	fixListItemIds
-} from './utils';
+} from './utils/postfixers';
+import { iterateSiblingListBlocks } from './utils/listwalker';
+
+import '../../theme/documentlist.css';
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
@@ -72,6 +77,31 @@ export default class DocumentListEditing extends Plugin {
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
 		this._setupConversion();
+
+		// Register commands.
+		editor.commands.add( 'numberedList', new DocumentListCommand( editor, 'numbered' ) );
+		editor.commands.add( 'bulletedList', new DocumentListCommand( editor, 'bulleted' ) );
+
+		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
+		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const commands = this.editor.commands;
+
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentList' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
 	}
 
 	/**
@@ -107,31 +137,29 @@ export default class DocumentListEditing extends Plugin {
 	}
 }
 
-/**
- * Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
- *
- * In the example below, there is a correct list structure.
- * Then the middle element is removed so the list structure will become incorrect:
- *
- *		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
- *		<paragraph listType="bulleted" listItemId="b" listIndent=1>Item 2</paragraph>   <--- this is removed.
- *		<paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
- *
- * The list structure after the middle element is removed:
- *
- * 		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
- *		<paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
- *
- * Should become:
- *
- *		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
- *		<paragraph listType="bulleted" listItemId="c" listIndent=1>Item 3</paragraph>   <--- note that indent got post-fixed.
- *
- * @param {module:engine/model/model~Model} model The data model.
- * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
- * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
- */
-export function modelChangePostFixer( model, writer ) {
+// Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
+//
+// In the example below, there is a correct list structure.
+// Then the middle element is removed so the list structure will become incorrect:
+//
+//		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
+//		<paragraph listType="bulleted" listItemId="b" listIndent=1>Item 2</paragraph>   <--- this is removed.
+//		<paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
+//
+// The list structure after the middle element is removed:
+//
+// 		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
+//		<paragraph listType="bulleted" listItemId="c" listIndent=2>Item 3</paragraph>
+//
+// Should become:
+//
+//		<paragraph listType="bulleted" listItemId="a" listIndent=0>Item 1</paragraph>
+//		<paragraph listType="bulleted" listItemId="c" listIndent=1>Item 3</paragraph>   <--- note that indent got post-fixed.
+//
+// @param {module:engine/model/model~Model} model The data model.
+// @param {module:engine/model/writer~Writer} writer The writer to do changes with.
+// @returns {Boolean} `true` if any change has been applied, `false` otherwise.
+function modelChangePostFixer( model, writer ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map();
 
@@ -191,27 +219,25 @@ export function modelChangePostFixer( model, writer ) {
 	return applied;
 }
 
-/**
- * A fixer for pasted content that includes list items.
- *
- * It fixes indentation of pasted list items so the pasted items match correctly to the context they are pasted into.
- *
- * Example:
- *
- *		<paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
- *		<paragraph listType="bulleted" listItemId="b" listIndent=1>B^</paragraph>
- *		// At ^ paste:  <paragraph listType="bulleted" listItemId="x" listIndent=4>X</paragraph>
- *		//              <paragraph listType="bulleted" listItemId="y" listIndent=5>Y</paragraph>
- *		<paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
- *
- * Should become:
- *
- *		<paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
- *		<paragraph listType="bulleted" listItemId="b" listIndent=1>BX</paragraph>
- *		<paragraph listType="bulleted" listItemId="y" listIndent=2>Y/paragraph>
- *		<paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
- *
- */
+// A fixer for pasted content that includes list items.
+//
+// It fixes indentation of pasted list items so the pasted items match correctly to the context they are pasted into.
+//
+// Example:
+//
+//		<paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
+//		<paragraph listType="bulleted" listItemId="b" listIndent=1>B^</paragraph>
+//		// At ^ paste:  <paragraph listType="bulleted" listItemId="x" listIndent=4>X</paragraph>
+//		//              <paragraph listType="bulleted" listItemId="y" listIndent=5>Y</paragraph>
+//		<paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
+//
+// Should become:
+//
+//		<paragraph listType="bulleted" listItemId="a" listIndent=0>A</paragraph>
+//		<paragraph listType="bulleted" listItemId="b" listIndent=1>BX</paragraph>
+//		<paragraph listType="bulleted" listItemId="y" listIndent=2>Y/paragraph>
+//		<paragraph listType="bulleted" listItemId="c" listIndent=2>C</paragraph>
+//
 function createModelIndentPasteFixer( model ) {
 	return ( evt, [ content, selectable ] ) => {
 		// Check whether inserted content starts from a `listItem`. If it does not, it means that there are some other
@@ -219,7 +245,7 @@ function createModelIndentPasteFixer( model ) {
 		// that list will be broken.
 		// Note: we also need to handle singular elements because inserting item with indent 0 into 0,1,[],2
 		// would create incorrect model.
-		let item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
+		const item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
 
 		if ( !item || !item.hasAttribute( 'listItemId' ) ) {
 			return;
@@ -260,10 +286,8 @@ function createModelIndentPasteFixer( model ) {
 
 		model.change( writer => {
 			// Adjust indent of all "first" list items in inserted data.
-			while ( item && item.hasAttribute( 'listItemId' ) ) {
-				writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange, item );
-
-				item = item.nextSibling;
+			for ( const { node } of iterateSiblingListBlocks( item, 'forward' ) ) {
+				writer.setAttribute( 'listIndent', node.getAttribute( 'listIndent' ) + indentChange, node );
 			}
 		} );
 	};

@@ -3,8 +3,10 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { getData as getModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import { getData as getModelData, parse as parseModel, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import ListWalker from '../../../src/documentlist/utils/listwalker';
 
 /**
  * Sets the editor model according to the specified input string.
@@ -68,7 +70,7 @@ export function setupTestHelpers( editor ) {
 			actionCallback( callbackSelection );
 			test.reconvertSpy.restore();
 
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( output );
 
 			if ( testUndo ) {
 				const modelAfter = getModelData( model );
@@ -76,13 +78,13 @@ export function setupTestHelpers( editor ) {
 
 				editor.execute( 'undo' );
 
-				expect( getModelData( model ), 'after undo' ).to.equal( modelBefore );
-				expect( getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equal( viewBefore );
+				expect( getModelData( model ), 'after undo' ).to.equalMarkup( modelBefore );
+				expect( getViewData( view, { withoutSelection: true } ), 'after undo' ).to.equalMarkup( viewBefore );
 
 				editor.execute( 'redo' );
 
-				expect( getModelData( model ), 'after redo' ).to.equal( modelAfter );
-				expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equal( viewAfter );
+				expect( getModelData( model ), 'after redo' ).to.equalMarkup( modelAfter );
+				expect( getViewData( view, { withoutSelection: true } ), 'after redo' ).to.equalMarkup( viewAfter );
 			}
 		},
 
@@ -193,10 +195,131 @@ export function setupTestHelpers( editor ) {
 		data( input, modelData, output = input ) {
 			editor.setData( input );
 
-			expect( editor.getData(), 'output data' ).to.equal( output );
-			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equal( modelData );
+			expect( editor.getData(), 'output data' ).to.equalMarkup( output );
+			expect( getModelData( model, { withoutSelection: true } ), 'model data' ).to.equalMarkup( modelData );
 		}
 	};
 
 	return test;
+}
+
+/**
+ * Returns a model representation of a document list pseudo markdown notation:
+ *
+ * 		modelList( [
+ * 			'* foo',
+ * 			'* bar'
+ * 		] );
+ *
+ * 	will output:
+ *
+ * 		'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+ * 		'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+ *
+ * @param {Iterable.<String>} lines
+ * @returns {String}
+ */
+export function modelList( lines ) {
+	const items = [];
+	const stack = [];
+
+	let prevIndent = -1;
+
+	for ( const [ idx, line ] of lines.entries() ) {
+		let [ , pad, marker, content ] = line.match( /^((?: {2})*(?:([*#]) )?)(.*)/ );
+		const listIndent = pad.length / 2 - 1;
+
+		if ( listIndent < 0 ) {
+			stack.length = 0;
+		} else if ( prevIndent > listIndent ) {
+			stack.length = listIndent + 1;
+		}
+
+		if ( listIndent < 0 ) {
+			items.push( stringifyElement( content ) );
+		} else {
+			if ( !stack[ listIndent ] && !marker ) {
+				throw new Error( 'Invalid indent: ' + line );
+			}
+
+			if ( !stack[ listIndent ] || marker ) {
+				let listItemId = String( idx ).padStart( 3, '0' );
+
+				content = content.replace( /\s*{(?:id:)?([^}]+)}\s*/, ( match, id ) => {
+					listItemId = id;
+
+					return '';
+				} );
+
+				stack[ listIndent ] = {
+					listItemId,
+					listType: marker == '#' ? 'numbered' : 'bulleted'
+				};
+			}
+
+			items.push( stringifyElement( content, { listIndent, ...stack[ listIndent ] } ) );
+		}
+
+		prevIndent = listIndent;
+	}
+
+	return items.join( '' );
+}
+
+/**
+ * Returns document list pseudo markdown notation for a given document fragment.
+ *
+ * @param {module:engine/model/documentfragment~DocumentFragment} fragment The document fragment to stringify to pseudo markdown notation.
+ * @returns {String}
+ */
+export function stringifyList( fragment ) {
+	const model = new Model();
+	const lines = [];
+
+	model.change( writer => {
+		for ( let node = fragment.getChild( 0 ); node; node = node.nextSibling ) {
+			let pad = '';
+
+			if ( node.hasAttribute( 'listItemId' ) ) {
+				const marker = node.getAttribute( 'listType' ) == 'numbered' ? '#' : '*';
+				const indentSpaces = ( node.getAttribute( 'listIndent' ) + 1 ) * 2;
+				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameItemId: true } );
+
+				pad = isFollowing ? ' '.repeat( indentSpaces ) : marker.padStart( indentSpaces - 1 ) + ' ';
+			}
+
+			lines.push( `${ pad }${ stringifyNode( node, writer ) }` );
+		}
+	} );
+
+	return lines.join( '\n' );
+}
+
+function stringifyNode( node, writer ) {
+	const fragment = writer.createDocumentFragment();
+
+	if ( node.is( 'element', 'paragraph' ) ) {
+		for ( const child of node.getChildren() ) {
+			writer.append( writer.cloneElement( child ), fragment );
+		}
+	} else {
+		const contentNode = writer.cloneElement( node );
+
+		for ( const key of contentNode.getAttributeKeys() ) {
+			if ( key.startsWith( 'list' ) ) {
+				writer.removeAttribute( key, contentNode );
+			}
+		}
+
+		writer.append( contentNode, fragment );
+	}
+
+	return stringifyModel( fragment );
+}
+
+function stringifyElement( content, attributes = {}, name = 'paragraph' ) {
+	[ , name, content ] = content.match( /^<([^>]+)>([^<]*)?/ ) || [ null, name, content ];
+	attributes = Object.entries( attributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+
+	return `<${ name }${ attributes }>${ content }</${ name.replace( /\s.*/, '' ) }>`;
 }
