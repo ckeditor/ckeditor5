@@ -46,7 +46,6 @@
 //
 // Skipped hidden elements:
 // noscript
-// script
 
 export default {
 	block: [
@@ -831,6 +830,14 @@ export default {
 			isObject: true,
 			modelSchema: {
 				inheritAllFrom: '$htmlObjectInline'
+			}
+		},
+		{
+			model: 'htmlScript',
+			view: 'script',
+			modelSchema: {
+				allowWhere: [ '$text', '$block' ],
+				isInline: true
 			}
 		}
 	]

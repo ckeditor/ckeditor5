@@ -110,6 +110,10 @@ ClassicEditor
 						}
 					],
 					styles: { 'background-color': true }
+				},
+				{
+					name: 'script',
+					attributes: true
 				}
 			],
 			disallow: [
