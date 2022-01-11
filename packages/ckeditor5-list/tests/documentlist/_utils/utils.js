@@ -300,10 +300,18 @@ function stringifyNode( node, writer ) {
 
 	if ( node.is( 'element', 'paragraph' ) ) {
 		for ( const child of node.getChildren() ) {
-			writer.append( child, fragment );
+			writer.append( writer.cloneElement( child ), fragment );
 		}
 	} else {
-		writer.append( node, fragment );
+		const contentNode = writer.cloneElement( node );
+
+		for ( const key of contentNode.getAttributeKeys() ) {
+			if ( key.startsWith( 'list' ) ) {
+				writer.removeAttribute( key, contentNode );
+			}
+		}
+
+		writer.append( contentNode, fragment );
 	}
 
 	return stringifyModel( fragment );
