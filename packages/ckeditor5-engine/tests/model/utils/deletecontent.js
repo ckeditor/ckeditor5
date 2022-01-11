@@ -689,7 +689,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge left if the first element is not empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]bar</paragraph>' );
 
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 3 ] ),
@@ -706,7 +706,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge right if the first element is empty', () => {
 					setData( model, '<heading1>[</heading1><paragraph>]bar</paragraph>' );
 
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 0 ] ),
@@ -723,7 +723,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge left if the last element is empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]</paragraph>' );
 
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 3 ] ),
@@ -1245,7 +1245,7 @@ describe( 'DataController utils', () => {
 
 		function test( title, input, output, options ) {
 			it( title, () => {
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setData( model, input );
 
 					deleteContent( model, doc.selection, options );

@@ -868,8 +868,8 @@ describe( 'ImageUploadEditing', () => {
 				loader.file.then( () => adapterMocks[ 0 ].mockSuccess( { originalUrl: 'original.jpg', default: 'image.jpg' } ) );
 			} );
 
-			// Make sure the custom attribute was set in the same transparent batch as the default handling (setting src and status).
-			expect( batch.type ).to.equal( 'transparent' );
+			// Make sure the custom attribute was set in the same non-undoable batch as the default handling (setting src and status).
+			expect( batch.isUndoable ).to.be.false;
 			expect( batch.operations.length ).to.equal( 3 );
 
 			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );
@@ -923,8 +923,8 @@ describe( 'ImageUploadEditing', () => {
 				) );
 			} );
 
-			// Make sure the custom attribute was set in the same transparent batch as the default handling (setting src and status).
-			expect( batch.type ).to.equal( 'transparent' );
+			// Make sure the custom attribute was set in the non-undoable batch as the default handling (setting src and status).
+			expect( batch.isUndoable ).to.be.false;
 			expect( batch.operations.length ).to.equal( 2 );
 
 			expect( batch.operations[ 0 ].type ).to.equal( 'changeAttribute' );

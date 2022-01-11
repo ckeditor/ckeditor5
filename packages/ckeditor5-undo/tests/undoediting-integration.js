@@ -53,7 +53,7 @@ describe( 'UndoEditing integration', () => {
 	}
 
 	function input( input ) {
-		model.enqueueChange( 'transparent', () => {
+		model.enqueueChange( { isUndoable: false }, () => {
 			setData( model, input );
 		} );
 	}

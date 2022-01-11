@@ -305,7 +305,7 @@ export default class SourceEditing extends Plugin {
 		}
 
 		if ( Object.keys( data ).length ) {
-			editor.data.set( data, { batchType: 'default' } );
+			editor.data.set( data, { batchType: { isUndoable: true } } );
 		}
 	}
 

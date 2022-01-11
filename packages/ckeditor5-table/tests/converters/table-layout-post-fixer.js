@@ -393,7 +393,7 @@ describe( 'Table layout post-fixer', () => {
 
 			model.change( localCallback );
 
-			model.enqueueChange( 'transparent', externalCallback );
+			model.enqueueChange( { isUndoable: false }, externalCallback );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
 
