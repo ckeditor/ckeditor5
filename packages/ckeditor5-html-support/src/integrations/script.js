@@ -4,7 +4,7 @@
  */
 
 /**
- * @module html-support/integrations/codeblock
+ * @module html-support/integrations/script
  */
 
 import { Plugin } from 'ckeditor5/src/core';
@@ -44,7 +44,7 @@ export default class ScriptElementSupport extends Plugin {
 			schema.register( 'htmlScript', definition.modelSchema );
 
 			schema.extend( 'htmlScript', {
-				allowAttributes: [ 'htmlAttributes' ]
+				allowAttributes: [ 'htmlAttributes', 'htmlContent' ]
 			} );
 
 			editor.data.registerRawContentMatcher( {

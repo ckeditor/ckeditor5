@@ -46,7 +46,6 @@
 //
 // Skipped hidden elements:
 // noscript
-// script
 
 export default {
 	block: [

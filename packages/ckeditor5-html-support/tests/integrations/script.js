@@ -21,10 +21,9 @@ describe( 'ScriptElementSupport', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		const newEditor = await ClassicTestEditor.create( editorElement, {
+		editor = await ClassicTestEditor.create( editorElement, {
 			plugins: [ Paragraph, GeneralHtmlSupport ]
 		} );
-		editor = newEditor;
 		model = editor.model;
 		dataFilter = editor.plugins.get( 'DataFilter' );
 
