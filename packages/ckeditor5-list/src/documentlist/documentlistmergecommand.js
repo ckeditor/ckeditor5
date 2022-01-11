@@ -70,7 +70,14 @@ export default class DocumentListMergeCommand extends Command {
 			}
 
 			if ( firstNode.isEmpty || !selection.isCollapsed ) {
-				this.editor.execute( 'delete' );
+				let sel = selection;
+
+				if ( selection.isCollapsed ) {
+					sel = writer.createSelection( selection );
+					model.modifySelection( sel, { direction: 'backward' } );
+				}
+
+				model.deleteContent( sel, { doNotResetEntireContent: true } );
 			}
 
 			if ( !firstNode.isEmpty ) {
