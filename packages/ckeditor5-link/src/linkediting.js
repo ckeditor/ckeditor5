@@ -642,9 +642,9 @@ function shouldCopyAttributes( model ) {
 // @params {module:core/editor/editor~Editor} editor
 // @returns {Boolean}
 function isTyping( editor ) {
-	const input = editor.plugins.get( 'Input' );
+	const currentBatch = editor.model.change( writer => writer.batch );
 
-	return input.isInput( editor.model.change( writer => writer.batch ) );
+	return currentBatch.isTyping;
 }
 
 // Returns an array containing names of the attributes allowed on `$text` that describes the link item.

@@ -4823,7 +4823,7 @@ describe( 'ListEditing', () => {
 			const selection = parsedResult.selection;
 
 			// Ensure no undo step is generated.
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Replace existing model in document by new one.
 				writer.remove( writer.createRangeIn( modelRoot ) );
 				writer.insert( modelDocumentFragment, modelRoot );

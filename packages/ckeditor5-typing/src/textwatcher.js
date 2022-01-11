@@ -117,7 +117,7 @@ export default class TextWatcher {
 		} );
 
 		this.listenTo( document, 'change:data', ( evt, batch ) => {
-			if ( batch.type == 'transparent' ) {
+			if ( batch.isUndo || !batch.isLocal ) {
 				return;
 			}
 

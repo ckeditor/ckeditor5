@@ -156,7 +156,7 @@ export default class DataController {
 		// Fix empty roots after DataController is 'ready' (note that init method could be decorated and stopped).
 		// We need to handle this event because initial data could be empty and post-fixer would not get triggered.
 		this.on( 'ready', () => {
-			this.model.enqueueChange( 'transparent', autoParagraphEmptyRoots );
+			this.model.enqueueChange( { isUndoable: false }, autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
 	}
 
@@ -323,7 +323,7 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-init-non-existent-root', this );
 		}
 
-		this.model.enqueueChange( 'transparent', writer => {
+		this.model.enqueueChange( { isUndoable: false }, writer => {
 			for ( const rootName of Object.keys( initialData ) ) {
 				const modelRoot = this.model.document.getRoot( rootName );
 				writer.insert( this.parse( initialData[ rootName ], modelRoot ), modelRoot, 0 );
@@ -350,17 +350,18 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
-	 * To set the data with preserved undo stacks and set the current change to this stack, use the `{ batchType: 'default' }` option.
+	 * To set the data with preserved undo stack and add the change to the undo stack, set `{ isUndoable: true }` as `batchType` option.
 	 *
-	 *		dataController.set( '<p>Foo</p>', { batchType: 'default' } ); // Sets data as a new change.
+	 *		dataController.set( '<p>Foo</p>', { batchType: { isUndoable: true } } );
 	 *
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
 	 * @param {Object} [options={}] Options for setting data.
-	 * @param {'default'|'transparent'} [options.batchType='default'] The batch type that will be used to create a batch for the changes.
-	 * When set to `default`, the undo and redo stacks will be preserved. Note that when not set, the undo feature (when present) will
-	 * override it to `transparent` and all undo steps will be lost.
+	 * @param {Object} [options.batchType] The batch type that will be used to create a batch for the changes applied by this method.
+	 * By default, the batch will be set as {@link module:engine/model/batch~Batch#isUndoable not undoable} and the undo stack will be
+	 * cleared after the new data is applied (all undo steps will be removed). If batch type `isUndoable` flag will be set to `true`,
+	 * the undo stack will be preserved.
 	 */
 	set( data, options = {} ) {
 		let newData = {};
@@ -386,9 +387,7 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
-		const batchType = options.batchType || 'default';
-
-		this.model.enqueueChange( batchType, writer => {
+		this.model.enqueueChange( options.batchType || {}, writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 

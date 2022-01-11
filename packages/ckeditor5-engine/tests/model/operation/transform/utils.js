@@ -335,7 +335,7 @@ export function syncClients() {
 				remoteOperationsTransformed = transformSets( remoteOperations, localOperations, options ).operationsA;
 			}
 
-			localClient.editor.model.enqueueChange( 'transparent', writer => {
+			localClient.editor.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const operation of remoteOperationsTransformed ) {
 					writer.batch.addOperation( operation );
 					localClient.editor.model.applyOperation( operation );

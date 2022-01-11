@@ -1339,7 +1339,7 @@ describe( 'DataController utils', () => {
 		it( 'should insert text into limit element when selection spans over many limit elements', () => {
 			let affectedRange;
 
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setData( model, '<limit>foo[</limit><limit>]bar</limit>' );
 				affectedRange = insertHelper( 'baz' );
 			} );
