@@ -302,7 +302,7 @@ describe( 'PasteFromOffice - filters', () => {
 
 					it( 'converts "arabic-leading-zero2" style to proper CSS attribute', () => {
 						const styles = '@list l0:level1\n' +
-							'{mso-level-number-format:arabic-leading-zero3;}';
+							'{mso-level-number-format:arabic-leading-zero2;}';
 
 						const html = `<p ${ level1 }>Foo</p>`;
 						const view = htmlDataProcessor.toView( html );
