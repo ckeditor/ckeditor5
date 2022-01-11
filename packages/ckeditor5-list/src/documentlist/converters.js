@@ -142,8 +142,7 @@ export function reconvertItemsOnDataChange( model, editing ) {
 						findAndAddListHeadToMap( entry.range.start.getShiftedBy( 1 ), itemToListHead );
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
-						// Passing empty array to not look for other blocks because it's already gone from the model.
-						if ( doesItemParagraphRequiresRefresh( item, [] ) ) {
+						if ( doesItemParagraphRequiresRefresh( item ) ) {
 							itemsToRefresh.push( item );
 						}
 					} else {
