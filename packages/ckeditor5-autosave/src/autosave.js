@@ -146,12 +146,15 @@ export default class Autosave extends Plugin {
 		this._pendingActions = editor.plugins.get( PendingActions );
 
 		/**
-		 * The document version
+		 * Informs whether there should be another autosave callback performed, immediately after current autosave callback finishes.
+		 *
+		 * This is set to `true` when there's a save request while autosave callback is already being processed and the model has changed
+		 * since the last save.
 		 *
 		 * @private
 		 * @type {Boolean}
 		 */
-		this._manualSaveVersion = null;
+		this._makeImmediateSave = false;
 
 		/**
 		 * An action that will be added to pending action manager for actions happening in that plugin.
@@ -229,7 +232,7 @@ export default class Autosave extends Plugin {
 	save() {
 		this._debouncedSave.cancel();
 
-		return this._save( true );
+		return this._save();
 	}
 
 	/**
@@ -247,15 +250,11 @@ export default class Autosave extends Plugin {
 	 * It waits for the result and then removes the created pending action.
 	 *
 	 * @private
-	 * @param {Boolean} [manualSave=false] Whether the save was triggered by another plugin (`true`) or by the autosave plugin, after
-	 * the model has changed (`false`).
 	 * @returns {Promise} A promise that will be resolved when the autosave callback is finished.
 	 */
-	_save( manualSave = false ) {
+	_save() {
 		if ( this._savePromise ) {
-			if ( manualSave ) {
-				this._manualSaveVersion = this.editor.model.document.version;
-			}
+			this._makeImmediateSave = this.editor.model.document.version > this._lastDocumentVersion;
 
 			return this._savePromise;
 		}
@@ -278,13 +277,13 @@ export default class Autosave extends Plugin {
 			} )
 			// If the save was successful we have three scenarios:
 			//
-			// 1. If a save was requested (`save()`) during the callback, we need to immediately call another autosave callback.
-			// In this case, `this._savePromise` won't be cleared and won't be resolved until the next callback is done.
+			// 1. If a save was requested when an autosave callback was already processed, we need to immediately call
+			// another autosave callback. In this case, `this._savePromise` won't be resolved until the next callback is done.
 			// 2. Otherwise, if changes happened to the model, make a delayed autosave callback (like the change just happened).
 			// 3. If no changes happened to the model, return to the `synchronized` state.
 			.then( () => {
-				if ( this._manualSaveVersion !== null && this._manualSaveVersion > this._lastDocumentVersion ) {
-					this._manualSaveVersion = null;
+				if ( this._makeImmediateSave ) {
+					this._makeImmediateSave = false;
 
 					// Start another autosave callback. Return a promise that will be resolved after the new autosave callback.
 					// This way promises returned by `_save()` won't be resolved until all changes are saved.
