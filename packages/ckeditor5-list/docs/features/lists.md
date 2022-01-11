@@ -49,19 +49,31 @@ The {@link module:list/liststartcommand~ListStartCommand list start index} featu
 
 Additional dropdown option is available, where the user may set the starting marker.
 
+#### Demo
+
+In the editor below, select a list use the ordered list dropdown input field to set the start index for each list to achieve continuous numbering of spaceships.
+
+{@snippet features/lists-index}
+
 ### Reversed list
 
 The {@link module:list/listreversedcommand~ListReversedCommand reversed list} feature lets the editor reverse the numbering order of a list. This is especially useful in countdowns and thing-to-do lists that need to reproduce steps in a reversed order (for example disassembling instruction in an owners manual).
 
 Additional dropdown switch makes it easy to reverse the order of a list with a single click.
 
+#### Demo
+
+Click the second list and use the ordered list dropdown switch to choose order reversion.
+
+{@snippet features/lists-reversed}
+
 ### List styles
 
 The {@link module:list/listproperties~ListProperties list style} feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The styles can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
-### List properties demo
+#### Demo
 
-Use the editor below to see the list properties in action.
+Use the editor below use the lists dropdown to choose the desired marker types for each list.
 
 {@snippet features/lists-style}
 
@@ -146,8 +158,8 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
 * The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command that accepts a numerical value (the default is 1).
 * The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed`} command which is a boolean and defaults to `false`.
-* The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plugin.
-* The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plugin.
+* The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plugin).
+* The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plugin).
 
 ## Contribute
 

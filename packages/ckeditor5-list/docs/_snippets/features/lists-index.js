@@ -8,7 +8,7 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-lists-styles' ), {
+	.create( document.querySelector( '#snippet-lists-index' ), {
 		extraPlugins: [ ListProperties ],
 		toolbar: {
 			items: [
@@ -51,8 +51,8 @@ ClassicEditor
 		},
 		list: {
 			properties: {
-				styles: true,
-				startIndex: false,
+				styles: false,
+				startIndex: true,
 				reversed: false
 			}
 		},
