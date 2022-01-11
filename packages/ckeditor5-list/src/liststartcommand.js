@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from './utils';
 
 /**
- * The list start index command. It changes `listStart` attribute of the selected list items.
+ * The list start index command. It changes the `listStart` attribute of the selected list items.
  * It is used by the {@link module:list/listproperties~ListProperties list style feature}.
  *
  * @extends module:core/command~Command

@@ -144,8 +144,8 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
-* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command that accepts a numerical value
-* The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed`} command which is a boolean
+* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command that accepts a numerical value (the default is 1).
+* The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed`} command which is a boolean and defaults to `false`.
 * The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plugin.
 * The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plugin.
 
