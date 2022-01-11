@@ -890,7 +890,7 @@ describe( 'DocumentList - utils - model', () => {
 	describe( 'splitListItemBefore()', () => {
 		it( 'should replace all blocks ids for first block given', () => {
 			const input = modelList( [
-				'* a{a}',
+				'* a',
 				'  b',
 				'  c'
 			] );
@@ -901,7 +901,7 @@ describe( 'DocumentList - utils - model', () => {
 			model.change( writer => splitListItemBefore( fragment.getChild( 0 ), writer ) );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* a{a00}',
+				'* a{id:a00}',
 				'  b',
 				'  c'
 			] ) );
@@ -909,7 +909,7 @@ describe( 'DocumentList - utils - model', () => {
 
 		it( 'should replace blocks ids for second block given', () => {
 			const input = modelList( [
-				'* a{a}',
+				'* a',
 				'  b',
 				'  c'
 			] );
@@ -920,8 +920,8 @@ describe( 'DocumentList - utils - model', () => {
 			model.change( writer => splitListItemBefore( fragment.getChild( 1 ), writer ) );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* a{a}',
-				'* b{a00}',
+				'* a',
+				'* b{id:a00}',
 				'  c'
 			] ) );
 		} );
@@ -943,7 +943,7 @@ describe( 'DocumentList - utils - model', () => {
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* x',
 				'* a',
-				'* b{a00}',
+				'* b{id:a00}',
 				'  c',
 				'* y'
 			] ) );
@@ -964,7 +964,7 @@ describe( 'DocumentList - utils - model', () => {
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* a',
-				'* b{a00}',
+				'* b{id:a00}',
 				'  * c',
 				'  d'
 			] ) );
@@ -987,7 +987,7 @@ describe( 'DocumentList - utils - model', () => {
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* a',
 				'  * b',
-				'  * c{a00}',
+				'  * c{id:a00}',
 				'    d',
 				'  e'
 			] ) );
@@ -1050,7 +1050,7 @@ describe( 'DocumentList - utils - model', () => {
 
 		it( 'should not apply non-list attributes', () => {
 			const input = modelList( [
-				'* <paragraph alignment="right">0</paragraph>{a}',
+				'* <paragraph alignment="right">0</paragraph>{id:a}',
 				'  * 1',
 				'* 2'
 			] );
@@ -1063,8 +1063,8 @@ describe( 'DocumentList - utils - model', () => {
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* <paragraph alignment="right">0</paragraph>{a}',
-				'* 1{a}',
+				'* <paragraph alignment="right">0</paragraph>{id:a}',
+				'* 1{id:a}',
 				'* 2'
 			] ) );
 
@@ -1095,9 +1095,9 @@ describe( 'DocumentList - utils - model', () => {
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 				'* a',
-				'  * b{000}',
+				'  * b{id:000}',
 				'  * c',
-				'* d{002}'
+				'* d{id:002}'
 			] ) );
 		} );
 

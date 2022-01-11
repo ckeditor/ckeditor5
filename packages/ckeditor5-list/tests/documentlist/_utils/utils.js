@@ -243,18 +243,36 @@ export function modelList( lines ) {
 			}
 
 			if ( !stack[ listIndent ] || marker ) {
-				let listItemId = String( idx ).padStart( 3, '0' );
+				const props = {
+					listType: marker == '#' ? 'numbered' : 'bulleted',
+					listItemId: String( idx ).padStart( 3, '0' )
+				};
 
-				content = content.replace( /\s*{(?:id:)?([^}]+)}\s*/, ( match, id ) => {
-					listItemId = id;
+				content = content.replace( /\s*{(?:id:)([^}]+)}\s*/g, ( match, id ) => {
+					props.listItemId = id;
 
 					return '';
 				} );
 
-				stack[ listIndent ] = {
-					listItemId,
-					listType: marker == '#' ? 'numbered' : 'bulleted'
-				};
+				if ( !stack[ listIndent ] ) {
+					content = content.replace( /\s*{(?:(style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
+						switch ( key ) {
+							case 'style':
+								props.listStyle = value;
+								break;
+							case 'start':
+								props.listStart = parseInt( value );
+								break;
+							case 'reversed':
+								props.listReversed = value === true || parseInt( value ) !== 0;
+								break;
+						}
+
+						return '';
+					} );
+				}
+
+				stack[ listIndent ] = Object.assign( stack[ listIndent ] || {}, props );
 			}
 
 			items.push( stringifyElement( content, { listIndent, ...stack[ listIndent ] } ) );
@@ -319,7 +337,11 @@ function stringifyNode( node, writer ) {
 
 function stringifyElement( content, attributes = {}, name = 'paragraph' ) {
 	[ , name, content ] = content.match( /^<([^>]+)>([^<]*)?/ ) || [ null, name, content ];
-	attributes = Object.entries( attributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+
+	attributes = Object.entries( attributes )
+		.sort( ( [ keyA ], [ keyB ] ) => keyA.localeCompare( keyB ) )
+		.map( ( [ key, value ] ) => ` ${ key }="${ value }"` )
+		.join( '' );
 
 	return `<${ name }${ attributes }>${ content }</${ name.replace( /\s.*/, '' ) }>`;
 }

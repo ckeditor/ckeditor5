@@ -228,7 +228,7 @@ describe( 'mockList()', () => {
 
 	it( 'should allow to customize the list item id (suffix)', () => {
 		expect( modelList( [
-			'* foo{abc}',
+			'* foo{id:abc}',
 			'  bar',
 			'* baz'
 		] ) ).to.equalMarkup(
@@ -241,7 +241,7 @@ describe( 'mockList()', () => {
 	it( 'should allow to customize the list item id (prefix)', () => {
 		expect( modelList( [
 			'* foo',
-			'* {abc}bar',
+			'* {id:abc}bar',
 			'  baz'
 		] ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
@@ -265,11 +265,11 @@ describe( 'mockList()', () => {
 	it( 'should not parse the custom list item ID if provided in the following block of a list item', () => {
 		expect( modelList( [
 			'* foo',
-			'  {abc}bar',
+			'  {id:abc}bar',
 			'* baz'
 		] ) ).to.equalMarkup(
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
-			'<paragraph listIndent="0" listItemId="000" listType="bulleted">{abc}bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">{id:abc}bar</paragraph>' +
 			'<paragraph listIndent="0" listItemId="002" listType="bulleted">baz</paragraph>'
 		);
 	} );

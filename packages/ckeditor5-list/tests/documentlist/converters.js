@@ -44,7 +44,7 @@ describe( 'DocumentListEditing - converters', () => {
 
 		model.schema.register( 'foo', {
 			allowWhere: '$block',
-			allowAttributes: [ 'listIndent', 'listType' ],
+			allowAttributesOf: '$container',
 			isBlock: true,
 			isObject: true
 		} );
