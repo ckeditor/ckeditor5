@@ -15,7 +15,7 @@ import {
 } from './utils/model';
 
 /**
- * The document list split command that splits the list item at the first position of the selection.
+ * The document list split command that splits the list item at the selection.
  *
  * It is used by the {@link module:list/documentlist~DocumentList document list feature}.
  *
@@ -30,7 +30,7 @@ export default class DocumentListSplitCommand extends Command {
 	}
 
 	/**
-	 * Splits the list item at the first position of the selection.
+	 * Splits the list item at the selection.
 	 *
 	 * @fires execute
 	 * @fires afterExecute
