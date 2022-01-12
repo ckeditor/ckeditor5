@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals Event */
 
 import MediaFormView from '../../src/ui/mediaformview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -22,12 +22,6 @@ describe( 'MediaFormView', () => {
 	beforeEach( () => {
 		view = new MediaFormView( [], { t: val => val } );
 		view.render();
-		document.body.appendChild( view.element );
-	} );
-
-	afterEach( () => {
-		view.element.remove();
-		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -128,7 +122,7 @@ describe( 'MediaFormView', () => {
 		} );
 
 		it( 'should register child views\' #element in #focusTracker', () => {
-			const view = new MediaFormView( [], { t: () => {} } );
+			view = new MediaFormView( [], { t: () => {} } );
 
 			const spy = testUtils.sinon.spy( view.focusTracker, 'add' );
 
@@ -137,20 +131,16 @@ describe( 'MediaFormView', () => {
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
-
-			view.destroy();
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			const view = new MediaFormView( [], { t: () => {} } );
+			view = new MediaFormView( [], { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
-
-			view.destroy();
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {

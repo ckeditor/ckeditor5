@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -280,12 +280,8 @@ describe( 'table cell properties', () => {
 			} );
 
 			describe( 'property changes', () => {
-				let batch;
-
 				beforeEach( () => {
-					batch = editor.model.createBatch();
-
-					tableCellPropertiesUI._undoStepBatch = batch;
+					tableCellPropertiesUI._undoStepBatch = 'foo';
 				} );
 
 				describe( '#borderStyle', () => {
@@ -295,7 +291,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderStyle = 'dotted';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderStyle', { value: 'dotted', batch: 'foo' } );
 					} );
 				} );
 
@@ -306,7 +302,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderColor = '#FFAAFF';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#FFAAFF', batch: 'foo' } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -326,7 +322,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.borderColorInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderColor', { value: '#AAA', batch: 'foo' } );
 					} );
 				} );
 
@@ -337,7 +333,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.borderWidth = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '12px', batch: 'foo' } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -357,7 +353,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBorderWidth', { value: '3em', batch: 'foo' } );
 					} );
 				} );
 
@@ -368,7 +364,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.width = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '12px', batch: 'foo' } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -388,7 +384,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellWidth', { value: '3em', batch: 'foo' } );
 					} );
 				} );
 
@@ -399,7 +395,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.height = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '12px', batch: 'foo' } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -419,7 +415,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHeight', { value: '3em', batch: 'foo' } );
 					} );
 				} );
 
@@ -430,7 +426,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.padding = '12px';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '12px', batch: 'foo' } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -450,7 +446,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellPadding', { value: '3em', batch: 'foo' } );
 					} );
 				} );
 
@@ -461,7 +457,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.backgroundColor = '#FFAAFF';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#FFAAFF', batch: 'foo' } );
 					} );
 
 					it( 'should display an error message if value is invalid', () => {
@@ -481,7 +477,7 @@ describe( 'table cell properties', () => {
 						clock.tick( 500 );
 
 						expect( tableCellPropertiesView.backgroundInput.errorText ).to.be.null;
-						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellBackgroundColor', { value: '#AAA', batch: 'foo' } );
 					} );
 				} );
 
@@ -492,7 +488,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.horizontalAlignment = 'right';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellHorizontalAlignment', { value: 'right', batch: 'foo' } );
 					} );
 				} );
 
@@ -503,7 +499,7 @@ describe( 'table cell properties', () => {
 						tableCellPropertiesView.verticalAlignment = 'right';
 
 						sinon.assert.calledOnce( spy );
-						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch } );
+						sinon.assert.calledWithExactly( spy, 'tableCellVerticalAlignment', { value: 'right', batch: 'foo' } );
 					} );
 				} );
 

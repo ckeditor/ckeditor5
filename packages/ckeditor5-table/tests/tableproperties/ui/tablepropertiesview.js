@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, Event */
+/* globals Event */
 
 import TablePropertiesView from '../../../src/tableproperties/ui/tablepropertiesview';
 import LabeledFieldView from '@ckeditor/ckeditor5-ui/src/labeledfield/labeledfieldview';
@@ -59,11 +59,9 @@ describe( 'table properties', () => {
 			locale = { t: val => val };
 			view = new TablePropertiesView( locale, VIEW_OPTIONS );
 			view.render();
-			document.body.appendChild( view.element );
 		} );
 
 		afterEach( () => {
-			view.element.remove();
 			view.destroy();
 		} );
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -41,7 +41,6 @@ function parseArguments( args ) {
 		boolean: [
 			'docs',
 			'manual',
-			'spinner',
 			'quit'
 		],
 
@@ -51,10 +50,6 @@ function parseArguments( args ) {
 			e: 'exclusions',
 			c: 'concurrency',
 			q: 'quit'
-		},
-
-		default: {
-			spinner: true
 		}
 	};
 
@@ -101,7 +96,6 @@ function parseArguments( args ) {
 		depth: options.depth ? Number( options.depth ) : Infinity,
 		exclusions: options.exclusions ? toArray( options.exclusions ).filter( exclusion => exclusion.length > 0 ) : [],
 		concurrency: options.concurrency ? Number( options.concurrency ) : 1,
-		quit: Boolean( options.quit ),
-		noSpinner: !options.spinner
+		quit: Boolean( options.quit )
 	};
 }

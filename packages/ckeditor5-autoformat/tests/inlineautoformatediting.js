@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -152,23 +152,11 @@ describe( 'inlineAutoformatEditing', () => {
 		} );
 	} );
 
-	it( 'should ignore non-local batches', () => {
+	it( 'should ignore transparent batches', () => {
 		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
 
 		setData( model, '<paragraph>*foobar[]</paragraph>' );
-		model.enqueueChange( { isLocal: false }, writer => {
-			writer.insertText( '*', doc.selection.getFirstPosition() );
-		} );
-
-		sinon.assert.notCalled( formatSpy );
-		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
-	} );
-
-	it( 'should ignore undo batches', () => {
-		inlineAutoformatEditing( editor, plugin, /(\*)(.+?)(\*)/g, formatSpy );
-
-		setData( model, '<paragraph>*foobar[]</paragraph>' );
-		model.enqueueChange( { isUndo: true }, writer => {
+		model.enqueueChange( 'transparent', writer => {
 			writer.insertText( '*', doc.selection.getFirstPosition() );
 		} );
 

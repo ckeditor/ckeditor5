@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -689,7 +689,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge left if the first element is not empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]bar</paragraph>' );
 
-					model.enqueueChange( { isUndoable: false }, writer => {
+					model.enqueueChange( 'transparent', writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 3 ] ),
@@ -706,7 +706,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge right if the first element is empty', () => {
 					setData( model, '<heading1>[</heading1><paragraph>]bar</paragraph>' );
 
-					model.enqueueChange( { isUndoable: false }, writer => {
+					model.enqueueChange( 'transparent', writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 0 ] ),
@@ -723,7 +723,7 @@ describe( 'DataController utils', () => {
 				it( 'should merge left if the last element is empty', () => {
 					setData( model, '<heading1>foo[</heading1><paragraph>]</paragraph>' );
 
-					model.enqueueChange( { isUndoable: false }, writer => {
+					model.enqueueChange( 'transparent', writer => {
 						const root = doc.getRoot( );
 						const range = writer.createRange(
 							writer.createPositionFromPath( root, [ 0, 3 ] ),
@@ -1245,7 +1245,7 @@ describe( 'DataController utils', () => {
 
 		function test( title, input, output, options ) {
 			it( title, () => {
-				model.enqueueChange( { isUndoable: false }, () => {
+				model.enqueueChange( 'transparent', () => {
 					setData( model, input );
 
 					deleteContent( model, doc.selection, options );

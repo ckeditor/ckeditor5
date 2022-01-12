@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1105,7 +1105,7 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			model.enqueueChange( { isUndoable: false }, () => {
+			model.enqueueChange( 'transparent', () => {
 				setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
 				const section = root.getNodeByPath( [ 0, 0 ] );
@@ -1794,7 +1794,7 @@ describe( 'Schema', () => {
 			it( testName, () => {
 				let range;
 
-				model.enqueueChange( { isUndoable: false }, () => {
+				model.enqueueChange( 'transparent', () => {
 					setData( model, data );
 					range = schema.getNearestSelectionRange( selection.anchor, direction );
 				} );

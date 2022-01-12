@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,14 +8,14 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ListProperties from './listproperties';
-import { logWarning } from 'ckeditor5/src/utils';
+import ListStyleEditing from './liststyleediting';
+import ListStyleUI from './liststyleui';
 
 /**
  * The list style feature.
  *
- * This is an obsolete plugin that exists for backward-compatibility.
- * Use {@link module:list/listproperties~ListProperties list properties plugin} instead.
+ * This is a "glue" plugin that loads the {@link module:list/liststyleediting~ListStyleEditing list style editing feature}
+ * and the {@link module:list/liststyleui~ListStyleUI list style UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -24,7 +24,7 @@ export default class ListStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ListProperties ];
+		return [ ListStyleEditing, ListStyleUI ];
 	}
 
 	/**
@@ -32,11 +32,5 @@ export default class ListStyle extends Plugin {
 	 */
 	static get pluginName() {
 		return 'ListStyle';
-	}
-
-	constructor( editor ) {
-		super( editor );
-
-		logWarning( '`ListStyle` plugin is obsolete. User `ListProperties` instead.' );
 	}
 }
