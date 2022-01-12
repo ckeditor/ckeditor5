@@ -516,7 +516,7 @@ describe( 'DocumentListEditing integrations', () => {
 				preventDefault: sinon.spy()
 			} );
 
-			splitCommand = editor.commands.get( 'splitListItem' );
+			splitCommand = editor.commands.get( 'splitListItemBefore' );
 			indentCommand = editor.commands.get( 'outdentList' );
 
 			splitCommandExecuteSpy = sinon.spy( splitCommand, 'execute' );

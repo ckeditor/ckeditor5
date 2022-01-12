@@ -118,8 +118,14 @@ describe( 'DocumentListEditing', () => {
 			expect( command ).to.be.instanceOf( DocumentListIndentCommand );
 		} );
 
-		it( 'should register the splitListItem command', () => {
-			const command = editor.commands.get( 'splitListItem' );
+		it( 'should register the splitListItemBefore command', () => {
+			const command = editor.commands.get( 'splitListItemBefore' );
+
+			expect( command ).to.be.instanceOf( DocumentListSplitCommand );
+		} );
+
+		it( 'should register the splitListItemAfter command', () => {
+			const command = editor.commands.get( 'splitListItemAfter' );
 
 			expect( command ).to.be.instanceOf( DocumentListSplitCommand );
 		} );

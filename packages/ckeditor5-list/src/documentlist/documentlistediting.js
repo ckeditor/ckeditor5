@@ -93,7 +93,8 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
 
-		editor.commands.add( 'splitListItem', new DocumentListSplitCommand( editor ) );
+		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
+		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
@@ -101,18 +102,29 @@ export default class DocumentListEditing extends Plugin {
 			const positionParent = doc.selection.getFirstPosition().parent;
 
 			if ( doc.selection.isCollapsed && positionParent.hasAttribute( 'listItemId' ) && positionParent.isEmpty ) {
+				const isFirstBlock = isFirstBlockOfListItem( positionParent );
+				const isLastBlock = isLastBlockOfListItem( positionParent );
+
 				// * a      →      * a
 				// * []     →      []
-				if ( isFirstBlockOfListItem( positionParent ) ) {
+				if ( isFirstBlock && isLastBlock ) {
 					editor.execute( 'outdentList' );
+
+					data.preventDefault();
+					evt.stop();
+				}
+				// * []     →      * []
+				//   a      →      * a
+				else if ( isFirstBlock && !isLastBlock ) {
+					editor.execute( 'splitListItemAfter' );
 
 					data.preventDefault();
 					evt.stop();
 				}
 				// * a      →      * a
 				//   []     →      * []
-				else if ( isLastBlockOfListItem( positionParent ) ) {
-					editor.execute( 'splitListItem' );
+				else if ( isLastBlock ) {
+					editor.execute( 'splitListItemBefore' );
 
 					data.preventDefault();
 					evt.stop();
@@ -120,10 +132,10 @@ export default class DocumentListEditing extends Plugin {
 			}
 		}, { context: 'li' } );
 
-		// In some cases, after the default block splitting, we want to modify the new block to become a new list item 
+		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
-			const splitCommand = commands.get( 'splitListItem' );
+			const splitCommand = commands.get( 'splitListItemBefore' );
 
 			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
 			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
@@ -144,7 +156,7 @@ export default class DocumentListEditing extends Plugin {
 			// │          * a[]            │           * a             │           * a             │
 			// │                           │             []            │           * []            │
 			if ( listItemBlocks.length === 2 ) {
-				editor.execute( 'splitListItem' );
+				splitCommand.execute();
 			}
 		} );
 	}

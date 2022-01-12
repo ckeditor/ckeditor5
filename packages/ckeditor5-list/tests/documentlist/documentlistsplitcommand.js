@@ -31,7 +31,7 @@ describe( 'DocumentListSplitCommand', () => {
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
-		command = new DocumentListSplitCommand( editor );
+		command = new DocumentListSplitCommand( editor, 'before' );
 
 		command.on( 'afterExecute', ( evt, data ) => {
 			changedBlocks = data;
