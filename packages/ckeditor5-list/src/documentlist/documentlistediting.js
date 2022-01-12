@@ -14,6 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
+import DocumentListSplitCommand from './documentlistsplitcommand';
 import {
 	listItemDowncastConverter,
 	listItemParagraphDowncastConverter,
@@ -27,6 +28,11 @@ import {
 	fixListIndents,
 	fixListItemIds
 } from './utils/postfixers';
+import {
+	getAllListItemBlocks,
+	isFirstBlockOfListItem,
+	isLastBlockOfListItem
+} from './utils/model';
 import { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
@@ -57,6 +63,8 @@ export default class DocumentListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const commands = editor.commands;
+		const enterCommand = commands.get( 'enter' );
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -84,14 +92,69 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
+
+		editor.commands.add( 'splitListItem', new DocumentListSplitCommand( editor ) );
+
+		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
+		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
+			const doc = model.document;
+			const positionParent = doc.selection.getFirstPosition().parent;
+
+			if ( doc.selection.isCollapsed && positionParent.hasAttribute( 'listItemId' ) && positionParent.isEmpty ) {
+				// * a      →      * a
+				// * []     →      []
+				if ( isFirstBlockOfListItem( positionParent ) ) {
+					editor.execute( 'outdentList' );
+
+					data.preventDefault();
+					evt.stop();
+				}
+				// * a      →      * a
+				//   []     →      * []
+				else if ( isLastBlockOfListItem( positionParent ) ) {
+					editor.execute( 'splitListItem' );
+
+					data.preventDefault();
+					evt.stop();
+				}
+			}
+		}, { context: 'li' } );
+
+		// In some cases, after the default block splitting, we want to modify the new block to become a new list item 
+		// instead of an additional block in the same list item.
+		this.listenTo( enterCommand, 'afterExecute', () => {
+			const splitCommand = commands.get( 'splitListItem' );
+
+			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
+			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
+			splitCommand.refresh();
+
+			if ( !splitCommand.isEnabled ) {
+				return;
+			}
+
+			const doc = editor.model.document;
+			const positionParent = doc.selection.getLastPosition().parent;
+			const listItemBlocks = getAllListItemBlocks( positionParent );
+
+			// Keep in mind this split happens after the default enter handler was executed. For instance:
+			//
+			// │       Initial state       │    After default enter    │   Here in #afterExecute   │
+			// ├───────────────────────────┼───────────────────────────┼───────────────────────────┤
+			// │          * a[]            │           * a             │           * a             │
+			// │                           │             []            │           * []            │
+			if ( listItemBlocks.length === 2 ) {
+				editor.execute( 'splitListItem' );
+			}
+		} );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const commands = this.editor.commands;
-
+		const editor = this.editor;
+		const commands = editor.commands;
 		const indent = commands.get( 'indent' );
 		const outdent = commands.get( 'outdent' );
 
