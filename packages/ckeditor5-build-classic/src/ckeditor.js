@@ -36,6 +36,7 @@ import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
+import {ImageUpload} from "@ckeditor/ckeditor5-image";
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -60,6 +61,7 @@ const plugins = [
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
+	ImageUpload,
 	Indent,
 	Link,
 	List,
