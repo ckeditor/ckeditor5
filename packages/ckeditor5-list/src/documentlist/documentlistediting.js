@@ -93,7 +93,7 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.commands.add( 'splitListItem', new DocumentListSplitCommand( editor ) );
 
-		// Overwrite default Enter key behavior and outdent the list.
+		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
 			const doc = model.document;
 			const positionParent = doc.selection.getFirstPosition().parent;
