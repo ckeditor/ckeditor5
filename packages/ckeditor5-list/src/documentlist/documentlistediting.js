@@ -120,7 +120,7 @@ export default class DocumentListEditing extends Plugin {
 			}
 		}, { context: 'li' } );
 
-		// In some cases, the integration with the enter key is done after the default handler in EnterCommand.
+		// In some cases, after the default block splitting, we want to modify the new block to become a new list item instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
 			const splitCommand = commands.get( 'splitListItem' );
 
