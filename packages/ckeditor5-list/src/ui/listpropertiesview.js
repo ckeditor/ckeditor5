@@ -12,14 +12,14 @@ import {
 	ViewCollection,
 	FocusCycler,
 	SwitchButtonView,
-	LabeledFieldView
+	LabeledFieldView,
+	createLabeledInputNumber
 } from 'ckeditor5/src/ui';
 import {
 	FocusTracker,
 	KeystrokeHandler
 } from 'ckeditor5/src/utils';
 
-import { createLabeledInputNumber } from './inputnumberview';
 import CollapsibleView from './collapsibleview';
 
 import '../../theme/listproperties.css';
