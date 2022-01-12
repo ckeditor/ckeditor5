@@ -14,6 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
+import DocumentListSplitCommand from './documentlistsplitcommand';
 import {
 	listItemDowncastConverter,
 	listItemParagraphDowncastConverter,
@@ -27,6 +28,11 @@ import {
 	fixListIndents,
 	fixListItemIds
 } from './utils/postfixers';
+import {
+	getAllListItemBlocks,
+	isFirstBlockOfListItem,
+	isLastBlockOfListItem
+} from './utils/model';
 import { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
@@ -85,16 +91,30 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
 
-		// Overwrite default Enter key behavior.
+		editor.commands.add( 'splitListItem', new DocumentListSplitCommand( editor ) );
+
+		// Overwrite default Enter key behavior and outdent the list.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
 			const doc = model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
+			const positionParent = doc.selection.getFirstPosition().parent;
 
 			if ( doc.selection.isCollapsed && positionParent.hasAttribute( 'listItemId' ) && positionParent.isEmpty ) {
-				editor.execute( 'outdentList' );
+				// * a      →      * a
+				// * []     →      []
+				if ( isFirstBlockOfListItem( positionParent ) ) {
+					editor.execute( 'outdentList' );
 
-				data.preventDefault();
-				evt.stop();
+					data.preventDefault();
+					evt.stop();
+				}
+				// * a      →      * a
+				//   []     →      * []
+				else if ( isLastBlockOfListItem( positionParent ) ) {
+					editor.execute( 'splitListItem' );
+
+					data.preventDefault();
+					evt.stop();
+				}
 			}
 		}, { context: 'li' } );
 	}
@@ -103,10 +123,12 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const commands = this.editor.commands;
+		const editor = this.editor;
+		const commands = editor.commands;
 
 		const indent = commands.get( 'indent' );
 		const outdent = commands.get( 'outdent' );
+		const enterCommand = commands.get( 'enter' );
 
 		if ( indent ) {
 			indent.registerChildCommand( commands.get( 'indentList' ) );
@@ -114,6 +136,35 @@ export default class DocumentListEditing extends Plugin {
 
 		if ( outdent ) {
 			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
+
+		if ( enterCommand ) {
+			// In some cases, the integration with the enter key is done after the default handler in EnterCommand.
+			this.listenTo( enterCommand, 'afterExecute', () => {
+				const splitCommand = editor.commands.get( 'splitListItem' );
+
+				// The commands has not refreshed because the change block related to EnterCommand#execute() is not over yet.
+				// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
+				splitCommand.refresh();
+
+				if ( !splitCommand.isEnabled ) {
+					return;
+				}
+
+				const doc = editor.model.document;
+				const positionParent = doc.selection.getLastPosition().parent;
+				const listItemBlocks = getAllListItemBlocks( positionParent );
+
+				// Keep in mind this split happens after the default enter handler was executed. For instance:
+				//
+				// │       Initial state       │    After default enter    │   Here in #afterExecute   │
+				// ├───────────────────────────┼───────────────────────────┼───────────────────────────┤
+				// │          * a[]            │           * a             │           * a             │
+				// │                           │             []            │           * []            │
+				if ( listItemBlocks.length === 2 ) {
+					editor.execute( 'splitListItem' );
+				}
+			} );
 		}
 	}
 

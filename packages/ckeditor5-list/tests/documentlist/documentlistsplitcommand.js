@@ -14,8 +14,8 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DocumentListSplitCommand', () => {
-	let editor, command, model, doc;
-	// let changedBlocks;
+	let editor, command, model, doc, root;
+	let changedBlocks;
 
 	testUtils.createSinonSandbox();
 
@@ -25,17 +25,17 @@ describe( 'DocumentListSplitCommand', () => {
 
 		model = editor.model;
 		doc = model.document;
-
-		doc.createRoot();
+		root = doc.createRoot();
 
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
 		command = new DocumentListSplitCommand( editor );
-		// command.on( 'afterExecute', ( evt, data ) => {
-		// 	changedBlocks = data;
-		// } );
+
+		command.on( 'afterExecute', ( evt, data ) => {
+			changedBlocks = data;
+		} );
 
 		stubUid();
 	} );
@@ -45,12 +45,76 @@ describe( 'DocumentListSplitCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		// TODO
+		it( 'should be false if selection is not in a list item', () => {
+			setData( model, modelList( [
+				'[]'
+			] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection is not collapsed in a list item', () => {
+			setData( model, modelList( [
+				'* a',
+				'  [b]'
+			] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be false if selection is in the first block of a list item', () => {
+			setData( model, modelList( [
+				'* a[]'
+			] ) );
+
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be true if selection is collapsed in a non-first block of a list item', () => {
+			setData( model, modelList( [
+				'* a',
+				'  []'
+			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+
+			setData( model, modelList( [
+				'* a',
+				'  b[]'
+			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+
+			setData( model, modelList( [
+				'* a',
+				'  []b'
+			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+
+			setData( model, modelList( [
+				'* a',
+				'  b[]c'
+			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+
+			setData( model, modelList( [
+				'* a',
+				'  b[]c',
+				'  d'
+			] ) );
+
+			expect( command.isEnabled ).to.be.true;
+		} );
 	} );
 
 	describe( 'execute()', () => {
 		it( 'should use parent batch', () => {
-			setData( model, '<paragraph>[0]</paragraph>' );
+			setData( model, modelList( [
+				'* a',
+				'  []'
+			] ) );
 
 			model.change( writer => {
 				expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
@@ -61,120 +125,7 @@ describe( 'DocumentListSplitCommand', () => {
 			} );
 		} );
 
-		it( '0', () => {
-			setData( model, modelList( [
-				'* a[]'
-			] ) );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'* []'
-			] ) );
-
-			// TODO changed blocks
-		} );
-
-		it( '1.-1', () => {
-			setData( model, modelList( [
-				'* a[]',
-				'  b',
-				'  c'
-			] ) );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  []',
-				'  b',
-				'  c'
-			] ) );
-
-			// TODO changed blocks
-		} );
-
-		it( '1.0', () => {
-			setData( model, modelList( [
-				'* []a',
-				'  b',
-				'  c'
-			] ) );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* ',
-				'* []a',
-				'  b',
-				'  c'
-			] ) );
-
-			// TODO changed blocks
-		} );
-
-		it( '1.1', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  []c'
-			] ) );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'  ',
-				'  []c'
-			] ) );
-
-			// TODO
-			// expect( changedBlocks.length ).to.equal( ... );
-			// expect( changedBlocks ).to.deep.equal( [
-			// ] );
-		} );
-
-		it( '1.2', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  c[]'
-			] ) );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'  c',
-				'  []'
-			] ) );
-
-			// TODO changed blocks
-		} );
-
-		it( '3', () => {
-			setData( model, modelList( [
-				'* a',
-				'  []',
-				'  c'
-			] ) );
-
-			command.execute();
-
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  ',
-				'  []',
-				'  c'
-			] ) );
-
-			// TODO changed blocks
-		} );
-
-		it( '4', () => {
+		it( 'should create another list item when the selection in an empty last block (two blocks in total)', () => {
 			setData( model, modelList( [
 				'* a',
 				'  []'
@@ -184,13 +135,15 @@ describe( 'DocumentListSplitCommand', () => {
 
 			expect( getData( model ) ).to.equalMarkup( modelList( [
 				'* a',
-				'* []'
+				'* [] {id:a00}'
 			] ) );
 
-			// TODO changed blocks
+			expect( changedBlocks ).to.deep.equal( [
+				root.getChild( 1 )
+			] );
 		} );
 
-		it( '5', () => {
+		it( 'should create another list item when the selection in an empty last block (three blocks in total)', () => {
 			setData( model, modelList( [
 				'* a',
 				'  b',
@@ -202,18 +155,20 @@ describe( 'DocumentListSplitCommand', () => {
 			expect( getData( model ) ).to.equalMarkup( modelList( [
 				'* a',
 				'  b',
-				'* []'
+				'* [] {id:a00}'
 			] ) );
 
-			// TODO changed blocks
+			expect( changedBlocks ).to.deep.equal( [
+				root.getChild( 2 )
+			] );
 		} );
 
-		it( '6', () => {
+		it( 'should create another list item when the selection in an empty last block (followed by a list item)', () => {
 			setData( model, modelList( [
 				'* a',
 				'  b',
 				'  []',
-				'*'
+				'* '
 			] ) );
 
 			command.execute();
@@ -221,11 +176,89 @@ describe( 'DocumentListSplitCommand', () => {
 			expect( getData( model ) ).to.equalMarkup( modelList( [
 				'* a',
 				'  b',
-				'* []',
-				'*'
+				'* [] {id:a00}',
+				'* '
 			] ) );
 
-			// TODO changed blocks
+			expect( changedBlocks ).to.deep.equal( [
+				root.getChild( 2 )
+			] );
+		} );
+
+		it( 'should create another list item in a nested structure (last block of the list item)', () => {
+			setData( model, modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'    []'
+			] ) );
+
+			command.execute();
+
+			expect( getData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'  * [] {id:a00}'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				root.getChild( 3 )
+			] );
+		} );
+
+		it( 'should create another list item in a nested structure (middle block of the list item)', () => {
+			setData( model, modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'    d[]',
+				'    e'
+			] ) );
+
+			command.execute();
+
+			expect( getData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'  * d[] {id:a00}',
+				'    e'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				root.getChild( 3 ),
+				root.getChild( 4 )
+			] );
+		} );
+
+		it( 'should create another list item in a nested structure (middle block of the list item, followed by list items)', () => {
+			setData( model, modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'    d[]',
+				'    e',
+				'  * f',
+				'* g'
+			] ) );
+
+			command.execute();
+
+			expect( getData( model ) ).to.equalMarkup( modelList( [
+				'* a',
+				'  b',
+				'  * c',
+				'  * d[] {id:a00}',
+				'    e',
+				'  * f',
+				'* g'
+			] ) );
+
+			expect( changedBlocks ).to.deep.equal( [
+				root.getChild( 3 ),
+				root.getChild( 4 )
+			] );
 		} );
 	} );
 } );

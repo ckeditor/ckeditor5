@@ -4,16 +4,20 @@
  */
 
 /**
- * @module TODO
+ * @module list/documentlist/documentlistsplitcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
 import {
-	sortBlocks
+	isFirstBlockOfListItem,
+	sortBlocks,
+	splitListItemBefore
 } from './utils/model';
 
 /**
- * The list split command. It is used by the {@link module:list/documentlist~DocumentList document list feature}.
+ * The document list split command that splits the list item at the first position of the selection.
+ *
+ * It is used by the {@link module:list/documentlist~DocumentList document list feature}.
  *
  * @extends module:core/command~Command
  */
@@ -26,39 +30,20 @@ export default class DocumentListSplitCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Splits the list item at the first position of the selection.
 	 *
 	 * @fires execute
 	 * @fires afterExecute
 	 */
 	execute() {
-		// const editor = this.editor;
-		// const model = editor.model;
-		// const selection = model.document.selection;
-		// const firstPosition = selection.getFirstPosition();
+		const editor = this.editor;
 
-		// if ( selection.isCollapsed ) {
-		// }
+		editor.model.change( writer => {
+			const positionParent = editor.model.document.selection.getFirstPosition().parent;
+			const changedBlocks = splitListItemBefore( positionParent, writer );
 
-		// if ( empty list item ) {
-		// 	outdent list item
-
-		// 	return;
-		// }
-
-		// if ( in first block ) {
-
-		// }
-
-		// if ( single block in item ) {
-		// 	if ( at end ) {
-		// 		create list item after
-		// 	} else {
-		// 		split list item
-		// 	}
-		// } else if ( multiple blocks in item ) {
-		// 	split block
-		// }
+			this._fireAfterExecute( changedBlocks );
+		} );
 	}
 
 	/**
@@ -71,7 +56,7 @@ export default class DocumentListSplitCommand extends Command {
 		/**
 		 * Event fired by the {@link #execute} method.
 		 *
-		 * It allows to execute an action after executing the {@link ~TODO#execute} method,
+		 * It allows to execute an action after executing the {@link ~DocumentListSplitCommand#execute} method,
 		 * for example adjusting attributes of changed list items.
 		 *
 		 * @protected
@@ -87,8 +72,11 @@ export default class DocumentListSplitCommand extends Command {
 	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
-		// TODO
+		const doc = this.editor.model.document;
+		const positionParent = doc.selection.getFirstPosition().parent;
 
-		return true;
+		return doc.selection.isCollapsed &&
+			positionParent.hasAttribute( 'listItemId' ) &&
+			!isFirstBlockOfListItem( positionParent );
 	}
 }
