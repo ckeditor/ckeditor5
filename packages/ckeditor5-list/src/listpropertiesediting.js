@@ -17,7 +17,7 @@ import { getSiblingListItem, getSiblingNodes } from './utils';
 const DEFAULT_LIST_TYPE = 'default';
 
 /**
- * The list style engine feature.
+ * The list properties engine feature.
  *
  * It sets the value for the `listItem` attribute of the {@link module:list/list~List `<listItem>`} element that
  * allows modifying the list style type.

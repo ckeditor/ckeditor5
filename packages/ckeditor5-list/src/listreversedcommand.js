@@ -12,7 +12,7 @@ import { getSelectedListItems } from './utils';
 
 /**
  * The list reversed command. It changes the `listReversed` attribute of the selected list items.
- * It is used by the {@link module:list/listproperties~ListProperties list style feature}.
+ * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  *
  * @extends module:core/command~Command
  */

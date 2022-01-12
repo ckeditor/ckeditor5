@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from './utils';
 
 /**
- * The list style command. It changes `listStyle` attribute of the selected list items.
+ * The list style command. It changes the `listStyle` attribute of the selected list items.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  *
  * @extends module:core/command~Command

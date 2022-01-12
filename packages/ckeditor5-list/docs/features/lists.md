@@ -51,7 +51,7 @@ Additional dropdown option is available, where the user may set the starting mar
 
 #### Demo
 
-In the editor below, select last list and use the ordered list dropdown input field to set the start index to achieve continuous numbering of spaceships.
+In the editor below, select the last list and use the ordered list dropdown input field to set the start index to achieve continuous numbering of spaceships.
 
 {@snippet features/lists-index}
 
@@ -122,7 +122,7 @@ To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the add the `ListProperties` plugin to your plugin list and the list feature to the toolbar configuration:
+Then add the add the `ListProperties` plugin to your plugin list and the list feature to the toolbar configuration. To enable selected list properties subfeatures, you need to add their configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
@@ -131,23 +131,12 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ListProperties, ... ],
 		toolbar: [ 'bulletedList', 'numberedList', ... ],
-	} )
-	.then( ... )
-	.catch( ... );
-```
-
-To enable the selected list properties subfeatures, you need to add the following configuration to your editor (set `true` for each feature you want to enable):
-
-```js
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		list: {
+				list: {
 			properties: {
 				styles: true,
 				startIndex: true,
 				reversed: true
 			}
-		}
 	} )
 	.then( ... )
 	.catch( ... );
@@ -161,7 +150,7 @@ ClassicEditor
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/listui~ListUI}.
 </info-box>
 
-## List indentation
+### List indentation
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
@@ -186,8 +175,18 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'`, and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'`, and `'upper-latin'`.
-* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command that accepts a numerical value (the default is 1).
+* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command which is a boolean and defaults to `false` (meaning a list starts with 1). If enabled, it accepts a numerical value for the `start` attribute.
+
+	```js
+    editor.execute( 'listStart', { start: '1' } );
+    ```
+
 * The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed`} command which is a boolean and defaults to `false`.
+
+	```js
+    editor.execute( 'listReversed', { reversed: 'true' } );
+    ```
+
 * The `'numberedList'` UI split button (it overrides the UI button registered by the `List` plugin).
 * The `'bulletedList'` UI split button (it overrides the UI button registered by the `List` plugin).
 
