@@ -158,7 +158,7 @@ const onPaste = () => {
 	}
 };
 
-const onHighlighChange = () => {
+const onHighlightChange = () => {
 	document.querySelector( '.ck-editor' ).classList.toggle( 'highlight-lists' );
 };
 
@@ -166,5 +166,5 @@ document.getElementById( 'btn-process-input' ).addEventListener( 'click', proces
 document.getElementById( 'btn-process-editor-model' ).addEventListener( 'click', processEditorModel );
 document.getElementById( 'btn-copy-output' ).addEventListener( 'click', copyOutput );
 document.getElementById( 'data-input' ).addEventListener( 'paste', onPaste );
-document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlighChange );
+document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlightChange );
 

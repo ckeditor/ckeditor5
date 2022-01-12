@@ -118,12 +118,29 @@ export default class DocumentListMergeCommand extends Command {
 		const selection = model.document.selection;
 		const firstPosition = selection.getFirstPosition();
 		const firstPositionParent = firstPosition.parent;
-		const firstNode = selection.isCollapsed ? firstPositionParent.previousSibling : firstPositionParent;
 
-		if ( !firstNode || !firstNode.hasAttribute( 'listItemId' ) ) {
+		let firstNode;
+
+		if ( selection.isCollapsed ) {
+			firstNode = firstPosition.isAtEnd ? firstPositionParent.nextSibling : firstPositionParent.previousSibling;
+		} else {
+			firstNode = firstPositionParent;
+		}
+
+		const lastNode = selection.getLastPosition().parent;
+
+		if ( firstNode === lastNode ) {
 			return false;
 		}
 
-		return firstPosition.isAtStart;
+		if ( !firstNode || !lastNode.hasAttribute( 'listItemId' ) ) {
+			return false;
+		}
+
+		if ( selection.isCollapsed && !( firstPosition.isAtStart || firstPosition.isAtEnd ) ) {
+			return false;
+		}
+
+		return true;
 	}
 }
