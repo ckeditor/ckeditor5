@@ -61,7 +61,7 @@ export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
 /**
  * A helper for creating labeled number inputs.
  *
- * It creates an instance of a {@link module:list/ui/inputnumberview~InputNumberView input number} that is
+ * It creates an instance of a {@link module:ui/inputnumber/inputnumberview~InputNumberView input number} that is
  * logically related to a {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView labeled view} in DOM.
  *
  * The helper does the following:
@@ -81,7 +81,7 @@ export function createLabeledInputText( labeledFieldView, viewUid, statusUid ) {
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#labelView labeled view's label} and the input.
  * @param {String} statusUid An UID string that allows DOM logical connection between the
  * {@link module:ui/labeledfield/labeledfieldview~LabeledFieldView#statusView labeled view's status} and the input.
- * @returns {module:ui/inputtext/inputtextview~InputTextView} The input text view instance.
+ * @returns {module:ui/inputnumber/inputnumberview~InputNumberView} The input number view instance.
  */
 export function createLabeledInputNumber( labeledFieldView, viewUid, statusUid ) {
 	const inputView = new InputNumberView( labeledFieldView.locale );
