@@ -10,7 +10,7 @@ order: 20
 
 The following legal notices apply to CKEditor 5 Framework and all software from CKEditor 5 Ecosystem included with it.
 
-Copyright (c) 2003-2022, CKSource Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
 
@@ -22,5 +22,5 @@ The {@link features/image-upload#easy-image Easy Image} feature present in {@lin
 
 ## Trademarks
 
-CKEditor is a trademark of [CKSource](http://cksource.com/) Frederico Knabben. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
+CKEditor is a trademark of [CKSource](http://cksource.com/) Holding sp. z o.o. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource - Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -393,7 +393,7 @@ describe( 'Table layout post-fixer', () => {
 
 			model.change( localCallback );
 
-			model.enqueueChange( 'transparent', externalCallback );
+			model.enqueueChange( { isUndoable: false }, externalCallback );
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelAfter );
 
