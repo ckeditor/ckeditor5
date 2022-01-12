@@ -20,7 +20,6 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
@@ -36,6 +35,7 @@ import Font from "@ckeditor/ckeditor5-font/src/font";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
+import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -60,7 +60,6 @@ const plugins = [
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
-	ImageUpload,
 	Indent,
 	Link,
 	List,
@@ -70,7 +69,8 @@ const plugins = [
 	Table,
 	TableToolbar,
 	Clipboard,
-	TextTransformation
+	TextTransformation,
+	Base64UploadAdapter
 ];
 
 // Plugins to include in the build.
@@ -134,7 +134,7 @@ const defaultConfig = {
 		]
 	},
 	// This value must be kept in sync with the language defined in webpack.config.js.
-	language: 'en'
+	language: 'de'
 };
 
 // Editor configuration.
