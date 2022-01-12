@@ -63,6 +63,8 @@ export default class DocumentListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const commands = editor.commands;
+		const enterCommand = commands.get( 'enter' );
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -117,30 +119,11 @@ export default class DocumentListEditing extends Plugin {
 				}
 			}
 		}, { context: 'li' } );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
-		const commands = editor.commands;
-
-		const indent = commands.get( 'indent' );
-		const outdent = commands.get( 'outdent' );
-		const enterCommand = commands.get( 'enter' );
-		const splitCommand = commands.get( 'splitListItem' );
-
-		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
-		}
-
-		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
-		}
 
 		// In some cases, the integration with the enter key is done after the default handler in EnterCommand.
 		this.listenTo( enterCommand, 'afterExecute', () => {
+			const splitCommand = commands.get( 'splitListItem' );
+
 			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
 			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
 			splitCommand.refresh();
@@ -163,6 +146,24 @@ export default class DocumentListEditing extends Plugin {
 				editor.execute( 'splitListItem' );
 			}
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+		const commands = editor.commands;
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentList' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
 	}
 
 	/**
