@@ -167,9 +167,9 @@ The {@link module:list/list~List} plugin registers:
 
 The {@link module:list/listproperties~ListProperties} plugin registers:
 
-* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts a `type` of the list style to set.
+* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts a `type` of the list style to set. If not set, is uses the default marker (usually decimal).
     ```js
-    editor.execute( 'listStyle', { type: 'decimal' } );
+    editor.execute( 'listStyle', { type: 'lower-roman' } );
     ```
     The available types are:
 
@@ -178,7 +178,7 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 * The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command which is a boolean and defaults to `false` (meaning a list starts with 1). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
-    editor.execute( 'listStart', { start: '1' } );
+    editor.execute( 'listStart', { startIndex: 3 } )
     ```
 
 * The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed`} command which is a boolean and defaults to `false`.
