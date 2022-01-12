@@ -40,7 +40,7 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 Beside the basic functionality of creating the ordered and unordered list, CKEditor 5 offers additional formatting tools that allow controlling the lists.
 
 <info-box info>
-	The feature is enabled by default in the document editor build.
+	This feature is enabled by default in the document editor build.
 </info-box>
 
 ### List start index
@@ -51,7 +51,7 @@ Additional dropdown option is available, where the user may set the starting mar
 
 #### Demo
 
-In the editor below, select a list use the ordered list dropdown input field to set the start index for each list to achieve continuous numbering of spaceships.
+In the editor below, select last list and use the ordered list dropdown input field to set the start index to achieve continuous numbering of spaceships.
 
 {@snippet features/lists-index}
 
@@ -63,7 +63,7 @@ Additional dropdown switch makes it easy to reverse the order of a list with a s
 
 #### Demo
 
-Click the second list and use the ordered list dropdown switch to choose order reversion.
+Click the second list and use the ordered list dropdown switch to choose whether it should be reversed.
 
 {@snippet features/lists-reversed}
 
@@ -86,13 +86,43 @@ These features also provide similar functionality:
 
 ## Installation
 
+<info-box info>
+	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
 
 ```
 npm install --save @ckeditor/ckeditor5-list
 ```
 
-Then add the `ListProperties` plugin to your plugin list and the toolbar configuration:
+Then add the `List` plugin to your plugin list and the toolbar configuration:
+
+```js
+import List from '@ckeditor/ckeditor5-list/src/list';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ List, ... ],
+		toolbar: [ 'bulletedList', 'numberedList', ... ],
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+### List properties
+
+<info-box info>
+	This feature is enabled by default only in the document editor build.
+</info-box>
+
+To enable the list properties feature, install the [`@ckeditor/ckeditor5-list`](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package:
+
+```
+npm install --save @ckeditor/ckeditor5-list
+```
+
+Then add the add the `ListProperties` plugin to your plugin list and the list feature to the toolbar configuration:
 
 ```js
 import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
@@ -106,11 +136,11 @@ ClassicEditor
 	.catch( ... );
 ```
 
-To enable chosen list properties, you need to add the following configuration (set `true` for each feature you want to enable):
+To enable the selected list properties subfeatures, you need to add the following configuration to your editor (set `true` for each feature you want to enable):
 
 ```js
 ClassicEditor
-	.create( editorElement, {
+	.create( document.querySelector( '#editor' ), {
 		list: {
 			properties: {
 				styles: true,
@@ -133,7 +163,7 @@ ClassicEditor
 
 ## List indentation
 
-Refer to the {@link features/indent Indenting lists} section of the Block indentation feature guide.
+Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
 ## Common API
 
