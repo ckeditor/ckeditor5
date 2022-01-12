@@ -535,7 +535,7 @@ describe( 'DocumentListEditing integrations', () => {
 
 		describe( 'collapsed selection', () => {
 			describe( 'with just one block per list item', () => {
-				it( 'should outdent if the slection in the only empty list item (convert into paragraph and turn of the list)', () => {
+				it( 'should outdent if the slection in the only empty list item (convert into paragraph and turn off the list)', () => {
 					setModelData( model, modelList( [
 						'* []'
 					] ) );
