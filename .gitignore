@@ -4,7 +4,10 @@ packages/*/node_modules/
 docs/api/output.json
 external/
 lerna-debug.log
-.idea
+
+# IDEs and editors
+/.idea
+*.iml
 .vscode
 
 # Ignore `yarn.lock` - this file might contain info from external repositories.
