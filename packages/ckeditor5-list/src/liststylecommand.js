@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,11 +8,10 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getSelectedListItems } from './utils';
+import { getSiblingNodes } from './utils';
 
 /**
- * The list style command. It changes `listStyle` attribute of the selected list items.
- * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
+ * The list style command. It is used by the {@link module:list/liststyle~ListStyle list style feature}.
  *
  * @extends module:core/command~Command
  */
@@ -54,7 +53,25 @@ export default class ListStyleCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const listItems = getSelectedListItems( model );
+		const document = model.document;
+
+		// For all selected blocks find all list items that are being selected
+		// and update the `listStyle` attribute in those lists.
+		let listItems = [ ...document.selection.getSelectedBlocks() ]
+			.filter( element => element.is( 'element', 'listItem' ) )
+			.map( element => {
+				const position = model.change( writer => writer.createPositionAt( element, 0 ) );
+
+				return [
+					...getSiblingNodes( position, 'backward' ),
+					...getSiblingNodes( position, 'forward' )
+				];
+			} )
+			.flat();
+
+		// Since `getSelectedBlocks()` can return items that belong to the same list, and
+		// `getSiblingNodes()` returns the entire list, we need to remove duplicated items.
+		listItems = [ ...new Set( listItems ) ];
 
 		if ( !listItems.length ) {
 			return;

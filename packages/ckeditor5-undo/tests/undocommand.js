@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -357,18 +357,18 @@ describe( 'UndoCommand', () => {
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should clear stack on DataController set() when the batch is set as not undoable', () => {
+		it( 'should clear stack on DataController set() when the `batchType` is set to `transparent`', () => {
 			const spy = sinon.stub( undo, 'clearStack' );
 
-			editor.data.set( 'foo', { batchType: { isUndoable: false } } );
+			editor.setData( 'foo' );
 
 			sinon.assert.called( spy );
 		} );
 
-		it( 'should not clear stack on DataController#set() when the batch is set as undoable', () => {
+		it( 'should not clear stack on DataController#set() when the `batchType` is set to `default`', () => {
 			const spy = sinon.spy( undo, 'clearStack' );
 
-			editor.data.set( 'foo', { batchType: { isUndoable: true } } );
+			editor.data.set( 'foo', { batchType: 'default' } );
 
 			sinon.assert.notCalled( spy );
 		} );
@@ -384,7 +384,7 @@ describe( 'UndoCommand', () => {
 			const data = firstCall.args[ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
-			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: false } );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'transparent' );
 		} );
 
 		it( 'should not override the batch type in editor.data.set() when the batch type is set', () => {
@@ -392,13 +392,13 @@ describe( 'UndoCommand', () => {
 
 			editor.data.on( 'set', dataSetSpy, { priority: 'lowest' } );
 
-			editor.data.set( 'foo', { batchType: { isUndoable: true } } );
+			editor.data.set( 'foo', { batchType: 'default' } );
 
 			const firstCall = dataSetSpy.firstCall;
 			const data = firstCall.args[ 1 ];
 
 			expect( data[ 1 ] ).to.be.an( 'object' );
-			expect( data[ 1 ].batchType ).to.deep.equal( { isUndoable: true } );
+			expect( data[ 1 ] ).to.have.property( 'batchType', 'default' );
 		} );
 	} );
 } );

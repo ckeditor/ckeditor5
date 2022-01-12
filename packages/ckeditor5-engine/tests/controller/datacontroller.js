@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -291,26 +291,22 @@ describe( 'DataController', () => {
 			expect( modelDocument.history.getOperations().length ).to.equal( 1 );
 		} );
 
-		it( 'should create a batch with default type if `batchType` option is not given', () => {
+		it( 'should create a `default` batch by default', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
 			const operation = modelDocument.history.getOperations()[ 0 ];
-			const batch = operation.batch;
 
-			expect( batch.isUndoable ).to.be.true;
-			expect( batch.isLocal ).to.be.true;
-			expect( batch.isUndo ).to.be.false;
-			expect( batch.isTyping ).to.be.false;
+			expect( operation.batch.type ).to.equal( 'default' );
 		} );
 
 		it( 'should create a batch specified by the `options.batch` option when provided', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.set( 'foo', { batchType: { isUndoable: true } } );
+			data.set( 'foo', { batchType: 'transparent' } );
 
 			const operation = modelDocument.history.getOperations()[ 0 ];
 
-			expect( operation.batch.isUndoable ).to.be.true;
+			expect( operation.batch.type ).to.equal( 'transparent' );
 		} );
 
 		it( 'should cause firing change event', () => {

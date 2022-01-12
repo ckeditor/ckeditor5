@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -234,24 +234,12 @@ describe( 'blockAutoformatEditing', () => {
 		} );
 	} );
 
-	it( 'should ignore non-local batches', () => {
+	it( 'should ignore transparent batches', () => {
 		const spy = testUtils.sinon.spy();
 		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
 
 		setData( model, '<paragraph>*[]</paragraph>' );
-		model.enqueueChange( { isLocal: false }, writer => {
-			writer.insertText( ' ', doc.selection.getFirstPosition() );
-		} );
-
-		sinon.assert.notCalled( spy );
-	} );
-
-	it( 'should ignore undo batches', () => {
-		const spy = testUtils.sinon.spy();
-		blockAutoformatEditing( editor, plugin, /^[*]\s$/, spy );
-
-		setData( model, '<paragraph>*[]</paragraph>' );
-		model.enqueueChange( { isUndo: true }, writer => {
+		model.enqueueChange( 'transparent', writer => {
 			writer.insertText( ' ', doc.selection.getFirstPosition() );
 		} );
 

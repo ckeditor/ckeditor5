@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2022, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -46,6 +46,7 @@
 //
 // Skipped hidden elements:
 // noscript
+// script
 
 export default {
 	block: [
@@ -830,14 +831,6 @@ export default {
 			isObject: true,
 			modelSchema: {
 				inheritAllFrom: '$htmlObjectInline'
-			}
-		},
-		{
-			model: 'htmlScript',
-			view: 'script',
-			modelSchema: {
-				allowWhere: [ '$text', '$block' ],
-				isInline: true
 			}
 		}
 	]
