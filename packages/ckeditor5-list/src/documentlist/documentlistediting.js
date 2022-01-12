@@ -120,7 +120,8 @@ export default class DocumentListEditing extends Plugin {
 			}
 		}, { context: 'li' } );
 
-		// In some cases, after the default block splitting, we want to modify the new block to become a new list item instead of an additional block in the same list item.
+		// In some cases, after the default block splitting, we want to modify the new block to become a new list item 
+		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
 			const splitCommand = commands.get( 'splitListItem' );
 
