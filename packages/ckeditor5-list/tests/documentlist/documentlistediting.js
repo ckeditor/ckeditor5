@@ -15,10 +15,12 @@ import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 import ListEditing from '../../src/list/listediting';
 import DocumentListIndentCommand from '../../src/documentlist/documentlistindentcommand';
@@ -26,8 +28,6 @@ import DocumentListSplitCommand from '../../src/documentlist/documentlistsplitco
 
 import stubUid from './_utils/uid';
 import { prepareTest, modelList } from './_utils/utils';
-import { DomEventData } from '@ckeditor/ckeditor5-engine';
-import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 describe( 'DocumentListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view;

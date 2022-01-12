@@ -129,6 +129,7 @@ export default class DocumentListEditing extends Plugin {
 		const indent = commands.get( 'indent' );
 		const outdent = commands.get( 'outdent' );
 		const enterCommand = commands.get( 'enter' );
+		const splitCommand = commands.get( 'splitListItem' );
 
 		if ( indent ) {
 			indent.registerChildCommand( commands.get( 'indentList' ) );
@@ -138,34 +139,30 @@ export default class DocumentListEditing extends Plugin {
 			outdent.registerChildCommand( commands.get( 'outdentList' ) );
 		}
 
-		if ( enterCommand ) {
-			// In some cases, the integration with the enter key is done after the default handler in EnterCommand.
-			this.listenTo( enterCommand, 'afterExecute', () => {
-				const splitCommand = editor.commands.get( 'splitListItem' );
+		// In some cases, the integration with the enter key is done after the default handler in EnterCommand.
+		this.listenTo( enterCommand, 'afterExecute', () => {
+			// The command has not refreshed because the change block related to EnterCommand#execute() is not over yet.
+			// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
+			splitCommand.refresh();
 
-				// The commands has not refreshed because the change block related to EnterCommand#execute() is not over yet.
-				// Let's keep it up to date and take advantage of DocumentListSplitCommand#isEnabled.
-				splitCommand.refresh();
+			if ( !splitCommand.isEnabled ) {
+				return;
+			}
 
-				if ( !splitCommand.isEnabled ) {
-					return;
-				}
+			const doc = editor.model.document;
+			const positionParent = doc.selection.getLastPosition().parent;
+			const listItemBlocks = getAllListItemBlocks( positionParent );
 
-				const doc = editor.model.document;
-				const positionParent = doc.selection.getLastPosition().parent;
-				const listItemBlocks = getAllListItemBlocks( positionParent );
-
-				// Keep in mind this split happens after the default enter handler was executed. For instance:
-				//
-				// │       Initial state       │    After default enter    │   Here in #afterExecute   │
-				// ├───────────────────────────┼───────────────────────────┼───────────────────────────┤
-				// │          * a[]            │           * a             │           * a             │
-				// │                           │             []            │           * []            │
-				if ( listItemBlocks.length === 2 ) {
-					editor.execute( 'splitListItem' );
-				}
-			} );
-		}
+			// Keep in mind this split happens after the default enter handler was executed. For instance:
+			//
+			// │       Initial state       │    After default enter    │   Here in #afterExecute   │
+			// ├───────────────────────────┼───────────────────────────┼───────────────────────────┤
+			// │          * a[]            │           * a             │           * a             │
+			// │                           │             []            │           * []            │
+			if ( listItemBlocks.length === 2 ) {
+				editor.execute( 'splitListItem' );
+			}
+		} );
 	}
 
 	/**
