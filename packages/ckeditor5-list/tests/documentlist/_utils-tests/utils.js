@@ -274,6 +274,46 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should parse string to lines', () => {
+		expect( modelList( `
+			* foo
+			* bar
+			  # num
+				block
+			  # aaa
+			  abc
+			* end
+		` ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="1" listItemId="002" listType="numbered">num</paragraph>' +
+			'<paragraph listIndent="1" listItemId="002" listType="numbered">block</paragraph>' +
+			'<paragraph listIndent="1" listItemId="004" listType="numbered">aaa</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">abc</paragraph>' +
+			'<paragraph listIndent="0" listItemId="006" listType="bulleted">end</paragraph>'
+		);
+	} );
+
+	it( 'should parse string with mixed tabs and spaces to lines', () => {
+		expect( modelList( `
+			* foo
+			\x20\x20# num
+			\ta
+			\x20\tb
+			\x20\x20\tc
+			\x20\x20\x20\td
+			\x20\x20\x20\x20e
+		` ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">num</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">a</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">b</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">c</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">d</paragraph>' +
+			'<paragraph listIndent="1" listItemId="001" listType="numbered">e</paragraph>'
+		);
+	} );
+
 	it( 'should throw when indent is invalid', () => {
 		expect( () => modelList( [
 			'* foo',

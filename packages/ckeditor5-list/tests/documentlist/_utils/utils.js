@@ -223,6 +223,22 @@ export function modelList( lines ) {
 	const items = [];
 	const stack = [];
 
+	if ( !Array.isArray( lines ) ) {
+		lines = lines
+			// Remove the first and last empty lines.
+			.replace( /^[^\n]*\n|\n[^\n]*$/g, '' )
+			// Replace tab characters with spaces.
+			.replace( /^[\t ]+/gm, match => match.split( '' ).reduce( ( pad, char ) => (
+				pad + ( char != '\t' ? char : ' '.repeat( 4 - pad.length % 4 ) )
+			), '' ) );
+
+		// Find the indent of the first line.
+		const basePad = lines.match( /^\s*/ )[ 0 ].length;
+
+		// Convert to array.
+		lines = lines.split( '\n' ).map( line => line.substring( basePad ) );
+	}
+
 	let prevIndent = -1;
 
 	for ( const [ idx, line ] of lines.entries() ) {
