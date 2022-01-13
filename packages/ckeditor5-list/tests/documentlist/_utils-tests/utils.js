@@ -281,6 +281,13 @@ describe( 'mockList()', () => {
 			'    baz'
 		] ) ).to.throw( Error, 'Invalid indent:     bar' );
 	} );
+
+	it( 'should throw when ID is reused', () => {
+		expect( () => modelList( [
+			'* foo',
+			'* bar {id:000}'
+		] ) ).to.throw( Error, 'ID conflict: 000' );
+	} );
 } );
 
 describe( 'stringifyList()', () => {

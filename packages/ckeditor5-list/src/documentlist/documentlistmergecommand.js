@@ -9,9 +9,10 @@
 
 import { Command } from 'ckeditor5/src/core';
 import {
-	indentBlocks,
+	indentBlocks, isFirstBlockOfListItem,
 	mergeListItemBefore
 } from './utils/model';
+import ListWalker from './utils/listwalker';
 
 /**
  * TODO
@@ -21,10 +22,29 @@ import {
  */
 export default class DocumentListMergeCommand extends Command {
 	/**
+	 * Creates an instance of the command.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {'backward'|'forward'} direction Whether list item should be merged before or after the selected block.
+	 */
+	constructor( editor, direction ) {
+		super( editor );
+
+		/**
+		 * Whether list item should be merged before or after the selected block.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {'backward'|'forward'}
+		 */
+		this._direction = direction;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = this._checkEnabled();
+		this.isEnabled = true; // this._checkEnabled();
 	}
 
 	/**
@@ -33,55 +53,61 @@ export default class DocumentListMergeCommand extends Command {
 	 * @fires execute
 	 * @fires afterExecute
 	 */
-	execute() {
+	execute( { deleteContent = false } = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		// Backspace handling
-		// - Collapsed selection at the beginning of the first item of list
-		//   -> outdent command
-		// - Collapsed selection at the beginning of the first block of an item
-		//   - Item before is empty
-		//     -> change indent to match previous (with sub lists)
-		//     -> standard delete command
-		//   - Item before is not empty
-		//     -> change indent to match previous
-		//     -> merge block with previous item
-		// - Non-collapsed selection with first position in the first block of a list item and the last position in other item
-		//   - first position in empty block
-		//     -> change indent of the last block to match the first block
-		//     -> standard delete command
-		//   - first position in non-empty block
-		//     -> change indent of the last block to match the first block
-		//     -> standard delete command
-		//     -> merge last block with the first block
-
 		model.change( writer => {
-			const firstPosition = selection.getFirstPosition();
-			const firstPositionParent = firstPosition.parent;
-			const firstNode = selection.isCollapsed ? firstPositionParent.previousSibling : firstPositionParent;
-			const lastNode = selection.getLastPosition().parent;
+			const anchorElement = selection.getFirstPosition().parent;
+			const isFirstBlock = isFirstBlockOfListItem( anchorElement );
+			let firstElement, lastElement;
 
-			const firstIndent = firstNode.getAttribute( 'listIndent' );
-			const lastIndent = lastNode.getAttribute( 'listIndent' );
+			// TODO what about different list types?
 
-			if ( firstIndent != lastIndent ) {
-				indentBlocks( lastNode, writer, { expand: true, indentBy: firstIndent - lastIndent } );
+			if ( this._direction == 'backward' ) {
+				lastElement = anchorElement;
+				firstElement = isFirstBlock && !deleteContent ?
+					ListWalker.first( anchorElement, { sameIndent: true, lowerIndent: true } ) :
+					anchorElement.previousSibling;
+			} else {
+				// TODO
+				firstElement = anchorElement;
+				lastElement = anchorElement.nextSibling;
 			}
 
-			if ( firstNode.isEmpty || !selection.isCollapsed ) {
+			const firstIndent = firstElement.getAttribute( 'listIndent' );
+			const lastIndent = lastElement.getAttribute( 'listIndent' );
+
+			if ( firstIndent != lastIndent ) {
+				indentBlocks( lastElement, writer, {
+					indentBy: firstIndent - lastIndent,
+					expand: 'forward'
+				} );
+			}
+
+			if ( deleteContent ) {
 				let sel = selection;
 
 				if ( selection.isCollapsed ) {
-					sel = writer.createSelection( selection );
-					model.modifySelection( sel, { direction: 'backward' } );
+					sel = writer.createSelection( writer.createRange(
+						writer.createPositionAt( firstElement, 'end' ),
+						writer.createPositionAt( lastElement, 0 )
+					) );
 				}
 
-				model.deleteContent( sel, { doNotResetEntireContent: true } );
-			}
+				const lastElementId = lastElement.getAttribute( 'listItemId' );
 
-			if ( !firstNode.isEmpty ) {
-				mergeListItemBefore( lastNode, firstNode, writer );
+				model.deleteContent( sel, { doNotResetEntireContent: true } );
+
+				// Find the last element (it could be moved to graveyard).
+				const lastElementAfterDelete = lastElement.root.rootName != '$graveyard' ? lastElement : firstElement;
+				const nextSibling = lastElementAfterDelete.nextSibling;
+
+				if ( nextSibling && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
+					mergeListItemBefore( nextSibling, lastElementAfterDelete, writer );
+				}
+			} else {
+				mergeListItemBefore( lastElement, firstElement, writer );
 			}
 
 			// TODO this._fireAfterExecute()

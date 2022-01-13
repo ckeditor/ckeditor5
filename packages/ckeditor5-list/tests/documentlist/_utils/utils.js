@@ -222,6 +222,7 @@ export function setupTestHelpers( editor ) {
 export function modelList( lines ) {
 	const items = [];
 	const stack = [];
+	const seenIds = new Set();
 
 	let prevIndent = -1;
 
@@ -250,6 +251,12 @@ export function modelList( lines ) {
 
 					return '';
 				} );
+
+				if ( seenIds.has( listItemId ) ) {
+					throw new Error( 'ID conflict: ' + listItemId );
+				}
+
+				seenIds.add( listItemId );
 
 				stack[ listIndent ] = {
 					listItemId,

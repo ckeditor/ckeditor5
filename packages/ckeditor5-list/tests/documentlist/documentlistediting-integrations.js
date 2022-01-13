@@ -16,12 +16,17 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import {
+	getData as getModelData,
+	parse as parseModel,
+	setData as setModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
 
 import stubUid from './_utils/uid';
 import { modelList } from './_utils/utils';
+import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 
 describe( 'DocumentListEditing integrations', () => {
 	let editor, model, modelDoc, modelRoot, view;
@@ -1778,6 +1783,877 @@ describe( 'DocumentListEditing integrations', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'backspace key handling', () => {
+		const changedBlocks = [];
+		let domEventData, mergeCommand, splitAfterCommand, indentCommand,
+			eventInfo, mergeCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
+
+		beforeEach( () => {
+			eventInfo = new BubblingEventInfo( view.document, 'delete' );
+			domEventData = new DomEventData( view, {
+				preventDefault: sinon.spy()
+			}, {
+				direction: 'backward',
+				unit: 'codePoint',
+				sequence: 1
+			} );
+
+			splitAfterCommand = editor.commands.get( 'splitListItemAfter' );
+			indentCommand = editor.commands.get( 'outdentList' );
+			mergeCommand = editor.commands.get( 'mergeListItemBackward' );
+
+			splitAfterCommandExecuteSpy = sinon.spy( splitAfterCommand, 'execute' );
+			outdentCommandExecuteSpy = sinon.spy( indentCommand, 'execute' );
+			mergeCommandExecuteSpy = sinon.spy( mergeCommand, 'execute' );
+
+			changedBlocks.length = 0;
+
+			splitAfterCommand.on( 'afterExecute', ( evt, data ) => {
+				changedBlocks.push( ...data );
+			} );
+
+			indentCommand.on( 'afterExecute', ( evt, data ) => {
+				changedBlocks.push( ...data );
+			} );
+
+			mergeCommand.on( 'afterExecute', ( evt, data ) => {
+				changedBlocks.push( ...data );
+			} );
+		} );
+
+		describe( 'collapsed selection', () => {
+			describe( 'at the beginning of a list item', () => {
+				describe( 'single block list item', () => {
+					describe( 'item before is empty', () => {
+						it( 'should merge non empty list item with with previous list item as a block', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b {id:001}'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						// Default behaviour of backspace?
+						it( 'should merge empty list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []a'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []a{id:001}'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented empty list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * ',
+								'* []a'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* ',
+								'  * []a{id:002}'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge empty list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * ',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* ',
+								'  * []'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+					} );
+
+					describe( 'item before is not empty', () => {
+						it( 'should merge non empty list item with with previous list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge empty list item with with previous list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented list item with with parent list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented empty list item with with parent list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge list item with with previous list item with higher indent as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * b',
+								'* []c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  * b',
+								'  []c'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge empty list item with with previous list item with higher indent as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * b',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  * b',
+								'  []'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should keep merged list item\'s children', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []b',
+								'    * c',
+								'    * d',
+								'      e',
+								'    * f',
+								'      * g',
+								'        h'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b',
+								'  * c',
+								'  * d',
+								'    e',
+								'  * f',
+								'    * g',
+								'      h'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+					} );
+				} );
+
+				describe( 'multi-block list item', () => {
+					describe( 'item before is empty', () => {
+						it( 'should merge with previous list item and keep blocks intact', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []b',
+								'  c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b{id:001}',
+								'  c'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge with previous list item and keep complex blocks intact', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []b{id:b}',
+								'  c',
+								'  * d{id:d}',
+								'    e',
+								'  * f{id:f}',
+								'    * g{id:g}',
+								'      h',
+								'      * i{id:i}',
+								'        * j{id:j}',
+								'       k',
+								'  l'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b{id:b}',
+								'  c',
+								'  * d{id:d}',
+								'    e',
+								'  * f{id:f}',
+								'    * g{id:g}',
+								'      h',
+								'      * i{id:i}',
+								'        * j{id:j}',
+								'       k',
+								'  l'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge list item with first block empty with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []',
+								'  a'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []',
+								'  a'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []a',
+								'    b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []a {id:001}',
+								'  b'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented list having block and indented list item with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []a',
+								'    b',
+								'    * c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []a {id:001}',
+								'  b',
+								'  * c {id:003}'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented empty list item with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []',
+								'    text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []',
+								'  text'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * ',
+								'* []a',
+								'  b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* ',
+								'  * []a{id:002}',
+								'    b'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge empty list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * ',
+								'* []',
+								'  text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* ',
+								'  * []',
+								'    text'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+					} );
+
+					describe( 'item before is not empty', () => {
+						it( 'should merge with previous list item and keep blocks intact', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []b',
+								'  c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b',
+								'  c'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should TODO', () => {
+							setModelData( model, modelList( [
+								'* b',
+								'  * c',
+								'  []d',
+								'  e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* b',
+								'  * c',
+								'    []d',
+								'    e'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge with previous list item and keep complex blocks intact', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []b',
+								'  c',
+								'  * d',
+								'    e',
+								'  * f',
+								'    * g',
+								'      h',
+								'      * i',
+								'        * j',
+								'       k',
+								'  l'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b',
+								'  c',
+								'  * d',
+								'    e',
+								'  * f',
+								'    * g',
+								'      h',
+								'      * i',
+								'        * j',
+								'       k',
+								'  l'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge list item with first block empty with previous list item', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []',
+								'  b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []',
+								'  b'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented list item with with previous list item as blocks', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []a',
+								'    b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []a',
+								'  b'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented list having block and indented list item with previous list item', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []b',
+								'    c',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b',
+								'  c',
+								'  * d'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge indented empty list item with previous list item', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []',
+								'    text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []',
+								'  text'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+
+						it( 'should merge list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * b',
+								'* []c',
+								'  d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  * b',
+								'  []c',
+								'  d'
+							] ) );
+
+							sinon.assert.notCalled( outdentCommandExecuteSpy );
+							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
+							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+
+							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+							expect( eventInfo.stop.called ).to.be.true;
+
+							// expect( changedBlocks ).to.deep.equal( [
+							// 	modelRoot.getChild( 0 )
+							// ] );
+						} );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'non-collapsed selection', () => {
+			// TODO
 		} );
 	} );
 } );

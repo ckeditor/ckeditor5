@@ -169,11 +169,21 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 	blocks = toArray( blocks );
 
 	const higherIndent = options.withNested !== false;
+	const expandForward = options.direction != 'backward';
+	const expandBackward = options.direction != 'forward';
 	const allBlocks = new Set();
 
 	for ( const block of blocks ) {
-		for ( const itemBlock of getAllListItemBlocks( block, { higherIndent } ) ) {
-			allBlocks.add( itemBlock );
+		if ( expandBackward ) {
+			for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'backward' } ) ) {
+				allBlocks.add( itemBlock );
+			}
+		}
+
+		if ( expandForward ) {
+			for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'forward' } ) ) {
+				allBlocks.add( itemBlock );
+			}
 		}
 	}
 
@@ -241,7 +251,7 @@ export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
-	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
+	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks, { direction: expand == true ? 'both' : expand } ) : blocks;
 
 	for ( const block of allBlocks ) {
 		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;

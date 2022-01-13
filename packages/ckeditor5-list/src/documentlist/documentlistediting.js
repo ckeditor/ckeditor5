@@ -32,7 +32,8 @@ import {
 import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem,
-	isLastBlockOfListItem
+	isLastBlockOfListItem,
+	isSingleListItem
 } from './utils/model';
 import { iterateSiblingListBlocks } from './utils/listwalker';
 
@@ -94,52 +95,52 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
 
-		editor.commands.add( 'mergeListItem', new DocumentListMergeCommand( editor ) );
-		editor.commands.add( 'splitListItem', new DocumentListSplitCommand( editor ) );
+		editor.commands.add( 'mergeListItemBackward', new DocumentListMergeCommand( editor, 'backward' ) );
+		editor.commands.add( 'mergeListItemForward', new DocumentListMergeCommand( editor, 'forward' ) );
+
 		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
 
 		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
-			if ( data.direction !== 'backward' ) {
-				return;
-			}
-
-			const mergeListCommand = editor.commands.get( 'mergeListItem' );
-
-			if ( mergeListCommand.isEnabled ) {
-				mergeListCommand.execute();
-
-				data.preventDefault();
-				evt.stop();
-
-				return;
-			}
-
 			const selection = editor.model.document.selection;
-
-			if ( !selection.isCollapsed ) {
-				return;
-			}
-
 			const firstPosition = selection.getFirstPosition();
-
-			if ( !firstPosition.isAtStart ) {
-				return;
-			}
-
 			const positionParent = firstPosition.parent;
 
-			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
-				return;
-			}
+			editor.model.change( () => {
+				if ( selection.isCollapsed ) {
+					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+						return;
+					}
 
-			const previousIsAListItem = positionParent.previousSibling && positionParent.previousSibling.hasAttribute( 'listItemId' );
+					// TODO what about different list types?
 
-			if ( previousIsAListItem ) {
-				return;
-			}
+					if ( data.direction == 'backward' && firstPosition.isAtStart ) {
+						const previousSibling = positionParent.previousSibling;
+						const previousSiblingIsSameListItem = isSingleListItem( [ positionParent, previousSibling ] );
 
-			this.editor.execute( 'outdentList' );
+						// Merge block with previous one (on the block level or on the content level).
+						if ( previousSibling && previousSibling.hasAttribute( 'listItemId' ) ) {
+							editor.execute( 'mergeListItemBackward', {
+								deleteContent: previousSibling.isEmpty || previousSiblingIsSameListItem
+							} );
+						}
+						// Outdent the first block of a first list item.
+						else {
+							if ( !isLastBlockOfListItem( positionParent ) ) {
+								editor.execute( 'splitListItemAfter' );
+							}
+
+							editor.execute( 'outdentList' );
+						}
+
+						data.preventDefault();
+						evt.stop();
+					} else if ( data.direction == 'forward' && firstPosition.isAtEnd ) {
+						// TODO
+						throw new Error( 'not yet' );
+					}
+				}
+			} );
 		}, { context: 'li' } );
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
