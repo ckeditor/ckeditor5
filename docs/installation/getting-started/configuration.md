@@ -66,7 +66,7 @@ ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 
 ### Adding complex features
 
-As CKEditor builds do not include all possible features, the only way to add more features to them is to {@link installation/getting-started/quick-start#creating-custom-builds create a custom build}.
+As CKEditor builds do not include all possible features, the only way to add more features to them is to {@link installation/getting-started/quick-start#building-the-editor-from-the-source create a custom build}.
 
 ### Adding simple (standalone) features
 
@@ -125,4 +125,4 @@ In the builds that contain toolbars an optimal default configuration is defined 
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
-Some of the options may require loading plugins which are not available in the build you use. Read more about {@link installation/getting-started/quick-start#creating-custom-builds customizing builds}.
+Some of the options may require loading plugins which are not available in the build you use. Read more about {@link installation/getting-started/quick-start#building-the-editor-from-the-source customizing builds}.
