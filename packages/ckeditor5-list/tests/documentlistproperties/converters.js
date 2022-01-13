@@ -116,29 +116,29 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			// it( 'should convert nested and mixed lists', () => {
-			// 	editor.setData(
-			// 		'<ol style="list-style-type:upper-alpha;">' +
-			// 		'<li>OL 1</li>' +
-			// 		'<li>OL 2' +
-			// 		'<ul style="list-style-type:circle;">' +
-			// 		'<li>UL 1</li>' +
-			// 		'<li>UL 2</li>' +
-			// 		'</ul>' +
-			// 		'</li>' +
-			// 		'<li>OL 3</li>' +
-			// 		'</ol>'
-			// 	);
-			//
-			// 	expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			// 		'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 1</listItem>' +
-			// 		'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 2</listItem>' +
-			// 		'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 1</listItem>' +
-			// 		'<listItem listIndent="1" listStyle="circle" listType="bulleted">UL 2</listItem>' +
-			// 		'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">OL 3</listItem>'
-			// 	);
-			// } );
-			//
+			it( 'should convert nested and mixed lists', () => {
+				test.data(
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>OL 1</li>' +
+						'<li>OL 2' +
+							'<ul style="list-style-type:circle;">' +
+								'<li>UL 1</li>' +
+								'<li>UL 2</li>' +
+							'</ul>' +
+						'</li>' +
+						'<li>OL 3</li>' +
+					'</ol>',
+
+					modelList( `
+						# OL 1 {id:000} {style:upper-alpha}
+						# OL 2 {id:003}
+						  * UL 1 {id:001} {style:circle}
+						  * UL 2 {id:002}
+						# OL 3 {id:004} 
+					` )
+				);
+			} );
+
 			// it( 'should convert when the list is in the middle of the content', () => {
 			// 	editor.setData(
 			// 		'<p>Paragraph.</p>' +
