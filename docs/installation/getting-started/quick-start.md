@@ -11,19 +11,17 @@ modified_at: 2021-12-20
 
 ## Introduction
 
-CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM. It is written from scratch in ES6 and has excellent webpack support.
-
-In CKEditor 5 everything is a plugin, even a basic feature like typing. With a plugin-based architecture and an event-based, highly decoupled code, features are implemented in a granular way. You can tune-up, remove or replace plugins with your own implementations.
+CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM, written from scratch in ES6 with excellent webpack support.
 
 In this guide, you will learn how to run your own CKEditor 5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor 5 journey!
 
 Available paths:
-* [Online builder path](#creating-custom-builds-with-online-builder) - the most user-friendly path, recommended for beginners.
+* [Online builder path](#creating-custom-builds-with-online-builder) - the most beginners-friendly and quickest path.
 * [Building from the source path](#building-the-editor-from-the-source) - an advanced path including using `npm` and Webpack.
 
 ## Creating custom builds with Online builder
 
-Although the CKEditor 5 WYSIWYG editor comes with handy preconfigured builds, sometimes these predefined versions are not enough and a need for custom builds arises. Some of the reasons for creating custom builds are:
+Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/advanced/predefined-builds predefined builds}, sometimes these predefined versions are not enough and a need for custom builds arises. Some of the reasons for creating custom builds are:
 
 * Adding {@link installation/advanced/plugins plugin-driven features} which are not included in the existing builds.
 * Removing unnecessary features present in a build.
@@ -93,11 +91,13 @@ Scroll the list of available languages and check the one you want to be the main
 
 This is as simple as it gets: just press the **Start** button to download your customized package.
 
-Refer to the [Installation page](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installation.html#zip-download) for further instructions on installing the custom build.
+Refer to the [What's next?](#whats-next) section for further steps in your CKEditor 5 journey!
 
 ## Building the editor from the source
 
-This guide assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
+This scenario allows you to fully control the building process of CKEditor. This means that you will not actually use the builds introduced in the previous path, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
+
+This path assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
 
 ### Setting up the environment
 
