@@ -101,7 +101,9 @@ This path assumes that you are familiar with npm and your project uses npm alrea
 
 ### Setting up the environment
 
-First, install packages needed to build CKEditor 5:
+Before moving to the integration, we need to prepare three files that will be filled with code presented in this guide. Let's create `webpack.config.js`, `app.js` and `index.html` files.
+
+Then, install packages needed to build CKEditor 5:
 
 ```bash
 npm install --save \
@@ -177,6 +179,7 @@ module.exports = {
 ### Creating an editor
 
 You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
+
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
@@ -281,7 +284,7 @@ Finally, it is time to create an HTML page:
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>CKEditor 5 Framework – Quick start</title>
+		<title>CKEditor 5 Quick start guide</title>
 	</head>
 	<body>
 		<div id="editor">
@@ -303,4 +306,6 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 
 ## What's next?
 
-@TODO
+Congratulations, you have run your first CKEditor 5 instance! Now, it's time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}. 
+
+P.S. If you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, see our {@link installation/frameworks/overview Frameworks section}.
