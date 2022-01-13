@@ -304,5 +304,3 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 ## What's next?
 
 @TODO
-
-
