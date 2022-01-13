@@ -31,12 +31,6 @@ describe( 'DocumentListSplitCommand', () => {
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
-		command = new DocumentListSplitCommand( editor, 'before' );
-
-		command.on( 'afterExecute', ( evt, data ) => {
-			changedBlocks = data;
-		} );
-
 		stubUid();
 	} );
 
@@ -44,221 +38,452 @@ describe( 'DocumentListSplitCommand', () => {
 		command.destroy();
 	} );
 
-	describe( 'isEnabled', () => {
-		it( 'should be false if selection is not in a list item', () => {
-			setData( model, modelList( [
-				'[]'
-			] ) );
+	describe( 'split before', () => {
+		beforeEach( () => {
+			command = new DocumentListSplitCommand( editor, 'before' );
 
-			expect( command.isEnabled ).to.be.false;
-		} );
-
-		it( 'should be false if selection is not collapsed in a list item', () => {
-			setData( model, modelList( [
-				'* a',
-				'  [b]'
-			] ) );
-
-			expect( command.isEnabled ).to.be.false;
-		} );
-
-		it( 'should be false if selection is in the first block of a list item', () => {
-			setData( model, modelList( [
-				'* a[]'
-			] ) );
-
-			expect( command.isEnabled ).to.be.false;
-		} );
-
-		it( 'should be true if selection is collapsed in a non-first block of a list item', () => {
-			setData( model, modelList( [
-				'* a',
-				'  []'
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
-
-			setData( model, modelList( [
-				'* a',
-				'  b[]'
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
-
-			setData( model, modelList( [
-				'* a',
-				'  []b'
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
-
-			setData( model, modelList( [
-				'* a',
-				'  b[]c'
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
-
-			setData( model, modelList( [
-				'* a',
-				'  b[]c',
-				'  d'
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
-		} );
-	} );
-
-	describe( 'execute()', () => {
-		it( 'should use parent batch', () => {
-			setData( model, modelList( [
-				'* a',
-				'  []'
-			] ) );
-
-			model.change( writer => {
-				expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
-
-				command.execute();
-
-				expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+			command.on( 'afterExecute', ( evt, data ) => {
+				changedBlocks = data;
 			} );
 		} );
 
-		it( 'should create another list item when the selection in an empty last block (two blocks in total)', () => {
-			setData( model, modelList( [
-				'* a',
-				'  []'
-			] ) );
+		describe( 'isEnabled', () => {
+			it( 'should be false if selection is not in a list item', () => {
+				setData( model, modelList( [
+					'[]'
+				] ) );
 
-			command.execute();
+				expect( command.isEnabled ).to.be.false;
+			} );
 
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'* [] {id:a00}'
-			] ) );
+			it( 'should be false if selection is not collapsed in a list item', () => {
+				setData( model, modelList( [
+					'* a',
+					'  [b]'
+				] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
-				root.getChild( 1 )
-			] );
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if selection is in the first block of a list item', () => {
+				setData( model, modelList( [
+					'* a[]'
+				] ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true if selection is collapsed in a non-first block of a list item', () => {
+				setData( model, modelList( [
+					'* a',
+					'  []'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+
+				setData( model, modelList( [
+					'* a',
+					'  b[]'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+
+				setData( model, modelList( [
+					'* a',
+					'  []b'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+
+				setData( model, modelList( [
+					'* a',
+					'  b[]c'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+
+				setData( model, modelList( [
+					'* a',
+					'  b[]c',
+					'  d'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
 		} );
 
-		it( 'should create another list item when the selection in an empty last block (three blocks in total)', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  []'
-			] ) );
+		describe( 'execute()', () => {
+			it( 'should use parent batch', () => {
+				setData( model, modelList( [
+					'* a',
+					'  []'
+				] ) );
 
-			command.execute();
+				model.change( writer => {
+					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
 
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'* [] {id:a00}'
-			] ) );
+					command.execute();
 
-			expect( changedBlocks ).to.deep.equal( [
-				root.getChild( 2 )
-			] );
+					expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+				} );
+			} );
+
+			it( 'should create another list item when the selection in an empty last block (two blocks in total)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  []'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'* [] {id:a00}'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 1 )
+				] );
+			} );
+
+			it( 'should create another list item when the selection in an empty last block (three blocks in total)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  []'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'* [] {id:a00}'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 2 )
+				] );
+			} );
+
+			it( 'should create another list item when the selection in an empty last block (followed by a list item)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  []',
+					'* '
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'* [] {id:a00}',
+					'* '
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 2 )
+				] );
+			} );
+
+			it( 'should create another list item in a nested structure (last block of the list item)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    []'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'  * [] {id:a00}'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 3 )
+				] );
+			} );
+
+			it( 'should create another list item in a nested structure (middle block of the list item)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d[]',
+					'    e'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'  * d[] {id:a00}',
+					'    e'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 3 ),
+					root.getChild( 4 )
+				] );
+			} );
+
+			it( 'should create another list item in a nested structure (middle block of the list item, followed by list items)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d[]',
+					'    e',
+					'  * f',
+					'* g'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'  * d[] {id:a00}',
+					'    e',
+					'  * f',
+					'* g'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 3 ),
+					root.getChild( 4 )
+				] );
+			} );
+		} );
+	} );
+
+	describe( 'split after', () => {
+		beforeEach( () => {
+			command = new DocumentListSplitCommand( editor, 'after' );
+
+			command.on( 'afterExecute', ( evt, data ) => {
+				changedBlocks = data;
+			} );
 		} );
 
-		it( 'should create another list item when the selection in an empty last block (followed by a list item)', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  []',
-				'* '
-			] ) );
+		describe( 'isEnabled', () => {
+			it( 'should be false if selection is not in a list item', () => {
+				setData( model, modelList( [
+					'[]'
+				] ) );
 
-			command.execute();
+				expect( command.isEnabled ).to.be.false;
+			} );
 
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'* [] {id:a00}',
-				'* '
-			] ) );
+			it( 'should be false if selection is not collapsed in a list item', () => {
+				setData( model, modelList( [
+					'* a',
+					'  [b]'
+				] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
-				root.getChild( 2 )
-			] );
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if selection is in the first empty block of a list item not followed by another block', () => {
+				setData( model, modelList( [
+					'* []'
+				] ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if selection is in the first block of a list item not followed by another block', () => {
+				setData( model, modelList( [
+					'* a[]'
+				] ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true if selection is collapsed in a block followed by another block in the same list item', () => {
+				setData( model, modelList( [
+					'* []',
+					'  a'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+
+				setData( model, modelList( [
+					'* a',
+					'  []',
+					'  b'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+
+				setData( model, modelList( [
+					'* a',
+					'  b[]c',
+					'  d'
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
 		} );
 
-		it( 'should create another list item in a nested structure (last block of the list item)', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  * c',
-				'    []'
-			] ) );
+		describe( 'execute()', () => {
+			it( 'should use parent batch', () => {
+				setData( model, modelList( [
+					'* []',
+					'  a'
+				] ) );
 
-			command.execute();
+				model.change( writer => {
+					expect( writer.batch.operations.length, 'before' ).to.equal( 0 );
 
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'  * c',
-				'  * [] {id:a00}'
-			] ) );
+					command.execute();
 
-			expect( changedBlocks ).to.deep.equal( [
-				root.getChild( 3 )
-			] );
-		} );
+					expect( writer.batch.operations.length, 'after' ).to.be.above( 0 );
+				} );
+			} );
 
-		it( 'should create another list item in a nested structure (middle block of the list item)', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  * c',
-				'    d[]',
-				'    e'
-			] ) );
+			it( 'should create another list item when the selection in an empty first block followed by another', () => {
+				setData( model, modelList( [
+					'* []',
+					'  a'
+				] ) );
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'  * c',
-				'  * d[] {id:a00}',
-				'    e'
-			] ) );
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* []',
+					'* a {id:a00}'
+				] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
-				root.getChild( 3 ),
-				root.getChild( 4 )
-			] );
-		} );
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 1 )
+				] );
+			} );
 
-		it( 'should create another list item in a nested structure (middle block of the list item, followed by list items)', () => {
-			setData( model, modelList( [
-				'* a',
-				'  b',
-				'  * c',
-				'    d[]',
-				'    e',
-				'  * f',
-				'* g'
-			] ) );
+			it( 'should create another list item when the selection in a middle block of the list item', () => {
+				setData( model, modelList( [
+					'* a',
+					'  []',
+					'  c'
+				] ) );
 
-			command.execute();
+				command.execute();
 
-			expect( getData( model ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  b',
-				'  * c',
-				'  * d[] {id:a00}',
-				'    e',
-				'  * f',
-				'* g'
-			] ) );
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  []',
+					'* c {id:a00}'
+				] ) );
 
-			expect( changedBlocks ).to.deep.equal( [
-				root.getChild( 3 ),
-				root.getChild( 4 )
-			] );
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 2 )
+				] );
+			} );
+
+			it( 'should create another list item when the selection in a middle block of the list item (followed by another)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  []',
+					'  c',
+					'* '
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  []',
+					'* c {id:a00}',
+					'* '
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 2 )
+				] );
+			} );
+
+			it( 'should create another list item in a nested structure', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  * a[]',
+					'    b'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * a[]',
+					'  * b {id:a00}'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 3 )
+				] );
+			} );
+
+			it( 'should create another list item in a nested structure (middle block of the list item)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d[]',
+					'    e'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d[]',
+					'  * e {id:a00}'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 4 )
+				] );
+			} );
+
+			it( 'should create another list item in a nested structure (middle block of the list item, followed by list items)', () => {
+				setData( model, modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d[]',
+					'    e',
+					'  * f',
+					'* g'
+				] ) );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d[]',
+					'  * e {id:a00}',
+					'  * f',
+					'* g'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					root.getChild( 4 )
+				] );
+			} );
 		} );
 	} );
 } );

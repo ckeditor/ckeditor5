@@ -36,7 +36,7 @@ export default class DocumentListSplitCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Number}
+		 * @member {'before'|'after'}
 		 */
 		this._direction = direction;
 	}
@@ -94,7 +94,7 @@ export default class DocumentListSplitCommand extends Command {
 		const block = this._getStartBlock();
 
 		return selection.isCollapsed &&
-			block && block.hasAttribute( 'listItemId' ) &&
+			!!block && block.hasAttribute( 'listItemId' ) &&
 			!isFirstBlockOfListItem( block );
 	}
 
