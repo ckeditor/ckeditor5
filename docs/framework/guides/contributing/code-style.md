@@ -818,7 +818,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 ### Description of an error: `ckeditor5-rules/ckeditor-error-message`
 
-Each time a new error is created, it needs a description to be displayed on the {@link framework/guides/support/error-codes error codes} page, like this:
+Each time a new error is created, it needs a description to be displayed on the {@link support/error-codes error codes} page, like this:
 
 👎&nbsp; Examples of incorrect code for this rule:
 

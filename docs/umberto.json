@@ -14,11 +14,11 @@
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"redirects": {
 		"api/module_adapter-ckfinder_uploadadapter-CKFinderAdapterConfig.html": "api/module_ckfinder_ckfinder-CKFinderConfig.html",
-		"builds/guides/browser-compatibility.html": "installation/support/browser-compatibility.html",
+		"builds/guides/browser-compatibility.html": "support/browser-compatibility.html",
 		"builds/guides/development/installing-plugins.html": "installation/getting-started/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "installation/getting-started/frameworks/vuejs-v3.html",
-		"builds/guides/license-and-legal.html": "installation/support/license-and-legal.html",
-		"builds/guides/reporting-issues.html": "installation/support/reporting-issues.html",
+		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
+		"builds/guides/reporting-issues.html": "support/reporting-issues.html",
 		"builds/guides/whats-new.html": "features/index.html",
 		"features/blocktoolbar.html": "features/toolbar/blocktoolbar.html",
 		"features/ckfinder.html": "features/images/image-upload/ckfinder.html",
@@ -81,7 +81,7 @@
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
 		"builds/guides/development/dll-builds.html": "installation/advanced/alternative-setups/dll-builds.html",
-		"builds/guides/faq.html": "installation/support/faq.html"
+		"builds/guides/faq.html": "support/faq.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -160,12 +160,6 @@
 							"order": 100
 						}
 					]
-				},
-				{
-					"name": "Support",
-					"id": "support",
-					"slug": "support",
-					"order": 30
 				}
 			]
 		},
@@ -280,6 +274,11 @@
 			"name": "Updating",
 			"id": "updating",
 			"slug": "updating"
+		},
+		{
+			"name": "Support",
+			"id": "support",
+			"slug": "support"
 		},
 		{
 			"name": "Framework",

@@ -1,5 +1,5 @@
 ---
-category: framework-support
+category: support
 order: 50
 ---
 

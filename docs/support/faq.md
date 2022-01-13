@@ -1,7 +1,7 @@
 ---
 menu-title: FAQ
 category: support
-order: 50
+order: 60
 ---
 
 # Frequently asked questions
