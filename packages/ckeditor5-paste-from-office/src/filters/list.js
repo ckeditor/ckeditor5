@@ -87,7 +87,7 @@ export function unwrapParagraphInListItem( documentFragment, writer ) {
 		const element = value.item;
 
 		if ( element.is( 'element', 'li' ) ) {
-			// Google Docs allows on single paragraph inside LI.
+			// Google Docs allows for single paragraph inside LI.
 			const firstChild = element.getChild( 0 );
 
 			if ( firstChild && firstChild.is( 'element', 'p' ) ) {
@@ -286,7 +286,7 @@ function mapListStyleDefinition( value ) {
 	}
 }
 
-// Creates empty list of a given type and inserts it after a specified element.
+// Creates an empty list of a given type and inserts it after a specified element.
 //
 // @param {Object} listStyle List style object which determines the type of newly created list.
 // Usually a result of `detectListStyle()` function.
