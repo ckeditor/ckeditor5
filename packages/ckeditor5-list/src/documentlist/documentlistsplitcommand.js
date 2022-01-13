@@ -23,6 +23,25 @@ import {
  */
 export default class DocumentListSplitCommand extends Command {
 	/**
+	 * Creates an instance of the command.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor The editor instance.
+	 * @param {'before'|'after'} direction Whether list item should be split before or after the selected block.
+	 */
+	constructor( editor, direction ) {
+		super( editor );
+
+		/**
+		 * Whether list item should be split before or after the selected block.
+		 *
+		 * @readonly
+		 * @private
+		 * @member {'before'|'after'}
+		 */
+		this._direction = direction;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	refresh() {
@@ -39,8 +58,7 @@ export default class DocumentListSplitCommand extends Command {
 		const editor = this.editor;
 
 		editor.model.change( writer => {
-			const positionParent = editor.model.document.selection.getFirstPosition().parent;
-			const changedBlocks = splitListItemBefore( positionParent, writer );
+			const changedBlocks = splitListItemBefore( this._getStartBlock(), writer );
 
 			this._fireAfterExecute( changedBlocks );
 		} );
@@ -72,11 +90,24 @@ export default class DocumentListSplitCommand extends Command {
 	 * @returns {Boolean} Whether the command should be enabled.
 	 */
 	_checkEnabled() {
+		const selection = this.editor.model.document.selection;
+		const block = this._getStartBlock();
+
+		return selection.isCollapsed &&
+			!!block && block.hasAttribute( 'listItemId' ) &&
+			!isFirstBlockOfListItem( block );
+	}
+
+	/**
+	 * Returns the model element that is the main focus of the command (according to the current selection and command direction).
+	 *
+	 * @private
+	 * @returns {module:engine/model/element~Element}
+	 */
+	_getStartBlock() {
 		const doc = this.editor.model.document;
 		const positionParent = doc.selection.getFirstPosition().parent;
 
-		return doc.selection.isCollapsed &&
-			positionParent.hasAttribute( 'listItemId' ) &&
-			!isFirstBlockOfListItem( positionParent );
+		return this._direction == 'before' ? positionParent : positionParent.nextSibling;
 	}
 }

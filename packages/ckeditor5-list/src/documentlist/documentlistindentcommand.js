@@ -40,7 +40,7 @@ export default class DocumentListIndentCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {Number}
+		 * @member {'forward'|'backward'}
 		 */
 		this._direction = indentDirection;
 	}
