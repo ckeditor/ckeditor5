@@ -59,7 +59,7 @@ export function getLocalizedColorErrorText( t ) {
  * @returns {String}
  */
 export function getLocalizedLengthErrorText( t ) {
-	return t( 'The value is invalid. Try "10px" or "2em" or simply "2".' );
+	return t( 'The value is invalid. Try use any number with unit and no space, e.g. "2px", "2cm", "2em", "2%", or simply "2".' );
 }
 
 /**
