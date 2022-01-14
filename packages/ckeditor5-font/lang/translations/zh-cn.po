@@ -37,7 +37,7 @@ msgid "Huge"
 msgstr "极大"
 
 msgctxt "Tooltip for the font family dropdown."
-msgid "Font Family"
+msgid "Font family"
 msgstr "字体"
 
 msgctxt "Dropdown option label for the default font family."

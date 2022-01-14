@@ -37,7 +37,7 @@ msgid "Huge"
 msgstr "विशाल"
 
 msgctxt "Tooltip for the font family dropdown."
-msgid "Font Family"
+msgid "Font family"
 msgstr "फन्ट परिवार"
 
 msgctxt "Dropdown option label for the default font family."

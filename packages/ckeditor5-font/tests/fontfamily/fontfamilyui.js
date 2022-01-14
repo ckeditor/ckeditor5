@@ -23,12 +23,12 @@ describe( 'FontFamilyUI', () => {
 
 	before( () => {
 		addTranslations( 'en', {
-			'Font Family': 'Font Family',
+			'Font family': 'Font family',
 			'Default': 'Default'
 		} );
 
 		addTranslations( 'pl', {
-			'Font Family': 'Czcionka',
+			'Font family': 'Czcionka',
 			'Default': 'Domyślna'
 		} );
 	} );
@@ -67,7 +67,7 @@ describe( 'FontFamilyUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'label', 'Font Family' );
+			expect( button ).to.have.property( 'label', 'Font family' );
 			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', fontFamilyIcon );
 		} );

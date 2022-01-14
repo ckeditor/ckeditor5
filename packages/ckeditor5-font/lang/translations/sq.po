@@ -37,7 +37,7 @@ msgid "Huge"
 msgstr "I stërmadh"
 
 msgctxt "Tooltip for the font family dropdown."
-msgid "Font Family"
+msgid "Font family"
 msgstr "Familja e fontit"
 
 msgctxt "Dropdown option label for the default font family."
