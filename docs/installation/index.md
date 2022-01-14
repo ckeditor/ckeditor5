@@ -242,6 +242,9 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 			hideQuizPane( parentPaneElement );
 			showQuizPane( quizPaneElements[ event.target.dataset.navigateToPaneId ] );
+
+			// Allow tracking the usage of the quiz in GA.
+			window.location.hash = `installation-quiz-navigation:${ event.target.dataset.navigateToPaneId }`;
 		}, false );
 	}
 
