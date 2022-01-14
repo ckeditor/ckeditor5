@@ -63,6 +63,7 @@ export default class DocumentListMergeCommand extends Command {
 			let firstElement, lastElement;
 
 			// TODO what about different list types?
+			// TODO handle non-collapsed selection
 
 			if ( this._direction == 'backward' ) {
 				lastElement = anchorElement;
@@ -77,6 +78,7 @@ export default class DocumentListMergeCommand extends Command {
 
 			const firstIndent = firstElement.getAttribute( 'listIndent' );
 			const lastIndent = lastElement.getAttribute( 'listIndent' );
+			const lastElementId = lastElement.getAttribute( 'listItemId' );
 
 			if ( firstIndent != lastIndent ) {
 				indentBlocks( lastElement, writer, {
@@ -95,12 +97,13 @@ export default class DocumentListMergeCommand extends Command {
 					) );
 				}
 
-				const lastElementId = lastElement.getAttribute( 'listItemId' );
-
 				model.deleteContent( sel, { doNotResetEntireContent: true } );
 
-				// Find the last element (it could be moved to graveyard).
-				const lastElementAfterDelete = lastElement.root.rootName != '$graveyard' ? lastElement : firstElement;
+				// Get the last "touched" element after deleteContent call (can't use the lastElement because
+				// it could get merged into the firstElement while deleting content).
+				const lastElementAfterDelete = sel.getLastPosition().parent;
+
+				// Check if the element after it was in the same list item and adjust it if needed.
 				const nextSibling = lastElementAfterDelete.nextSibling;
 
 				if ( nextSibling && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
