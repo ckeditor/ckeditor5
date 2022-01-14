@@ -146,7 +146,7 @@ If everything worked, the editor build (which is available in the `build/` direc
 
 You can open the `sample/index.html` file in your browser to see whether the plugin was installed correctly.
 
-This was a quick version of how a build can be customized. Read more about {@link installation/getting-started/quick-start#creating-custom-builds customizing existing editor builds} in a separate guide.
+This was a quick version of how a build can be customized. Read more about {@link installation/getting-started/quick-start#building-the-editor-from-the-source customizing existing editor builds} in a separate guide.
 
 ## Adding a plugin to an editor
 

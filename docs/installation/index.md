@@ -8,7 +8,9 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # Installing CKEditor 5
 
-Learn how to install CKEditor 5 from scratch or using predefined builds. Integrate CKEditor 5 with your software, keep it updated and find out hot you can help developing it.
+CKEditor 5 provides every type of WYSIWYG editing solution imaginable. From editors similar to Google Docs and Medium, to Slack or Twitter like applications, all is possible within a single editing framework. It is an ultra-modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM, written from scratch in ES6 with excellent webpack support. Find out the most convenient way to start using it!
+
+<!-- Quiz here I believe -->
 
 <info-box>
 	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through the documentation. Newly added or meaningfully updated guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting.
@@ -20,15 +22,11 @@ Learn how to install CKEditor 5 from scratch or using predefined builds. Integra
 
 ## Installing CKEditor 5
 
-Learn to {@link installation/getting-started/quick-start install the editor} from scratch, learn to {@link installation/getting-started/quick-start#creating-custom-builds create custom builds}, {@link installation/getting-started/configuration configure it}, and {@link installation/advanced/csp secure}.
+Learn how to install CKEditor 5 easily with the use of {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder online builder} or {@link installation/getting-started/quick-start#building-the-editor-from-the-source building the editor from scratch}, learn to {@link installation/getting-started/quick-start#building-the-editor-from-the-source create custom builds}, {@link installation/getting-started/configuration configure it}, and {@link installation/advanced/csp secure}.
 
 ## Predefined CKEditor 5 builds
 
 Predefined CKEditor 5 builds are ready-to-use installations aimed at specific needs that you can simply download and use out of the box. Learn more about the {@link installation/advanced/predefined-builds available predefined builds} and choosing the right one for you. This is the fastest way to kick-off you CKEditor 5 installation.
-
-## CKEditor 5 online builder
-
-The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an installation tool that lets you {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder download custom-made CKEditor 5 builds}. It allows you to create your own, customized packages with a different set of plugins in a few easy steps, through a simple and intuitive UI.
 
 ## Frameworks integration
 
