@@ -124,32 +124,32 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		// ------------------------------ Resolutions ----------------------------------------------
 
 		'quiz-resolution-usingBuilds': {
-			content: 'Based on you previous answers, you should check out the {@link installation/advanced/predefined-builds predefined builds}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/advanced/predefined-builds predefined builds}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-onlineBuilder': {
-			content: 'Based on you previous answers, you should check out the {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder Online Builder}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder Online Builder}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-fromSource': {
-			content: 'Based on you previous answers, you should check out the {@link installation/getting-started/quick-start#building-the-editor-from-the-source Building CKEditor 5 from source} guide. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/getting-started/quick-start#building-the-editor-from-the-source Building CKEditor 5 from source} guide. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-usingFrameworks': {
-			content: 'Based on you previous answers, you should check out official {@link installation/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out official {@link installation/frameworks/overview integrations with popular JavaScript frameworks}. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-usingDLL': {
-			content: 'Based on you previous answers, you should check out the {@link installation/advanced/dll-builds DLL webpack} solution. You can also browse other installation methods listed below.',
+			content: 'Based on your answers, you should check out the {@link installation/advanced/dll-builds DLL webpack} solution. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
 		'quiz-resolution-migrateFromV4': {
-			content: 'Based on you previous answers, we recommend you to check out the {@link installation/getting-started/migration-from-ckeditor-4 CKEditor 4 migration guide}.',
+			content: 'Based on your answers, we recommend you to check out the {@link installation/getting-started/migration-from-ckeditor-4 CKEditor 4 migration guide}.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
