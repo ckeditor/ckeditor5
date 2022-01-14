@@ -9,7 +9,7 @@ order: 10
 
 You can report issues and feature requests on [GitHub](https://github.com/ckeditor/ckeditor5). This is also a good place to discuss architecture decisions and things which are not yet covered by the documentation.
 
-Refer to {@link installation/support/reporting-issues Reporting issues} guide for more details.
+Refer to {@link support/reporting-issues Reporting issues} guide for more details.
 
 ## Stack Overflow
 
