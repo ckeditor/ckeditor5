@@ -78,10 +78,19 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 		},
 
 		'quiz-question-onlineBuilder': {
-			content: 'Do you need a ready-to-use, custom-tailored solution?',
+			content: 'Do you need a ready-to-use, custom solution?',
 			hint: 'CKEditor 5 Online Builder allows users to create a downloadable working copy with custom set of features.',
 			buttons: [
 				getDecisionButtonDefinition( true, 'quiz-resolution-onlineBuilder' ),
+				getDecisionButtonDefinition( false, 'quiz-question-fromSource' ),
+			]
+		},
+
+		'quiz-question-fromSource': {
+			content: 'Do you want to configure your own custom-tailored installation?',
+			hint: 'Building CKEditor 5 from source allows you to fully control the building process and every aspect of the final editor.',
+			buttons: [
+				getDecisionButtonDefinition( true, 'quiz-resolution-fromSource' ),
 				getDecisionButtonDefinition( false, 'quiz-question-usingFrameworks' ),
 			]
 		},
@@ -121,6 +130,11 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 		'quiz-resolution-onlineBuilder': {
 			content: 'Based on you previous answers, you should check out the {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder Online Builder}. You can also browse other installation methods listed below.',
+			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
+		},
+
+		'quiz-resolution-fromSource': {
+			content: 'Based on you previous answers, you should check out the {@link installation/getting-started/quick-start#building-the-editor-from-the-source Building CKEditor 5 from source} guide. You can also browse other installation methods listed below.',
 			buttons: QUIZ_RESOLUTION_BUTTON_DEFINITIONS
 		},
 
