@@ -12,8 +12,6 @@
 import BasicHtmlWriter from './basichtmlwriter';
 import DomConverter from '../view/domconverter';
 
-import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
-
 /**
  * The HTML data processor class.
  * This data processor implementation uses HTML as input and output data.
@@ -116,37 +114,15 @@ export default class HtmlDataProcessor {
 	 * @returns {DocumentFragment}
 	 */
 	_toDom( data ) {
-		const document = this.domParser.parseFromString( data, 'text/html' );
-		const fragment = document.createDocumentFragment();
-
-		// The rules for parsing an HTML string can be read on https://html.spec.whatwg.org/multipage/parsing.html#parsing-main-inhtml.
-		//
-		// In short, parsing tokens in an HTML string starts with the so-called "initial" insertion mode. When a DOM parser is in this
-		// state and encounters a comment node, it inserts this comment node as the last child of the newly-created `HTMLDocument` object.
-		// The parser then proceeds to successive insertion modes during parsing subsequent tokens and appends in the `HTMLDocument` object
-		// other nodes (like <html>, <head>, <body>). This causes that the first leading comments from HTML string become the first nodes
-		// in the `HTMLDocument` object, but not in the <body> collection, because they are ultimately located before the <html> element.
-		//
-		// Therefore, so that such leading comments do not disappear, they all are moved from the `HTMLDocument` object to the document
-		// fragment, until the <html> element is encountered.
-		//
-		// See: https://github.com/ckeditor/ckeditor5/issues/9861.
-		let documentChildNode = document.firstChild;
-
-		while ( !documentChildNode.isSameNode( document.documentElement ) ) {
-			const node = documentChildNode;
-
-			documentChildNode = documentChildNode.nextSibling;
-
-			// It seems that `DOMParser#parseFromString()` adds only comment nodes directly to the `HTMLDocument` object, before the <html>
-			// node. The condition below is just to be sure we are moving only comment nodes.
-
-			/* istanbul ignore else */
-			if ( isComment( node ) ) {
-				fragment.appendChild( node );
-			}
+		// Wrap data with a <body> so leading non-layout nodes (like <script>, <style>, HTML comment)
+		// will be preserved in the body collection.
+		// Do it only for data that is not a full HTML document.
+		if ( !data.match( /<(?:html|body|head|meta)(?:\s[^>]*)?>/i ) ) {
+			data = `<body>${ data }</body>`;
 		}
 
+		const document = this.domParser.parseFromString( data, 'text/html' );
+		const fragment = document.createDocumentFragment();
 		const bodyChildNodes = document.body.childNodes;
 
 		while ( bodyChildNodes.length > 0 ) {
