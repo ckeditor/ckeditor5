@@ -56,7 +56,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * This scenario is very similar to the previous one, but has a different origin.
 	 *
 	 * Let's assume that you wanted to use CKEditor 5 from source, as explained in the
-	 * {@glink /installation/advanced/integrating-from-source "Building from source"} section
+	 * {@glink /installation/advanced/alternative-setups/integrating-from-source "Building from source"} section
 	 * or in the {@glink framework/guides/quick-start "Quick start"} guide of CKEditor 5 Framework.
 	 *
 	 * The correct way to do so is to import an editor and plugins and run them together like this:
@@ -124,7 +124,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * **Note:** All official CKEditor 5 packages (excluding integrations and `ckeditor5-dev-*` packages) are released in the
 	 * same major version. This is &mdash; in the `x.y.z`, the `x` is the same for all packages. This is the simplest way to check
 	 * whether you use packages coming from the same CKEditor 5 version. You can read more about versioning in the
-	 * {@glink framework/guides/support/versioning-policy Versioning policy} guide.
+	 * {@glink support/versioning-policy Versioning policy} guide.
 	 *
 	 * # Packages were duplicated in `node_modules`
 	 *
