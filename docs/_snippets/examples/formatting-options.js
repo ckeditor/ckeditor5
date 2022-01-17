@@ -12,7 +12,6 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import DropdownButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/dropdownbuttonview';
 import DropdownPanelView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownpanelview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
@@ -243,6 +242,7 @@ DecoupledEditor
 		overrideDropdownPositionsToNorth( editor, editor.plugins.get( 'FormattingOptions' ).toolbarView );
 
 		overrideTooltipPositions( editor.ui.view.toolbar );
+		overrideTooltipPositions( editor.plugins.get( 'FormattingOptions' ).toolbarView );
 
 		window.attachTourBalloon( {
 			target: window.findToolbarItem( editor.ui.view.toolbar,
@@ -314,11 +314,9 @@ function overrideDropdownPositionsToNorth( editor, toolbarView ) {
  */
 function overrideTooltipPositions( toolbarView ) {
 	for ( const item of toolbarView.items ) {
-		if ( item instanceof DropdownView ) {
+		if ( item.buttonView ) {
 			item.buttonView.tooltipPosition = 'n';
-		}
-
-		if ( item instanceof ButtonView ) {
+		} else if ( item.tooltipPosition ) {
 			item.tooltipPosition = 'n';
 		}
 	}
