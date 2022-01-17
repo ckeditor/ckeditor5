@@ -334,7 +334,7 @@ describe( 'HtmlDataProcessor', () => {
 				expect( text.data ).to.equal( 'Paragraph' );
 			} );
 
-			it( 'should ignore leading non-layout elements if <meya> tag is provided', () => {
+			it( 'should ignore leading non-layout elements if <meta> tag is provided', () => {
 				const bodyDocumentFragment = dataProcessor._toDom(
 					'<meta>' +
 					'<!-- Comment 1 -->' +
