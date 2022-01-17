@@ -10,6 +10,12 @@ order: 20
 
 # Configuration
 
+<info-box hint>
+**Quick recap**
+
+In the {@link installation/getting-started/quick-start last tutorial} you have learned about the quickest ways for setting up CKEditor 5 in the project. Now, you know how to use Online builder and create the editor from the source. It's time to play a bit with the configuration!
+</info-box>
+
 When creating an editor in your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
 
 ```js
@@ -126,3 +132,9 @@ In the builds that contain toolbars an optimal default configuration is defined 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
 Some of the options may require loading plugins which are not available in the build you use. Read more about {@link installation/getting-started/quick-start#building-the-editor-from-the-source customizing builds}.
+
+<info-box hint>
+**What's next?**
+
+You have learned how to configure your own CKEditor 5 instance. Awesome! In the next tutorial, you will learn more about extending your editor with plugins. Ready for a ride? {@link installation/getting-started/installing-plugins Jump in}!
+</info-box>

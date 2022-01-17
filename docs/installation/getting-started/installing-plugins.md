@@ -7,6 +7,12 @@ order: 30
 
 # Installing plugins
 
+<info-box hint>
+**Quick recap**
+
+In the {@link installation/getting-started/configuration last tutorial} you have learned how to configure your editor with various options. Now, we will be extending it with some additional features.
+</info-box>
+
 CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way, which means that a single plugin may consist of multiple JavaScript files.
 
 In this guide you can learn how to add plugins to your editor in the two most common scenarios:
@@ -283,3 +289,9 @@ ClassicEditor
 ```
 
 So, in short, both methods use very similar mechanisms. However, adding a plugin through the static `builtinPlugins` property (which happens in editor builds) lets you automatically enable it in all editor instances created using this editor class, while passing a plugin to `create()` will naturally affect only one instance.
+
+<info-box hint>
+**What's next?**
+
+That was fun, right? Don't hesitate and [explore our features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html), they are waiting to be installed! {@link installation/getting-started/basic-api In the next article} you will learn more about the editor API and how to use it.
+</info-box>
