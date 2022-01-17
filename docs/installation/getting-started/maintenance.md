@@ -9,7 +9,7 @@ modified_at: 2021-07-16
 <info-box hint>
 **Quick recap**
 
-In previous tutorials you have learned about installing, configuring and extending your editor. This guide is a last piece from the *Getting started* section, so if you are looking for some basic information about the editor, check the previous articles!
+In the previous tutorials you have learned about installing, configuring and extending your editor. This guide is a last chapter from the *Getting started* section, so if you are looking for some basic information about the editor, check the previous articles!
 </info-box>
 
 A placeholder file for [#1265](https://github.com/cksource/ckeditor5-internal/issues/1265)

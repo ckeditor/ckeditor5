@@ -293,5 +293,5 @@ So, in short, both methods use very similar mechanisms. However, adding a plugin
 <info-box hint>
 **What's next?**
 
-That was fun, right? Don't hesitate and [explore our features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html), they are waiting to be installed! {@link installation/getting-started/basic-api In the next article} you will learn more about the editor API and how to use it.
+That was fun, right? Don't hesitate and [explore available CKEditor 5 features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html), they are waiting to be installed! {@link installation/getting-started/basic-api In the next article}, you will learn more about the editor API and how to use it.
 </info-box>

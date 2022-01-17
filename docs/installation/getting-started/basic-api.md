@@ -11,7 +11,7 @@ order: 40
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/installing-plugins last tutorial} you have explored our features and learned how to add them to your editor. This article shows the basic API which you can use for the interaction with the editor.
+In the {@link installation/getting-started/installing-plugins last tutorial} you have explored available features and learned how to add them to your editor. This article shows the basic API which you can use for the interaction with the editor.
 </info-box>
 
 Each CKEditor 5 **build** provides a different **editor class** that handles the creation of editor instances:
@@ -215,7 +215,7 @@ ClassicEditor.create( ... ); // [Function]
 <info-box hint>
 **What's next?**
 
-Now, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
+Having read this guide, you know how to communicate with the editor, but remember that CKEditor 5 offers a rich API to interact with it. Check out the {@link api/index API documentation} for more.
 
-You went through our quick start path for beginners, well done! It's important to know how you can maintain your editor, so take a look at the {@link installation/getting-started/maintenance last article from this section} to learn more.
+You have almost completed the CKEditor 5's quick start path for beginners, well done! It is important to know how you can maintain your editor, so take a look at the {@link installation/getting-started/maintenance last article from this section} to learn more.
 </info-box>
