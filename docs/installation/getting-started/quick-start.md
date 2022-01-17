@@ -93,7 +93,7 @@ Scroll the list of available languages and check the one you want to be the main
 
 This is as simple as it gets: just press the **Start** button to download your customized package.
 
-Refer to the [What's next?](#whats-next) section for further steps in your CKEditor 5 journey!
+Refer to the *What's next?* note at the end of this page for further steps in your CKEditor 5 journey!
 
 ## Building the editor from the source
 
@@ -306,8 +306,10 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 	We recommend using the official {@link framework/guides/development-tools#ckeditor-5-inspector CKEditor 5 inspector} for development and debugging. It will give you tons of useful information about the state of the editor such as internal data structures, selection, commands, and many more.
 </info-box>
 
-## What's next?
+<info-box hint>
+**What's next?**
 
 Congratulations, you have run your first CKEditor 5 instance! Now, it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 
-P.S. If you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, see our {@link installation/frameworks/overview Frameworks section}.
+P.S. If you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, see the {@link installation/frameworks/overview Frameworks section}.
+</info-box>
