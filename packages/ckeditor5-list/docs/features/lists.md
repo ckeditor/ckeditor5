@@ -77,6 +77,10 @@ Use the editor below use the lists dropdown to choose the desired marker types f
 
 {@snippet features/lists-style}
 
+## List indentation
+
+Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
+
 ## Related features
 
 These features also provide similar functionality:
@@ -149,10 +153,6 @@ ClassicEditor
 <info-box warning>
 	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/listui~ListUI}.
 </info-box>
-
-### List indentation
-
-Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
 
 ## Common API
 
