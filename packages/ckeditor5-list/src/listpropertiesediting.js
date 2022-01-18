@@ -214,6 +214,13 @@ export default class ListPropertiesEditing extends Plugin {
 					direction: 'forward'
 				} );
 
+				// If the selection ends in a non-list element, there are no <listItem>s that would require adjustments.
+				// See: #8642.
+				if ( !secondListMostOuterItem ) {
+					firstMostOuterItem = null;
+					return;
+				}
+
 				const items = [
 					secondListMostOuterItem,
 					...getSiblingNodes( writer.createPositionAt( secondListMostOuterItem, 0 ), 'forward' )
