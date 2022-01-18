@@ -22,7 +22,8 @@ import { createListElement, isListView } from '../documentlist/utils/view';
  */
 export function listPropertiesUpcastConverter( attributeStrategies ) {
 	return ( evt, data, conversionApi ) => {
-		const { writer, schema } = conversionApi;
+		const { writer, schema, consumable } = conversionApi;
+
 		const parentList = data.viewItem.parent;
 
 		// It may happen that the native spell checker fixes a word inside a list item.
@@ -35,20 +36,36 @@ export function listPropertiesUpcastConverter( attributeStrategies ) {
 			return;
 		}
 
-		const items = Array.from( data.modelRange.getItems( { shallow: true } ) )
-			.filter( item => schema.checkAttribute( item, 'listStyle' ) );
+		const items = Array.from( data.modelRange.getItems( { shallow: true } ) );
 
-		if ( !items.length ) {
-			return;
-		}
+		for ( const strategy of attributeStrategies ) {
+			// if ( !consumable.test( parentList, strategy.viewConsumables ) ) {
+			// 	continue;
+			// }
+			//
+			// let applied = false;
 
-		for ( const item of items ) {
-			for ( const strategy of attributeStrategies ) {
-				// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
-				if ( strategy.appliesToListItem( item ) && !item.hasAttribute( strategy.attributeName ) ) {
-					writer.setAttribute( strategy.attributeName, strategy.getAttributeOnUpcast( parentList ), item );
+			for ( const item of items ) {
+				if ( !schema.checkAttribute( item, strategy.attributeName ) ) {
+					continue;
 				}
+
+				if ( !strategy.appliesToListItem( item ) ) {
+					continue;
+				}
+
+				// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
+				if ( item.hasAttribute( strategy.attributeName ) ) {
+					continue;
+				}
+
+				writer.setAttribute( strategy.attributeName, strategy.getAttributeOnUpcast( parentList ), item );
+				// applied = true;
 			}
+
+			// if ( applied ) {
+			// 	consumable.consume( parentList, strategy.viewConsumables );
+			// }
 		}
 	};
 }

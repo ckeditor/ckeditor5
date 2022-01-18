@@ -263,6 +263,7 @@ function createAttributeStrategies( enabledProperties ) {
 		strategies.push( {
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
+			viewConsumables: { styles: 'list-style-type' },
 
 			addCommand( editor ) {
 				// editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
@@ -290,6 +291,7 @@ function createAttributeStrategies( enabledProperties ) {
 		strategies.push( {
 			attributeName: 'listReversed',
 			defaultValue: false,
+			viewConsumables: { attributes: 'reversed' },
 
 			addCommand( editor ) {
 				// editor.commands.add( 'listReversed', new ListReversedCommand( editor ) );
@@ -317,6 +319,7 @@ function createAttributeStrategies( enabledProperties ) {
 		strategies.push( {
 			attributeName: 'listStart',
 			defaultValue: 1,
+			viewConsumables: { attributes: 'start' },
 
 			addCommand( editor ) {
 				// editor.commands.add( 'listStart', new ListStartCommand( editor ) );

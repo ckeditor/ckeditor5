@@ -274,6 +274,56 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should parse the custom list style', () => {
+		expect( modelList( [
+			'* foo {style:abc}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="abc" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStyle="abc" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="abc" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should not parse the custom list style if provided in the following block of a list item', () => {
+		expect( modelList( [
+			'* foo {style:123}',
+			'  bar {style:abc}',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">bar {style:abc}</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="123" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should not parse the custom list style if provided in the following list item', () => {
+		expect( modelList( [
+			'* foo {style:123}',
+			'  bar',
+			'* baz {style:abc}'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="123" listType="bulleted">baz {style:abc}</paragraph>'
+		);
+	} );
+
+	it( 'should parse the custom list style of the different adjacent list type', () => {
+		expect( modelList( [
+			'* foo {style:123}',
+			'* bar',
+			'# abc {style:789}',
+			'# def'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listStyle="123" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStyle="789" listType="numbered">abc</paragraph>' +
+			'<paragraph listIndent="0" listItemId="003" listStyle="789" listType="numbered">def</paragraph>'
+		);
+	} );
+
 	it( 'should parse string to lines', () => {
 		expect( modelList( `
 			* foo

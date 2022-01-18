@@ -41,23 +41,9 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 			await editor.destroy();
 		} );
 
-		describe( 'data pipeline', () => {
+		describe.only( 'data pipeline', () => {
 			beforeEach( () => {
 				stubUid( 0 );
-			} );
-
-			it.skip( 'should 1', () => {
-				test.data(
-					'<ol style="list-style-type:upper-roman;" reversed="reversed" start="7">' +
-						'<li>foo</li>' +
-						'<li>bar</li>' +
-					'</ol>',
-
-					modelList( `
-						# foo {reversed:true} {start:7} {style:upper-roman}
-						# bar
-					` )
-				);
 			} );
 
 			it( 'should convert single list (type: bulleted)', () => {
@@ -116,6 +102,26 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
+			it( 'should convert mixed lists', () => {
+				test.data(
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>OL 1</li>' +
+						'<li>OL 2</li>' +
+					'</ol>' +
+					'<ul style="list-style-type:circle;">' +
+						'<li>UL 1</li>' +
+						'<li>UL 2</li>' +
+					'</ul>',
+
+					modelList( `
+						# OL 1 {style:upper-alpha}
+						# OL 2
+						* UL 1 {style:circle}
+						* UL 2
+					` )
+				);
+			} );
+
 			it( 'should convert nested and mixed lists', () => {
 				test.data(
 					'<ol style="list-style-type:upper-alpha;">' +
@@ -139,338 +145,233 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			// it( 'should convert when the list is in the middle of the content', () => {
-			// 	editor.setData(
-			// 		'<p>Paragraph.</p>' +
-			// 		'<ol style="list-style-type:upper-alpha;">' +
-			// 		'<li>Foo</li>' +
-			// 		'<li>Bar</li>' +
-			// 		'</ol>' +
-			// 		'<p>Paragraph.</p>'
-			// 	);
-			//
-			// 	expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-			// 		'<paragraph>Paragraph.</paragraph>' +
-			// 		'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Foo</listItem>' +
-			// 		'<listItem listIndent="0" listStyle="upper-alpha" listType="numbered">Bar</listItem>' +
-			// 		'<paragraph>Paragraph.</paragraph>'
-			// 	);
-			// } );
-			//
-			// // See: #8262.
-			// describe( 'list conversion with surrounding text nodes', () => {
-			// 	let editor;
-			//
-			// 	beforeEach( () => {
-			// 		return VirtualTestEditor
-			// 			.create( {
-			// 				plugins: [ Paragraph, ListPropertiesEditing ],
-			// 				list: {
-			// 					properties: { styles: true, startIndex: false, reversed: false }
-			// 				}
-			// 			} )
-			// 			.then( newEditor => {
-			// 				editor = newEditor;
-			// 			} );
-			// 	} );
-			//
-			// 	afterEach( () => {
-			// 		return editor.destroy();
-			// 	} );
-			//
-			// 	it( 'should convert a list if raw text is before the list', () => {
-			// 		editor.setData( 'Foo<ul><li>Foo</li></ul>' );
-			//
-			// 		expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul>' );
-			// 	} );
-			//
-			// 	it( 'should convert a list if raw text is after the list', () => {
-			// 		editor.setData( '<ul><li>Foo</li></ul>Foo' );
-			//
-			// 		expect( editor.getData() ).to.equal( '<ul><li>Foo</li></ul><p>Foo</p>' );
-			// 	} );
-			//
-			// 	it( 'should convert a list if it is surrender by two text nodes', () => {
-			// 		editor.setData( 'Foo<ul><li>Foo</li></ul>Foo' );
-			//
-			// 		expect( editor.getData() ).to.equal( '<p>Foo</p><ul><li>Foo</li></ul><p>Foo</p>' );
-			// 	} );
-			// } );
+			it( 'should convert when the list is in the middle of the content', () => {
+				test.data(
+					'<p>Paragraph.</p>' +
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
+					'<p>Paragraph.</p>',
+
+					modelList( `
+						Paragraph.
+						# Foo {id:000} {style:upper-alpha}
+						# Bar {id:001}
+						Paragraph.
+					` )
+				);
+			} );
+
+			it( 'view ol converter should not fire if change was already consumed', () => {
+				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { styles: 'list-style-type' } );
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo
+						# Bar
+					` ),
+
+					'<ol>' +
+					'<li>Foo</li>' +
+					'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'view ul converter should not fire if change was already consumed', () => {
+				editor.data.upcastDispatcher.on( 'element:ul', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { styles: 'list-style-type' } );
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ul style="list-style-type:circle;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo
+						* Bar
+					` ),
+
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>'
+				);
+			} );
+
+			describe( 'list conversion with surrounding text nodes', () => {
+				it( 'should convert a list if raw text is before the list', () => {
+					test.data(
+						'Foo' +
+						'<ul><li>Bar</li></ul>',
+
+						modelList( `
+							Foo
+							* Bar {id:000} {style:default}
+						` ),
+
+						'<p>Foo</p>' +
+						'<ul><li>Bar</li></ul>'
+					);
+				} );
+
+				it( 'should convert a list if raw text is after the list', () => {
+					test.data(
+						'<ul><li>Foo</li></ul>' +
+						'Bar',
+
+						modelList( `
+							* Foo {style:default}
+							Bar
+						` ),
+
+						'<ul><li>Foo</li></ul>' +
+						'<p>Bar</p>'
+					);
+				} );
+
+				it( 'should convert a list if it is surrounded by two text nodes', () => {
+					test.data(
+						'Foo' +
+						'<ul><li>Bar</li></ul>' +
+						'Baz',
+
+						modelList( `
+							Foo
+							* Bar {id:000} {style:default}
+							Baz
+						` ),
+
+						'<p>Foo</p>' +
+						'<ul><li>Bar</li></ul>' +
+						'<p>Baz</p>'
+					);
+				} );
+			} );
 		} );
 
-		// describe( 'conversion in data pipeline', () => {
-		// 	describe( 'model to data', () => {
-		// 		it( 'should convert single list (type: bulleted)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal( '<ul><li>Foo</li><li>Bar</li></ul>' );
-		// 		} );
-		//
-		// 		it( 'should convert single list (type: numbered)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="numbered">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
-		// 		} );
-		//
-		// 		it( 'should convert single list (type: bulleted, style: default)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal( '<ul><li>Foo</li><li>Bar</li></ul>' );
-		// 		} );
-		//
-		// 		it( 'should convert single list (type: numbered, style: default)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="default">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="default">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal( '<ol><li>Foo</li><li>Bar</li></ol>' );
-		// 		} );
-		//
-		// 		it( 'should convert single list (type: bulleted, style: circle)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal( '<ul style="list-style-type:circle;"><li>Foo</li><li>Bar</li></ul>' );
-		// 		} );
-		//
-		// 		it( 'should convert single list (type: numbered, style: upper-alpha)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="upper-alpha">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal( '<ol style="list-style-type:upper-alpha;"><li>Foo</li><li>Bar</li></ol>' );
-		// 		} );
-		//
-		// 		it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal(
-		// 				'<ul style="list-style-type:circle;">' +
-		// 				'<li>Foo 1' +
-		// 				'<ul style="list-style-type:disc;">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ul>' +
-		// 				'</li>' +
-		// 				'<li>Foo 2</li>' +
-		// 				'<li>Foo 3</li>' +
-		// 				'</ul>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should convert nested numbered lists (main: decimal-leading-zero, nested: lower-latin)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="numbered" listStyle="lower-latin">Bar 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal-leading-zero">Foo 3</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal(
-		// 				'<ol style="list-style-type:decimal-leading-zero;">' +
-		// 				'<li>Foo 1' +
-		// 				'<ol style="list-style-type:lower-latin;">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ol>' +
-		// 				'</li>' +
-		// 				'<li>Foo 2</li>' +
-		// 				'<li>Foo 3</li>' +
-		// 				'</ol>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should convert nested mixed lists (ul>ol, main: square, nested: lower-roman)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="numbered" listStyle="lower-roman">Bar 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="square">Foo 3</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal(
-		// 				'<ul style="list-style-type:square;">' +
-		// 				'<li>Foo 1' +
-		// 				'<ol style="list-style-type:lower-roman;">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ol>' +
-		// 				'</li>' +
-		// 				'<li>Foo 2</li>' +
-		// 				'<li>Foo 3</li>' +
-		// 				'</ul>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should produce nested lists (different `listIndent` attribute)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 1</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
-		// 				'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="numbered" listStyle="decimal">Bar 2</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal(
-		// 				'<ol style="list-style-type:decimal;">' +
-		// 				'<li>Foo 1</li>' +
-		// 				'<li>Foo 2' +
-		// 				'<ol style="list-style-type:decimal;">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ol>' +
-		// 				'</li>' +
-		// 				'</ol>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should produce two different lists (different `listType` attribute)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 1</listItem>' +
-		// 				'<listItem listIndent="0" listType="numbered" listStyle="decimal">Foo 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="disc">Bar 2</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal(
-		// 				'<ol style="list-style-type:decimal;">' +
-		// 				'<li>Foo 1</li>' +
-		// 				'<li>Foo 2</li>' +
-		// 				'</ol>' +
-		// 				'<ul style="list-style-type:disc;">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ul>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should produce two different lists (different `listStyle` attribute)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 1</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="disc">Foo 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 1</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar 2</listItem>'
-		// 			);
-		//
-		// 			expect( editor.getData() ).to.equal(
-		// 				'<ul style="list-style-type:disc;">' +
-		// 				'<li>Foo 1</li>' +
-		// 				'<li>Foo 2</li>' +
-		// 				'</ul>' +
-		// 				'<ul style="list-style-type:circle;">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ul>'
-		// 			);
-		// 		} );
-		// 	} );
-		// } );
-		//
-		// // At this moment editing and data pipelines produce exactly the same content.
-		// // Just a few tests will be enough here. `model to data` block contains all cases checked.
-		// describe( 'conversion in editing pipeline', () => {
-		// 	describe( 'model to view', () => {
-		// 		it( 'should convert single list (type: bulleted, style: default)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-		// 				'<ul><li>Foo</li><li>Bar</li></ul>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should convert single list (type: bulleted, style: circle)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Bar</listItem>'
-		// 			);
-		//
-		// 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-		// 				'<ul style="list-style-type:circle"><li>Foo</li><li>Bar</li></ul>'
-		// 			);
-		// 		} );
-		//
-		// 		it( 'should convert nested bulleted lists (main: circle, nested: disc)', () => {
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 1</listItem>' +
-		// 				'<listItem listIndent="1" listType="bulleted" listStyle="disc">Bar 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 2</listItem>' +
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="circle">Foo 3</listItem>'
-		// 			);
-		//
-		// 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-		// 				'<ul style="list-style-type:circle">' +
-		// 				'<li>Foo 1' +
-		// 				'<ul style="list-style-type:disc">' +
-		// 				'<li>Bar 1</li>' +
-		// 				'<li>Bar 2</li>' +
-		// 				'</ul>' +
-		// 				'</li>' +
-		// 				'<li>Foo 2</li>' +
-		// 				'<li>Foo 3</li>' +
-		// 				'</ul>'
-		// 			);
-		// 		} );
-		//
-		// 		// See: #8081.
-		// 		it( 'should convert properly nested list styles', () => {
-		// 			// ■ Level 0
-		// 			//     ▶ Level 0.1
-		// 			//         ○ Level 0.1.1
-		// 			//     ▶ Level 0.2
-		// 			//         ○ Level 0.2.1
-		// 			setModelData( model,
-		// 				'<listItem listIndent="0" listType="bulleted" listStyle="default">Level 0</listItem>' +
-		// 				'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.1</listItem>' +
-		// 				'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.1.1</listItem>' +
-		// 				'<listItem listIndent="1" listType="bulleted" listStyle="default">Level 0.2</listItem>' +
-		// 				'<listItem listIndent="2" listType="bulleted" listStyle="circle">Level 0.2.1</listItem>'
-		// 			);
-		//
-		// 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-		// 				'<ul>' +
-		// 				'<li>Level 0' +
-		// 				'<ul>' +
-		// 				'<li>Level 0.1' +
-		// 				'<ul style="list-style-type:circle">' +
-		// 				'<li>Level 0.1.1</li>' +
-		// 				'</ul>' +
-		// 				'</li>' +
-		// 				'<li>Level 0.2' +
-		// 				'<ul style="list-style-type:circle">' +
-		// 				'<li>Level 0.2.1</li>' +
-		// 				'</ul>' +
-		// 				'</li>' +
-		// 				'</ul>' +
-		// 				'</li>' +
-		// 				'</ul>'
-		// 			);
-		// 		} );
-		// 	} );
-		// } );
+		describe( 'editing pipeline', () => {
+			describe( 'insert', () => {
+				it( 'should convert single list (type: bulleted, style: default)', () => {
+					test.insert(
+						'<paragraph>x</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="000" listType="bulleted" listStyle="default">Foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="001" listType="bulleted" listStyle="default">Bar</paragraph>]',
+
+						'<p>x</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ul>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert single list (type: bulleted, style: circle)', () => {
+					test.insert(
+						'<paragraph>x</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="circle">Foo</paragraph>' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted" listStyle="circle">Bar</paragraph>]',
+
+						'<p>x</p>' +
+						'<ul style="list-style-type:circle">' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ul>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert nested bulleted list (main: circle, nested: disc)', () => {
+					test.insert(
+						'<paragraph>x</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="circle">Foo 1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted" listStyle="disc">Bar 1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="c" listType="bulleted" listStyle="disc">Bar 2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="d" listType="bulleted" listStyle="circle">Foo 2</paragraph>' +
+						'<paragraph listIndent="0" listItemId="e" listType="bulleted" listStyle="circle">Foo 3</paragraph>]',
+
+						'<p>x</p>' +
+						'<ul style="list-style-type:circle">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">Foo 1</span>' +
+								'<ul style="list-style-type:disc">' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 1</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 2</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 2</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 3</span></li>' +
+						'</ul>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert properly nested list styles', () => {
+					// ■ Level 0
+					//     ▶ Level 0.1
+					//         ○ Level 0.1.1
+					//     ▶ Level 0.2
+					//         ○ Level 0.2.1
+					test.insert(
+						'<paragraph>x</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="default">Level 0</paragraph>' +
+						'<paragraph listIndent="1" listItemId="b" listType="bulleted" listStyle="default">Level 0.1</paragraph>' +
+						'<paragraph listIndent="2" listItemId="c" listType="bulleted" listStyle="circle">Level 0.1.1</paragraph>' +
+						'<paragraph listIndent="1" listItemId="d" listType="bulleted" listStyle="default">Level 0.2</paragraph>' +
+						'<paragraph listIndent="2" listItemId="e" listType="bulleted" listStyle="circle">Level 0.2.1</paragraph>]',
+
+						'<p>x</p>' +
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">Level 0</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">Level 0.1</span>' +
+										'<ul style="list-style-type:circle">' +
+											'<li><span class="ck-list-bogus-paragraph">Level 0.1.1</span></li>' +
+										'</ul>' +
+									'</li>' +
+									'<li><span class="ck-list-bogus-paragraph">Level 0.2</span>' +
+										'<ul style="list-style-type:circle">' +
+											'<li><span class="ck-list-bogus-paragraph">Level 0.2.1</span></li>' +
+										'</ul>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				// TODO multi-block
+				// TODO inserting list items/blocks into other lists
+			} );
+
+			describe( 'remove', () => {
+				// TODO
+			} );
+
+			describe( 'change type', () => {
+				// TODO
+			} );
+
+			describe( 'change style', () => {
+				// TODO
+			} );
+		} );
 	} );
 
 	async function setupEditor( config = {} ) {

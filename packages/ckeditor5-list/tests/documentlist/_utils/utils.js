@@ -270,7 +270,7 @@ export function modelList( lines ) {
 					return '';
 				} );
 
-				if ( !stack[ listIndent ] ) {
+				if ( !stack[ listIndent ] || stack[ listIndent ].listType != props.listType ) {
 					content = content.replace( /\s*{(?:(style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
 						switch ( key ) {
 							case 'style':
