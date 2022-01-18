@@ -10,7 +10,7 @@
 import Position from '../position';
 import TreeWalker from '../treewalker';
 import Range from '../range';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
+import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils/src/unicode';
 import DocumentSelection from '../documentselection';
 
 const wordBoundaryCharacters = ' ,.?!:;"-()';
@@ -146,7 +146,7 @@ function getCorrectPosition( walker, unit ) {
 		const data = textNode.data;
 		let offset = walker.position.offset - textNode.startOffset;
 
-		while ( isInsideSurrogatePair( data, offset ) || ( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ) {
+		while ( isInsideSurrogatePair( data, offset ) || ( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) || isInsideEmojiSequence( data, offset ) ) {
 			walker.next();
 
 			offset = walker.position.offset - textNode.startOffset;
