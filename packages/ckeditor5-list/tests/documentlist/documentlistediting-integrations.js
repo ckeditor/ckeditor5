@@ -1789,7 +1789,8 @@ describe( 'DocumentListEditing integrations', () => {
 	describe( 'backspace key handling', () => {
 		const changedBlocks = [];
 		let domEventData, mergeCommand, splitAfterCommand, indentCommand,
-			eventInfo, mergeCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
+			eventInfo;
+			// mergeCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
 
 		beforeEach( () => {
 			eventInfo = new BubblingEventInfo( view.document, 'delete' );
@@ -1805,9 +1806,9 @@ describe( 'DocumentListEditing integrations', () => {
 			indentCommand = editor.commands.get( 'outdentList' );
 			mergeCommand = editor.commands.get( 'mergeListItemBackward' );
 
-			splitAfterCommandExecuteSpy = sinon.spy( splitAfterCommand, 'execute' );
-			outdentCommandExecuteSpy = sinon.spy( indentCommand, 'execute' );
-			mergeCommandExecuteSpy = sinon.spy( mergeCommand, 'execute' );
+			// splitAfterCommandExecuteSpy = sinon.spy( splitAfterCommand, 'execute' );
+			// outdentCommandExecuteSpy = sinon.spy( indentCommand, 'execute' );
+			// mergeCommandExecuteSpy = sinon.spy( mergeCommand, 'execute' );
 
 			changedBlocks.length = 0;
 
@@ -1824,9 +1825,9 @@ describe( 'DocumentListEditing integrations', () => {
 			} );
 		} );
 
-		describe( 'collapsed selection', () => {
-			describe( 'at the beginning of a list item', () => {
-				describe( 'single block list item', () => {
+		describe( 'backward delete', () => {
+			describe( 'single block list item', () => {
+				describe( 'collapsed selection at the beginning of a list item', () => {
 					describe( 'item before is empty', () => {
 						it( 'should merge non empty list item with with previous list item as a block', () => {
 							setModelData( model, modelList( [
@@ -1837,19 +1838,8 @@ describe( 'DocumentListEditing integrations', () => {
 							view.document.fire( eventInfo, domEventData );
 
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
-								'* []b {id:001}'
+								'* []b{id:001}'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						// Default behaviour of backspace?
@@ -1864,17 +1854,6 @@ describe( 'DocumentListEditing integrations', () => {
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
 								'* []'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented list item with with previous empty list item', () => {
@@ -1888,17 +1867,6 @@ describe( 'DocumentListEditing integrations', () => {
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
 								'* []a{id:001}'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented empty list item with with previous empty list item', () => {
@@ -1912,17 +1880,6 @@ describe( 'DocumentListEditing integrations', () => {
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
 								'* []'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge list item with with previous indented empty list item', () => {
@@ -1938,17 +1895,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* ',
 								'  * []a{id:002}'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge empty list item with with previous indented empty list item', () => {
@@ -1964,17 +1910,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* ',
 								'  * []'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 					} );
 
@@ -1991,17 +1926,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* a',
 								'  []b'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge empty list item with with previous list item as a block', () => {
@@ -2016,17 +1940,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* a',
 								'  []'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented list item with with parent list item as a block', () => {
@@ -2041,17 +1954,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* a',
 								'  []b'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented empty list item with with parent list item as a block', () => {
@@ -2066,17 +1968,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* a',
 								'  []'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge list item with with previous list item with higher indent as a block', () => {
@@ -2093,17 +1984,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  * b',
 								'  []c'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge empty list item with with previous list item with higher indent as a block', () => {
@@ -2120,17 +2000,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  * b',
 								'  []'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should keep merged list item\'s children', () => {
@@ -2157,22 +2026,481 @@ describe( 'DocumentListEditing integrations', () => {
 								'    * g',
 								'      h'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 					} );
 				} );
 
-				describe( 'multi-block list item', () => {
+				describe( 'collapsed selection at the end of a list item', () => {
+					describe( 'item after is empty', () => {
+						it( 'should merge non empty list item with with previous list item as a block', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b{id:001}'
+							] ) );
+						} );
+
+						// Default behaviour of backspace?
+						it( 'should merge empty list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []'
+							] ) );
+						} );
+
+						it( 'should merge indented list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []a'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []a{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge indented empty list item with with previous empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []'
+							] ) );
+						} );
+
+						it( 'should merge list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * ',
+								'* []a'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* ',
+								'  * []a{id:002}'
+							] ) );
+						} );
+
+						it( 'should merge empty list item with with previous indented empty list item', () => {
+							setModelData( model, modelList( [
+								'* ',
+								'  * ',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* ',
+								'  * []'
+							] ) );
+						} );
+					} );
+
+					describe( 'item before is not empty', () => {
+						it( 'should merge non empty list item with with previous list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b'
+							] ) );
+						} );
+
+						it( 'should merge empty list item with with previous list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []'
+							] ) );
+						} );
+
+						it( 'should merge indented list item with with parent list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b'
+							] ) );
+						} );
+
+						it( 'should merge indented empty list item with with parent list item as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []'
+							] ) );
+						} );
+
+						it( 'should merge list item with with previous list item with higher indent as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * b',
+								'* []c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  * b',
+								'  []c'
+							] ) );
+						} );
+
+						it( 'should merge empty list item with with previous list item with higher indent as a block', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * b',
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  * b',
+								'  []'
+							] ) );
+						} );
+
+						it( 'should keep merged list item\'s children', () => {
+							setModelData( model, modelList( [
+								'* a',
+								'  * []b',
+								'    * c',
+								'    * d',
+								'      e',
+								'    * f',
+								'      * g',
+								'        h'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* a',
+								'  []b',
+								'  * c',
+								'  * d',
+								'    e',
+								'  * f',
+								'    * g',
+								'      h'
+							] ) );
+						} );
+					} );
+				} );
+
+				describe( 'non-collapsed selection starting in first block of a list item', () => {
+					describe( 'first position in empty block', () => {
+						it( 'should merge two empty list items', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* ]'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* ]text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []text{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item and delete text', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* te]xt'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []xt{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list item when end selection is at the beginning of item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * ]b'
+							] ) );
+
+							// // ------------
+							// '* [',
+							// '* a',
+							// '* ]b'
+
+							// // ------------
+							// '* []',
+							// '* b'
+
+							// // ------------ WRONG
+							// '* []',
+							// '  b'
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b]c',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []c{id:002}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items when selection at the end of an item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * bc]',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []{id:000}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should delete all items till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b',
+								'* ]d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []d'
+							] ) );
+						} );
+
+						it( 'should delete all items and text till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b',
+								'* d]e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []e{id:003}'
+							] ) );
+						} );
+					} );
+
+					describe( 'first position in non-empty block', () => {
+						it( 'should merge two list items', () => {
+							setModelData( model, modelList( [
+								'* [text',
+								'* ano]ther'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []ther{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge two list itemsx TODO', () => {
+							setModelData( model, modelList( [
+								'* te[xt',
+								'* ano]ther'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* te[]ther'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* ]another'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]another'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item and delete text', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* ano]ther'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]ther'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list item when end selection is at the beginning of item', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* a',
+								'  * ]b',
+								'    * c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+							// output is okay, fix expect
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]b',
+								'  * c{id:003}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* a',
+								'  * b]c',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]c',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items when selection at the end of an item', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* a',
+								'  * bc]',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]{id:000}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should delete all items till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* a',
+								'  * b',
+								'* ]d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							// output is okay, fix expect
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]d'
+							] ) );
+						} );
+
+						it( 'should delete all items and text till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* text[',
+								'* a',
+								'  * b',
+								'* d]e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* text[]e'
+							] ) );
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'multi-block list item', () => {
+				describe( 'collapsed selection at the beginning of a list item', () => {
 					describe( 'item before is empty', () => {
 						it( 'should merge with previous list item and keep blocks intact', () => {
 							setModelData( model, modelList( [
@@ -2187,17 +2515,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* []b{id:001}',
 								'  c'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge with previous list item and keep complex blocks intact', () => {
@@ -2231,19 +2548,9 @@ describe( 'DocumentListEditing integrations', () => {
 								'       k',
 								'  l'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
+						// TODO: fix ids????
 						it( 'should merge list item with first block empty with previous empty list item', () => {
 							setModelData( model, modelList( [
 								'* ',
@@ -2257,17 +2564,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* []',
 								'  a'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented list item with with previous empty list item', () => {
@@ -2280,20 +2576,9 @@ describe( 'DocumentListEditing integrations', () => {
 							view.document.fire( eventInfo, domEventData );
 
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
-								'* []a {id:001}',
+								'* []a{id:001}',
 								'  b'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented list having block and indented list item with previous empty list item', () => {
@@ -2311,17 +2596,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  b',
 								'  * c {id:003}'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented empty list item with previous empty list item', () => {
@@ -2337,17 +2611,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'* []',
 								'  text'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge list item with with previous indented empty list item', () => {
@@ -2365,17 +2628,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  * []a{id:002}',
 								'    b'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge empty list item with with previous indented empty list item', () => {
@@ -2393,17 +2645,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  * []',
 								'    text'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 					} );
 
@@ -2422,17 +2663,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  []b',
 								'  c'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should TODO', () => {
@@ -2449,33 +2679,22 @@ describe( 'DocumentListEditing integrations', () => {
 								'* b',
 								'  * c',
 								'    []d',
-								'    e'
+								'  e'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge with previous list item and keep complex blocks intact', () => {
 							setModelData( model, modelList( [
-								'* a',
-								'* []b',
+								'* a{id:a}',
+								'* []b{id:b}',
 								'  c',
-								'  * d',
+								'  * d{id:d}',
 								'    e',
-								'  * f',
-								'    * g',
+								'  * f{id:f}',
+								'    * g{id:g}',
 								'      h',
-								'      * i',
-								'        * j',
+								'      * i{id:i}',
+								'        * j{id:j}',
 								'       k',
 								'  l'
 							] ) );
@@ -2483,30 +2702,19 @@ describe( 'DocumentListEditing integrations', () => {
 							view.document.fire( eventInfo, domEventData );
 
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
-								'* a',
+								'* a{id:a}',
 								'  []b',
 								'  c',
-								'  * d',
+								'  * d{id:d}',
 								'    e',
-								'  * f',
-								'    * g',
+								'  * f{id:f}',
+								'    * g{id:g}',
 								'      h',
-								'      * i',
-								'        * j',
+								'      * i{id:i}',
+								'        * j{id:j}',
 								'       k',
 								'  l'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge list item with first block empty with previous list item', () => {
@@ -2523,17 +2731,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  []',
 								'  b'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented list item with with previous list item as blocks', () => {
@@ -2550,17 +2747,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  []a',
 								'  b'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented list having block and indented list item with previous list item', () => {
@@ -2579,17 +2765,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  c',
 								'  * d'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge indented empty list item with previous list item', () => {
@@ -2606,17 +2781,6 @@ describe( 'DocumentListEditing integrations', () => {
 								'  []',
 								'  text'
 							] ) );
-
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
-
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
-
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
 						} );
 
 						it( 'should merge list item with with previous indented empty list item', () => {
@@ -2635,25 +2799,489 @@ describe( 'DocumentListEditing integrations', () => {
 								'  []c',
 								'  d'
 							] ) );
+						} );
+					} );
+				} );
 
-							sinon.assert.notCalled( outdentCommandExecuteSpy );
-							sinon.assert.notCalled( splitAfterCommandExecuteSpy );
-							sinon.assert.calledOnce( mergeCommandExecuteSpy );
+				describe( 'non-collapsed selection starting in first block of a list item', () => {
+					describe( 'first position in empty block', () => {
+						it( 'should merge two empty list items', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* ]',
+								'  '
+							] ) );
 
-							sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
-							expect( eventInfo.stop.called ).to.be.true;
+							view.document.fire( eventInfo, domEventData );
 
-							// expect( changedBlocks ).to.deep.equal( [
-							// 	modelRoot.getChild( 0 )
-							// ] );
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []',
+								'  '
+							] ) );
+						} );
+
+						it( 'should merge non empty list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* ]text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []text{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item and delete text', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* te]xt'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []xt{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list item when end selection is at the beginning of item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * ]b'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b]c',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []c{id:002}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items when selection at the end of an item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * bc]',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []{id:000}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should delete all items till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b',
+								'* ]d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []d'
+							] ) );
+						} );
+
+						it( 'should delete all items and text till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b',
+								'* d]e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []e{id:003}'
+							] ) );
+						} );
+
+						it( 'should delete all following items till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'  text',
+								'* a',
+								'  * b',
+								'* d]e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []e{id:004}'
+							] ) );
+						} );
+
+						it( 'should delete all following items till the end of selection and merge last list itemxx', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'  * b',
+								'    ]c',
+								'    * d',
+								'      e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []c',
+								'  * d{id:003}',
+								'    e'
+							] ) );
+						} );
+
+						it( 'should delete items till the end of selection and merge middle block with following blocks', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'  * b',
+								'    c]d',
+								'    * e',
+								'      f'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []d{id:001}',
+								'  * e{id:003}',
+								'    f'
+							] ) );
+						} );
+
+						// TODO: Is the expected correct?
+						it( 'should delete items till the end of selection and merge following blocks', () => {
+							setModelData( model, modelList( [
+								'* [{id:a}',
+								'  * b',
+								'    cd]',
+								'    * e{id:b}',
+								'      f',
+								'    s'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []{id:a}',
+								'  * e{id:b}',
+								'    f',
+								'  s'
+							] ) );
+						} );
+					} );
+
+					describe( 'first position in non-empty block', () => {
+						it( 'should merge two list items', () => {
+							setModelData( model, modelList( [
+								'* [text',
+								'* ano]ther',
+								'  text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []ther{id:001}',
+								'  text'
+							] ) );
+						} );
+
+						// Not related to merge command
+						it( 'should merge two list items with selection in the middle', () => {
+							setModelData( model, modelList( [
+								'* te[xt',
+								'* ano]ther'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* te[]ther'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* ]text'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []text{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge non empty list item and delete text', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* te]xt'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []xt{id:001}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list item when end selection is at the beginning of item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * ]b',
+								'    * c'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+							// output is okay, fix expect
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []b{id:000}',
+								'  * c{id:003}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b]c',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []c{id:002}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should merge and adjust indentation of child list items when selection at the end of an item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * bc]',
+								'    * d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []{id:000}',
+								'  * d{id:003}'
+							] ) );
+						} );
+
+						it( 'should delete all items till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b',
+								'* ]d'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							// output is okay, fix expect
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []d'
+							] ) );
+						} );
+
+						it( 'should delete all items and text till the end of selection and merge last list item', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b',
+								'* d]e'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []e{id:003}'
+							] ) );
+						} );
+
+						// TODO: Is expected correct?
+						it( 'should delete all items and text till the end of selection and adjust orphan elements', () => {
+							setModelData( model, modelList( [
+								'* [',
+								'* a',
+								'  * b]',
+								'    c',
+								'    * d',
+								'      e',
+								'  f'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'* []',
+								'  c',
+								'  * d{id:004}',
+								'    e',
+								'  f'
+							] ) );
 						} );
 					} );
 				} );
 			} );
 		} );
 
-		describe( 'non-collapsed selection', () => {
-			// TODO
+		describe( 'forward delete', () => {
+			it( 'xx', () => {
+				setModelData( model, modelList( [
+					'* a[]',
+					'* b',
+					'* c'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* a[]b',
+					'* c'
+				] ) );
+			} );
+
+			it( 'xxx', () => {
+				setModelData( model, modelList( [
+					'* a[]',
+					'* b',
+					'  c'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* a[]',
+					'  b',
+					'  c'
+				] ) );
+			} );
+
+			it( 'xxxx', () => {
+				setModelData( model, modelList( [
+					'* a[]',
+					'  * b',
+					'  c'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* a[]',
+					'  b',
+					'  c'
+				] ) );
+			} );
+
+			it( 'xxxxx', () => {
+				setModelData( model, modelList( [
+					'* a',
+					'  b[]',
+					'* c',
+					'  d'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b[]',
+					'  c',
+					'  d'
+				] ) );
+			} );
+
+			it( 'xxxxxx', () => {
+				setModelData( model, modelList( [
+					'* a',
+					'  b[]',
+					'  * c',
+					'* b',
+					'  c'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b[]',
+					'  c',
+					'* b',
+					'  c'
+				] ) );
+			} );
+
+			it( 'xxxxxxx', () => {
+				setModelData( model, modelList( [
+					'* a',
+					'  b[]',
+					'  * c',
+					'* b',
+					'  c'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b[]',
+					'  c',
+					'* b',
+					'  c'
+				] ) );
+			} );
+
+			it( 'xxxxxxxx', () => {
+				setModelData( model, modelList( [
+					'* []',
+					'  b',
+					'  * c',
+					'    * b',
+					'  c'
+				] ) );
+
+				view.document.fire( eventInfo, domEventData );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelList( [
+					'* b',
+					'  * c',
+					'    * b',
+					'  c'
+				] ) );
+			} );
 		} );
 	} );
 } );

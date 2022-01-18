@@ -66,10 +66,18 @@ export default class DocumentListMergeCommand extends Command {
 			// TODO handle non-collapsed selection
 
 			if ( this._direction == 'backward' ) {
-				lastElement = anchorElement;
-				firstElement = isFirstBlock && !deleteContent ?
-					ListWalker.first( anchorElement, { sameIndent: true, lowerIndent: true } ) :
-					anchorElement.previousSibling;
+				if ( selection.isCollapsed ) {
+					lastElement = anchorElement;
+
+					if ( isFirstBlock && !deleteContent ) {
+						firstElement = ListWalker.first( anchorElement, { sameIndent: true, lowerIndent: true } );
+					} else {
+						firstElement = anchorElement.previousSibling;
+					}
+				} else {
+					firstElement = selection.getFirstPosition().parent;
+					lastElement = selection.getLastPosition().parent;
+				}
 			} else {
 				// TODO
 				firstElement = anchorElement;
@@ -83,12 +91,13 @@ export default class DocumentListMergeCommand extends Command {
 			if ( firstIndent != lastIndent ) {
 				indentBlocks( lastElement, writer, {
 					indentBy: firstIndent - lastIndent,
-					expand: 'forward'
+					expand: isFirstBlock ? 'forward' : false
 				} );
 			}
 
 			if ( deleteContent ) {
 				let sel = selection;
+				const wasSelectionCollapsed = sel.isCollapsed;
 
 				if ( selection.isCollapsed ) {
 					sel = writer.createSelection( writer.createRange(
@@ -108,6 +117,17 @@ export default class DocumentListMergeCommand extends Command {
 
 				if ( nextSibling && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
 					mergeListItemBefore( nextSibling, lastElementAfterDelete, writer );
+
+					// Note: Using cached selection state because deleteContent will collapse the selection.
+					// If last element was empty, it would land in the graveyard.
+					if ( !wasSelectionCollapsed && lastElement.root === firstElement.root ) {
+						sel = writer.createSelection( writer.createRange(
+							writer.createPositionAt( firstElement, 'end' ),
+							writer.createPositionAt( lastElement, 0 )
+						) );
+
+						model.deleteContent( sel, { doNotResetEntireContent: true } );
+					}
 				}
 			} else {
 				mergeListItemBefore( lastElement, firstElement, writer );

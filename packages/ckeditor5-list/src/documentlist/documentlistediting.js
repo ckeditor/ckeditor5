@@ -103,11 +103,12 @@ export default class DocumentListEditing extends Plugin {
 
 		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
-			const firstPosition = selection.getFirstPosition();
-			const positionParent = firstPosition.parent;
 
 			editor.model.change( () => {
 				if ( selection.isCollapsed ) {
+					const firstPosition = selection.getFirstPosition();
+					const positionParent = firstPosition.parent;
+
 					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
 						return;
 					}
@@ -136,6 +137,18 @@ export default class DocumentListEditing extends Plugin {
 						data.preventDefault();
 						evt.stop();
 					} else if ( data.direction == 'forward' && firstPosition.isAtEnd ) {
+						// TODO
+						throw new Error( 'not yet' );
+					}
+				} else {
+					if ( data.direction == 'backward' ) {
+						editor.execute( 'mergeListItemBackward', {
+							deleteContent: true
+						} );
+
+						data.preventDefault();
+						evt.stop();
+					} else {
 						// TODO
 						throw new Error( 'not yet' );
 					}
