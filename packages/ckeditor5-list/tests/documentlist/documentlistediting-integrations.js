@@ -3828,13 +3828,12 @@ describe( 'DocumentListEditing integrations', () => {
 							] ) );
 						} );
 
-						// TODO: Is the expected correct?
-						it.skip( 'should delete items till the end of selection and merge following blocks', () => {
+						it( 'should delete items till the end of selection and merge following blocks', () => {
 							setModelData( model, modelList( [
-								'* [{id:a}',
+								'* [',
 								'  * b',
 								'    cd]',
-								'    * e{id:b}',
+								'    * e',
 								'      f',
 								'    s'
 							] ) );
@@ -3842,10 +3841,10 @@ describe( 'DocumentListEditing integrations', () => {
 							view.document.fire( eventInfo, domEventData );
 
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
-								'* []{id:a}',
-								'  * e{id:b}',
+								'* []',
+								'  * e {id:003}',
 								'    f',
-								'  s'
+								'* s'
 							] ) );
 						} );
 					} );
@@ -3986,8 +3985,7 @@ describe( 'DocumentListEditing integrations', () => {
 							] ) );
 						} );
 
-						// TODO: Is expected correct?
-						it.skip( 'should delete all items and text till the end of selection and adjust orphan elements', () => {
+						it( 'should delete all items and text till the end of selection and adjust orphan elements', () => {
 							setModelData( model, modelList( [
 								'* [',
 								'* a',
@@ -3995,7 +3993,8 @@ describe( 'DocumentListEditing integrations', () => {
 								'    c',
 								'    * d',
 								'      e',
-								'  f'
+								'  f',
+								'  g'
 							] ) );
 
 							view.document.fire( eventInfo, domEventData );
@@ -4003,9 +4002,10 @@ describe( 'DocumentListEditing integrations', () => {
 							expect( getModelData( model ) ).to.equalMarkup( modelList( [
 								'* []',
 								'  c',
-								'  * d{id:004}',
+								'  * d {id:004}',
 								'    e',
-								'  f'
+								'* f',
+								'  g'
 							] ) );
 						} );
 					} );
