@@ -9,7 +9,9 @@
 
 import { Command } from 'ckeditor5/src/core';
 import {
-	indentBlocks, isFirstBlockOfListItem,
+	getNestedListBlocks,
+	indentBlocks,
+	isFirstBlockOfListItem,
 	mergeListItemBefore
 } from './utils/model';
 import ListWalker from './utils/listwalker';
@@ -89,15 +91,18 @@ export default class DocumentListMergeCommand extends Command {
 			const lastElementId = lastElement.getAttribute( 'listItemId' );
 
 			if ( firstIndent != lastIndent ) {
-				indentBlocks( lastElement, writer, {
+				const nestedLastElementBlocks = getNestedListBlocks( lastElement );
+
+				indentBlocks( [ lastElement, ...nestedLastElementBlocks ], writer, {
 					indentBy: firstIndent - lastIndent,
-					expand: isFirstBlock ? 'forward' : false
+
+					// If outdenting, the entire sub-tree that follows must be included.
+					expand: firstIndent < lastIndent
 				} );
 			}
 
 			if ( deleteContent ) {
 				let sel = selection;
-				const wasSelectionCollapsed = sel.isCollapsed;
 
 				if ( selection.isCollapsed ) {
 					sel = writer.createSelection( writer.createRange(
@@ -115,19 +120,8 @@ export default class DocumentListMergeCommand extends Command {
 				// Check if the element after it was in the same list item and adjust it if needed.
 				const nextSibling = lastElementAfterDelete.nextSibling;
 
-				if ( nextSibling && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
+				if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
 					mergeListItemBefore( nextSibling, lastElementAfterDelete, writer );
-
-					// Note: Using cached selection state because deleteContent will collapse the selection.
-					// If last element was empty, it would land in the graveyard.
-					if ( !wasSelectionCollapsed && lastElement.root === firstElement.root ) {
-						sel = writer.createSelection( writer.createRange(
-							writer.createPositionAt( firstElement, 'end' ),
-							writer.createPositionAt( lastElement, 0 )
-						) );
-
-						model.deleteContent( sel, { doNotResetEntireContent: true } );
-					}
 				}
 			} else {
 				mergeListItemBefore( lastElement, firstElement, writer );

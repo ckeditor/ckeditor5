@@ -162,6 +162,7 @@ export function isLastBlockOfListItem( listBlock ) {
  * @protected
  * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
  * @param {Object} [options]
+ * TODO: Looks like expand in all directions is only used here, no need for forward or backward.
  * @param {Boolean} [options.withNested=true] Whether should include nested list items.
  * @returns {Array.<module:engine/model/element~Element>}
  */
@@ -243,7 +244,8 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
  * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @param {Object} [options]
- * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
+ * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items.
+ * TODO get rid of 'forward', looks like it is not used anywhere.
  * @param {Number} [options.indentBy=1] TODO
  * (all blocks of given list items).
  */
