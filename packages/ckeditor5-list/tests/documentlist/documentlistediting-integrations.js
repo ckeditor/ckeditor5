@@ -2659,6 +2659,18 @@ describe( 'DocumentListEditing integrations', () => {
 			describe( 'single block list item', () => {
 				describe( 'collapsed selection at the beginning of a list item', () => {
 					describe( 'item before is empty', () => {
+						it( 'should remove list when in empty only element of a list', () => {
+							setModelData( model, modelList( [
+								'* []'
+							] ) );
+
+							view.document.fire( eventInfo, domEventData );
+
+							expect( getModelData( model ) ).to.equalMarkup( modelList( [
+								'[]'
+							] ) );
+						} );
+
 						it( 'should merge non empty list item with with previous list item as a block', () => {
 							setModelData( model, modelList( [
 								'* ',
@@ -3844,7 +3856,7 @@ describe( 'DocumentListEditing integrations', () => {
 								'* []',
 								'  * e {id:003}',
 								'    f',
-								'* s'
+								'* s {id:001}'
 							] ) );
 						} );
 					} );
@@ -4004,7 +4016,7 @@ describe( 'DocumentListEditing integrations', () => {
 								'  c',
 								'  * d {id:004}',
 								'    e',
-								'* f',
+								'* f {id:001}',
 								'  g'
 							] ) );
 						} );

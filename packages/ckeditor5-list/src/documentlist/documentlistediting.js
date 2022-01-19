@@ -117,7 +117,14 @@ export default class DocumentListEditing extends Plugin {
 
 					if ( data.direction == 'backward' && firstPosition.isAtStart ) {
 						const previousSibling = positionParent.previousSibling;
-						const previousSiblingIsSameListItem = isSingleListItem( [ positionParent, previousSibling ] );
+						let previousSiblingIsSameListItem;
+
+						// There's no previous sibling when the position parent is the first item of the root.
+						if ( previousSibling ) {
+							previousSiblingIsSameListItem = isSingleListItem( [ positionParent, previousSibling ] );
+						} else {
+							previousSiblingIsSameListItem = true;
+						}
 
 						// Merge block with previous one (on the block level or on the content level).
 						if ( previousSibling && previousSibling.hasAttribute( 'listItemId' ) ) {
@@ -141,6 +148,14 @@ export default class DocumentListEditing extends Plugin {
 						throw new Error( 'not yet' );
 					}
 				} else {
+					// TODO: What if not in a list?
+					// TODO: What if start only in a list?
+					// TODO: What if end only in a list?
+					// TODO (tests):
+					// 		li[st
+					// 		some-non-list
+					// 		anothe]rlist
+
 					if ( data.direction == 'backward' ) {
 						editor.execute( 'mergeListItemBackward', {
 							deleteContent: true
