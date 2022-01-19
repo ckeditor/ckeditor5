@@ -12,14 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
-"Language: ne_NP\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Bosnian (https://www.transifex.com/ckeditor/teams/11143/bs/)\n"
+"Language: bs\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-msgctxt "Label showing the number of words in the editor content."
-msgid "Words: %0"
-msgstr "शब्दहरू: %0"
-
-msgctxt "Label showing the number of characters in the editor content."
-msgid "Characters: %0"
-msgstr "क्यारेक्टरहरू: %0"
+msgctxt "A message that the data is being saved."
+msgid "Saving changes"
+msgstr "Spremanje izmjena"

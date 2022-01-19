@@ -12,14 +12,10 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
-"Language: ne_NP\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
+"Language: sk\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
-msgctxt "Label showing the number of words in the editor content."
-msgid "Words: %0"
-msgstr "शब्दहरू: %0"
-
-msgctxt "Label showing the number of characters in the editor content."
-msgid "Characters: %0"
-msgstr "क्यारेक्टरहरू: %0"
+msgctxt "A label describing an HTML object widget."
+msgid "HTML object"
+msgstr "HTML objekt"

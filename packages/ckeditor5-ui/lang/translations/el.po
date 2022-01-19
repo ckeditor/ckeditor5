@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Επεξεργαστής Πλούσιου Κειμένου, 0%"
+msgstr "Επεξεργαστής Πλούσιου Κειμένου, %0"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"

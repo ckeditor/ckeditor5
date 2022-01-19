@@ -12,17 +12,17 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
-"Language: zh_CN\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language-Team: Bosnian (https://www.transifex.com/ckeditor/teams/11143/bs/)\n"
+"Language: bs\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 msgctxt "The label for the image widget."
 msgid "image widget"
-msgstr "图像小部件"
+msgstr ""
 
 msgctxt "The label for the image style button that wraps text around the image."
 msgid "Wrap text"
-msgstr ""
+msgstr "Prelomi tekst"
 
 msgctxt "The label for the image style button that breaks the text around the image."
 msgid "Break text"
@@ -34,80 +34,80 @@ msgstr ""
 
 msgctxt "The label for the Side image option."
 msgid "Side image"
-msgstr "图片侧边显示"
+msgstr ""
 
 msgctxt "The label for the Full size image option."
 msgid "Full size image"
-msgstr "图片通栏显示"
+msgstr ""
 
 msgctxt "The label for the Left aligned image option."
 msgid "Left aligned image"
-msgstr "图片左侧对齐"
+msgstr "Lijevo poravnata slika"
 
 msgctxt "The label for the Centered image option."
 msgid "Centered image"
-msgstr "图片居中"
+msgstr "Centrirana slika"
 
 msgctxt "The label for the Right aligned image option."
 msgid "Right aligned image"
-msgstr "图片右侧对齐"
+msgstr "Desno poravnata slika"
 
 msgctxt "The label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "更改图片替换文本"
+msgstr "Promijeni ALT atribut za sliku"
 
 msgctxt "The label for the image text alternative input."
 msgid "Text alternative"
-msgstr "替换文本"
+msgstr "ALT atribut"
 
 msgctxt "The placeholder text for the image caption displayed when the caption is empty."
 msgid "Enter image caption"
-msgstr "输入图片标题"
+msgstr "Unesi naziv slike"
 
 msgctxt "The label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "插入图像"
+msgstr "Umetni sliku"
 
 msgctxt "The title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "上传失败"
+msgstr "Učitavanje slike nije uspjelo"
 
 msgctxt "The label used by assistive technologies describing an image toolbar attached to an image widget."
 msgid "Image toolbar"
-msgstr "图片工具栏"
+msgstr ""
 
 msgctxt "The label used for the dropdown in the image toolbar containing defined resize options."
 msgid "Resize image"
-msgstr "调整图像大小"
+msgstr "Promijeni veličinu slike"
 
 msgctxt "The label used for the standalone resize options buttons in the image toolbar."
 msgid "Resize image to %0"
-msgstr "调整图像大小为%0"
+msgstr ""
 
 msgctxt "The accessibility label of the standalone image resize reset option button in the image toolbar for screen readers."
 msgid "Resize image to the original size"
-msgstr "调整图像大小为原始大小"
+msgstr "Postavi originalnu veličinu slike"
 
 msgctxt "The default label for the resize option that resets the size of the image."
 msgid "Original"
-msgstr "原始大小"
+msgstr "Original"
 
 msgctxt "The accessibility label of the image resize dropdown for screen readers."
 msgid "Image resize list"
-msgstr "图片大小列表"
+msgstr "Lista veličina slike"
 
 msgctxt "The label of the form submit button if the image source URL input has no value."
 msgid "Insert"
-msgstr "插入"
+msgstr "Umetni"
 
 msgctxt "The label of the form submit button if the image source URL input has a value."
 msgid "Update"
-msgstr "更新"
+msgstr "Ažuriraj"
 
 msgctxt "The input label for the Insert image via URL form."
 msgid "Insert image via URL"
-msgstr "通过URL地址插入图片"
+msgstr "Umetni sliku preko URLa"
 
 msgctxt "The input label for the Insert image via URL form for a pre-existing image."
 msgid "Update image URL"
-msgstr "更新图片URL地址"
+msgstr "Ažuriraj URL slike"
