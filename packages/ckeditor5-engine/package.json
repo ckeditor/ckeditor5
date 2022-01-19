@@ -33,6 +33,7 @@
     "@ckeditor/ckeditor5-cloud-services": "^31.1.0",
     "@ckeditor/ckeditor5-core": "^31.1.0",
     "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
+    "@ckeditor/ckeditor5-editor-decoupled": "^31.1.0",
     "@ckeditor/ckeditor5-enter": "^31.1.0",
     "@ckeditor/ckeditor5-essentials": "^31.1.0",
     "@ckeditor/ckeditor5-heading": "^31.1.0",
