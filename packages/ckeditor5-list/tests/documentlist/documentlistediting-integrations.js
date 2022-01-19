@@ -1794,13 +1794,6 @@ describe( 'DocumentListEditing integrations', () => {
 
 		beforeEach( () => {
 			eventInfo = new BubblingEventInfo( view.document, 'delete' );
-			domEventData = new DomEventData( view, {
-				preventDefault: sinon.spy()
-			}, {
-				direction: 'backward',
-				unit: 'codePoint',
-				sequence: 1
-			} );
 
 			splitAfterCommand = editor.commands.get( 'splitListItemAfter' );
 			indentCommand = editor.commands.get( 'outdentList' );
@@ -1826,6 +1819,16 @@ describe( 'DocumentListEditing integrations', () => {
 		} );
 
 		describe( 'backward delete', () => {
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {
+					preventDefault: sinon.spy()
+				}, {
+					direction: 'backward',
+					unit: 'codePoint',
+					sequence: 1
+				} );
+			} );
+
 			describe( 'extra tests', () => {
 				describe( 'collapsed selection', () => {
 					describe( 'at the beginning of a list item', () => {
@@ -4025,7 +4028,17 @@ describe( 'DocumentListEditing integrations', () => {
 			} );
 		} );
 
-		describe.skip( 'forward delete', () => {
+		describe( 'forward delete', () => {
+			beforeEach( () => {
+				domEventData = new DomEventData( view, {
+					preventDefault: sinon.spy()
+				}, {
+					direction: 'forward',
+					unit: 'codePoint',
+					sequence: 1
+				} );
+			} );
+
 			it( 'xx', () => {
 				setModelData( model, modelList( [
 					'* a[]',
@@ -4037,7 +4050,7 @@ describe( 'DocumentListEditing integrations', () => {
 
 				expect( getModelData( model ) ).to.equalMarkup( modelList( [
 					'* a[]b',
-					'* c'
+					'* c {id:002}'
 				] ) );
 			} );
 

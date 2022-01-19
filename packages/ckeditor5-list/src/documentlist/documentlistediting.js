@@ -144,8 +144,15 @@ export default class DocumentListEditing extends Plugin {
 						data.preventDefault();
 						evt.stop();
 					} else if ( data.direction == 'forward' && firstPosition.isAtEnd ) {
-						// TODO
-						throw new Error( 'not yet' );
+						const nextSibling = positionParent.nextSibling;
+
+						if ( !isLastBlockOfListItem( nextSibling ) ) {
+							editor.execute( 'mergeListItemForward', {
+							} );
+
+							data.preventDefault();
+							evt.stop();
+						}
 					}
 				} else {
 					// TODO: What if not in a list?
