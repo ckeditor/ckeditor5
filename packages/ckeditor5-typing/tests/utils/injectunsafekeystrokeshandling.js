@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -109,12 +109,14 @@ describe( 'unsafe keystroke handling utils', () => {
 		} );
 
 		it( 'uses typing batch while removing the content', () => {
-			const inputCommand = editor.commands.get( 'input' );
+			let currentBatch = getCurrentBatch();
 
-			expect( inputCommand._batches.has( getCurrentBatch() ), 'batch before typing' ).to.equal( false );
+			expect( currentBatch.isTyping, 'batch before typing' ).to.equal( false );
 
 			model.on( 'deleteContent', () => {
-				expect( inputCommand._batches.has( getCurrentBatch() ), 'batch when deleting content' ).to.equal( true );
+				currentBatch = getCurrentBatch();
+
+				expect( currentBatch.isTyping, 'batch when deleting content' ).to.equal( true );
 			}, { priority: 'highest' } );
 
 			setData( model, '<paragraph>[foo]</paragraph>' );

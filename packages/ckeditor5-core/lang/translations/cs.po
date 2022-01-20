@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -26,7 +26,7 @@ msgstr "Odstranit barvu"
 
 msgctxt "The label used by a button next to the color palette in the color picker that restores the default value if the default table properties are specified."
 msgid "Restore default"
-msgstr ""
+msgstr "Obnovit výchozí"
 
 msgctxt "Label for the Save button."
 msgid "Save"
