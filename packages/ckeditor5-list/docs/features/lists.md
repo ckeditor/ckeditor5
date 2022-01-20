@@ -39,6 +39,10 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 
 The {@link module:list/listproperties~ListProperties list style} feature introduces some more styles for the list item markers. When enabled, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The styles can be changed via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
 
+<info-box info>
+	The feature is enabled by default in the document editor build.
+</info-box>
+
 ### Demo
 
 Use the editor below to see the list properties plugin in action.

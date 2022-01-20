@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -508,7 +508,8 @@ describe( 'DocumentListEditing integrations', () => {
 
 	describe( 'enter key handling', () => {
 		const changedBlocks = [];
-		let domEventData, splitCommand, indentCommand, eventInfo, splitCommandExecuteSpy, outdentCommandExecuteSpy;
+		let domEventData, splitBeforeCommand, splitAfterCommand, indentCommand,
+			eventInfo, splitBeforeCommandExecuteSpy, splitAfterCommandExecuteSpy, outdentCommandExecuteSpy;
 
 		beforeEach( () => {
 			eventInfo = new EventInfo( view.document, 'enter' );
@@ -516,15 +517,21 @@ describe( 'DocumentListEditing integrations', () => {
 				preventDefault: sinon.spy()
 			} );
 
-			splitCommand = editor.commands.get( 'splitListItem' );
+			splitBeforeCommand = editor.commands.get( 'splitListItemBefore' );
+			splitAfterCommand = editor.commands.get( 'splitListItemAfter' );
 			indentCommand = editor.commands.get( 'outdentList' );
 
-			splitCommandExecuteSpy = sinon.spy( splitCommand, 'execute' );
+			splitBeforeCommandExecuteSpy = sinon.spy( splitBeforeCommand, 'execute' );
+			splitAfterCommandExecuteSpy = sinon.spy( splitAfterCommand, 'execute' );
 			outdentCommandExecuteSpy = sinon.spy( indentCommand, 'execute' );
 
 			changedBlocks.length = 0;
 
-			splitCommand.on( 'afterExecute', ( evt, data ) => {
+			splitBeforeCommand.on( 'afterExecute', ( evt, data ) => {
+				changedBlocks.push( ...data );
+			} );
+
+			splitAfterCommand.on( 'afterExecute', ( evt, data ) => {
 				changedBlocks.push( ...data );
 			} );
 
@@ -551,7 +558,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.calledOnce( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -575,7 +583,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.calledOnce( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -598,7 +607,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -626,7 +636,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.calledOnce( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -654,7 +665,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.calledOnce( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -682,7 +694,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.calledOnce( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -707,7 +720,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -732,7 +746,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -757,7 +772,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -782,7 +798,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -807,7 +824,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -831,7 +849,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -857,7 +876,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
@@ -885,11 +905,96 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.true;
 				} );
+
+				it( 'should create another list item when the selection in an empty first block (followed by another block)', () => {
+					setModelData( model, modelList( [
+						'* []',
+						'  b'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* []',
+						'* b {id:a00}'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [
+						modelRoot.getChild( 1 )
+					] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.calledOnce( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.true;
+				} );
+
+				it( 'should create another list item when the selection in an empty first block (followed by multiple blocks)', () => {
+					setModelData( model, modelList( [
+						'* []',
+						'  a',
+						'  b'
+					] ) );
+
+					view.document.fire( eventInfo, domEventData );
+
+					expect( getModelData( model ) ).to.equalMarkup( modelList( [
+						'* []',
+						'* a {id:a00}',
+						'  b'
+					] ) );
+
+					expect( changedBlocks ).to.deep.equal( [
+						modelRoot.getChild( 1 ),
+						modelRoot.getChild( 2 )
+					] );
+
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.calledOnce( splitAfterCommandExecuteSpy );
+
+					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+					expect( eventInfo.stop.called ).to.be.true;
+				} );
+
+				it( 'should create another list item when the selection in an empty first block (followed by multiple blocks and an item)',
+					() => {
+						setModelData( model, modelList( [
+							'* []',
+							'  a',
+							'  b',
+							'* c'
+						] ) );
+
+						view.document.fire( eventInfo, domEventData );
+
+						expect( getModelData( model ) ).to.equalMarkup( modelList( [
+							'* []',
+							'* a {id:a00}',
+							'  b',
+							'* c'
+						] ) );
+
+						expect( changedBlocks ).to.deep.equal( [
+							modelRoot.getChild( 1 ),
+							modelRoot.getChild( 2 )
+						] );
+
+						sinon.assert.notCalled( outdentCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.calledOnce( splitAfterCommandExecuteSpy );
+
+						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
+						expect( eventInfo.stop.called ).to.be.true;
+					} );
 			} );
 		} );
 
@@ -912,7 +1017,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -935,7 +1041,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -955,8 +1062,9 @@ describe( 'DocumentListEditing integrations', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( splitCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -977,8 +1085,9 @@ describe( 'DocumentListEditing integrations', () => {
 
 					expect( changedBlocks ).to.deep.equal( [] );
 
-					sinon.assert.notCalled( splitCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( outdentCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1003,7 +1112,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1025,7 +1135,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1048,7 +1159,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1072,7 +1184,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1096,7 +1209,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1121,7 +1235,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1146,7 +1261,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1170,7 +1286,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1196,7 +1313,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1220,7 +1338,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1245,7 +1364,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1270,7 +1390,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1296,7 +1417,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1324,7 +1446,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1351,7 +1474,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1374,7 +1498,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1398,7 +1523,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1431,7 +1557,8 @@ describe( 'DocumentListEditing integrations', () => {
 					] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.calledOnce( splitCommandExecuteSpy );
+					sinon.assert.calledOnce( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1455,7 +1582,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1479,7 +1607,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1504,7 +1633,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1528,7 +1658,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1554,7 +1685,8 @@ describe( 'DocumentListEditing integrations', () => {
 					expect( changedBlocks ).to.deep.equal( [] );
 
 					sinon.assert.notCalled( outdentCommandExecuteSpy );
-					sinon.assert.notCalled( splitCommandExecuteSpy );
+					sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+					sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 					sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 					expect( eventInfo.stop.called ).to.be.undefined;
@@ -1582,7 +1714,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1609,7 +1742,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;
@@ -1636,7 +1770,8 @@ describe( 'DocumentListEditing integrations', () => {
 						expect( changedBlocks ).to.deep.equal( [] );
 
 						sinon.assert.notCalled( outdentCommandExecuteSpy );
-						sinon.assert.notCalled( splitCommandExecuteSpy );
+						sinon.assert.notCalled( splitBeforeCommandExecuteSpy );
+						sinon.assert.notCalled( splitAfterCommandExecuteSpy );
 
 						sinon.assert.calledOnce( domEventData.domEvent.preventDefault );
 						expect( eventInfo.stop.called ).to.be.undefined;

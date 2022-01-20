@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -173,6 +173,23 @@ ClassicEditor
 		list: {
 			properties: {
 				styles: true,
+				startIndex: false,
+				reversed: false
+			}
+		}
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+// ------------------------------------------------------------------
+
+ClassicEditor
+	.create( document.querySelector( '#editor-h' ), {
+		...config,
+		list: {
+			properties: {
+				styles: false,
 				startIndex: false,
 				reversed: false
 			}

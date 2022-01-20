@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -118,8 +118,14 @@ describe( 'DocumentListEditing', () => {
 			expect( command ).to.be.instanceOf( DocumentListIndentCommand );
 		} );
 
-		it( 'should register the splitListItem command', () => {
-			const command = editor.commands.get( 'splitListItem' );
+		it( 'should register the splitListItemBefore command', () => {
+			const command = editor.commands.get( 'splitListItemBefore' );
+
+			expect( command ).to.be.instanceOf( DocumentListSplitCommand );
+		} );
+
+		it( 'should register the splitListItemAfter command', () => {
+			const command = editor.commands.get( 'splitListItemAfter' );
 
 			expect( command ).to.be.instanceOf( DocumentListSplitCommand );
 		} );
