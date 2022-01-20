@@ -70,7 +70,6 @@ const plugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
-	Clipboard,
 	TextTransformation,
 	Base64UploadAdapter
 ];
@@ -101,7 +100,6 @@ const defaultConfig = {
 			'blockQuote',
 			'insertTable',
 			'mediaEmbed',
-			'clipboard',
 			'undo',
 			'redo',
 			'fontFamily',
