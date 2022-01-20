@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,7 +33,7 @@ export default class UndoCommand extends BaseCommand {
 		const batchIndex = batch ? this._stack.findIndex( a => a.batch == batch ) : this._stack.length - 1;
 
 		const item = this._stack.splice( batchIndex, 1 )[ 0 ];
-		const undoingBatch = this.editor.model.createBatch( 'transparent' );
+		const undoingBatch = this.editor.model.createBatch( { isUndo: true } );
 
 		// All changes has to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive operations, or won't do changes to the document before selection is properly restored.
