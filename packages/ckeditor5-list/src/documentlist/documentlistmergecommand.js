@@ -65,25 +65,32 @@ export default class DocumentListMergeCommand extends Command {
 			let firstElement, lastElement;
 
 			// TODO what about different list types?
-			// TODO handle non-collapsed selection
 
-			if ( this._direction == 'backward' ) {
-				if ( selection.isCollapsed ) {
+			if ( selection.isCollapsed ) {
+				if ( this._direction == 'backward' ) {
 					lastElement = anchorElement;
 
 					if ( isFirstBlock && !deleteContent ) {
+						// For the "c" as an anchorElement:
+						//	* a
+						//	  * b
+						//  * [c]  <-- this block should be merged with "a"
+						// It should find "a" element to merge with:
+						//	* a
+						//	  * b
+						//    c
 						firstElement = ListWalker.first( anchorElement, { sameIndent: true, lowerIndent: true } );
 					} else {
 						firstElement = anchorElement.previousSibling;
 					}
 				} else {
-					firstElement = selection.getFirstPosition().parent;
-					lastElement = selection.getLastPosition().parent;
+					// In case of the forward merge there is no case as above, just merge with next sibling.
+					firstElement = anchorElement;
+					lastElement = anchorElement.nextSibling;
 				}
 			} else {
-				// TODO
-				firstElement = anchorElement;
-				lastElement = anchorElement.nextSibling;
+				firstElement = selection.getFirstPosition().parent;
+				lastElement = selection.getLastPosition().parent;
 			}
 
 			const firstIndent = firstElement.getAttribute( 'listIndent' );
@@ -161,6 +168,8 @@ export default class DocumentListMergeCommand extends Command {
 		const selection = model.document.selection;
 		const firstPosition = selection.getFirstPosition();
 		const firstPositionParent = firstPosition.parent;
+
+		// TODO refactor this; it does not depend on where exactly in the list block the selection is
 
 		let firstNode;
 

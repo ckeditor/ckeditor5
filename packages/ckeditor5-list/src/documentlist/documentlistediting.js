@@ -105,56 +105,46 @@ export default class DocumentListEditing extends Plugin {
 			const selection = editor.model.document.selection;
 
 			editor.model.change( () => {
-				if ( selection.isCollapsed ) {
+				if ( selection.isCollapsed && data.direction == 'backward' ) {
 					const firstPosition = selection.getFirstPosition();
+
+					// TODO what about different list types?
+
+					if ( !firstPosition.isAtStart ) {
+						return;
+					}
+
 					const positionParent = firstPosition.parent;
 
 					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
 						return;
 					}
 
-					// TODO what about different list types?
+					const previousSibling = positionParent.previousSibling;
 
-					if ( data.direction == 'backward' && firstPosition.isAtStart ) {
-						const previousSibling = positionParent.previousSibling;
-						let previousSiblingIsSameListItem;
-
+					// Merge block with previous one (on the block level or on the content level).
+					if ( previousSibling && previousSibling.hasAttribute( 'listItemId' ) ) {
 						// There's no previous sibling when the position parent is the first item of the root.
-						if ( previousSibling ) {
-							previousSiblingIsSameListItem = isSingleListItem( [ positionParent, previousSibling ] );
-						} else {
-							previousSiblingIsSameListItem = true;
-						}
+						const isInsideSingleListItem = isSingleListItem( [ positionParent, previousSibling ] );
 
-						// Merge block with previous one (on the block level or on the content level).
-						if ( previousSibling && previousSibling.hasAttribute( 'listItemId' ) ) {
-							editor.execute( 'mergeListItemBackward', {
-								deleteContent: previousSibling.isEmpty || previousSiblingIsSameListItem
-							} );
-						}
-						// Outdent the first block of a first list item.
-						else {
-							if ( !isLastBlockOfListItem( positionParent ) ) {
-								editor.execute( 'splitListItemAfter' );
-							}
-
-							editor.execute( 'outdentList' );
-						}
-
-						data.preventDefault();
-						evt.stop();
-					} else if ( data.direction == 'forward' && firstPosition.isAtEnd ) {
-						const nextSibling = positionParent.nextSibling;
-
-						if ( !isLastBlockOfListItem( nextSibling ) ) {
-							editor.execute( 'mergeListItemForward', {
-							} );
-
-							data.preventDefault();
-							evt.stop();
-						}
+						editor.execute( 'mergeListItemBackward', {
+							deleteContent: previousSibling.isEmpty || isInsideSingleListItem
+						} );
 					}
-				} else {
+					// Outdent the first block of a first list item.
+					else {
+						if ( !isLastBlockOfListItem( positionParent ) ) {
+							editor.execute( 'splitListItemAfter' );
+						}
+
+						editor.execute( 'outdentList' );
+					}
+
+					data.preventDefault();
+					evt.stop();
+				}
+				// Non-collapsed selection or forward delete.
+				else {
 					// TODO: What if not in a list?
 					// TODO: What if start only in a list?
 					// TODO: What if end only in a list?
@@ -163,17 +153,12 @@ export default class DocumentListEditing extends Plugin {
 					// 		some-non-list
 					// 		anothe]rlist
 
-					if ( data.direction == 'backward' ) {
-						editor.execute( 'mergeListItemBackward', {
-							deleteContent: true
-						} );
+					editor.execute( 'mergeListItemForward', {
+						deleteContent: true
+					} );
 
-						data.preventDefault();
-						evt.stop();
-					} else {
-						// TODO
-						throw new Error( 'not yet' );
-					}
+					data.preventDefault();
+					evt.stop();
 				}
 			} );
 		}, { context: 'li' } );
