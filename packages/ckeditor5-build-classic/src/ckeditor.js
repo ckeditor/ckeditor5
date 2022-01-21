@@ -38,6 +38,8 @@ import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 import {ImageUpload} from "@ckeditor/ckeditor5-image";
+import {HorizontalLine} from "@ckeditor/ckeditor5-horizontal-line";
+import {SpecialCharacters} from "@ckeditor/ckeditor5-special-characters";
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -74,7 +76,9 @@ const plugins = [
 	Table,
 	TableToolbar,
 	TextTransformation,
-	Base64UploadAdapter
+	Base64UploadAdapter,
+	HorizontalLine,
+	SpecialCharacters
 ];
 
 // Plugins to include in the build.

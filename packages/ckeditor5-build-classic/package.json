@@ -40,6 +40,7 @@
     "@ckeditor/ckeditor5-find-and-replace": "^31.1.0",
     "@ckeditor/ckeditor5-font": "^31.1.0",
     "@ckeditor/ckeditor5-heading": "^31.1.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^31.1.0",
     "@ckeditor/ckeditor5-image": "^31.1.0",
     "@ckeditor/ckeditor5-indent": "^31.1.0",
     "@ckeditor/ckeditor5-link": "^31.1.0",
@@ -48,6 +49,7 @@
     "@ckeditor/ckeditor5-paragraph": "^31.1.0",
     "@ckeditor/ckeditor5-paste-from-office": "^31.1.0",
     "@ckeditor/ckeditor5-remove-format": "^31.1.0",
+    "@ckeditor/ckeditor5-special-characters": "^31.1.0",
     "@ckeditor/ckeditor5-table": "^31.1.0",
     "@ckeditor/ckeditor5-typing": "^31.1.0",
     "@ckeditor/ckeditor5-upload": "^31.1.0"
