@@ -47,6 +47,7 @@
     "@ckeditor/ckeditor5-media-embed": "^31.1.0",
     "@ckeditor/ckeditor5-paragraph": "^31.1.0",
     "@ckeditor/ckeditor5-paste-from-office": "^31.1.0",
+    "@ckeditor/ckeditor5-remove-format": "^31.1.0",
     "@ckeditor/ckeditor5-table": "^31.1.0",
     "@ckeditor/ckeditor5-typing": "^31.1.0",
     "@ckeditor/ckeditor5-upload": "^31.1.0"
