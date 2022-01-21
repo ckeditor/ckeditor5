@@ -37,6 +37,6 @@ export default class ListStyle extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		logWarning( '`ListStyle` plugin is obsolete. User `ListProperties` instead.' );
+		logWarning( '`ListStyle` plugin is obsolete. Use `ListProperties` instead.' );
 	}
 }
