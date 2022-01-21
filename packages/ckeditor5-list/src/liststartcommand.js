@@ -30,7 +30,7 @@ export default class ListStartCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Object} options
-	 * @param {Number} [options.startIndex=1] Whether the list should be reversed.
+	 * @param {Number} [options.startIndex=1] The list start index.
 	 * @protected
 	 */
 	execute( options = {} ) {

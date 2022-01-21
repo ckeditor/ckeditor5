@@ -11,7 +11,8 @@ import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from './utils';
 
 /**
- * The list reversed command. It changes the `listReversed` attribute of the selected list items.
+ * The reversed list command. It changes the `listReversed` attribute of the selected list items. As a result, the list order will be
+ * reversed.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  *
  * @extends module:core/command~Command

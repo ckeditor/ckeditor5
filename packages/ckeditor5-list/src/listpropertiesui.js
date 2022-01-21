@@ -29,7 +29,7 @@ import '../theme/liststyles.css';
 
 /**
  * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
- * buttons that allow users to change styles of individual lists in the content.
+ * buttons that allow users to control such aspects of list as the marker, start index or order.
  *
  * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/listui~ListUI}
  * (because they share the same names).
