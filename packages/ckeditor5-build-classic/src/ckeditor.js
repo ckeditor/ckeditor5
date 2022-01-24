@@ -42,6 +42,7 @@ import {HorizontalLine} from "@ckeditor/ckeditor5-horizontal-line";
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
+import {Subscript, Superscript} from "@ckeditor/ckeditor5-basic-styles";
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -57,6 +58,8 @@ const plugins = [
 	Italic,
 	Underline,
 	Strikethrough,
+	Subscript,
+	Superscript,
 	BlockQuote,
 	Font,
 	CKFinder,
