@@ -39,7 +39,8 @@ import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandrepl
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 import {ImageUpload} from "@ckeditor/ckeditor5-image";
 import {HorizontalLine} from "@ckeditor/ckeditor5-horizontal-line";
-import {SpecialCharacters} from "@ckeditor/ckeditor5-special-characters";
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
+import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -78,7 +79,8 @@ const plugins = [
 	TextTransformation,
 	Base64UploadAdapter,
 	HorizontalLine,
-	SpecialCharacters
+	SpecialCharacters,
+	SpecialCharactersEssentials
 ];
 
 // Plugins to include in the build.
