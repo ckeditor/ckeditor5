@@ -41,6 +41,7 @@ import {ImageUpload} from "@ckeditor/ckeditor5-image";
 import {HorizontalLine} from "@ckeditor/ckeditor5-horizontal-line";
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
+import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -80,7 +81,8 @@ const plugins = [
 	Base64UploadAdapter,
 	HorizontalLine,
 	SpecialCharacters,
-	SpecialCharactersEssentials
+	SpecialCharactersEssentials,
+	SourceEditing
 ];
 
 // Plugins to include in the build.
