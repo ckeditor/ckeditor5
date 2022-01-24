@@ -28,7 +28,7 @@ describe( 'DocumentListMergeCommand', () => {
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
-		command = new DocumentListMergeCommand( editor );
+		command = new DocumentListMergeCommand( editor, 'backward' );
 	} );
 
 	afterEach( () => {
@@ -1340,15 +1340,15 @@ describe( 'DocumentListMergeCommand', () => {
 						it( 'should merge with previous list item and keep complex blocks intact', () => {
 							setData( model, modelList( [
 								'* ',
-								'* []b{id:b}',
+								'* []b',
 								'  c',
-								'  * d{id:d}',
+								'  * d',
 								'    e',
-								'  * f{id:f}',
-								'    * g{id:g}',
+								'  * f',
+								'    * g',
 								'      h',
-								'      * i{id:i}',
-								'        * j{id:j}',
+								'      * i',
+								'        * j',
 								'       k',
 								'  l'
 							] ) );
@@ -1356,15 +1356,15 @@ describe( 'DocumentListMergeCommand', () => {
 							command.execute();
 
 							expect( getData( model ) ).to.equalMarkup( modelList( [
-								'* []b{id:b}',
+								'* []b',
 								'  c',
-								'  * d{id:d}',
+								'  * d',
 								'    e',
-								'  * f{id:f}',
-								'    * g{id:g}',
+								'  * f',
+								'    * g{',
 								'      h',
-								'      * i{id:i}',
-								'        * j{id:j}',
+								'      * i',
+								'        * j',
 								'       k',
 								'  l'
 							] ) );

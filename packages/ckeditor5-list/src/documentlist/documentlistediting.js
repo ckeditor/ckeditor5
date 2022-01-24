@@ -121,7 +121,7 @@ export default class DocumentListEditing extends Plugin {
 					const previousBlock = ListWalker.first( positionParent, { sameIndent: true, sameItemType: true } );
 
 					// Outdent the first block of a first list item.
-					if ( !previousBlock ) {
+					if ( !previousBlock && positionParent.getAttribute( 'listIndent' ) === 0 ) {
 						if ( !isLastBlockOfListItem( positionParent ) ) {
 							editor.execute( 'splitListItemAfter' );
 						}
@@ -168,9 +168,9 @@ export default class DocumentListEditing extends Plugin {
 					}
 
 					// TODO let the widget handler do its stuff
-					if ( model.schema.isObject( positionParent.nextSibling ) ) {
-						return;
-					}
+					// if ( model.schema.isObject( positionParent.nextSibling ) ) {
+					// 	return;
+					// }
 
 					editor.execute( 'mergeListItemForward', {
 						deleteContent: true
