@@ -43,6 +43,7 @@ import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specia
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
 import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
 import {Subscript, Superscript} from "@ckeditor/ckeditor5-basic-styles";
+import {RemoveFormat} from "@ckeditor/ckeditor5-remove-format";
 
 
 class ClassicEditor extends ClassicEditorBase {}
@@ -80,6 +81,7 @@ const plugins = [
 	PasteFromOffice,
 	Table,
 	TableToolbar,
+	RemoveFormat,
 	TextTransformation,
 	Base64UploadAdapter,
 	HorizontalLine,
