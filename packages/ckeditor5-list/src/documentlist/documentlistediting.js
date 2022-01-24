@@ -35,7 +35,7 @@ import {
 	isLastBlockOfListItem,
 	isSingleListItem
 } from './utils/model';
-import { iterateSiblingListBlocks } from './utils/listwalker';
+import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
 
@@ -108,8 +108,6 @@ export default class DocumentListEditing extends Plugin {
 				if ( selection.isCollapsed && data.direction == 'backward' ) {
 					const firstPosition = selection.getFirstPosition();
 
-					// TODO what about different list types?
-
 					if ( !firstPosition.isAtStart ) {
 						return;
 					}
@@ -120,24 +118,34 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
-					const previousSibling = positionParent.previousSibling;
+					const previousBlock = ListWalker.first( positionParent, { sameIndent: true, sameItemType: true } );
 
-					// Merge block with previous one (on the block level or on the content level).
-					if ( previousSibling && previousSibling.hasAttribute( 'listItemId' ) ) {
-						// There's no previous sibling when the position parent is the first item of the root.
-						const isInsideSingleListItem = isSingleListItem( [ positionParent, previousSibling ] );
-
-						editor.execute( 'mergeListItemBackward', {
-							deleteContent: previousSibling.isEmpty || isInsideSingleListItem
-						} );
-					}
 					// Outdent the first block of a first list item.
-					else {
+					if ( !previousBlock ) {
 						if ( !isLastBlockOfListItem( positionParent ) ) {
 							editor.execute( 'splitListItemAfter' );
 						}
 
 						editor.execute( 'outdentList' );
+					}
+					// Merge block with previous one (on the block level or on the content level).
+					else {
+						const previousSibling = positionParent.previousSibling;
+						const isInsideSingleListItem = isSingleListItem( [ positionParent, previousSibling ] );
+
+						if ( model.schema.isObject( previousSibling ) ) {
+							if ( isInsideSingleListItem ) {
+								return;
+							}
+
+							editor.execute( 'mergeListItemBackward', {
+								deleteContent: false
+							} );
+						} else {
+							editor.execute( 'mergeListItemBackward', {
+								deleteContent: previousSibling.isEmpty || isInsideSingleListItem
+							} );
+						}
 					}
 
 					data.preventDefault();
@@ -145,13 +153,24 @@ export default class DocumentListEditing extends Plugin {
 				}
 				// Non-collapsed selection or forward delete.
 				else {
-					// TODO: What if not in a list?
-					// TODO: What if start only in a list?
-					// TODO: What if end only in a list?
-					// TODO (tests):
-					// 		li[st
-					// 		some-non-list
-					// 		anothe]rlist
+					const lastPosition = selection.getLastPosition();
+					const positionParent = lastPosition.parent;
+
+					// Collapsed selection should trigger forward merging only if at the end of a block.
+					if ( selection.isCollapsed && !lastPosition.isAtEnd ) {
+						return;
+					}
+
+					// The list bocks merging is required only if the selection ends in the list item
+					// (in case of fixing the indents of following list items).
+					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+						return;
+					}
+
+					// TODO let the widget handler do its stuff
+					if ( model.schema.isObject( positionParent.nextSibling ) ) {
+						return;
+					}
 
 					editor.execute( 'mergeListItemForward', {
 						deleteContent: true

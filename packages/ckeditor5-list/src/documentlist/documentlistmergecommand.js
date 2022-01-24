@@ -60,15 +60,14 @@ export default class DocumentListMergeCommand extends Command {
 		const selection = model.document.selection;
 
 		model.change( writer => {
-			const anchorElement = selection.getFirstPosition().parent;
-			const isFirstBlock = isFirstBlockOfListItem( anchorElement );
 			let firstElement, lastElement;
 
-			// TODO what about different list types?
-
 			if ( selection.isCollapsed ) {
+				const positionParent = selection.getFirstPosition().parent;
+				const isFirstBlock = isFirstBlockOfListItem( positionParent );
+
 				if ( this._direction == 'backward' ) {
-					lastElement = anchorElement;
+					lastElement = positionParent;
 
 					if ( isFirstBlock && !deleteContent ) {
 						// For the "c" as an anchorElement:
@@ -79,21 +78,21 @@ export default class DocumentListMergeCommand extends Command {
 						//	* a
 						//	  * b
 						//    c
-						firstElement = ListWalker.first( anchorElement, { sameIndent: true, lowerIndent: true } );
+						firstElement = ListWalker.first( positionParent, { sameIndent: true, lowerIndent: true } );
 					} else {
-						firstElement = anchorElement.previousSibling;
+						firstElement = positionParent.previousSibling;
 					}
 				} else {
 					// In case of the forward merge there is no case as above, just merge with next sibling.
-					firstElement = anchorElement;
-					lastElement = anchorElement.nextSibling;
+					firstElement = positionParent;
+					lastElement = positionParent.nextSibling;
 				}
 			} else {
 				firstElement = selection.getFirstPosition().parent;
 				lastElement = selection.getLastPosition().parent;
 			}
 
-			const firstIndent = firstElement.getAttribute( 'listIndent' );
+			const firstIndent = firstElement.getAttribute( 'listIndent' ) || 0;
 			const lastIndent = lastElement.getAttribute( 'listIndent' );
 			const lastElementId = lastElement.getAttribute( 'listItemId' );
 
@@ -119,7 +118,8 @@ export default class DocumentListMergeCommand extends Command {
 					) );
 				}
 
-				model.deleteContent( sel, { doNotResetEntireContent: true } );
+				// Delete selected content. Replace entire content only for non-collapsed selection.
+				model.deleteContent( sel, { doNotResetEntireContent: selection.isCollapsed } );
 
 				// Get the last "touched" element after deleteContent call (can't use the lastElement because
 				// it could get merged into the firstElement while deleting content).
