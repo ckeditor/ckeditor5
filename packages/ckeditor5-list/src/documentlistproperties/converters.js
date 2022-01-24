@@ -17,55 +17,46 @@ import { createListElement, isListView } from '../documentlist/utils/view';
  * If not found, the `"default"` value will be used.
  *
  * @protected
- * @param {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>} attributeStrategies
+ * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>} strategy
  * @returns {Function}
  */
-export function listPropertiesUpcastConverter( attributeStrategies ) {
+export function listPropertiesUpcastConverter( strategy ) {
 	return ( evt, data, conversionApi ) => {
 		const { writer, schema, consumable } = conversionApi;
 
-		const parentList = data.viewItem.parent;
-
-		// It may happen that the native spell checker fixes a word inside a list item.
-		// When the children mutation is fired, the `<li>` does not have the parent element. See: #9325.
-		if ( !parentList ) {
+		if ( !consumable.test( data.viewItem, strategy.viewConsumables ) ) {
 			return;
 		}
 
 		if ( !data.modelRange ) {
-			return;
+			const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+			data.modelRange = modelRange;
+			data.modelCursor = modelCursor;
 		}
 
-		const items = Array.from( data.modelRange.getItems( { shallow: true } ) );
+		let applied = false;
 
-		for ( const strategy of attributeStrategies ) {
-			// if ( !consumable.test( parentList, strategy.viewConsumables ) ) {
-			// 	continue;
-			// }
-			//
-			// let applied = false;
-
-			for ( const item of items ) {
-				if ( !schema.checkAttribute( item, strategy.attributeName ) ) {
-					continue;
-				}
-
-				if ( !strategy.appliesToListItem( item ) ) {
-					continue;
-				}
-
-				// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
-				if ( item.hasAttribute( strategy.attributeName ) ) {
-					continue;
-				}
-
-				writer.setAttribute( strategy.attributeName, strategy.getAttributeOnUpcast( parentList ), item );
-				// applied = true;
+		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+			if ( !schema.checkAttribute( item, strategy.attributeName ) ) {
+				continue;
 			}
 
-			// if ( applied ) {
-			// 	consumable.consume( parentList, strategy.viewConsumables );
-			// }
+			if ( !strategy.appliesToListItem( item ) ) {
+				continue;
+			}
+
+			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
+			if ( item.hasAttribute( strategy.attributeName ) ) {
+				continue;
+			}
+
+			writer.setAttribute( strategy.attributeName, strategy.getAttributeOnUpcast( data.viewItem ), item );
+			applied = true;
+		}
+
+		if ( applied ) {
+			consumable.consume( data.viewItem, strategy.viewConsumables );
 		}
 	};
 }

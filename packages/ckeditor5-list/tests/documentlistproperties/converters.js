@@ -54,7 +54,7 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 					'</ul>',
 
 					modelList( `
-						* Foo {style:default}
+						* Foo
 						* Bar
 					` )
 				);
@@ -68,7 +68,7 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 					'</ol>',
 
 					modelList( `
-						# Foo {style:default}
+						# Foo
 						# Bar
 					` )
 				);
@@ -180,8 +180,8 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 					` ),
 
 					'<ol>' +
-					'<li>Foo</li>' +
-					'<li>Bar</li>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
 					'</ol>'
 				);
 			} );
@@ -209,33 +209,120 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
+			it( 'should use modeRange provided from higher priority converter', () => {
+				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {style:upper-alpha}
+						# Bar
+					` ),
+
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should not apply attribute on elements that does not accept it', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block'
+				} );
+				editor.conversion.elementToElement( { view: 'div', model: 'block' } );
+
+				test.data(
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li><div>x</div></li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {style:upper-alpha}
+						<block>x</block>
+						# Bar {style:upper-alpha}
+					` ),
+
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+					'</ol>' +
+					'<div>x</div>' +
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should not consume attribute while upcasting if not applied', () => {
+				const spy = sinon.spy();
+
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => attributeName != 'listStyle' );
+				editor.conversion.for( 'upcast' ).add(
+					dispatcher => dispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { styles: 'list-style-type' } ) ).to.be.true;
+						spy();
+					}, { priority: 'lowest' } )
+				);
+
+				test.data(
+					'<ol style="list-style-type:upper-alpha;">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo
+						# Bar
+					` ),
+
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
 			describe( 'list conversion with surrounding text nodes', () => {
 				it( 'should convert a list if raw text is before the list', () => {
 					test.data(
 						'Foo' +
-						'<ul><li>Bar</li></ul>',
+						'<ul style="list-style-type:square;"><li>Bar</li></ul>',
 
 						modelList( `
 							Foo
-							* Bar {id:000} {style:default}
+							* Bar {id:000} {style:square}
 						` ),
 
 						'<p>Foo</p>' +
-						'<ul><li>Bar</li></ul>'
+						'<ul style="list-style-type:square;"><li>Bar</li></ul>'
 					);
 				} );
 
 				it( 'should convert a list if raw text is after the list', () => {
 					test.data(
-						'<ul><li>Foo</li></ul>' +
+						'<ul style="list-style-type:square;"><li>Foo</li></ul>' +
 						'Bar',
 
 						modelList( `
-							* Foo {style:default}
+							* Foo {style:square}
 							Bar
 						` ),
 
-						'<ul><li>Foo</li></ul>' +
+						'<ul style="list-style-type:square;"><li>Foo</li></ul>' +
 						'<p>Bar</p>'
 					);
 				} );
@@ -243,17 +330,17 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 				it( 'should convert a list if it is surrounded by two text nodes', () => {
 					test.data(
 						'Foo' +
-						'<ul><li>Bar</li></ul>' +
+						'<ul style="list-style-type:square;"><li>Bar</li></ul>' +
 						'Baz',
 
 						modelList( `
 							Foo
-							* Bar {id:000} {style:default}
+							* Bar {id:000} {style:square}
 							Baz
 						` ),
 
 						'<p>Foo</p>' +
-						'<ul><li>Bar</li></ul>' +
+						'<ul style="list-style-type:square;"><li>Bar</li></ul>' +
 						'<p>Baz</p>'
 					);
 				} );

@@ -81,7 +81,10 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		// Set up conversion.
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
-			dispatcher.on( 'element:li', listPropertiesUpcastConverter( strategies ) );
+			for ( const strategy of strategies ) {
+				dispatcher.on( 'element:ol', listPropertiesUpcastConverter( strategy ) );
+				dispatcher.on( 'element:ul', listPropertiesUpcastConverter( strategy ) );
+			}
 		} );
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
