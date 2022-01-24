@@ -73,6 +73,13 @@ ClassicEditor
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
 		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: false
+			}
+		},
 		placeholder: 'Paste the content here to test the feature.',
 		cloudServices: CS_CONFIG
 	} )
