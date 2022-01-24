@@ -75,10 +75,6 @@ export function isInsideEmojiSequence( string, offset ) {
 
 	const matches = String( string ).matchAll( EMOJI_PATTERN );
 
-	if ( !matches ) {
-		return false;
-	}
-
 	return Array.from( matches ).some( match => match.index < offset && offset < match.index + match[ 0 ].length );
 }
 
