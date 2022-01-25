@@ -61,6 +61,10 @@ This will reduce the risk of omitting plugin dependencies and in the created opt
 
 Observe any security alerts that are published by the CKEditor 5 team and always act promptly to apply patches and upgrades. Keeping your editor up-to-date is crucial to the security and integrity of you content and data. If you are using framework integrations always follow any information provided by framework developers, too.
 
+### Data backup
+
+Whatever your approach toward updates might be, always remember to keep a fresh backup of your data. Whether a local solutions is used, and On-Premises server or autosave feature, create regular backups of you database and files.
+
 <info-box hint>
 **What's next?**
 
