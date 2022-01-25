@@ -158,7 +158,6 @@
     "release:find-plugins": "node ./scripts/docs/find-new-plugins.js",
     "docs:serve": "http-server ./build/docs/",
     "docs:verify": "node ./scripts/web-crawler/index.js --docs",
-    "docs:mini-inspector": "",
     "translations:collect": "node ./scripts/translations.js collect",
     "translations:download": "node ./scripts/translations.js download",
     "translations:upload": "node ./scripts/translations.js upload",
