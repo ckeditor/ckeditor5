@@ -191,6 +191,21 @@ describe( 'utils', () => {
 			it( 'should return false if a string is empty', () => {
 				expect( isInsideEmojiSequence( '', 0 ) ).to.be.false;
 			} );
+
+			it( 'should properly detect multiple emojis in the same string', () => {
+				const firstEmoji = '\u{0032}\u{FE0F}\u{20E3}';
+				const secondEmoji = '\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}';
+				const testString = `foo${ firstEmoji }bar${ secondEmoji }}baz`;
+				const firstEmojiOffset = 'foo'.length;
+				const secondEmojiOffset = `foo${ firstEmoji }bar`.length;
+
+				for ( let i = 0; i < testString.length - 1; i++ ) {
+					const isInsideFirstEmoji = i > firstEmojiOffset && i < firstEmojiOffset + firstEmoji.length;
+					const isInsideSecondEmoji = i > secondEmojiOffset && i < secondEmojiOffset + secondEmoji.length;
+
+					expect( isInsideEmojiSequence( testString, i ) ).to.equal( isInsideFirstEmoji || isInsideSecondEmoji );
+				}
+			} );
 		} );
 	} );
 } );

@@ -114,6 +114,14 @@ describe( 'DeleteCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
 
+		it( 'deletes only one of previous multi-character emojis', () => {
+			setData( model, '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}\u{1F1E7}\u{1F1EA}[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
+		} );
+
 		it( 'deletes selection contents', () => {
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 

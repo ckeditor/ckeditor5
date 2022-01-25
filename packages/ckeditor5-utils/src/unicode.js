@@ -70,9 +70,14 @@ export function isInsideCombinedSymbol( string, offset ) {
 
 const EMOJI_PATTERN = buildEmojiRegexp();
 
+/**
+ * Checks whether given offset in a string is inside multi-character emoji sequence.
+ *
+ * @param {String} string String to check.
+ * @param {Number} offset Offset to check.
+ * @returns {Boolean}
+ */
 export function isInsideEmojiSequence( string, offset ) {
-	EMOJI_PATTERN.lastIndex = 0;
-
 	const matches = String( string ).matchAll( EMOJI_PATTERN );
 
 	return Array.from( matches ).some( match => match.index < offset && offset < match.index + match[ 0 ].length );
@@ -89,7 +94,7 @@ function buildEmojiRegexp() {
 		// Emoji Presentation Sequence
 		/\p{Emoji}\u{FE0F}/u,
 
-		// Single-Character Emoji / // Emoji Modifier Sequence
+		// Single-Character Emoji / Emoji Modifier Sequence
 		/(?=\p{General_Category=Other_Symbol})\p{Emoji}\p{Emoji_Modifier}*/u
 	];
 

@@ -49,7 +49,7 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
- * @param {Boolean} [options.treatEmojiAsSingleUnit=false] If true, regardless of the options.direction, entire emoji is consumed.
+ * @param {Boolean} [options.treatEmojiAsSingleUnit=false] Whether multi-characer emoji sequences should be handled as single unit.
  */
 export default function modifySelection( model, selection, options = {} ) {
 	const schema = model.schema;
@@ -149,7 +149,11 @@ function getCorrectPosition( walker, unit, treatEmojiAsSingleUnit ) {
 		const data = textNode.data;
 		let offset = walker.position.offset - textNode.startOffset;
 
-		while ( shouldMoveNext( data, offset ) ) {
+		while (
+			isInsideSurrogatePair( data, offset ) ||
+			( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ||
+			( treatEmojiAsSingleUnit && isInsideEmojiSequence( data, offset ) )
+		) {
 			walker.next();
 
 			offset = walker.position.offset - textNode.startOffset;
@@ -157,12 +161,6 @@ function getCorrectPosition( walker, unit, treatEmojiAsSingleUnit ) {
 	}
 
 	return walker.position;
-
-	function shouldMoveNext( data, offset ) {
-		return isInsideSurrogatePair( data, offset ) ||
-			( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ||
-			( treatEmojiAsSingleUnit && isInsideEmojiSequence( data, offset ) );
-	}
 }
 
 // Finds a correct position of a word break by walking in a text node and checking whether selection can be extended to given position
