@@ -12,7 +12,7 @@ import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'DocumentListMergeCommand', () => {
+describe.skip( 'DocumentListMergeCommand', () => {
 	let editor, model, doc, command;
 
 	testUtils.createSinonSandbox();
