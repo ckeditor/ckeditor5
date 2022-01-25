@@ -87,6 +87,7 @@ const plugins = [
 	HorizontalLine,
 	SpecialCharacters,
 	SpecialCharactersEssentials,
+	SpecialCharactersEmoji,
 	SourceEditing
 ];
 
@@ -143,6 +144,17 @@ const defaultConfig = {
 	fontFamily: {supportAllValues: true},
 	fontColor: {supportAllValues: true},
 	fontBackgroundColor: {supportAllValues: true},
+	heading: {
+		options: [
+			{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+			{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+			{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+			{ model: 'heading3', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading3' },
+			{ model: 'heading4', view: 'h4', title: 'Heading 2', class: 'ck-heading_heading4' },
+			{ model: 'heading5', view: 'h5', title: 'Heading 2', class: 'ck-heading_heading5' },
+			{ model: 'heading6', view: 'h6', title: 'Heading 2', class: 'ck-heading_heading6' },
+		]
+	},
 	table: {
 		contentToolbar: [
 			'tableColumn',
@@ -153,6 +165,35 @@ const defaultConfig = {
 	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'de'
 };
+
+// a function to add
+function SpecialCharactersEmoji(editor) {
+	editor.plugins.get('SpecialCharacters').addItems('Emoji', [
+		{ title: 'Smiley face', character: '😊' },
+		{ title: 'Slightly Frowning Face', character: '🙁' },
+		{ title: 'Winking Face', character: '😉' },
+		{ title: 'Grinning Face', character: '😀' },
+		{ title: 'Confused smile', character: '😕️' },
+		{ title: 'Face with Tongue', character: '😛' },
+		{ title: 'Embarrassed Smile', character: '😳️' },
+		{ title: 'Omg', character: '😮' },
+		{ title: 'What are you talking about', character: '😐' },
+		{ title: 'Angry', character: '😡' },
+		{ title: 'Angle smile', character: '🙂' },
+		{ title: 'Nerd Face', character: '🤓' },
+		{ title: 'Smiling Face with Horns', character: '😈' },
+		{ title: 'Crying Face', character: '😢' },
+		{ title: 'Light Bulb', character: '💡' },
+		{ title: 'Thumbs Up', character: '👍' },
+		{ title: 'Thumbs Down', character: '👎' },
+		{ title: 'Heart', character: '❤️' },
+		{ title: 'Broken Heart', character: '💔' },
+		{ title: 'Kiss Mark', character: '💋' },
+		{ title: 'Envelope', character: '✉️' }
+	]);
+}
+
+
 
 // Editor configuration.
 ClassicEditor.defaultConfig = defaultConfig
