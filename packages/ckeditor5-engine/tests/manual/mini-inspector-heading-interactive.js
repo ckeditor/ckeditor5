@@ -6,7 +6,8 @@
 import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import MiniCKEditorInspector from '../../../../scripts/docs/mini-inspector/miniinspector';
+// TODO: import from @ckeditor/ckeditor5-inspector once this PR is merged: https://github.com/ckeditor/ckeditor5-inspector/pull/142/files
+import MiniCKEditorInspector from '../../docs/framework/guides/mini-inspector/miniinspector.js';
 // import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /* globals console, window, document */

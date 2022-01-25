@@ -1,7 +1,8 @@
 ---
 category: framework-deep-dive-conversion
 menu-title: View to model - upcast
-order: 2
+order: 30
+since: 33.0.0
 ---
 
 # Model to view - downcast
@@ -113,7 +114,7 @@ The above converter will handle the conversion of every `<div class="example">` 
 
 ## Converting structures
 
-As you may learned in the {@link framework/guides/deep-dive/conversion-downcast previous chapter}, a single model element can be downcasted into a structure of multiple view elements.
+As you may learned in the {@link framework/guides/deep-dive/conversion/downcast previous chapter}, a single model element can be downcasted into a structure of multiple view elements.
 
 The opposite process will have to detect that structure (e.g. the main element) and convert that into a simple model element.
 
@@ -142,6 +143,4 @@ The above converter will detect all `<div class="wrapper"><p>...</p></div>` stru
 
 ## Read next
 
-{@link framework/guides/deep-dive/conversion-intro Conversion helpers}
-
-TODO: update the link
+{@link framework/guides/deep-dive/conversion/helpers/intro Conversion helpers}

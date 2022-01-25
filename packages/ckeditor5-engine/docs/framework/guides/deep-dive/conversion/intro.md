@@ -1,7 +1,8 @@
 ---
 category: framework-deep-dive-conversion
 menu-title: Introduction
-order: 0
+order: 10
+since: 33.0.0
 ---
 
 # Introduction
@@ -20,17 +21,14 @@ Following chapters will teach you how to create the right converter for each cas
 
 ## Table of contents
 
-* **{@link framework/guides/deep-dive/conversion-downcast Model to view - downcast}**
+* **{@link framework/guides/deep-dive/conversion/downcast Model to view - downcast}**
 
 	Model has to be transformed into the view. Learn how to achieve that by creating downcast converters.
 
-* **{@link framework/guides/deep-dive/conversion-upcast View to model - upcast}**
+* **{@link framework/guides/deep-dive/conversion/upcast View to model - upcast}**
 
 	Raw data coming into the editor has to be transformed into the model. Learn how to achieve that by creating upcast converters.
 
-* **{@link framework/guides/deep-dive/conversion-intro Conversion helpers}**
+* **{@link framework/guides/deep-dive/conversion/helpers/intro Conversion helpers}**
 
 	There are plenty of ways to transform data between model and view. To help you do this as efficiently as possible we provided many functions speeding up this process. This chapter will help you choose the right helper for the job.
-
-	TODO: update this section link.
-

@@ -1,7 +1,8 @@
 ---
 category: framework-deep-dive-conversion
 menu-title: Model to view - downcast
-order: 1
+order: 20
+since: 33.0.0
 ---
 
 # Model to view - downcast
@@ -180,7 +181,7 @@ editor.conversion
 		model: 'myElement',
 		view: ( modelElement, { writer } ) => {
 			return writer.createContainerElement( 'div', { class: 'wrapper' }, [
-				writer.createContainterElement( 'p' )
+				writer.createContainerElement( 'p' )
 			] );
 		}
 	} );
@@ -194,4 +195,4 @@ editor.conversion
 
 ## Read next
 
-{@link framework/guides/deep-dive/conversion-upcast View to model - upcast}
+{@link framework/guides/deep-dive/conversion/upcast View to model - upcast}

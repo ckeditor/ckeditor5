@@ -10,11 +10,13 @@ function Structure( editor ) {
 		inheritAllFrom: '$block'
 	} );
 
-	editor.conversion.elementToElement( {
+	editor.conversion.elementToStructure( {
 		model: 'myElement',
-		view: ( modelElement, { writer } ) => {
+		view: ( modelElement, { writer, slotFor } ) => {
 			return writer.createContainerElement( 'div', { class: 'wrapper' }, [
-				writer.createContainerElement( 'p' )
+				writer.createContainerElement( 'p', null, [
+					slotFor( 'children' )
+				] )
 			] );
 		}
 	} );
