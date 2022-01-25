@@ -1044,6 +1044,106 @@ describe( 'DataController utils', () => {
 				{ direction: 'backward' }
 			);
 		} );
+
+		describe( 'emoji handling', () => {
+			describe( 'with `treatEmojiAsSingleUnit` equal `true`', () => {
+				test(
+					'extend one character forward to the beginning of emoji sequence (collapsed)',
+					'<p>fo[]o\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>fo[o]\u{1F1E7}\u{1F1EA}bar</p>',
+					{ treatEmojiAsSingleUnit: true }
+				);
+
+				test(
+					'extend one character forward to the beginning of emoji sequence (non-collapsed)',
+					'<p>f[o]o\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>f[oo]\u{1F1E7}\u{1F1EA}bar</p>',
+					{ treatEmojiAsSingleUnit: true }
+				);
+
+				test(
+					'extend one character forward to the end of emoji sequence (collapsed)',
+					'<p>foo[]\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>foo[\u{1F1E7}\u{1F1EA}]bar</p>',
+					{ treatEmojiAsSingleUnit: true }
+				);
+
+				test(
+					'extend one character forward to the end of emoji sequence (non-collapsed)',
+					'<p>f[oo]\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>f[oo\u{1F1E7}\u{1F1EA}]bar</p>',
+					{ treatEmojiAsSingleUnit: true }
+				);
+
+				test(
+					'extend one character backward to the beginning of emoji sequence (collapsed)',
+					'<p>foo\u{1F1E7}\u{1F1EA}[]bar</p>',
+					'<p>foo[\u{1F1E7}\u{1F1EA}]bar</p>',
+					{ treatEmojiAsSingleUnit: true, direction: 'backward' }
+				);
+
+				it( 'extend one character backward to the beginning of emoji sequence (non-collapsed)', () => {
+					setData( model, '<p>foo\u{1F1E7}\u{1F1EA}[ba]r</p>', { lastRangeBackward: true } );
+
+					modifySelection( model, doc.selection, { treatEmojiAsSingleUnit: true, direction: 'backward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo[\u{1F1E7}\u{1F1EA}ba]r</p>' );
+					expect( doc.selection.isBackward ).to.true;
+				} );
+			} );
+
+			describe( 'with `treatEmojiAsSingleUnit` equal `false` or missing', () => {
+				test(
+					'extend one character forward to the beginning of emoji sequence (collapsed)',
+					'<p>fo[]o\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>fo[o]\u{1F1E7}\u{1F1EA}bar</p>',
+					{ treatEmojiAsSingleUnit: false }
+				);
+
+				test(
+					'extend one character forward to the beginning of emoji sequence (non-collapsed)',
+					'<p>f[o]o\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>f[oo]\u{1F1E7}\u{1F1EA}bar</p>',
+					{ treatEmojiAsSingleUnit: false }
+				);
+
+				test(
+					'extend one character forward to the middle of emoji sequence (collapsed)',
+					'<p>foo[]\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>foo[\u{1F1E7}]\u{1F1EA}bar</p>',
+					{ treatEmojiAsSingleUnit: false }
+				);
+
+				test(
+					'extend one character forward to the middle of emoji sequence (collapsed, missing option)',
+					'<p>foo[]\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>foo[\u{1F1E7}]\u{1F1EA}bar</p>'
+				);
+
+				test(
+					'extend one character forward to the middle of emoji sequence (non-collapsed)',
+					'<p>f[oo]\u{1F1E7}\u{1F1EA}bar</p>',
+					'<p>f[oo\u{1F1E7}]\u{1F1EA}bar</p>',
+					{ treatEmojiAsSingleUnit: false }
+				);
+
+				test(
+					'extend one character backward to the middle of emoji sequence (collapsed)',
+					'<p>foo\u{1F1E7}\u{1F1EA}[]bar</p>',
+					'<p>foo\u{1F1E7}[\u{1F1EA}]bar</p>',
+					{ treatEmojiAsSingleUnit: false, direction: 'backward' }
+				);
+
+				it( 'extend one character backward to the middle of emoji sequence (non-collapsed)', () => {
+					setData( model, '<p>foo\u{1F1E7}\u{1F1EA}[ba]r</p>', { lastRangeBackward: true } );
+
+					modifySelection( model, doc.selection, { treatEmojiAsSingleUnit: false, direction: 'backward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo\u{1F1E7}[\u{1F1EA}ba]r</p>' );
+					expect( doc.selection.isBackward ).to.true;
+				} );
+			} );
+		} );
 	} );
 
 	function test( title, input, output, options ) {
