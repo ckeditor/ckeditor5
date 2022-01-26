@@ -396,7 +396,7 @@ The document editor is focused on rich text editing experience similar to the na
 
 {@img assets/img/editor-document.png 843 Screenshot of the user interface of the document editor.}
 
-To try it out online, check the {@link examples/builds/document-editor document editor example}. 
+To try it out online, check the {@link examples/builds/document-editor document editor example}.
 
 #### Installation example
 
@@ -523,7 +523,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5.git
 <info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 
-	Alternatively, instead of creating a custom build you can {@link installation/advanced/advanced-setup#scenario-2-building-from-source integrate CKEditor 5 directly from source}. This option allows for even more flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments &mdash; for example in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
+	Alternatively, instead of creating a custom build you can {@link installation/advanced/integrating-from-source integrate CKEditor 5 directly from source}. This option allows for even more flexibility and requires less overhead (you will not need to fork the official build). However, it requires that you fully control the `webpack.config.js` file (which is not that easy in some environments &mdash; for example in [`angular-cli`](https://cli.angular.io/) or [`create-react-app`](https://github.com/facebook/create-react-app)).
 </info-box>
 
 <info-box warning>
