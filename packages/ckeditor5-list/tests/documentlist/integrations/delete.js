@@ -46,7 +46,6 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 
 		model = editor.model;
 		view = editor.editing.view;
-		// modelRoot = model.document.getRoot();
 
 		model.schema.extend( 'paragraph', {
 			allowAttributes: 'foo'
@@ -156,7 +155,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 0, 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -176,7 +175,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -216,7 +215,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -238,7 +237,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1, 2 ]
+							changedBlocks: [ 1 ]
 						} );
 					} );
 
@@ -260,7 +259,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 2 ]
+							changedBlocks: [ 1 ]
 						} );
 					} );
 				} );
@@ -449,7 +448,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -470,7 +469,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -490,7 +489,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -510,7 +509,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -532,7 +531,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 2 ]
+							changedBlocks: [ 1 ]
 						} );
 					} );
 
@@ -554,7 +553,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 2 ]
+							changedBlocks: [ 1 ]
 						} );
 					} );
 				} );
@@ -745,7 +744,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 2 ]
+							changedBlocks: [ 1 ]
 						} );
 					} );
 
@@ -765,7 +764,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -785,7 +784,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -807,7 +806,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -830,7 +829,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 0, 1, 2 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -853,7 +852,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 0, 1, 2, 3 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -876,7 +875,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 0, 1, 2 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -898,7 +897,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 0, 1, 2 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 				} );
@@ -920,7 +919,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -940,7 +939,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -960,7 +959,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -980,7 +979,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1004,7 +1003,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -1027,7 +1026,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1050,7 +1049,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1073,7 +1072,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1095,7 +1094,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 				} );
@@ -1123,7 +1122,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 0 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1140,7 +1139,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								'      h',
 								'      * i',
 								'        * j',
-								'       k',
+								'      k',
 								'  l'
 							],
 							expected: [
@@ -1153,7 +1152,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								'      h',
 								'      * i {id:008}',
 								'        * j {id:009}',
-								'       k',
+								'      k',
 								'  l'
 							],
 							eventStopped: true,
@@ -1163,7 +1162,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
+							changedBlocks: [ 0, 1, 10 ]
 						} );
 					} );
 
@@ -1185,7 +1184,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 0 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1207,7 +1206,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 0, 1, 2 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1231,7 +1230,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 0, 1, 2, 3 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -1253,7 +1252,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 0, 1, 2 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1277,7 +1276,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 2, 3 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -1301,7 +1300,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 				} );
@@ -1326,7 +1325,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -1351,7 +1350,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 2 ]
 						} );
 					} );
 
@@ -1392,7 +1391,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2, 11 ]
 						} );
 					} );
 
@@ -1415,7 +1414,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -1438,7 +1437,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -1463,7 +1462,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2, 3 ]
 						} );
 					} );
 
@@ -1486,7 +1485,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -1511,7 +1510,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 1,
 								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 2, 3 ]
 						} );
 					} );
 				} );
@@ -1549,7 +1548,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							mergeBackward: 1,
 							mergeForward: 0
 						},
-						changedBlocks: [ 1 ]
+						changedBlocks: [ 4, 5 ]
 					} );
 				} );
 			} );
@@ -1574,7 +1573,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1594,7 +1593,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1614,7 +1613,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1636,7 +1635,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1659,7 +1658,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1682,7 +1681,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1705,7 +1704,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1727,7 +1726,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1750,11 +1749,11 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
-					it( 'should delete all following items till the end of selection and merge last list itemxx', () => {
+					it( 'should delete all following items till the end of selection and merge last list itemx', () => {
 						runTest( {
 							input: [
 								'* [',
@@ -1776,7 +1775,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3 ]
 						} );
 					} );
 
@@ -1801,7 +1800,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -1828,7 +1827,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3 ]
 						} );
 					} );
 				} );
@@ -1852,7 +1851,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1873,7 +1872,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1893,7 +1892,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1913,7 +1912,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -1937,7 +1936,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -1960,7 +1959,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -1983,7 +1982,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -2006,7 +2005,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2028,7 +2027,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2059,7 +2058,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3 ]
 						} );
 					} );
 				} );
@@ -2077,8 +2076,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'[]'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2099,8 +2098,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'[]text'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2121,8 +2120,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'tex[]'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2143,8 +2142,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							't[]xt'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2167,8 +2166,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* 2'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2192,8 +2191,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* 3 {id:002}'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2219,8 +2218,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  * 4 {id:003}'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2244,8 +2243,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* 3 {id:002}'
 						],
 						eventStopped: {
-							preventDefault: 1,
-							stop: undefined
+							preventDefault: true,
+							stop: false
 						},
 						executedCommands: {
 							outdent: 0,
@@ -2269,8 +2268,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								't[]t'
 							],
 							eventStopped: {
-								preventDefault: 1,
-								stop: undefined
+								preventDefault: true,
+								stop: false
 							},
 							executedCommands: {
 								outdent: 0,
@@ -2293,8 +2292,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								'* 1'
 							],
 							eventStopped: {
-								preventDefault: 1,
-								stop: undefined
+								preventDefault: true,
+								stop: false
 							},
 							executedCommands: {
 								outdent: 0,
@@ -2318,8 +2317,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								'* te[]'
 							],
 							eventStopped: {
-								preventDefault: 1,
-								stop: undefined
+								preventDefault: true,
+								stop: false
 							},
 							executedCommands: {
 								outdent: 0,
@@ -2343,8 +2342,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								'* te[]'
 							],
 							eventStopped: {
-								preventDefault: 1,
-								stop: undefined
+								preventDefault: true,
+								stop: false
 							},
 							executedCommands: {
 								outdent: 0,
@@ -2369,8 +2368,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								'  tex[]t4'
 							],
 							eventStopped: {
-								preventDefault: 1,
-								stop: undefined
+								preventDefault: true,
+								stop: false
 							},
 							executedCommands: {
 								outdent: 0,
@@ -2400,7 +2399,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2422,7 +2421,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -2444,7 +2443,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							// Note: Technically speaking "c" should also be included but wasn't; was fixed by model post-fixer.
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2468,12 +2468,12 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							// Note: Technically speaking "c" and "d" should also be included but weren't; fixed by model post-fixer.
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
-					// TODO: skipped because below TODO
-					it.skip( 'should remove selection and adjust remaining list', () => {
+					it( 'should remove selection and adjust remaining list', () => {
 						runTest( {
 							input: [
 								'a[',
@@ -2483,8 +2483,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							],
 							expected: [
 								'a[]b',
-								'* c',
-								'  d' // TODO: No way currently to adjust this block id <-
+								'* c {id:002}',
+								'* d {id:001}'
 							],
 							eventStopped: true,
 							executedCommands: {
@@ -2493,7 +2493,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							// Note: Technically speaking "c" and "d" should also be included but weren't; fixed by model post-fixer.
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2519,7 +2520,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 				} );
@@ -2542,7 +2543,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2588,7 +2589,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2613,7 +2614,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -2639,7 +2640,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -2666,7 +2667,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -2720,7 +2721,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2792,6 +2793,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 		describe( 'single block list item', () => {
 			describe( 'collapsed selection at the end of a list item', () => {
 				describe( 'item after is empty', () => {
+					// TODO: This should be handled by #isEnabled.
 					it( 'should remove list when in empty only element of a list', () => {
 						runTest( {
 							input: [
@@ -2827,7 +2829,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2847,7 +2849,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2867,7 +2869,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2887,7 +2889,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2953,7 +2955,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2973,7 +2975,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -2993,7 +2995,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3013,7 +3015,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3089,7 +3091,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3, 4, 5, 6 ]
 						} );
 					} );
 
@@ -3117,7 +3119,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3, 4 ]
 						} );
 					} );
 				} );
@@ -3163,7 +3165,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3183,7 +3185,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3205,7 +3207,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3228,7 +3230,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3251,7 +3253,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3274,7 +3276,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3296,7 +3298,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 				} );
@@ -3318,7 +3320,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3338,7 +3340,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3358,7 +3360,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3378,7 +3380,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3402,7 +3404,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -3425,7 +3427,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3448,7 +3450,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3471,7 +3473,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3493,7 +3495,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 				} );
@@ -3583,7 +3585,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -3605,7 +3607,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3629,7 +3631,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -3651,7 +3653,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3675,7 +3677,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -3699,7 +3701,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 				} );
@@ -3723,7 +3725,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3749,7 +3751,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 2, 3 ]
 						} );
 					} );
 
@@ -3791,7 +3793,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2, 11 ]
 						} );
 					} );
 
@@ -3815,7 +3817,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -3839,7 +3841,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 
@@ -3863,7 +3865,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 2 ]
 						} );
 					} );
 
@@ -3887,7 +3889,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 2 ]
 						} );
 					} );
 
@@ -3911,7 +3913,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2 ]
 						} );
 					} );
 				} );
@@ -3948,7 +3950,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							mergeBackward: 0,
 							mergeForward: 1
 						},
-						changedBlocks: [ 1 ]
+						changedBlocks: [ 4 ]
 					} );
 				} );
 			} );
@@ -3973,7 +3975,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -3993,7 +3995,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4013,7 +4015,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4035,7 +4037,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -4058,7 +4060,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -4081,7 +4083,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -4104,7 +4106,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4126,7 +4128,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4149,11 +4151,11 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
-					it( 'should delete all following items till the end of selection and merge last list itemxx', () => {
+					it( 'should delete all following items till the end of selection and merge last list itemx', () => {
 						runTest( {
 							input: [
 								'* [',
@@ -4175,7 +4177,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3 ]
 						} );
 					} );
 
@@ -4200,7 +4202,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -4227,7 +4229,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3 ]
 						} );
 					} );
 				} );
@@ -4251,7 +4253,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -4272,7 +4274,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4292,7 +4294,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4312,7 +4314,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4336,7 +4338,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2 ]
 						} );
 					} );
 
@@ -4359,7 +4361,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -4382,7 +4384,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1 ]
 						} );
 					} );
 
@@ -4405,7 +4407,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4427,7 +4429,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0 ]
 						} );
 					} );
 
@@ -4458,7 +4460,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 0, 1, 2, 3 ]
 						} );
 					} );
 				} );
@@ -4466,8 +4468,13 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 		} );
 	} );
 
-	function runTest( { input, expected, eventStopped, executedCommands = {} } ) {
-	// function runTest( { input, expected, eventStopped, executedCommands = {}, changedBlocks = [] } ) {
+	// @param {Iterable.<String>} input
+	// @param {Iterable.<String>} expected
+	// @param {Boolean|Object.<String,Boolean>} eventStopped Boolean when preventDefault() and stop() were called/not called together.
+	// Object, when mixed behavior was expected.
+	// @param {Object.<String,Number>} executedCommands Numbers of command executions.
+	// @param {Array.<Number>} changedBlocks Indexes of changed blocks.
+	function runTest( { input, expected, eventStopped, executedCommands = {}, changedBlocks = [] } ) {
 		setModelData( model, modelList( input ) );
 
 		view.document.fire( eventInfo, domEventData );
@@ -4475,24 +4482,17 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 		expect( getModelData( model ) ).to.equalMarkup( modelList( expected ) );
 
 		if ( typeof eventStopped === 'object' ) {
-			expect( domEventData.domEvent.preventDefault.callCount ).to.equal( eventStopped.preventDefault, 'preventDefault() call' );
-			expect( eventInfo.stop.called ).to.equal( eventStopped.stop, 'eventInfo.stop() call' );
+			expect( domEventData.domEvent.preventDefault.called ).to.equal( eventStopped.preventDefault, 'preventDefault() call' );
+			expect( !!eventInfo.stop.called ).to.equal( eventStopped.stop, 'eventInfo.stop() call' );
 		} else {
-			if ( eventStopped ) {
-				expect( domEventData.domEvent.preventDefault.callCount ).to.equal( 1, 'preventDefault() call' );
-				expect( eventInfo.stop.called ).to.equal( true, 'eventInfo.stop() call' );
-			} else {
-				expect( domEventData.domEvent.preventDefault.callCount ).to.equal( 0, 'preventDefault() call' );
-				expect( eventInfo.stop.called ).to.equal( undefined, 'eventInfo.stop() call' );
-			}
+			expect( domEventData.domEvent.preventDefault.callCount ).to.equal( eventStopped ? 1 : 0, 'preventDefault() call' );
+			expect( eventInfo.stop.called ).to.equal( eventStopped ? true : undefined, 'eventInfo.stop() call' );
 		}
 
 		for ( const name in executedCommands ) {
 			expect( commandSpies[ name ].callCount ).to.equal( executedCommands[ name ], `${ name } command call count` );
 		}
 
-		// TODO: Enable it once all commands return this info.
-		// expect( blocksChangedByCommands.length ).to.equal( changedBlocks.length, 'changed blocks length' );
-		// expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks ), 'changed blocks\' indexes' );
+		expect( blocksChangedByCommands.map( block => block.index ) ).to.deep.equal( changedBlocks, 'changed blocks\' indexes' );
 	}
 } );

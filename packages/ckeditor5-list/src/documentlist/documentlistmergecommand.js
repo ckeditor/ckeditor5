@@ -11,6 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import {
 	getNestedListBlocks,
 	indentBlocks,
+	sortBlocks,
 	isFirstBlockOfListItem,
 	mergeListItemBefore
 } from './utils/model';
@@ -58,6 +59,7 @@ export default class DocumentListMergeCommand extends Command {
 	execute( { deleteContent = false } = {} ) {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+		const changedBlocks = [];
 
 		model.change( writer => {
 			let firstElement, lastElement;
@@ -99,12 +101,12 @@ export default class DocumentListMergeCommand extends Command {
 			if ( firstIndent != lastIndent ) {
 				const nestedLastElementBlocks = getNestedListBlocks( lastElement );
 
-				indentBlocks( [ lastElement, ...nestedLastElementBlocks ], writer, {
+				changedBlocks.push( ...indentBlocks( [ lastElement, ...nestedLastElementBlocks ], writer, {
 					indentBy: firstIndent - lastIndent,
 
 					// If outdenting, the entire sub-tree that follows must be included.
 					expand: firstIndent < lastIndent
-				} );
+				} ) );
 			}
 
 			if ( deleteContent ) {
@@ -128,14 +130,16 @@ export default class DocumentListMergeCommand extends Command {
 				// Check if the element after it was in the same list item and adjust it if needed.
 				const nextSibling = lastElementAfterDelete.nextSibling;
 
+				changedBlocks.push( lastElementAfterDelete );
+
 				if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
-					mergeListItemBefore( nextSibling, lastElementAfterDelete, writer );
+					changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
 				}
 			} else {
-				mergeListItemBefore( lastElement, firstElement, writer );
+				changedBlocks.push( ...mergeListItemBefore( lastElement, firstElement, writer ) );
 			}
 
-			// TODO this._fireAfterExecute()
+			this._fireAfterExecute( changedBlocks );
 		} );
 	}
 
@@ -155,7 +159,7 @@ export default class DocumentListMergeCommand extends Command {
 		 * @protected
 		 * @event afterExecute
 		 */
-		this.fire( 'afterExecute', changedBlocks );
+		this.fire( 'afterExecute', sortBlocks( new Set( changedBlocks ) ) );
 	}
 
 	/**

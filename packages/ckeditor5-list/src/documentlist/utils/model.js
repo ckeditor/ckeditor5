@@ -477,7 +477,9 @@ export function outdentFollowingItems( lastBlock, writer ) {
  * @returns {Array.<module:engine/model/element~Element>} The sorted array of blocks.
  */
 export function sortBlocks( blocks ) {
-	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
+	return Array.from( blocks )
+		.filter( block => block.root.rootName !== '$graveyard' )
+		.sort( ( a, b ) => a.index - b.index );
 }
 
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
