@@ -20,7 +20,7 @@ Each code release (there are usually 10-12 of those a year) brings different cha
 
 ### Code release
 
-Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions and bug fixes that took place, also highlighting if there are any breaking changes (e.i. changes that make the latest release incompatible with the previous ones code-wise). These are released on [CKEditor 5 npm site](https://www.npmjs.com/package/ckeditor5), as well as {@link installation/advanced/predefined-builds#download-options updated predefined builds} and {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder Online Builder} and are ready to download.
+Each code release is noted in the [changelog](https://github.com/ckeditor/ckeditor5/blob/stable/CHANGELOG.md) and enumerates all changes, additions and bug fixes that took place, also highlighting if there are any breaking changes (i.e. changes that make the latest release incompatible with the previous ones code-wise). These are released on [CKEditor 5 npm site](https://www.npmjs.com/package/ckeditor5), as well as {@link installation/advanced/predefined-builds#download-options updated predefined builds} and {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder Online Builder} and are ready to download.
 
 It is good to follow `npm` release messages about new packages being published as well as periodicall check the changelog.
 
