@@ -21,7 +21,7 @@ import stubUid from '../documentlist/_utils/uid';
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 import { modelList, setupTestHelpers } from '../documentlist/_utils/utils';
 
-describe.only( 'DocumentListPropertiesEditing - converters', () => {
+describe( 'DocumentListPropertiesEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot, test;
 
 	testUtils.createSinonSandbox();
@@ -41,7 +41,7 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 			await editor.destroy();
 		} );
 
-		describe.only( 'data pipeline', () => {
+		describe( 'data pipeline', () => {
 			beforeEach( () => {
 				stubUid( 0 );
 			} );
@@ -159,6 +159,25 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 						# Foo {id:000} {style:upper-alpha}
 						# Bar {id:001}
 						Paragraph.
+					` )
+				);
+			} );
+
+			// TODO
+			it( 'aaa', () => {
+				test.data(
+					'<ul>' +
+						'<li>' +
+							'cd' +
+							'<ol style="list-style-type:upper-alpha;">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>',
+
+					modelList( `
+						* cd {id:001}
+						  # efg {id:000} {style:upper-alpha}
 					` )
 				);
 			} );
@@ -441,6 +460,44 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 					);
 
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				// TODO
+				it( 'aaa', () => {
+					test.insert(
+						'<paragraph>x</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="001" listType="bulleted">cd</paragraph>' +
+						'<paragraph listIndent="1" listItemId="000" listStyle="upper-alpha" listType="numbered">efg</paragraph>]',
+
+						'<p>x</p>' +
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">cd</span>' +
+								'<ol style="list-style-type:upper-alpha">' +
+									'<li><span class="ck-list-bogus-paragraph">efg</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				// TODO this test should be in the reversed group
+				it.skip( 'aaa2', () => {
+					test.insert(
+						'<paragraph>x</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="001" listType="bulleted">cd</paragraph>' +
+						'<paragraph listIndent="1" listItemId="000" listReversed="true" listType="numbered">efg</paragraph>]',
+
+						'<p>x</p>' +
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">cd</span>' +
+								'<ol style="list-style-type:upper-alpha">' +
+									'<li><span class="ck-list-bogus-paragraph">efg</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
 				} );
 
 				// TODO multi-block

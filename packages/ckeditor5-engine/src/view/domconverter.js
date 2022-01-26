@@ -492,7 +492,11 @@ export default class DomConverter {
 				yield this._getBlockFiller( domDocument );
 			}
 
-			yield this.viewToDom( childView, domDocument, options );
+			if ( childView.is( 'element' ) && childView.getCustomProperty( 'transparent' ) ) {
+				yield* this.viewChildrenToDom( childView, domDocument, options );
+			} else {
+				yield this.viewToDom( childView, domDocument, options );
+			}
 
 			offset++;
 		}

@@ -401,6 +401,10 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 		const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
 		const viewPosition = mapper.toViewPosition( data.range.start );
 
+		if ( dataPipeline ) {
+			writer.setCustomProperty( 'transparent', true, paragraphElement );
+		}
+
 		mapper.bindElements( listItem, paragraphElement );
 		writer.insert( viewPosition, paragraphElement );
 
@@ -409,7 +413,7 @@ export function listItemParagraphDowncastConverter( attributes, model, { dataPip
 		// Find the range over the bogus paragraph (or just an inline content in the data pipeline).
 		let viewRange;
 
-		if ( dataPipeline ) {
+		if ( false && dataPipeline ) {
 			// Unwrap paragraph content from bogus paragraph.
 			viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
 

@@ -103,15 +103,17 @@ function unwrapListItemBlock( viewElement, strategy, writer ) {
 
 	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
 		const parentElement = attributeElement.parent;
+		const attributeValue = strategy.getAttributeOnUpcast( attributeElement );
 
-		if ( isListView( attributeElement ) ) {
+		// Unwrap only if the model attribute is really downcasted (it's not the default value).
+		if ( isListView( attributeElement ) && attributeValue !== strategy.defaultValue ) {
 			// Make a clone of an attribute element that only includes properties of list styles.
 			const element = writer.createAttributeElement( attributeElement.name, null, {
 				priority: attributeElement.priority,
 				id: attributeElement.id
 			} );
 
-			strategy.setAttributeOnDowncast( writer, strategy.getAttributeOnUpcast( attributeElement ), element );
+			strategy.setAttributeOnDowncast( writer, attributeValue, element );
 			writer.unwrap( writer.createRangeOn( viewElement ), element );
 		}
 

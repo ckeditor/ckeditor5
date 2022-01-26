@@ -207,7 +207,7 @@ export default class DocumentListEditing extends Plugin {
 			}
 		}
 
-		editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
+		// editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
 	}
 }
