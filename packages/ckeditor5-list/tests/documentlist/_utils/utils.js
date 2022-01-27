@@ -280,7 +280,7 @@ export function modelList( lines ) {
 								props.listStart = parseInt( value );
 								break;
 							case 'reversed':
-								props.listReversed = value === true || parseInt( value ) !== 0;
+								props.listReversed = value;
 								break;
 						}
 

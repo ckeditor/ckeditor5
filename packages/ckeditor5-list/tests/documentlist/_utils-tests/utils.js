@@ -390,6 +390,30 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should parse the custom list start', () => {
+		expect( modelList( [
+			'* foo {start:7}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listStart="7" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
+	it( 'should parse the list reversed', () => {
+		expect( modelList( [
+			'* foo {reversed:true}',
+			'  bar',
+			'* baz'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="bulleted">bar</paragraph>' +
+			'<paragraph listIndent="0" listItemId="002" listReversed="true" listType="bulleted">baz</paragraph>'
+		);
+	} );
+
 	it( 'should not parse the custom list style if provided in the following block of a list item', () => {
 		expect( modelList( [
 			'* foo {style:123}',

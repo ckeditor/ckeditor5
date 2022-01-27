@@ -366,13 +366,15 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			} );
 		} );
 
-		describe( 'editing pipeline', () => {
+		describe.only( 'editing pipeline', () => {
 			describe( 'insert', () => {
 				it( 'should convert single list (type: bulleted, style: default)', () => {
 					test.insert(
-						'<paragraph>x</paragraph>' +
-						'[<paragraph listIndent="0" listItemId="000" listType="bulleted" listStyle="default">Foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="001" listType="bulleted" listStyle="default">Bar</paragraph>]',
+						modelList( `
+							x
+							* [<paragraph>Foo</paragraph> {style:default}
+							* <paragraph>Bar</paragraph>]
+						` ),
 
 						'<p>x</p>' +
 						'<ul>' +
@@ -386,9 +388,11 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 				it( 'should convert single list (type: bulleted, style: circle)', () => {
 					test.insert(
-						'<paragraph>x</paragraph>' +
-						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="circle">Foo</paragraph>' +
-						'<paragraph listIndent="0" listItemId="b" listType="bulleted" listStyle="circle">Bar</paragraph>]',
+						modelList( `
+							x
+							* [<paragraph>Foo {style:circle}</paragraph>
+							* <paragraph>Bar</paragraph>]
+						` ),
 
 						'<p>x</p>' +
 						'<ul style="list-style-type:circle">' +
@@ -402,12 +406,14 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 				it( 'should convert nested bulleted list (main: circle, nested: disc)', () => {
 					test.insert(
-						'<paragraph>x</paragraph>' +
-						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="circle">Foo 1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="b" listType="bulleted" listStyle="disc">Bar 1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="c" listType="bulleted" listStyle="disc">Bar 2</paragraph>' +
-						'<paragraph listIndent="0" listItemId="d" listType="bulleted" listStyle="circle">Foo 2</paragraph>' +
-						'<paragraph listIndent="0" listItemId="e" listType="bulleted" listStyle="circle">Foo 3</paragraph>]',
+						modelList( `
+							x
+							* [<paragraph>Foo 1</paragraph> {style:circle}
+							  * <paragraph>Bar 1</paragraph> {style:disc}
+							  * <paragraph>Bar 2</paragraph>
+						    * <paragraph>Foo 2</paragraph>
+						    * <paragraph>Foo 3</paragraph>]
+						` ),
 
 						'<p>x</p>' +
 						'<ul style="list-style-type:circle">' +
@@ -433,12 +439,14 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					//     ▶ Level 0.2
 					//         ○ Level 0.2.1
 					test.insert(
-						'<paragraph>x</paragraph>' +
-						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="default">Level 0</paragraph>' +
-						'<paragraph listIndent="1" listItemId="b" listType="bulleted" listStyle="default">Level 0.1</paragraph>' +
-						'<paragraph listIndent="2" listItemId="c" listType="bulleted" listStyle="circle">Level 0.1.1</paragraph>' +
-						'<paragraph listIndent="1" listItemId="d" listType="bulleted" listStyle="default">Level 0.2</paragraph>' +
-						'<paragraph listIndent="2" listItemId="e" listType="bulleted" listStyle="circle">Level 0.2.1</paragraph>]',
+						modelList( `
+							x
+							* [<paragraph>Level 0</paragraph> {style:default}
+							  * <paragraph>Level 0.1</paragraph> {style:default}
+							    * <paragraph>Level 0.1.1</paragraph> {style:circle}
+							  * <paragraph>Level 0.2</paragraph>
+							    * <paragraph>Level 0.2.1</paragraph>] {style:circle}
+						` ),
 
 						'<p>x</p>' +
 						'<ul>' +
@@ -465,9 +473,11 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				// TODO
 				it( 'aaa', () => {
 					test.insert(
-						'<paragraph>x</paragraph>' +
-						'[<paragraph listIndent="0" listItemId="001" listType="bulleted">cd</paragraph>' +
-						'<paragraph listIndent="1" listItemId="000" listStyle="upper-alpha" listType="numbered">efg</paragraph>]',
+						modelList( `
+							x
+							* [<paragraph>cd</paragraph>
+							  # <paragraph>efg</paragraph>] {style:upper-alpha}
+						` ),
 
 						'<p>x</p>' +
 						'<ul>' +
@@ -484,9 +494,11 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				// TODO this test should be in the reversed group
 				it.skip( 'aaa2', () => {
 					test.insert(
-						'<paragraph>x</paragraph>' +
-						'[<paragraph listIndent="0" listItemId="001" listType="bulleted">cd</paragraph>' +
-						'<paragraph listIndent="1" listItemId="000" listReversed="true" listType="numbered">efg</paragraph>]',
+						modelList( `
+							x
+							* [<paragraph>cd</paragraph>
+							  # <paragraph>efg</paragraph>] {reversed:true}
+						` ),
 
 						'<p>x</p>' +
 						'<ul>' +
