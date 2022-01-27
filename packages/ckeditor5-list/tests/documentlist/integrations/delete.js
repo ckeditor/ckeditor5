@@ -3,18 +3,17 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+/* global document */
+
 import DocumentListEditing from '../../../src/documentlist/documentlistediting';
 
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
-import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
-import ClipboardPipeline from '@ckeditor/ckeditor5-clipboard/src/clipboardpipeline';
-import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import {
 	getData as getModelData,
 	setData as setModelData
@@ -28,6 +27,7 @@ import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubb
 describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	const blocksChangedByCommands = [];
 
+	let element;
 	let editor, model, view;
 	let eventInfo, domEventData;
 	let mergeBackwardCommand, mergeForwardCommand, splitAfterCommand, outdentCommand,
@@ -37,10 +37,12 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
-		editor = await VirtualTestEditor.create( {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		editor = await ClassicTestEditor.create( element, {
 			plugins: [
-				Paragraph, ClipboardPipeline, BoldEditing, DocumentListEditing, UndoEditing,
-				BlockQuoteEditing, TableEditing, HeadingEditing
+				DocumentListEditing, Paragraph, Delete, Widget
 			]
 		} );
 
@@ -51,14 +53,33 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 			allowAttributes: 'foo'
 		} );
 
-		model.schema.register( 'nonListable', {
-			allowWhere: '$block',
-			allowContentOf: '$block',
-			inheritTypesFrom: '$block',
-			allowAttributes: 'foo'
+		model.schema.register( 'blockWidget', {
+			isObject: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
 		} );
 
-		editor.conversion.elementToElement( { model: 'nonListable', view: 'div' } );
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'blockWidget',
+			view: ( modelItem, { writer } ) => {
+				return toWidget( writer.createContainerElement( 'blockwidget', { class: 'block-widget' } ), writer );
+			}
+		} );
+
+		editor.model.schema.register( 'inlineWidget', {
+			isObject: true,
+			isInline: true,
+			allowWhere: '$text',
+			allowAttributesOf: '$text'
+		} );
+
+		// The view element has no children.
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'inlineWidget',
+			view: ( modelItem, { writer } ) => toWidget(
+				writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } ), writer, { label: 'inline widget' }
+			)
+		} );
 
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
@@ -108,6 +129,8 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	} );
 
 	afterEach( async () => {
+		element.remove();
+
 		await editor.destroy();
 	} );
 
@@ -2778,6 +2801,460 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							},
 							changedBlocks: [ 1 ]
 						} );
+					} );
+				} );
+			} );
+		} );
+
+		describe( 'around widgets', () => {
+			describe( 'block widgets', () => {
+				it( 'TODO 1', () => {
+					runTest( {
+						input: [
+							'* <blockWidget></blockWidget>',
+							'[]'
+						],
+						expected: [
+							'* [<blockWidget></blockWidget>]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 1a', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  <blockWidget></blockWidget>',
+							'[]'
+						],
+						expected: [
+							'* a',
+							'  [<blockWidget></blockWidget>]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 1b', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * <blockWidget></blockWidget>',
+							'[]'
+						],
+						expected: [
+							'* a',
+							'  * [<blockWidget></blockWidget>]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 2', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  <blockWidget></blockWidget>',
+							'* []'
+						],
+						expected: [
+							'* a',
+							'  <blockWidget></blockWidget>',
+							'  []'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 1,
+							mergeForward: 0
+						},
+						changedBlocks: [ 2 ]
+					} );
+				} );
+
+				it( 'TODO 3', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * <blockWidget></blockWidget>',
+							'* []'
+						],
+						expected: [
+							'* a',
+							'  * <blockWidget></blockWidget>',
+							'  []'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 1,
+							mergeForward: 0
+						},
+						changedBlocks: [ 2 ]
+					} );
+				} );
+
+				it( 'TODO 4', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * <blockWidget></blockWidget>',
+							'    * []'
+						],
+						expected: [
+							'* a',
+							'  * <blockWidget></blockWidget>',
+							'    []'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 1,
+							mergeForward: 0
+						},
+						changedBlocks: [ 2 ]
+					} );
+				} );
+
+				it( 'TODO 5', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  b',
+							'  <blockWidget></blockWidget>',
+							'  []'
+						],
+						expected: [
+							'* a',
+							'  b',
+							'  [<blockWidget></blockWidget>]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 6', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  [<blockWidget></blockWidget>]'
+						],
+						expected: [
+							'* a[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 6a', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  [<blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* a[]',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 6b', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  [<blockWidget></blockWidget>]',
+							'  * b'
+						],
+						expected: [
+							'* a[]',
+							'  * b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 7', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * [<blockWidget></blockWidget>]'
+						],
+						expected: [
+							'* a[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 7a', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * [<blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* a[]',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 8', () => {
+					runTest( {
+						input: [
+							'* a[',
+							'  <blockWidget></blockWidget>]'
+						],
+						expected: [
+							'* a[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 9', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  <blockWidget></blockWidget>]'
+						],
+						expected: [
+							'[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'TODO 10', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]'
+						],
+						expected: [
+							'[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+			} );
+
+			describe( 'inline images', () => {
+				it( 'INTODO 0', () => {
+					runTest( {
+						input: [
+							'* <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
+						],
+						expected: [
+							'* []'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'INTODO 1', () => {
+					runTest( {
+						input: [
+							'* a<inlineWidget></inlineWidget>',
+							'[]'
+						],
+						expected: [
+							'* a<inlineWidget></inlineWidget>[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'INTODO 2', () => {
+					runTest( {
+						input: [
+							'* a<inlineWidget></inlineWidget>',
+							'* []'
+						],
+						expected: [
+							'* a<inlineWidget></inlineWidget>',
+							'  []'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 1,
+							mergeForward: 0
+						},
+						changedBlocks: [ 1 ]
+					} );
+				} );
+
+				it( 'INTODO 3', () => {
+					runTest( {
+						input: [
+							'* a[<inlineWidget></inlineWidget>]'
+						],
+						expected: [
+							'* a[]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'INTODO 4', () => {
+					runTest( {
+						input: [
+							'* a[<inlineWidget></inlineWidget>]'
+						],
+						expected: [
+							'* a[]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
 					} );
 				} );
 			} );
