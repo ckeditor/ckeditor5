@@ -7,7 +7,6 @@ import {
 	createListElement,
 	createListItemElement,
 	getIndent,
-	getViewElementIdForListType,
 	getViewElementNameForListType,
 	isListItemView,
 	isListView
@@ -215,32 +214,29 @@ describe( 'DocumentList - utils - view', () => {
 	} );
 
 	describe( 'createListElement()', () => {
-		it( 'should create an attribute element for numbered list with given ID', () => {
-			const element = createListElement( viewDowncastWriter, 0, 'numbered', 'abc' );
+		it( 'should create an attribute element for numbered list', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'numbered' );
 
 			expect( element.is( 'attributeElement', 'ol' ) ).to.be.true;
-			expect( element.id ).to.equal( 'abc' );
 		} );
 
-		it( 'should create an attribute element for bulleted list with given ID', () => {
-			const element = createListElement( viewDowncastWriter, 0, 'bulleted', '123' );
+		it( 'should create an attribute element for bulleted list', () => {
+			const element = createListElement( viewDowncastWriter, 0, 'bulleted' );
 
 			expect( element.is( 'attributeElement', 'ul' ) ).to.be.true;
-			expect( element.id ).to.equal( '123' );
 		} );
 
 		it( 'should create an attribute element OL for other list types', () => {
-			const element = createListElement( viewDowncastWriter, 0, 'something', 'foobar' );
+			const element = createListElement( viewDowncastWriter, 0, 'something' );
 
 			expect( element.is( 'attributeElement', 'ul' ) ).to.be.true;
-			expect( element.id ).to.equal( 'foobar' );
 		} );
 
 		it( 'should use priority related to indent', () => {
 			let previousPriority = Number.NEGATIVE_INFINITY;
 
 			for ( let i = 0; i < 20; i++ ) {
-				const element = createListElement( viewDowncastWriter, i, 'abc', '123' );
+				const element = createListElement( viewDowncastWriter, i, 'abc' );
 
 				expect( element.priority ).to.be.greaterThan( previousPriority );
 				expect( element.priority ).to.be.lessThan( 80 );
@@ -304,17 +300,6 @@ describe( 'DocumentList - utils - view', () => {
 			expect( getViewElementNameForListType( 'foo' ) ).to.equal( 'ul' );
 			expect( getViewElementNameForListType( 'bar' ) ).to.equal( 'ul' );
 			expect( getViewElementNameForListType( 'sth' ) ).to.equal( 'ul' );
-		} );
-	} );
-
-	describe( 'getViewElementIdForListType()', () => {
-		it( 'should generate view element ID for the given list type and indent', () => {
-			expect( getViewElementIdForListType( 'bulleted', 0 ) ).to.equal( 'list-bulleted-0' );
-			expect( getViewElementIdForListType( 'bulleted', 1 ) ).to.equal( 'list-bulleted-1' );
-			expect( getViewElementIdForListType( 'bulleted', 2 ) ).to.equal( 'list-bulleted-2' );
-			expect( getViewElementIdForListType( 'numbered', 0 ) ).to.equal( 'list-numbered-0' );
-			expect( getViewElementIdForListType( 'numbered', 1 ) ).to.equal( 'list-numbered-1' );
-			expect( getViewElementIdForListType( 'numbered', 2 ) ).to.equal( 'list-numbered-2' );
 		} );
 	} );
 } );

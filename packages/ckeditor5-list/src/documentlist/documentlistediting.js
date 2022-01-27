@@ -16,10 +16,9 @@ import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
 import DocumentListSplitCommand from './documentlistsplitcommand';
 import {
+	bogusParagraphCreator,
 	listItemDowncastConverter,
-	listItemParagraphDowncastConverter,
 	listItemUpcastConverter,
-	listItemViewToModelLengthMapper,
 	listUpcastCleanList,
 	reconvertItemsOnDataChange
 } from './converters';
@@ -196,16 +195,26 @@ export default class DocumentListEditing extends Plugin {
 				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
 			} );
 
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => downcastConverters( dispatcher ) );
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => downcastConverters( dispatcher, { dataPipeline: true } ) );
+		editor.conversion.for( 'editingDowncast' )
+			.elementToElement( {
+				model: 'paragraph',
+				view: bogusParagraphCreator(),
+				converterPriority: 'high'
+			} );
 
-		function downcastConverters( dispatcher, options = {} ) {
-			dispatcher.on( 'insert:paragraph', listItemParagraphDowncastConverter( attributes, model, options ), { priority: 'high' } );
+		editor.conversion.for( 'dataDowncast' )
+			.elementToElement( {
+				model: 'paragraph',
+				view: bogusParagraphCreator( { dataPipeline: true } ),
+				converterPriority: 'high'
+			} );
 
-			for ( const attributeName of attributes ) {
-				dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
-			}
-		}
+		editor.conversion.for( 'downcast' )
+			.add( dispatcher => {
+				for ( const attributeName of attributes ) {
+					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
+				}
+			} );
 
 		// editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );

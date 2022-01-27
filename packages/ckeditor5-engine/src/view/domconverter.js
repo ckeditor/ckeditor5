@@ -492,9 +492,21 @@ export default class DomConverter {
 				yield this._getBlockFiller( domDocument );
 			}
 
-			if ( childView.is( 'element' ) && childView.getCustomProperty( 'transparent' ) ) {
+			// TODO add tests
+			const transparentRendering = childView.is( 'element' ) && childView.getCustomProperty( 'dataPipeline:transparentRendering' );
+
+			if ( transparentRendering && this.renderingMode == 'data' ) {
 				yield* this.viewChildrenToDom( childView, domDocument, options );
 			} else {
+				if ( transparentRendering ) {
+					/**
+					 * The `dataPipeline:transparentRendering` flag is supported only in the data pipeline.
+					 *
+					 * @error domconverter-transparent-rendering-unsupported-in-editing-pipeline
+					 */
+					logWarning( 'domconverter-transparent-rendering-unsupported-in-editing-pipeline', { viewElement: childView } );
+				}
+
 				yield this.viewToDom( childView, domDocument, options );
 			}
 

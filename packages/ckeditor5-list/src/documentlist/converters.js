@@ -18,8 +18,7 @@ import {
 	getIndent,
 	isListView,
 	isListItemView,
-	getViewElementNameForListType,
-	getViewElementIdForListType
+	getViewElementNameForListType
 } from './utils/view';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
@@ -257,10 +256,9 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			} else if ( isListView( element ) ) {
 				const type = stack[ indent ].type;
 				const expectedElementName = getViewElementNameForListType( type );
-				// const expectedElementId = getViewElementIdForListType( type, indent );
 
 				// For UL and OL check if the name and ID of element is correct.
-				if ( element.name != expectedElementName /* || element.id != expectedElementId */ ) {
+				if ( element.name != expectedElementName ) {
 					break;
 				}
 
@@ -275,58 +273,6 @@ export function reconvertItemsOnDataChange( model, editing ) {
 
 		return true;
 	}
-}
-
-/**
- * Returns the view-to-model element length mapping callback for list items. This is used in the data pipeline to be able to map length
- * of the bogus paragraphs that are down-casted in the data pipeline without any container.
- *
- * @protected
- * @param {module:engine/conversion/mapper~Mapper} mapper The mapper instance.
- * @param {module:engine/model/schema~Schema} schema A schema instance.
- * @return {Function}
- */
-export function listItemViewToModelLengthMapper( mapper, schema ) {
-	function getViewListItemModelLength( element ) {
-		let length = 0;
-
-		// First count model size of nested lists.
-		for ( const child of element.getChildren() ) {
-			if ( isListView( child ) ) {
-				for ( const item of child.getChildren() ) {
-					length += getViewListItemModelLength( item );
-				}
-			}
-		}
-
-		let hasBlocks = false;
-
-		// Then add the size of block elements or in case of content directly in the LI add 1.
-		for ( const child of element.getChildren() ) {
-			if ( !isListView( child ) ) {
-				const modelElement = mapper.toModelElement( child );
-
-				// If the content is not mapped (attribute element or a text)
-				// or is inline then this is a content directly in the LI.
-				if ( !modelElement || schema.isInline( modelElement ) ) {
-					return length + 1;
-				}
-
-				// There are some blocks in LI so count their model length.
-				length += mapper.getModelLength( child );
-				hasBlocks = true;
-			}
-		}
-
-		// If the LI was empty or contained only nested lists.
-		if ( !hasBlocks ) {
-			length += 1;
-		}
-
-		return length;
-	}
-
-	return getViewListItemModelLength;
 }
 
 /**
@@ -363,69 +309,27 @@ export function listItemDowncastConverter( attributes, model ) {
 }
 
 /**
- * Returns the bogus paragraph downcast converter. A bogus paragraph is used if a list item contains only a single block or nested list.
+ * Returns the bogus paragraph view element creator. A bogus paragraph is used if a list item contains only a single block or nested list.
  *
  * @protected
- * @param {Array.<String>} attributes A list of attribute names that should be converted if are set.
- * @param {module:engine/model/model~Model} model The model.
  * @param {Object} [options]
  * @param {Boolean} [options.dataPipeline=false]
  * @returns {Function}
  */
-export function listItemParagraphDowncastConverter( attributes, model, { dataPipeline } ) {
-	const attributesConsumer = createAttributesConsumer( attributes );
-
-	return ( evt, data, conversionApi ) => {
-		const { writer, mapper, consumable } = conversionApi;
-
-		const listItem = data.item;
-
-		// Test the paragraph.
-		if ( !consumable.test( listItem, evt.name ) ) {
-			return;
-		}
-
+export function bogusParagraphCreator( { dataPipeline } = {} ) {
+	return ( modelElement, { writer } ) => {
 		// Convert only if a bogus paragraph should be used.
-		if ( !shouldUseBogusParagraph( listItem ) ) {
+		if ( !shouldUseBogusParagraph( modelElement ) ) {
 			return;
 		}
 
-		// Consume attributes.
-		if ( !attributesConsumer( listItem, consumable ) ) {
-			return;
-		}
-
-		// Consume the paragraph.
-		consumable.consume( listItem, evt.name );
-
-		const paragraphElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
-		const viewPosition = mapper.toViewPosition( data.range.start );
+		const viewElement = writer.createContainerElement( 'span', { class: 'ck-list-bogus-paragraph' } );
 
 		if ( dataPipeline ) {
-			writer.setCustomProperty( 'transparent', true, paragraphElement );
+			writer.setCustomProperty( 'dataPipeline:transparentRendering', true, viewElement );
 		}
 
-		mapper.bindElements( listItem, paragraphElement );
-		writer.insert( viewPosition, paragraphElement );
-
-		conversionApi.convertChildren( listItem );
-
-		// Find the range over the bogus paragraph (or just an inline content in the data pipeline).
-		let viewRange;
-
-		if ( false && dataPipeline ) {
-			// Unwrap paragraph content from bogus paragraph.
-			viewRange = writer.move( writer.createRangeIn( paragraphElement ), viewPosition );
-
-			writer.remove( paragraphElement );
-			mapper.unbindViewElement( paragraphElement );
-		} else {
-			// Use range on the bogus paragraph to wrap it with ULs and LIs.
-			viewRange = writer.createRangeOn( paragraphElement );
-		}
-
-		// Then wrap it with the list wrappers.
-		wrapListItemBlock( listItem, viewRange, writer );
+		return viewElement;
 	};
 }
 
@@ -481,8 +385,6 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 		const listItemViewElement = createListItemElement( writer, indent, listItemId );
 		const listViewElement = createListElement( writer, indent, listType );
 
-		listItemViewElement.getFillerOffset = getListItemFillerOffset;
-
 		viewRange = writer.wrap( viewRange, listItemViewElement );
 		viewRange = writer.wrap( viewRange, listViewElement );
 
@@ -523,22 +425,6 @@ function createAttributesConsumer( attributes ) {
 
 		return true;
 	};
-}
-
-// The function that handled block filler position in the list items with bogus paragraph.
-// Note that this has a purpose only in the data pipeline, so we can ignore UIElements.
-function getListItemFillerOffset() {
-	for ( const child of this.getChildren() ) {
-		// There is no content before a nested list so render a block filler before the nested list.
-		if ( isListView( child ) ) {
-			return 0;
-		} else {
-			return null;
-		}
-	}
-
-	// Render block filler if there is no children in the list item.
-	return 0;
 }
 
 // Whether the given item should be rendered as a bogus paragraph.
