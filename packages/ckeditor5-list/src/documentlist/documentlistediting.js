@@ -138,13 +138,9 @@ export default class DocumentListEditing extends Plugin {
 								return;
 							}
 
-							editor.execute( 'mergeListItemBackward', {
-								deleteContent: false
-							} );
+							editor.execute( 'mergeListItemBackward' );
 						} else {
-							editor.execute( 'mergeListItemBackward', {
-								deleteContent: previousSibling.isEmpty || isInsideSingleListItem
-							} );
+							editor.execute( 'mergeListItemBackward' );
 						}
 					}
 
@@ -172,9 +168,7 @@ export default class DocumentListEditing extends Plugin {
 					// 	return;
 					// }
 
-					editor.execute( 'mergeListItemForward', {
-						deleteContent: true
-					} );
+					editor.execute( 'mergeListItemForward' );
 
 					data.preventDefault();
 					evt.stop();

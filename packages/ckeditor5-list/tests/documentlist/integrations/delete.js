@@ -25,7 +25,7 @@ import stubUid from '../_utils/uid';
 import { modelList } from '../_utils/utils';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 
-describe( 'DocumentListEditing integrations: backspace & delete', () => {
+describe.only( 'DocumentListEditing integrations: backspace & delete', () => {
 	const blocksChangedByCommands = [];
 
 	let editor, model, view;

@@ -13,7 +13,9 @@ import {
 	indentBlocks,
 	sortBlocks,
 	isFirstBlockOfListItem,
-	mergeListItemBefore
+	mergeListItemBefore,
+	isSingleListItem,
+	isListItemBlock
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
@@ -47,7 +49,7 @@ export default class DocumentListMergeCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = true; // this._checkEnabled();
+		this.isEnabled = this._checkEnabled();
 	}
 
 	/**
@@ -56,43 +58,14 @@ export default class DocumentListMergeCommand extends Command {
 	 * @fires execute
 	 * @fires afterExecute
 	 */
-	execute( { deleteContent = false } = {} ) {
+	execute() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 		const changedBlocks = [];
 
 		model.change( writer => {
-			let firstElement, lastElement;
-
-			if ( selection.isCollapsed ) {
-				const positionParent = selection.getFirstPosition().parent;
-				const isFirstBlock = isFirstBlockOfListItem( positionParent );
-
-				if ( this._direction == 'backward' ) {
-					lastElement = positionParent;
-
-					if ( isFirstBlock && !deleteContent ) {
-						// For the "c" as an anchorElement:
-						//	* a
-						//	  * b
-						//  * [c]  <-- this block should be merged with "a"
-						// It should find "a" element to merge with:
-						//	* a
-						//	  * b
-						//    c
-						firstElement = ListWalker.first( positionParent, { sameIndent: true, lowerIndent: true } );
-					} else {
-						firstElement = positionParent.previousSibling;
-					}
-				} else {
-					// In case of the forward merge there is no case as above, just merge with next sibling.
-					firstElement = positionParent;
-					lastElement = positionParent.nextSibling;
-				}
-			} else {
-				firstElement = selection.getFirstPosition().parent;
-				lastElement = selection.getLastPosition().parent;
-			}
+			const shouldMergeOnBlocksContentLevel = this._shouldMergeOnBlocksContentLevel();
+			const { firstElement, lastElement } = this._getBoundaryElements( selection, shouldMergeOnBlocksContentLevel );
 
 			const firstIndent = firstElement.getAttribute( 'listIndent' ) || 0;
 			const lastIndent = lastElement.getAttribute( 'listIndent' );
@@ -109,7 +82,7 @@ export default class DocumentListMergeCommand extends Command {
 				} ) );
 			}
 
-			if ( deleteContent ) {
+			if ( shouldMergeOnBlocksContentLevel ) {
 				let sel = selection;
 
 				if ( selection.isCollapsed ) {
@@ -171,33 +144,111 @@ export default class DocumentListMergeCommand extends Command {
 	_checkEnabled() {
 		const model = this.editor.model;
 		const selection = model.document.selection;
+
+		const shouldMergeOnBlocksContentLevel = this._shouldMergeOnBlocksContentLevel();
+		const { firstElement, lastElement } = this._getBoundaryElements( selection, shouldMergeOnBlocksContentLevel );
+
+		if ( shouldMergeOnBlocksContentLevel ) {
+			return isListItemBlock( lastElement );
+			// return isListItemBlock( firstElement ) && isListItemBlock( lastElement );
+		} else {
+			return isListItemBlock( firstElement );
+		}
+
+		// let sel = selection;
+
+		// if ( selection.isCollapsed ) {
+		// 	// TODO what if one of blocks is an object (for example a table or block image)?
+		// 	sel = writer.createSelection( writer.createRange(
+		// 		writer.createPositionAt( firstElement, 'end' ),
+		// 		writer.createPositionAt( lastElement, 0 )
+		// 	) );
+		// }
+
+		// // Delete selected content. Replace entire content only for non-collapsed selection.
+		// model.deleteContent( sel, { doNotResetEntireContent: selection.isCollapsed } );
+
+		// // Get the last "touched" element after deleteContent call (can't use the lastElement because
+		// // it could get merged into the firstElement while deleting content).
+		// const lastElementAfterDelete = sel.getLastPosition().parent;
+
+		// // Check if the element after it was in the same list item and adjust it if needed.
+		// const nextSibling = lastElementAfterDelete.nextSibling;
+
+		// changedBlocks.push( lastElementAfterDelete );
+
+		// if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
+		// 	changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
+		// }
+	}
+
+	/**
+	 *
+	 * @returns TODO
+	 */
+	_shouldMergeOnBlocksContentLevel() {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
+		if ( !selection.isCollapsed || this._direction === 'forward' ) {
+			return true;
+		}
+
 		const firstPosition = selection.getFirstPosition();
-		const firstPositionParent = firstPosition.parent;
+		const positionParent = firstPosition.parent;
+		const previousSibling = positionParent.previousSibling;
 
-		// TODO refactor this; it does not depend on where exactly in the list block the selection is
+		if ( model.schema.isObject( previousSibling ) ) {
+			return false;
+		}
 
-		let firstNode;
+		if ( previousSibling.isEmpty ) {
+			return true;
+		}
+
+		return isSingleListItem( [ positionParent, previousSibling ] );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {*} selection
+	 * @param {*} shouldMergeOnBlocksContentLevel
+	 * @returns
+	 */
+	_getBoundaryElements( selection, shouldMergeOnBlocksContentLevel ) {
+		let firstElement, lastElement;
 
 		if ( selection.isCollapsed ) {
-			firstNode = firstPosition.isAtEnd ? firstPositionParent.nextSibling : firstPositionParent.previousSibling;
+			const positionParent = selection.getFirstPosition().parent;
+			const isFirstBlock = isFirstBlockOfListItem( positionParent );
+
+			if ( this._direction == 'backward' ) {
+				lastElement = positionParent;
+
+				if ( isFirstBlock && !shouldMergeOnBlocksContentLevel ) {
+					// For the "c" as an anchorElement:
+					//	* a
+					//	  * b
+					//  * [c]  <-- this block should be merged with "a"
+					// It should find "a" element to merge with:
+					//	* a
+					//	  * b
+					//    c
+					firstElement = ListWalker.first( positionParent, { sameIndent: true, lowerIndent: true } );
+				} else {
+					firstElement = positionParent.previousSibling;
+				}
+			} else {
+				// In case of the forward merge there is no case as above, just merge with next sibling.
+				firstElement = positionParent;
+				lastElement = positionParent.nextSibling;
+			}
 		} else {
-			firstNode = firstPositionParent;
+			firstElement = selection.getFirstPosition().parent;
+			lastElement = selection.getLastPosition().parent;
 		}
 
-		const lastNode = selection.getLastPosition().parent;
-
-		if ( firstNode === lastNode ) {
-			return false;
-		}
-
-		if ( !firstNode || !lastNode.hasAttribute( 'listItemId' ) ) {
-			return false;
-		}
-
-		if ( selection.isCollapsed && !( firstPosition.isAtStart || firstPosition.isAtEnd ) ) {
-			return false;
-		}
-
-		return true;
+		return { firstElement, lastElement };
 	}
 }
