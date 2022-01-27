@@ -226,6 +226,110 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should allow passing custom element (no selection)', () => {
+		expect( modelList( [
+			'* <objectElement></objectElement>'
+		] ) ).to.equalMarkup(
+			'<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (self closing, no attributes)', () => {
+		expect( modelList( [
+			'* <objectElement/>'
+		] ) ).to.equalMarkup(
+			'<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (self closing, with attributes)', () => {
+		expect( modelList( [
+			'* <objectElement foo="bar"/>'
+		] ) ).to.equalMarkup(
+			'<objectElement foo="bar" listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (empty)', () => {
+		expect( modelList( [
+			'* [<objectElement></objectElement>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (nested)', () => {
+		expect( modelList( [
+			'* [<paragraph><nested></nested></paragraph>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<paragraph listIndent="0" listItemId="000" listType="bulleted"><nested></nested></paragraph>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (nested mixed)', () => {
+		expect( modelList( [
+			'* [<objectElement>a<nested></nested>b</objectElement>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">a<nested></nested>b</objectElement>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selected)', () => {
+		expect( modelList( [
+			'* [<objectElement>foo</objectElement>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection starts before)', () => {
+		expect( modelList( [
+			'* [<objectElement>foo</objectElement>',
+			'* bar]'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar]</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection ends before)', () => {
+		expect( modelList( [
+			'* [bar',
+			'* ]<objectElement>foo</objectElement>'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[bar</paragraph>]' +
+			'<objectElement listIndent="0" listItemId="001" listType="bulleted">foo</objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection starts after)', () => {
+		expect( modelList( [
+			'* <objectElement>foo</objectElement>[',
+			'* bar]'
+		] ) ).to.equalMarkup(
+			'<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>' +
+			'[<paragraph listIndent="0" listItemId="001" listType="bulleted">bar]</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection ends after)', () => {
+		expect( modelList( [
+			'* [bar',
+			'* <objectElement>foo</objectElement>]'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[bar</paragraph>' +
+			'<objectElement listIndent="0" listItemId="001" listType="bulleted">foo</objectElement>]'
+		);
+	} );
+
 	it( 'should allow to customize the list item id (suffix)', () => {
 		expect( modelList( [
 			'* foo{abc}',

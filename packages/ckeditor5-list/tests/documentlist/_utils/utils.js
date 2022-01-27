@@ -324,9 +324,43 @@ function stringifyNode( node, writer ) {
 	return stringifyModel( fragment );
 }
 
-function stringifyElement( content, attributes = {}, name = 'paragraph' ) {
-	[ , name, content ] = content.match( /^<([^>]+)>([^<]*)?/ ) || [ null, name, content ];
-	attributes = Object.entries( attributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+function stringifyElement( content, listAttributes = {} ) {
+	let name = 'paragraph';
+	let elementAttributes = '';
+	let selectionBefore = '';
+	let selectionAfter = '';
 
-	return `<${ name }${ attributes }>${ content }</${ name.replace( /\s.*/, '' ) }>`;
+	const regexp = new RegExp(
+		'^(?<selectionBefore>[\\[\\]])?' +													// [<element
+			'(?:' +
+				'<(?<nameSelfClosing>\\w+)(?<elementSelfClosingAttributes>[^>]+)?/>' +		// For instance <element/> OR <element attrs/>
+				'|' +
+				'<(?<name>\\w+)(?<elementAttributes>[^>]+)?>' +								// For instance <element> OR <element attrs>...
+					'(?<content>.*)' +
+				'(?:</\\4>)' +																// Note: Match <name> here in the closing tag.
+			')' +
+		'(?<selectionAfter>[\\[\\]])?$'														// </element>] or <element/>]
+	);
+
+	const match = content.match( regexp );
+
+	if ( match ) {
+		name = match.groups.nameSelfClosing || match.groups.name;
+		elementAttributes = match.groups.elementAttributes || match.groups.elementSelfClosingAttributes || '';
+		content = match.groups.content || '';
+
+		if ( match.groups.selectionBefore ) {
+			selectionBefore = match.groups.selectionBefore;
+		}
+
+		if ( match.groups.selectionAfter ) {
+			selectionAfter = match.groups.selectionAfter;
+		}
+	}
+
+	listAttributes = Object.entries( listAttributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+
+	return `${ selectionBefore }` +
+		`<${ name }${ elementAttributes }${ listAttributes }>${ content }</${ name.replace( /\s.*/, '' ) }>` +
+	`${ selectionAfter }`;
 }
