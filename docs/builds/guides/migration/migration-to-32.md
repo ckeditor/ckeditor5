@@ -20,6 +20,10 @@ For the entire list of changes introduced in version 32.0.0, see the [changelog 
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v32.0.0.
 
-### Bump of minimal version of `Node.js` to 14.x
+## Bump of minimal version of `Node.js` to 14.x
 
 [`Node.js` 12 ends its long-term support in April 2022](https://nodejs.org/en/about/releases/). Because of that, starting from v32.0.0, the minimal version of `Node.js` required by CKEditor 5 will be 14.
+
+## The `ListStyle` plugin is now obsolete
+
+Due to the introduction of the new {@link features/lists#list-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Please refer to the {@link features/lists#installation installation guide} for details on how to handle the upgrade.
