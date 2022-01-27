@@ -13,6 +13,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import {
 	parse as parseModel,
 	setData as setModelData,
@@ -24,11 +26,41 @@ import DocumentList from '../../src/documentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent, Widget ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		editor.model.schema.register( 'blockWidget', {
+			isObject: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
+		} );
+
+		editor.conversion.for( 'upcast' ).elementToElement( { model: 'blockWidget', view: 'blockwidget' } );
+
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'blockWidget',
+			view: ( modelItem, { writer } ) => {
+				return toWidget( writer.createContainerElement( 'blockwidget', { class: 'block-widget' } ), writer );
+			}
+		} );
+
+		editor.model.schema.register( 'inlineWidget', {
+			isObject: true,
+			isInline: true,
+			allowWhere: '$text',
+			allowAttributesOf: '$text'
+		} );
+
+		// The view element has no children.
+		editor.conversion.for( 'downcast' ).elementToElement( {
+			model: 'inlineWidget',
+			view: ( modelItem, { writer } ) => toWidget(
+				writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } ), writer, { label: 'inline widget' }
+			)
+		} );
 
 		const model = '<paragraph listIndent="0" listItemId="000" listType="bulleted">A</paragraph>\n' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">B</paragraph>\n' +
