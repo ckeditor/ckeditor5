@@ -231,7 +231,6 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 			// If the content the selection is anchored to is not a list, let's create a list of a desired style.
 			else {
 				editor.model.change( () => {
-					editor.execute( parentCommandName );
 					editor.execute( 'listStyle', { type } );
 				} );
 			}

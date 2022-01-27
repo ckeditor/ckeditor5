@@ -253,7 +253,7 @@ describe( 'ListStyleCommand', () => {
 			);
 		} );
 
-		it( 'should start searching for the list items from starting position (collapsed selection)', () => {
+		it( 'should start searching for the list items from starting position (non-collapsed selection)', () => {
 			setData( model,
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">2.</listItem>' +
@@ -271,7 +271,7 @@ describe( 'ListStyleCommand', () => {
 			);
 		} );
 
-		it( 'should start searching for the list items from ending position (collapsed selection)', () => {
+		it( 'should start searching for the list items from ending position (non-collapsed selection)', () => {
 			setData( model,
 				'<paragraph>[Foo.</paragraph>' +
 				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.]</listItem>' +
@@ -282,7 +282,7 @@ describe( 'ListStyleCommand', () => {
 			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equal(
-				'<paragraph>[Foo.</paragraph>' +
+				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.]</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">2.</listItem>' +
 				'<listItem listIndent="0" listStyle="circle" listType="bulleted">3.</listItem>'
@@ -325,22 +325,106 @@ describe( 'ListStyleCommand', () => {
 			);
 		} );
 
-		it( 'should not update anything if no listItem found in the selection', () => {
+		it( 'should not update anything if no listItem found in the selection (default style)', () => {
 			setData( model,
 				'<paragraph>[Foo.]</paragraph>' +
-				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>'
+				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>'
 			);
 
 			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
 
-			listStyleCommand.execute( { type: 'circle' } );
+			listStyleCommand.execute();
 
 			expect( getData( model ) ).to.equal(
 				'<paragraph>[Foo.]</paragraph>' +
-				'<listItem listIndent="0" listStyle="default" listType="bulleted">1.</listItem>'
+				'<listItem listIndent="0" listStyle="circle" listType="bulleted">1.</listItem>'
 			);
 
 			expect( modelChangeStub.called ).to.equal( false );
+		} );
+
+		it( 'should create a list list if no listItem found in the selection (circle, non-collapsed selection)', () => {
+			setData( model,
+				'<paragraph>[Foo.</paragraph>' +
+				'<paragraph>Bar.]</paragraph>'
+			);
+
+			const listCommand = editor.commands.get( 'bulletedList' );
+			const spy = sinon.spy( listCommand, 'execute' );
+
+			listStyleCommand.execute( { type: 'circle' } );
+
+			expect( getData( model ) ).to.equal(
+				'<listItem listIndent="0" listStyle="circle" listType="bulleted">[Foo.</listItem>' +
+				'<listItem listIndent="0" listStyle="circle" listType="bulleted">Bar.]</listItem>'
+			);
+
+			expect( spy.called ).to.be.true;
+
+			spy.restore();
+		} );
+
+		it( 'should create a list list if no listItem found in the selection (square, collapsed selection)', () => {
+			setData( model,
+				'<paragraph>Fo[]o.</paragraph>' +
+				'<paragraph>Bar.</paragraph>'
+			);
+
+			const listCommand = editor.commands.get( 'bulletedList' );
+			const spy = sinon.spy( listCommand, 'execute' );
+
+			listStyleCommand.execute( { type: 'circle' } );
+
+			expect( getData( model ) ).to.equal(
+				'<listItem listIndent="0" listStyle="circle" listType="bulleted">Fo[]o.</listItem>' +
+				'<paragraph>Bar.</paragraph>'
+			);
+
+			expect( spy.called ).to.be.true;
+
+			spy.restore();
+		} );
+
+		it( 'should create a list list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
+			setData( model,
+				'<paragraph>[Foo.</paragraph>' +
+				'<paragraph>Bar.]</paragraph>'
+			);
+
+			const listCommand = editor.commands.get( 'numberedList' );
+			const spy = sinon.spy( listCommand, 'execute' );
+
+			listStyleCommand.execute( { type: 'decimal' } );
+
+			expect( getData( model ) ).to.equal(
+				'<listItem listIndent="0" listStyle="decimal" listType="numbered">[Foo.</listItem>' +
+				'<listItem listIndent="0" listStyle="decimal" listType="numbered">Bar.]</listItem>'
+			);
+
+			expect( spy.called ).to.be.true;
+
+			spy.restore();
+		} );
+
+		it( 'should create a list list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
+			setData( model,
+				'<paragraph>Fo[]o.</paragraph>' +
+				'<paragraph>Bar.</paragraph>'
+			);
+
+			const listCommand = editor.commands.get( 'numberedList' );
+			const spy = sinon.spy( listCommand, 'execute' );
+
+			listStyleCommand.execute( { type: 'upper-roman' } );
+
+			expect( getData( model ) ).to.equal(
+				'<listItem listIndent="0" listStyle="upper-roman" listType="numbered">Fo[]o.</listItem>' +
+				'<paragraph>Bar.</paragraph>'
+			);
+
+			expect( spy.called ).to.be.true;
+
+			spy.restore();
 		} );
 
 		it( 'should update all items that belong to selected elements', () => {
