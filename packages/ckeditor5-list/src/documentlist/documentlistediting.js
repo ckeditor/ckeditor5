@@ -32,8 +32,7 @@ import {
 import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem,
-	isLastBlockOfListItem,
-	isSingleListItem
+	isLastBlockOfListItem
 } from './utils/model';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
@@ -130,18 +129,13 @@ export default class DocumentListEditing extends Plugin {
 					}
 					// Merge block with previous one (on the block level or on the content level).
 					else {
-						const previousSibling = positionParent.previousSibling;
-						const isInsideSingleListItem = isSingleListItem( [ positionParent, previousSibling ] );
+						const mergeListItemCommand = editor.commands.get( 'mergeListItemBackward' );
 
-						if ( model.schema.isObject( previousSibling ) ) {
-							if ( isInsideSingleListItem ) {
-								return;
-							}
-
-							editor.execute( 'mergeListItemBackward' );
-						} else {
-							editor.execute( 'mergeListItemBackward' );
+						if ( !mergeListItemCommand.isEnabled ) {
+							return;
 						}
+
+						mergeListItemCommand.execute();
 					}
 
 					data.preventDefault();
@@ -149,26 +143,18 @@ export default class DocumentListEditing extends Plugin {
 				}
 				// Non-collapsed selection or forward delete.
 				else {
-					const lastPosition = selection.getLastPosition();
-					const positionParent = lastPosition.parent;
-
 					// Collapsed selection should trigger forward merging only if at the end of a block.
-					if ( selection.isCollapsed && !lastPosition.isAtEnd ) {
+					if ( selection.isCollapsed && !selection.getLastPosition().isAtEnd ) {
 						return;
 					}
 
-					// The list bocks merging is required only if the selection ends in the list item
-					// (in case of fixing the indents of following list items).
-					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+					const mergeListItemCommand = editor.commands.get( 'mergeListItemForward' );
+
+					if ( !mergeListItemCommand.isEnabled ) {
 						return;
 					}
 
-					// TODO let the widget handler do its stuff
-					// if ( model.schema.isObject( positionParent.nextSibling ) ) {
-					// 	return;
-					// }
-
-					editor.execute( 'mergeListItemForward' );
+					mergeListItemCommand.execute();
 
 					data.preventDefault();
 					evt.stop();

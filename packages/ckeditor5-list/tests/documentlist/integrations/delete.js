@@ -25,7 +25,7 @@ import stubUid from '../_utils/uid';
 import { modelList } from '../_utils/utils';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 
-describe.only( 'DocumentListEditing integrations: backspace & delete', () => {
+describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	const blocksChangedByCommands = [];
 
 	let editor, model, view;
@@ -71,10 +71,15 @@ describe.only( 'DocumentListEditing integrations: backspace & delete', () => {
 		mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' );
 		mergeForwardCommand = editor.commands.get( 'mergeListItemForward' );
 
-		splitAfterCommandExecuteSpy = sinon.spy( splitAfterCommand, 'execute' );
-		outdentCommandExecuteSpy = sinon.spy( outdentCommand, 'execute' );
-		mergeBackwardCommandExecuteSpy = sinon.spy( mergeBackwardCommand, 'execute' );
-		mergeForwardCommandExecuteSpy = sinon.spy( mergeForwardCommand, 'execute' );
+		splitAfterCommandExecuteSpy = sinon.spy();
+		outdentCommandExecuteSpy = sinon.spy();
+		mergeBackwardCommandExecuteSpy = sinon.spy();
+		mergeForwardCommandExecuteSpy = sinon.spy();
+
+		splitAfterCommand.on( 'execute', splitAfterCommandExecuteSpy );
+		outdentCommand.on( 'execute', outdentCommandExecuteSpy );
+		mergeBackwardCommand.on( 'execute', mergeBackwardCommandExecuteSpy );
+		mergeForwardCommand.on( 'execute', mergeForwardCommandExecuteSpy );
 
 		commandSpies = {
 			outdent: outdentCommandExecuteSpy,
@@ -2793,23 +2798,25 @@ describe.only( 'DocumentListEditing integrations: backspace & delete', () => {
 		describe( 'single block list item', () => {
 			describe( 'collapsed selection at the end of a list item', () => {
 				describe( 'item after is empty', () => {
-					// TODO: This should be handled by #isEnabled.
-					it( 'should remove list when in empty only element of a list', () => {
+					it( 'should not remove list when in empty only element of a list', () => {
 						runTest( {
 							input: [
 								'* []'
 							],
 							expected: [
-								'[]'
+								'* []'
 							],
-							eventStopped: true,
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
 							executedCommands: {
 								outdent: 0,
 								splitAfter: 0,
 								mergeBackward: 0,
-								mergeForward: 1
+								mergeForward: 0
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: []
 						} );
 					} );
 
@@ -3578,14 +3585,17 @@ describe.only( 'DocumentListEditing integrations: backspace & delete', () => {
 							expected: [
 								'* []a'
 							],
-							eventStopped: true,
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
 							executedCommands: {
 								outdent: 0,
 								splitAfter: 0,
 								mergeBackward: 0,
-								mergeForward: 1
+								mergeForward: 0
 							},
-							changedBlocks: [ 0 ]
+							changedBlocks: []
 						} );
 					} );
 

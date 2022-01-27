@@ -14,8 +14,7 @@ import {
 	sortBlocks,
 	isFirstBlockOfListItem,
 	mergeListItemBefore,
-	isSingleListItem,
-	isListItemBlock
+	isSingleListItem
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
@@ -65,7 +64,7 @@ export default class DocumentListMergeCommand extends Command {
 
 		model.change( writer => {
 			const shouldMergeOnBlocksContentLevel = this._shouldMergeOnBlocksContentLevel();
-			const { firstElement, lastElement } = this._getBoundaryElements( selection, shouldMergeOnBlocksContentLevel );
+			const { firstElement, lastElement } = this._getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel );
 
 			const firstIndent = firstElement.getAttribute( 'listIndent' ) || 0;
 			const lastIndent = lastElement.getAttribute( 'listIndent' );
@@ -145,41 +144,35 @@ export default class DocumentListMergeCommand extends Command {
 		const model = this.editor.model;
 		const selection = model.document.selection;
 
-		const shouldMergeOnBlocksContentLevel = this._shouldMergeOnBlocksContentLevel();
-		const { firstElement, lastElement } = this._getBoundaryElements( selection, shouldMergeOnBlocksContentLevel );
+		if ( selection.isCollapsed ) {
+			const firstPosition = selection.getFirstPosition();
+			const positionParent = firstPosition.parent;
 
-		if ( shouldMergeOnBlocksContentLevel ) {
-			return isListItemBlock( lastElement );
-			// return isListItemBlock( firstElement ) && isListItemBlock( lastElement );
+			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+				return false;
+			}
+
+			const siblingNode = this._direction == 'backward' ?
+				positionParent.previousSibling :
+				positionParent.nextSibling;
+
+			if ( !siblingNode ) {
+				return false;
+			}
+
+			if ( isSingleListItem( [ positionParent, siblingNode ] ) ) {
+				return false;
+			}
 		} else {
-			return isListItemBlock( firstElement );
+			const lastPosition = selection.getLastPosition();
+			const positionParent = lastPosition.parent;
+
+			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+				return false;
+			}
 		}
 
-		// let sel = selection;
-
-		// if ( selection.isCollapsed ) {
-		// 	// TODO what if one of blocks is an object (for example a table or block image)?
-		// 	sel = writer.createSelection( writer.createRange(
-		// 		writer.createPositionAt( firstElement, 'end' ),
-		// 		writer.createPositionAt( lastElement, 0 )
-		// 	) );
-		// }
-
-		// // Delete selected content. Replace entire content only for non-collapsed selection.
-		// model.deleteContent( sel, { doNotResetEntireContent: selection.isCollapsed } );
-
-		// // Get the last "touched" element after deleteContent call (can't use the lastElement because
-		// // it could get merged into the firstElement while deleting content).
-		// const lastElementAfterDelete = sel.getLastPosition().parent;
-
-		// // Check if the element after it was in the same list item and adjust it if needed.
-		// const nextSibling = lastElementAfterDelete.nextSibling;
-
-		// changedBlocks.push( lastElementAfterDelete );
-
-		// if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
-		// 	changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
-		// }
+		return true;
 	}
 
 	/**
@@ -216,7 +209,7 @@ export default class DocumentListMergeCommand extends Command {
 	 * @param {*} shouldMergeOnBlocksContentLevel
 	 * @returns
 	 */
-	_getBoundaryElements( selection, shouldMergeOnBlocksContentLevel ) {
+	_getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel ) {
 		let firstElement, lastElement;
 
 		if ( selection.isCollapsed ) {
