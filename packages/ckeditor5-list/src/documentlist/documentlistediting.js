@@ -64,8 +64,6 @@ export default class DocumentListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
-		const commands = editor.commands;
-		const enterCommand = commands.get( 'enter' );
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -85,8 +83,6 @@ export default class DocumentListEditing extends Plugin {
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
-		this._setupConversion();
-
 		// Register commands.
 		editor.commands.add( 'numberedList', new DocumentListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new DocumentListCommand( editor, 'bulleted' ) );
@@ -99,6 +95,70 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
+
+		this._setupConversion();
+		this._setupDeleteIntegration();
+		this._setupEnterIntegration();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+		const commands = editor.commands;
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentList' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
+	}
+
+	/**
+	 * Registers the conversion helpers for the document-list feature.
+	 * @private
+	 */
+	_setupConversion() {
+		const editor = this.editor;
+		const model = editor.model;
+		const attributes = [ 'listItemId', 'listType', 'listIndent' ];
+
+		editor.conversion.for( 'upcast' )
+			.elementToElement( { view: 'li', model: 'paragraph' } )
+			.add( dispatcher => {
+				dispatcher.on( 'element:li', listItemUpcastConverter() );
+				dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
+				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
+			} );
+
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => downcastConverters( dispatcher ) );
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher => downcastConverters( dispatcher, { dataPipeline: true } ) );
+
+		function downcastConverters( dispatcher, options = {} ) {
+			dispatcher.on( 'insert:paragraph', listItemParagraphDowncastConverter( attributes, model, options ), { priority: 'high' } );
+
+			for ( const attributeName of attributes ) {
+				dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
+			}
+		}
+
+		editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
+		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
+	}
+
+	/**
+	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
+	 * keys in and around document lists.
+	 *
+	 * @private
+	 */
+	_setupDeleteIntegration() {
+		const editor = this.editor;
 
 		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -161,6 +221,19 @@ export default class DocumentListEditing extends Plugin {
 				}
 			} );
 		}, { context: 'li' } );
+	}
+
+	/**
+	 * Attaches a listener to the {@link module:engine/view/document~Document#event:enter} event and handles enter key press
+	 * in document lists.
+	 *
+	 * @private
+	 */
+	_setupEnterIntegration() {
+		const editor = this.editor;
+		const model = editor.model;
+		const commands = editor.commands;
+		const enterCommand = commands.get( 'enter' );
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
@@ -225,56 +298,6 @@ export default class DocumentListEditing extends Plugin {
 				splitCommand.execute();
 			}
 		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
-		const commands = editor.commands;
-		const indent = commands.get( 'indent' );
-		const outdent = commands.get( 'outdent' );
-
-		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
-		}
-
-		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
-		}
-	}
-
-	/**
-	 * Registers the conversion helpers for the document-list feature.
-	 * @private
-	 */
-	_setupConversion() {
-		const editor = this.editor;
-		const model = editor.model;
-		const attributes = [ 'listItemId', 'listType', 'listIndent' ];
-
-		editor.conversion.for( 'upcast' )
-			.elementToElement( { view: 'li', model: 'paragraph' } )
-			.add( dispatcher => {
-				dispatcher.on( 'element:li', listItemUpcastConverter() );
-				dispatcher.on( 'element:ul', listUpcastCleanList(), { priority: 'high' } );
-				dispatcher.on( 'element:ol', listUpcastCleanList(), { priority: 'high' } );
-			} );
-
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => downcastConverters( dispatcher ) );
-		editor.conversion.for( 'dataDowncast' ).add( dispatcher => downcastConverters( dispatcher, { dataPipeline: true } ) );
-
-		function downcastConverters( dispatcher, options = {} ) {
-			dispatcher.on( 'insert:paragraph', listItemParagraphDowncastConverter( attributes, model, options ), { priority: 'high' } );
-
-			for ( const attributeName of attributes ) {
-				dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
-			}
-		}
-
-		editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
-		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
 	}
 }
 
