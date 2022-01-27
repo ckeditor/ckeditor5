@@ -35,7 +35,7 @@ This release introduces the following new features:
 ### Features
 
 * **[autosave](https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave)**: `Autosave#save()` will now return a promise that is resolved when the autosave callback has finished. ([commit](https://github.com/ckeditor/ckeditor5/commit/3e2f1b3458c44dda3e86f326192135a9e1fa3042))
-* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `Annotation#refreshVisibility()` and `Annotations#refreshVisibility()` that refresh the annotations visibility based on the visibility of their annotation target elements.
+* **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced `Annotation#refreshVisibility()` and `Annotations#refreshVisibility()` that refresh the annotations visibility based on the visibility of their target elements.
 * **[comments](https://www.npmjs.com/package/@ckeditor/ckeditor5-comments)**: Introduced the `Annotation#isVisible` observable property, that allows controlling the visibility of the annotation.
 * **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Added support for the `<script>` elements. Closes [#10891](https://github.com/ckeditor/ckeditor5/issues/10891). ([commit](https://github.com/ckeditor/ckeditor5/commit/277a5919870e69c330337f13a7df92dd9999fbc3))
 * **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Implemented the numbered list properties UI. Closes [#10877](https://github.com/ckeditor/ckeditor5/issues/10877). ([commit](https://github.com/ckeditor/ckeditor5/commit/9be585f8b7d6d7ef504a48b101c4961137f3e8da))
