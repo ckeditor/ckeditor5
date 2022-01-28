@@ -92,7 +92,7 @@ export default class MultiCommand extends Command {
 	 * Registers a child command.
 	 *
 	 * @param {module:core/command~Command} command
-	 * @param {String} priority Priority of command. Command with highest priority will be executed over others.
+	 * @param {String|Number} priority Priority of command. Command with highest priority will be executed over others.
 	 */
 	registerChildCommand( command, priority = 'normal' ) {
 		this._insertCommandDefinitionByPriority( { command, priority } );
