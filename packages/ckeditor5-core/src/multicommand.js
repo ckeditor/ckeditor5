@@ -82,6 +82,7 @@ export default class MultiCommand extends Command {
 
 			if ( !registeredCommand || priorities.get( registeredCommand.priority ) >= priorities.get( newCommandDefinition.priority ) ) {
 				this._childCommandsDefinitons.splice( i, 0, newCommandDefinition );
+
 				break;
 			}
 		}
@@ -120,6 +121,7 @@ export default class MultiCommand extends Command {
 	_getFirstEnabledCommand() {
 		const definitonsWithEnabledCommand = this._childCommandsDefinitons.filter( definition => definition.command.isEnabled );
 		const definitionWithHighestPriority = definitonsWithEnabledCommand[ definitonsWithEnabledCommand.length - 1 ];
+
 		return definitionWithHighestPriority && definitionWithHighestPriority.command;
 	}
 }
