@@ -40,7 +40,7 @@ Administrators and developers should always refer to migration guides after each
 
 ### Upgrade regularly
 
-CKEditor 5 should be <!-- add updating guide link once ready -->upgraded frequently, as bug fixes and new features are not backported. While installing and using CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
+CKEditor 5 should be {@link updating/updating upgraded frequently}, as bug fixes and new features are not backported. While installing and using CKEditor 5 instance, especially when adding new features, always make sure all the packages are of the same (preferably latest) version. If this requirement is not met, errors may occur.
 
 ### Update your custom builds
 
