@@ -11,7 +11,7 @@ Updating is an important process that should become your routine. Our team const
 
 Before proceeding with a real update, it is highly recommended to [read the changelog](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md) for the latest version to learn about changes introduced in the release (pay attention to {@link support/versioning-policy#major-and-minor-breaking-changes breaking changes}). This step is crucial if you develop custom features and modify the editor, as sometimes, changes in our code might affect your custom solutions. 
 
-To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located in the left side of the page.
+To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located on the left side of the page.
 
 <info-box>
 Always remember to test your editor before exposing it in the production environment to make sure that the update won't have a negative impact on your application and a user experience.
@@ -19,7 +19,18 @@ Always remember to test your editor before exposing it in the production environ
 
 ## Updating CKEditor 5
 
-CKEditor 5 is delivered in a few ways, while the most flexible and 
+### Process
+
+CKEditor 5 is delivered in a few ways, while the most flexible and popular one is using `npm` packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or update packages versions in `package.json` file. 
+
+If you use a {@link installation/advanced/predefined-builds predefined build} you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor. However, if you create your customized editor, the process can be described in a few steps:
+1. Read the changelog.
+2. Update your packages.
+3. Read the migration guide.
+4. Reinstall packages and rebuild the editor.
+5. Test your editor.
+
+Below you can find an example that will guide you through the updating process and give you an idea how it should be done. 
 
 ### Example
 
@@ -99,4 +110,10 @@ That's it! Your editor is updated and now you can focus on adjusting your custom
 
 ### Real-time collaboration
 
-Bar
+While using real-time collaboration it is important to remember about preparing existing documents for the updated editor. Basically, it is not possible to join the document that was created with a CKEditor 5 version different than the one used by the client. For example, imagine a situation when the document has been initialized with the editor at version 30.0.0 and after the update, a user connects to this document with the editor at version 31.0.0. In such a case, the error about incompatible engine verison will be thrown.
+
+To avoid such a situation, you should flush the existing document using Cloud Services REST API before connecting a user with the updated editor.
+
+<info-box>
+If you are using Cloud Services On-premises, it is recommended to keeping it updated, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.
+</info-box>
