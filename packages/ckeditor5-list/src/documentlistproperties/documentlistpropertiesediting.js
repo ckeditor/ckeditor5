@@ -92,6 +92,17 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
+		// TODO make this API nicer
+		editor.plugins.get( DocumentListEditing )._reconvertCallbacks.push( ( viewElement, modelAttributes ) => {
+			for ( const strategy of strategies ) {
+				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
+					return true;
+				}
+			}
+
+			return false;
+		} );
+
 		// // Handle merging two separated lists into the single one.
 		// this._mergeListAttributesWhileMergingLists( strategies );
 	}

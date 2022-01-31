@@ -21,7 +21,7 @@ import stubUid from '../documentlist/_utils/uid';
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 import { modelList, setupTestHelpers } from '../documentlist/_utils/utils';
 
-describe.only( 'DocumentListPropertiesEditing - converters', () => {
+describe( 'DocumentListPropertiesEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot, test;
 
 	testUtils.createSinonSandbox();
@@ -575,9 +575,6 @@ describe.only( 'DocumentListPropertiesEditing - converters', () => {
 							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
 								if ( item.getAttribute( 'listIndent' ) == 0 ) {
 									writer.setAttribute( 'listStyle', 'circle', item );
-								} else {
-									// TODO this should be triggered by the change:data handler
-									editor.editing.reconvertItem( item );
 								}
 							}
 						} );

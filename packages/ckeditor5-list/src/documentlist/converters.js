@@ -106,9 +106,10 @@ export function listUpcastCleanList() {
  * @protected
  * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
+ * @param {TODO} customCallbacks
  * @return {Function}
  */
-export function reconvertItemsOnDataChange( model, editing ) {
+export function reconvertItemsOnDataChange( model, editing, customCallbacks ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
@@ -184,10 +185,10 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			}
 
 			// Update the stack for the current indent level.
-			stack[ itemIndent ] = {
-				id: node.getAttribute( 'listItemId' ),
-				type: node.getAttribute( 'listType' )
-			};
+			stack[ itemIndent ] = Object.fromEntries(
+				Array.from( node.getAttributes() )
+					.filter( ( [ key ] ) => key.startsWith( 'list' ) )
+			);
 
 			// Find all blocks of the current node.
 			const blocks = getListItemBlocks( node, { direction: 'forward' } );
@@ -247,18 +248,23 @@ export function reconvertItemsOnDataChange( model, editing ) {
 			element = element.parent
 		) {
 			if ( isListItemView( element ) ) {
-				const expectedElementId = stack[ indent ].id;
+				const expectedElementId = stack[ indent ].listItemId;
 
 				// For LI verify if an ID of the attribute element is correct.
 				if ( element.id != expectedElementId ) {
 					break;
 				}
 			} else if ( isListView( element ) ) {
-				const type = stack[ indent ].type;
+				const type = stack[ indent ].listType;
 				const expectedElementName = getViewElementNameForListType( type );
 
 				// For UL and OL check if the name and ID of element is correct.
 				if ( element.name != expectedElementName ) {
+					break;
+				}
+
+				// TODO here check if some list properties require refresh (use injected callback)
+				if ( customCallbacks.some( callback => callback( element, stack[ indent ] ) ) ) {
 					break;
 				}
 

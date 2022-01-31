@@ -79,7 +79,13 @@ export default class DocumentListEditing extends Plugin {
 			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
 		} );
 
-		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer ) );
+		// TODO make nice API and docs
+		this._postFixerCallbacks = [
+			( listHead, writer ) => fixListIndents( listHead, writer ),
+			( listHead, writer, { seenIds } ) => fixListItemIds( listHead, seenIds, writer )
+		];
+
+		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, this._postFixerCallbacks ) );
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
@@ -216,8 +222,9 @@ export default class DocumentListEditing extends Plugin {
 				}
 			} );
 
-		// editor.data.mapper.registerViewToModelLength( 'li', listItemViewToModelLengthMapper( editor.data.mapper, model.schema ) );
-		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing ) );
+		// TODO API
+		this._reconvertCallbacks = [];
+		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this._reconvertCallbacks ) );
 	}
 }
 
@@ -242,8 +249,9 @@ export default class DocumentListEditing extends Plugin {
 //
 // @param {module:engine/model/model~Model} model The data model.
 // @param {module:engine/model/writer~Writer} writer The writer to do changes with.
+// @param {TODO} postfixerCallbacks
 // @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-function modelChangePostFixer( model, writer ) {
+function modelChangePostFixer( model, writer, postFixerCallbacks ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map();
 
@@ -296,8 +304,9 @@ function modelChangePostFixer( model, writer ) {
 	const seenIds = new Set();
 
 	for ( const listHead of itemToListHead.values() ) {
-		applied = fixListIndents( listHead, writer ) || applied;
-		applied = fixListItemIds( listHead, seenIds, writer ) || applied;
+		for ( const callback of postFixerCallbacks ) {
+			applied = callback( listHead, writer, { seenIds } ) || applied;
+		}
 	}
 
 	return applied;
