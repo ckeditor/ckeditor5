@@ -21,7 +21,7 @@ import stubUid from '../documentlist/_utils/uid';
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 import { modelList, setupTestHelpers } from '../documentlist/_utils/utils';
 
-describe( 'DocumentListPropertiesEditing - converters', () => {
+describe.only( 'DocumentListPropertiesEditing - converters', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot, test;
 
 	testUtils.createSinonSandbox();
@@ -54,7 +54,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					'</ul>',
 
 					modelList( `
-						* Foo
+						* Foo {style:default}
 						* Bar
 					` )
 				);
@@ -68,7 +68,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					'</ol>',
 
 					modelList( `
-						# Foo
+						# Foo {style:default}
 						# Bar
 					` )
 				);
@@ -163,8 +163,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			// TODO
-			it( 'aaa', () => {
+			it( 'should convert style on a nested list', () => {
 				test.data(
 					'<ul>' +
 						'<li>' +
@@ -176,7 +175,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					'</ul>',
 
 					modelList( `
-						* cd {id:001}
+						* cd {id:001} {style:default}
 						  # efg {id:000} {style:upper-alpha}
 					` )
 				);
@@ -366,7 +365,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			} );
 		} );
 
-		describe.only( 'editing pipeline', () => {
+		describe( 'editing pipeline', () => {
 			describe( 'insert', () => {
 				it( 'should convert single list (type: bulleted, style: default)', () => {
 					test.insert(
@@ -470,8 +469,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
 
-				// TODO
-				it( 'aaa', () => {
+				it( 'should unwrap list item only if it was really wrapped (there was no wrapper for the default style) ', () => {
 					test.insert(
 						modelList( `
 							x
@@ -492,7 +490,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				} );
 
 				// TODO this test should be in the reversed group
-				it.skip( 'aaa2', () => {
+				it.skip( 'should unwrap list item only if it was really wrapped (there was no wrapper for the default order)', () => {
 					test.insert(
 						modelList( `
 							x
@@ -517,15 +515,108 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			} );
 
 			describe( 'remove', () => {
+				it( 'remove a list item', () => {
+					test.remove(
+						'<paragraph>p</paragraph>' +
+						'[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="circle">a</paragraph>]' +
+						'<paragraph listIndent="0" listItemId="b" listType="bulleted" listStyle="circle">b</paragraph>' +
+						'<paragraph listIndent="0" listItemId="c" listType="bulleted" listStyle="circle">c</paragraph>',
+
+						'<p>p</p>' +
+						'<ul style="list-style-type:circle">' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+			} );
+
+			describe( 'set list style', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph>
+						* <paragraph>a</paragraph>]
+					` );
+
+					const output =
+						'<ul style="list-style-type:circle">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStyle', 'circle', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:default}
+						  * <paragraph>b</paragraph> {style:default}
+						* <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ul style="list-style-type:circle">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listStyle', 'circle', item );
+								} else {
+									// TODO this should be triggered by the change:data handler
+									editor.editing.reconvertItem( item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'remove list style', () => {
 				// TODO
 			} );
 
-			describe( 'change type', () => {
+			describe( 'change list style', () => {
 				// TODO
 			} );
 
-			describe( 'change style', () => {
+			describe( 'change list type', () => {
 				// TODO
+			} );
+
+			describe( 'consuming', () => {
+				it( 'should not convert attribute if it was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:listStyle', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'highest' } );
+
+					setModelData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute( 'listStyle', 'circle', modelRoot.getChild( 0 ) );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ul>'
+					);
+				} );
 			} );
 		} );
 	} );

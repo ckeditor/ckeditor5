@@ -24,7 +24,9 @@ export function listPropertiesUpcastConverter( strategy ) {
 	return ( evt, data, conversionApi ) => {
 		const { writer, schema, consumable } = conversionApi;
 
-		if ( !consumable.test( data.viewItem, strategy.viewConsumables ) ) {
+		// If there is no view consumable to consume, set the default attribute value to be able to reconvert nested lists on parent change.
+		// So abort converting if attribute was directly consumed.
+		if ( consumable.test( data.viewItem, strategy.viewConsumables ) === false ) {
 			return;
 		}
 
@@ -81,19 +83,12 @@ export function listPropertiesDowncastConverter( strategy, model ) {
 		// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model );
-		let viewRange = null;
 
 		// Unwrap element from current list wrappers.
-		// There is no view element in the data downcast of bogus paragraph.
-		if ( viewElement ) {
-			unwrapListItemBlock( viewElement, strategy, writer );
-			viewRange = writer.createRangeOn( viewElement );
-		} else {
-			viewRange = conversionApi.mapper.toViewRange( data.range );
-		}
+		unwrapListItemBlock( viewElement, strategy, writer );
 
 		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, viewRange, strategy, writer );
+		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
 	};
 }
 
