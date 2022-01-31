@@ -7,6 +7,8 @@
  * @module engine/model/batch
  */
 
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+
 /**
  * A batch instance groups model changes ({@link module:engine/model/operation/operation~Operation operations}). All operations
  * grouped in a single batch can be reverted together, so you can also think about a batch as of a single undo step. If you want
@@ -25,9 +27,30 @@ export default class Batch {
 	 *
 	 * @see module:engine/model/model~Model#enqueueChange
 	 * @see module:engine/model/model~Model#change
-	 * @param {'transparent'|'default'} [type='default'] The type of the batch.
+	 * @param {Object} [type] Set of flags that specifies the type of the batch. Batch type can alter how some of the features work when
+	 * encountering given `Batch` instance (for example, when a feature listens to applied operations).
+	 * @param {Boolean} [type.isUndoable=true] Whether batch can be undone through undo feature.
+	 * @param {Boolean} [type.isLocal=true] Whether batch includes operations created locally (`true`) or operations created on
+	 * other, remote editors (`false`).
+	 * @param {Boolean} [type.isUndo=false] Whether batch was created by the undo feature and undoes other operations.
+	 * @param {Boolean} [type.isTyping=false] Whether batch includes operations connected with typing action.
 	 */
-	constructor( type = 'default' ) {
+	constructor( type = {} ) {
+		if ( typeof type === 'string' ) {
+			type = type === 'transparent' ? { isUndoable: false } : {};
+
+			/**
+			 * The string value for `type` property of the `Batch` constructor has been deprecated and will be removed in the near future.
+			 * Please refer to the {@link module:engine/model/batch~Batch#constructor `Batch` constructor API documentation} for more
+			 * information.
+			 *
+			 * @error batch-constructor-deprecated-string-type
+			 */
+			logWarning( 'batch-constructor-deprecated-string-type' );
+		}
+
+		const { isUndoable = true, isLocal = true, isUndo = false, isTyping = false } = type;
+
 		/**
 		 * An array of operations that compose this batch.
 		 *
@@ -37,17 +60,61 @@ export default class Batch {
 		this.operations = [];
 
 		/**
-		 * The type of the batch.
-		 *
-		 * It can be one of the following values:
-		 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.
-		 * * `'transparent'` &ndash; A batch that should be ignored by other features, i.e. an initial batch or collaborative editing
-		 * changes.
+		 * Whether batch can be undone through the undo feature.
 		 *
 		 * @readonly
-		 * @type {'transparent'|'default'}
+		 * @type {Boolean}
 		 */
-		this.type = type;
+		this.isUndoable = isUndoable;
+
+		/**
+		 * Whether batch includes operations created locally (`true`) or operations created on other, remote editors (`false`).
+		 *
+		 * @readonly
+		 * @type {Boolean}
+		 */
+		this.isLocal = isLocal;
+
+		/**
+		 * Whether batch was created by the undo feature and undoes other operations.
+		 *
+		 * @readonly
+		 * @type {Boolean}
+		 */
+		this.isUndo = isUndo;
+
+		/**
+		 * Whether batch includes operations connected with typing.
+		 *
+		 * @readonly
+		 * @type {Boolean}
+		 */
+		this.isTyping = isTyping;
+	}
+
+	/**
+	 * The type of the batch.
+	 *
+	 * **This property has been deprecated and is always set to `'default'` value.**
+	 *
+	 * It can be one of the following values:
+	 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.
+	 * * `'transparent'` &ndash; A batch that should be ignored by other features, i.e. an initial batch or collaborative editing
+	 * changes.
+	 *
+	 * @deprecated
+	 * @type {'default'}
+	 */
+	get type() {
+		/**
+		 * The {@link module:engine/model/batch~Batch#type `Batch#type` } property has been deprecated and will be removed in the near
+		 * future. Use `Batch#isLocal`, `Batch#isUndoable`, `Batch#isUndo` and `Batch#isTyping` instead.
+		 *
+		 * @error batch-type-deprecated
+		 */
+		logWarning( 'batch-type-deprecated' );
+
+		return 'default';
 	}
 
 	/**

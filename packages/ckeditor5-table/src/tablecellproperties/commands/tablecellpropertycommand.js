@@ -73,7 +73,7 @@ export default class TableCellPropertyCommand extends Command {
 		const tableCells = getSelectionAffectedTableCells( model.document.selection );
 		const valueToSet = this._getValueToSet( value );
 
-		model.enqueueChange( batch || 'default', writer => {
+		model.enqueueChange( batch, writer => {
 			if ( valueToSet ) {
 				tableCells.forEach( tableCell => writer.setAttribute( this.attributeName, valueToSet, tableCell ) );
 			} else {

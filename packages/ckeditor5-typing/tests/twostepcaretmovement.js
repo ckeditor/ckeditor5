@@ -820,7 +820,7 @@ describe( 'TwoStepCaretMovement()', () => {
 		] );
 
 		// Simulate an external text insertion BEFORE the user selection to trigger #change:range.
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.insertText( 'x', selection.getFirstPosition().getShiftedBy( -2 ) );
 		} );
 

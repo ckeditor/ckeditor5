@@ -132,7 +132,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use model#enqueueChange method if the batchType option was provided', () => {
 			const changeSpy = sinon.spy( model, 'enqueueChange' );
-			const batchType = 'default';
+			const batchType = { isUndoable: true };
 			setData( model, 'text', { batchType } );
 
 			sinon.assert.calledTwice( changeSpy );

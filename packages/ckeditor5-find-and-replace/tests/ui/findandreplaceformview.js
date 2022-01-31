@@ -44,9 +44,11 @@ describe( 'FindAndReplaceFormView', () => {
 	beforeEach( () => {
 		view = new FindAndReplaceFormView( { t: val => val } );
 		view.render();
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
+		view.element.remove();
 		view.destroy();
 	} );
 
@@ -385,7 +387,7 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
-				view = new FindAndReplaceFormView( { t: val => val } );
+				const view = new FindAndReplaceFormView( { t: val => val } );
 
 				const spy = testUtils.sinon.spy( view._focusTracker, 'add' );
 
@@ -399,16 +401,20 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.calledWithExactly( spy.getCall( 5 ), view._optionsDropdown.element );
 				sinon.assert.calledWithExactly( spy.getCall( 6 ), view._replaceButtonView.element );
 				sinon.assert.calledWithExactly( spy.getCall( 7 ), view._replaceAllButtonView.element );
+
+				view.destroy();
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
-				view = new FindAndReplaceFormView( { t: val => val } );
+				const view = new FindAndReplaceFormView( { t: val => val } );
 
 				const spy = sinon.spy( view._keystrokes, 'listenTo' );
 
 				view.render();
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, view.element );
+
+				view.destroy();
 			} );
 
 			describe( 'activates keyboard navigation in the form', () => {

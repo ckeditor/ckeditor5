@@ -125,7 +125,7 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 	} );
 
 	editor.model.document.on( 'change:data', ( evt, batch ) => {
-		if ( batch.type == 'transparent' || !plugin.isEnabled ) {
+		if ( batch.isUndo || !batch.isLocal || !plugin.isEnabled ) {
 			return;
 		}
 

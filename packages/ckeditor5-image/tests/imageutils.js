@@ -381,7 +381,7 @@ describe( 'ImageUtils plugin', () => {
 		} );
 
 		it( 'should return true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				expect( imageUtils.isImageAllowed() ).to.be.true;

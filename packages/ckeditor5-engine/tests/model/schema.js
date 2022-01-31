@@ -1105,7 +1105,7 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
 				const section = root.getNodeByPath( [ 0, 0 ] );
@@ -1794,7 +1794,7 @@ describe( 'Schema', () => {
 			it( testName, () => {
 				let range;
 
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setData( model, data );
 					range = schema.getNearestSelectionRange( selection.anchor, direction );
 				} );

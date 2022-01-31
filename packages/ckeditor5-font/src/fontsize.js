@@ -111,12 +111,12 @@ export default class FontSize extends Plugin {
  *			options: [
  *				{
  * 				 	title: 'Small',
- * 				 	model: '8px
+ * 				 	model: '8px'
  * 				},
  * 				'default',
  * 				{
  * 				 	title: 'Big',
- * 				 	model: '14px
+ * 				 	model: '14px'
  * 				}
  *			]
  *		};

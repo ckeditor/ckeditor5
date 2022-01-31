@@ -77,7 +77,7 @@ export default function blockAutoformatEditing( editor, plugin, pattern, callbac
 			return;
 		}
 
-		if ( batch.type == 'transparent' ) {
+		if ( batch.isUndo || !batch.isLocal ) {
 			return;
 		}
 

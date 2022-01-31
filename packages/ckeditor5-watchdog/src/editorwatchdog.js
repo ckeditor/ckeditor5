@@ -235,6 +235,11 @@ export default class EditorWatchdog extends Watchdog {
 
 				this._editor = null;
 
+				// Remove the `change:data` listener before destroying the editor.
+				// Incorrectly written plugins may trigger firing `change:data` events during the editor destruction phase
+				// causing the watchdog to call `editor.getData()` when some parts of editor are already destroyed.
+				editor.model.document.off( 'change:data', this._throttledSave );
+
 				return this._destructor( editor );
 			} );
 	}

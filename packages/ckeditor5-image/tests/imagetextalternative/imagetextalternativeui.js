@@ -247,7 +247,7 @@ describe( 'ImageTextAlternativeUI', () => {
 				const removeSpy = sinon.spy( balloon, 'remove' );
 				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-				model.enqueueChange( 'transparent', writer => {
+				model.enqueueChange( { isUndoable: false }, writer => {
 					writer.remove( doc.selection.getFirstRange() );
 				} );
 
