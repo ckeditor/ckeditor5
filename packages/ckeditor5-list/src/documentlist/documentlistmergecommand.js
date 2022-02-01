@@ -82,30 +82,48 @@ export default class DocumentListMergeCommand extends Command {
 			}
 
 			if ( shouldMergeOnBlocksContentLevel ) {
-				let sel = selection;
+				const selectedElement = selection.getSelectedElement();
 
-				if ( selection.isCollapsed ) {
-					// TODO what if one of blocks is an object (for example a table or block image)?
-					sel = writer.createSelection( writer.createRange(
-						writer.createPositionAt( firstElement, 'end' ),
-						writer.createPositionAt( lastElement, 0 )
-					) );
-				}
+				if ( selectedElement ) {
+					const listItemId = selectedElement.getAttribute( 'listItemId' );
+					const listType = selectedElement.getAttribute( 'listType' );
+					const listIndent = selectedElement.getAttribute( 'listIndent' );
 
-				// Delete selected content. Replace entire content only for non-collapsed selection.
-				model.deleteContent( sel, { doNotResetEntireContent: selection.isCollapsed } );
+					model.deleteContent( selection, {
+						doNotResetEntireContent: false,
+						doNotAutoparagraph: false
+					} );
 
-				// Get the last "touched" element after deleteContent call (can't use the lastElement because
-				// it could get merged into the firstElement while deleting content).
-				const lastElementAfterDelete = sel.getLastPosition().parent;
+					const lastElementAfterDelete = selection.getLastPosition().parent;
 
-				// Check if the element after it was in the same list item and adjust it if needed.
-				const nextSibling = lastElementAfterDelete.nextSibling;
+					writer.setAttributes( { listItemId, listType, listIndent }, lastElementAfterDelete );
+				} else {
+					let sel = selection;
 
-				changedBlocks.push( lastElementAfterDelete );
+					if ( selection.isCollapsed ) {
+						sel = writer.createSelection( writer.createRange(
+							writer.createPositionAt( firstElement, 'end' ),
+							writer.createPositionAt( lastElement, 0 )
+						) );
+					}
 
-				if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
-					changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
+					// Delete selected content. Replace entire content only for non-collapsed selection.
+					model.deleteContent( sel, {
+						doNotResetEntireContent: selection.isCollapsed
+					} );
+
+					// Get the last "touched" element after deleteContent call (can't use the lastElement because
+					// it could get merged into the firstElement while deleting content).
+					const lastElementAfterDelete = sel.getLastPosition().parent;
+
+					// Check if the element after it was in the same list item and adjust it if needed.
+					const nextSibling = lastElementAfterDelete.nextSibling;
+
+					changedBlocks.push( lastElementAfterDelete );
+
+					if ( nextSibling && nextSibling !== lastElement && nextSibling.getAttribute( 'listItemId' ) == lastElementId ) {
+						changedBlocks.push( ...mergeListItemBefore( nextSibling, lastElementAfterDelete, writer ) );
+					}
 				}
 			} else {
 				changedBlocks.push( ...mergeListItemBefore( lastElement, firstElement, writer ) );
@@ -160,15 +178,34 @@ export default class DocumentListMergeCommand extends Command {
 				return false;
 			}
 
+			// []
+			// * <blockWidget></blockWidget>
+			//
+			// OR
+			//
+			// * []
+			// * <blockWidget></blockWidget>
+			if ( model.schema.isObject( siblingNode ) && this._direction == 'forward' ) {
+				return false;
+			}
+
 			if ( isSingleListItem( [ positionParent, siblingNode ] ) ) {
 				return false;
 			}
 		} else {
-			const lastPosition = selection.getLastPosition();
-			const positionParent = lastPosition.parent;
+			const selectedElement = selection.getSelectedElement();
 
-			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
-				return false;
+			if ( selectedElement ) {
+				if ( !selectedElement.hasAttribute( 'listItemId' ) ) {
+					return false;
+				}
+			} else {
+				const lastPosition = selection.getLastPosition();
+				const positionParent = lastPosition.parent;
+
+				if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+					return false;
+				}
 			}
 		}
 
@@ -238,8 +275,14 @@ export default class DocumentListMergeCommand extends Command {
 				lastElement = positionParent.nextSibling;
 			}
 		} else {
-			firstElement = selection.getFirstPosition().parent;
-			lastElement = selection.getLastPosition().parent;
+			const selectedElement = selection.getSelectedElement();
+
+			if ( selectedElement ) {
+				firstElement = lastElement = selectedElement;
+			} else {
+				firstElement = selection.getFirstPosition().parent;
+				lastElement = selection.getLastPosition().parent;
+			}
 		}
 
 		return { firstElement, lastElement };

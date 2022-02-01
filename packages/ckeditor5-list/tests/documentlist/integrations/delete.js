@@ -2808,7 +2808,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 
 		describe( 'around widgets', () => {
 			describe( 'block widgets', () => {
-				it( 'TODO 1', () => {
+				it( 'should delete a paragraph and select a block widget in a list that precedes it', () => {
 					runTest( {
 						input: [
 							'* <blockWidget></blockWidget>',
@@ -2828,7 +2828,28 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 1a', () => {
+				it( 'should select a block widget in a list that precedes a non-empty paragraph', () => {
+					runTest( {
+						input: [
+							'* <blockWidget></blockWidget>',
+							'[]foo'
+						],
+						expected: [
+							'* [<blockWidget></blockWidget>]',
+							'foo'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a paragraph and select a block widget at a deeper level (2nd block) in a list that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2850,7 +2871,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 1b', () => {
+				it( 'should delete a paragraph and select a block widget at a deeper level (1st block) in a list that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2872,7 +2893,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 2', () => {
+				it( 'should merge an item into the previous one despite a block widget precededing it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2895,7 +2916,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 3', () => {
+				it( 'should merge an item into the previous one despite a block widget precededing it at a deeper level', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2918,7 +2939,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 4', () => {
+				it( 'should merge an item into the previous one (down) despite a block widget precededing it at a lower level', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2941,7 +2962,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 5', () => {
+				it( 'should delete an item block and select a block widget that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2965,30 +2986,31 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 6', () => {
+				it( 'should delete a block widget and move the selection to the list item block that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
 							'  [<blockWidget></blockWidget>]'
 						],
 						expected: [
-							'* a[]'
+							'* a',
+							'  []'
 						],
 						eventStopped: {
 							preventDefault: true,
-							stop: false
+							stop: true
 						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 0
+							mergeForward: 1
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it( 'TODO 6a', () => {
+				it( 'should delete a block widget and move the selection to the block that precedes it (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -2996,24 +3018,25 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  b'
 						],
 						expected: [
-							'* a[]',
+							'* a',
+							'  []',
 							'  b'
 						],
 						eventStopped: {
 							preventDefault: true,
-							stop: false
+							stop: true
 						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 0
+							mergeForward: 1
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it( 'TODO 6b', () => {
+				it( 'should delete a block widget and move the selection to the block that precedes it (nested item follows)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3021,47 +3044,49 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  * b'
 						],
 						expected: [
-							'* a[]',
-							'  * b'
+							'* a',
+							'  []',
+							'  * b {id:002}'
 						],
 						eventStopped: {
 							preventDefault: true,
-							stop: false
+							stop: true
 						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 0
+							mergeForward: 1
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it( 'TODO 7', () => {
+				it( 'should delete a block widget and move the selection down to the (shallower) block that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
 							'  * [<blockWidget></blockWidget>]'
 						],
 						expected: [
-							'* a[]'
+							'* a',
+							'  * []'
 						],
 						eventStopped: {
 							preventDefault: true,
-							stop: false
+							stop: true
 						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 0
+							mergeForward: 1
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it( 'TODO 7a', () => {
+				it( 'should delete a block widget and move the selection down to the block that precedes it (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3069,47 +3094,25 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  b'
 						],
 						expected: [
-							'* a[]',
+							'* a',
+							'  * []',
 							'  b'
 						],
 						eventStopped: {
 							preventDefault: true,
-							stop: false
+							stop: true
 						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
 							mergeBackward: 0,
-							mergeForward: 0
+							mergeForward: 1
 						},
 						changedBlocks: []
 					} );
 				} );
 
-				it( 'TODO 8', () => {
-					runTest( {
-						input: [
-							'* a[',
-							'  <blockWidget></blockWidget>]'
-						],
-						expected: [
-							'* a[]'
-						],
-						eventStopped: {
-							preventDefault: true,
-							stop: false
-						},
-						executedCommands: {
-							outdent: 0,
-							splitAfter: 0,
-							mergeBackward: 0,
-							mergeForward: 0
-						},
-						changedBlocks: []
-					} );
-				} );
-
-				it( 'TODO 9', () => {
+				it( 'should remove list when its entire cotent is selected (including a block widget), same indentation levels', () => {
 					runTest( {
 						input: [
 							'* [a',
@@ -3132,7 +3135,57 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'TODO 10', () => {
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, block follows', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  <blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, nested block follows', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  <blockWidget></blockWidget>]',
+							'  * b'
+						],
+						expected: [
+							'* []',
+							'  * b {id:002}'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove list when its entire cotent is selected (including a block widget), mixed indentation levels', () => {
 					runTest( {
 						input: [
 							'* [a',
@@ -3154,18 +3207,22 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 						changedBlocks: []
 					} );
 				} );
-			} );
 
-			describe( 'inline images', () => {
-				it( 'INTODO 0', () => {
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, mixed indent levels', () => {
 					runTest( {
 						input: [
-							'* <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
+							'* [a',
+							'  * <blockWidget></blockWidget>]',
+							'  * b'
 						],
 						expected: [
-							'* []'
+							'* []',
+							'  * b {id:002}'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3176,7 +3233,106 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'INTODO 1', () => {
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, ' +
+				'mixed indent levels, following block', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, ' +
+				'mixed indent levels, following block at a deeper level', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]',
+							'    b'
+						],
+						expected: [
+							'* []',
+							'  * b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+					runTest( {
+						input: [
+							'* a<inlineWidget></inlineWidget>',
+							'  [<blockWidget></blockWidget>]',
+							'  <inlineWidget></inlineWidget>b'
+						],
+						expected: [
+							'* a<inlineWidget></inlineWidget>',
+							'  []',
+							'  <inlineWidget></inlineWidget>b'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+			} );
+
+			describe( 'inline images', () => {
+				it( 'should remove an inline widget if only content of a block', () => {
+					runTest( {
+						input: [
+							'* <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
+						],
+						expected: [
+							'* []'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should merge a paragraph into preceding list containing an inline widget', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
@@ -3199,7 +3355,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'INTODO 2', () => {
+				it( 'should merge an empty list item into preceding list item containing an inline widget', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
@@ -3220,7 +3376,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'INTODO 3', () => {
+				it( 'should remove an inline widget in a list item block containing other content (before)', () => {
 					runTest( {
 						input: [
 							'* a[<inlineWidget></inlineWidget>]'
@@ -3228,7 +3384,10 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 						expected: [
 							'* a[]'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3239,15 +3398,70 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'INTODO 4', () => {
+				it( 'should remove an inline widget in a list item block containing other content (after)', () => {
 					runTest( {
 						input: [
-							'* a[<inlineWidget></inlineWidget>]'
+							'* [<inlineWidget></inlineWidget>]a'
 						],
 						expected: [
-							'* a[]'
+							'* []a'
 						],
-						eventStopped: true,
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove an inline widget in a middle list item block', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  <paragraph>[<inlineWidget></inlineWidget>]</paragraph>',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove an inline widget in a nested list item block', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * <paragraph>[<inlineWidget></inlineWidget>]</paragraph>',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  * []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -4953,6 +5167,626 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 				} );
 			} );
 		} );
+
+		describe( 'around widgets', () => {
+			describe( 'block widgets', () => {
+				it( 'should delete a paragraph and select a block widget in a list that follows it', () => {
+					runTest( {
+						input: [
+							'[]',
+							'* <blockWidget></blockWidget>'
+						],
+						expected: [
+							'* [<blockWidget></blockWidget>] {id:001}'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should select a block widget in a list that follows a non-empty paragraph', () => {
+					runTest( {
+						input: [
+							'foo[]',
+							'* <blockWidget></blockWidget>'
+						],
+						expected: [
+							'foo',
+							'* [<blockWidget></blockWidget>]'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a paragraph and select a block widget (1st block) in a list that follows it', () => {
+					runTest( {
+						input: [
+							'[]',
+							'* <blockWidget></blockWidget>',
+							'  a'
+						],
+						expected: [
+							'* [<blockWidget></blockWidget>] {id:001}',
+							'  a'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should merge an item into the next one despite a block widget following it', () => {
+					runTest( {
+						input: [
+							'* []',
+							'* <blockWidget></blockWidget>',
+							'  a'
+						],
+						expected: [
+							'* [<blockWidget></blockWidget>] {id:001}',
+							'  a'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should merge an item into the next one despite a block widget following it at a deeper level', () => {
+					runTest( {
+						input: [
+							'* a',
+							'* []',
+							'  * <blockWidget></blockWidget>'
+						],
+						expected: [
+							'* a',
+							'  * [<blockWidget></blockWidget>] {id:002}'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete an item block and select a block widget that follows it', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  []',
+							'  <blockWidget></blockWidget>',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  [<blockWidget></blockWidget>]',
+							'  b'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a block widget and move the selection to the list item block that follows it', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  [<blockWidget></blockWidget>]'
+						],
+						expected: [
+							'* a',
+							'  []'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: true
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a block widget and move the selection to the block that follows it (multiple blocks)', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  [<blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: true
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a block widget and move the selection to the block that follows it (nested item follows)', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  [<blockWidget></blockWidget>]',
+							'  * b'
+						],
+						expected: [
+							'* a',
+							'  []',
+							'  * b {id:002}'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: true
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a block widget and move the selection down to the (shallower) block that follows it', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * [<blockWidget></blockWidget>]'
+						],
+						expected: [
+							'* a',
+							'  * []'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: true
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should delete a block widget and move the selection down to the block that follows it (multiple blocks)', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * [<blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  * []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: true
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove list when its entire cotent is selected (including a block widget), same indentation levels', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  <blockWidget></blockWidget>]'
+						],
+						expected: [
+							'[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, block follows', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  <blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, nested block follows', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  <blockWidget></blockWidget>]',
+							'  * b'
+						],
+						expected: [
+							'* []',
+							'  * b {id:002}'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove list when its entire cotent is selected (including a block widget), mixed indentation levels', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]'
+						],
+						expected: [
+							'[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, mixed indent levels', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]',
+							'  * b'
+						],
+						expected: [
+							'* []',
+							'  * b {id:002}'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, ' +
+				'mixed indent levels, following block', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]',
+							'  b'
+						],
+						expected: [
+							'* []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove multiple list item blocks (including a block widget) within the selection, ' +
+				'mixed indent levels, following block at a deeper level', () => {
+					runTest( {
+						input: [
+							'* [a',
+							'  * <blockWidget></blockWidget>]',
+							'    b'
+						],
+						expected: [
+							'* []',
+							'  * b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+					runTest( {
+						input: [
+							'* a<inlineWidget></inlineWidget>',
+							'  [<blockWidget></blockWidget>]',
+							'  <inlineWidget></inlineWidget>b'
+						],
+						expected: [
+							'* a<inlineWidget></inlineWidget>',
+							'  []',
+							'  <inlineWidget></inlineWidget>b'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: []
+					} );
+				} );
+			} );
+
+			describe( 'inline images', () => {
+				it( 'should remove an inline widget if only content of a block', () => {
+					runTest( {
+						input: [
+							'* <paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
+						],
+						expected: [
+							'* []'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should merge a paragraph into following list containing an inline widget', () => {
+					runTest( {
+						input: [
+							'[]',
+							'* a<inlineWidget></inlineWidget>'
+						],
+						expected: [
+							'* []a<inlineWidget></inlineWidget> {id:001}'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should merge an empty list item into following list item containing an inline widget', () => {
+					runTest( {
+						input: [
+							'* []',
+							'* a<inlineWidget></inlineWidget>'
+						],
+						expected: [
+							'* []a<inlineWidget></inlineWidget> {id:001}'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 1
+						},
+						changedBlocks: [ 0 ]
+					} );
+				} );
+
+				it( 'should remove an inline widget in a list item block containing other content (before)', () => {
+					runTest( {
+						input: [
+							'* a[<inlineWidget></inlineWidget>]'
+						],
+						expected: [
+							'* a[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove an inline widget in a list item block containing other content (after)', () => {
+					runTest( {
+						input: [
+							'* [<inlineWidget></inlineWidget>]a'
+						],
+						expected: [
+							'* []a'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove an inline widget in a middle list item block', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  <paragraph>[<inlineWidget></inlineWidget>]</paragraph>',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'should remove an inline widget in a nested list item block', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * <paragraph>[<inlineWidget></inlineWidget>]</paragraph>',
+							'  b'
+						],
+						expected: [
+							'* a',
+							'  * []',
+							'  b'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+			} );
+		} );
 	} );
 
 	// @param {Iterable.<String>} input
@@ -4962,6 +5796,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	// @param {Object.<String,Number>} executedCommands Numbers of command executions.
 	// @param {Array.<Number>} changedBlocks Indexes of changed blocks.
 	function runTest( { input, expected, eventStopped, executedCommands = {}, changedBlocks = [] } ) {
+		// console.log( 'in', modelList( input ) );
 		setModelData( model, modelList( input ) );
 
 		view.document.fire( eventInfo, domEventData );
