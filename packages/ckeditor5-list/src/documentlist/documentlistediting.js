@@ -159,6 +159,8 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	_setupDeleteIntegration() {
 		const editor = this.editor;
+		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' );
+		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' );
 
 		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
 			const selection = editor.model.document.selection;
@@ -189,13 +191,11 @@ export default class DocumentListEditing extends Plugin {
 					}
 					// Merge block with previous one (on the block level or on the content level).
 					else {
-						const mergeListItemCommand = editor.commands.get( 'mergeListItemBackward' );
-
-						if ( !mergeListItemCommand.isEnabled ) {
+						if ( !mergeBackwardCommand.isEnabled ) {
 							return;
 						}
 
-						mergeListItemCommand.execute();
+						mergeBackwardCommand.execute();
 					}
 
 					data.preventDefault();
@@ -208,13 +208,11 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
-					const mergeListItemCommand = editor.commands.get( 'mergeListItemForward' );
-
-					if ( !mergeListItemCommand.isEnabled ) {
+					if ( !mergeForwardCommand.isEnabled ) {
 						return;
 					}
 
-					mergeListItemCommand.execute();
+					mergeForwardCommand.execute();
 
 					data.preventDefault();
 					evt.stop();

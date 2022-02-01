@@ -146,6 +146,28 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 		} );
 
 		describe( 'single block list item', () => {
+			it( 'should not engage when the selection is in the middle of a text', () => {
+				runTest( {
+					input: [
+						'* a[]b'
+					],
+					expected: [
+						'* []b'
+					],
+					eventStopped: {
+						preventDefault: true,
+						stop: false
+					},
+					executedCommands: {
+						outdent: 0,
+						splitAfter: 0,
+						mergeBackward: 0,
+						mergeForward: 0
+					},
+					changedBlocks: []
+				} );
+			} );
+
 			describe( 'collapsed selection at the beginning of a list item', () => {
 				describe( 'item before is empty', () => {
 					it( 'should remove list when in empty only element of a list', () => {
@@ -1131,6 +1153,31 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 
 		describe( 'multi-block list item', () => {
 			describe( 'collapsed selection at the beginning of a list item', () => {
+				describe( 'no item before', () => {
+					it( 'should split the list item and then outdent if selection anchored in a first empty of many blocks', () => {
+						runTest( {
+							input: [
+								'* []',
+								'  a',
+								'  b'
+							],
+							expected: [
+								'[]',
+								'* a {id:a00}',
+								'  b'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 1,
+								splitAfter: 1,
+								mergeBackward: 0,
+								mergeForward: 0
+							},
+							changedBlocks: [ 1, 2, 0 ]
+						} );
+					} );
+				} );
+
 				describe( 'item before is empty', () => {
 					it( 'should merge with previous list item and keep blocks intact', () => {
 						runTest( {
@@ -2094,6 +2141,36 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 		} );
 
 		describe( 'selection outside list', () => {
+			it( 'should not engage for a <li> that is not a document list item', () => {
+				model.schema.register( 'thirdPartyListItem', { inheritAllFrom: '$block' } );
+
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'thirdPartyListItem',
+					view: ( modelItem, { writer } ) => writer.createContainerElement( 'li' )
+				} );
+
+				runTest( {
+					input: [
+						'<thirdPartyListItem>a</thirdPartyListItem>',
+						'<thirdPartyListItem>[]b</thirdPartyListItem>'
+					],
+					expected: [
+						'<thirdPartyListItem>a[]b</thirdPartyListItem>'
+					],
+					eventStopped: {
+						preventDefault: true,
+						stop: false
+					},
+					executedCommands: {
+						outdent: 0,
+						splitAfter: 0,
+						mergeBackward: 0,
+						mergeForward: 0
+					},
+					changedBlocks: []
+				} );
+			} );
+
 			describe( 'collapsed selection', () => {
 				it( 'no list editing commands should be executed outside list (empty paragraph)', () => {
 					runTest( {
@@ -2996,10 +3073,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* a',
 							'  []'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3022,10 +3096,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  b'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3048,10 +3119,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  * b {id:002}'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3072,10 +3140,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* a',
 							'  * []'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3098,10 +3163,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  * []',
 							'  b'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -3487,6 +3549,28 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 		} );
 
 		describe( 'single block list item', () => {
+			it( 'should not engage when the selection is in the middle of a text', () => {
+				runTest( {
+					input: [
+						'* a[]b'
+					],
+					expected: [
+						'* a[]'
+					],
+					eventStopped: {
+						preventDefault: true,
+						stop: false
+					},
+					executedCommands: {
+						outdent: 0,
+						splitAfter: 0,
+						mergeBackward: 0,
+						mergeForward: 0
+					},
+					changedBlocks: []
+				} );
+			} );
+
 			describe( 'collapsed selection at the end of a list item', () => {
 				describe( 'item after is empty', () => {
 					it( 'should not remove list when in empty only element of a list', () => {
@@ -4225,7 +4309,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 						} );
 					} );
 
-					it.skip( 'should merge following complex list item with current one', () => {
+					it( 'should merge following complex list item with current one', () => {
 						runTest( {
 							input: [
 								'* ',
@@ -4244,7 +4328,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							],
 							expected: [
 								'* ',
-								'  []b',
+								'* []b {id:002}',
 								'  c',
 								'  * d {id:d}',
 								'    e',
@@ -4263,7 +4347,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 								mergeBackward: 0,
 								mergeForward: 1
 							},
-							changedBlocks: [ 1 ]
+							changedBlocks: [ 1, 2, 11 ]
 						} );
 					} );
 
@@ -5168,6 +5252,697 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 			} );
 		} );
 
+		describe( 'selection outside list', () => {
+			it( 'should not engage for a <li> that is not a document list item', () => {
+				model.schema.register( 'thirdPartyListItem', { inheritAllFrom: '$block' } );
+
+				editor.conversion.for( 'downcast' ).elementToElement( {
+					model: 'thirdPartyListItem',
+					view: ( modelItem, { writer } ) => writer.createContainerElement( 'li' )
+				} );
+
+				runTest( {
+					input: [
+						'<thirdPartyListItem>a[]</thirdPartyListItem>',
+						'<thirdPartyListItem>b</thirdPartyListItem>'
+					],
+					expected: [
+						'<thirdPartyListItem>a[]b</thirdPartyListItem>'
+					],
+					eventStopped: {
+						preventDefault: true,
+						stop: false
+					},
+					executedCommands: {
+						outdent: 0,
+						splitAfter: 0,
+						mergeBackward: 0,
+						mergeForward: 0
+					},
+					changedBlocks: []
+				} );
+			} );
+
+			describe( 'collapsed selection', () => {
+				it( 'no list editing commands should be executed outside list (empty paragraph)', () => {
+					runTest( {
+						input: [
+							'[]'
+						],
+						expected: [
+							'[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'no list editing commands should be executed outside list (selection at the beginning of text)', () => {
+					runTest( {
+						input: [
+							'[]text'
+						],
+						expected: [
+							'[]ext'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'no list editing commands should be executed outside list (selection at the end of text)', () => {
+					runTest( {
+						input: [
+							'text[]'
+						],
+						expected: [
+							'text[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'no list editing commands should be executed outside list (selection in the middle of text)', () => {
+					runTest( {
+						input: [
+							'te[]xt'
+						],
+						expected: [
+							'te[]t'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'no list editing commands should be executed next to a list', () => {
+					runTest( {
+						input: [
+							'* 1',
+							'[]2'
+						],
+						expected: [
+							'* 1',
+							'[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it( 'empty list should be deleted', () => {
+					runTest( {
+						input: [
+							'* 1',
+							'2[]',
+							'* '
+						],
+						expected: [
+							'* 1',
+							'2[]'
+						],
+						eventStopped: {
+							preventDefault: true,
+							stop: false
+						},
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+			} );
+
+			describe( 'non-collapsed selection', () => {
+				describe( 'outside list', () => {
+					it( 'no list editing commands should be executed', () => {
+						runTest( {
+							input: [
+								't[ex]t'
+							],
+							expected: [
+								't[]t'
+							],
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 0
+							},
+							changedBlocks: []
+						} );
+					} );
+
+					it( 'no list editing commands should be executed when outside list when next to a list', () => {
+						runTest( {
+							input: [
+								't[ex]t',
+								'* 1'
+							],
+							expected: [
+								't[]t',
+								'* 1'
+							],
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 0
+							},
+							changedBlocks: []
+						} );
+					} );
+				} );
+
+				describe( 'only start in a list', () => {
+					it( 'no list editing commands should be executed when doing delete', () => {
+						runTest( {
+							input: [
+								'* te[xt',
+								'aa]'
+							],
+							expected: [
+								'* te[]'
+							],
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 0
+							},
+							changedBlocks: []
+						} );
+					} );
+
+					it( 'no list editing commands should be executed when doing delete (multi-block list)', () => {
+						runTest( {
+							input: [
+								'* te[xt1',
+								'  text2',
+								'  * text3',
+								'text4]'
+							],
+							expected: [
+								'* te[]'
+							],
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 0
+							},
+							changedBlocks: []
+						} );
+					} );
+
+					it( 'should delete everything till end of selection and merge remaining text', () => {
+						runTest( {
+							input: [
+								'* text1',
+								'  tex[t2',
+								'  * text3',
+								'tex]t4'
+							],
+							expected: [
+								'* text1',
+								'  tex[]t4'
+							],
+							eventStopped: {
+								preventDefault: true,
+								stop: false
+							},
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 0
+							},
+							changedBlocks: []
+						} );
+					} );
+				} );
+
+				describe( 'only end in a list', () => {
+					it( 'should delete everything till end of selection', () => {
+						runTest( {
+							input: [
+								'[',
+								'* te]xt'
+							],
+							expected: [
+								'* []xt {id:001}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should delete everything till the end of selection and adjust remaining block to item list', () => {
+						runTest( {
+							input: [
+								'a[',
+								'* b]b',
+								'  c'
+							],
+							expected: [
+								'a[]b',
+								'* c'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0, 1 ]
+						} );
+					} );
+
+					it( 'should delete everything till the end of selection and adjust remaining item list indentation', () => {
+						runTest( {
+							input: [
+								'a[',
+								'* b]b',
+								'  * c'
+							],
+							expected: [
+								'a[]b',
+								'* c {id:002}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							// Note: Technically speaking "c" should also be included but wasn't; was fixed by model post-fixer.
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should delete selection and adjust remaining item list indentation (multi-block)', () => {
+						runTest( {
+							input: [
+								'a[',
+								'* b]b',
+								'  * c',
+								'    d'
+							],
+							expected: [
+								'a[]b',
+								'* c {id:002}',
+								'  d'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							// Note: Technically speaking "c" and "d" should also be included but weren't; fixed by model post-fixer.
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should remove selection and adjust remaining list', () => {
+						runTest( {
+							input: [
+								'a[',
+								'* b]b',
+								'  * c',
+								'  d'
+							],
+							expected: [
+								'a[]b',
+								'* c {id:002}',
+								'* d {id:001}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							// Note: Technically speaking "c" and "d" should also be included but weren't; fixed by model post-fixer.
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should remove selection and adjust remaining list (multi-block)', () => {
+						runTest( {
+							input: [
+								'a[',
+								'* b',
+								'  * c',
+								'    d]d',
+								'    * e',
+								'      f'
+							],
+							expected: [
+								'a[]d',
+								'* e {id:004}',
+								'  f'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0, 1, 2 ]
+						} );
+					} );
+				} );
+
+				describe( 'spanning multiple lists', () => {
+					it( 'should merge lists into one with one list item', () => {
+						runTest( {
+							input: [
+								'* a[a',
+								'b',
+								'* c]c'
+							],
+							expected: [
+								'* a[]c'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should merge lists into one with two blocks', () => {
+						runTest( {
+							input: [
+								'* a',
+								'  b[b',
+								'c',
+								'* d]d'
+							],
+							expected: [
+								'* a',
+								'  b[]d'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 1 ]
+						} );
+					} );
+
+					it( 'should merge two lists into one with two list items', () => {
+						runTest( {
+							input: [
+								'* a[',
+								'c',
+								'* d]',
+								'* e'
+							],
+							expected: [
+								'* a[]',
+								'* e {id:003}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should merge two lists into one with two list items (multiple blocks)', () => {
+						runTest( {
+							input: [
+								'* a[',
+								'c',
+								'* d]',
+								'  e',
+								'* f'
+							],
+							expected: [
+								'* a[]',
+								'  e',
+								'* f {id:004}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0, 1 ]
+						} );
+					} );
+
+					it( 'should merge two lists into one with two list items and adjust indentation', () => {
+						runTest( {
+							input: [
+								'* a[',
+								'c',
+								'* d',
+								'  * e]e',
+								'    * f',
+								'      g'
+							],
+							expected: [
+								'* a[]e',
+								'  * f {id:004}',
+								'    g'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0, 1, 2 ]
+						} );
+					} );
+
+					it( 'should merge two lists into one with deeper indendation', () => {
+						runTest( {
+							input: [
+								'* a',
+								'  * b[',
+								'c',
+								'* d',
+								'  * e',
+								'    * f]f',
+								'      * g'
+							],
+							expected: [
+								'* a',
+								'  * b[]f',
+								'    * g {id:006}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 1, 2 ]
+						} );
+					} );
+
+					it( 'should merge two lists into one with deeper indentation (multiple blocks)', () => {
+						runTest( {
+							input: [
+								'* a',
+								'  * b[',
+								'c',
+								'* d',
+								'  * e]e',
+								'    * f',
+								'      g'
+							],
+							expected: [
+								'* a',
+								'  * b[]e',
+								'    * f {id:005}',
+								'      g'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 1 ]
+						} );
+					} );
+
+					it( 'should merge two lists into one and keep items after selection', () => {
+						runTest( {
+							input: [
+								'* a[',
+								'c',
+								'* d',
+								'  * e]e',
+								'* f',
+								'  g'
+							],
+							expected: [
+								'* a[]e',
+								'* f {id:004}',
+								'  g'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 0 ]
+						} );
+					} );
+
+					it( 'should merge lists of different types to a single list and keep item lists types', () => {
+						runTest( {
+							input: [
+								'* a',
+								'* b[b',
+								'c',
+								'# d]d',
+								'# d'
+							],
+							expected: [
+								'* a',
+								'* b[]d',
+								'# d {id:004}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 1 ]
+						} );
+					} );
+
+					it( 'should merge lists of mixed types to a single list and keep item lists types', () => {
+						runTest( {
+							input: [
+								'* a',
+								'# b[b',
+								'c',
+								'# d]d',
+								'  * f'
+							],
+							expected: [
+								'* a',
+								'# b[]d',
+								'  * f {id:004}'
+							],
+							eventStopped: true,
+							executedCommands: {
+								outdent: 0,
+								splitAfter: 0,
+								mergeBackward: 0,
+								mergeForward: 1
+							},
+							changedBlocks: [ 1 ]
+						} );
+					} );
+				} );
+			} );
+		} );
+
 		describe( 'around widgets', () => {
 			describe( 'block widgets', () => {
 				it( 'should delete a paragraph and select a block widget in a list that follows it', () => {
@@ -5311,10 +6086,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* a',
 							'  []'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -5337,10 +6109,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  b'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -5363,10 +6132,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  []',
 							'  * b {id:002}'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -5387,10 +6153,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'* a',
 							'  * []'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
@@ -5413,10 +6176,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 							'  * []',
 							'  b'
 						],
-						eventStopped: {
-							preventDefault: true,
-							stop: true
-						},
+						eventStopped: true,
 						executedCommands: {
 							outdent: 0,
 							splitAfter: 0,
