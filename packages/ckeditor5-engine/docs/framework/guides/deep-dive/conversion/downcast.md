@@ -1,11 +1,11 @@
 ---
 category: framework-deep-dive-conversion
-menu-title: Model to view - downcast
+menu-title: Model to view (downcast)
 order: 20
 since: 33.0.0
 ---
 
-# Model to view - downcast
+# Model to view (downcast)
 
 ## Introduction
 
@@ -195,4 +195,4 @@ editor.conversion
 
 ## Read next
 
-{@link framework/guides/deep-dive/conversion/upcast View to model - upcast}
+{@link framework/guides/deep-dive/conversion/upcast View to model (upcast)}

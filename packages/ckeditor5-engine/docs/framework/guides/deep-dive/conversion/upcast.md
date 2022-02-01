@@ -1,11 +1,11 @@
 ---
 category: framework-deep-dive-conversion
-menu-title: View to model - upcast
+menu-title: View to model (upcast)
 order: 30
 since: 33.0.0
 ---
 
-# Model to view - downcast
+# Model to view (downcast)
 
 ## Introduction
 

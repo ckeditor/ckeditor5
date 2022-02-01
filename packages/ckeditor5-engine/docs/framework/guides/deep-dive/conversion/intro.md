@@ -19,13 +19,11 @@ You can think about upcast and downcast as about processes working in opposite d
 
 Following chapters will teach you how to create the right converter for each case, when creating your very own CKEditor 5 plugin.
 
-## Table of contents
-
-* **{@link framework/guides/deep-dive/conversion/downcast Model to view - downcast}**
+* **{@link framework/guides/deep-dive/conversion/downcast Model to view (downcast)}**
 
 	Model has to be transformed into the view. Learn how to achieve that by creating downcast converters.
 
-* **{@link framework/guides/deep-dive/conversion/upcast View to model - upcast}**
+* **{@link framework/guides/deep-dive/conversion/upcast View to model (upcast)}**
 
 	Raw data coming into the editor has to be transformed into the model. Learn how to achieve that by creating upcast converters.
 

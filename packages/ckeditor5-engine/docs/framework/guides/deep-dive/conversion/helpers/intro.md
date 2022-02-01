@@ -6,3 +6,15 @@ since: 33.0.0
 ---
 
 # Introduction
+
+The editor is supporting out-of-the-box a vast amount of the most commonly used HTML elements via {@link features/index existing editor features}.
+
+If your aim is to easily enable common HTML features that are not explicitly supported by the dedicated CKEditor 5 features, use the {@link features/general-html-support General HTML Support feature}.
+
+Yet, there are cases where you might want to provide a rich editing experience for a custom HTML markup. The conversion helpers are the way to achieve that.
+
+## Helpers by category
+
+* **{@link framework/guides/deep-dive/conversion/helpers/downcast Downcast helpers (model to view)}**
+
+* **{@link framework/guides/deep-dive/conversion/helpers/upcast Upcast helpers (view to model)}**
