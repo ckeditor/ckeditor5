@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
+
 import Command from './command';
 
 /**
@@ -14,7 +16,7 @@ import Command from './command';
  *
  * This command is used to proxy multiple commands. The multi-command is enabled when
  * at least one of its registered child commands is enabled.
- * When executing a multi-command the first command that is enabled will be executed.
+ * When executing a multi-command the first enabled command with highest priority will be executed.
  *
  *		const multiCommand = new MultiCommand( editor );
  *
@@ -22,8 +24,8 @@ import Command from './command';
  *		const commandBar = new Command( editor );
  *
  *		// Register child commands.
- *		multiCommand.registerChildCommand( commandFoo );
- *		multiCommand.registerChildCommand( commandBar );
+ *		multiCommand.registerChildCommand( commandFoo, 'low' );
+ *		multiCommand.registerChildCommand( commandBar, 'high' );
  *
  *		// Enable one of the commands.
  *		commandBar.isEnabled = true;
@@ -40,12 +42,12 @@ export default class MultiCommand extends Command {
 		super( editor );
 
 		/**
-		 * Registered child commands.
+		 * Registered child commands definitions.
 		 *
-		 * @type {Array.<module:core/command~Command>}
+		 * @type {Array.<Object>}
 		 * @private
 		 */
-		this._childCommands = [];
+		this._childCommandsDefinitons = [];
 	}
 
 	/**
@@ -56,23 +58,44 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Executes the first of it registered child commands.
+	 * Executes the first enabled command which has the highest priority of all registered child commands.
 	 *
 	 * @returns {*} The value returned by the {@link module:core/command~Command#execute `command.execute()`}.
 	 */
 	execute( ...args ) {
 		const command = this._getFirstEnabledCommand();
 
-		return command != null && command.execute( args );
+		return !!command && command.execute( args );
+	}
+
+	/**
+	 * Inserts command definition at correct index by priority so registered commands are always sorted from lowest priority to highest
+	 *
+	 * @param {Object} newCommandDefinition Object with `command` and `priority` properties
+	 * Object
+	 * @returns {undefined}
+	 * @private
+	 */
+	_insertCommandDefinitionByPriority( newCommandDefinition ) {
+		for ( let i = 0; i <= this._childCommandsDefinitons.length; i++ ) {
+			const registeredCommand = this._childCommandsDefinitons[ i ];
+
+			if ( !registeredCommand || priorities.get( registeredCommand.priority ) >= priorities.get( newCommandDefinition.priority ) ) {
+				this._childCommandsDefinitons.splice( i, 0, newCommandDefinition );
+
+				break;
+			}
+		}
 	}
 
 	/**
 	 * Registers a child command.
 	 *
 	 * @param {module:core/command~Command} command
+	 * @param {String|Number} priority Priority of command. Command with highest priority will be executed over others.
 	 */
-	registerChildCommand( command ) {
-		this._childCommands.push( command );
+	registerChildCommand( command, priority = 'normal' ) {
+		this._insertCommandDefinitionByPriority( { command, priority } );
 
 		// Change multi command enabled state when one of registered commands changes state.
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
@@ -90,12 +113,15 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Returns a first enabled command or undefined if none of them is enabled.
+	 * Returns a first enabled command with highest priority or undefined if none of them is enabled.
 	 *
 	 * @returns {module:core/command~Command|undefined}
 	 * @private
 	 */
 	_getFirstEnabledCommand() {
-		return this._childCommands.find( command => command.isEnabled );
+		const definitonsWithEnabledCommand = this._childCommandsDefinitons.filter( definition => definition.command.isEnabled );
+		const definitionWithHighestPriority = definitonsWithEnabledCommand[ definitonsWithEnabledCommand.length - 1 ];
+
+		return definitionWithHighestPriority && definitionWithHighestPriority.command;
 	}
 }
