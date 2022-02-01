@@ -38,11 +38,21 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 
 ## List properties
 
-Beside the basic functionality of creating the ordered and unordered list, CKEditor 5 offers additional formatting tools that allow controlling the lists.
+Beside the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers additional formatting tools that allow controlling the lists. Features such as more styles for list markers, setting the start index or reversing the list order can be enabled separately or all together. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
 </info-box>
+
+### List styles
+
+The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
+
+#### Demo
+
+In the editor below use the ordered or unordered list dropdown to choose the desired marker type for each list.
+
+{@snippet features/lists-style}
 
 ### List start index
 
@@ -67,16 +77,6 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#reve
 Click the second list and use the ordered list dropdown switch to choose whether it should be reversed.
 
 {@snippet features/lists-reversed}
-
-### List styles
-
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
-
-#### Demo
-
-In the editor below use the ordered or unordered list dropdown to choose the desired marker type for each list.
-
-{@snippet features/lists-style}
 
 ## List indentation
 
