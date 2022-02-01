@@ -10,6 +10,7 @@
 import { Plugin } from 'ckeditor5/src/core';
 import DocumentListEditing from '../documentlist/documentlistediting';
 import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
+import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -92,7 +93,9 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
-		editor.plugins.get( DocumentListEditing ).addReconvertCallback( ( viewElement, modelAttributes ) => {
+		const documentListEditingPlugin = editor.plugins.get( DocumentListEditing );
+
+		documentListEditingPlugin.addReconvertCallback( ( viewElement, modelAttributes ) => {
 			for ( const strategy of strategies ) {
 				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
 					return true;
@@ -100,6 +103,23 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 
 			return false;
+		} );
+
+		// TODO extract this post-fixer to a helper function.
+		// Fixing the missing list properties attributes.
+		documentListEditingPlugin.addPostFixerCallback( ( listHead, writer ) => {
+			let applied = false;
+
+			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+				for ( const strategy of strategies ) {
+					if ( strategy.appliesToListItem( node ) && !node.hasAttribute( strategy.attributeName ) ) {
+						writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+						applied = true;
+					}
+				}
+			}
+
+			return applied;
 		} );
 
 		// // Handle merging two separated lists into the single one.

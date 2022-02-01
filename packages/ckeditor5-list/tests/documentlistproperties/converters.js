@@ -193,7 +193,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					'</ol>',
 
 					modelList( `
-						# Foo
+						# Foo {style:default}
 						# Bar
 					` ),
 
@@ -216,7 +216,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					'</ul>',
 
 					modelList( `
-						* Foo
+						* Foo {style:default}
 						* Bar
 					` ),
 
@@ -301,7 +301,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					'</ol>',
 
 					modelList( `
-						# Foo
+						# Foo {style:default}
 						# Bar
 					` ),
 
