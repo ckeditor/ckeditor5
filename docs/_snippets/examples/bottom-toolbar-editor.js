@@ -17,9 +17,7 @@ import DropdownPanelView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownpanel
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
-import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
-import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import HorizontalLine from '@ckeditor/ckeditor5-horizontal-line/src/horizontalline';
 import Image from '@ckeditor/ckeditor5-image/src/image';
@@ -34,6 +32,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
@@ -149,9 +148,7 @@ DecoupledEditor
 			Bold,
 			EasyImage,
 			Essentials,
-			FontBackgroundColor,
-			FontColor,
-			FontSize,
+			Font,
 			Heading,
 			HorizontalLine,
 			Image,
@@ -166,6 +163,7 @@ DecoupledEditor
 			List,
 			MediaEmbed,
 			Paragraph,
+			RemoveFormat,
 			Strikethrough,
 			Subscript,
 			Superscript,
@@ -191,6 +189,7 @@ DecoupledEditor
 			'undo',
 			'redo',
 			'|',
+			'fontFamily',
 			'fontSize',
 			'fontColor',
 			'fontBackgroundColor',
@@ -206,7 +205,9 @@ DecoupledEditor
 			'numberedList',
 			'|',
 			'outdent',
-			'indent'
+			'indent',
+			'|',
+			'removeFormat'
 		],
 
 		image: {
