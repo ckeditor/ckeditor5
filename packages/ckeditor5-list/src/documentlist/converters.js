@@ -106,7 +106,7 @@ export function listUpcastCleanList() {
  * @protected
  * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
- * @param {TODO} customCallbacks
+ * @param {Array.<Function>} customCallbacks The callbacks to verify whether a view element is reflecting the model attributes.
  * @return {Function}
  */
 export function reconvertItemsOnDataChange( model, editing, customCallbacks ) {
@@ -263,7 +263,7 @@ export function reconvertItemsOnDataChange( model, editing, customCallbacks ) {
 					break;
 				}
 
-				// TODO here check if some list properties require refresh (use injected callback)
+				// There might be list properties attributes that require refreshing a view element.
 				if ( customCallbacks.some( callback => callback( element, stack[ indent ] ) ) ) {
 					break;
 				}

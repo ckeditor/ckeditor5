@@ -60,6 +60,25 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		/**
+		 * The callbacks to verify whether a view element is reflecting the model attributes.
+		 *
+		 * @private
+		 * @type {Array.<Function>}
+		 */
+		this._reconvertCallbacks = [];
+
+		/**
+		 * The post-fixer callbacks that are triggered in the context of the changed list.
+		 *
+		 * @private
+		 * @type {Array.<Function>}
+		 */
+		this._postFixerCallbacks = [
+			( listHead, writer ) => fixListIndents( listHead, writer ),
+			( listHead, writer, { seenIds } ) => fixListItemIds( listHead, seenIds, writer )
+		];
+
 		const editor = this.editor;
 		const model = editor.model;
 		const commands = editor.commands;
@@ -78,12 +97,6 @@ export default class DocumentListEditing extends Plugin {
 		model.schema.extend( '$container', {
 			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
 		} );
-
-		// TODO make nice API and docs
-		this._postFixerCallbacks = [
-			( listHead, writer ) => fixListIndents( listHead, writer ),
-			( listHead, writer, { seenIds } ) => fixListItemIds( listHead, seenIds, writer )
-		];
 
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, this._postFixerCallbacks ) );
 
@@ -185,6 +198,27 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
+	 * Adds the callback that verifies whether a view element is reflecting the model attributes.
+	 *
+	 * @protected
+	 * @param {Function} callback
+	 */
+	addReconvertCallback( callback ) {
+		this._reconvertCallbacks.push( callback );
+	}
+
+	/**
+	 * Adds the callback that is triggered in the context of the changed list and is expected to fix the model
+	 * and return true if changes were applied.
+	 *
+	 * @protected
+	 * @param {Function} callback
+	 */
+	addPostFixerCallback( callback ) {
+		this._postFixerCallbacks.push( callback );
+	}
+
+	/**
 	 * Registers the conversion helpers for the document-list feature.
 	 * @private
 	 */
@@ -222,8 +256,6 @@ export default class DocumentListEditing extends Plugin {
 				}
 			} );
 
-		// TODO API
-		this._reconvertCallbacks = [];
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this._reconvertCallbacks ) );
 	}
 }
@@ -249,7 +281,7 @@ export default class DocumentListEditing extends Plugin {
 //
 // @param {module:engine/model/model~Model} model The data model.
 // @param {module:engine/model/writer~Writer} writer The writer to do changes with.
-// @param {TODO} postfixerCallbacks
+// @param {Array.<Function>} postFixerCallbacks The post-fixer callbacks that are triggered in the context of the changed list.
 // @returns {Boolean} `true` if any change has been applied, `false` otherwise.
 function modelChangePostFixer( model, writer, postFixerCallbacks ) {
 	const changes = model.document.differ.getChanges();

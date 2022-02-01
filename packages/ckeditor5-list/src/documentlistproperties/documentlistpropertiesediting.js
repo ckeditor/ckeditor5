@@ -92,8 +92,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
-		// TODO make this API nicer
-		editor.plugins.get( DocumentListEditing )._reconvertCallbacks.push( ( viewElement, modelAttributes ) => {
+		editor.plugins.get( DocumentListEditing ).addReconvertCallback( ( viewElement, modelAttributes ) => {
 			for ( const strategy of strategies ) {
 				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
 					return true;
