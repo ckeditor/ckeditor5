@@ -14,7 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
-import DocumentListMergeCommand from './documentlistmergecommand';
+import DocumentListMergeCommand, { getSelectedBlockObject } from './documentlistmergecommand';
 import DocumentListSplitCommand from './documentlistsplitcommand';
 import {
 	listItemDowncastConverter,
@@ -32,7 +32,8 @@ import {
 import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem,
-	isLastBlockOfListItem
+	isLastBlockOfListItem,
+	isSingleListItem
 } from './utils/model';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
@@ -166,9 +167,10 @@ export default class DocumentListEditing extends Plugin {
 			const selection = editor.model.document.selection;
 
 			editor.model.change( () => {
-				if ( selection.isCollapsed && data.direction == 'backward' ) {
-					const firstPosition = selection.getFirstPosition();
+				const firstPosition = selection.getFirstPosition();
+				const lastPosition = selection.getLastPosition();
 
+				if ( selection.isCollapsed && data.direction == 'backward' ) {
 					if ( !firstPosition.isAtStart ) {
 						return;
 					}
@@ -195,7 +197,9 @@ export default class DocumentListEditing extends Plugin {
 							return;
 						}
 
-						mergeBackwardCommand.execute();
+						mergeBackwardCommand.execute( {
+							shouldMergeOnBlocksContentLevel: shouldMergeOnBlocksContentLevel( editor.model, 'backward' )
+						} );
 					}
 
 					data.preventDefault();
@@ -208,11 +212,19 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
+					// If deleting within a single block of a list item, there's no need to merge anything.
+					// The default delete should be executed instead.
+					if ( !selection.isCollapsed && firstPosition.parent === lastPosition.parent ) {
+						return;
+					}
+
 					if ( !mergeForwardCommand.isEnabled ) {
 						return;
 					}
 
-					mergeForwardCommand.execute();
+					mergeForwardCommand.execute( {
+						shouldMergeOnBlocksContentLevel: shouldMergeOnBlocksContentLevel( editor.model, 'forward' )
+					} );
 
 					data.preventDefault();
 					evt.stop();
@@ -453,4 +465,31 @@ function createModelIndentPasteFixer( model ) {
 			}
 		} );
 	};
+}
+
+// TODO
+function shouldMergeOnBlocksContentLevel( model, direction ) {
+	const selection = model.document.selection;
+
+	if ( !selection.isCollapsed ) {
+		return !getSelectedBlockObject( model );
+	}
+
+	if ( direction === 'forward' ) {
+		return true;
+	}
+
+	const firstPosition = selection.getFirstPosition();
+	const positionParent = firstPosition.parent;
+	const previousSibling = positionParent.previousSibling;
+
+	if ( model.schema.isObject( previousSibling ) ) {
+		return false;
+	}
+
+	if ( previousSibling.isEmpty ) {
+		return true;
+	}
+
+	return isSingleListItem( [ positionParent, previousSibling ] );
 }

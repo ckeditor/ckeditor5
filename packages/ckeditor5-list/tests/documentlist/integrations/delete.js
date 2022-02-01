@@ -3063,7 +3063,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection to the list item block that precedes it', () => {
+				it.skip( 'should delete a block widget and move the selection to the list item block that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3084,7 +3084,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection to the block that precedes it (multiple blocks)', () => {
+				it.skip( 'should delete a block widget and move the selection to the block that precedes it (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3107,7 +3107,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection to the block that precedes it (nested item follows)', () => {
+				it.skip( 'should delete a block widget and move the selection to the block that precedes it (nested item follows)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3130,7 +3130,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection down to the (shallower) block that precedes it', () => {
+				it.skip( 'should delete a block widget and move the selection down to the (shallower) block that precedes it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3151,7 +3151,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection down to the block that precedes it (multiple blocks)', () => {
+				it.skip( 'should delete a block widget and move the selection down to the block that precedes it (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -3347,7 +3347,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+				it.skip( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
@@ -6008,7 +6008,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should merge an item into the next one despite a block widget following it', () => {
+				it.skip( 'should merge an item into the next one despite a block widget following it', () => {
 					runTest( {
 						input: [
 							'* []',
@@ -6030,12 +6030,34 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should merge an item into the next one despite a block widget following it at a deeper level', () => {
+				it.skip( 'should merge an item into the next one despite a block widget following it at a deeper level', () => {
 					runTest( {
 						input: [
 							'* a',
 							'* []',
 							'  * <blockWidget></blockWidget>'
+						],
+						expected: [
+							'* a',
+							'  * [<blockWidget></blockWidget>] {id:002}'
+						],
+						eventStopped: true,
+						executedCommands: {
+							outdent: 0,
+							splitAfter: 0,
+							mergeBackward: 0,
+							mergeForward: 0
+						},
+						changedBlocks: []
+					} );
+				} );
+
+				it.skip( 'should merge an item into the next one despite a block widget following it at an even deeper level', () => {
+					runTest( {
+						input: [
+							'* a',
+							'  * []',
+							'    * <blockWidget></blockWidget>'
 						],
 						expected: [
 							'* a',
@@ -6076,7 +6098,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection to the list item block that follows it', () => {
+				it.skip( 'should delete a block widget and move the selection to the list item block that follows it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -6097,7 +6119,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection to the block that follows it (multiple blocks)', () => {
+				it.skip( 'should delete a block widget and move the selection to the block that follows it (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -6120,7 +6142,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection to the block that follows it (nested item follows)', () => {
+				it.skip( 'should delete a block widget and move the selection to the block that follows it (nested item follows)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -6143,7 +6165,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection down to the (shallower) block that follows it', () => {
+				it.skip( 'should delete a block widget and move the selection down to the (shallower) block that follows it', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -6164,7 +6186,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should delete a block widget and move the selection down to the block that follows it (multiple blocks)', () => {
+				it.skip( 'should delete a block widget and move the selection down to the block that follows it (multiple blocks)', () => {
 					runTest( {
 						input: [
 							'* a',
@@ -6360,7 +6382,7 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 					} );
 				} );
 
-				it( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
+				it.skip( 'should remove a block widget surrounded by block containing inline images at boundaries', () => {
 					runTest( {
 						input: [
 							'* a<inlineWidget></inlineWidget>',
