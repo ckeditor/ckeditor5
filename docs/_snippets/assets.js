@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -65,7 +65,7 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		<button class="ck ck-button tippy-content__close-button ck-off" title="Close"></button>
 	`;
 
-	const options = Object.assign( {}, tippyOptions, {
+	const options = Object.assign( {}, {
 		placement: 'bottom',
 		trigger: 'manual',
 		hideOnClick: false,
@@ -76,7 +76,7 @@ window.attachTourBalloon = function( { target, text, editor, tippyOptions } ) {
 		theme: 'light-border',
 		zIndex: 1,
 		appendTo: () => document.body
-	} );
+	}, tippyOptions );
 
 	const tooltip = window.umberto.createTooltip( target, content, options );
 

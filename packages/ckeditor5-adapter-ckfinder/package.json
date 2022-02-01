@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-adapter-ckfinder",
-  "version": "31.1.0",
+  "version": "32.0.0",
   "description": "CKFinder adapter for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,23 +12,23 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^31.1.0"
+    "ckeditor5": "^32.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^31.1.0",
-    "@ckeditor/ckeditor5-core": "^31.1.0",
-    "@ckeditor/ckeditor5-clipboard": "^31.1.0",
-    "@ckeditor/ckeditor5-dev-utils": "^27.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
-    "@ckeditor/ckeditor5-enter": "^31.1.0",
-    "@ckeditor/ckeditor5-heading": "^31.1.0",
-    "@ckeditor/ckeditor5-image": "^31.1.0",
-    "@ckeditor/ckeditor5-list": "^31.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^31.1.0",
-    "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
-    "@ckeditor/ckeditor5-typing": "^31.1.0",
-    "@ckeditor/ckeditor5-undo": "^31.1.0",
-    "@ckeditor/ckeditor5-upload": "^31.1.0",
+    "@ckeditor/ckeditor5-basic-styles": "^32.0.0",
+    "@ckeditor/ckeditor5-core": "^32.0.0",
+    "@ckeditor/ckeditor5-clipboard": "^32.0.0",
+    "@ckeditor/ckeditor5-dev-utils": "^28.0.1",
+    "@ckeditor/ckeditor5-editor-classic": "^32.0.0",
+    "@ckeditor/ckeditor5-enter": "^32.0.0",
+    "@ckeditor/ckeditor5-heading": "^32.0.0",
+    "@ckeditor/ckeditor5-image": "^32.0.0",
+    "@ckeditor/ckeditor5-list": "^32.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^32.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^32.0.0",
+    "@ckeditor/ckeditor5-typing": "^32.0.0",
+    "@ckeditor/ckeditor5-undo": "^32.0.0",
+    "@ckeditor/ckeditor5-upload": "^32.0.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },

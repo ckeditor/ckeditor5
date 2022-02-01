@@ -54,7 +54,8 @@
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
-		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html"
+		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
+		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -305,14 +306,22 @@
 			"slug": "examples",
 			"categories": [
 				{
-					"name": "Builds",
+					"name": "Predefined builds",
 					"id": "examples-builds",
-					"slug": "builds"
+					"slug": "builds",
+					"order": 100
+				},
+				{
+					"name": "Custom builds",
+					"id": "examples-builds-custom",
+					"slug": "builds-custom",
+					"order": 200
 				},
 				{
 					"name": "Framework",
 					"id": "examples-framework",
-					"slug": "framework"
+					"slug": "framework",
+					"order": 300
 				}
 			]
 		},

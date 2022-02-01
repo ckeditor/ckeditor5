@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,3 +35,26 @@ export default class List extends Plugin {
 		return 'List';
 	}
 }
+
+/**
+ * The configuration of the {@link module:list/list~List list} feature.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				list:  ... // The list feature configuration.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface ListConfig
+ */
+
+/**
+ * The configuration of the {@link module:list/list~List} feature.
+ *
+ * Read more in {@link module:list/list~ListConfig}.
+ *
+ * @member {module:module:list/list~ListConfig} module:core/editor/editorconfig~EditorConfig#list
+ */

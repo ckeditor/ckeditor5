@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -601,6 +601,18 @@ export function modelChangePostFixer( model, writer ) {
 
 				if ( item.hasAttribute( 'listStyle' ) ) {
 					writer.removeAttribute( 'listStyle', item );
+
+					applied = true;
+				}
+
+				if ( item.hasAttribute( 'listReversed' ) ) {
+					writer.removeAttribute( 'listReversed', item );
+
+					applied = true;
+				}
+
+				if ( item.hasAttribute( 'listStart' ) ) {
+					writer.removeAttribute( 'listStart', item );
 
 					applied = true;
 				}

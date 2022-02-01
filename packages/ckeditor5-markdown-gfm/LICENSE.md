@@ -2,7 +2,7 @@ Software License Agreement
 ==========================
 
 **CKEditor 5 GitHub Flavored Markdown support** – https://github.com/ckeditor/ckeditor5-markdown-gfm <br>
-Copyright (c) 2003-2021, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2022, [CKSource](http://cksource.com) Holding sp. z o.o. All rights reserved.
 
 Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html).
 
@@ -20,4 +20,4 @@ The following libraries are included in CKEditor under the [MIT license](https:/
 Trademarks
 ----------
 
-**CKEditor** is a trademark of [CKSource](http://cksource.com) Frederico Knabben. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
+**CKEditor** is a trademark of [CKSource](http://cksource.com) Holding sp. z o.o. All other brand and product names are trademarks, registered trademarks or service marks of their respective holders.
