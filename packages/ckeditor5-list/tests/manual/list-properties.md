@@ -8,6 +8,8 @@ Several editors were configured in this manual.
 2. Make sure the UI of the dropdown matches the description of the editor.
 3. Open the bulleted list dropdown and make sure it always looks the same.
 
+**Note**: When list styles are disabled, the bulleted list dropdown should become a simple button.
+
 ## Accessibility
 
 1. In each editor, focus the editing root and hit <kbd>(Fn+)Alt+F10</kbd>.
