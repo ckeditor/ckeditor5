@@ -51,8 +51,8 @@ export default class InsertColumnCommand extends Command {
 	 */
 	refresh() {
 		const selection = this.editor.model.document.selection;
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
-		const isAnyCellSelected = !!tableSelectionUtils.getSelectionAffectedTableCells( selection ).length;
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
 
 		this.isEnabled = isAnyCellSelected;
 	}
@@ -69,11 +69,10 @@ export default class InsertColumnCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 		const insertBefore = this.order === 'left';
 
-		const affectedTableCells = tableSelectionUtils.getSelectionAffectedTableCells( selection );
-		const columnIndexes = tableSelectionUtils.getColumnIndexes( affectedTableCells );
+		const affectedTableCells = tableUtils.getSelectionAffectedTableCells( selection );
+		const columnIndexes = tableUtils.getColumnIndexes( affectedTableCells );
 
 		const column = insertBefore ? columnIndexes.first : columnIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );

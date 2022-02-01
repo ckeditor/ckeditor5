@@ -36,10 +36,9 @@ export default class SetHeaderColumnCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
-
-		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
@@ -72,12 +71,12 @@ export default class SetHeaderColumnCommand extends Command {
 			return;
 		}
 
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
-		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const table = selectedCells[ 0 ].findAncestor( 'table' );
 
-		const { first, last } = tableSelectionUtils.getColumnIndexes( selectedCells );
+		const { first, last } = tableUtils.getColumnIndexes( selectedCells );
 		const headingColumnsToSet = this.value ? first : last + 1;
 
 		model.change( writer => {

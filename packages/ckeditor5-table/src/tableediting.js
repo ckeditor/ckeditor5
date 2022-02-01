@@ -39,7 +39,6 @@ import injectTableCellRefreshPostFixer from './converters/table-cell-refresh-pos
 import injectTableHeadingRowsRefreshPostFixer from './converters/table-heading-rows-refresh-post-fixer';
 
 import '../theme/tableediting.css';
-import TableSelectionUtils from './utils/tableselectionutils';
 
 /**
  * The table editing feature.
@@ -55,7 +54,7 @@ export default class TableEditing extends Plugin {
 	}
 
 	static get requires() {
-		return [ TableUtils, TableSelectionUtils ];
+		return [ TableUtils ];
 	}
 
 	/**

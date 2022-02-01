@@ -119,9 +119,9 @@ ClassicEditor
 
 		function findTable( editor, useAnyTable = false ) {
 			const selection = editor.model.document.selection;
-			const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-			const tableCells = tableSelectionUtils.getSelectionAffectedTableCells( selection );
+			const tableCells = tableUtils.getSelectionAffectedTableCells( selection );
 
 			if ( tableCells.length ) {
 				return tableCells[ 0 ].findAncestor( 'table' );

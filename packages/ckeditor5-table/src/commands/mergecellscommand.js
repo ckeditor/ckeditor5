@@ -28,10 +28,10 @@ export default class MergeCellsCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		const selectedTableCells = tableSelectionUtils.getSelectedTableCells( this.editor.model.document.selection );
-		this.isEnabled = tableSelectionUtils.isSelectionRectangular( selectedTableCells, this.editor.plugins.get( TableUtils ) );
+		const selectedTableCells = tableUtils.getSelectedTableCells( this.editor.model.document.selection );
+		this.isEnabled = tableUtils.isSelectionRectangular( selectedTableCells, this.editor.plugins.get( TableUtils ) );
 	}
 
 	/**
@@ -42,10 +42,9 @@ export default class MergeCellsCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( TableUtils );
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 
 		model.change( writer => {
-			const selectedTableCells = tableSelectionUtils.getSelectedTableCells( model.document.selection );
+			const selectedTableCells = tableUtils.getSelectedTableCells( model.document.selection );
 
 			// All cells will be merged into the first one.
 			const firstTableCell = selectedTableCells.shift();

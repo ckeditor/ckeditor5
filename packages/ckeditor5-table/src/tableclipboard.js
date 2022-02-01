@@ -12,7 +12,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import TableSelection from './tableselection';
 import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
-import TableSelectionUtils from './utils/tableselectionutils';
 import {
 	cropTableToDimensions,
 	getHorizontallyOverlappingCells,
@@ -43,7 +42,7 @@ export default class TableClipboard extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection, TableUtils, TableSelectionUtils ];
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**
@@ -58,8 +57,6 @@ export default class TableClipboard extends Plugin {
 		this.listenTo( editor.model, 'insertContent', ( evt, args ) => this._onInsertContent( evt, ...args ), { priority: 'high' } );
 
 		this.decorate( '_replaceTableSlotCell' );
-
-		this.tableSelectionUtils = editor.plugins.get( 'TableSelectionUtils' );
 	}
 
 	/**
@@ -124,7 +121,7 @@ export default class TableClipboard extends Plugin {
 			return;
 		}
 
-		const selectedTableCells = this.tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
+		const selectedTableCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 
 		if ( !selectedTableCells.length ) {
 			removeEmptyRowsColumns( pastedTable, tableUtils );
@@ -142,7 +139,7 @@ export default class TableClipboard extends Plugin {
 			};
 
 			// Prepare the table for pasting.
-			const selection = prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils, this.tableSelectionUtils );
+			const selection = prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils );
 
 			// Beyond this point we operate on a fixed content table with rectangular selection and proper last row/column values.
 
@@ -173,7 +170,7 @@ export default class TableClipboard extends Plugin {
 			if ( this.editor.plugins.get( 'TableSelection' ).isEnabled ) {
 				// Selection ranges must be sorted because the first and last selection ranges are considered
 				// as anchor/focus cell ranges for multi-cell selection.
-				const selectionRanges = this.tableSelectionUtils.sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
+				const selectionRanges = tableUtils.sortRanges( cellsToSelect.map( cell => writer.createRangeOn( cell ) ) );
 
 				writer.setSelection( selectionRanges );
 			} else {
@@ -384,11 +381,11 @@ function getTableIfOnlyTableInContent( content, model ) {
 // @returns {Number} selection.firstRow
 // @returns {Number} selection.lastColumn
 // @returns {Number} selection.lastRow
-function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils, tableSelectionUtils ) {
+function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, tableUtils ) {
 	const selectedTable = selectedTableCells[ 0 ].findAncestor( 'table' );
 
-	const columnIndexes = tableSelectionUtils.getColumnIndexes( selectedTableCells );
-	const rowIndexes = tableSelectionUtils.getRowIndexes( selectedTableCells );
+	const columnIndexes = tableUtils.getColumnIndexes( selectedTableCells );
+	const rowIndexes = tableUtils.getRowIndexes( selectedTableCells );
 
 	const selection = {
 		firstColumn: columnIndexes.first,
@@ -409,7 +406,7 @@ function prepareTableForPasting( selectedTableCells, pastedDimensions, writer, t
 
 	// In case of expanding selection we do not reset the selection so in this case we will always try to fix selection
 	// like in the case of a non-rectangular area. This might be fixed by re-setting selected cells array but this shortcut is safe.
-	if ( shouldExpandSelection || !tableSelectionUtils.isSelectionRectangular( selectedTableCells ) ) {
+	if ( shouldExpandSelection || !tableUtils.isSelectionRectangular( selectedTableCells ) ) {
 		// For a non-rectangular selection (ie in which some cells sticks out from a virtual selection rectangle) we need to create
 		// a table layout that has a rectangular selection. This will split cells so the selection become rectangular.
 		// Beyond this point we will operate on fixed content table.

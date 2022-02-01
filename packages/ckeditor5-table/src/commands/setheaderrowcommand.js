@@ -31,9 +31,9 @@ export default class SetHeaderRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
-		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const isInTable = selectedCells.length > 0;
 
 		this.isEnabled = isInTable;
@@ -66,13 +66,13 @@ export default class SetHeaderRowCommand extends Command {
 			return;
 		}
 
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const model = this.editor.model;
 
-		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
 		const table = selectedCells[ 0 ].findAncestor( 'table' );
 
-		const { first, last } = tableSelectionUtils.getRowIndexes( selectedCells );
+		const { first, last } = tableUtils.getRowIndexes( selectedCells );
 		const headingRowsToSet = this.value ? first : last + 1;
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 

@@ -14,7 +14,6 @@ import TableWalker from './tablewalker';
 import TableUtils from './tableutils';
 
 import { cropTableToDimensions, adjustLastRowIndex, adjustLastColumnIndex } from './utils/structure';
-import TableSelectionUtils from './utils/tableselectionutils';
 
 import '../theme/tableselection.css';
 
@@ -36,7 +35,7 @@ export default class TableSelection extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableUtils, TableSelectionUtils ];
+		return [ TableUtils, TableUtils ];
 	}
 
 	/**
@@ -58,10 +57,10 @@ export default class TableSelection extends Plugin {
 	 * @returns {Array.<module:engine/model/element~Element>|null}
 	 */
 	getSelectedTableCells() {
-		const tableSelectionUtils = this.editor.plugins.get( TableSelectionUtils );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selection = this.editor.model.document.selection;
 
-		const selectedCells = tableSelectionUtils.getSelectedTableCells( selection );
+		const selectedCells = tableUtils.getSelectedTableCells( selection );
 
 		if ( selectedCells.length == 0 ) {
 			return null;
@@ -82,7 +81,7 @@ export default class TableSelection extends Plugin {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment|null}
 	 */
 	getSelectionAsFragment() {
-		const tableSelectionUtils = this.editor.plugins.get( TableSelectionUtils );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const selectedCells = this.getSelectedTableCells();
 
 		if ( !selectedCells ) {
@@ -92,8 +91,8 @@ export default class TableSelection extends Plugin {
 		return this.editor.model.change( writer => {
 			const documentFragment = writer.createDocumentFragment();
 
-			const { first: firstColumn, last: lastColumn } = tableSelectionUtils.getColumnIndexes( selectedCells );
-			const { first: firstRow, last: lastRow } = tableSelectionUtils.getRowIndexes( selectedCells );
+			const { first: firstColumn, last: lastColumn } = tableUtils.getColumnIndexes( selectedCells );
+			const { first: firstRow, last: lastRow } = tableUtils.getRowIndexes( selectedCells );
 
 			const sourceTable = selectedCells[ 0 ].findAncestor( 'table' );
 
@@ -102,7 +101,7 @@ export default class TableSelection extends Plugin {
 
 			// If the selection is rectangular there could be a case of all cells in the last row/column spanned over
 			// next row/column so the real lastRow/lastColumn should be updated.
-			if ( tableSelectionUtils.isSelectionRectangular( selectedCells ) ) {
+			if ( tableUtils.isSelectionRectangular( selectedCells ) ) {
 				const dimensions = {
 					firstColumn,
 					lastColumn,
@@ -270,11 +269,11 @@ export default class TableSelection extends Plugin {
 	 * @param {Array.<*>} args Delete content method arguments.
 	 */
 	_handleDeleteContent( event, args ) {
-		const tableSelectionUtils = this.editor.plugins.get( TableSelectionUtils );
+		const tableUtils = this.editor.plugins.get( TableUtils );
 		const [ selection, options ] = args;
 		const model = this.editor.model;
 		const isBackward = !options || options.direction == 'backward';
-		const selectedTableCells = tableSelectionUtils.getSelectedTableCells( selection );
+		const selectedTableCells = tableUtils.getSelectedTableCells( selection );
 
 		if ( !selectedTableCells.length ) {
 			return;

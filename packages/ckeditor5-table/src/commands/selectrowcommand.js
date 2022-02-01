@@ -35,8 +35,8 @@ export default class SelectRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
-		const selectedCells = tableSelectionUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 
 		this.isEnabled = selectedCells.length > 0;
 	}
@@ -46,9 +46,9 @@ export default class SelectRowCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
-		const referenceCells = tableSelectionUtils.getSelectionAffectedTableCells( model.document.selection );
-		const rowIndexes = tableSelectionUtils.getRowIndexes( referenceCells );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
+		const rowIndexes = tableUtils.getRowIndexes( referenceCells );
 
 		const table = referenceCells[ 0 ].findAncestor( 'table' );
 		const rangesToSelect = [];

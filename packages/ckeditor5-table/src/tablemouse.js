@@ -11,7 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 
 import TableSelection from './tableselection';
 import MouseEventsObserver from './tablemouse/mouseeventsobserver';
-import TableSelectionUtils from './utils/tableselectionutils';
+import TableUtils from './tableutils';
 
 /**
  * This plugin enables a table cells' selection with the mouse.
@@ -31,7 +31,7 @@ export default class TableMouse extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableSelection, TableSelectionUtils ];
+		return [ TableSelection, TableUtils ];
 	}
 
 	/**
@@ -56,7 +56,7 @@ export default class TableMouse extends Plugin {
 	 */
 	_enableShiftClickSelection() {
 		const editor = this.editor;
-		const tableSelectionUtils = editor.plugins.get( 'TableSelectionUtils' );
+		const tableUtils = editor.plugins.get( TableUtils );
 		let blockSelectionChange = false;
 
 		const tableSelection = editor.plugins.get( TableSelection );
@@ -72,7 +72,7 @@ export default class TableMouse extends Plugin {
 				return;
 			}
 
-			const anchorCell = tableSelection.getAnchorCell() || tableSelectionUtils.getTableCellsContainingSelection( selection )[ 0 ];
+			const anchorCell = tableSelection.getAnchorCell() || tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 
 			if ( !anchorCell ) {
 				return;

@@ -1078,9 +1078,9 @@ describe( 'TableKeyboard', () => {
 					let tableCell;
 
 					beforeEach( () => {
-						const tableSelectionUtils = editor.plugins.get( 'TableSelectionUtils' );
+						const tableUtils = editor.plugins.get( 'TableUtils' );
 
-						tableCell = tableSelectionUtils.getTableCellsContainingSelection( selection )[ 0 ];
+						tableCell = tableUtils.getTableCellsContainingSelection( selection )[ 0 ];
 					} );
 
 					it( 'should expand the selection to the cell on the right when the direction is "right"', () => {

@@ -79,8 +79,8 @@ export default class MergeCellCommand extends Command {
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
-		const tableCell = tableSelectionUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		const cellToMerge = this.value;
 		const direction = this.direction;
@@ -122,14 +122,12 @@ export default class MergeCellCommand extends Command {
 	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
-		const tableCell = tableSelectionUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const tableCell = tableUtils.getTableCellsContainingSelection( doc.selection )[ 0 ];
 
 		if ( !tableCell ) {
 			return;
 		}
-
-		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
 		// First get the cell on proper direction.
 		const cellToMerge = this.isHorizontal ?

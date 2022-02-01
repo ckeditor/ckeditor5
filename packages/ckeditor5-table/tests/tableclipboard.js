@@ -10,7 +10,6 @@ import TableSelection from '../src/tableselection';
 import TableUtils from '../src/tableutils';
 
 import TableClipboard from '../src/tableclipboard';
-import TableSelectionUtils from '../src/utils/tableselectionutils';
 
 describe( 'table clipboard', () => {
 	let editor;
@@ -33,7 +32,6 @@ describe( 'table clipboard', () => {
 		it( 'requires TableSelection plugins and utilities', () => {
 			expect( editor.plugins.has( TableSelection ) ).to.be.true;
 			expect( editor.plugins.has( TableUtils ) ).to.be.true;
-			expect( editor.plugins.has( TableSelectionUtils ) ).to.be.true;
 		} );
 	} );
 } );

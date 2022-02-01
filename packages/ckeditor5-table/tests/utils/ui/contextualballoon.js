@@ -66,9 +66,9 @@ describe( 'table utils', () => {
 						'</tableRow></table>' );
 					repositionContextualBalloon( editor, 'cell' );
 
-					const tableSelectionUtils = editor.plugins.get( 'TableSelectionUtils' );
+					const tableUtils = editor.plugins.get( 'TableUtils' );
 
-					const modelCell = tableSelectionUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
+					const modelCell = tableUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 					const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 					sinon.assert.calledWithExactly( spy, {
@@ -174,10 +174,10 @@ describe( 'table utils', () => {
 			} );
 
 			it( 'returns the position data', () => {
-				const tableSelectionUtils = editor.plugins.get( 'TableSelectionUtils' );
+				const tableUtils = editor.plugins.get( 'TableUtils' );
 				const defaultPositions = BalloonPanelView.defaultPositions;
 				const data = getBalloonCellPositionData( editor );
-				const modelCell = tableSelectionUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
+				const modelCell = tableUtils.getTableCellsContainingSelection( editor.model.document.selection )[ 0 ];
 				const viewCell = editor.editing.mapper.toViewElement( modelCell );
 
 				expect( data ).to.deep.equal( {

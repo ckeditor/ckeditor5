@@ -51,7 +51,7 @@ export default class InsertRowCommand extends Command {
 	 */
 	refresh() {
 		const selection = this.editor.model.document.selection;
-		const tableUtils = this.editor.plugins.get( 'TableSelectionUtils' );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const isAnyCellSelected = !!tableUtils.getSelectionAffectedTableCells( selection ).length;
 
 		this.isEnabled = isAnyCellSelected;
@@ -68,11 +68,10 @@ export default class InsertRowCommand extends Command {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( 'TableUtils' );
-		const tableSelectionUtils = this.editor.plugins.get( 'TableSelectionUtils' );
 		const insertAbove = this.order === 'above';
 
-		const affectedTableCells = tableSelectionUtils.getSelectionAffectedTableCells( selection );
-		const rowIndexes = tableSelectionUtils.getRowIndexes( affectedTableCells );
+		const affectedTableCells = tableUtils.getSelectionAffectedTableCells( selection );
+		const rowIndexes = tableUtils.getRowIndexes( affectedTableCells );
 
 		const row = insertAbove ? rowIndexes.first : rowIndexes.last;
 		const table = affectedTableCells[ 0 ].findAncestor( 'table' );
