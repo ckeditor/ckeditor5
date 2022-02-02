@@ -172,11 +172,7 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 	const allBlocks = new Set();
 
 	for ( const block of blocks ) {
-		for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'backward' } ) ) {
-			allBlocks.add( itemBlock );
-		}
-
-		for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'forward' } ) ) {
+		for ( const itemBlock of getAllListItemBlocks( block, { higherIndent } ) ) {
 			allBlocks.add( itemBlock );
 		}
 	}
@@ -251,11 +247,9 @@ export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 
 		if ( blockIndent < 0 ) {
 			removeListAttributes( block, writer );
-
-			continue;
+		} else {
+			writer.setAttribute( 'listIndent', blockIndent, block );
 		}
-
-		writer.setAttribute( 'listIndent', blockIndent, block );
 	}
 
 	return allBlocks;

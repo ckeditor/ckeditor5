@@ -82,7 +82,7 @@ export default class DocumentListIndentCommand extends Command {
 				if ( this._direction == 'forward' ) {
 					changedBlocks.push( ...indentBlocks( blocks, writer, { expand: true } ) );
 				} else {
-					changedBlocks.push( ...outdentBlocksWithMerge( blocks, writer, { expand: true } ) );
+					changedBlocks.push( ...outdentBlocksWithMerge( blocks, writer ) );
 				}
 			}
 

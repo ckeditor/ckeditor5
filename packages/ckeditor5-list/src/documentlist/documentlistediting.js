@@ -461,7 +461,7 @@ function createModelIndentPasteFixer( model ) {
 	};
 }
 
-// Decided whether the merge should be accompanied by the model's `deleteContent()`, for instance to get rid of the inline
+// Decides whether the merge should be accompanied by the model's `deleteContent()`, for instance, to get rid of the inline
 // content in the selection or take advantage of the heuristics in `deleteContent()` that helps convert lists into paragraphs
 // in certain cases.
 //

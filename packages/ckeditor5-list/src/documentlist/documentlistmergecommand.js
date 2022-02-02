@@ -191,7 +191,7 @@ export default class DocumentListMergeCommand extends Command {
 	 * @param {module:engine/model/selection~Selection} selection The selection the merge is executed for.
 	 * @param {Boolean} shouldMergeOnBlocksContentLevel When `true`, merge is performed together with
 	 * {@link module:engine/model/model~Model#deleteContent} to remove the inline content within the selection.
-	 * @returns {Object.<String,module:engine/model/element~Element>} elements
+	 * @returns {Object} elements
 	 * @returns {module:engine/model/element~Element} elements.firstElement
 	 * @returns {module:engine/model/element~Element} elements.lastElement
 	 */
