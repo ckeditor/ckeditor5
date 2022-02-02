@@ -20,37 +20,45 @@ For the entire list of changes introduced in version 32.0.0, see the [changelog 
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v32.0.0.
 
+## Bump of minimal version of Node.js to 14.x
+
+[Node.js 12 ends its long-term support in April 2022](https://nodejs.org/en/about/releases/). Because of that, starting from v32.0.0, the minimal version of Node.js required by CKEditor 5 will be 14.
+
+## The `ListStyle` plugin is now deprecated
+
+Due to the introduction of the new {@link features/lists#list-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Please refer to the {@link features/lists##list-properties-2 list feature installation guide} for details on how to handle the upgrade.
+
 ## Revision history
 
-The revision history feature was adapted for the real-time editing integration. Unfortunately, this introduced several breaking changes for the non-real-time integrations as well. The migration instructions are below. We also recommend revisiting {@link features/revision-history-integration the revision history integration guide}.
+The revision history feature was adapted to future support for real-time editing integration. Unfortunately, this introduced several breaking changes for the non-real-time integrations as well. The migration instructions are below. We also recommend revisiting the {@link features/revision-history-integration revision history integration guide}.
 
-In case of any problems with migrating to `v32.0.0`, please contact our support team.
+In case of any problems with migrating to CKEditor 5 v32.0.0, please [contact our support team](https://ckeditor.com/contact/).
 
 ### Revisions data
 
-The revision model has changed, so has the list of properties stored in a database. Below is the summary of the changes:
+The revision model has changed along with the list of properties stored in the database. Below is the summary of the changes:
 
-* New properties {@link module:revision-history/revision~Revision#fromVersion `#fromVersion`} and {@link module:revision-history/revision~Revision#toVersion `#toVersion`} have been added and need to be stored in your database. For the existing revisions, set those properties value to `0`.
-* Revision id for the initial revision will be set to document id or to `'initial'` value. Make sure that you either set `collaboration.channelId` configuration variable or allow for storing multiple revisions with the same id (among different documents).
-* `Revision#isLocked` property has been removed as it is no longer needed. You may remove it from the revisions saved in your database.
-* `Revision#data` property has been renamed to {@link module:revision-history/revision~Revision#diffData `#diffData`}. Rename this property for revisions stored in your database.
+* New properties {@link module:revision-history/revision~Revision#fromVersion `#fromVersion`} and {@link module:revision-history/revision~Revision#toVersion `#toVersion`} were added and need to be stored in your database. For existing revisions, set the value of these properties.
+* Revision ID for the initial revision will be set to the document ID or to the `'initial'` value. Make sure that you either set the `collaboration.channelId` configuration variable or allow for storing multiple revisions with the same ID (among different documents).
+* The `Revision#isLocked` property was removed as it is no longer needed. You may remove it from the revisions saved in your database.
+* The `Revision#data` property was renamed to {@link module:revision-history/revision~Revision#diffData `#diffData`}. Rename this property for revisions stored in your database.
 
-Please adjust your integration so that the revision data is properly saved in your database.
+Please **adjust your integration so that the revision data is properly saved in your database**.
 
 ### Revision history adapter
 
 The adapter interface has changed:
 
-`RevisionHistoryAdapter#getRevisions()` method has been removed. You will need to fetch and add revisions data directly in the adapter:
+The `RevisionHistoryAdapter#getRevisions()` method was removed. You will need to fetch and add the revisions data directly in the adapter:
 
 ```js
 /* Before v32.0.0 */
 class RevisionHistoryIntegration extends Plugin {
     init() {
         const revisionHistory = editor.plugins.get( 'RevisionHistory' );
-        
+
     	// ...
-        
+
 		revisionHistory.adapter = {
 			getRevisions: () => {
 				return this._getRevisions();
@@ -58,11 +66,11 @@ class RevisionHistoryIntegration extends Plugin {
 			// ...
 		};
     }
-    
+
     _getRevisions() {
-    	// Example of an asynchronous call to the database
-        // that fetches revisions data for the document.
-        // Don't return `diffData` property for those revisions!
+    	// An example of an asynchronous call to the database
+        // that fetches the revisions data for the document.
+        // Do not return the `diffData` property for these revisions!
     	return fetch( /* ... */ ).then( /* ... */ );
     }
 }
@@ -72,15 +80,15 @@ class RevisionHistoryIntegration extends Plugin {
 class RevisionHistoryIntegration extends Plugin {
 	async init() {
 	    const revisionHistory = editor.plugins.get( 'RevisionHistory' );
-	    
+
 		// ...
 
 		revisionHistory.adapter = {
 			// ...
 		};
-		
+
 		const revisionsData = await this._getRevisions();
-		
+
 		for ( const revisionData of revisionsData ) {
 			revisionHistory.addRevisionData( revisionData );
 		}
@@ -92,9 +100,9 @@ class RevisionHistoryIntegration extends Plugin {
 }
 ```
 
-Keep in mind that you can still pass the revisions data (`revisionsData`) straight in the webpage source instead of making an asynchronous call.
+Keep in mind that you can still pass the revisions data (`revisionsData`) straight in the web page source instead of making an asynchronous call.
 
-Adapter methods `#addRevision()` and `#updateRevision()` were removed in favor of {@link module:revision-history/revisionhistory~RevisionHistoryAdapter#updateRevisions `#updateRevisions()`} which needs to be implemented. The new method updates and/or saves one or multiple revisions in a single request. The input parameter is an array of objects containing revisions data. These may be either new revisions or existing revisions. Every object contains revision id, which should be checked to verify if given revision already exists in your database. For new revisions, the data object contains all revision data. For existing revisions, only updated properties are passed:
+The adapter methods `#addRevision()` and `#updateRevision()` were removed in favor of {@link module:revision-history/revisionhistory~RevisionHistoryAdapter#updateRevisions `#updateRevisions()`} which needs to be implemented. The new method updates and/or saves one or multiple revisions in a single request. The input parameter is an array of objects containing revisions data. These may be either new revisions or existing revisions. Every object contains a revision ID, which should be checked to verify if a given revision already exists in your database. For new revisions, the data object contains all revision data. For existing revisions, only updated properties are passed:
 
 ```js
 /* Before v32.0.0 */
@@ -132,9 +140,9 @@ revisionHistory.adapter = {
 
 ### Revision history API and autosave integration
 
-`RevisionTracker#updateRevision()` was removed in favor of {@link module:revision-history/revisiontracker~RevisionTracker#update `#update()`} and {@link module:revision-history/revisiontracker~RevisionTracker#saveRevision `#saveRevision()`}.
+The `RevisionTracker#updateRevision()` method was removed in favor of {@link module:revision-history/revisiontracker~RevisionTracker#update `#update()`} and {@link module:revision-history/revisiontracker~RevisionTracker#saveRevision `#saveRevision()`}.
 
-Earlier, `#updateRevision()` could either update the most recent revision or create a new revision (if the most recent revision was locked earlier). Now, the {@link features/revision-history-integration#how-revisions-are-updated-and-saved revision lifecycle} has been simplified and "locking" is no longer needed. `#updateRevision()` utility has been split into two, more "precise" methods, that more clearly communicate the outcome of their use. We believe that the new approach is easier to understand.
+Earlier, `#updateRevision()` could either update the most recent revision or create a new revision (if the most recent revision was locked earlier). Now, the {@link features/revision-history-integration#how-revisions-are-updated-and-saved revision lifecycle} was simplified and "locking" is no longer needed. The `#updateRevision()` utility was split into two, more "precise" methods, that more clearly communicate the outcome of their use. We believe that the new approach is easier to understand.
 
 ```js
 /* Before v32.0.0 */
@@ -158,17 +166,9 @@ const revisionTracker = editor.plugins.get( 'RevisionTracker' );
 revisionTracker.update();
 // Save all unsaved changes as a new revision:
 revisionTracker.saveRevision( { name: 'My revision' } );
-// After some time new changes can be added as unsaved changes or as a new revision:
+// After some time, new changes can be added as unsaved changes or as a new revision:
 revisionTracker.update();
 revisionTracker.saveRevision( { name: 'Another revision' } );
 ```
 
-Those methods may have been used in your autosave integration. Please refer to the documentation to see updated {@link features/revision-history-integration#autosave-integration autosave integration examples}.
-
-## Bump of minimal version of `Node.js` to 14.x
-
-[`Node.js` 12 ends its long-term support in April 2022](https://nodejs.org/en/about/releases/). Because of that, starting from v32.0.0, the minimal version of `Node.js` required by CKEditor 5 will be 14.
-
-## The `ListStyle` plugin is now obsolete
-
-Due to the introduction of the new {@link features/lists#list-properties list properties}, the `ListStyle` plugin used so far became obsolete as it was replaced by the {@link module:list/listproperties~ListProperties `ListProperties`} plugin. Please refer to the {@link features/lists#installation installation guide} for details on how to handle the upgrade.
+These methods may have been used in your autosave integration. Please refer to the documentation to see updated {@link features/revision-history-integration#autosave-integration autosave integration examples}.
