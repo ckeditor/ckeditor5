@@ -104,6 +104,8 @@ export default class ListStyleCommand extends Command {
 	}
 
 	/**
+	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
+	 *
 	 * @param {Object} options
 	 * @param {String|null} [options.type] The type of the list style. If `null` is specified, the function does nothing.
 	 * @private
