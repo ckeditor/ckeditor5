@@ -34,6 +34,7 @@ ClassicEditor
 
 		editor.model.schema.register( 'blockWidget', {
 			isObject: true,
+			isBlock: true,
 			allowIn: '$root',
 			allowAttributesOf: '$container'
 		} );

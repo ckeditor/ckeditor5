@@ -6578,7 +6578,6 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 	// @param {Object.<String,Number>} executedCommands Numbers of command executions.
 	// @param {Array.<Number>} changedBlocks Indexes of changed blocks.
 	function runTest( { input, expected, eventStopped, executedCommands = {}, changedBlocks = [] } ) {
-		// console.log( 'in', modelList( input ) );
 		setModelData( model, modelList( input ) );
 
 		view.document.fire( eventInfo, domEventData );

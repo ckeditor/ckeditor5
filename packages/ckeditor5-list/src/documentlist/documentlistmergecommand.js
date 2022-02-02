@@ -19,8 +19,7 @@ import {
 import ListWalker from './utils/listwalker';
 
 /**
- * TODO
- * The document list indent command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
+ * The document list merge command. It is used by the {@link module:list/documentlist~DocumentList list feature}.
  *
  * @extends module:core/command~Command
  */
@@ -52,10 +51,14 @@ export default class DocumentListMergeCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Merges list blocks together (depending on the {@link #constructor}'s `direction` parameter).
 	 *
 	 * @fires execute
 	 * @fires afterExecute
+	 * @param {Object} [options] Command options.
+	 * @param {String|Boolean} [options.shouldMergeOnBlocksContentLevel=false] When set `true`, merging will be performed together
+	 * with {@link module:engine/model/model~Model#deleteContent} to get rid of the inline content in the selection or take advantage
+	 * of the heuristics in `deleteContent()` that helps convert lists into paragraphs in certain cases.
 	 */
 	execute( { shouldMergeOnBlocksContentLevel = false } = {} ) {
 		const model = this.editor.model;
@@ -115,7 +118,7 @@ export default class DocumentListMergeCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Fires the `afterExecute` event.
 	 *
 	 * @private
 	 * @param {Array.<module:engine/model/element~Element>} changedBlocks The changed list elements.
@@ -124,7 +127,7 @@ export default class DocumentListMergeCommand extends Command {
 		/**
 		 * Event fired by the {@link #execute} method.
 		 *
-		 * It allows to execute an action after executing the {@link ~DocumentListIndentCommand#execute} method,
+		 * It allows to execute an action after executing the {@link ~DocumentListMergeCommand#execute} method,
 		 * for example adjusting attributes of changed list items.
 		 *
 		 * @protected
@@ -164,9 +167,15 @@ export default class DocumentListMergeCommand extends Command {
 			}
 		} else {
 			const lastPosition = selection.getLastPosition();
-			const positionParent = lastPosition.parent;
+			const firstPosition = selection.getFirstPosition();
 
-			if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+			// If deleting within a single block of a list item, there's no need to merge anything.
+			// The default delete should be executed instead.
+			if ( lastPosition.parent === firstPosition.parent ) {
+				return false;
+			}
+
+			if ( !lastPosition.parent.hasAttribute( 'listItemId' ) ) {
 				return false;
 			}
 		}
@@ -175,11 +184,15 @@ export default class DocumentListMergeCommand extends Command {
 	}
 
 	/**
-	 * TODO
+	 * Returns the boundary elements the merge should be executed for. These are not necessarily selection's first
+	 * and last position parents but sometimes sibling or even further blocks depending on the context.
 	 *
-	 * @param {*} selection
-	 * @param {*} shouldMergeOnBlocksContentLevel
-	 * @returns
+	 * @param {module:engine/model/selection~Selection} selection The selection the merge is executed for.
+	 * @param {Boolean} shouldMergeOnBlocksContentLevel When `true`, merge is performed together with
+	 * {@link module:engine/model/model~Model#deleteContent} to remove the inline content within the selection.
+	 * @returns {Object.<String,module:engine/model/element~Element>} elements
+	 * @returns {module:engine/model/element~Element} elements.firstElement
+	 * @returns {module:engine/model/element~Element} elements.lastElement
 	 */
 	_getMergeSubjectElements( selection, shouldMergeOnBlocksContentLevel ) {
 		const model = this.editor.model;
@@ -220,7 +233,11 @@ export default class DocumentListMergeCommand extends Command {
 	}
 }
 
-// TODO
+// Returns a selected block object. If a selected object is inline or when there is no selected
+// object, `null` is returned.
+//
+// @param {module:engine/model/model~Model} model
+// @returns {module:engine/model/element~Element|null}
 export function getSelectedBlockObject( model ) {
 	const selectedElement = model.document.selection.getSelectedElement();
 

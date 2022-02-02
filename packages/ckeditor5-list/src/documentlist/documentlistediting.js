@@ -168,7 +168,6 @@ export default class DocumentListEditing extends Plugin {
 
 			editor.model.change( () => {
 				const firstPosition = selection.getFirstPosition();
-				const lastPosition = selection.getLastPosition();
 
 				if ( selection.isCollapsed && data.direction == 'backward' ) {
 					if ( !firstPosition.isAtStart ) {
@@ -209,12 +208,6 @@ export default class DocumentListEditing extends Plugin {
 				else {
 					// Collapsed selection should trigger forward merging only if at the end of a block.
 					if ( selection.isCollapsed && !selection.getLastPosition().isAtEnd ) {
-						return;
-					}
-
-					// If deleting within a single block of a list item, there's no need to merge anything.
-					// The default delete should be executed instead.
-					if ( !selection.isCollapsed && firstPosition.parent === lastPosition.parent ) {
 						return;
 					}
 
@@ -467,7 +460,13 @@ function createModelIndentPasteFixer( model ) {
 	};
 }
 
-// TODO
+// Decided whether the merge should be accompanied by the model's `deleteContent()`, for instance to get rid of the inline
+// content in the selection or take advantage of the heuristics in `deleteContent()` that helps convert lists into paragraphs
+// in certain cases.
+//
+// @param {module:engine/model/model~Model} model
+// @param {'backward'|'forward'} direction
+// @returns {Boolean}
 function shouldMergeOnBlocksContentLevel( model, direction ) {
 	const selection = model.document.selection;
 
