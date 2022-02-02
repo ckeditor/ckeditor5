@@ -162,7 +162,6 @@ export function isLastBlockOfListItem( listBlock ) {
  * @protected
  * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
  * @param {Object} [options]
- * TODO: Looks like expand in all directions is only used here, no need for forward or backward.
  * @param {Boolean} [options.withNested=true] Whether should include nested list items.
  * @returns {Array.<module:engine/model/element~Element>}
  */
@@ -170,21 +169,15 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 	blocks = toArray( blocks );
 
 	const higherIndent = options.withNested !== false;
-	const expandForward = options.direction != 'backward';
-	const expandBackward = options.direction != 'forward';
 	const allBlocks = new Set();
 
 	for ( const block of blocks ) {
-		if ( expandBackward ) {
-			for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'backward' } ) ) {
-				allBlocks.add( itemBlock );
-			}
+		for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'backward' } ) ) {
+			allBlocks.add( itemBlock );
 		}
 
-		if ( expandForward ) {
-			for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'forward' } ) ) {
-				allBlocks.add( itemBlock );
-			}
+		for ( const itemBlock of getListItemBlocks( block, { higherIndent, direction: 'forward' } ) ) {
+			allBlocks.add( itemBlock );
 		}
 	}
 
@@ -245,15 +238,13 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @param {Object} [options]
  * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items.
- * TODO get rid of 'forward', looks like it is not used anywhere.
- * @param {Number} [options.indentBy=1] TODO
- * (all blocks of given list items).
+ * @param {Number} [options.indentBy=1] The number of levels the indentation should change (could be negative).
  */
 export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
-	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks, { direction: expand == true ? 'both' : expand } ) : blocks;
+	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
 
 	for ( const block of allBlocks ) {
 		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;
@@ -271,24 +262,21 @@ export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 }
 
 /**
- * TODO
- * Decreases indentation of given list blocks.
+ * Decreases indentation of given list of blocks. If the indentation of some blocks matches the indentation
+ * of surrounding blocks, they get merged together.
  *
  * @protected
  * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
  * @param {module:engine/model/writer~Writer} writer The model writer.
- * @param {Object} [options]
- * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
- * (all blocks of given list items).
  */
-export function outdentBlocksWithMerge( blocks, writer, { expand } = {} ) {
+export function outdentBlocksWithMerge( blocks, writer ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
-	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
+	const allBlocks = expandListBlocksToCompleteItems( blocks );
 	const visited = new Set();
 
-	const referenceIndex = Math.min( ...allBlocks.map( block => block.getAttribute( 'listIndent' ) ) );
+	const referenceIndent = Math.min( ...allBlocks.map( block => block.getAttribute( 'listIndent' ) ) );
 	const parentBlocks = new Map();
 
 	// Collect parent blocks before the list structure gets altered.
@@ -312,7 +300,7 @@ export function outdentBlocksWithMerge( blocks, writer, { expand } = {} ) {
 		}
 
 		// Merge with parent list item while outdenting and indent matches reference indent.
-		if ( block.getAttribute( 'listIndent' ) == referenceIndex ) {
+		if ( block.getAttribute( 'listIndent' ) == referenceIndent ) {
 			const mergedBlocks = mergeListItemIfNotLast( block, parentBlocks.get( block ), writer );
 
 			// All list item blocks are updated while merging so add those to visited set.

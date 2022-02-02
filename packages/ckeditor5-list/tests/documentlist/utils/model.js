@@ -1319,7 +1319,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentBlocksWithMerge( blocks, writer, { expand: true } );
+				changedBlocks = outdentBlocksWithMerge( blocks, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -1353,7 +1353,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentBlocksWithMerge( blocks, writer, { expand: true } );
+				changedBlocks = outdentBlocksWithMerge( blocks, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -1387,7 +1387,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentBlocksWithMerge( blocks, writer, { expand: true } );
+				changedBlocks = outdentBlocksWithMerge( blocks, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
