@@ -304,7 +304,6 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
  * @param {Object} [options={}] Additional configuration.
  * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
- * @param {Boolean} [options.wrapSingleElement=false] If set to `true`, single model elements will be wrapped in DocumentFragment.
  * @param {module:engine/model/schema~SchemaContextDefinition} [options.context='$root'] The conversion context.
  * If not provided, the default `'$root'` will be used.
  * @returns {module:engine/model/element~Element|module:engine/model/text~Text|
@@ -352,7 +351,7 @@ export function parse( data, schema, options = {} ) {
 	mapper.bindElements( model, viewDocumentFragment.root );
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( model.childCount == 1 && !options.wrapSingleElement ) {
+	if ( model.childCount == 1 ) {
 		model = model.getChild( 0 );
 	}
 
