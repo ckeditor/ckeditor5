@@ -81,8 +81,6 @@ describe( 'DocumentListEditing integrations: backspace & delete', () => {
 			)
 		} );
 
-		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
-		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
 		stubUid();
 
 		eventInfo = new BubblingEventInfo( view.document, 'delete' );

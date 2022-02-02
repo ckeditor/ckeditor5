@@ -47,15 +47,6 @@ describe( 'DocumentListEditing integrations: clipboard copy & paste', () => {
 			allowAttributes: 'foo'
 		} );
 
-		model.schema.register( 'nonListable', {
-			allowWhere: '$block',
-			allowContentOf: '$block',
-			inheritTypesFrom: '$block',
-			allowAttributes: 'foo'
-		} );
-
-		editor.conversion.elementToElement( { model: 'nonListable', view: 'div' } );
-
 		// Stub `view.scrollToTheSelection` as it will fail on VirtualTestEditor without DOM.
 		sinon.stub( view, 'scrollToTheSelection' ).callsFake( () => { } );
 		stubUid();
