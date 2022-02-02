@@ -447,9 +447,9 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 		it( 'should update item ID if middle item of bigger block changed type', () => {
 			const input = modelList( [
-				'* 0{a}',
-				'# 1{a}',
-				'* 2{a}'
+				'* 0 {id:a}',
+				'# 1 {id:a}',
+				'* 2 {id:a}'
 			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
@@ -462,17 +462,17 @@ describe( 'DocumentList - utils - postfixers', () => {
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0{id:a}',
-				'# 1{id:a00}',
-				'* 2{id:a01}'
+				'* 0 {id:a}',
+				'# 1 {id:a00}',
+				'* 2 {id:a01}'
 			] ) );
 		} );
 
 		it( 'should use same new ID if multiple items changed type', () => {
 			const input = modelList( [
-				'* 0{a}',
-				'# 1{a}',
-				'# 2{a}'
+				'* 0 {id:a}',
+				'# 1 {id:a}',
+				'# 2 {id:a}'
 			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
@@ -485,18 +485,18 @@ describe( 'DocumentList - utils - postfixers', () => {
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0{id:a}',
-				'# 1{id:a00}',
+				'* 0 {id:a}',
+				'# 1 {id:a00}',
 				'  2'
 			] ) );
 		} );
 
 		it( 'should fix ids of list with nested lists', () => {
 			const input = modelList( [
-				'* 0{a}',
-				'# 1{a}',
-				'  * 2{b}',
-				'# 3{a}'
+				'* 0 {id:a}',
+				'# 1 {id:a}',
+				'  * 2 {id:b}',
+				'# 3 {id:a}'
 			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
@@ -509,9 +509,9 @@ describe( 'DocumentList - utils - postfixers', () => {
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0{id:a}',
-				'# 1{id:a00}',
-				'  * 2{id:b}',
+				'* 0 {id:a}',
+				'# 1 {id:a00}',
+				'  * 2 {id:b}',
 				'  3'
 			] ) );
 		} );
