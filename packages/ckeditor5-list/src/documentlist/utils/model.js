@@ -439,13 +439,8 @@ export function outdentFollowingItems( lastBlock, writer ) {
 		// Note, that if we just changed the current relative indent, the newIndent will be equal to 0.
 		const newIndent = indent - currentIndent;
 
-		// Save the entry in changes array. We do not apply it at the moment, because we will need to
-		// reverse the changes so the last item is changed first.
-		// This is to keep model in correct state all the time.
-		if ( node.getAttribute( 'listIndent' ) != newIndent ) {
-			writer.setAttribute( 'listIndent', newIndent, node );
-			changedBlocks.push( node );
-		}
+		writer.setAttribute( 'listIndent', newIndent, node );
+		changedBlocks.push( node );
 	}
 
 	return changedBlocks;
