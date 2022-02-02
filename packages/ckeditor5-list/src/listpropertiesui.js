@@ -228,10 +228,9 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 					editor.execute( 'listStyle', { type: listStyleCommand._defaultType } );
 				}
 			}
-			// If the content the selection is anchored to is not a list, let's create a list of a desired style.
+			// Otherwise, leave the creation of the styled list to the `ListStyleCommand`.
 			else {
 				editor.model.change( () => {
-					editor.execute( parentCommandName );
 					editor.execute( 'listStyle', { type } );
 				} );
 			}
