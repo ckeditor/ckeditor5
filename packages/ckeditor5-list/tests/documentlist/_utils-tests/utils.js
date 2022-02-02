@@ -542,8 +542,7 @@ describe( 'stringifyList()', () => {
 		it( 'single list item', () => {
 			const input = parseModel(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
-				model.schema,
-				{ wrapSingleElement: true }
+				model.schema
 			);
 
 			expect( stringifyList( input ) ).to.equalMarkup( [
@@ -554,8 +553,7 @@ describe( 'stringifyList()', () => {
 		it( 'empty list item', () => {
 			const input = parseModel(
 				'<paragraph listIndent="0" listItemId="a" listType="bulleted"></paragraph>',
-				model.schema,
-				{ wrapSingleElement: true }
+				model.schema
 			);
 
 			expect( stringifyList( input ) ).to.equalMarkup( [
@@ -702,8 +700,7 @@ describe( 'stringifyList()', () => {
 		it( 'single list item', () => {
 			const input = parseModel(
 				'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>',
-				model.schema,
-				{ wrapSingleElement: true }
+				model.schema
 			);
 
 			expect( stringifyList( input ) ).to.equal( [
@@ -714,8 +711,7 @@ describe( 'stringifyList()', () => {
 		it( 'empty list item', () => {
 			const input = parseModel(
 				'<paragraph listIndent="0" listItemId="a" listType="numbered"></paragraph>',
-				model.schema,
-				{ wrapSingleElement: true }
+				model.schema
 			);
 
 			expect( stringifyList( input ) ).to.equal( [
