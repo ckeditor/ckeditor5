@@ -11,7 +11,7 @@ import { Command } from 'ckeditor5/src/core';
 import { getListTypeFromListStyleType, getSelectedListItems } from './utils';
 
 /**
- * The list style command. It changes `listStyle` attribute of the selected list items.
+ * The list style command. It changes the `listStyle` attribute of the selected list items.
  *
  * If the list type (numbered or bulleted) can be inferred from the passed style type,
  * the command tries to convert selected items to a list of that type.

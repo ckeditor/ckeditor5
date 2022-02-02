@@ -42,7 +42,7 @@ export default class ListProperties extends Plugin {
  * operating on lists ({@link module:list/liststylecommand~ListStyleCommand `'listStyle'`},
  * {@link module:list/liststartcommand~ListStartCommand `'listStart'`},
  * {@link module:list/listreversedcommand~ListReversedCommand `'listReversed'`}), the look of the UI
- * (`'numberedList'` and `'bulletedList'` dropdowns), and editor data pipeline (allowed HTML attributes).
+ * (`'numberedList'` and `'bulletedList'` dropdowns), and the editor data pipeline (allowed HTML attributes).
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -68,18 +68,20 @@ export default class ListProperties extends Plugin {
  */
 
 /**
- * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists.
+ * When set, the list start index feature will be enabled. It allows changing the `start` HTML attribute of the numbered lists. As a
+ * result, it will be possible to specify the start value of the first item in an ordered list.
  *
- * **Note**: This configuration doesn't affect bulleted and todo lists.
+ * **Note**: This configuration does not affect bulleted and to-do lists.
  *
  * @default false
  * @member {Boolean} module:list/listproperties~ListPropertiesConfig#startIndex
  */
 
 /**
- * When set, the list reversed feature will be enabled. It allows changing the `reversed` HTML attribute of the numbered lists.
+ * When set, the reversed list feature will be enabled. It allows changing the `reversed` HTML attribute of the numbered lists. As a
+ * result, it will be possible to make the list order descending instead of ascending.
  *
- * **Note**: This configuration doesn't affect bulleted and todo lists.
+ * **Note**: This configuration does not affect bulleted and to-do lists.
  *
  * @default false
  * @member {Boolean} module:list/listproperties~ListPropertiesConfig#reversed

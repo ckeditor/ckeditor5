@@ -285,7 +285,7 @@ export function findNestedList( viewElement ) {
 }
 
 /**
- * Returns an array with all `listItem` elements that represents the same list.
+ * Returns an array with all `listItem` elements that represent the same list.
  *
  * It means that values of `listIndent`, `listType`, `listStyle`, `listReversed` and `listStart` for all items are equal.
  *
