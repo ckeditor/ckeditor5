@@ -1050,7 +1050,7 @@ describe( 'DocumentList - utils - model', () => {
 
 		it( 'should not apply non-list attributes', () => {
 			const input = modelList( [
-				'* <paragraph alignment="right">0</paragraph>{a}',
+				'* <paragraph alignment="right">0</paragraph>',
 				'  * 1',
 				'* 2'
 			] );
@@ -1063,8 +1063,8 @@ describe( 'DocumentList - utils - model', () => {
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* <paragraph alignment="right">0</paragraph>{a}',
-				'* 1{a}',
+				'* <paragraph alignment="right">0</paragraph>',
+				'  1',
 				'* 2'
 			] ) );
 
@@ -1086,8 +1086,8 @@ describe( 'DocumentList - utils - model', () => {
 
 				const fragment = parseModel( input, schema );
 				const blocks = [
-					fragment.getChild( 1 ),
-					fragment.getChild( 2 )
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 )
 				];
 
 				stubUid();
@@ -1096,9 +1096,9 @@ describe( 'DocumentList - utils - model', () => {
 
 				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
 					'* a',
-					'  * b{000}',
+					'  b',
 					'  * c',
-					'* d{002}'
+					'    d'
 				] ) );
 			} );
 
