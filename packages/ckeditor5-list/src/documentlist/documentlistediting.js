@@ -14,6 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
+import DocumentListMergeCommand from './documentlistmergecommand';
 import DocumentListSplitCommand from './documentlistsplitcommand';
 import {
 	bogusParagraphCreator,
@@ -30,9 +31,11 @@ import {
 import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem,
-	isLastBlockOfListItem
+	isLastBlockOfListItem,
+	isSingleListItem,
+	getSelectedBlockObject
 } from './utils/model';
-import { iterateSiblingListBlocks } from './utils/listwalker';
+import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
 import { getViewElementNameForListType } from './utils/view';
@@ -63,8 +66,6 @@ export default class DocumentListEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
-		const commands = editor.commands;
-		const enterCommand = commands.get( 'enter' );
 
 		if ( editor.plugins.has( 'ListEditing' ) ) {
 			/**
@@ -82,9 +83,6 @@ export default class DocumentListEditing extends Plugin {
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
-		this._setupModelPostFixing();
-		this._setupConversion();
-
 		// Register commands.
 		editor.commands.add( 'numberedList', new DocumentListCommand( editor, 'numbered' ) );
 		editor.commands.add( 'bulletedList', new DocumentListCommand( editor, 'bulleted' ) );
@@ -92,8 +90,121 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'indentList', new DocumentListIndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new DocumentListIndentCommand( editor, 'backward' ) );
 
+		editor.commands.add( 'mergeListItemBackward', new DocumentListMergeCommand( editor, 'backward' ) );
+		editor.commands.add( 'mergeListItemForward', new DocumentListMergeCommand( editor, 'forward' ) );
+
 		editor.commands.add( 'splitListItemBefore', new DocumentListSplitCommand( editor, 'before' ) );
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
+
+		this._setupModelPostFixing();
+		this._setupConversion();
+		this._setupDeleteIntegration();
+		this._setupEnterIntegration();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+		const commands = editor.commands;
+		const indent = commands.get( 'indent' );
+		const outdent = commands.get( 'outdent' );
+
+		if ( indent ) {
+			indent.registerChildCommand( commands.get( 'indentList' ) );
+		}
+
+		if ( outdent ) {
+			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+		}
+	}
+
+	/**
+	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
+	 * keys in and around document lists.
+	 *
+	 * @private
+	 */
+	_setupDeleteIntegration() {
+		const editor = this.editor;
+		const mergeBackwardCommand = editor.commands.get( 'mergeListItemBackward' );
+		const mergeForwardCommand = editor.commands.get( 'mergeListItemForward' );
+
+		this.listenTo( editor.editing.view.document, 'delete', ( evt, data ) => {
+			const selection = editor.model.document.selection;
+
+			editor.model.change( () => {
+				const firstPosition = selection.getFirstPosition();
+
+				if ( selection.isCollapsed && data.direction == 'backward' ) {
+					if ( !firstPosition.isAtStart ) {
+						return;
+					}
+
+					const positionParent = firstPosition.parent;
+
+					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+						return;
+					}
+
+					const previousBlock = ListWalker.first( positionParent, { sameIndent: true, sameItemType: true } );
+
+					// Outdent the first block of a first list item.
+					if ( !previousBlock && positionParent.getAttribute( 'listIndent' ) === 0 ) {
+						if ( !isLastBlockOfListItem( positionParent ) ) {
+							editor.execute( 'splitListItemAfter' );
+						}
+
+						editor.execute( 'outdentList' );
+					}
+					// Merge block with previous one (on the block level or on the content level).
+					else {
+						if ( !mergeBackwardCommand.isEnabled ) {
+							return;
+						}
+
+						mergeBackwardCommand.execute( {
+							shouldMergeOnBlocksContentLevel: shouldMergeOnBlocksContentLevel( editor.model, 'backward' )
+						} );
+					}
+
+					data.preventDefault();
+					evt.stop();
+				}
+				// Non-collapsed selection or forward delete.
+				else {
+					// Collapsed selection should trigger forward merging only if at the end of a block.
+					if ( selection.isCollapsed && !selection.getLastPosition().isAtEnd ) {
+						return;
+					}
+
+					if ( !mergeForwardCommand.isEnabled ) {
+						return;
+					}
+
+					mergeForwardCommand.execute( {
+						shouldMergeOnBlocksContentLevel: shouldMergeOnBlocksContentLevel( editor.model, 'forward' )
+					} );
+
+					data.preventDefault();
+					evt.stop();
+				}
+			} );
+		}, { context: 'li' } );
+	}
+
+	/**
+	 * Attaches a listener to the {@link module:engine/view/document~Document#event:enter} event and handles enter key press
+	 * in document lists.
+	 *
+	 * @private
+	 */
+	_setupEnterIntegration() {
+		const editor = this.editor;
+		const model = editor.model;
+		const commands = editor.commands;
+		const enterCommand = commands.get( 'enter' );
 
 		// Overwrite the default Enter key behavior: outdent or split the list in certain cases.
 		this.listenTo( editor.editing.view.document, 'enter', ( evt, data ) => {
@@ -158,24 +269,6 @@ export default class DocumentListEditing extends Plugin {
 				splitCommand.execute();
 			}
 		} );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	afterInit() {
-		const editor = this.editor;
-		const commands = editor.commands;
-		const indent = commands.get( 'indent' );
-		const outdent = commands.get( 'outdent' );
-
-		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
-		}
-
-		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
-		}
 	}
 
 	/**
@@ -414,4 +507,37 @@ function createModelIndentPasteFixer( model ) {
 			}
 		} );
 	};
+}
+
+// Decides whether the merge should be accompanied by the model's `deleteContent()`, for instance, to get rid of the inline
+// content in the selection or take advantage of the heuristics in `deleteContent()` that helps convert lists into paragraphs
+// in certain cases.
+//
+// @param {module:engine/model/model~Model} model
+// @param {'backward'|'forward'} direction
+// @returns {Boolean}
+function shouldMergeOnBlocksContentLevel( model, direction ) {
+	const selection = model.document.selection;
+
+	if ( !selection.isCollapsed ) {
+		return !getSelectedBlockObject( model );
+	}
+
+	if ( direction === 'forward' ) {
+		return true;
+	}
+
+	const firstPosition = selection.getFirstPosition();
+	const positionParent = firstPosition.parent;
+	const previousSibling = positionParent.previousSibling;
+
+	if ( model.schema.isObject( previousSibling ) ) {
+		return false;
+	}
+
+	if ( previousSibling.isEmpty ) {
+		return true;
+	}
+
+	return isSingleListItem( [ positionParent, previousSibling ] );
 }

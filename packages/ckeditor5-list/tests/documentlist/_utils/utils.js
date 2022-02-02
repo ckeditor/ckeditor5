@@ -4,6 +4,7 @@
  */
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import { getData as getModelData, parse as parseModel, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ListWalker from '../../../src/documentlist/utils/listwalker';
@@ -222,6 +223,7 @@ export function setupTestHelpers( editor ) {
 export function modelList( lines ) {
 	const items = [];
 	const stack = [];
+	const seenIds = new Set();
 
 	if ( !Array.isArray( lines ) ) {
 		lines = lines
@@ -288,6 +290,12 @@ export function modelList( lines ) {
 					} );
 				}
 
+				if ( seenIds.has( props.listItemId ) ) {
+					throw new Error( 'ID conflict: ' + props.listItemId );
+				}
+
+				seenIds.add( props.listItemId );
+
 				stack[ listIndent ] = Object.assign( stack[ listIndent ] || {}, props );
 			}
 
@@ -301,17 +309,22 @@ export function modelList( lines ) {
 }
 
 /**
- * Returns document list pseudo markdown notation for a given document fragment.
+ * Returns document list pseudo markdown notation for a given document fragment or element.
  *
- * @param {module:engine/model/documentfragment~DocumentFragment} fragment The document fragment to stringify to pseudo markdown notation.
+ * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Element} fragmentOrElement The document
+ * fragment or element to stringify to pseudo markdown notation.
  * @returns {String}
  */
-export function stringifyList( fragment ) {
+export function stringifyList( fragmentOrElement ) {
 	const model = new Model();
 	const lines = [];
 
+	if ( fragmentOrElement.is( 'element' ) ) {
+		fragmentOrElement = new DocumentFragment( [ fragmentOrElement ] );
+	}
+
 	model.change( writer => {
-		for ( let node = fragment.getChild( 0 ); node; node = node.nextSibling ) {
+		for ( let node = fragmentOrElement.getChild( 0 ); node; node = node.nextSibling ) {
 			let pad = '';
 
 			if ( node.hasAttribute( 'listItemId' ) ) {
