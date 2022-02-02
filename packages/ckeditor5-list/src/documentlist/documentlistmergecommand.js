@@ -14,7 +14,8 @@ import {
 	sortBlocks,
 	isFirstBlockOfListItem,
 	mergeListItemBefore,
-	isSingleListItem
+	isSingleListItem,
+	getSelectedBlockObject
 } from './utils/model';
 import ListWalker from './utils/listwalker';
 
@@ -231,23 +232,4 @@ export default class DocumentListMergeCommand extends Command {
 
 		return { firstElement, lastElement };
 	}
-}
-
-// Returns a selected block object. If a selected object is inline or when there is no selected
-// object, `null` is returned.
-//
-// @param {module:engine/model/model~Model} model
-// @returns {module:engine/model/element~Element|null}
-export function getSelectedBlockObject( model ) {
-	const selectedElement = model.document.selection.getSelectedElement();
-
-	if ( !selectedElement ) {
-		return null;
-	}
-
-	if ( model.schema.isObject( selectedElement ) && model.schema.isBlock( selectedElement ) ) {
-		return selectedElement;
-	}
-
-	return null;
 }

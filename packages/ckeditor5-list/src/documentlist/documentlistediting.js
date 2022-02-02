@@ -14,7 +14,7 @@ import { CKEditorError } from 'ckeditor5/src/utils';
 
 import DocumentListIndentCommand from './documentlistindentcommand';
 import DocumentListCommand from './documentlistcommand';
-import DocumentListMergeCommand, { getSelectedBlockObject } from './documentlistmergecommand';
+import DocumentListMergeCommand from './documentlistmergecommand';
 import DocumentListSplitCommand from './documentlistsplitcommand';
 import {
 	listItemDowncastConverter,
@@ -33,7 +33,8 @@ import {
 	getAllListItemBlocks,
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
-	isSingleListItem
+	isSingleListItem,
+	getSelectedBlockObject
 } from './utils/model';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 

@@ -470,6 +470,28 @@ export function sortBlocks( blocks ) {
 		.sort( ( a, b ) => a.index - b.index );
 }
 
+/**
+ * Returns a selected block object. If a selected object is inline or when there is no selected
+ * object, `null` is returned.
+ *
+ * @protected
+ * @param {module:engine/model/model~Model} model The instance of editor model.
+ * @returns {module:engine/model/element~Element|null} Selected block object or `null`.
+ */
+export function getSelectedBlockObject( model ) {
+	const selectedElement = model.document.selection.getSelectedElement();
+
+	if ( !selectedElement ) {
+		return null;
+	}
+
+	if ( model.schema.isObject( selectedElement ) && model.schema.isBlock( selectedElement ) ) {
+		return selectedElement;
+	}
+
+	return null;
+}
+
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.
 function mergeListItemIfNotLast( block, parentBlock, writer ) {
 	const parentItemBlocks = getListItemBlocks( parentBlock, { direction: 'forward' } );
