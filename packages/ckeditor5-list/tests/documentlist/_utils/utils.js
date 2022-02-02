@@ -218,9 +218,11 @@ export function setupTestHelpers( editor ) {
  * 		'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
  *
  * @param {Iterable.<String>} lines
+ * @param {Object} options
+ * @param {Boolean} [options.ignoreIdConflicts=false] Whether should not throw if ID conflict is detected.
  * @returns {String}
  */
-export function modelList( lines ) {
+export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 	const items = [];
 	const stack = [];
 	const seenIds = new Set();
@@ -290,7 +292,7 @@ export function modelList( lines ) {
 					} );
 				}
 
-				if ( seenIds.has( props.listItemId ) ) {
+				if ( !ignoreIdConflicts && seenIds.has( props.listItemId ) ) {
 					throw new Error( 'ID conflict: ' + props.listItemId );
 				}
 

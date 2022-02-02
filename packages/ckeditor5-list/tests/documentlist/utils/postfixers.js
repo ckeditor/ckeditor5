@@ -447,10 +447,10 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 		it( 'should update item ID if middle item of bigger block changed type', () => {
 			const input = modelList( [
-				'* 0{id:a}',
-				'# 1{id:a}',
-				'* 2{id:a}'
-			] );
+				'* 0{a}',
+				'# 1{a}',
+				'* 2{a}'
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -470,10 +470,10 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 		it( 'should use same new ID if multiple items changed type', () => {
 			const input = modelList( [
-				'* 0{id:a}',
-				'# 1{id:a}',
-				'# 2{id:a}'
-			] );
+				'* 0{a}',
+				'# 1{a}',
+				'# 2{a}'
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -493,11 +493,11 @@ describe( 'DocumentList - utils - postfixers', () => {
 
 		it( 'should fix ids of list with nested lists', () => {
 			const input = modelList( [
-				'* 0{id:a}',
-				'# 1{id:a}',
-				'  * 2{id:b}',
-				'# 3{id:a}'
-			] );
+				'* 0{a}',
+				'# 1{a}',
+				'  * 2{b}',
+				'# 3{a}'
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -526,7 +526,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 				'  5',
 				'# 6{id:a}',
 				'  7'
-			] );
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
