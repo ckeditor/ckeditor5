@@ -106,10 +106,11 @@ export function listUpcastCleanList() {
  * @protected
  * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
- * @param {Array.<Function>} customCallbacks The callbacks to verify whether a view element is reflecting the model attributes.
+ * @param {module:utils/emittermixin~Emitter} emitter The emitter that will fire events for checking whether given
+ * view element requires refresh.
  * @return {Function}
  */
-export function reconvertItemsOnDataChange( model, editing, customCallbacks ) {
+export function reconvertItemsOnDataChange( model, editing, emitter ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
@@ -247,27 +248,23 @@ export function reconvertItemsOnDataChange( model, editing, customCallbacks ) {
 			!element.is( 'editableElement' );
 			element = element.parent
 		) {
-			if ( isListItemView( element ) ) {
-				const expectedElementId = stack[ indent ].listItemId;
+			const isListItemElement = isListItemView( element );
+			const isListElement = isListView( element );
 
-				// For LI verify if an ID of the attribute element is correct.
-				if ( element.id != expectedElementId ) {
-					break;
-				}
-			} else if ( isListView( element ) ) {
-				const type = stack[ indent ].listType;
-				const expectedElementName = getViewElementNameForListType( type );
+			if ( !isListElement && !isListItemElement ) {
+				continue;
+			}
 
-				// For UL and OL check if the name and ID of element is correct.
-				if ( element.name != expectedElementName ) {
-					break;
-				}
+			const needsRefresh = emitter.fire( `refreshChecker:${ isListItemElement ? 'item' : 'list' }`, {
+				viewElement: element,
+				modelAttributes: stack[ indent ]
+			} );
 
-				// There might be list properties attributes that require refreshing a view element.
-				if ( customCallbacks.some( callback => callback( element, stack[ indent ] ) ) ) {
-					break;
-				}
+			if ( needsRefresh ) {
+				return true;
+			}
 
+			if ( isListElement ) {
 				indent--;
 
 				// Don't need to iterate further if we already know that the item is wrapped appropriately.

@@ -93,33 +93,28 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
-		const documentListEditingPlugin = editor.plugins.get( DocumentListEditing );
+		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
-		documentListEditingPlugin.addReconvertCallback( ( viewElement, modelAttributes ) => {
+		// Verify if the list view element (ul or ol) requires refreshing.
+		documentListEditing.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
 			for ( const strategy of strategies ) {
 				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
-					return true;
+					evt.return = true;
+					evt.stop();
 				}
 			}
-
-			return false;
 		} );
 
-		// TODO extract this post-fixer to a helper function.
 		// Fixing the missing list properties attributes.
-		documentListEditingPlugin.addPostFixerCallback( ( listHead, writer ) => {
-			let applied = false;
-
+		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 				for ( const strategy of strategies ) {
 					if ( strategy.appliesToListItem( node ) && !node.hasAttribute( strategy.attributeName ) ) {
 						writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
-						applied = true;
+						evt.return = true;
 					}
 				}
 			}
-
-			return applied;
 		} );
 
 		// // Handle merging two separated lists into the single one.

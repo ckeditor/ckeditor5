@@ -35,6 +35,7 @@ import {
 import { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
+import { getViewElementNameForListType } from './utils/view';
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
@@ -60,25 +61,6 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		/**
-		 * The callbacks to verify whether a view element is reflecting the model attributes.
-		 *
-		 * @private
-		 * @type {Array.<Function>}
-		 */
-		this._reconvertCallbacks = [];
-
-		/**
-		 * The post-fixer callbacks that are triggered in the context of the changed list.
-		 *
-		 * @private
-		 * @type {Array.<Function>}
-		 */
-		this._postFixerCallbacks = [
-			( listHead, writer ) => fixListIndents( listHead, writer ),
-			( listHead, writer, { seenIds } ) => fixListItemIds( listHead, seenIds, writer )
-		];
-
 		const editor = this.editor;
 		const model = editor.model;
 		const commands = editor.commands;
@@ -98,10 +80,9 @@ export default class DocumentListEditing extends Plugin {
 			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
 		} );
 
-		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, this._postFixerCallbacks ) );
-
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
+		this._setupModelPostFixing();
 		this._setupConversion();
 
 		// Register commands.
@@ -198,27 +179,6 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * Adds the callback that verifies whether a view element is reflecting the model attributes.
-	 *
-	 * @protected
-	 * @param {Function} callback
-	 */
-	addReconvertCallback( callback ) {
-		this._reconvertCallbacks.push( callback );
-	}
-
-	/**
-	 * Adds the callback that is triggered in the context of the changed list and is expected to fix the model
-	 * and return true if changes were applied.
-	 *
-	 * @protected
-	 * @param {Function} callback
-	 */
-	addPostFixerCallback( callback ) {
-		this._postFixerCallbacks.push( callback );
-	}
-
-	/**
 	 * Registers the conversion helpers for the document-list feature.
 	 * @private
 	 */
@@ -256,7 +216,47 @@ export default class DocumentListEditing extends Plugin {
 				}
 			} );
 
-		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this._reconvertCallbacks ) );
+		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this ) );
+
+		// For LI verify if an ID of the attribute element is correct.
+		this.on( 'refreshChecker:item', ( evt, { viewElement, modelAttributes } ) => {
+			if ( viewElement.id != modelAttributes.listItemId ) {
+				evt.return = true;
+				evt.stop();
+			}
+		} );
+
+		// For UL and OL check if the name and ID of element is correct.
+		this.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
+			if ( viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ) {
+				evt.return = true;
+				evt.stop();
+			}
+		} );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_setupModelPostFixing() {
+		const model = this.editor.model;
+
+		// Register list fixing.
+		// First the low level handler.
+		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, this ) );
+
+		// Then the callbacks for the specific lists.
+		// The indentation fixing must be the first one...
+		this.on( 'postFixer', ( evt, { listHead, writer } ) => {
+			evt.return = fixListIndents( listHead, writer );
+		}, { priority: 'high' } );
+
+		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
+		this.on( 'postFixer', ( evt, { listHead, writer, seenIds } ) => {
+			evt.return = fixListItemIds( listHead, seenIds, writer );
+		}, { priority: 'high' } );
 	}
 }
 
@@ -281,9 +281,9 @@ export default class DocumentListEditing extends Plugin {
 //
 // @param {module:engine/model/model~Model} model The data model.
 // @param {module:engine/model/writer~Writer} writer The writer to do changes with.
-// @param {Array.<Function>} postFixerCallbacks The post-fixer callbacks that are triggered in the context of the changed list.
+// @param {module:utils/emittermixin~Emitter} emitter The emitter that will fire events for fixing a list.
 // @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-function modelChangePostFixer( model, writer, postFixerCallbacks ) {
+function modelChangePostFixer( model, writer, emitter ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map();
 
@@ -336,9 +336,7 @@ function modelChangePostFixer( model, writer, postFixerCallbacks ) {
 	const seenIds = new Set();
 
 	for ( const listHead of itemToListHead.values() ) {
-		for ( const callback of postFixerCallbacks ) {
-			applied = callback( listHead, writer, { seenIds } ) || applied;
-		}
+		applied = emitter.fire( 'postFixer', { listHead, writer, seenIds } ) || applied;
 	}
 
 	return applied;
