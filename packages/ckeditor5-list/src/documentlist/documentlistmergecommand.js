@@ -209,12 +209,12 @@ export default class DocumentListMergeCommand extends Command {
 
 				if ( isFirstBlock && !shouldMergeOnBlocksContentLevel ) {
 					// For the "c" as an anchorElement:
-					//	* a
-					//	  * b
+					//  * a
+					//    * b
 					//  * [c]  <-- this block should be merged with "a"
 					// It should find "a" element to merge with:
-					//	* a
-					//	  * b
+					//  * a
+					//    * b
 					//    c
 					firstElement = ListWalker.first( positionParent, { sameIndent: true, lowerIndent: true } );
 				} else {
