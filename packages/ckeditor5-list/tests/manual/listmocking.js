@@ -39,13 +39,16 @@ ClassicEditor
 			allowAttributesOf: '$container'
 		} );
 
-		editor.conversion.for( 'upcast' ).elementToElement( { model: 'blockWidget', view: 'blockwidget' } );
-
-		editor.conversion.for( 'downcast' ).elementToElement( {
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'blockWidget',
 			view: ( modelItem, { writer } ) => {
 				return toWidget( writer.createContainerElement( 'blockwidget', { class: 'block-widget' } ), writer );
 			}
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'blockWidget',
+			view: ( modelItem, { writer } ) => writer.createContainerElement( 'blockwidget', { class: 'block-widget' } )
 		} );
 
 		editor.model.schema.register( 'inlineWidget', {
@@ -55,12 +58,16 @@ ClassicEditor
 			allowAttributesOf: '$text'
 		} );
 
-		// The view element has no children.
-		editor.conversion.for( 'downcast' ).elementToElement( {
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
 			model: 'inlineWidget',
 			view: ( modelItem, { writer } ) => toWidget(
 				writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } ), writer, { label: 'inline widget' }
 			)
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'inlineWidget',
+			view: ( modelItem, { writer } ) => writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } )
 		} );
 
 		const model = '<paragraph listIndent="0" listItemId="000" listType="bulleted">A</paragraph>\n' +
