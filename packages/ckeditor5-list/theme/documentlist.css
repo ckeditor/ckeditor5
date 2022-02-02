@@ -4,9 +4,5 @@
  */
 
 .ck-editor__editable .ck-list-bogus-paragraph {
-	/*
-	 * Use display:inline-block to force Chrome/Safari to limit text mutations to this element.
-	 * See https://github.com/ckeditor/ckeditor5/issues/6062.
-	 */
 	display: block;
 }
