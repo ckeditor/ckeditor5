@@ -8,7 +8,6 @@ import DocumentListMergeCommand from '../../src/documentlist/documentlistmergeco
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -37,26 +36,11 @@ describe( 'DocumentListMergeCommand', () => {
 			allowAttributesOf: '$container'
 		} );
 
-		editor.conversion.for( 'downcast' ).elementToElement( {
-			model: 'blockWidget',
-			view: ( modelItem, { writer } ) => {
-				return toWidget( writer.createContainerElement( 'blockwidget', { class: 'block-widget' } ), writer );
-			}
-		} );
-
 		editor.model.schema.register( 'inlineWidget', {
 			isObject: true,
 			isInline: true,
 			allowWhere: '$text',
 			allowAttributesOf: '$text'
-		} );
-
-		// The view element has no children.
-		editor.conversion.for( 'downcast' ).elementToElement( {
-			model: 'inlineWidget',
-			view: ( modelItem, { writer } ) => toWidget(
-				writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } ), writer, { label: 'inline widget' }
-			)
 		} );
 	} );
 
