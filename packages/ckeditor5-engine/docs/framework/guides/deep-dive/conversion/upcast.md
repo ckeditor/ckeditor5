@@ -5,13 +5,13 @@ order: 30
 since: 33.0.0
 ---
 
-# Model to view (downcast)
+# View to model (upcast)
 
 ## Introduction
 
-The process of converting the **view** to the **model** is called an **downcast**.
+The process of converting the **view** to the **model** is called an **upcast**.
 
-{@img assets/img/upcast-basic.png 214 Basic downcast conversion diagram.}
+{@img assets/img/upcast-basic.png 214 Basic upcast conversion diagram.}
 
 The upcast process conversion happens every time any data is being loaded into the editor.
 
