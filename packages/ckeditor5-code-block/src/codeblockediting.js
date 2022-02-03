@@ -97,19 +97,26 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
 		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
-		const getCommandExecuter = commandName => {
-			return ( data, cancel ) => {
-				const command = this.editor.commands.get( commandName );
+		// const executeCommand = commandName => {
+		// 	const command = this.editor.commands.get( commandName );
 
-				if ( command.isEnabled ) {
-					this.editor.execute( commandName );
-					cancel();
-				}
-			};
-		};
+		// 	if ( command.isEnabled ) {
+		// 		this.editor.execute( commandName );
+		// 		return true;
+		// 	}
+		// };
 
-		editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentCodeBlock' ) );
-		editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentCodeBlock' ) );
+		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
+			const command = this.editor.commands.get( commandName );
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'pre' } );
 
 		schema.register( 'codeBlock', {
 			allowWhere: '$block',
@@ -211,7 +218,7 @@ export default class CodeBlockEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentCodeBlock' ) );
+			indent.registerChildCommand( commands.get( 'indentCodeBlock' ), 'highest' );
 		}
 
 		if ( outdent ) {

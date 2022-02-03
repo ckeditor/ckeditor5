@@ -132,6 +132,18 @@ export default class DocumentListEditing extends Plugin {
 			}
 		}, { context: 'li' } );
 
+		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
+			const command = this.editor.commands.get( commandName );
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li' } );
+
 		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
@@ -171,11 +183,11 @@ export default class DocumentListEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
+			indent.registerChildCommand( commands.get( 'indentList' ), 'high' );
 		}
 
 		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+			outdent.registerChildCommand( commands.get( 'outdentList' ), 'lowest' );
 		}
 	}
 
