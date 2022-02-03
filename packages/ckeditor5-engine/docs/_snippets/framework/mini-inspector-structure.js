@@ -69,7 +69,7 @@ function Structure( editor ) {
 			// Create model element.
 			const modelElement = writer.createElement( 'myElement' );
 
-			// Insert element on cursor location.
+			// Insert element on a current cursor location.
 			if ( !safeInsert( modelElement, data.modelCursor ) ) {
 				return;
 			}

@@ -176,21 +176,24 @@ You can use `elementToStructure()` conversion helper for this purpose:
 
 ```js
 editor.conversion
-	.for( 'downcast' )
-	.elementToStructure( {
+	.for( 'downcast' ).elementToStructure( {
 		model: 'myElement',
-		view: ( modelElement, { writer } ) => {
+		view: ( modelElement, { writer, slotFor } ) => {
 			return writer.createContainerElement( 'div', { class: 'wrapper' }, [
-				writer.createContainerElement( 'p' )
+				writer.createContainerElement( 'div', { class: 'inner-wrapper' }, [
+					slotFor( 'children' )
+				] )
 			] );
 		}
 	} );
 ```
 
+The above converter will convert all `<myElement>` model elements to `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures.
+
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema. More information in the example below.
+	Using your own custom model element requires defining it in the schema.
 </info-box>
 
 ## Read next
