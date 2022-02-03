@@ -128,7 +128,7 @@ As you may learned in the {@link framework/guides/deep-dive/conversion/downcast 
 
 The opposite process will have to detect that structure (e.g. the main element) and convert that into a simple model element.
 
-You can use `elementToStructure()` conversion helper for this purpose:
+Since there is no `structureToElement()` conversion helper available, in order to create upcast conversion for the entire structure and create just one model element, you must use event based API like this:
 
 ```js
 editor.conversion.for( 'upcast' ).add( dispatcher => {
