@@ -17,6 +17,7 @@ import ImageElementSupport from './integrations/image';
 import MediaEmbedElementSupport from './integrations/mediaembed';
 import ScriptElementSupport from './integrations/script';
 import TableElementSupport from './integrations/table';
+import StyleElementSupport from './integrations/style';
 
 /**
  * The General HTML Support feature.
@@ -46,7 +47,8 @@ export default class GeneralHtmlSupport extends Plugin {
 			ImageElementSupport,
 			MediaEmbedElementSupport,
 			ScriptElementSupport,
-			TableElementSupport
+			TableElementSupport,
+			StyleElementSupport
 		];
 	}
 

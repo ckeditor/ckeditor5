@@ -1546,7 +1546,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.renderingMode == 'editing' && elementName.toLowerCase() == 'script';
+		return this.renderingMode == 'editing' && ( elementName.toLowerCase() == 'script' || elementName.toLowerCase() == 'style' );
 	}
 
 	/**
