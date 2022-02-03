@@ -51,7 +51,7 @@ export default class TableKeyboard extends Plugin {
 
 		this.listenTo( this.editor.editing.view.document, 'tab', ( eventInfo, domEventData ) => {
 			this._handleTabOnSelectedTable( eventInfo, domEventData );
-		} );
+		}, { context: 'figure' } );
 
 		this.listenTo( this.editor.editing.view.document, 'tab', ( eventInfo, domEventData ) => {
 			this._handleTab( !domEventData.shiftKey, eventInfo, domEventData );
