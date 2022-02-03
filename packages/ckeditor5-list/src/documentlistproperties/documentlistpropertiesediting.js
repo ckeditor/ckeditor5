@@ -81,6 +81,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		// model.document.registerPostFixer( fixListAttributesOnListItemElements( editor, strategies ) );
 
 		// Set up conversion.
+		const baseListAttributes = [ 'listItemId', 'listType', 'listIndent' ];
+
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
 				dispatcher.on( 'element:ol', listPropertiesUpcastConverter( strategy ) );
@@ -89,7 +91,9 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
-				dispatcher.on( `attribute:${ strategy.attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
+				for ( const attributeName of [ ...baseListAttributes, strategy.attributeName ] ) {
+					dispatcher.on( `attribute:${ attributeName }`, listPropertiesDowncastConverter( strategy, baseListAttributes, model ) );
+				}
 			}
 		} );
 

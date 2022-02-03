@@ -17,8 +17,7 @@ import {
 	createListItemElement,
 	getIndent,
 	isListView,
-	isListItemView,
-	getViewElementNameForListType
+	isListItemView
 } from './utils/view';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import { findAndAddListHeadToMap } from './utils/postfixers';
@@ -261,7 +260,7 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 			} );
 
 			if ( needsRefresh ) {
-				return true;
+				break;
 			}
 
 			if ( isListElement ) {

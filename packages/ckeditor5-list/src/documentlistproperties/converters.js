@@ -68,15 +68,18 @@ export function listPropertiesUpcastConverter( strategy ) {
  * The `"default"` values are removed and not present in the view/data.
  *
  * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy} strategy
+ * @param {Array.<String>} baseListAttributes The base list attributes.
  * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}
  */
-export function listPropertiesDowncastConverter( strategy, model ) {
+export function listPropertiesDowncastConverter( strategy, baseListAttributes, model ) {
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 		const listItem = data.item;
 
-		if ( !consumable.consume( listItem, evt.name ) ) {
+		// Check and consume only the list properties attributes (the base list attributes are already consumed
+		// but should also trigger conversion of list properties).
+		if ( !baseListAttributes.includes( data.attributeKey ) && !consumable.consume( listItem, evt.name ) ) {
 			return;
 		}
 

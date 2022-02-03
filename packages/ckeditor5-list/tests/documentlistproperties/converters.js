@@ -15,7 +15,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import stubUid from '../documentlist/_utils/uid';
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
@@ -537,13 +537,13 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				it( 'on a flat list', () => {
 					const input = modelList( `
 						* [<paragraph>a</paragraph>
-						* <paragraph>a</paragraph>]
+						* <paragraph>b</paragraph>]
 					` );
 
 					const output =
 						'<ul style="list-style-type:circle">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
-							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>';
 
 					test.test( input, output, selection => {
@@ -592,6 +592,39 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 			describe( 'change list type', () => {
 				// TODO
+			} );
+
+			describe( 'change list indent', () => {
+				it( 'aaa', () => {
+					const input = modelList( [
+						'* <paragraph>a</paragraph>',
+						'* [<paragraph>b</paragraph>',
+						'  # <paragraph>c</paragraph>] {style:roman}',
+					] );
+
+					const output =
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">b</span>' +
+										'<ol style="list-style-type:roman">' +
+											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + 1, item );
+							}
+						} );
+					} );
+				} );
 			} );
 
 			describe( 'consuming', () => {
