@@ -1,8 +1,11 @@
-<script src="../../mini-inspector/miniinspector.js"></script>
-
 <style>
 	.mini-inspector-editor {
 		display: none;
+	}
+
+	.ck-mini-inspector {
+		/* Vertical spacing like around code snippets. */
+		margin: 1em 0;
 	}
 
 	.ck-mini-inspector .ck-inspector-tree .ck-inspector-tree__position.ck-inspector-tree__position_selection {
@@ -11,6 +14,15 @@
 
 	.ck-mini-inspector .ck-inspector-tree > .ck-inspector-tree-node > :first-child,
 	.ck-mini-inspector .ck-inspector-tree > .ck-inspector-tree-node > :last-child {
-		opacity: 0.2;
+		opacity: 0.4;
+		filter: grayscale(1);
+	}
+
+	.ck-mini-inspector .ck-inspector-tree > .ck-inspector-tree-node > :first-child {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 100%;
+		white-space: nowrap;
+		display: block;
 	}
 </style>
