@@ -18,8 +18,8 @@ msgstr ""
 
 msgctxt "Label showing the number of words in the editor content."
 msgid "Words: %0"
-msgstr "Woorden: 0%"
+msgstr "Woorden: %0"
 
 msgctxt "Label showing the number of characters in the editor content."
 msgid "Characters: %0"
-msgstr "Tekens: 0%"
+msgstr "Tekens: %0"

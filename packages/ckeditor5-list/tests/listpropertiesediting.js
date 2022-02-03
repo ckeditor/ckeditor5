@@ -1530,6 +1530,25 @@ describe( 'ListPropertiesEditing', () => {
 					);
 				} );
 
+				// See: #8642.
+				it( 'should not crash when removing entire list item followed by a paragraph element with another list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">[bbbb</listItem>' +
+						'<paragraph>]foo</paragraph>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">[]</listItem>' +
+						'<paragraph>foo</paragraph>' +
+						'<listItem listIndent="0" listStyle="default" listType="bulleted">aaaa</listItem>'
+					);
+				} );
+
 				function simulateTyping( text ) {
 				// While typing, every character is an atomic change.
 					text.split( '' ).forEach( character => {
@@ -3198,6 +3217,25 @@ describe( 'ListPropertiesEditing', () => {
 					);
 				} );
 
+				// See: #8642.
+				it( 'should not crash when removing entire list item followed by a paragraph element with another list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">[bbbb</listItem>' +
+						'<paragraph>]foo</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">[]</listItem>' +
+						'<paragraph>foo</paragraph>' +
+						'<listItem listIndent="0" listReversed="true" listType="numbered">aaaa</listItem>'
+					);
+				} );
+
 				it(
 					'should read the `listReversed` attribute from the most outer selected list while removing content between lists',
 					() => {
@@ -4825,6 +4863,25 @@ describe( 'ListPropertiesEditing', () => {
 						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
 						'<listItem listIndent="1" listStart="1" listType="numbered">bb[]cc</listItem>' +
 						'<listItem listIndent="2" listStart="1" listType="numbered">dddd</listItem>'
+					);
+				} );
+
+				// See: #8642.
+				it( 'should not crash when removing entire list item followed by a paragraph element with another list', () => {
+					setModelData( model,
+						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
+						'<listItem listIndent="0" listStart="1" listType="numbered">[bbbb</listItem>' +
+						'<paragraph>]foo</paragraph>' +
+						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>'
+					);
+
+					editor.execute( 'delete' );
+
+					expect( getModelData( model ) ).to.equal(
+						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>' +
+						'<listItem listIndent="0" listStart="1" listType="numbered">[]</listItem>' +
+						'<paragraph>foo</paragraph>' +
+						'<listItem listIndent="0" listStart="1" listType="numbered">aaaa</listItem>'
 					);
 				} );
 

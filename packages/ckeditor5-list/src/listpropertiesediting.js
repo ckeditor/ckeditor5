@@ -17,12 +17,12 @@ import { getSiblingListItem, getSiblingNodes } from './utils';
 const DEFAULT_LIST_TYPE = 'default';
 
 /**
- * The list style engine feature.
+ * The engine of the list properties feature.
  *
  * It sets the value for the `listItem` attribute of the {@link module:list/list~List `<listItem>`} element that
  * allows modifying the list style type.
  *
- * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they're enabled in config.
+ * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
@@ -108,8 +108,8 @@ export default class ListPropertiesEditing extends Plugin {
 	}
 
 	/**
-	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} checks whether two lists will be merged into a single one
-	 * after deleting the content.
+	 * Starts listening to {@link module:engine/model/model~Model#deleteContent} and checks whether two lists will be merged into a single
+	 * one after deleting the content.
 	 *
 	 * The purpose of this action is to adjust the `listStyle`, `listReversed` and `listStart` values
 	 * for the list that was merged.
@@ -213,6 +213,13 @@ export default class ListPropertiesEditing extends Plugin {
 					listIndent: firstMostOuterItem.getAttribute( 'listIndent' ),
 					direction: 'forward'
 				} );
+
+				// If the selection ends in a non-list element, there are no <listItem>s that would require adjustments.
+				// See: #8642.
+				if ( !secondListMostOuterItem ) {
+					firstMostOuterItem = null;
+					return;
+				}
 
 				const items = [
 					secondListMostOuterItem,
