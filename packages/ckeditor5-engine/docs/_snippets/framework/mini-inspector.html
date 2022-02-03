@@ -1,3 +1,5 @@
+<script src="../../mini-inspector/miniinspector.js"></script>
+
 <style>
 	.mini-inspector-editor {
 		display: none;
@@ -5,5 +7,10 @@
 
 	.ck-mini-inspector .ck-inspector-tree .ck-inspector-tree__position.ck-inspector-tree__position_selection {
 		display: none;
+	}
+
+	.ck-mini-inspector .ck-inspector-tree > .ck-inspector-tree-node > :first-child,
+	.ck-mini-inspector .ck-inspector-tree > .ck-inspector-tree-node > :last-child {
+		opacity: 0.2;
 	}
 </style>
