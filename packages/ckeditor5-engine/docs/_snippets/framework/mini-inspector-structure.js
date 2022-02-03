@@ -25,6 +25,7 @@ function Structure( editor ) {
 	} );
 
 	editor.conversion.for( 'upcast' ).add( dispatcher => {
+		// Look for every view div element.
 		dispatcher.on( 'element:div', ( evt, data, conversionApi ) => {
 			// Get all the necessary items from the conversion API object.
 			const {
