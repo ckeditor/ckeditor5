@@ -87,7 +87,7 @@ As you may know from the chapter about the model, an **attribute** can be applie
 
 Such text nodes attributes can be converted into view elements.
 
-In order to do so, you can register a converter by using attributeToElement() conversion helper:
+In order to do so, you can register a converter by using `attributeToElement()` conversion helper:
 
 ```js
 editor.conversion

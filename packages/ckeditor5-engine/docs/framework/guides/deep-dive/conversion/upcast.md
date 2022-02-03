@@ -90,7 +90,7 @@ editor.conversion
 	} );
 ```
 
-Assuming that in the editor some other feature registered the `<img>` to `<image>` model element upcast converter, you can extend this feature to allow `src` attribute that will be converted into `source` attribute on a model element.
+Assuming that in the editor some other feature did register the `<img>` to `<image>` model element upcast converter, you can extend this feature to allow `src` attribute. This attribute will be converted into `source` attribute on a model element.
 
 {@snippet framework/mini-inspector-upcast-attribute}
 
@@ -128,7 +128,7 @@ As you may learned in the {@link framework/guides/deep-dive/conversion/downcast 
 
 The opposite process will have to detect that structure (e.g. the main element) and convert that into a simple model element.
 
-Since there is no `structureToElement()` conversion helper available, in order to create upcast conversion for the entire structure and create just one model element, you must use event based API like this:
+There is no `structureToElement()` helper available for the upcast conversion. In order to register upcast converter for the entire structure and create just one model element, you must use the event based API like in the following example:
 
 ```js
 editor.conversion.for( 'upcast' ).add( dispatcher => {
