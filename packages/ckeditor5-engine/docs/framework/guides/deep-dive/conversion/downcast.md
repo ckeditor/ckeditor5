@@ -165,7 +165,7 @@ You can check this in action by using the example below:
 {@snippet framework/mini-inspector-heading-interactive}
 
 <info-box>
-	This is just an example. Heading support is provided by the heading feature {@link features/headings headings feature} so you don't have to write your own `<heading level="1">` to `<h1>` element conversion.
+	This is just an example. Heading support is provided by the {@link features/headings headings feature} so you don't have to write your own `<heading level="1">` to `<h1>` element conversion.
 </info-box>
 
 ## Converting element to structure

@@ -73,6 +73,10 @@ Text wrapped with the `<strong>` tag will be converted to a model text node with
 
 {@snippet framework/mini-inspector-bold}
 
+<info-box>
+	This is just an example. Bold support is provided by the {@link features/basic-styles basic styles} plugin so you don't have to write your own strong element to bold attribute conversion.
+</info-box>
+
 If you need to “copy” an attribute from a view element to a model element, use `attributeToAttribute()`.
 
 Keep in mind that the model element must have its own converter registered, otherwise there is nothing the attribute can be copied to.
@@ -89,6 +93,10 @@ editor.conversion
 Assuming that in the editor some other feature registered the `<img>` to `<image>` model element upcast converter, you can extend this feature to allow `src` attribute that will be converted into `source` attribute on a model element.
 
 {@snippet framework/mini-inspector-upcast-attribute}
+
+<info-box>
+	This is just an example. Image elements and source attributes support is provided by the {@link features/images-overview images feature} so you don't have to write your own `<image source="xxx">` to `<img src="xxx">` element conversion.
+</info-box>
 
 ## Converting to element
 
