@@ -86,7 +86,9 @@ editor.conversion
 	} );
 ```
 
-{@snippet framework/mini-inspector-bold}
+Assuming that in the editor some other feature registered the `<img>` to `<image>` model element upcast converter, you can extend this feature to allow `src` attribute that will be converted into `source` attribute on a model element.
+
+{@snippet framework/mini-inspector-upcast-attribute}
 
 ## Converting to element
 
@@ -106,7 +108,7 @@ editor.conversion
 
 The above converter will handle the conversion of every `<div class="example">` view element into an `<example>` model element.
 
-{@snippet framework/mini-inspector-bold}
+{@snippet framework/mini-inspector-upcast-element}
 
 <info-box>
 	Using your own custom model element requires defining it in the schema.

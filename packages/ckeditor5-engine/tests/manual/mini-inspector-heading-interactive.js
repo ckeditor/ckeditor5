@@ -199,15 +199,27 @@ function CustomHeading( editor ) {
 	} );
 }
 
+function Example( editor ) {
+	editor.model.schema.register( 'example', {
+		inheritAllFrom: '$block'
+	} );
+
+	editor.conversion.elementToElement( {
+		view: {
+			name: 'div',
+			classes: [ 'example' ]
+		},
+		model: 'example'
+	} );
+}
+
 DecoupledEditor.create(
 	document.querySelector( '#mini-inspector-heading-interactive' ),
 	{
-		plugins: [ Essentials, Paragraph, BlockQuote, HorizontalLine ]
+		plugins: [ Essentials, Example ]
 	}
 )
 	.then( editor => {
-		window.editor = editor;
-
 		MiniCKEditorInspector.attach(
 			editor,
 			document.querySelector(
