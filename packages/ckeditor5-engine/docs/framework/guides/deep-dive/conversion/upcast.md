@@ -11,7 +11,7 @@ since: 33.0.0
 
 The process of converting the **view** to the **model** is called an **downcast**.
 
-{@img assets/img/upcast-basic.png 760 Basic downcast conversion diagram.}
+{@img assets/img/upcast-basic.png 214 Basic downcast conversion diagram.}
 
 The upcast process conversion happens every time any data is being loaded into the editor.
 
@@ -50,7 +50,7 @@ Contrary to the downcast, the upcast process happens only in the data pipeline a
 
 The editing view may be changed only via changing the model first, hence editing pipeline needs only the downcast process.
 
-{@img assets/img/upcast-pipeline.png 760 Upcast conversion pipeline diagram.}
+{@img assets/img/upcast-pipeline.png 612 Upcast conversion pipeline diagram.}
 
 The previous code example registers a converter for both pipelines at once. It means that `<paragraph>` model element will be converted to a `<p>` view element in both **data view** and **editing view**.
 

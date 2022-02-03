@@ -11,7 +11,7 @@ since: 33.0.0
 
 The process of converting the **model** to the **view** is called a **downcast**.
 
-{@img assets/img/downcast-basic.png 760 Basic downcast conversion diagram.}
+{@img assets/img/downcast-basic.png 238 Basic downcast conversion diagram.}
 
 The downcast process happens every time a model node or attribute needs to be converted into a view node or attribute.
 
@@ -52,7 +52,7 @@ CKEditor 5 engine uses two different views: **data view** and **editing view**.
 
 **The editing view**, on the other hand, is what you see when you open the editor, which is controlled by the editing pipeline.
 
-{@img assets/img/downcast-pipelines.png 760 Downcast conversion pipelines diagram.}
+{@img assets/img/downcast-pipelines.png 444 Downcast conversion pipelines diagram.}
 
 The previous code example registers a converter for both pipelines at once. It means that `<paragraph>` model element will be converted to a `<p>` view element in both **data view** and **editing view**.
 
