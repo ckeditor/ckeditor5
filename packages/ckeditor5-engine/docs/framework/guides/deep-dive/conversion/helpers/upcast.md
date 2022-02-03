@@ -17,7 +17,7 @@ When using the `elementToElement()` helper, a **single view element** will be co
 
 The simplest case of an element to element conversion, where a view element becomes a paragraph model element can be achieved by providing their names:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToElement( {
@@ -32,7 +32,7 @@ The above example creates a model element `<paragraph>` from every `<p>` view el
 
 You can limit the view elements that qualify for the conversion by specifying their attributes, e.g. a class name. Provide respective element definition in the `view` property like in the example below:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToElement( {
@@ -50,7 +50,7 @@ Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckedit
 
 Model element resulting from the conversion can be created manually using a callback provided as a `model` property.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToElement( {
@@ -72,7 +72,7 @@ The second parameter of the model callback is the [UpcastConversionApi](https://
 
 If the model element depends not only on the view element itself but also on its attributes, you need to specify those attributes in the `view` property.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToElement( {
@@ -94,7 +94,7 @@ editor.conversion
 
 In case there are other converters with the overlapping `view` patterns already present, you can prioritize your converter in order to override them. To do so use the `converterPriority` property:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToElement( {
@@ -125,7 +125,7 @@ The element to attribute conversion is used to handle formatting view elements l
 
 ### Basic element to attribute conversion
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToAttribute( {
@@ -140,7 +140,7 @@ A view `<strong>CKEditor 5</strong>` will become the `"CKEditor 5"` model text n
 
 You might want to convert only view elements with a specific class name or other attribute. To achieve that you can provide [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToAttribute( {
@@ -158,7 +158,7 @@ Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckedit
 
 You can specify the value model attribute will take. To achieve that provide the name of the resulting model attribute as a `key` and its value as a `value` in `model` property object:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToAttribute( {
@@ -179,7 +179,7 @@ The code above will convert `<span class="styled styled-dark">CKEditor5</span>` 
 
 In case when the value of an attribute needs additional processing (like mapping, filtering, etc.) you can define the `model.value` as a callback.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToAttribute( {
@@ -213,7 +213,7 @@ In the above example we turn a numeric `font-size` inline style into an either `
 
 You can override the existing converters by specifying higher priority, like in the example below:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.elementToAttribute( {
@@ -248,7 +248,7 @@ The `attributeToAttribute()` helper comes handy when for some reason you can’t
 
 This conversion result in adding an attribute to a model element, based on an attribute from a view element. For example, the `src` attribute in `<img src="foo.jpg">` will be converted to `source` in `<imageInline source="foo.jpg"></imageInline>`.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.attributeToAttribute( {
@@ -259,7 +259,7 @@ editor.conversion
 
 Another way of writing this converter is to provide a `view.key` property as in the example below:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.attributeToAttribute( {
@@ -276,7 +276,7 @@ Both snippets will result in the creating exactly the same converter.
 
 You can limit the element holding the attribute as well as the value of that attributes. Such a converter will be executed only in case of a full match.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.attributeToAttribute( {
@@ -298,7 +298,7 @@ In the example above only a `styled-dark` class of a `<p>` element will be conve
 
 The pattern provided in a `view` property can be much more elaborate. Besides a string, you can also provide a regexp or a function that takes the attribute value and returns `true` or `false`.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.attributeToAttribute( {
@@ -316,7 +316,7 @@ In the example above we are utilizing regular expression to match only an attrib
 
 In case when the value of an attribute needs additional processing (like mapping, filtering, etc.) you can define the `model.value` as a callback.
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.attributeToAttribute( {
@@ -342,7 +342,7 @@ The converter in the example above will extract the style name from each `class`
 
 You can override the existing converters by specifying higher priority, like in the example below:
 
-```jsx
+```js
 editor.conversion
 	.for( 'upcast' )
 	.attributeToAttribute( {

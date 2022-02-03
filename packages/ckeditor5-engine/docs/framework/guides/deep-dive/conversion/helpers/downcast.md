@@ -17,7 +17,7 @@ When using the `elementToElement()` helper, a **single model element** will be c
 
 If you want to convert a model element to a simple view element without additional attributes, simply provide their names:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.elementToElement( {
@@ -30,7 +30,7 @@ editor.conversion
 
 You might want to output a view element that has more attributes, e.g. a class name. To achieve that you can provide [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.elementToElement( {
@@ -48,17 +48,17 @@ Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckedit
 
 Another way of writing a converter from the previous section using a callback would look like this:
 
-```jsx
+```js
 editor.conversion
-		.for( 'downcast' )
-		.elementToElement( {
-				model: 'fancyParagraph',
-				view: ( modelElement, { writer } ) => {
-						return writer.createContainerElement(
-								'p', { class: 'fancy' }
-						);
-				}
-		} );
+	.for( 'downcast' )
+	.elementToElement( {
+		model: 'fancyParagraph',
+		view: ( modelElement, { writer } ) => {
+			return writer.createContainerElement(
+				'p', { class: 'fancy' }
+			);
+		}
+	} );
 ```
 
 The second parameter of the view callback is the [DowncastConversionApi](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_conversion_downcastdispatcher-DowncastConversionApi.html) object, that contains many properties and methods that can be useful when writing a more complex converters.
@@ -69,7 +69,7 @@ The callback should return a single container element. That element should not c
 
 If the view element depends not only on the model element itself but also on its attributes you need to specify these attributes in the `model` property.
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.elementToElement( {
@@ -93,7 +93,7 @@ editor.conversion
 
 In case there are other converters with the overlapping `model` patterns already present, you can prioritize your converter in order to override t. To do that use the `converterPriority` property:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.elementToElement( {
@@ -130,16 +130,16 @@ To convert a single model element `horizontalLine` to a following structure:
 
 you can use a converter similar to this:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.elementToStructure( {
 		model: 'horizontalLine',
 		view: ( modelElement, { writer } ) => {
-				return writer.createContainerElement( 'div', { class: 'horizontal-line' }, [
-						writer.createEmptyElement( 'hr' )
-				] );
-			}
+			return writer.createContainerElement( 'div', { class: 'horizontal-line' }, [
+				writer.createEmptyElement( 'hr' )
+			] );
+		}
 } );
 ```
 
@@ -151,7 +151,7 @@ Another thing to remember is that in the real life scenario it would be recommen
 
 The example above uses an empty model element. If your model element may contain children you need to specify in the view where these children should be placed. To do that use `slotFor( 'children' )`
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.elementToStructure( {
@@ -178,7 +178,7 @@ The attribute to element conversion is used to create formatting view elements l
 
 ### Basic text attribute to model conversion
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToElement( {
@@ -193,7 +193,7 @@ A model text node `"CKEditor 5"` with a `bold` attribute will become a `<stron
 
 You might want to output a view element that has more attributes, e.g. a class name. To achieve that you can provide [element definition](https://ckeditor.com/docs/ckeditor5/latest/api/module_engine_view_elementdefinition-ElementDefinition.html) in the `view` property:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToElement( {
@@ -211,7 +211,7 @@ Check out the [ElementDefinition documentation](https://ckeditor.com/docs/ckedit
 
 You can also generate the view element by a callback. This method is useful when the view element depends on the value of the model attribute.
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToElement( {
@@ -232,7 +232,7 @@ The second parameter of the view callback is the [DowncastConversionApi](https:/
 
 In case there are other converters already present, you can prioritize your converter in order to override existing ones. To do that use the `converterPriority` property:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToElement( {
@@ -267,7 +267,7 @@ The `attributeToAttribute()` helper comes handy when for some reason you can’t
 
 This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example, `<imageInline src='foo.jpg'></imageInline>` is converted to `<img src='foo.jpg'></img>`.
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToAttribute( {
@@ -280,7 +280,7 @@ editor.conversion
 
 The converter in the example above will be convert all the `source` model attributes in the document. You can limit its scope by providing the model element name.
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToAttribute( {
@@ -298,7 +298,7 @@ The converter above will convert all the `source` model attributes, but only tho
 
 Once you provide the array in the `model.values` property, the `view` property is expected to be an object with keys matching these values. This is best explained using the example below:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToAttribute( {
@@ -323,7 +323,7 @@ editor.conversion
 
 The value of the view attribute can be modified in the converter. Below is a simple mapper, that sets the class attribute based on the model attribute value:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToAttribute( {
@@ -337,7 +337,7 @@ editor.conversion
 
 It is worth noting that providing a style property in this manner requires the returned `value` to be an object:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToAttribute( {
@@ -356,7 +356,7 @@ editor.conversion
 
 You can override the existing converters by specifying higher priority, like in the example below:
 
-```jsx
+```js
 editor.conversion
 	.for( 'downcast' )
 	.attributeToAttribute( {
