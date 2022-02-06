@@ -98,11 +98,11 @@ describe( 'Widget', () => {
 					.elementToElement( { model: 'div', view: 'div' } )
 					.elementToStructure( {
 						model: 'widget',
-						view: ( modelItem, { writer, slotFor } ) => {
+						view: ( modelItem, { writer } ) => {
 							const b = writer.createAttributeElement( 'b' );
 							const div = writer.createContainerElement( 'div' );
 							writer.insert( writer.createPositionAt( div, 0 ), b );
-							writer.insert( writer.createPositionAt( div, 0 ), slotFor( 'children' ) );
+							writer.insert( writer.createPositionAt( div, 0 ), writer.createSlot() );
 
 							return toWidget( div, writer, { label: 'element label' } );
 						}

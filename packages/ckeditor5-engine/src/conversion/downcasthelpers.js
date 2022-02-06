@@ -1084,11 +1084,12 @@ export function insertStructure( elementCreator, consumer ) {
 
 		const slotsMap = new Map();
 
+		conversionApi.writer._registerSlotFactory( createSlotFactory( data.item, slotsMap, conversionApi ) );
+
 		// View creation.
-		const viewElement = elementCreator( data.item, {
-			...conversionApi,
-			slotFor: createSlotFactory( data.item, slotsMap, conversionApi )
-		} );
+		const viewElement = elementCreator( data.item, conversionApi );
+
+		conversionApi.writer._clearSlotFactory();
 
 		if ( !viewElement ) {
 			return;
@@ -2152,8 +2153,8 @@ function validateChildren( viewElement ) {
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
 // @returns {Function} Exposed by conversionApi as {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor}.
 function createSlotFactory( element, slotsMap, conversionApi ) {
-	return modeOrFilter => {
-		const slot = conversionApi.writer.createContainerElement( '$slot' );
+	return ( writer, modeOrFilter = 'children' ) => {
+		const slot = writer.createContainerElement( '$slot' );
 
 		let children = null;
 

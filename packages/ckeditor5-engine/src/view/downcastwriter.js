@@ -58,6 +58,14 @@ export default class DowncastWriter {
 		 * @type {Map.<String,Set>}
 		 */
 		this._cloneGroups = new Map();
+
+		/**
+		 * The slot factory used by the `elementToStructure` downcast helper.
+		 *
+		 * @private
+		 * @type {Function|null}
+		 */
+		this._slotFactory = null;
 	}
 
 	/**
@@ -1248,6 +1256,44 @@ export default class DowncastWriter {
 	 */
 	createSelection( selectable, placeOrOffset, options ) {
 		return new Selection( selectable, placeOrOffset, options );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param [modeOrFilter]
+	 * @returns {*}
+	 */
+	createSlot( modeOrFilter ) {
+		if ( !this._slotFactory ) {
+			/**
+			 * The `createSlot()` method is allowed only inside the `elementToStructure` downcast helper.
+			 *
+			 * @error view-writer-invalid-create-slot-context
+			 */
+			throw new CKEditorError( 'view-writer-invalid-create-slot-context', this.document );
+		}
+
+		return this._slotFactory( this, modeOrFilter );
+	}
+
+	/**
+	 * Registers a slot factory.
+	 *
+	 * @protected
+	 * @param {Function} slotFactory The slot factory.
+	 */
+	_registerSlotFactory( slotFactory ) {
+		this._slotFactory = slotFactory;
+	}
+
+	/**
+	 * Clears the registered slot factory.
+	 *
+	 * @protected
+	 */
+	_clearSlotFactory() {
+		this._slotFactory = null;
 	}
 
 	/**
