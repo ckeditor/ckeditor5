@@ -113,9 +113,12 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 				for ( const strategy of strategies ) {
-					if ( strategy.appliesToListItem( node ) && !node.hasAttribute( strategy.attributeName ) ) {
-						writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
-						evt.return = true;
+					if ( strategy.appliesToListItem( node ) ) {
+						// Add missing default property attributes.
+						if ( !node.hasAttribute( strategy.attributeName ) ) {
+							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+							evt.return = true;
+						}
 					}
 				}
 			}

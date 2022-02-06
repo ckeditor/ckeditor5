@@ -22,7 +22,7 @@ import DocumentListPropertiesEditing from '../../src/documentlistproperties/docu
 import { modelList, setupTestHelpers } from '../documentlist/_utils/utils';
 
 describe( 'DocumentListPropertiesEditing - converters', () => {
-	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot, test;
+	let editor, model, modelDoc, modelRoot, view, test;
 
 	testUtils.createSinonSandbox();
 
@@ -159,6 +159,24 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 						# Foo {id:000} {style:upper-alpha}
 						# Bar {id:001}
 						Paragraph.
+					` )
+				);
+			} );
+
+			it( 'should convert style on a nested list', () => {
+				test.data(
+					'<ul>' +
+						'<li>' +
+							'cd' +
+							'<ol style="list-style-type:upper-alpha;">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>',
+
+					modelList( `
+						* cd {id:001} {style:default}
+						  # efg {id:000} {style:upper-alpha}
 					` )
 				);
 			} );
@@ -363,6 +381,57 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					);
 				} );
 			} );
+
+			describe( 'copy and getSelectedContent()', () => {
+				it( 'should be able to downcast part of a nested list', () => {
+					setModelData( model, modelList( `
+						* A
+						  * [B1 {style:foo}
+						    B2
+						    * C1] {style:bar}
+						      C2
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+					const viewFragment = editor.data.toView( modelFragment );
+					const data = editor.data.htmlProcessor.toData( viewFragment );
+
+					expect( data ).to.equal(
+						'<ul style="list-style-type:foo;">' +
+							'<li>' +
+								'<p>B1</p>' +
+								'<p>B2</p>' +
+								'<ul style="list-style-type:bar;">' +
+									'<li>C1</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+
+				it( 'should be able to downcast part of a deep nested list', () => {
+					setModelData( model, modelList( `
+						* A
+						  * B1 {style:foo}
+						    B2
+						    * [C1 {style:bar}
+						      C2]
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+					const viewFragment = editor.data.toView( modelFragment );
+					const data = editor.data.htmlProcessor.toData( viewFragment );
+
+					expect( data ).to.equal(
+						'<ul style="list-style-type:bar;">' +
+							'<li>' +
+								'<p>C1</p>' +
+								'<p>C2</p>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+			} );
 		} );
 
 		describe( 'editing pipeline', () => {
@@ -468,50 +537,6 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
-
-				it( 'should unwrap list item only if it was really wrapped (there was no wrapper for the default style) ', () => {
-					test.insert(
-						modelList( `
-							x
-							* [<paragraph>cd</paragraph>
-							  # <paragraph>efg</paragraph>] {style:upper-alpha}
-						` ),
-
-						'<p>x</p>' +
-						'<ul>' +
-							'<li>' +
-								'<span class="ck-list-bogus-paragraph">cd</span>' +
-								'<ol style="list-style-type:upper-alpha">' +
-									'<li><span class="ck-list-bogus-paragraph">efg</span></li>' +
-								'</ol>' +
-							'</li>' +
-						'</ul>'
-					);
-				} );
-
-				// TODO this test should be in the reversed group
-				it.skip( 'should unwrap list item only if it was really wrapped (there was no wrapper for the default order)', () => {
-					test.insert(
-						modelList( `
-							x
-							* [<paragraph>cd</paragraph>
-							  # <paragraph>efg</paragraph>] {reversed:true}
-						` ),
-
-						'<p>x</p>' +
-						'<ul>' +
-							'<li>' +
-								'<span class="ck-list-bogus-paragraph">cd</span>' +
-								'<ol style="list-style-type:upper-alpha">' +
-									'<li><span class="ck-list-bogus-paragraph">efg</span></li>' +
-								'</ol>' +
-							'</li>' +
-						'</ul>'
-					);
-				} );
-
-				// TODO multi-block
-				// TODO inserting list items/blocks into other lists
 			} );
 
 			describe( 'remove', () => {
@@ -583,23 +608,181 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			} );
 
 			describe( 'remove list style', () => {
-				// TODO
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						* <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ul>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.removeAttribute( 'listStyle', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						  * <paragraph>b</paragraph> {style:bar}
+						* <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul style="list-style-type:bar">' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.removeAttribute( 'listStyle', item );
+								}
+							}
+						} );
+					} );
+				} );
+
+				it( 'and all other list attributes', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						  <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<p>a</p>' +
+						'<p>b</p>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.removeAttribute( 'listStyle', selection.getFirstRange() );
+							writer.removeAttribute( 'listIndent', selection.getFirstRange() );
+							writer.removeAttribute( 'listItemId', selection.getFirstRange() );
+							writer.removeAttribute( 'listType', selection.getFirstRange() );
+						} );
+					} );
+				} );
 			} );
 
 			describe( 'change list style', () => {
-				// TODO
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						* <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ul style="list-style-type:bar">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStyle', 'bar', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						  * <paragraph>b</paragraph> {style:bar}
+						* <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ul style="list-style-type:bar">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul style="list-style-type:bar">' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listStyle', 'bar', item );
+								}
+							}
+						} );
+					} );
+				} );
 			} );
 
 			describe( 'change list type', () => {
-				// TODO
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						* <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol style="list-style-type:foo">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listType', 'numbered', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {style:foo}
+						  * <paragraph>b</paragraph> {style:bar}
+						* <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol style="list-style-type:foo">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul style="list-style-type:bar">' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listType', 'numbered', item );
+								}
+							}
+						} );
+					} );
+				} );
 			} );
 
 			describe( 'change list indent', () => {
-				it( 'aaa', () => {
+				it( 'should update list attribute elements', () => {
 					const input = modelList( [
 						'* <paragraph>a</paragraph>',
 						'* [<paragraph>b</paragraph>',
-						'  # <paragraph>c</paragraph>] {style:roman}',
+						'  # <paragraph>c</paragraph>] {style:roman}'
 					] );
 
 					const output =
@@ -651,6 +834,1301 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 		} );
 	} );
 
+	describe( 'list reversed', () => {
+		beforeEach( () => setupEditor( {
+			list: {
+				properties: {
+					styles: false,
+					startIndex: false,
+					reversed: true
+				}
+			}
+		} ) );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		describe( 'data pipeline', () => {
+			beforeEach( () => {
+				stubUid( 0 );
+			} );
+
+			it( 'should convert single list (type: bulleted)', () => {
+				test.data(
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo
+						* Bar
+					` )
+				);
+			} );
+
+			it( 'should convert single list (type: numbered)', () => {
+				test.data(
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {reversed:false}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should not convert on bulleted single list (type: bulleted)', () => {
+				test.data(
+					'<ul reversed="true">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo
+						* Bar
+					` ),
+
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should convert single list (type: numbered)', () => {
+				test.data(
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {reversed:true}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should convert when the list is in the middle of the content', () => {
+				test.data(
+					'<p>Paragraph.</p>' +
+					'<ol reversed="true">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
+					'<p>Paragraph.</p>',
+
+					modelList( `
+						Paragraph.
+						# Foo {id:000} {reversed:true}
+						# Bar {id:001}
+						Paragraph.
+					` ),
+
+					'<p>Paragraph.</p>' +
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
+					'<p>Paragraph.</p>'
+				);
+			} );
+
+			it( 'should convert on a nested list', () => {
+				test.data(
+					'<ul>' +
+						'<li>' +
+							'cd' +
+							'<ol reversed="reversed">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>',
+
+					modelList( `
+						* cd {id:001}
+						  # efg {id:000} {reversed:true}
+					` )
+				);
+			} );
+
+			it( 'should convert on a nested list', () => {
+				test.data(
+					'<ol>' +
+						'<li>' +
+							'cd' +
+							'<ol reversed="reversed">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>',
+
+					modelList( `
+						# cd {id:001} {reversed:false}
+						  # efg {id:000} {reversed:true}
+					` )
+				);
+			} );
+
+			it( 'view ol converter should not fire if change was already consumed', () => {
+				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { attributes: 'reversed' } );
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {reversed:false}
+						# Bar
+					` ),
+
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should use modeRange provided from higher priority converter', () => {
+				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {reversed:true}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should not apply attribute on elements that does not accept it', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block'
+				} );
+				editor.conversion.elementToElement( { view: 'div', model: 'block' } );
+
+				test.data(
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li><div>x</div></li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {reversed:true}
+						<block>x</block>
+						# Bar {reversed:true}
+					` ),
+
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+					'</ol>' +
+					'<div>x</div>' +
+					'<ol reversed="reversed">' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should not consume attribute while upcasting if not applied', () => {
+				const spy = sinon.spy();
+
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => attributeName != 'listReversed' );
+				editor.conversion.for( 'upcast' ).add(
+					dispatcher => dispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'reversed' } ) ).to.be.true;
+						spy();
+					}, { priority: 'lowest' } )
+				);
+
+				test.data(
+					'<ol reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {reversed:false}
+						# Bar
+					` ),
+
+					'<ol>' +
+					'<li>Foo</li>' +
+					'<li>Bar</li>' +
+					'</ol>'
+				);
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			describe( 'copy and getSelectedContent()', () => {
+				it( 'should be able to downcast part of a nested list', () => {
+					setModelData( model, modelList( `
+						# A
+						  # [B1 {reversed:true}
+						    B2
+						    # C1] {reversed:false}
+						      C2
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+					const viewFragment = editor.data.toView( modelFragment );
+					const data = editor.data.htmlProcessor.toData( viewFragment );
+
+					expect( data ).to.equal(
+						'<ol reversed="reversed">' +
+							'<li>' +
+								'<p>B1</p>' +
+								'<p>B2</p>' +
+								'<ol>' +
+									'<li>C1</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'should be able to downcast part of a deep nested list', () => {
+					setModelData( model, modelList( `
+						# A
+						  # B1 {reversed:true}
+						    B2
+						    # [C1 {reversed:true}
+						      C2]
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+					const viewFragment = editor.data.toView( modelFragment );
+					const data = editor.data.htmlProcessor.toData( viewFragment );
+
+					expect( data ).to.equal(
+						'<ol reversed="reversed">' +
+							'<li>' +
+								'<p>C1</p>' +
+								'<p>C2</p>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+			} );
+		} );
+
+		describe( 'editing pipeline', () => {
+			describe( 'insert', () => {
+				it( 'should convert single list (type: numbered, reversed: false)', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo</paragraph> {reversed:false}
+							# <paragraph>Bar</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert single list (type: numbered, reversed:true)', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo</paragraph> {reversed:true}
+							# <paragraph>Bar</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol reversed="reversed">' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert nested numbered list', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo 1</paragraph> {reversed:false}
+							  # <paragraph>Bar 1</paragraph> {reversed:true}
+							  # <paragraph>Bar 2</paragraph>
+						    # <paragraph>Foo 2</paragraph>
+						    # <paragraph>Foo 3</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">Foo 1</span>' +
+								'<ol reversed="reversed">' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 1</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 2</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 2</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 3</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert properly nested list', () => {
+					// ■ Level 0
+					//     ▶ Level 0.1
+					//         ○ Level 0.1.1
+					//     ▶ Level 0.2
+					//         ○ Level 0.2.1
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Level 0</paragraph> {reversed:false}
+							  # <paragraph>Level 0.1</paragraph> {reversed:false}
+							    # <paragraph>Level 0.1.1</paragraph> {reversed:true}
+							  # <paragraph>Level 0.2</paragraph>
+							    # <paragraph>Level 0.2.1</paragraph>] {reversed:true}
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">Level 0</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">Level 0.1</span>' +
+										'<ol reversed="reversed">' +
+											'<li><span class="ck-list-bogus-paragraph">Level 0.1.1</span></li>' +
+										'</ol>' +
+									'</li>' +
+									'<li><span class="ck-list-bogus-paragraph">Level 0.2</span>' +
+										'<ol reversed="reversed">' +
+											'<li><span class="ck-list-bogus-paragraph">Level 0.2.1</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should unwrap list item only if it was really wrapped (there was no wrapper for the reversed:false)', () => {
+					test.insert(
+						modelList( `
+							x
+							* [<paragraph>cd</paragraph>
+							  # <paragraph>efg</paragraph>] {reversed:true}
+						` ),
+
+						'<p>x</p>' +
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">cd</span>' +
+								'<ol reversed="reversed">' +
+									'<li><span class="ck-list-bogus-paragraph">efg</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+			} );
+
+			describe( 'remove', () => {
+				it( 'remove a list item', () => {
+					test.remove(
+						modelList( `
+							<paragraph>p</paragraph>
+							# [<paragraph>a</paragraph>] {reversed:true}
+							# <paragraph>b</paragraph>
+							# <paragraph>c</paragraph>
+						` ),
+
+						'<p>p</p>' +
+						'<ol reversed="reversed">' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+			} );
+
+			describe( 'set list reversed', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph>
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listReversed', true, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {reversed:false}
+						  # <paragraph>b</paragraph> {reversed:false}
+						# <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listReversed', true, item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'remove list reversed', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {reversed:true}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.removeAttribute( 'listReversed', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {reversed:true}
+						  # <paragraph>b</paragraph> {reversed:true}
+						# <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol reversed="reversed">' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.removeAttribute( 'listReversed', item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list type', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {reversed:true}
+						* <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listType', 'numbered', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {reversed:true}
+						  * <paragraph>b</paragraph> {reversed:true}
+						* <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listType', 'numbered', item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list indent', () => {
+				it( 'should update list attribute elements', () => {
+					const input = modelList( [
+						'* <paragraph>a</paragraph>',
+						'* [<paragraph>b</paragraph>',
+						'  # <paragraph>c</paragraph>] {reversed:true}'
+					] );
+
+					const output =
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">b</span>' +
+										'<ol reversed="reversed">' +
+											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + 1, item );
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'consuming', () => {
+				it( 'should not convert attribute if it was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:listReversed', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'highest' } );
+
+					setModelData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute( 'listReversed', true, modelRoot.getChild( 0 ) );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ol>'
+					);
+				} );
+			} );
+		} );
+	} );
+
+	describe( 'list start index', () => {
+		beforeEach( () => setupEditor( {
+			list: {
+				properties: {
+					styles: false,
+					startIndex: true,
+					reversed: false
+				}
+			}
+		} ) );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		describe( 'data pipeline', () => {
+			beforeEach( () => {
+				stubUid( 0 );
+			} );
+
+			it( 'should convert single list (type: bulleted)', () => {
+				test.data(
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo
+						* Bar
+					` )
+				);
+			} );
+
+			it( 'should convert single list (type: numbered)', () => {
+				test.data(
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {start:1}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should not convert on bulleted single list (type: bulleted)', () => {
+				test.data(
+					'<ul start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo
+						* Bar
+					` ),
+
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should convert single list (type: numbered)', () => {
+				test.data(
+					'<ol start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {start:5}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should convert when the list is in the middle of the content', () => {
+				test.data(
+					'<p>Paragraph.</p>' +
+					'<ol start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
+					'<p>Paragraph.</p>',
+
+					modelList( `
+						Paragraph.
+						# Foo {id:000} {start:5}
+						# Bar {id:001}
+						Paragraph.
+					` )
+				);
+			} );
+
+			it( 'should convert on a nested list', () => {
+				test.data(
+					'<ul>' +
+						'<li>' +
+							'cd' +
+							'<ol start="3">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>',
+
+					modelList( `
+						* cd {id:001}
+						  # efg {id:000} {start:3}
+					` )
+				);
+			} );
+
+			it( 'should convert on a nested list (same type)', () => {
+				test.data(
+					'<ol>' +
+						'<li>' +
+							'cd' +
+							'<ol start="7">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>',
+
+					modelList( `
+						# cd {id:001} {start:1}
+						  # efg {id:000} {start:7}
+					` )
+				);
+			} );
+
+			it( 'view ol converter should not fire if change was already consumed', () => {
+				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { attributes: 'start' } );
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ol start="4">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {start:1}
+						# Bar
+					` ),
+
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should use modeRange provided from higher priority converter', () => {
+				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+					const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+					data.modelRange = modelRange;
+					data.modelCursor = modelCursor;
+				}, { priority: 'highest' } );
+
+				test.data(
+					'<ol start="3">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {start:3}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should not apply attribute on elements that does not accept it', () => {
+				model.schema.register( 'block', {
+					allowWhere: '$block',
+					allowContentOf: '$block'
+				} );
+				editor.conversion.elementToElement( { view: 'div', model: 'block' } );
+
+				test.data(
+					'<ol start="2">' +
+						'<li>Foo</li>' +
+						'<li><div>x</div></li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {start:2}
+						<block>x</block>
+						# Bar {start:2}
+					` ),
+
+					'<ol start="2">' +
+						'<li>Foo</li>' +
+					'</ol>' +
+					'<div>x</div>' +
+					'<ol start="2">' +
+						'<li>Bar</li>' +
+					'</ol>'
+				);
+			} );
+
+			it( 'should not consume attribute while upcasting if not applied', () => {
+				const spy = sinon.spy();
+
+				model.schema.addAttributeCheck( ( ctx, attributeName ) => attributeName != 'listStart' );
+				editor.conversion.for( 'upcast' ).add(
+					dispatcher => dispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
+						expect( conversionApi.consumable.test( data.viewItem, { attributes: 'start' } ) ).to.be.true;
+						spy();
+					}, { priority: 'lowest' } )
+				);
+
+				test.data(
+					'<ol start="3">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {start:1}
+						# Bar
+					` ),
+
+					'<ol>' +
+					'<li>Foo</li>' +
+					'<li>Bar</li>' +
+					'</ol>'
+				);
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			describe( 'copy and getSelectedContent()', () => {
+				it( 'should be able to downcast part of a nested list', () => {
+					setModelData( model, modelList( `
+						# A
+						  # [B1 {start:4}
+						    B2
+						    # C1] {start:1}
+						      C2
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+					const viewFragment = editor.data.toView( modelFragment );
+					const data = editor.data.htmlProcessor.toData( viewFragment );
+
+					expect( data ).to.equal(
+						'<ol start="4">' +
+							'<li>' +
+								'<p>B1</p>' +
+								'<p>B2</p>' +
+								'<ol>' +
+									'<li>C1</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+
+				it( 'should be able to downcast part of a deep nested list', () => {
+					setModelData( model, modelList( `
+						# A
+						  # B1 {start:4}
+						    B2
+						    # [C1 {start:7}
+						      C2]
+					` ) );
+
+					const modelFragment = model.getSelectedContent( model.document.selection );
+					const viewFragment = editor.data.toView( modelFragment );
+					const data = editor.data.htmlProcessor.toData( viewFragment );
+
+					expect( data ).to.equal(
+						'<ol start="7">' +
+							'<li>' +
+								'<p>C1</p>' +
+								'<p>C2</p>' +
+							'</li>' +
+						'</ol>'
+					);
+				} );
+			} );
+		} );
+
+		describe( 'editing pipeline', () => {
+			describe( 'insert', () => {
+				it( 'should convert single list (type: numbered, start: 1)', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo</paragraph> {start:1}
+							# <paragraph>Bar</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert single list (type: numbered, start:5)', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo</paragraph> {start:5}
+							# <paragraph>Bar</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol start="5">' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert nested numbered list', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo 1</paragraph> {start:1}
+							  # <paragraph>Bar 1</paragraph> {start:7}
+							  # <paragraph>Bar 2</paragraph>
+						    # <paragraph>Foo 2</paragraph>
+						    # <paragraph>Foo 3</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">Foo 1</span>' +
+								'<ol start="7">' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 1</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 2</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 2</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 3</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert properly nested list', () => {
+					// ■ Level 0
+					//     ▶ Level 0.1
+					//         ○ Level 0.1.1
+					//     ▶ Level 0.2
+					//         ○ Level 0.2.1
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Level 0</paragraph> {start:1}
+							  # <paragraph>Level 0.1</paragraph> {start:1}
+							    # <paragraph>Level 0.1.1</paragraph> {start:3}
+							  # <paragraph>Level 0.2</paragraph>
+							    # <paragraph>Level 0.2.1</paragraph>] {start:12}
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">Level 0</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">Level 0.1</span>' +
+										'<ol start="3">' +
+											'<li><span class="ck-list-bogus-paragraph">Level 0.1.1</span></li>' +
+										'</ol>' +
+									'</li>' +
+									'<li><span class="ck-list-bogus-paragraph">Level 0.2</span>' +
+										'<ol start="12">' +
+											'<li><span class="ck-list-bogus-paragraph">Level 0.2.1</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ol>' +
+							'</li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should unwrap list item only if it was really wrapped (there was no wrapper for the start:1)', () => {
+					test.insert(
+						modelList( `
+							x
+							* [<paragraph>cd</paragraph>
+							  # <paragraph>efg</paragraph>] {start:5}
+						` ),
+
+						'<p>x</p>' +
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">cd</span>' +
+								'<ol start="5">' +
+									'<li><span class="ck-list-bogus-paragraph">efg</span></li>' +
+								'</ol>' +
+							'</li>' +
+						'</ul>'
+					);
+				} );
+			} );
+
+			describe( 'remove', () => {
+				it( 'remove a list item', () => {
+					test.remove(
+						modelList( `
+							<paragraph>p</paragraph>
+							# [<paragraph>a</paragraph>] {start:6}
+							# <paragraph>b</paragraph>
+							# <paragraph>c</paragraph>
+						` ),
+
+						'<p>p</p>' +
+						'<ol start="6">' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+			} );
+
+			describe( 'set list reversed', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph>
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol start="2">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {start:1}
+						  # <paragraph>b</paragraph> {start:1}
+						# <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol start="6">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listStart', 6, item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list start index', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {start:2}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol start="6">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 6, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {start:2}
+						  # <paragraph>b</paragraph> {start:4}
+						# <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol start="11">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ol start="4">' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listStart', 11, item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list type', () => {
+				it( 'on a flat list', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {start:2}
+						* <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol start="2">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listType', 'numbered', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'on a list with nested lists', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {start:2}
+						  * <paragraph>b</paragraph> {start:5}
+						* <paragraph>c</paragraph>]
+					` );
+
+					const output =
+						'<ol start="2">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+								'</ul>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								if ( item.getAttribute( 'listIndent' ) == 0 ) {
+									writer.setAttribute( 'listType', 'numbered', item );
+								}
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list indent', () => {
+				it( 'should update list attribute elements', () => {
+					const input = modelList( [
+						'* <paragraph>a</paragraph>',
+						'* [<paragraph>b</paragraph>',
+						'  # <paragraph>c</paragraph>] {start:4}'
+					] );
+
+					const output =
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">b</span>' +
+										'<ol start="4">' +
+											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + 1, item );
+							}
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'consuming', () => {
+				it( 'should not convert attribute if it was already consumed', () => {
+					editor.editing.downcastDispatcher.on( 'attribute:listStart', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'highest' } );
+
+					setModelData( model,
+						'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>'
+					);
+
+					model.change( writer => {
+						writer.setAttribute( 'listStart', 4, modelRoot.getChild( 0 ) );
+					} );
+
+					expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal(
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+						'</ol>'
+					);
+				} );
+			} );
+		} );
+	} );
+
 	async function setupEditor( config = {} ) {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, DocumentListPropertiesEditing, UndoEditing,
@@ -663,8 +2141,6 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 		modelRoot = modelDoc.getRoot();
 
 		view = editor.editing.view;
-		viewDoc = view.document;
-		viewRoot = viewDoc.getRoot();
 
 		model.schema.register( 'foo', {
 			allowWhere: '$block',
