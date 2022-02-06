@@ -113,9 +113,6 @@ export default class DocumentListPropertiesEditing extends Plugin {
 				}
 			}
 		} );
-
-		// // Handle merging two separated lists into the single one.
-		// this._mergeListAttributesWhileMergingLists( strategies );
 	}
 }
 
