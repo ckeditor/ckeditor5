@@ -1195,7 +1195,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~Selection} instance.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = writer.createSelection();
@@ -1259,10 +1259,29 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 * TODO
+	 * Creates placeholders for child elements of {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+	 * `elementToStructure()`} conversion helper.
 	 *
-	 * @param [modeOrFilter]
-	 * @returns {*}
+	 *		const viewSlot = conversionApi.writer.createSlot();
+	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 *
+	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 *
+	 * It could be filtered to a specific subset of children (only `<foo>` model elements in this case):
+	 *
+	 *		const viewSlot = conversionApi.writer.createSlot( node => node.is( 'element', 'foo' ) );
+	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 *
+	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 *
+	 * While providing a filtered slot make sure to provide slots for all child nodes. A single node can not be downcasted into
+	 * multiple slots.
+	 *
+	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
+	 *
+	 * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} [modeOrFilter='children'] The filter for child nodes.
+	 * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
 	 */
 	createSlot( modeOrFilter ) {
 		if ( !this._slotFactory ) {

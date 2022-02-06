@@ -178,10 +178,10 @@ You can use `elementToStructure()` conversion helper for this purpose:
 editor.conversion
 	.for( 'downcast' ).elementToStructure( {
 		model: 'myElement',
-		view: ( modelElement, { writer, slotFor } ) => {
+		view: ( modelElement, { writer } ) => {
 			return writer.createContainerElement( 'div', { class: 'wrapper' }, [
 				writer.createContainerElement( 'div', { class: 'inner-wrapper' }, [
-					slotFor( 'children' )
+					writer.createSlot()
 				] )
 			] );
 		}
