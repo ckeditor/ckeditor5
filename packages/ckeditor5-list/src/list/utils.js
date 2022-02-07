@@ -285,7 +285,7 @@ export function findNestedList( viewElement ) {
 }
 
 /**
- * Returns an array with all `listItem` elements that represents the same list.
+ * Returns an array with all `listItem` elements that represent the same list.
  *
  * It means that values of `listIndent`, `listType`, `listStyle`, `listReversed` and `listStart` for all items are equal.
  *
@@ -408,6 +408,37 @@ export function getSelectedListItems( model ) {
 	listItems = [ ...new Set( listItems ) ];
 
 	return listItems;
+}
+
+const BULLETED_LIST_STYLE_TYPES = [ 'disc', 'circle', 'square' ];
+
+// There's a lot of them (https://www.w3.org/TR/css-counter-styles-3/#typedef-counter-style).
+// Let's support only those that can be selected by ListPropertiesUI.
+const NUMBERED_LIST_STYLE_TYPES = [
+	'decimal',
+	'decimal-leading-zero',
+	'lower-roman',
+	'upper-roman',
+	'lower-latin',
+	'upper-latin'
+];
+
+/**
+ * Checks whether the given list-style-type is supported by numbered or bulleted list.
+ *
+ * @param {String} listStyleType
+ * @returns {'bulleted'|'numbered'|null}
+ */
+export function getListTypeFromListStyleType( listStyleType ) {
+	if ( BULLETED_LIST_STYLE_TYPES.includes( listStyleType ) ) {
+		return 'bulleted';
+	}
+
+	if ( NUMBERED_LIST_STYLE_TYPES.includes( listStyleType ) ) {
+		return 'numbered';
+	}
+
+	return null;
 }
 
 // Implementation of getFillerOffset for view list item element.

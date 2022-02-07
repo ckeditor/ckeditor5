@@ -68,7 +68,7 @@ export default class CollapsibleView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * The id of the label inside the {@link #buttonView} that describes the collapsible
+		 * The ID of the label inside the {@link #buttonView} that describes the collapsible
 		 * container for assistive technologies. Set after the button was {@link #render rendered}.
 		 *
 		 * @private

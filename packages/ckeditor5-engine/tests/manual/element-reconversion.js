@@ -39,8 +39,7 @@ function Items( editor ) {
 	editor.conversion.for( 'downcast' ).elementToElement( {
 		model: {
 			name: 'items',
-			attributes: [ 'mode' ],
-			children: true
+			attributes: [ 'mode' ]
 		},
 		view: ( modelElement, { writer } ) => {
 			const mode = modelElement.getAttribute( 'mode' );

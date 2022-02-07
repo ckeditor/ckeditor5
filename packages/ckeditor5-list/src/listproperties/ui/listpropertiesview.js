@@ -36,7 +36,7 @@ export default class ListPropertiesView extends View {
 	 * Creates an instance of the list properties view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param {Object} options Options of the view
+	 * @param {Object} options Options of the view.
 	 * @param {Object.<String,Boolean>} options.enabledProperties An object containing the configuration of enabled list property names.
 	 * Allows conditional rendering the sub-components of the properties view.
 	 * @param {Array.<module:ui/button/buttonview~ButtonView>|null} options.styleButtonViews A list of style buttons to be rendered
@@ -71,7 +71,7 @@ export default class ListPropertiesView extends View {
 		 * A collapsible view that hosts additional list property fields ({@link #startIndexFieldView} and
 		 * {@link #reversedSwitchButtonView}) to visually separate them from the {@link #stylesView grid of styles}.
 		 *
-		 * **Note**: Only present when
+		 * **Note**: Only present when:
 		 * * the view represents **numbered** list properties,
 		 * * and the {@link #stylesView} is rendered,
 		 * * and either {@link #startIndexFieldView} or {@link #reversedSwitchButtonView} is rendered.
@@ -253,7 +253,7 @@ export default class ListPropertiesView extends View {
 	 *
 	 * @protected
 	 * @param {Array.<module:ui/button/buttonview~ButtonView>} styleButtons Buttons to be placed in the grid.
-	 * @param {String} styleGridAriaLabel The accessible technology label of the grid.
+	 * @param {String} styleGridAriaLabel The assistive technology label of the grid.
 	 * @returns {module:ui/view~View}
 	 */
 	_createStylesView( styleButtons, styleGridAriaLabel ) {
@@ -368,7 +368,7 @@ export default class ListPropertiesView extends View {
 	}
 
 	/**
-	 * Creates the list reversed switch button.
+	 * Creates the reversed list switch button.
 	 *
 	 * @private
 	 * @protected
