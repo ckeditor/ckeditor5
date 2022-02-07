@@ -1286,7 +1286,7 @@ export default class DowncastWriter {
 	createSlot( modeOrFilter ) {
 		if ( !this._slotFactory ) {
 			/**
-			 * The `createSlot()` method is allowed only inside the `elementToStructure` downcast helper.
+			 * The `createSlot()` method is allowed only inside the `elementToStructure` downcast helper callback.
 			 *
 			 * @error view-writer-invalid-create-slot-context
 			 */
