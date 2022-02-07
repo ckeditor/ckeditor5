@@ -114,7 +114,7 @@ export default class Autosave extends Plugin {
 		 * Promise used for asynchronous save calls.
 		 *
 		 * Created to handle the autosave call to an external data source. It resolves when that call is finished. It is re-used if
-		 * save is called before the promise has resolved. It is set to `null` if there is no call in progress.
+		 * save is called before the promise has been resolved. It is set to `null` if there is no call in progress.
 		 *
 		 * @type {Promise|null}
 		 * @private
@@ -148,8 +148,8 @@ export default class Autosave extends Plugin {
 		/**
 		 * Informs whether there should be another autosave callback performed, immediately after current autosave callback finishes.
 		 *
-		 * This is set to `true` when there's a save request while autosave callback is already being processed and the model has changed
-		 * since the last save.
+		 * This is set to `true` when there is a save request while autosave callback is already being processed
+		 * and the model has changed since the last save.
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -157,7 +157,7 @@ export default class Autosave extends Plugin {
 		this._makeImmediateSave = false;
 
 		/**
-		 * An action that will be added to pending action manager for actions happening in that plugin.
+		 * An action that will be added to the pending action manager for actions happening in that plugin.
 		 *
 		 * @private
 		 * @member {Object} #_action
@@ -275,10 +275,10 @@ export default class Autosave extends Plugin {
 			.finally( () => {
 				this._savePromise = null;
 			} )
-			// If the save was successful we have three scenarios:
+			// If the save was successful, we have three scenarios:
 			//
 			// 1. If a save was requested when an autosave callback was already processed, we need to immediately call
-			// another autosave callback. In this case, `this._savePromise` won't be resolved until the next callback is done.
+			// another autosave callback. In this case, `this._savePromise` will not be resolved until the next callback is done.
 			// 2. Otherwise, if changes happened to the model, make a delayed autosave callback (like the change just happened).
 			// 3. If no changes happened to the model, return to the `synchronized` state.
 			.then( () => {
@@ -286,10 +286,10 @@ export default class Autosave extends Plugin {
 					this._makeImmediateSave = false;
 
 					// Start another autosave callback. Return a promise that will be resolved after the new autosave callback.
-					// This way promises returned by `_save()` won't be resolved until all changes are saved.
+					// This way promises returned by `_save()` will not be resolved until all changes are saved.
 					//
 					// If `save()` was called when another (most often automatic) autosave callback was already processed,
-					// the promise returned by `save()` call will be resolved only after new changes has been saved.
+					// the promise returned by `save()` call will be resolved only after new changes have been saved.
 					//
 					// Note that it would not work correctly if `this._savePromise` is not cleared.
 					return this._save();
@@ -304,7 +304,7 @@ export default class Autosave extends Plugin {
 					}
 				}
 			} )
-			// In case of an error retry the autosave callback after a delay (and also throw the original error).
+			// In case of an error, retry the autosave callback after a delay (and also throw the original error).
 			.catch( err => {
 				// Change state to `error` so that listeners handling autosave error can be called.
 				this.state = 'error';

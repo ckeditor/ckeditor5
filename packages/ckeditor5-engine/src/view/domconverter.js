@@ -428,7 +428,7 @@ export default class DomConverter {
 	 * @param {String} key The name of the attribute.
 	 * @param {String} value The value of the attribute.
 	 * @param {module:engine/view/element~Element} [relatedViewElement] The view element related to the `domElement` (if there is any).
-	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via
+	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via the
 	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
 	 */
 	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
