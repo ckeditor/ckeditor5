@@ -19,7 +19,7 @@ export default class InputNumberView extends InputView {
 	 * Creates an instance of the input number view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
-	 * @param {Object} [options] Options of the input.
+	 * @param {Object} [options] The options of the input.
 	 * @param {Number} [options.min] The value of the `min` DOM attribute (the lowest accepted value).
 	 * @param {Number} [options.max] The value of the `max` DOM attribute (the highest accepted value).
 	 * @param {Number} [options.step] The value of the `step` DOM attribute.
