@@ -2303,9 +2303,11 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/11163
-		it( 'should throw an exception a structure was created for a model element that allows $text', () => {
+		it( 'should throw an exception when invoked for a model element that allows $text', () => {
 			model.schema.register( 'myElement', {
 				allowIn: '$root',
+
+				// This makes it accept $text.
 				allowContentOf: '$block'
 			} );
 
