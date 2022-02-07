@@ -274,23 +274,21 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 					return '';
 				} );
 
-				if ( !stack[ listIndent ] || stack[ listIndent ].listType != props.listType ) {
-					content = content.replace( /\s*{(?:(style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
-						switch ( key ) {
-							case 'style':
-								props.listStyle = value;
-								break;
-							case 'start':
-								props.listStart = parseInt( value );
-								break;
-							case 'reversed':
-								props.listReversed = value;
-								break;
-						}
+				content = content.replace( /\s*{(?:(style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
+					switch ( key ) {
+						case 'style':
+							props.listStyle = value;
+							break;
+						case 'start':
+							props.listStart = parseInt( value );
+							break;
+						case 'reversed':
+							props.listReversed = value;
+							break;
+					}
 
-						return '';
-					} );
-				}
+					return '';
+				} );
 
 				if ( !ignoreIdConflicts && seenIds.has( props.listItemId ) ) {
 					throw new Error( 'ID conflict: ' + props.listItemId );

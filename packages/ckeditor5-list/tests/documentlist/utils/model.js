@@ -475,6 +475,25 @@ describe( 'DocumentList - utils - model', () => {
 			] );
 		} );
 
+		it( 'shout return all list items of the same properties', () => {
+			const input = modelList( [
+				'# 0 {reversed:true}{start:1}',
+				'# 1 {reversed:false}{start:5}',
+				'# 2',
+				'# 3',
+				'# 4 {reversed:false}{start:3}'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const listItem = fragment.getChild( 2 );
+
+			expect( getListItems( listItem ) ).to.deep.equal( [
+				fragment.getChild( 1 ),
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			] );
+		} );
+
 		it( 'should return all list items and ignore nested lists', () => {
 			const input = modelList( [
 				'0',

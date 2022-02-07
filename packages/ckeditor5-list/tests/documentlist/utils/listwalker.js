@@ -184,6 +184,69 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
 		} );
 
+		it( 'should return items of the same style', () => {
+			const input = modelList( [
+				'* 0 {style:abc}',
+				'* 1',
+				'* 2 {style:xyz}'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const walker = new ListWalker( fragment.getChild( 0 ), {
+				direction: 'forward',
+				sameIndent: true,
+				includeSelf: true,
+				sameProperties: true
+			} );
+			const blocks = Array.from( walker );
+
+			expect( blocks.length ).to.equal( 2 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+		} );
+
+		it( 'should return items of the same start index', () => {
+			const input = modelList( [
+				'* 0 {start:5}',
+				'* 1',
+				'* 2 {start:6}'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const walker = new ListWalker( fragment.getChild( 0 ), {
+				direction: 'forward',
+				sameIndent: true,
+				includeSelf: true,
+				sameProperties: true
+			} );
+			const blocks = Array.from( walker );
+
+			expect( blocks.length ).to.equal( 2 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+		} );
+
+		it( 'should return items of the same reversal status', () => {
+			const input = modelList( [
+				'* 0 {reversed:true}',
+				'* 1',
+				'* 2 {reversed:false}'
+			] );
+
+			const fragment = parseModel( input, schema );
+			const walker = new ListWalker( fragment.getChild( 0 ), {
+				direction: 'forward',
+				sameIndent: true,
+				includeSelf: true,
+				sameProperties: true
+			} );
+			const blocks = Array.from( walker );
+
+			expect( blocks.length ).to.equal( 2 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+		} );
+
 		it( 'should return items while iterating over a nested list', () => {
 			const input = modelList( [
 				'* 0',

@@ -14,7 +14,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DocumentListCommand', () => {
-	let editor, command, model, doc, root, changedBlocks;
+	let editor, command, model, doc, root, changedBlocks, stub;
 
 	testUtils.createSinonSandbox();
 
@@ -30,7 +30,11 @@ describe( 'DocumentListCommand', () => {
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
-		stubUid();
+		stub = stubUid();
+	} );
+
+	afterEach( () => {
+		stub.restore();
 	} );
 
 	describe( 'bulleted', () => {

@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import DocumentListEditing from '../documentlist/documentlistediting';
+import DocumentListStyleCommand from './documentliststylecommand';
 import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
 
@@ -145,8 +146,8 @@ function createAttributeStrategies( enabledProperties ) {
 			defaultValue: DEFAULT_LIST_TYPE,
 			viewConsumables: { styles: 'list-style-type' },
 
-			addCommand( /* editor */ ) {
-				// editor.commands.add( 'listStyle', new ListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
+			addCommand( editor ) {
+				editor.commands.add( 'listStyle', new DocumentListStyleCommand( editor, DEFAULT_LIST_TYPE ) );
 			},
 
 			appliesToListItem() {

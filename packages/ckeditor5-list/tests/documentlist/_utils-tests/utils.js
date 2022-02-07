@@ -426,18 +426,6 @@ describe( 'mockList()', () => {
 		);
 	} );
 
-	it( 'should not parse the custom list style if provided in the following list item', () => {
-		expect( modelList( [
-			'* foo {style:123}',
-			'  bar',
-			'* baz {style:abc}'
-		] ) ).to.equalMarkup(
-			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">foo</paragraph>' +
-			'<paragraph listIndent="0" listItemId="000" listStyle="123" listType="bulleted">bar</paragraph>' +
-			'<paragraph listIndent="0" listItemId="002" listStyle="123" listType="bulleted">baz {style:abc}</paragraph>'
-		);
-	} );
-
 	it( 'should parse the custom list style of the different adjacent list type', () => {
 		expect( modelList( [
 			'* foo {style:123}',

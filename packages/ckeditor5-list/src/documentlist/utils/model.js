@@ -90,7 +90,7 @@ export function getNestedListBlocks( listItem ) {
 }
 
 /**
- * Returns array of all blocks/items of the same list as given block (same indent, same type).
+ * Returns array of all blocks/items of the same list as given block (same indent, same type and properties).
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
@@ -99,12 +99,14 @@ export function getNestedListBlocks( listItem ) {
 export function getListItems( listItem ) {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameItemType: true
+		sameItemType: true,
+		sameProperties: true
 	} );
 
 	const forwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameItemType: true,
+		sameProperties: true,
 		includeSelf: true,
 		direction: 'forward'
 	} );
