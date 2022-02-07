@@ -78,25 +78,25 @@ To perform the update, we can simply change the version from 30.0.0 to 31.0.0 or
 
 ```json
   "dependencies": {
-    "@ckeditor/ckeditor5-adapter-ckfinder": "^30.1.0",
-    "@ckeditor/ckeditor5-autoformat": "^30.1.0",
-    "@ckeditor/ckeditor5-basic-styles": "^30.1.0",
-    "@ckeditor/ckeditor5-block-quote": "^30.1.0",
-    "@ckeditor/ckeditor5-ckfinder": "^30.1.0",
-    "@ckeditor/ckeditor5-cloud-services": "^30.1.0",
-    "@ckeditor/ckeditor5-easy-image": "^30.1.0",
-    "@ckeditor/ckeditor5-editor-classic": "^30.1.0",
-    "@ckeditor/ckeditor5-essentials": "^30.1.0",
-    "@ckeditor/ckeditor5-heading": "^30.1.0",
-    "@ckeditor/ckeditor5-image": "^30.1.0",
-    "@ckeditor/ckeditor5-indent": "^30.1.0",
-    "@ckeditor/ckeditor5-link": "^30.1.0",
-    "@ckeditor/ckeditor5-list": "^30.1.0",
-    "@ckeditor/ckeditor5-media-embed": "^30.1.0",
-    "@ckeditor/ckeditor5-paragraph": "^30.1.0",
-    "@ckeditor/ckeditor5-paste-from-office": "^30.1.0",
-    "@ckeditor/ckeditor5-table": "^30.1.0",
-    "@ckeditor/ckeditor5-typing": "^30.1.0"
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^31.0.0",
+    "@ckeditor/ckeditor5-autoformat": "^31.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^31.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^31.0.0",
+    "@ckeditor/ckeditor5-ckfinder": "^31.0.0",
+    "@ckeditor/ckeditor5-cloud-services": "^31.0.0",
+    "@ckeditor/ckeditor5-easy-image": "^31.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^31.0.0",
+    "@ckeditor/ckeditor5-essentials": "^31.0.0",
+    "@ckeditor/ckeditor5-heading": "^31.0.0",
+    "@ckeditor/ckeditor5-image": "^31.0.0",
+    "@ckeditor/ckeditor5-indent": "^31.0.0",
+    "@ckeditor/ckeditor5-link": "^31.0.0",
+    "@ckeditor/ckeditor5-list": "^31.0.0",
+    "@ckeditor/ckeditor5-media-embed": "^31.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^31.0.0",
+    "@ckeditor/ckeditor5-paste-from-office": "^31.0.0",
+    "@ckeditor/ckeditor5-table": "^31.0.0",
+    "@ckeditor/ckeditor5-typing": "^31.0.0"
   }
   ```
 

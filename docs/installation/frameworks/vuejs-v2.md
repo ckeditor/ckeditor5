@@ -187,7 +187,7 @@ Integrating the rich text editor from source allows you to use the full power of
 This guide assumes that you are using [Vue CLI 3+](https://cli.vuejs.org) as your boilerplate and your application has been created using the [`vue create`](https://cli.vuejs.org/guide/creating-a-project.html#vue-create) command.
 
 <info-box>
-	Learn more about building CKEditor from source in the {@link installation/advanced/advanced-setup Advanced setup} guide.
+	Learn more about building CKEditor from source in the {@link installation/advanced/integrating-from-source Integrating the editor from the source} guide.
 </info-box>
 
 ### Configuring `vue.config.js`
