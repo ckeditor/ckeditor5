@@ -1702,6 +1702,38 @@ function downcastElementToStructure( config ) {
 	config.model.children = true;
 
 	return dispatcher => {
+		if ( dispatcher._conversionApi.schema.checkChild( config.model.name, '$text' ) ) {
+			/**
+			 * This error occurs when a {@link module:engine/model/element~Element model element} is downcasted
+			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
+			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
+			 *
+			 * For instance, this may be the result of `myElement` allowing the content of
+			 * {@glink framework/guides/deep-dive/schema#generic-items `$block`} in its schema definition:
+			 *
+			 *		// Element definition in schema.
+			 *		schema.register( 'myElement', {
+			 *			allowContentOf: '$block',
+			 *
+			 *			// ...
+			 *		} );
+			 *
+			 *		// ...
+			 *
+			 *		// Conversion of myElement with the use of elementToStructure().
+			 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * @error conversion-element-to-structure-disallowed-text
+			 * @param {String} elementName The name of the element the structure is to be created for.
+			 */
+			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: config.model.name } );
+		}
+
 		dispatcher.on(
 			'insert:' + config.model.name,
 			insertStructure( config.view, createConsumer( config.model ) ),
