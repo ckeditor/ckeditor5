@@ -30,7 +30,7 @@ Due to the introduction of the new {@link features/lists#list-properties list pr
 
 ## Revision history
 
-The revision history feature was adapted to future support for real-time editing integration. Unfortunately, this introduced several breaking changes for the non-real-time integrations as well. The migration instructions are below. We also recommend revisiting the {@link features/revision-history-integration revision history integration guide}.
+The revision history feature was adapted to the upcoming support for real-time editing integration. Unfortunately, this introduced several breaking changes for the non-real-time integrations as well. You can find the migration instructions below. We also recommend revisiting the {@link features/revision-history-integration revision history integration guide}.
 
 In case of any problems with migrating to CKEditor 5 v32.0.0, please [contact our support team](https://ckeditor.com/contact/).
 
@@ -142,7 +142,7 @@ revisionHistory.adapter = {
 
 The `RevisionTracker#updateRevision()` method was removed in favor of {@link module:revision-history/revisiontracker~RevisionTracker#update `#update()`} and {@link module:revision-history/revisiontracker~RevisionTracker#saveRevision `#saveRevision()`}.
 
-Earlier, `#updateRevision()` could either update the most recent revision or create a new revision (if the most recent revision was locked earlier). Now, the {@link features/revision-history-integration#how-revisions-are-updated-and-saved revision lifecycle} was simplified and "locking" is no longer needed. The `#updateRevision()` utility was split into two, more "precise" methods, that more clearly communicate the outcome of their use. We believe that the new approach is easier to understand.
+Before, `#updateRevision()` could either update the most recent revision or create a new revision (if the most recent revision was locked earlier). Now, the {@link features/revision-history-integration#how-revisions-are-updated-and-saved revision lifecycle} was simplified and "locking" is no longer needed. The `#updateRevision()` utility was split into two, more "precise" methods, that more clearly communicate the outcome of their use. We believe that the new approach is easier to understand.
 
 ```js
 /* Before v32.0.0 */

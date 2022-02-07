@@ -114,7 +114,7 @@ export default class HtmlDataProcessor {
 	 * @returns {DocumentFragment}
 	 */
 	_toDom( data ) {
-		// Wrap data with a <body> so leading non-layout nodes (like <script>, <style>, HTML comment)
+		// Wrap data with a <body> tag so leading non-layout nodes (like <script>, <style>, HTML comment)
 		// will be preserved in the body collection.
 		// Do it only for data that is not a full HTML document.
 		if ( !data.match( /<(?:html|body|head|meta)(?:\s[^>]*)?>/i ) ) {

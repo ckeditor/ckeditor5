@@ -378,9 +378,9 @@ export function getSiblingNodes( position, direction ) {
 /**
  * Returns an array with all `listItem` elements in the model selection.
  *
- * It returns all the items even if only part of the list is selected, including items that belong to nested lists.
- * If no list is selected, returns an empty array.
- * The order of elements is not specified.
+ * It returns all the items even if only a part of the list is selected, including items that belong to nested lists.
+ * If no list is selected, it returns an empty array.
+ * The order of the elements is not specified.
  *
  * @protected
  * @param {module:engine/model/model~Model} model

@@ -67,7 +67,7 @@ export default class InputView extends View {
 
 		/**
 		 * The `id` of the element describing this field, e.g. when it has
-		 * some error, it helps screen readers read the error text.
+		 * some error; it helps screen readers read the error text.
 		 *
 		 * @observable
 		 * @member {Boolean} #ariaDescribedById
@@ -106,7 +106,7 @@ export default class InputView extends View {
 		this.set( 'isEmpty', true );
 
 		/**
-		 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc..
+		 * Corresponds to the `inputmode` DOM attribute. Can be `text`, `numeric`, `decimal`, etc.
 		 *
 		 * @observable
 		 * @member {Boolean} #inputMode

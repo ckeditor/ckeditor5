@@ -102,11 +102,11 @@ export default class UndoEditing extends Plugin {
 			}
 
 			if ( isRedoBatch ) {
-				// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
+				// If this batch comes from `redoCommand`, add it to the `undoCommand` stack.
 				this._undoCommand.addBatch( batch );
 			} else if ( !isUndoBatch ) {
-				// If the batch neither comes from `redoCommand` or `undoCommand` then this is a new, regular batch.
-				// Add the batch to the `undoCommand` stack and clear `redoCommand` stack.
+				// If the batch comes neither  from `redoCommand` nor from `undoCommand` then it is a new, regular batch.
+				// Add the batch to the `undoCommand` stack and clear the `redoCommand` stack.
 				this._undoCommand.addBatch( batch );
 				this._redoCommand.clearStack();
 			}
