@@ -2301,25 +2301,6 @@ describe( 'DowncastHelpers', () => {
 				} );
 			}, /^conversion-slot-filter-incomplete/, controller.downcastDispatcher );
 		} );
-
-		// https://github.com/ckeditor/ckeditor5/issues/11163
-		it( 'should throw an exception when invoked for a model element that allows $text', () => {
-			model.schema.register( 'myElement', {
-				allowIn: '$root',
-
-				// This makes it accept $text.
-				allowContentOf: '$block'
-			} );
-
-			expectToThrowCKEditorError( () => {
-				downcastHelpers.elementToStructure( {
-					model: 'myElement',
-					view: ( modelElement, { writer } ) => {
-						return writer.createContainerElement( 'div' );
-					}
-				} );
-			}, /^conversion-element-to-structure-disallowed-text/, controller.downcastDispatcher, { elementName: 'myElement' } );
-		} );
 	} );
 
 	describe( 'attributeToElement()', () => {
