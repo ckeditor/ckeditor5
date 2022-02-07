@@ -32,7 +32,7 @@ In addition to enabling mentions, you may want to check the following productivi
 
 ## Configuration
 
-The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define `minimumCharacters` after which the autocomplete panel will show up. Moreover, feed items IDs may include whitespaces.
+The minimal configuration of the mention feature requires defining a {@link module:mention/mention~MentionFeed `feed`} and a {@link module:mention/mention~MentionFeed `marker`}. You can also define the `minimumCharacters` parameter, setting the number of letters after which the autocomplete panel will show up. Moreover, feed items' IDs may include whitespaces.
 
 The code snippet below was used to configure the demo above. It defines the list of names that will be autocompleted after the user types the "@" character.
 
