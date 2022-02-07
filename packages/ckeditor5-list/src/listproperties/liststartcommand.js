@@ -11,8 +11,8 @@ import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from '../list/utils';
 
 /**
- * The list start index command. It changes `listStart` attribute of the selected list items.
- * It is used by the {@link module:list/listproperties~ListProperties list style feature}.
+ * The list start index command. It changes the `listStart` attribute of the selected list items.
+ * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  *
  * @extends module:core/command~Command
  */
@@ -30,7 +30,7 @@ export default class ListStartCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Object} options
-	 * @param {Number} [options.startIndex=1] Whether the list should be reversed.
+	 * @param {Number} [options.startIndex=1] The list start index.
 	 * @protected
 	 */
 	execute( options = {} ) {
