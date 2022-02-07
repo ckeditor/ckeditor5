@@ -86,7 +86,7 @@ function getBoxUpcastConverter( editor ) {
 
 function getBoxDowncastCreator( multiSlot ) {
 	return ( modelElement, conversionApi ) => {
-		const { writer, slotFor } = conversionApi;
+		const { writer } = conversionApi;
 
 		const viewBox = writer.createContainerElement( 'div', { class: 'box' } );
 		const contentWrap = writer.createContainerElement( 'div', { class: 'box-content' } );
@@ -116,14 +116,14 @@ function getBoxDowncastCreator( multiSlot ) {
 		}
 
 		if ( !multiSlot ) {
-			writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( 'children' ) );
+			writer.insert( writer.createPositionAt( contentWrap, 0 ), writer.createSlot() );
 		} else {
-			writer.insert( writer.createPositionAt( contentWrap, 0 ), slotFor( element => element.index < 2 ) );
+			writer.insert( writer.createPositionAt( contentWrap, 0 ), writer.createSlot( element => element.index < 2 ) );
 
 			const contentWrap2 = writer.createContainerElement( 'div', { class: 'box-content' } );
 
 			writer.insert( writer.createPositionAt( viewBox, 'end' ), contentWrap2 );
-			writer.insert( writer.createPositionAt( contentWrap2, 0 ), slotFor( element => element.index >= 2 ) );
+			writer.insert( writer.createPositionAt( contentWrap2, 0 ), writer.createSlot( element => element.index >= 2 ) );
 
 			const footer = writer.createRawElement( 'div', { class: 'box-footer' }, domElement => {
 				domElement.innerHTML = 'Footer';
