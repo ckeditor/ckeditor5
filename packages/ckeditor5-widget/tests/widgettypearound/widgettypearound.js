@@ -1874,12 +1874,12 @@ describe( 'WidgetTypeAround', () => {
 		editor.conversion.for( 'downcast' )
 			.elementToStructure( {
 				model: 'blockWidget',
-				view: ( modelItem, { writer, slotFor } ) => {
+				view: ( modelItem, { writer } ) => {
 					const container = writer.createContainerElement( 'div' );
 					const viewText = writer.createText( 'block-widget' );
 
 					writer.insert( writer.createPositionAt( container, 0 ), viewText );
-					writer.insert( writer.createPositionAt( container, 0 ), slotFor( 'children' ) );
+					writer.insert( writer.createPositionAt( container, 0 ), writer.createSlot() );
 
 					return toWidget( container, writer, {
 						label: 'block widget'
@@ -1902,12 +1902,12 @@ describe( 'WidgetTypeAround', () => {
 		editor.conversion.for( 'downcast' )
 			.elementToStructure( {
 				model: 'inlineWidget',
-				view: ( modelItem, { writer, slotFor } ) => {
+				view: ( modelItem, { writer } ) => {
 					const container = writer.createContainerElement( 'inlineWidget' );
 					const viewText = writer.createText( 'inline-widget' );
 
 					writer.insert( writer.createPositionAt( container, 0 ), viewText );
-					writer.insert( writer.createPositionAt( container, 0 ), slotFor( 'children' ) );
+					writer.insert( writer.createPositionAt( container, 0 ), writer.createSlot() );
 
 					return toWidget( container, writer, {
 						label: 'inline widget'

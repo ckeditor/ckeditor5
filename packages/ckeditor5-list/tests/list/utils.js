@@ -11,7 +11,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ListEditing from '../../src/list/listediting';
 import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting';
 
-import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../src/utils';
+import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'utils', () => {

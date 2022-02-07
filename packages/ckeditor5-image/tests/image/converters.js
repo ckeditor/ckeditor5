@@ -49,8 +49,8 @@ describe( 'Image converters', () => {
 				isInline: true
 			} );
 
-			const imageEditingElementCreator = ( modelElement, { writer, slotFor } ) =>
-				imageUtils.toImageWidget( createBlockImageViewElement( writer, slotFor( 'children' ) ), writer, '' );
+			const imageEditingElementCreator = ( modelElement, { writer } ) =>
+				imageUtils.toImageWidget( createBlockImageViewElement( writer, writer.createSlot() ), writer, '' );
 
 			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
 				imageUtils.toImageWidget( createInlineImageViewElement( writer ), writer, '' );

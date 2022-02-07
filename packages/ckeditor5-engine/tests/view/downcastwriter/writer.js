@@ -15,8 +15,13 @@ import { StylesProcessor } from '../../../src/view/stylesmap';
 import DocumentFragment from '../../../src/view/documentfragment';
 import HtmlDataProcessor from '../../../src/dataprocessor/htmldataprocessor';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'DowncastWriter', () => {
 	let writer, attributes, root, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
@@ -506,6 +511,36 @@ describe( 'DowncastWriter', () => {
 			doc.getRoot()._appendChild( new ViewElement( 'p' ) );
 
 			expect( writer.createSelection() ).to.be.instanceof( ViewSelection );
+		} );
+	} );
+
+	describe( 'createSlot()', () => {
+		it( 'should throw if called before slot factory is initialized', () => {
+			expect( () => {
+				writer.createSlot();
+			} ).to.throw( CKEditorError, 'view-writer-invalid-create-slot-context' );
+		} );
+
+		it( 'should call slot factory and pass the parameter', () => {
+			const spy = sinon.spy();
+
+			writer._registerSlotFactory( spy );
+			writer.createSlot( 'foo' );
+
+			sinon.assert.calledWithExactly( spy, writer, 'foo' );
+		} );
+
+		it( 'should throw if called after slot factory is cleared', () => {
+			const spy = sinon.spy();
+
+			writer._registerSlotFactory( spy );
+			writer._clearSlotFactory();
+
+			expect( () => {
+				writer.createSlot( 'foo' );
+			} ).to.throw( CKEditorError, 'view-writer-invalid-create-slot-context' );
+
+			sinon.assert.notCalled( spy );
 		} );
 	} );
 
