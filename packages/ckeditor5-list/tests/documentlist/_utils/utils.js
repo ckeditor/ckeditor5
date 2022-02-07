@@ -4,6 +4,7 @@
  */
 
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import DocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import { getData as getModelData, parse as parseModel, stringify as stringifyModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import ListWalker from '../../../src/documentlist/utils/listwalker';
@@ -26,7 +27,7 @@ export function prepareTest( model, input ) {
 	const selection = parsedResult.selection;
 
 	// Ensure no undo step is generated.
-	model.enqueueChange( 'transparent', writer => {
+	model.enqueueChange( { isUndoable: false }, writer => {
 		// Replace existing model in document by new one.
 		writer.remove( writer.createRangeIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
@@ -217,11 +218,14 @@ export function setupTestHelpers( editor ) {
  * 		'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
  *
  * @param {Iterable.<String>} lines
+ * @param {Object} options
+ * @param {Boolean} [options.ignoreIdConflicts=false] Whether should not throw if ID conflict is detected.
  * @returns {String}
  */
-export function modelList( lines ) {
+export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 	const items = [];
 	const stack = [];
+	const seenIds = new Set();
 
 	let prevIndent = -1;
 
@@ -251,6 +255,12 @@ export function modelList( lines ) {
 					return '';
 				} );
 
+				if ( !ignoreIdConflicts && seenIds.has( listItemId ) ) {
+					throw new Error( 'ID conflict: ' + listItemId );
+				}
+
+				seenIds.add( listItemId );
+
 				stack[ listIndent ] = {
 					listItemId,
 					listType: marker == '#' ? 'numbered' : 'bulleted'
@@ -267,17 +277,22 @@ export function modelList( lines ) {
 }
 
 /**
- * Returns document list pseudo markdown notation for a given document fragment.
+ * Returns document list pseudo markdown notation for a given document fragment or element.
  *
- * @param {module:engine/model/documentfragment~DocumentFragment} fragment The document fragment to stringify to pseudo markdown notation.
+ * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/element~Element} fragmentOrElement The document
+ * fragment or element to stringify to pseudo markdown notation.
  * @returns {String}
  */
-export function stringifyList( fragment ) {
+export function stringifyList( fragmentOrElement ) {
 	const model = new Model();
 	const lines = [];
 
+	if ( fragmentOrElement.is( 'element' ) ) {
+		fragmentOrElement = new DocumentFragment( [ fragmentOrElement ] );
+	}
+
 	model.change( writer => {
-		for ( let node = fragment.getChild( 0 ); node; node = node.nextSibling ) {
+		for ( let node = fragmentOrElement.getChild( 0 ); node; node = node.nextSibling ) {
 			let pad = '';
 
 			if ( node.hasAttribute( 'listItemId' ) ) {
@@ -317,9 +332,43 @@ function stringifyNode( node, writer ) {
 	return stringifyModel( fragment );
 }
 
-function stringifyElement( content, attributes = {}, name = 'paragraph' ) {
-	[ , name, content ] = content.match( /^<([^>]+)>([^<]*)?/ ) || [ null, name, content ];
-	attributes = Object.entries( attributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+function stringifyElement( content, listAttributes = {} ) {
+	let name = 'paragraph';
+	let elementAttributes = '';
+	let selectionBefore = '';
+	let selectionAfter = '';
 
-	return `<${ name }${ attributes }>${ content }</${ name.replace( /\s.*/, '' ) }>`;
+	const regexp = new RegExp(
+		'^(?<selectionBefore>[\\[\\]])?' +													// [<element
+			'(?:' +
+				'<(?<nameSelfClosing>\\w+)(?<elementSelfClosingAttributes>[^>]+)?/>' +		// For instance <element/> OR <element attrs/>
+				'|' +
+				'<(?<name>\\w+)(?<elementAttributes>[^>]+)?>' +								// For instance <element> OR <element attrs>...
+					'(?<content>.*)' +
+				'(?:</\\4>)' +																// Note: Match <name> here in the closing tag.
+			')' +
+		'(?<selectionAfter>[\\[\\]])?$'														// </element>] or <element/>]
+	);
+
+	const match = content.match( regexp );
+
+	if ( match ) {
+		name = match.groups.nameSelfClosing || match.groups.name;
+		elementAttributes = match.groups.elementAttributes || match.groups.elementSelfClosingAttributes || '';
+		content = match.groups.content || '';
+
+		if ( match.groups.selectionBefore ) {
+			selectionBefore = match.groups.selectionBefore;
+		}
+
+		if ( match.groups.selectionAfter ) {
+			selectionAfter = match.groups.selectionAfter;
+		}
+	}
+
+	listAttributes = Object.entries( listAttributes ).map( ( [ key, value ] ) => ` ${ key }="${ value }"` ).join( '' );
+
+	return `${ selectionBefore }` +
+		`<${ name }${ elementAttributes }${ listAttributes }>${ content }</${ name.replace( /\s.*/, '' ) }>` +
+	`${ selectionAfter }`;
 }

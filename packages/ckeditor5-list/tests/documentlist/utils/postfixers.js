@@ -450,7 +450,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 				'* 0{a}',
 				'# 1{a}',
 				'* 2{a}'
-			] );
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -473,7 +473,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 				'* 0{a}',
 				'# 1{a}',
 				'# 2{a}'
-			] );
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -497,7 +497,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 				'# 1{a}',
 				'  * 2{b}',
 				'# 3{a}'
-			] );
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();
@@ -526,7 +526,7 @@ describe( 'DocumentList - utils - postfixers', () => {
 				'  5',
 				'# 6{a}',
 				'  7'
-			] );
+			], { ignoreIdConflicts: true } );
 
 			const fragment = parseModel( input, model.schema );
 			const seenIds = new Set();

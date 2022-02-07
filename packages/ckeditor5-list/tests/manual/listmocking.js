@@ -13,6 +13,8 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import {
 	parse as parseModel,
 	setData as setModelData,
@@ -24,11 +26,49 @@ import DocumentList from '../../src/documentlist';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent ],
+		plugins: [ Enter, Typing, Heading, Paragraph, Undo, Clipboard, DocumentList, Indent, Widget ],
 		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'outdent', 'indent', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
+
+		editor.model.schema.register( 'blockWidget', {
+			isObject: true,
+			isBlock: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'blockWidget',
+			view: ( modelItem, { writer } ) => {
+				return toWidget( writer.createContainerElement( 'blockwidget', { class: 'block-widget' } ), writer );
+			}
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'blockWidget',
+			view: ( modelItem, { writer } ) => writer.createContainerElement( 'blockwidget', { class: 'block-widget' } )
+		} );
+
+		editor.model.schema.register( 'inlineWidget', {
+			isObject: true,
+			isInline: true,
+			allowWhere: '$text',
+			allowAttributesOf: '$text'
+		} );
+
+		editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			model: 'inlineWidget',
+			view: ( modelItem, { writer } ) => toWidget(
+				writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } ), writer, { label: 'inline widget' }
+			)
+		} );
+
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+			model: 'inlineWidget',
+			view: ( modelItem, { writer } ) => writer.createContainerElement( 'inlinewidget', { class: 'inline-widget' } )
+		} );
 
 		const model = '<paragraph listIndent="0" listItemId="000" listType="bulleted">A</paragraph>\n' +
 			'<paragraph listIndent="0" listItemId="000" listType="bulleted">B</paragraph>\n' +
@@ -158,7 +198,7 @@ const onPaste = () => {
 	}
 };
 
-const onHighlighChange = () => {
+const onHighlightChange = () => {
 	document.querySelector( '.ck-editor' ).classList.toggle( 'highlight-lists' );
 };
 
@@ -166,5 +206,5 @@ document.getElementById( 'btn-process-input' ).addEventListener( 'click', proces
 document.getElementById( 'btn-process-editor-model' ).addEventListener( 'click', processEditorModel );
 document.getElementById( 'btn-copy-output' ).addEventListener( 'click', copyOutput );
 document.getElementById( 'data-input' ).addEventListener( 'paste', onPaste );
-document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlighChange );
+document.getElementById( 'chbx-highlight-lists' ).addEventListener( 'change', onHighlightChange );
 
