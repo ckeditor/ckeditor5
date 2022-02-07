@@ -67,3 +67,40 @@ export function isInsideSurrogatePair( string, offset ) {
 export function isInsideCombinedSymbol( string, offset ) {
 	return isCombiningMark( string.charAt( offset ) );
 }
+
+const EMOJI_PATTERN = buildEmojiRegexp();
+
+/**
+ * Checks whether given offset in a string is inside multi-character emoji sequence.
+ *
+ * @param {String} string String to check.
+ * @param {Number} offset Offset to check.
+ * @returns {Boolean}
+ */
+export function isInsideEmojiSequence( string, offset ) {
+	const matches = String( string ).matchAll( EMOJI_PATTERN );
+
+	return Array.from( matches ).some( match => match.index < offset && offset < match.index + match[ 0 ].length );
+}
+
+function buildEmojiRegexp() {
+	const parts = [
+		// Emoji Tag Sequence (ETS)
+		/\p{Emoji}[\u{E0020}-\u{E007E}]+\u{E007F}/u,
+
+		// Emoji Keycap Sequence
+		/\p{Emoji}\u{FE0F}?\u{20E3}/u,
+
+		// Emoji Presentation Sequence
+		/\p{Emoji}\u{FE0F}/u,
+
+		// Single-Character Emoji / Emoji Modifier Sequence
+		/(?=\p{General_Category=Other_Symbol})\p{Emoji}\p{Emoji_Modifier}*/u
+	];
+
+	const flagSequence = /\p{Regional_Indicator}{2}/u.source;
+	const emoji = '(?:' + parts.map( part => part.source ).join( '|' ) + ')';
+	const sequence = `${ flagSequence }|${ emoji }(?:\u{200D}${ emoji })*`;
+
+	return new RegExp( sequence, 'ug' );
+}

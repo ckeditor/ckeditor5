@@ -18,7 +18,7 @@ describe( 'ListStyle', () => {
 	} );
 
 	it( 'should emit warning when instantiated', () => {
-		const expectedMessage = '`ListStyle` plugin is obsolete. User `ListProperties` instead.';
+		const expectedMessage = '`ListStyle` plugin is obsolete. Use `ListProperties` instead.';
 
 		try {
 			sinon.stub( console, 'warn' );

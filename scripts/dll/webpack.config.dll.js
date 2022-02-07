@@ -13,7 +13,7 @@ const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
-const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
+const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
 
 if ( ROOT_DIRECTORY !== process.cwd() ) {
 	throw new Error( 'This script should be called from the package root directory.' );
