@@ -806,7 +806,7 @@ export default class TableUtils extends Plugin {
 	 * within the provided model selection's ranges.
 	 *
 	 * To obtain the cells selected from the inside, use
-	 * {@link module:table/utils/selection~getTableCellsContainingSelection}.
+	 * {@link #getTableCellsContainingSelection}.
 	 *
 	 * @param {module:engine/model/selection~Selection} selection
 	 * @returns {Array.<module:engine/model/element~Element>}
@@ -830,7 +830,7 @@ export default class TableUtils extends Plugin {
 	 * {@link module:engine/model/range~Range#start} inside.
 	 *
 	 * To obtain the cells selected from the outside, use
-	 * {@link module:table/utils/selection~getSelectedTableCells}.
+	 * {@link #getSelectedTableCells}.
 	 *
 	 * @param {module:engine/model/selection~Selection} selection
 	 * @returns {Array.<module:engine/model/element~Element>}
@@ -854,8 +854,8 @@ export default class TableUtils extends Plugin {
 	 * by selection ranges or host selection range
 	 * {@link module:engine/model/range~Range#start start positions} inside them.
 	 *
-	 * Combines {@link module:table/utils/selection~getTableCellsContainingSelection} and
-	 * {@link module:table/utils/selection~getSelectedTableCells}.
+	 * Combines {@link #getTableCellsContainingSelection} and
+	 * {@link #getSelectedTableCells}.
 	 *
 	 * @param {module:engine/model/selection~Selection} selection
 	 * @returns {Array.<module:engine/model/element~Element>}
