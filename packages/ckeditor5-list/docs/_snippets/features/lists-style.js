@@ -49,6 +49,13 @@ ClassicEditor
 		table: {
 			contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: false,
+				reversed: false
+			}
+		},
 		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
