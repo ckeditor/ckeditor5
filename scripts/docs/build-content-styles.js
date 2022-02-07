@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -187,9 +187,12 @@ function getWebpackConfig() {
 					test: /\.css$/,
 					use: [
 						'style-loader',
+						'css-loader',
 						{
 							loader: 'postcss-loader',
-							options: postCssConfig
+							options: {
+								postcssOptions: postCssConfig
+							}
 						}
 					]
 				}
@@ -374,7 +377,7 @@ function generateCKEditor5Source( ckeditor5Modules ) {
 
 	const sourceFileContent = [
 		'/**',
-		` * @license Copyright (c) 2003-${ new Date().getFullYear() }, CKSource - Frederico Knabben. All rights reserved.`,
+		` * @license Copyright (c) 2003-${ new Date().getFullYear() }, CKSource Holding sp. z o.o. All rights reserved.`,
 		' * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license',
 		' */',
 		'',

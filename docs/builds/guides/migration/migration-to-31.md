@@ -3,7 +3,7 @@
 category: builds-migration
 menu-title: Migration to v31.x
 order: 93
-modified_at: 2021-12-03
+modified_at: 2021-11-03
 ---
 
 # Migration to CKEditor 5 v31.x.0
@@ -35,7 +35,7 @@ Starting from v31.1.0, the editor engine will detect attributes that may interru
 ```
 
 <info-box>
-	Please keep in mind this new mechanism does not affect the {@link builds/guides/integration/saving-data data saved by the editor} (e.g. the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
+	Please keep in mind, that this new mechanism does not affect the {@link builds/guides/integration/saving-data data saved by the editor} (e.g. the output of `editor.getData()`). The filtering only applies during the editing when the user interacts with the editor.
 </info-box>
 
 If you are the author of a plugin that generates this kind of content in the {@link framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} and you want it to be preserved, you can configure this when creating the element using {@link module:engine/view/downcastwriter~DowncastWriter} during the {@link framework/guides/architecture/editing-engine#conversion model–view conversion}. Methods such as {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement}, {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement} accept an option that will disable filtering of specific attributes:
@@ -64,7 +64,7 @@ const paragraph = writer.createContainerElement( 'p',
 
 #### Blocking script elements
 
-Also, starting from v31.1.0, any `<script>` element that would find its way to the editing layer of the editor (and the user interacting with it) will be filtered out (renamed to `<span data-ck-unsafe-element="script"></span>`).
+Also starting from v31.1.0, any `<script>` element that would find its way to the editing layer of the editor (and the user interacting with it) will be filtered out (renamed to `<span data-ck-unsafe-element="script"></span>`).
 
 Please keep in mind that this mechanism will not change the output of the editor (e.g. the result of `editor.getData()` will include full `<script>...</script>` tags) and there is no way to opt out of it.
 

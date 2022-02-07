@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -755,9 +755,9 @@ describe( 'EditorWatchdog', () => {
 		} );
 	} );
 
-	describe( 'destroy()', () => {
-		// See #19.
-		it( 'should clean internal stuff', () => {
+	describe( 'destroying', () => {
+		// See https://github.com/ckeditor/ckeditor5/issues/4706.
+		it( 'destroy() should clean internal stuff', () => {
 			// 30ms should be enough to make the two data changes split into two data save actions.
 			// This will ensure that the second data save action will be put off in time.
 			const SAVE_INTERVAL = 30;
@@ -790,6 +790,44 @@ describe( 'EditorWatchdog', () => {
 				expect( watchdog.state ).to.equal( 'destroyed' );
 				expect( watchdog.crashes ).to.deep.equal( [] );
 			} );
+		} );
+
+		// See https://github.com/ckeditor/ckeditor5/issues/10643.
+		it( 'watchdog should remove the listener for `change:data` event before destroying the editor', async () => {
+			const watchdog = new EditorWatchdog( ClassicTestEditor );
+
+			const spy = sinon.spy();
+
+			// A plugin that modifies the editor data during the destruction phase.
+			class InvalidPlugin {
+				constructor( editor ) {
+					this.editor = editor;
+				}
+
+				destroy() {
+					const doc = this.editor.model.document;
+
+					this.editor.model.change( writer => {
+						writer.insertText( 'bar', writer.createPositionAt( doc.getRoot(), 1 ) );
+						spy();
+					} );
+				}
+			}
+
+			await watchdog.create( element, {
+				initialData: '<p>foo</p>',
+				plugins: [ InvalidPlugin, Paragraph ]
+			} );
+
+			await watchdog._restart();
+
+			// The watchdog during destroying the editor should not listen to the data changes.
+			sinon.assert.calledOnce( spy );
+			expect( watchdog.editor.getData() ).to.equal( '<p>foo</p>' );
+
+			await watchdog.destroy();
+
+			sinon.assert.calledTwice( spy );
 		} );
 	} );
 

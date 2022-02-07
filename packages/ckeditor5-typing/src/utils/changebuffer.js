@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -70,10 +70,10 @@ export default class ChangeBuffer {
 		// The callback will check whether it is a new batch and in that case the buffer will be flushed.
 		//
 		// The reason why the buffer needs to be flushed whenever a new batch appears is that the changes added afterwards
-		// should be added to a new batch. For instance, when the  user types, then inserts an image, and then types again,
+		// should be added to a new batch. For instance, when the user types, then inserts an image, and then types again,
 		// the characters typed after inserting the image should be added to a different batch than the characters typed before.
 		this._changeCallback = ( evt, batch ) => {
-			if ( batch.type != 'transparent' && batch !== this._batch ) {
+			if ( batch.isLocal && batch.isUndoable && batch !== this._batch ) {
 				this._reset( true );
 			}
 		};
@@ -117,7 +117,7 @@ export default class ChangeBuffer {
 	 */
 	get batch() {
 		if ( !this._batch ) {
-			this._batch = this.model.createBatch();
+			this._batch = this.model.createBatch( { isTyping: true } );
 		}
 
 		return this._batch;

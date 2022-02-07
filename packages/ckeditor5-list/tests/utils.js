@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,7 +9,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import ListEditing from '../src/listediting';
-import ListStyleEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/listpropertiesediting';
 
 import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../src/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -271,7 +271,7 @@ describe( 'utils', () => {
 		let editor, model, document;
 
 		beforeEach( () => {
-			return VirtualTestEditor.create( { plugins: [ Paragraph, ListStyleEditing ] } )
+			return VirtualTestEditor.create( { plugins: [ Paragraph, ListPropertiesEditing ] } )
 				.then( newEditor => {
 					editor = newEditor;
 					model = editor.model;

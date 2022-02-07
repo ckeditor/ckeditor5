@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -188,7 +188,7 @@ describe( 'ReplaceCommand', () => {
 			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
 			// In real life scenario the above deletion would be a transparent batch from the remote user,
 			// and undo would also be triggered by the remote user.
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				editor.execute( 'replaceAll', 'aa', results );
 			} );
 

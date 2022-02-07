@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -327,9 +327,26 @@ describe( 'Model', () => {
 			} );
 		} );
 
-		it( 'should let you create transparent batch', () => {
-			model.enqueueChange( 'transparent', writer => {
-				expect( writer.batch.type ).to.equal( 'transparent' );
+		it( 'should let you create batch of given type', () => {
+			model.enqueueChange( { isUndoable: false, isLocal: false }, writer => {
+				expect( writer.batch.isUndoable ).to.be.false;
+				expect( writer.batch.isLocal ).to.be.false;
+			} );
+		} );
+
+		it( 'should create a batch with the default type if empty value is passed', () => {
+			model.enqueueChange( null, writer => {
+				expect( writer.batch.isUndoable ).to.be.true;
+				expect( writer.batch.isLocal ).to.be.true;
+				expect( writer.batch.isTyping ).to.be.false;
+				expect( writer.batch.isUndo ).to.be.false;
+			} );
+
+			model.enqueueChange( undefined, writer => {
+				expect( writer.batch.isUndoable ).to.be.true;
+				expect( writer.batch.isLocal ).to.be.true;
+				expect( writer.batch.isTyping ).to.be.false;
+				expect( writer.batch.isUndo ).to.be.false;
 			} );
 		} );
 
@@ -591,7 +608,7 @@ describe( 'Model', () => {
 		it( 'should return true if given element has text node containing spaces only', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
 				writer.insertText( '    ', pEmpty, 'end' );
 			} );
@@ -602,7 +619,7 @@ describe( 'Model', () => {
 		it( 'should false true if given element has text node containing spaces only (ignoreWhitespaces)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Model `setData()` method trims whitespaces so use writer here to insert whitespace only text.
 				writer.insertText( '    ', pEmpty, 'end' );
 			} );
@@ -669,7 +686,7 @@ describe( 'Model', () => {
 		it( 'should return false for empty element with marker (usingOperation=false, affectsData=false)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert marker.
 				const range = ModelRange._createIn( pEmpty );
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: false } );
@@ -684,7 +701,7 @@ describe( 'Model', () => {
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=false)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert marker.
 				const range = ModelRange._createIn( pEmpty );
 				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: false } );
@@ -699,7 +716,7 @@ describe( 'Model', () => {
 		it( 'should return false (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=false)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert empty text.
 				const text = writer.createText( '    ', { bold: true } );
 				writer.append( text, pEmpty );
@@ -716,7 +733,7 @@ describe( 'Model', () => {
 		it( 'should return true for empty text with marker (usingOperation=false, affectsData=false)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert empty text.
 				const text = writer.createText( '    ', { bold: true } );
 				writer.append( text, pEmpty );
@@ -734,7 +751,7 @@ describe( 'Model', () => {
 		it( 'should return false for empty element with marker (usingOperation=false, affectsData=true)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert marker.
 				const range = ModelRange._createIn( pEmpty );
 				writer.addMarker( 'comment1', { range, usingOperation: false, affectsData: true } );
@@ -749,7 +766,7 @@ describe( 'Model', () => {
 		it( 'should return false for empty element with marker (usingOperation=true, affectsData=true)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert marker.
 				const range = ModelRange._createIn( pEmpty );
 				writer.addMarker( 'comment1', { range, usingOperation: true, affectsData: true } );
@@ -764,7 +781,7 @@ describe( 'Model', () => {
 		it( 'should return true (ignoreWhitespaces) for empty text with marker (usingOperation=false, affectsData=true)', () => {
 			const pEmpty = root.getChild( 0 ).getChild( 0 );
 
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				// Insert empty text.
 				const text = writer.createText( '    ', { bold: true } );
 				writer.append( text, pEmpty );
@@ -861,13 +878,13 @@ describe( 'Model', () => {
 		it( 'should return instance of Batch', () => {
 			const batch = model.createBatch();
 			expect( batch ).to.be.instanceof( Batch );
-			expect( batch.type ).to.equal( 'default' );
 		} );
 
 		it( 'should allow to define type of Batch', () => {
-			const batch = model.createBatch( 'transparent' );
+			const batch = model.createBatch( { isUndo: true, isUndoable: true } );
 			expect( batch ).to.be.instanceof( Batch );
-			expect( batch.type ).to.equal( 'transparent' );
+			expect( batch.isUndo ).to.be.true;
+			expect( batch.isUndoable ).to.be.true;
 		} );
 	} );
 
