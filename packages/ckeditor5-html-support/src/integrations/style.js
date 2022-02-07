@@ -64,12 +64,6 @@ export default class StyleElementSupport extends Plugin {
 					return createObjectView( 'style', modelElement, writer );
 				}
 			} );
-			// conversion.for( 'editingDowncast' ).elementToElement( {
-			// 	model: 'htmlStyle',
-			// 	view: ( modelElement, { writer } ) => {
-			// 		return createObjectView( 'div', modelElement, writer );
-			// 	}
-			// } );
 
 			conversion.for( 'downcast' ).add( modelToViewBlockAttributeConverter( definition ) );
 
