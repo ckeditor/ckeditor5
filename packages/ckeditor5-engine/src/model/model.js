@@ -215,7 +215,7 @@ export default class Model {
 	 *
 	 * Second, it lets you define the {@link module:engine/model/batch~Batch} into which you want to add your changes.
 	 * By default, a new batch with the default {@link module:engine/model/batch~Batch#constructor batch type} is created.
-	 * In the sample above, `change` and `enqueueChange` blocks will use a different batch (and a different
+	 * In the sample above, the `change` and `enqueueChange` blocks will use a different batch (and a different
 	 * {@link module:engine/model/writer~Writer} instance since each of them operates on a separate batch).
 	 *
 	 *		model.enqueueChange( { isUndoable: false }, writer => {
