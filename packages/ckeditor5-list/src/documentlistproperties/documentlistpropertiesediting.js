@@ -9,6 +9,7 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import DocumentListEditing from '../documentlist/documentlistediting';
+import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
@@ -202,8 +203,8 @@ function createAttributeStrategies( enabledProperties ) {
 			defaultValue: 1,
 			viewConsumables: { attributes: 'start' },
 
-			addCommand( /* editor */ ) {
-				// editor.commands.add( 'listStart', new ListStartCommand( editor ) );
+			addCommand( editor ) {
+				editor.commands.add( 'listStart', new DocumentListStartCommand( editor ) );
 			},
 
 			appliesToListItem( item ) {

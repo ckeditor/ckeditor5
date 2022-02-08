@@ -440,6 +440,36 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should not forward `style` to different list', () => {
+		expect( modelList( [
+			'* foo {style:xyz}',
+			'# bar'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStyle="xyz" listType="bulleted">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="numbered">bar</paragraph>'
+		);
+	} );
+
+	it( 'should not forward `start` to different list', () => {
+		expect( modelList( [
+			'# foo {start:7}',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listStart="7" listType="numbered">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should not forward `reversed` to different list', () => {
+		expect( modelList( [
+			'# foo {reversed:true}',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listReversed="true" listType="numbered">foo</paragraph>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
 	it( 'should parse string to lines', () => {
 		expect( modelList( `
 			* foo
