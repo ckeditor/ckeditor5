@@ -54,27 +54,30 @@ export default class DocumentListStyleCommand extends Command {
 	 * @protected
 	 */
 	execute( options = {} ) {
-		this._tryToConvertItemsToList( options );
-
 		const model = this.editor.model;
 		const document = model.document;
-		let blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => block.hasAttribute( 'listStyle' ) );
-
-		if ( !blocks.length ) {
-			return;
-		}
-
-		if ( document.selection.isCollapsed ) {
-			blocks = getListItems( blocks[ 0 ] );
-		} else {
-			blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
-		}
 
 		model.change( writer => {
-			for ( const block of blocks ) {
-				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
-			}
+			this._tryToConvertItemsToList( options );
+
+			model.enqueueChange( writer.batch, writer => {
+				let blocks = Array.from( document.selection.getSelectedBlocks() )
+					.filter( block => block.hasAttribute( 'listStyle' ) );
+
+				if ( !blocks.length ) {
+					return;
+				}
+
+				if ( document.selection.isCollapsed ) {
+					blocks = getListItems( blocks[ 0 ] );
+				} else {
+					blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
+				}
+
+				for ( const block of blocks ) {
+					writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
+				}
+			} );
 		} );
 	}
 

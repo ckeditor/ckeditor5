@@ -447,15 +447,11 @@ describe( 'DocumentListStyleCommand', () => {
 				Foo.[]
 			` ) );
 
-			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
-
 			listStyleCommand.execute( { type: 'default' } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
 				Foo.[]
 			` ) );
-
-			expect( modelChangeStub.called ).to.equal( false );
 		} );
 
 		it( 'should not update anything if no listItem found in the selection (style no specified)', () => {
@@ -463,15 +459,11 @@ describe( 'DocumentListStyleCommand', () => {
 				Foo.[]
 			` ) );
 
-			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
-
 			listStyleCommand.execute();
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
 				Foo.[]
 			` ) );
-
-			expect( modelChangeStub.called ).to.equal( false );
 		} );
 	} );
 } );
