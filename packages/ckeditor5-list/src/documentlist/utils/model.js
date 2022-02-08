@@ -97,16 +97,18 @@ export function getNestedListBlocks( listItem ) {
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItems( listItem ) {
+	const listAddidionalProperties = [ 'listReversed', 'listStart', 'listStyle' ];
+
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameItemType: true,
-		sameProperties: true
+		sameAttributes: listAddidionalProperties
 	} );
 
 	const forwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
 		sameItemType: true,
-		sameProperties: true,
+		sameAttributes: listAddidionalProperties,
 		includeSelf: true,
 		direction: 'forward'
 	} );

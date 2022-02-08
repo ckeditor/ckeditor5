@@ -23,8 +23,7 @@ export default class ListWalker {
 	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
 	 * as the start element.
 	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks wit the same `listType` attribute.
-	 * @param {Bollean} [options.sameProperties=false] Whether should return only blocks with the same `listStyle`,
-	 * `listReversed` and `listStart` attributes.
+	 * @param {Array.<String>} [options.sameAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -66,28 +65,16 @@ export default class ListWalker {
 		this._startItemType = startElement.getAttribute( 'listType' );
 
 		/**
-		 * The `listStyle` of the start block.
+		 * Additional attributes of the start block.
 		 *
 		 * @private
-		 * @type {String|undefined}
+		 * @type {Map}
 		 */
-		this._startItemStyle = startElement.getAttribute( 'listStyle' );
+		this._startAttributes = new Map();
 
-		/**
-		 * The `listReversed` of the start block.
-		 *
-		 * @private
-		 * @type {Boolean|undefined}
-		 */
-		this._startItemIsReversed = startElement.getAttribute( 'listReversed' );
-
-		/**
-		 * The `listStart` of the start block.
-		 *
-		 * @private
-		 * @type {Number|undefined}
-		 */
-		this._startItemStartIndex = startElement.getAttribute( 'listStart' );
+		for ( const attr of ( options.sameAttributes || [] ) ) {
+			this._startAttributes.set( attr, startElement.getAttribute( attr ) );
+		}
 
 		/**
 		 * The iterating direction.
@@ -122,11 +109,12 @@ export default class ListWalker {
 		this._sameItemType = !!options.sameItemType;
 
 		/**
-		 * Whether should return only blocks with the same `listStyle`, `listReversed` and `listStart` attributes.
+		 * Additional attributes that must be the same for each block.
+		 *
 		 * @private
-		 * @type {Boolean}
+		 * @type {Array.<String>}
 		 */
-		this._sameProperties = !!options.sameProperties;
+		this._sameAttributes = options.sameAttributes || [];
 
 		/**
 		 * Whether blocks with the same indent level as the start block should be included in the result.
@@ -163,8 +151,7 @@ export default class ListWalker {
 	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
 	 * as the start element.
 	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks with the same `listType` attribute.
-	 * @param {Bollean} [options.sameProperties=false] Whether should return only blocks with the same `listStyle`,
-	 * `listReversed` and `listStart` attributes.
+	 * @param {Array.<String>} [options.sameAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -243,12 +230,8 @@ export default class ListWalker {
 					break;
 				}
 
-				// Abort if item has different `listStyle`, `listStart` or `listReversed` properties.
-				if ( this._sameProperties && (
-					node.getAttribute( 'listStyle' ) != this._startItemStyle ||
-					node.getAttribute( 'listStart' ) != this._startItemStartIndex ||
-					node.getAttribute( 'listReversed' ) != this._startItemIsReversed
-				) ) {
+				// Abort if item has any additionaly specified attribute different.
+				if ( this._sameAttributes.some( attr => node.getAttribute( attr ) != this._startAttributes.get( attr ) ) ) {
 					break;
 				}
 			}

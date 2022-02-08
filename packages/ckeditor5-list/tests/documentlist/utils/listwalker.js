@@ -184,10 +184,10 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
 		} );
 
-		it( 'should return items of the same style', () => {
+		it( 'should return items of the same additional attributes (single specified)', () => {
 			const input = modelList( [
 				'* 0 {style:abc}',
-				'* 1',
+				'* 1 {start:5}',
 				'* 2 {style:xyz}'
 			] );
 
@@ -196,7 +196,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				direction: 'forward',
 				sameIndent: true,
 				includeSelf: true,
-				sameProperties: true
+				sameAttributes: [ 'listStyle' ]
 			} );
 			const blocks = Array.from( walker );
 
@@ -205,11 +205,12 @@ describe( 'DocumentList - utils - ListWalker', () => {
 			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
 		} );
 
-		it( 'should return items of the same start index', () => {
+		it( 'should return items of the same additional attributes (multiple specified)', () => {
 			const input = modelList( [
-				'* 0 {start:5}',
-				'* 1',
-				'* 2 {start:6}'
+				'* 0 {style:abc}',
+				'* 1 {start:5}',
+				'* 2 {reversed:true}',
+				'* 3 {style:xyz}'
 			] );
 
 			const fragment = parseModel( input, schema );
@@ -217,28 +218,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				direction: 'forward',
 				sameIndent: true,
 				includeSelf: true,
-				sameProperties: true
-			} );
-			const blocks = Array.from( walker );
-
-			expect( blocks.length ).to.equal( 2 );
-			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
-			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
-		} );
-
-		it( 'should return items of the same reversal status', () => {
-			const input = modelList( [
-				'* 0 {reversed:true}',
-				'* 1',
-				'* 2 {reversed:false}'
-			] );
-
-			const fragment = parseModel( input, schema );
-			const walker = new ListWalker( fragment.getChild( 0 ), {
-				direction: 'forward',
-				sameIndent: true,
-				includeSelf: true,
-				sameProperties: true
+				sameAttributes: [ 'listStyle', 'listReversed' ]
 			} );
 			const blocks = Array.from( walker );
 
