@@ -940,7 +940,11 @@ describe( 'DomConverter', () => {
 				.callsFake( () => {} );
 
 			console.warn
-				.withArgs( sinon.match( /^domconverter-unsafe-element-detected/ ) )
+				.withArgs( sinon.match( /^domconverter-unsafe-script-element-detected/ ) )
+				.callsFake( () => {} );
+
+			console.warn
+				.withArgs( sinon.match( /^domconverter-unsafe-style-element-detected/ ) )
 				.callsFake( () => {} );
 
 			console.warn.callThrough();
@@ -986,6 +990,29 @@ describe( 'DomConverter', () => {
 
 			expect( domElement.outerHTML ).to.equal(
 				'<p>foo<span data-ck-unsafe-element="script" style="foo-style" data-foo="bar">bar</span></p>'
+			);
+		} );
+
+		it( 'should skip removing the (replacement) attribute representing the unsafe <style> tag', () => {
+			const domElement = document.createElement( 'p' );
+			const html = 'foo<style class="foo-class" style="foo-style" data-foo="bar">bar</style>';
+
+			converter.setContentOf( domElement, html );
+
+			expect( domElement.outerHTML ).to.equal(
+				'<p>foo<span data-ck-unsafe-element="style" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+			);
+
+			converter.removeDomElementAttribute( domElement.lastChild, 'data-ck-unsafe-element' );
+
+			expect( domElement.outerHTML ).to.equal(
+				'<p>foo<span data-ck-unsafe-element="style" class="foo-class" style="foo-style" data-foo="bar">bar</span></p>'
+			);
+
+			converter.removeDomElementAttribute( domElement.lastChild, 'class' );
+
+			expect( domElement.outerHTML ).to.equal(
+				'<p>foo<span data-ck-unsafe-element="style" style="foo-style" data-foo="bar">bar</span></p>'
 			);
 		} );
 	} );
