@@ -72,7 +72,7 @@ describe( 'Widget - Events', () => {
 
 		function defineSchema( editor ) {
 			editor.model.schema.register( 'simpleWidgetElement', {
-				inheritAllFrom: '$block',
+				allowIn: '$root',
 				isObject: true
 			} );
 		}
