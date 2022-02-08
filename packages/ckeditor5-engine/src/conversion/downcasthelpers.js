@@ -1729,6 +1729,16 @@ function downcastElementToStructure( config ) {
 			 *			}
 			 *		} );
 			 *
+			 * In such case, {@link module:engine/conversion/conversion~Conversion#elementToElement `elementToElement()`} helper
+			 * can be used instead to get around this problem:
+			 *
+			 *		editor.conversion.for( 'downcast' ).elementToElement( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
 			 * @error conversion-element-to-structure-disallowed-text
 			 * @param {String} elementName The name of the element the structure is to be created for.
 			 */
