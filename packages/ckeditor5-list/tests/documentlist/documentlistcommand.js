@@ -7,6 +7,7 @@ import DocumentListCommand from '../../src/documentlist/documentlistcommand';
 import stubUid from './_utils/uid';
 import { modelList } from './_utils/utils';
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 
@@ -18,8 +19,23 @@ describe( 'DocumentListCommand', () => {
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		editor = new Editor();
+	class DocumentListEditingMock extends Plugin {
+		static get pluginName() {
+			return 'DocumentListEditing';
+		}
+
+		getSameListDefiningAttributes() {
+			return [ 'listType' ];
+		}
+	}
+
+	beforeEach( async () => {
+		editor = new Editor( {
+			plugins: [ DocumentListEditingMock ]
+		} );
+
+		await editor.initPlugins();
+
 		editor.model = new Model();
 
 		model = editor.model;

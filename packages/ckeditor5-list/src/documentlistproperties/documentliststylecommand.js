@@ -60,24 +60,24 @@ export default class DocumentListStyleCommand extends Command {
 		model.change( writer => {
 			this._tryToConvertItemsToList( options );
 
-			model.enqueueChange( writer.batch, writer => {
-				let blocks = Array.from( document.selection.getSelectedBlocks() )
-					.filter( block => block.hasAttribute( 'listStyle' ) );
+			let blocks = Array.from( document.selection.getSelectedBlocks() )
+				.filter( block => block.hasAttribute( 'listType' ) );
 
-				if ( !blocks.length ) {
-					return;
-				}
+			if ( !blocks.length ) {
+				return;
+			}
 
-				if ( document.selection.isCollapsed ) {
-					blocks = getListItems( blocks[ 0 ] );
-				} else {
-					blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
-				}
+			if ( document.selection.isCollapsed ) {
+				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
 
-				for ( const block of blocks ) {
-					writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
-				}
-			} );
+				blocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
+			} else {
+				blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
+			}
+
+			for ( const block of blocks ) {
+				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
+			}
 		} );
 	}
 

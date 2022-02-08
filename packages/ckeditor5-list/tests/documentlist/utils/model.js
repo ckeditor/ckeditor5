@@ -468,7 +468,7 @@ describe( 'DocumentList - utils - model', () => {
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem, [ 'listType' ] ) ).to.deep.equal( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )
@@ -487,7 +487,7 @@ describe( 'DocumentList - utils - model', () => {
 			const fragment = parseModel( input, schema );
 			const listItem = fragment.getChild( 2 );
 
-			expect( getListItems( listItem ) ).to.deep.equal( [
+			expect( getListItems( listItem, [ 'listType', 'listReversed', 'listStart' ] ) ).to.deep.equal( [
 				fragment.getChild( 1 ),
 				fragment.getChild( 2 ),
 				fragment.getChild( 3 )

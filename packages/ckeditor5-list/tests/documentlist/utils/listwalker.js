@@ -154,7 +154,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				direction: 'forward',
 				sameIndent: true,
 				includeSelf: true,
-				sameItemId: true
+				sameListAttributes: 'listItemId'
 			} );
 			const blocks = Array.from( walker );
 
@@ -175,7 +175,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				direction: 'forward',
 				sameIndent: true,
 				includeSelf: true,
-				sameItemType: true
+				sameListAttributes: [ 'listType' ]
 			} );
 			const blocks = Array.from( walker );
 
@@ -196,7 +196,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				direction: 'forward',
 				sameIndent: true,
 				includeSelf: true,
-				sameAttributes: [ 'listStyle' ]
+				sameListAttributes: [ 'listStyle' ]
 			} );
 			const blocks = Array.from( walker );
 
@@ -218,7 +218,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				direction: 'forward',
 				sameIndent: true,
 				includeSelf: true,
-				sameAttributes: [ 'listStyle', 'listReversed' ]
+				sameListAttributes: [ 'listStyle', 'listReversed' ]
 			} );
 			const blocks = Array.from( walker );
 
@@ -311,7 +311,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				sameIndent: true,
 				higherIndent: true,
 				includeSelf: true,
-				sameItemId: true
+				sameListAttributes: 'listItemId'
 			} );
 			const blocks = Array.from( walker );
 
@@ -338,7 +338,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				sameIndent: true,
 				higherIndent: true,
 				includeSelf: true,
-				sameItemId: true
+				sameListAttributes: 'listItemId'
 			} );
 			const blocks = Array.from( walker );
 
@@ -365,7 +365,7 @@ describe( 'DocumentList - utils - ListWalker', () => {
 				sameIndent: true,
 				higherIndent: true,
 				includeSelf: true,
-				sameItemId: true
+				sameListAttributes: 'listItemId'
 			} );
 			const blocks = Array.from( walker );
 

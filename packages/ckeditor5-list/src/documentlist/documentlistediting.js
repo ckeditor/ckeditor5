@@ -64,6 +64,14 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @type {Array.<String>}
+		 */
+		this._sameListDefiningAttributes = [ 'listType' ];
+
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -121,6 +129,24 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
+	 * TODO
+	 *
+	 * @param {String} attributeName
+	 */
+	registerSameListDefiningAttributes( attributeName ) {
+		this._sameListDefiningAttributes.push( attributeName );
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @returns {Array.<String>}
+	 */
+	getSameListDefiningAttributes() {
+		return this._sameListDefiningAttributes;
+	}
+
+	/**
 	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
 	 * keys in and around document lists.
 	 *
@@ -148,7 +174,10 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
-					const previousBlock = ListWalker.first( positionParent, { sameIndent: true, sameItemType: true } );
+					const previousBlock = ListWalker.first( positionParent, {
+						sameListAttributes: this.getSameListDefiningAttributes(),
+						sameIndent: true
+					} );
 
 					// Outdent the first block of a first list item.
 					if ( !previousBlock && positionParent.getAttribute( 'listIndent' ) === 0 ) {
