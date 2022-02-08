@@ -21,7 +21,6 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
-import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Downcast conversion helper functions.
@@ -1042,9 +1041,6 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 			return;
 		}
 
-		// Check if only one element has been created.
-		validateChildren( viewElement );
-
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		consumer( data.item, conversionApi.consumable );
 
@@ -1703,6 +1699,48 @@ function downcastElementToStructure( config ) {
 	config.model.children = true;
 
 	return dispatcher => {
+		if ( dispatcher._conversionApi.schema.checkChild( config.model.name, '$text' ) ) {
+			/**
+			 * This error occurs when a {@link module:engine/model/element~Element model element} is downcasted
+			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
+			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
+			 *
+			 * For instance, this may be the result of `myElement` allowing the content of
+			 * {@glink framework/guides/deep-dive/schema#generic-items `$block`} in its schema definition:
+			 *
+			 *		// Element definition in schema.
+			 *		schema.register( 'myElement', {
+			 *			allowContentOf: '$block',
+			 *
+			 *			// ...
+			 *		} );
+			 *
+			 *		// ...
+			 *
+			 *		// Conversion of myElement with the use of elementToStructure().
+			 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * In such case, {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} helper
+			 * can be used instead to get around this problem:
+			 *
+			 *		editor.conversion.for( 'downcast' ).elementToElement( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * @error conversion-element-to-structure-disallowed-text
+			 * @param {String} elementName The name of the element the structure is to be created for.
+			 */
+			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: config.model.name } );
+		}
+
 		dispatcher.on(
 			'insert:' + config.model.name,
 			insertStructure( config.view, createConsumer( config.model ) ),
@@ -2119,31 +2157,6 @@ function createConsumer( model ) {
 
 		return true;
 	};
-}
-
-// Check if given element children list contains only UI elements and warns otherwise.
-//
-// @param {module:engine/view/element~Element} viewElement.
-function validateChildren( viewElement ) {
-	const children = Array.from( viewElement.getChildren() );
-	const hasNonUiChildren = children.some( element => !element.is( 'uiElement' ) );
-
-	if ( hasNonUiChildren ) {
-		/**
-		 * Only one container element without any children elements other than
-		 * {@link module:engine/view/uielement~UIElement `UIElement`}s should be created in
-		 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} function.
-		 *
-		 * Please make sure you don't create more than one element in
-		 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and if you need
-		 * to create multiple elements use {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure}
-		 * instead.
-		 *
-		 * @error conversion-element-to-element-created-multiple-elements
-		 * @param {module:engine/model/element~Element} viewElement
-		 */
-		logWarning( 'conversion-element-to-element-created-multiple-elements', { viewElement } );
-	}
 }
 
 // Creates a function that create view slots.

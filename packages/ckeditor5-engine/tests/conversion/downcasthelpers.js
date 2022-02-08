@@ -808,7 +808,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		describe( 'with multiple child elements', () => {
-			it( 'warns if multiple child elements are created', () => {
+			it( 'does not warn if multiple child elements are created', () => {
 				let viewElement;
 
 				testUtils.sinon.stub( console, 'warn' );
@@ -828,12 +828,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
 				} );
 
-				sinon.assert.calledOnce( console.warn );
-				sinon.assert.calledWithExactly( console.warn,
-					sinon.match( /^conversion-element-to-element-created-multiple-elements/ ),
-					{ viewElement },
-					sinon.match.string // Link to the documentation
-				);
+				sinon.assert.notCalled( console.warn );
 			} );
 
 			it( 'does not warn if multiple child UI elements are created', () => {
@@ -2300,6 +2295,25 @@ describe( 'DowncastHelpers', () => {
 					writer.insert( complex, modelRoot, 0 );
 				} );
 			}, /^conversion-slot-filter-incomplete/, controller.downcastDispatcher );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11163
+		it( 'should throw an exception when invoked for a model element that allows $text', () => {
+			model.schema.register( 'myElement', {
+				allowIn: '$root',
+
+				// This makes it accept $text.
+				allowContentOf: '$block'
+			} );
+
+			expectToThrowCKEditorError( () => {
+				downcastHelpers.elementToStructure( {
+					model: 'myElement',
+					view: ( modelElement, { writer } ) => {
+						return writer.createContainerElement( 'div' );
+					}
+				} );
+			}, /^conversion-element-to-structure-disallowed-text/, controller.downcastDispatcher, { elementName: 'myElement' } );
 		} );
 	} );
 
