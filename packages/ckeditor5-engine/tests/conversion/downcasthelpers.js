@@ -808,7 +808,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		describe( 'with multiple child elements', () => {
-			it( 'warns if multiple child elements are created', () => {
+			it( 'does not warn if multiple child elements are created', () => {
 				let viewElement;
 
 				testUtils.sinon.stub( console, 'warn' );
@@ -828,12 +828,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
 				} );
 
-				sinon.assert.calledOnce( console.warn );
-				sinon.assert.calledWithExactly( console.warn,
-					sinon.match( /^conversion-element-to-element-created-multiple-elements/ ),
-					{ viewElement },
-					sinon.match.string // Link to the documentation
-				);
+				sinon.assert.notCalled( console.warn );
 			} );
 
 			it( 'does not warn if multiple child UI elements are created', () => {
