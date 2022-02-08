@@ -1636,7 +1636,9 @@ function hasBlockParent( domNode, blockElements ) {
 function _logUnsafeElement( elementName ) {
 	if ( elementName === 'script' ) {
 		logWarning( 'domconverter-unsafe-script-element-detected' );
-	} else if ( elementName === 'style' ) {
+	}
+
+	if ( elementName === 'style' ) {
 		logWarning( 'domconverter-unsafe-style-element-detected' );
 	}
 }

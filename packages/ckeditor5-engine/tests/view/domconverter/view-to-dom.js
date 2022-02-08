@@ -324,8 +324,53 @@ describe( 'DomConverter', () => {
 
 				sinon.assert.calledOnce( warnStub );
 				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^domconverter-unsafe-element-detected/ ),
-					sinon.match.has( 'unsafeElement', sinon.match.has( 'name', 'script' ) ),
+					sinon.match( /^domconverter-unsafe-script-element-detected/ ),
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
+			it( 'should replace style with span and add special data attribute', () => {
+				const viewScript = new ViewElement( viewDocument, 'style' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
+
+				viewP._appendChild( viewScript );
+				viewP._appendChild( viewText );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				const domP = converter.viewToDom( viewP, document );
+
+				expect( domP ).to.be.an.instanceof( HTMLElement );
+				expect( domP.tagName ).to.equal( 'P' );
+				expect( domP.getAttribute( 'class' ) ).to.equal( 'foo' );
+				expect( domP.attributes.length ).to.equal( 1 );
+
+				expect( domP.childNodes.length ).to.equal( 2 );
+				expect( domP.childNodes[ 0 ].tagName ).to.equal( 'SPAN' );
+				expect( domP.childNodes[ 0 ].getAttribute( 'data-ck-unsafe-element' ) ).to.equal( 'style' );
+				expect( domP.childNodes[ 1 ].data ).to.equal( 'foo' );
+			} );
+
+			it( 'should warn when an unsafe style was filtered out', () => {
+				const viewStyle = new ViewElement( viewDocument, 'style' );
+				const viewText = new ViewText( viewDocument, 'foo' );
+				const viewP = new ViewElement( viewDocument, 'p', { class: 'foo' } );
+
+				viewP._appendChild( viewStyle );
+				viewP._appendChild( viewText );
+
+				converter = new DomConverter( viewDocument, {
+					renderingMode: 'editing'
+				} );
+
+				converter.viewToDom( viewP, document );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-style-element-detected/ ),
 					sinon.match.string // Link to the documentation
 				);
 			} );

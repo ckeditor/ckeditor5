@@ -603,6 +603,16 @@ describe( 'DomConverter', () => {
 
 				expect( element.innerHTML ).to.equal( '<div>foo<script onclick="foo">bar</script></div>' );
 			} );
+
+			it( 'should keep style element', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<style nonce="foo">bar</style></div>';
+
+				converter.renderingMode = 'data';
+				converter.setContentOf( element, html );
+
+				expect( element.innerHTML ).to.equal( '<div>foo<style nonce="foo">bar</style></div>' );
+			} );
 		} );
 
 		describe( 'editing pipeline', () => {
@@ -736,7 +746,7 @@ describe( 'DomConverter', () => {
 				);
 			} );
 
-			it( 'should warn when an unsafe element was detected and renamed', () => {
+			it( 'should warn when an unsafe script element was detected and renamed', () => {
 				const element = document.createElement( 'p' );
 				const html = '<div>foo<script class="foo-class" style="foo-style" data-foo="bar">bar</script></div>';
 
@@ -744,8 +754,20 @@ describe( 'DomConverter', () => {
 
 				sinon.assert.calledOnce( warnStub );
 				sinon.assert.calledWithExactly( warnStub,
-					sinon.match( /^domconverter-unsafe-element-detected/ ),
-					sinon.match.has( 'unsafeElement', sinon.match.has( 'tagName', 'SCRIPT' ) ),
+					sinon.match( /^domconverter-unsafe-script-element-detected/ ),
+					sinon.match.string // Link to the documentation
+				);
+			} );
+
+			it( 'should warn when an unsafe style element was detected and renamed', () => {
+				const element = document.createElement( 'p' );
+				const html = '<div>foo<style class="foo-class" nonce="foo-nonce" data-foo="bar">bar</style></div>';
+
+				converter.setContentOf( element, html );
+
+				sinon.assert.calledOnce( warnStub );
+				sinon.assert.calledWithExactly( warnStub,
+					sinon.match( /^domconverter-unsafe-style-element-detected/ ),
 					sinon.match.string // Link to the documentation
 				);
 			} );
