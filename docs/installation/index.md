@@ -42,8 +42,11 @@ Find out more about the {@link installation/advanced/plugins plugin development}
 
 ## Related links
 
- * {@link examples/index Examples} &ndash; Try live demos of all available predefined builds.
- * {@link features/index Features} &ndash; Learn about some of the features included in CKEditor 5 builds.
+ * {@link installation/getting-started/migration-from-ckeditor-4 Migrating from CKEditor 4} &ndash; Learn how to switch from the previous version of our editor.
+ * {@link updating/index Updating CKEditor 5} &ndash; Find out how to keep you installation up-to-date at all times.
+ * {@link framework/guides/overview CKEditor 5 Framework} &ndash; Learn how to work with CKEditor 5 Framework, customize it, create your own plugins, custom editors, how to change the UI or even bring your own UI to the editor.
+ * {@link examples/index Examples} &ndash; Try live demos of available predefined builds and custom solutions.
+ * {@link features/index Features} &ndash; Learn more about the CKEditor 5 features.
 
 <script type="text/javascript">
 	const QUIZ_DEFAULT_HEADER = 'Installation method quiz';
