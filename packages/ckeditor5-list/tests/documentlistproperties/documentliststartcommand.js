@@ -3,29 +3,46 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
+
+import DocumentListStartCommand from '../../src/documentlistproperties/documentliststartcommand';
 import { modelList } from '../documentlist/_utils/utils';
 
-describe( 'DocumentListStyleCommand', () => {
+describe( 'DocumentListStartCommand', () => {
 	let editor, model, listStartCommand;
 
-	beforeEach( async () => {
-		const newEditor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, DocumentListPropertiesEditing ],
-			list: {
-				properties: { styles: false, startIndex: true, reversed: false }
-			}
-		} );
-		editor = newEditor;
-		model = editor.model;
-		listStartCommand = editor.commands.get( 'listStart' );
-	} );
+	class DocumentListEditingMock extends Plugin {
+		static get pluginName() {
+			return 'DocumentListEditing';
+		}
 
-	afterEach( () => {
-		return editor.destroy();
+		getSameListDefiningAttributes() {
+			return [ 'listType', 'listStart' ];
+		}
+	}
+
+	beforeEach( async () => {
+		editor = new Editor( {
+			plugins: [ DocumentListEditingMock ]
+		} );
+
+		await editor.initPlugins();
+
+		editor.model = new Model();
+
+		model = editor.model;
+		model.document.createRoot();
+
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
+		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+
+		listStartCommand = new DocumentListStartCommand( editor );
+
+		editor.commands.add( 'listStart', listStartCommand );
 	} );
 
 	describe( '#isEnabled', () => {

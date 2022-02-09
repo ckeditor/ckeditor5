@@ -29,9 +29,9 @@ export default class DocumentListStartCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
+	 * @fires execute
 	 * @param {Object} [options]
 	 * @param {Number} [options.startIndex=1] The list start index.
-	 * @protected
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
@@ -40,7 +40,9 @@ export default class DocumentListStartCommand extends Command {
 			.filter( block => block.hasAttribute( 'listStart' ) && block.getAttribute( 'listType' ) == 'numbered' );
 
 		if ( document.selection.isCollapsed ) {
-			blocks = getListItems( blocks[ 0 ] );
+			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+
+			blocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
 		} else {
 			blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
 		}
