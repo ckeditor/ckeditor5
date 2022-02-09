@@ -18,6 +18,7 @@ describe( 'DocumentListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
 
 	testUtils.createSinonSandbox();
+
 	class DocumentListEditingMock extends Plugin {
 		static get pluginName() {
 			return 'DocumentListEditing';
@@ -381,7 +382,7 @@ describe( 'DocumentListStyleCommand', () => {
 			expect( getData( model ) ).to.equalMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (circle, non-collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (circle, non-collapsed selection)', () => {
 			setData( model, modelList( `
 				[Foo.
 				Bar.]
@@ -410,7 +411,7 @@ describe( 'DocumentListStyleCommand', () => {
 			spy.restore();
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (square, collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (square, collapsed selection)', () => {
 			setData( model, modelList( `
 				Fo[]o.
 				Bar.
@@ -439,7 +440,7 @@ describe( 'DocumentListStyleCommand', () => {
 			spy.restore();
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
 			setData( model, modelList( `
 				[Foo.
 				Bar.]
@@ -468,7 +469,7 @@ describe( 'DocumentListStyleCommand', () => {
 			spy.restore();
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
 			setData( model, modelList( `
 				Fo[]o.
 				Bar.
