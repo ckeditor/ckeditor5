@@ -64,6 +64,14 @@ export default class DocumentListEditing extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		/**
+		 * The list of attributes that must be consistent among all items in the same list.
+		 *
+		 * @private
+		 * @type {Array.<String>}
+		 */
+		this._sameListDefiningAttributes = [ 'listType' ];
+
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -121,6 +129,25 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
+	 * Register attribute that must be that must be consistent among all items in the same list.
+	 * If list items have different values of registered attributes, they belong to different lists.
+	 *
+	 * @param {String} attributeName
+	 */
+	registerSameListDefiningAttributes( attributeName ) {
+		this._sameListDefiningAttributes.push( attributeName );
+	}
+
+	/**
+	 * Gets the list of attributes that must be consistent among all items in the same list.
+	 *
+	 * @returns {Array.<String>}
+	 */
+	getSameListDefiningAttributes() {
+		return this._sameListDefiningAttributes;
+	}
+
+	/**
 	 * Attaches the listener to the {@link module:engine/view/document~Document#event:delete} event and handles backspace/delete
 	 * keys in and around document lists.
 	 *
@@ -148,7 +175,10 @@ export default class DocumentListEditing extends Plugin {
 						return;
 					}
 
-					const previousBlock = ListWalker.first( positionParent, { sameIndent: true, sameItemType: true } );
+					const previousBlock = ListWalker.first( positionParent, {
+						sameListAttributes: this.getSameListDefiningAttributes(),
+						sameIndent: true
+					} );
 
 					// Outdent the first block of a first list item.
 					if ( !previousBlock && positionParent.getAttribute( 'listIndent' ) === 0 ) {

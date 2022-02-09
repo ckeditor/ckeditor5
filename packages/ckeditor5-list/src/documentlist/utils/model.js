@@ -69,7 +69,7 @@ export function getListItemBlocks( listItem, options = {} ) {
 		...options,
 		includeSelf: isForward,
 		sameIndent: true,
-		sameItemId: true
+		sameListAttributes: 'listItemId'
 	} ) );
 
 	return isForward ? items : items.reverse();
@@ -90,21 +90,22 @@ export function getNestedListBlocks( listItem ) {
 }
 
 /**
- * Returns array of all blocks/items of the same list as given block (same indent, same type).
+ * Returns array of all blocks/items of the same list as given block (same indent, same type and properties).
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
+ * @param {Array.<String>} sameListDefiningAttributes The list of attributes that must be consistent among all items in the same list.
  * @returns {Array.<module:engine/model/element~Element>}
  */
-export function getListItems( listItem ) {
+export function getListItems( listItem, sameListDefiningAttributes ) {
 	const backwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameItemType: true
+		sameListAttributes: sameListDefiningAttributes
 	} );
 
 	const forwardBlocks = new ListWalker( listItem, {
 		sameIndent: true,
-		sameItemType: true,
+		sameListAttributes: sameListDefiningAttributes,
 		includeSelf: true,
 		direction: 'forward'
 	} );
@@ -125,7 +126,7 @@ export function getListItems( listItem ) {
 export function isFirstBlockOfListItem( listBlock ) {
 	const previousSibling = ListWalker.first( listBlock, {
 		sameIndent: true,
-		sameItemId: true
+		sameListAttributes: 'listItemId'
 	} );
 
 	if ( !previousSibling ) {
@@ -146,7 +147,7 @@ export function isLastBlockOfListItem( listBlock ) {
 	const nextSibling = ListWalker.first( listBlock, {
 		direction: 'forward',
 		sameIndent: true,
-		sameItemId: true
+		sameListAttributes: 'listItemId'
 	} );
 
 	if ( !nextSibling ) {
