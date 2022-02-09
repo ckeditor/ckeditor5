@@ -22,6 +22,10 @@ The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. 
 
 {@snippet features/markdown}
 
+
+## Extending formatting support
+If you need a more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements and attributes, not yet supported by other CKEditor 5 plugins and extend the the formatting capabilities.
+
 ## Related features
 
 Some other ways to output the edited content include:
