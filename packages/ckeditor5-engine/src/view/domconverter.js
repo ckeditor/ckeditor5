@@ -1547,7 +1547,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		const name = elementName.toLocaleLowerCase();
+		const name = elementName.toLowerCase();
 
 		return this.renderingMode === 'editing' && UNSAFE_ELEMENTS.includes( name );
 	}
@@ -1662,15 +1662,13 @@ function _logUnsafeElement( elementName ) {
  * the `<script>` element was renamed to `<span data-ck-unsafe-element="script"></span>`.
  *
  * @error domconverter-unsafe-script-element-detected
- * that was renamed.
  */
 
 /**
- * The {@link module:engine/view/domconverter~DomConverter} detected a `<style>` element that may affect the editing experience.
- * To avoid this, the `<style>` element was renamed to `<span data-ck-unsafe-element="style"></span>`.
+ * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<style>` element that may affect
+ * the editing experience. To avoid this, the `<style>` element was replaced with `<span data-ck-unsafe-element="style"></span>`.
  *
  * @error domconverter-unsafe-style-element-detected
- * that was renamed.
  */
 
 /**

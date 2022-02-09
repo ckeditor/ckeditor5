@@ -13,7 +13,6 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 
 describe( 'StyleElementSupport', () => {
 	const STYLE = 'div { color: red; }';
-	const CODE_CPP = 'cout << "Hello World" << endl;';
 
 	let editor, model, editorElement, dataFilter, warnStub;
 
@@ -52,10 +51,10 @@ describe( 'StyleElementSupport', () => {
 	it( 'should allow attributes', () => {
 		dataFilter.allowAttributes( { name: 'style', attributes: [ 'type', 'nonce' ] } );
 
-		editor.setData( `<p>Foo</p><style type="c++" nonce="qwerty">${ CODE_CPP }</style>` );
+		editor.setData( `<p>Foo</p><style type="c++" nonce="qwerty">${ STYLE }</style>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ CODE_CPP }"></htmlStyle>`,
+			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ STYLE }"></htmlStyle>`,
 			attributes: {
 				1: {
 					attributes: {
@@ -63,32 +62,32 @@ describe( 'StyleElementSupport', () => {
 						type: 'c++'
 					}
 				},
-				2: CODE_CPP
+				2: STYLE
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++" nonce="qwerty">${ CODE_CPP }</style>` );
+		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++" nonce="qwerty">${ STYLE }</style>` );
 	} );
 
 	it( 'should disallow attributes', () => {
 		dataFilter.allowAttributes( { name: 'style', attributes: true } );
 		dataFilter.disallowAttributes( { name: 'style', attributes: 'nonce' } );
 
-		editor.setData( `<p>Foo</p><style type="c++" nonce="qwerty">${ CODE_CPP }</style>` );
+		editor.setData( `<p>Foo</p><style type="c++" nonce="qwerty">${ STYLE }</style>` );
 
 		expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
-			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ CODE_CPP }"></htmlStyle>`,
+			data: `<paragraph>Foo</paragraph><htmlStyle htmlAttributes="(1)" htmlContent="${ STYLE }"></htmlStyle>`,
 			attributes: {
 				1: {
 					attributes: {
 						type: 'c++'
 					}
 				},
-				2: CODE_CPP
+				2: STYLE
 			}
 		} );
 
-		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++">${ CODE_CPP }</style>` );
+		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++">${ STYLE }</style>` );
 	} );
 
 	describe( 'element position', () => {
