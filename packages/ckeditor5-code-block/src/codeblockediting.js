@@ -121,7 +121,7 @@ export default class CodeBlockEditing extends Plugin {
 		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
 		// Disallow all attributes on $text inside `codeBlock`.
 		schema.addAttributeCheck( ( context, attributeName ) => {
-			if ( context.endsWith( 'codeBlock' ) && attributeName.startsWith( 'list' ) ) {
+			if ( context.endsWith( 'codeBlock' ) && attributeName.startsWith( 'list' ) && attributeName !== 'list' ) {
 				return true;
 			}
 
