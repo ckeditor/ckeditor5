@@ -5,7 +5,7 @@
 
 import Command from './command';
 
-import insertByPriority from '@ckeditor/ckeditor5-utils/src/insertByPriority';
+import insertByPriority from '@ckeditor/ckeditor5-utils/src/insertbypriority';
 
 /**
  * @module core/multicommand
