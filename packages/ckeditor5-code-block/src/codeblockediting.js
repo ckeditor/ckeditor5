@@ -115,12 +115,16 @@ export default class CodeBlockEditing extends Plugin {
 			allowWhere: '$block',
 			allowChildren: '$text',
 			isBlock: true,
-			allowAttributes: [ 'language' ],
-			allowAttributesOf: '$container'
+			allowAttributes: [ 'language' ]
 		} );
 
+		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
 		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( context => {
+		schema.addAttributeCheck( ( context, attributeName ) => {
+			if ( context.endsWith( 'codeBlock' ) && attributeName.startsWith( 'list' ) ) {
+				return true;
+			}
+
 			if ( context.endsWith( 'codeBlock $text' ) ) {
 				return false;
 			}
