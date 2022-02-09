@@ -94,7 +94,7 @@ export function getNestedListBlocks( listItem ) {
  *
  * @protected
  * @param {module:engine/model/element~Element} listItem Starting list item element.
- * @param {Array.<String>} sameListDefiningAttributes TODO
+ * @param {Array.<String>} sameListDefiningAttributes The list of attributes that must be consistent among all items in the same list.
  * @returns {Array.<module:engine/model/element~Element>}
  */
 export function getListItems( listItem, sameListDefiningAttributes ) {

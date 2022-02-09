@@ -388,6 +388,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'bulletedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'circle' } );
 
@@ -397,6 +404,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
@@ -409,6 +417,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'bulletedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'circle' } );
 
@@ -418,6 +433,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
@@ -430,6 +446,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'numberedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'decimal' } );
 
@@ -439,6 +462,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
@@ -451,6 +475,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'numberedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'upper-roman' } );
 
@@ -460,6 +491,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );

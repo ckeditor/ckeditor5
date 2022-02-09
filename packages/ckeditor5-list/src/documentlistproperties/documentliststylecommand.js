@@ -51,7 +51,6 @@ export default class DocumentListStyleCommand extends Command {
 	 * @param {Object} options
 	 * @param {String|null} [options.type] The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
-	 * @protected
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

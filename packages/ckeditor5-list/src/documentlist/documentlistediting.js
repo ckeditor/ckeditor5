@@ -65,7 +65,7 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	init() {
 		/**
-		 * TODO
+		 * The list of attributes that must be consistent among all items in the same list.
 		 *
 		 * @private
 		 * @type {Array.<String>}
@@ -129,7 +129,8 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Register attribute that must be that must be consistent among all items in the same list.
+	 * If list items have different values of registered attributes, they belong to different lists.
 	 *
 	 * @param {String} attributeName
 	 */
@@ -138,7 +139,7 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Gets the list of attributes that must be consistent among all items in the same list.
 	 *
 	 * @returns {Array.<String>}
 	 */

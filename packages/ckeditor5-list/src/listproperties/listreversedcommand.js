@@ -32,7 +32,6 @@ export default class ListReversedCommand extends Command {
 	 *
 	 * @param {Object} options
 	 * @param {Boolean} [options.reversed=false] Whether the list should be reversed.
-	 * @protected
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
