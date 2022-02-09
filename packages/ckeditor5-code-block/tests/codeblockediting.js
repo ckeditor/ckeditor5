@@ -184,7 +184,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should execute indentCodeBlock command on tab key', () => {
 			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
 			sinon.assert.calledWithExactly( editor.execute, 'indentCodeBlock' );
@@ -193,7 +193,7 @@ describe( 'CodeBlockEditing', () => {
 		} );
 
 		it( 'should execute outdentCodeBlock command on Shift+Tab keystroke', () => {
-			domEvtDataStub.keyCode += getCode( 'Shift' );
+			domEvtDataStub.shiftKey = true;
 
 			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
@@ -202,7 +202,7 @@ describe( 'CodeBlockEditing', () => {
 				writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
 			} );
 
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
 			sinon.assert.calledWithExactly( editor.execute, 'outdentCodeBlock' );
@@ -213,7 +213,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not indent if command is disabled', () => {
 			setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );

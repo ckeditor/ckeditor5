@@ -42,11 +42,6 @@ export default class TableKeyboard extends Plugin {
 		const view = this.editor.editing.view;
 		const viewDocument = view.document;
 
-		// Handle Tab key navigation.
-		// this.editor.keystrokes.set( 'Tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { priority: 'low' } );
-		// this.editor.keystrokes.set( 'Tab', this._handleTab( true ), { priority: 'low' } );
-		// this.editor.keystrokes.set( 'Shift+Tab', this._handleTab( false ), { priority: 'low' } );
-
 		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
 
 		this.listenTo( this.editor.editing.view.document, 'tab', ( eventInfo, domEventData ) => {

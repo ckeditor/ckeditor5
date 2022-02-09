@@ -113,6 +113,7 @@ export default class CodeBlockEditing extends Plugin {
 			if ( command.isEnabled ) {
 				editor.execute( commandName );
 
+				data.stopPropagation();
 				data.preventDefault();
 				evt.stop();
 			}
