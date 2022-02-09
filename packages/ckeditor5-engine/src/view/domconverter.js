@@ -35,6 +35,7 @@ const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
 const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
 const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
+const UNSAFE_ELEMENTS = [ 'script', 'style' ];
 
 /**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -323,7 +324,7 @@ export default class DomConverter {
 
 			// There are certain nodes, that should be renamed to <span> in editing pipeline.
 			if ( this._shouldRenameElement( elementName ) ) {
-				logWarning( 'domconverter-unsafe-element-detected', { unsafeElement: currentNode } );
+				_logUnsafeElement( elementName );
 
 				currentNode.replaceWith( this._createReplacementDomElement( elementName, currentNode ) );
 			}
@@ -384,7 +385,7 @@ export default class DomConverter {
 			} else {
 				// Create DOM element.
 				if ( this._shouldRenameElement( viewNode.name ) ) {
-					logWarning( 'domconverter-unsafe-element-detected', { unsafeElement: viewNode } );
+					_logUnsafeElement( viewNode.name );
 
 					domElement = this._createReplacementDomElement( viewNode.name );
 				} else if ( viewNode.hasAttribute( 'xmlns' ) ) {
@@ -1546,7 +1547,9 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.renderingMode == 'editing' && elementName.toLowerCase() == 'script';
+		const name = elementName.toLowerCase();
+
+		return this.renderingMode === 'editing' && UNSAFE_ELEMENTS.includes( name );
 	}
 
 	/**
@@ -1626,6 +1629,20 @@ function hasBlockParent( domNode, blockElements ) {
 	return parent && parent.tagName && blockElements.includes( parent.tagName.toLowerCase() );
 }
 
+// Log to console the information about element that was replaced.
+// Check UNSAFE_ELEMENTS for all recognized unsafe elements.
+//
+// @param {String} elementName The name of the view element
+function _logUnsafeElement( elementName ) {
+	if ( elementName === 'script' ) {
+		logWarning( 'domconverter-unsafe-script-element-detected' );
+	}
+
+	if ( elementName === 'style' ) {
+		logWarning( 'domconverter-unsafe-style-element-detected' );
+	}
+}
+
 /**
  * Enum representing the type of the block filler.
  *
@@ -1640,13 +1657,17 @@ function hasBlockParent( domNode, blockElements ) {
  */
 
 /**
- * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may disrupt the
- * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} of the editor. To avoid this,
- * the `<script>` element was renamed to `<span data-ck-unsafe-element="script"></span>`.
+ * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may
+ * disrupt the editing experience. To avoid this, the `<script>` element was replaced with `<span data-ck-unsafe-element="script"></span>`.
  *
- * @error domconverter-unsafe-element-detected
- * @param {module:engine/model/element~Element|HTMLElement} unsafeElement The editing view or DOM element
- * that was renamed.
+ * @error domconverter-unsafe-script-element-detected
+ */
+
+/**
+ * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<style>` element that may affect
+ * the editing experience. To avoid this, the `<style>` element was replaced with `<span data-ck-unsafe-element="style"></span>`.
+ *
+ * @error domconverter-unsafe-style-element-detected
  */
 
 /**
