@@ -13,6 +13,10 @@ Its main purpose is to visually distinguish parts of the content. Block indentat
 	Block indentation can be removed with the {@link features/remove-format remove format} feature.
 </info-box>
 
+<info-box info>
+	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+</info-box>
+
 ## Demo
 
 Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to control the level of indentation of the content, both for paragraph text, headers and list items.
@@ -125,6 +129,10 @@ The target behavior comes from two other plugins:
 This means that if you want to allow indenting lists only, you can do that by loading only the `Indent` and `List` plugins. If you want the full behavior, you need to load all 3 plugins (`Indent`, `IndentBlock` and `List`).
 
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
 
 To add this feature to your editor, install the [`@ckeditor/ckeditor5-indent`](https://www.npmjs.com/package/@ckeditor/ckeditor5-indent) package:
 
