@@ -21,7 +21,6 @@ describe( 'MultiCommand', () => {
 
 	afterEach( () => {
 		multiCommand.destroy();
-
 		return editor.destroy();
 	} );
 
@@ -142,8 +141,8 @@ describe( 'MultiCommand', () => {
 			const commandA = new Command( editor );
 			const commandB = new Command( editor );
 
-			multiCommand.registerChildCommand( commandB, 'high' );
-			multiCommand.registerChildCommand( commandA, 'low' );
+			multiCommand.registerChildCommand( commandB, { priority: 'high' } );
+			multiCommand.registerChildCommand( commandA, { priority: 'low' } );
 
 			const spyA = sinon.spy( commandA, 'execute' );
 			const spyB = sinon.spy( commandB, 'execute' );
@@ -161,8 +160,8 @@ describe( 'MultiCommand', () => {
 			const commandA = new Command( editor );
 			const commandB = new Command( editor );
 
-			multiCommand.registerChildCommand( commandA, 'low' );
-			multiCommand.registerChildCommand( commandB, 'high' );
+			multiCommand.registerChildCommand( commandA, { priority: 'low' } );
+			multiCommand.registerChildCommand( commandB, { priority: 'high' } );
 
 			const spyA = sinon.spy( commandA, 'execute' );
 			const spyB = sinon.spy( commandB, 'execute' );
@@ -181,9 +180,9 @@ describe( 'MultiCommand', () => {
 			const commandB = new Command( editor );
 			const commandC = new Command( editor );
 
-			multiCommand.registerChildCommand( commandA, 'normal' );
-			multiCommand.registerChildCommand( commandB, 'normal' );
-			multiCommand.registerChildCommand( commandC, 'normal' );
+			multiCommand.registerChildCommand( commandA, { priority: 'normal' } );
+			multiCommand.registerChildCommand( commandB, { priority: 'normal' } );
+			multiCommand.registerChildCommand( commandC, { priority: 'normal' } );
 
 			const spyA = sinon.spy( commandA, 'execute' );
 			const spyB = sinon.spy( commandB, 'execute' );
@@ -205,9 +204,9 @@ describe( 'MultiCommand', () => {
 			const commandB = new Command( editor );
 			const commandC = new Command( editor );
 
-			multiCommand.registerChildCommand( commandA, 'low' );
-			multiCommand.registerChildCommand( commandB, 'high' );
-			multiCommand.registerChildCommand( commandC, 'highest' );
+			multiCommand.registerChildCommand( commandA, { priority: 'low' } );
+			multiCommand.registerChildCommand( commandB, { priority: 'high' } );
+			multiCommand.registerChildCommand( commandC, { priority: 'highest' } );
 
 			const spyA = sinon.spy( commandA, 'execute' );
 			const spyB = sinon.spy( commandB, 'execute' );
