@@ -30,6 +30,7 @@ export default class ListReversedCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
+	 * @fires execute
 	 * @param {Object} options
 	 * @param {Boolean} [options.reversed=false] Whether the list should be reversed.
 	 */
