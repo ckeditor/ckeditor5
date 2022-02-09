@@ -180,15 +180,15 @@
 							"order": 100
 						},
 						{
-							"name": "Tutorials",
-							"id": "framework-tutorials",
-							"slug": "tutorials",
-							"order": 200
-						},
-						{
 							"name": "Developing custom plugins",
 							"id": "framework-plugins",
 							"slug": "plugins",
+							"order": 200
+						},
+						{
+							"name": "Advanced tutorials",
+							"id": "framework-tutorials",
+							"slug": "tutorials",
 							"order": 250
 						},
 						{
