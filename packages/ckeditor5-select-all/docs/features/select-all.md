@@ -7,6 +7,10 @@ category: features
 
 The {@link module:select-all/selectall~SelectAll} feature allows selecting the entire content of the WYSIWYG editor using the <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> keystroke or the toolbar button. It is mostly useful when you need to copy all the content to another document or want to clear the editor area easily.
 
+<info-box info>
+	This feature is enabled by default in all {@link builds/guides/overview predefined builds} as a keyboard shortcut. See the [installation](#installation) section for information on adding a toolbar button to your editor.
+</info-box>
+
 ## Demo
 
 Press <kbd>Ctrl</kbd>/<kbd>Cmd</kbd>+<kbd>A</kbd> or use the toolbar button {@icon @ckeditor/ckeditor5-select-all/theme/icons/select-all.svg Select all} to select the entire content of the editor.
@@ -33,7 +37,7 @@ To add this feature to your editor, install the [`@ckeditor/ckeditor5-select-all
 npm install --save @ckeditor/ckeditor5-select-all
 ```
 
-Then add the `SelectAll` plugin to your plugin list:
+Then add the `SelectAll` plugin to your plugin list and to the toolbar:
 
 ```js
 import SelectAll from '@ckeditor/ckeditor5-select-all/src/selectall';
@@ -49,6 +53,10 @@ ClassicEditor
 	.then( ... )
 	.catch( ... );
 ```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
 
 ## Common API
 
