@@ -3,33 +3,57 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
-import { modelList } from '../documentlist/_utils/utils';
+
+import DocumentListCommand from '../../src/documentlist/documentlistcommand';
+import DocumentListStyleCommand from '../../src/documentlistproperties/documentliststylecommand';
 import stubUid from '../documentlist/_utils/uid';
+import { modelList } from '../documentlist/_utils/utils';
 
 describe( 'DocumentListStyleCommand', () => {
-	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand, stub;
+	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
+
+	testUtils.createSinonSandbox();
+
+	class DocumentListEditingMock extends Plugin {
+		static get pluginName() {
+			return 'DocumentListEditing';
+		}
+
+		getSameListDefiningAttributes() {
+			return [ 'listType', 'listStyle' ];
+		}
+	}
 
 	beforeEach( async () => {
-		const newEditor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, DocumentListPropertiesEditing ]
+		editor = new Editor( {
+			plugins: [ DocumentListEditingMock ]
 		} );
-		editor = newEditor;
+
+		await editor.initPlugins();
+
+		editor.model = new Model();
+
 		model = editor.model;
-		bulletedListCommand = editor.commands.get( 'bulletedList' );
-		numberedListCommand = editor.commands.get( 'numberedList' );
-		listStyleCommand = editor.commands.get( 'listStyle' );
+		model.document.createRoot();
 
-		stub = stubUid();
-	} );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
+		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
-	afterEach( () => {
-		stub.restore();
+		bulletedListCommand = new DocumentListCommand( editor, 'bulleted' );
+		numberedListCommand = new DocumentListCommand( editor, 'numbered' );
+		listStyleCommand = new DocumentListStyleCommand( editor, 'default' );
 
-		return editor.destroy();
+		editor.commands.add( 'numberedList', numberedListCommand );
+		editor.commands.add( 'bulletedList', bulletedListCommand );
+		editor.commands.add( 'listStyle', bulletedListCommand );
+
+		stubUid();
 	} );
 
 	describe( '#isEnabled', () => {
@@ -358,7 +382,7 @@ describe( 'DocumentListStyleCommand', () => {
 			expect( getData( model ) ).to.equalMarkup( modelList( [ '* 1.[] {style:default}' ] ) );
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (circle, non-collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (circle, non-collapsed selection)', () => {
 			setData( model, modelList( `
 				[Foo.
 				Bar.]
@@ -366,6 +390,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'bulletedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'circle' } );
 
@@ -375,11 +406,12 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (square, collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (square, collapsed selection)', () => {
 			setData( model, modelList( `
 				Fo[]o.
 				Bar.
@@ -387,6 +419,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'bulletedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'circle' } );
 
@@ -396,11 +435,12 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (decimal, non-collapsed selection)', () => {
 			setData( model, modelList( `
 				[Foo.
 				Bar.]
@@ -408,6 +448,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'numberedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'decimal' } );
 
@@ -417,11 +464,12 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
 
-		it( 'should create a list list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
+		it( 'should create a list if no listItem found in the selection (upper-roman, collapsed selection)', () => {
 			setData( model, modelList( `
 				Fo[]o.
 				Bar.
@@ -429,6 +477,13 @@ describe( 'DocumentListStyleCommand', () => {
 
 			const listCommand = editor.commands.get( 'numberedList' );
 			const spy = sinon.spy( listCommand, 'execute' );
+			const createdBatches = new Set();
+
+			model.on( 'applyOperation', ( evt, args ) => {
+				const operation = args[ 0 ];
+
+				createdBatches.add( operation.batch );
+			} );
 
 			listStyleCommand.execute( { type: 'upper-roman' } );
 
@@ -438,6 +493,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 
 			expect( spy.called ).to.be.true;
+			expect( createdBatches.size ).to.equal( 1 );
 
 			spy.restore();
 		} );
@@ -447,15 +503,11 @@ describe( 'DocumentListStyleCommand', () => {
 				Foo.[]
 			` ) );
 
-			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
-
 			listStyleCommand.execute( { type: 'default' } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
 				Foo.[]
 			` ) );
-
-			expect( modelChangeStub.called ).to.equal( false );
 		} );
 
 		it( 'should not update anything if no listItem found in the selection (style no specified)', () => {
@@ -463,15 +515,11 @@ describe( 'DocumentListStyleCommand', () => {
 				Foo.[]
 			` ) );
 
-			const modelChangeStub = sinon.stub( model, 'change' ).named( 'model#change' );
-
 			listStyleCommand.execute();
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
 				Foo.[]
 			` ) );
-
-			expect( modelChangeStub.called ).to.equal( false );
 		} );
 	} );
 } );

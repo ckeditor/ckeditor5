@@ -60,6 +60,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const model = editor.model;
+		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
 		const enabledProperties = editor.config.get( 'list.properties' );
 		const strategies = createAttributeStrategies( enabledProperties );
@@ -70,6 +71,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
+			documentListEditing.registerSameListDefiningAttributes( strategy.attributeName );
 		}
 
 		// Set up conversion.
@@ -88,8 +90,6 @@ export default class DocumentListPropertiesEditing extends Plugin {
 				}
 			}
 		} );
-
-		const documentListEditing = editor.plugins.get( DocumentListEditing );
 
 		// Verify if the list view element (ul or ol) requires refreshing.
 		documentListEditing.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {

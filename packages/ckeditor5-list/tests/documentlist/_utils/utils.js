@@ -268,14 +268,11 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 					listItemId: String( idx ).padStart( 3, '0' )
 				};
 
-				content = content.replace( /\s*{(?:id:)([^}]+)}\s*/g, ( match, id ) => {
-					props.listItemId = id;
-
-					return '';
-				} );
-
-				content = content.replace( /\s*{(?:(style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
+				content = content.replace( /\s*{(?:(id|style|start|reversed):)([^}]+)}\s*/g, ( match, key, value ) => {
 					switch ( key ) {
+						case 'id':
+							props.listItemId = value;
+							break;
 						case 'style':
 							props.listStyle = value;
 							break;
@@ -334,7 +331,7 @@ export function stringifyList( fragmentOrElement ) {
 			if ( node.hasAttribute( 'listItemId' ) ) {
 				const marker = node.getAttribute( 'listType' ) == 'numbered' ? '#' : '*';
 				const indentSpaces = ( node.getAttribute( 'listIndent' ) + 1 ) * 2;
-				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameItemId: true } );
+				const isFollowing = !!ListWalker.first( node, { sameIndent: true, sameListAttributes: 'listItemId' } );
 
 				pad = isFollowing ? ' '.repeat( indentSpaces ) : marker.padStart( indentSpaces - 1 ) + ' ';
 			}

@@ -7,7 +7,7 @@
  * @module list/documentlist/utils/listwalker
  */
 
-import { first } from 'ckeditor5/src/utils';
+import { first, toArray } from 'ckeditor5/src/utils';
 
 /**
  * Document list blocks iterator.
@@ -20,11 +20,7 @@ export default class ListWalker {
 	 * @param {Object} options
 	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
-	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
-	 * as the start element.
-	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks wit the same `listType` attribute.
-	 * @param {Bollean} [options.sameProperties=false] Whether should return only blocks with the same `listStyle`,
-	 * `listReversed` and `listStart` attributes.
+	 * @param {Array.<String>} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -50,46 +46,6 @@ export default class ListWalker {
 		this._referenceIndent = startElement.getAttribute( 'listIndent' );
 
 		/**
-		 * The `listItemId` of the start block.
-		 *
-		 * @private
-		 * @type {String}
-		 */
-		this._startItemId = startElement.getAttribute( 'listItemId' );
-
-		/**
-		 * The `listType` of the start block.
-		 *
-		 * @private
-		 * @type {String}
-		 */
-		this._startItemType = startElement.getAttribute( 'listType' );
-
-		/**
-		 * The `listStyle` of the start block.
-		 *
-		 * @private
-		 * @type {String|undefined}
-		 */
-		this._startItemStyle = startElement.getAttribute( 'listStyle' );
-
-		/**
-		 * The `listReversed` of the start block.
-		 *
-		 * @private
-		 * @type {Boolean|undefined}
-		 */
-		this._startItemIsReversed = startElement.getAttribute( 'listReversed' );
-
-		/**
-		 * The `listStart` of the start block.
-		 *
-		 * @private
-		 * @type {Number|undefined}
-		 */
-		this._startItemStartIndex = startElement.getAttribute( 'listStart' );
-
-		/**
 		 * The iterating direction.
 		 *
 		 * @private
@@ -98,7 +54,7 @@ export default class ListWalker {
 		this._isForward = options.direction == 'forward';
 
 		/**
-		 * Whether should return only blocks with the same `listItemId` attribute as the start element.
+		 * Whether start block should be included in the result (if it's matching other criteria).
 		 *
 		 * @private
 		 * @type {Boolean}
@@ -106,27 +62,12 @@ export default class ListWalker {
 		this._includeSelf = !!options.includeSelf;
 
 		/**
-		 * Whether only blocks with the `listItemId` attribute same as the start element should be included.
+		 * Additional attributes that must be the same for each block.
 		 *
 		 * @private
-		 * @type {Boolean}
+		 * @type {Array.<String>}
 		 */
-		this._sameItemId = !!options.sameItemId;
-
-		/**
-		 * Whether should return only blocks wit the same `listType` attribute.
-		 *
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._sameItemType = !!options.sameItemType;
-
-		/**
-		 * Whether should return only blocks with the same `listStyle`, `listReversed` and `listStart` attributes.
-		 * @private
-		 * @type {Boolean}
-		 */
-		this._sameProperties = !!options.sameProperties;
+		this._sameListAttributes = toArray( options.sameListAttributes || [] );
 
 		/**
 		 * Whether blocks with the same indent level as the start block should be included in the result.
@@ -160,11 +101,7 @@ export default class ListWalker {
 	 * @param {Object} options
 	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
-	 * @param {Boolean} [options.sameItemId=false] Whether should return only blocks with the same `listItemId` attribute
-	 * as the start element.
-	 * @param {Boolean} [options.sameItemType=false] Whether should return only blocks with the same `listType` attribute.
-	 * @param {Bollean} [options.sameProperties=false] Whether should return only blocks with the same `listStyle`,
-	 * `listReversed` and `listStart` attributes.
+	 * @param {Array.<String>} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -233,22 +170,8 @@ export default class ListWalker {
 					continue;
 				}
 
-				// Abort if item has a different ID.
-				if ( this._sameItemId && node.getAttribute( 'listItemId' ) != this._startItemId ) {
-					break;
-				}
-
-				// Abort if item has a different type.
-				if ( this._sameItemType && node.getAttribute( 'listType' ) != this._startItemType ) {
-					break;
-				}
-
-				// Abort if item has different `listStyle`, `listStart` or `listReversed` properties.
-				if ( this._sameProperties && (
-					node.getAttribute( 'listStyle' ) != this._startItemStyle ||
-					node.getAttribute( 'listStart' ) != this._startItemStartIndex ||
-					node.getAttribute( 'listReversed' ) != this._startItemIsReversed
-				) ) {
+				// Abort if item has any additionally specified attribute different.
+				if ( this._sameListAttributes.some( attr => node.getAttribute( attr ) !== this._startElement.getAttribute( attr ) ) ) {
 					break;
 				}
 			}

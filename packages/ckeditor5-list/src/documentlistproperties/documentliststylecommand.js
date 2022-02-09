@@ -48,30 +48,33 @@ export default class DocumentListStyleCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
+	 * @fires execute
 	 * @param {Object} options
 	 * @param {String|null} [options.type] The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
-	 * @protected
 	 */
 	execute( options = {} ) {
-		this._tryToConvertItemsToList( options );
-
 		const model = this.editor.model;
 		const document = model.document;
-		let blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => block.hasAttribute( 'listStyle' ) );
-
-		if ( !blocks.length ) {
-			return;
-		}
-
-		if ( document.selection.isCollapsed ) {
-			blocks = getListItems( blocks[ 0 ] );
-		} else {
-			blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
-		}
 
 		model.change( writer => {
+			this._tryToConvertItemsToList( options );
+
+			let blocks = Array.from( document.selection.getSelectedBlocks() )
+				.filter( block => block.hasAttribute( 'listType' ) );
+
+			if ( !blocks.length ) {
+				return;
+			}
+
+			if ( document.selection.isCollapsed ) {
+				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+
+				blocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
+			} else {
+				blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
+			}
+
 			for ( const block of blocks ) {
 				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
 			}
@@ -112,9 +115,9 @@ export default class DocumentListStyleCommand extends Command {
 	/**
 	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
 	 *
+	 * @private
 	 * @param {Object} options
 	 * @param {String|null} [options.type] The type of the list style. If `null` is specified, the function does nothing.
-	 * @private
 	*/
 	_tryToConvertItemsToList( options ) {
 		if ( !options.type ) {

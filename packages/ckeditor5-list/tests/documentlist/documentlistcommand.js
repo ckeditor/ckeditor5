@@ -7,6 +7,7 @@ import DocumentListCommand from '../../src/documentlist/documentlistcommand';
 import stubUid from './_utils/uid';
 import { modelList } from './_utils/utils';
 
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 
@@ -14,12 +15,27 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DocumentListCommand', () => {
-	let editor, command, model, doc, root, changedBlocks, stub;
+	let editor, command, model, doc, root, changedBlocks;
 
 	testUtils.createSinonSandbox();
 
-	beforeEach( () => {
-		editor = new Editor();
+	class DocumentListEditingMock extends Plugin {
+		static get pluginName() {
+			return 'DocumentListEditing';
+		}
+
+		getSameListDefiningAttributes() {
+			return [ 'listType' ];
+		}
+	}
+
+	beforeEach( async () => {
+		editor = new Editor( {
+			plugins: [ DocumentListEditingMock ]
+		} );
+
+		await editor.initPlugins();
+
 		editor.model = new Model();
 
 		model = editor.model;
@@ -30,11 +46,7 @@ describe( 'DocumentListCommand', () => {
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
-		stub = stubUid();
-	} );
-
-	afterEach( () => {
-		stub.restore();
+		stubUid();
 	} );
 
 	describe( 'bulleted', () => {

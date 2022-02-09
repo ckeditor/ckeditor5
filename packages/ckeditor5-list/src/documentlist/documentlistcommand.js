@@ -100,7 +100,8 @@ export default class DocumentListCommand extends Command {
 			}
 			// Turning on the list items for a collapsed selection inside a list item.
 			else if ( document.selection.isCollapsed && blocks[ 0 ].hasAttribute( 'listType' ) ) {
-				const changedBlocks = getListItems( blocks[ 0 ] );
+				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+				const changedBlocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
 
 				for ( const block of changedBlocks ) {
 					writer.setAttribute( 'listType', this.type, block );

@@ -13,7 +13,7 @@ import { ListItemUid } from '../../../src/documentlist/utils/model';
 export default function stubUid( start = 0xa00 ) {
 	const seq = sequence( start );
 
-	return sinon.stub( ListItemUid, 'next' ).callsFake( () => seq.next().value );
+	sinon.stub( ListItemUid, 'next' ).callsFake( () => seq.next().value );
 }
 
 function* sequence( num ) {
