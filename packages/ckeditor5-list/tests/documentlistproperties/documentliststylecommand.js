@@ -4,32 +4,54 @@
  */
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import { modelList } from '../documentlist/_utils/utils';
 import stubUid from '../documentlist/_utils/uid';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import DocumentListCommand from '../../src/documentlist/documentlistcommand';
+import DocumentListStyleCommand from '../../src/documentlistproperties/documentliststylecommand';
+import { Plugin } from '@ckeditor/ckeditor5-core';
 
 describe( 'DocumentListStyleCommand', () => {
-	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand, stub;
+	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
+
+	testUtils.createSinonSandbox();
+	class DocumentListEditingMock extends Plugin {
+		static get pluginName() {
+			return 'DocumentListEditing';
+		}
+
+		getSameListDefiningAttributes() {
+			return [ 'listType', 'listStyle' ];
+		}
+	}
 
 	beforeEach( async () => {
-		const newEditor = await VirtualTestEditor.create( {
-			plugins: [ Paragraph, DocumentListPropertiesEditing ]
+		editor = new Editor( {
+			plugins: [ DocumentListEditingMock ]
 		} );
-		editor = newEditor;
+
+		await editor.initPlugins();
+
+		editor.model = new Model();
+
 		model = editor.model;
-		bulletedListCommand = editor.commands.get( 'bulletedList' );
-		numberedListCommand = editor.commands.get( 'numberedList' );
-		listStyleCommand = editor.commands.get( 'listStyle' );
+		model.document.createRoot();
 
-		stub = stubUid();
-	} );
+		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
+		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 
-	afterEach( () => {
-		stub.restore();
+		bulletedListCommand = new DocumentListCommand( editor, 'bulleted' );
+		numberedListCommand = new DocumentListCommand( editor, 'numbered' );
+		listStyleCommand = new DocumentListStyleCommand( editor, 'default' );
 
-		return editor.destroy();
+		editor.commands.add( 'numberedList', numberedListCommand );
+		editor.commands.add( 'bulletedList', bulletedListCommand );
+		editor.commands.add( 'listStyle', bulletedListCommand );
+
+		stubUid();
 	} );
 
 	describe( '#isEnabled', () => {
