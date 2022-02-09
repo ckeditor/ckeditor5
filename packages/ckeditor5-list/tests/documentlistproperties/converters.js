@@ -2129,6 +2129,446 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 		} );
 	} );
 
+	describe( 'mixed properties', () => {
+		beforeEach( () => setupEditor( {
+			list: {
+				properties: {
+					styles: true,
+					startIndex: true,
+					reversed: true
+				}
+			}
+		} ) );
+
+		afterEach( async () => {
+			await editor.destroy();
+		} );
+
+		describe( 'data pipeline', () => {
+			beforeEach( () => {
+				stubUid( 0 );
+			} );
+
+			it( 'should convert single list (type: bulleted)', () => {
+				test.data(
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo {style:default}
+						* Bar
+					` )
+				);
+			} );
+
+			it( 'should convert single list (type: numbered)', () => {
+				test.data(
+					'<ol>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {style:default} {start:1} {reversed:false} 
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should not convert list start on bulleted single list (type: bulleted)', () => {
+				test.data(
+					'<ul start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo {style:default}
+						* Bar
+					` ),
+
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should not convert list reversed on bulleted single list (type: bulleted)', () => {
+				test.data(
+					'<ul reversed="reversed">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>',
+
+					modelList( `
+						* Foo {style:default}
+						* Bar
+					` ),
+
+					'<ul>' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ul>'
+				);
+			} );
+
+			it( 'should convert single list (type: numbered)', () => {
+				test.data(
+					'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>',
+
+					modelList( `
+						# Foo {style:lower-alpha} {start:5} {reversed:true}
+						# Bar
+					` )
+				);
+			} );
+
+			it( 'should convert when the list is in the middle of the content', () => {
+				test.data(
+					'<p>Paragraph.</p>' +
+					'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+						'<li>Foo</li>' +
+						'<li>Bar</li>' +
+					'</ol>' +
+					'<p>Paragraph.</p>',
+
+					modelList( `
+						Paragraph.
+						# Foo {id:000} {style:lower-alpha} {start:5} {reversed:true}
+						# Bar {id:001}
+						Paragraph.
+					` )
+				);
+			} );
+
+			it( 'should convert on a nested list', () => {
+				test.data(
+					'<ul>' +
+						'<li>' +
+							'cd' +
+							'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ul>',
+
+					modelList( `
+						* cd {id:001} {style:default}
+						  # efg {id:000} {style:lower-alpha} {start:5} {reversed:true}
+					` )
+				);
+			} );
+
+			it( 'should convert on a nested list (same type)', () => {
+				test.data(
+					'<ol>' +
+						'<li>' +
+							'cd' +
+							'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
+								'<li>efg</li>' +
+							'</ol>' +
+						'</li>' +
+					'</ol>',
+
+					modelList( `
+						# cd {id:001} {style:default} {start:1} {reversed:false}
+						  # efg {id:000} {style:lower-alpha} {start:5} {reversed:true}
+					` )
+				);
+			} );
+		} );
+
+		describe( 'editing pipeline', () => {
+			describe( 'insert', () => {
+				it( 'should convert single list (type: numbered, start: 1, reversed:false, style:default)', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo</paragraph> {start:1} {reversed:false} {style:default}
+							# <paragraph>Bar</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert single list (type: numbered, start:5, reversed:true, style:lower-alpha)', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo</paragraph> {start:5} {reversed:true} {style:lower-alpha}
+							# <paragraph>Bar</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol reversed="reversed" start="5" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">Foo</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Bar</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+
+				it( 'should convert nested numbered list', () => {
+					test.insert(
+						modelList( `
+							x
+							# [<paragraph>Foo 1</paragraph> {start:1} {reversed:true} {style:lower-alpha}
+							  # <paragraph>Bar 1</paragraph> {start:7} {reversed:false} {style:upper-alpha}
+							  # <paragraph>Bar 2</paragraph>
+						    # <paragraph>Foo 2</paragraph>
+						    # <paragraph>Foo 3</paragraph>]
+						` ),
+
+						'<p>x</p>' +
+						'<ol reversed="reversed" style="list-style-type:lower-alpha">' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">Foo 1</span>' +
+								'<ol start="7" style="list-style-type:upper-alpha">' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 1</span></li>' +
+									'<li><span class="ck-list-bogus-paragraph">Bar 2</span></li>' +
+								'</ol>' +
+							'</li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 2</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">Foo 3</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+			} );
+
+			describe( 'remove', () => {
+				it( 'remove a list item', () => {
+					test.remove(
+						modelList( `
+							<paragraph>p</paragraph>
+							# [<paragraph>a</paragraph>] {start:6} {reversed:true} {style:lower-alpha}
+							# <paragraph>b</paragraph>
+							# <paragraph>c</paragraph>
+						` ),
+
+						'<p>p</p>' +
+						'<ol reversed="reversed" start="6" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ol>'
+					);
+
+					expect( test.reconvertSpy.callCount ).to.equal( 0 );
+				} );
+			} );
+
+			describe( 'set list properties', () => {
+				it( 'list start on list with defined style', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {style:lower-alpha}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol start="2" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'list start on list with defined style and reversed', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {style:lower-alpha} {reversed:true}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'list start and reversed on list with defined style', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {style:lower-alpha}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+							writer.setAttribute( 'listReversed', true, selection.getFirstRange() );
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list property value', () => {
+				it( 'change of list start', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {style:lower-alpha} {start:4}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol start="2" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'list start and reversed', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {style:lower-alpha} {reversed:false} {start:6}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+							writer.setAttribute( 'listReversed', true, selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'list start, reversed, and style', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {style:lower-alpha} {reversed:false} {start:3}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed" start="2" style="list-style-type:upper-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listStart', 2, selection.getFirstRange() );
+							writer.setAttribute( 'listReversed', true, selection.getFirstRange() );
+							writer.setAttribute( 'listStyle', 'upper-alpha', selection.getFirstRange() );
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list type', () => {
+				it( 'to numbered', () => {
+					const input = modelList( `
+						* [<paragraph>a</paragraph> {start:2} {style:lower-alpha} {reversed:true}
+						* <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ol>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listType', 'numbered', selection.getFirstRange() );
+						} );
+					} );
+				} );
+
+				it( 'to bulleted', () => {
+					const input = modelList( `
+						# [<paragraph>a</paragraph> {start:2} {style:lower-alpha} {reversed:true}
+						# <paragraph>b</paragraph>]
+					` );
+
+					const output =
+						'<ul style="list-style-type:lower-alpha">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							writer.setAttribute( 'listType', 'bulleted', selection.getFirstRange() );
+						} );
+					} );
+				} );
+			} );
+
+			describe( 'change list indent', () => {
+				it( 'should update list attribute elements', () => {
+					const input = modelList( [
+						'* <paragraph>a</paragraph>',
+						'* [<paragraph>b</paragraph>',
+						'  # <paragraph>c</paragraph>] {start:4} {reversed:true} {style:lower-alpha}'
+					] );
+
+					const output =
+						'<ul>' +
+							'<li>' +
+								'<span class="ck-list-bogus-paragraph">a</span>' +
+								'<ul>' +
+									'<li>' +
+										'<span class="ck-list-bogus-paragraph">b</span>' +
+										'<ol reversed="reversed" start="4" style="list-style-type:lower-alpha">' +
+											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+										'</ol>' +
+									'</li>' +
+								'</ul>' +
+							'</li>' +
+						'</ul>';
+
+					test.test( input, output, selection => {
+						model.change( writer => {
+							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
+								writer.setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + 1, item );
+							}
+						} );
+					} );
+				} );
+			} );
+		} );
+	} );
+
 	async function setupEditor( config = {} ) {
 		editor = await VirtualTestEditor.create( {
 			plugins: [ Paragraph, IndentEditing, ClipboardPipeline, BoldEditing, DocumentListPropertiesEditing, UndoEditing,
