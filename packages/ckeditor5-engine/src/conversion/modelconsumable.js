@@ -8,6 +8,7 @@
  */
 
 import TextProxy from '../model/textproxy';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Manages a list of consumable values for {@link module:engine/model/item~Item model items}.
@@ -247,12 +248,54 @@ export default class ModelConsumable {
 	}
 
 	/**
+	 * Verifies if all events from specified group were consumed.
+	 *
+	 * @param {String} eventGroup The events group to verify.
+	 */
+	verifyAllConsumed( eventGroup ) {
+		const items = [];
+
+		for ( const [ item, consumables ] of this._consumable ) {
+			for ( const [ event, canConsume ] of consumables ) {
+				const eventPrefix = event.split( ':' )[ 0 ];
+
+				if ( canConsume && eventGroup == eventPrefix ) {
+					items.push( {
+						event,
+						item: item.name || item.description
+					} );
+				}
+			}
+		}
+
+		if ( items.length ) {
+			/**
+			 * Some of {@link module:engine/model/item~Item model items} were not consumed while downcasting the model to view.
+			 *
+			 * This might be an effect of:
+			 *
+			 * * Missing converter for some model elements. Make sure that you registered downcast converters for all model elements.
+			 * * Custom converter that does not consume converted items. Make sure that you
+			 * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} all model elements that you converted
+			 * from the model to the view.
+			 * * Custom converter that called `event.stop()`. When providing a custom converter, keep in mind that you should not stop
+			 * the event. If you stop it then the default converter at the `lowest` priority will not trigger the conversion of this node's
+			 * attributes and child nodes.
+			 *
+			 * @error conversion-model-consumable-not-consumed
+			 * @param {Array.<module:engine/model/item~Item>} items Items that were not consumed.
+			 */
+			throw new CKEditorError( 'conversion-model-consumable-not-consumed', null, { items } );
+		}
+	}
+
+	/**
 	 * Gets a unique symbol for passed {@link module:engine/model/textproxy~TextProxy} instance. All `TextProxy` instances that
 	 * have same parent, same start index and same end index will get the same symbol.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
-	 * @private
+	 * @protected
 	 * @param {module:engine/model/textproxy~TextProxy} textProxy `TextProxy` instance to get a symbol for.
 	 * @returns {Symbol} Symbol representing all equal instances of `TextProxy`.
 	 */
@@ -270,25 +313,27 @@ export default class ModelConsumable {
 		}
 
 		if ( !symbol ) {
-			symbol = this._addSymbolForTextProxy( textProxy.startOffset, textProxy.endOffset, textProxy.parent );
+			symbol = this._addSymbolForTextProxy( textProxy );
 		}
 
 		return symbol;
 	}
 
 	/**
-	 * Adds a symbol for given properties that characterizes a {@link module:engine/model/textproxy~TextProxy} instance.
+	 * Adds a symbol for given {@link module:engine/model/textproxy~TextProxy} instance.
 	 *
 	 * Used internally to correctly consume `TextProxy` instances.
 	 *
 	 * @private
-	 * @param {Number} startIndex Text proxy start index in it's parent.
-	 * @param {Number} endIndex Text proxy end index in it's parent.
-	 * @param {module:engine/model/element~Element} parent Text proxy parent.
-	 * @returns {Symbol} Symbol generated for given properties.
+	 * @param {module:engine/model/textproxy~TextProxy} textProxy Text proxy instance.
+	 * @returns {Symbol} Symbol generated for given `TextProxy`.
 	 */
-	_addSymbolForTextProxy( start, end, parent ) {
-		const symbol = Symbol( 'textProxySymbol' );
+	_addSymbolForTextProxy( textProxy ) {
+		const start = textProxy.startOffset;
+		const end = textProxy.endOffset;
+		const parent = textProxy.parent;
+
+		const symbol = Symbol( '$textProxy:' + textProxy.data );
 		let startMap, endMap;
 
 		startMap = this._textProxyRegistry.get( start );
@@ -319,6 +364,11 @@ export default class ModelConsumable {
 // @returns {String} Normalized consumable type.
 function _normalizeConsumableType( type ) {
 	const parts = type.split( ':' );
+
+	// For inserts allow passing event name, it's stored in the context of a specified element so the element name is not needed.
+	if ( parts[ 0 ] == 'insert' ) {
+		return parts[ 0 ];
+	}
 
 	// Markers are identified by the whole name (otherwise we would consume the whole markers group).
 	if ( parts[ 0 ] == 'addMarker' || parts[ 0 ] == 'removeMarker' ) {

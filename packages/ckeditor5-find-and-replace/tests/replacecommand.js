@@ -115,7 +115,7 @@ describe( 'ReplaceCommand', () => {
 				}
 			}
 
-			expect( getData( editor.model, { convertMarkers: true } ) ).to.equal(
+			expect( getData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).to.equal(
 				'<paragraph>bar <findResult:1:start></findResult:1:start>' +
 					'<findResultHighlighted:x:start></findResultHighlighted:x:start>foo<findResult:1:end></findResult:1:end>' +
 					'<findResultHighlighted:x:end></findResultHighlighted:x:end> ' +

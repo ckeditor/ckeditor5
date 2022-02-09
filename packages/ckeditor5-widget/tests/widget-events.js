@@ -72,14 +72,14 @@ describe( 'Widget - Events', () => {
 
 		function defineSchema( editor ) {
 			editor.model.schema.register( 'simpleWidgetElement', {
-				inheritAllFrom: '$block',
+				allowIn: '$root',
 				isObject: true
 			} );
 		}
 
 		function defineConverters( editor ) {
 			editor.conversion.for( 'editingDowncast' )
-				.elementToElement( {
+				.elementToStructure( {
 					model: 'simpleWidgetElement',
 					view: ( modelElement, { writer } ) => {
 						const widgetElement = createWidgetView( modelElement, { writer } );
@@ -89,7 +89,7 @@ describe( 'Widget - Events', () => {
 				} );
 
 			editor.conversion.for( 'dataDowncast' )
-				.elementToElement( {
+				.elementToStructure( {
 					model: 'simpleWidgetElement',
 					view: createWidgetView
 				} );

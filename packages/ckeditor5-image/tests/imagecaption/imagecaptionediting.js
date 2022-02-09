@@ -179,6 +179,12 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			it( 'should not convert caption from other elements', () => {
+				editor.conversion.for( 'downcast' ).add(
+					dispatcher => dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'lowest' } )
+				);
+
 				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
 
 				expect( editor.getData() ).to.equal( '<widget>foo bar</widget>' );
@@ -203,6 +209,12 @@ describe( 'ImageCaptionEditing', () => {
 			} );
 
 			it( 'should not convert caption from other elements', () => {
+				editor.conversion.for( 'downcast' ).add(
+					dispatcher => dispatcher.on( 'insert:caption', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'lowest' } )
+				);
+
 				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<widget>foo bar</widget>' );
 			} );

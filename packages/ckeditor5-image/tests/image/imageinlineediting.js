@@ -11,7 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import LinkImage from '@ckeditor/ckeditor5-link/src/linkimage';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';

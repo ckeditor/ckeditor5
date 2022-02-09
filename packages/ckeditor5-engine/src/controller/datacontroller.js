@@ -14,7 +14,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Mapper from '../conversion/mapper';
 
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { insertText } from '../conversion/downcasthelpers';
+import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers';
 
 import UpcastDispatcher from '../conversion/upcastdispatcher';
 import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
@@ -81,6 +81,7 @@ export default class DataController {
 			schema: model.schema
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
 		/**
 		 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.
@@ -243,27 +244,16 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// Make additional options available during conversion process through `conversionApi`.
-		this.downcastDispatcher.conversionApi.options = options;
-
-		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
-		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
-
-		// Convert markers.
+		// Prepare list of markers.
 		// For document fragment, simply take the markers assigned to this document fragment.
 		// For model root, all markers in that root will be taken.
 		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
 		// Collapsed markers at element boundary, although considered as not intersecting with the element, will also be returned.
 		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
-			Array.from( modelElementOrFragment.markers ) :
+			modelElementOrFragment.markers :
 			_getMarkersRelativeToElement( modelElementOrFragment );
 
-		for ( const [ name, range ] of markers ) {
-			this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
-		}
-
-		// Clean `conversionApi`.
-		delete this.downcastDispatcher.conversionApi.options;
+		this.downcastDispatcher.convert( modelRange, markers, viewWriter, options );
 
 		return viewDocumentFragment;
 	}
@@ -547,7 +537,7 @@ function _getMarkersRelativeToElement( element ) {
 	const doc = element.root.document;
 
 	if ( !doc ) {
-		return [];
+		return new Map();
 	}
 
 	const elementRange = ModelRange._createIn( element );
@@ -581,7 +571,7 @@ function _getMarkersRelativeToElement( element ) {
 	// reverse DOM order, and intersecting ranges are in something approximating
 	// reverse DOM order (since reverse DOM order doesn't have a precise meaning
 	// when working with intersecting ranges).
-	return result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
+	result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
 		if ( r1.end.compareWith( r2.start ) !== 'after' ) {
 			// m1.end <= m2.start -- m1 is entirely <= m2
 			return 1;
@@ -608,4 +598,6 @@ function _getMarkersRelativeToElement( element ) {
 			}
 		}
 	} );
+
+	return new Map( result );
 }

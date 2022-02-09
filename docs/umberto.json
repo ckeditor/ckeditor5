@@ -64,7 +64,12 @@
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
 		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
-		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html"
+		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
+		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -201,7 +206,15 @@
 									"name": "Conversion",
 									"id": "framework-deep-dive-conversion",
 									"slug": "conversion",
-									"order": 100
+									"order": 100,
+									"categories": [
+										{
+											"name": "Conversion helpers",
+											"id": "framework-deep-dive-conversion-helpers",
+											"slug": "helpers",
+											"order": 100
+										}
+									]
 								},
 								{
 									"name": "User interface",

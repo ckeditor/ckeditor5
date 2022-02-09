@@ -8,14 +8,14 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-import ListPropertiesEditing from './listpropertiesediting';
-import ListPropertiesUI from './listpropertiesui';
+import ListPropertiesEditing from './listproperties/listpropertiesediting';
+import ListPropertiesUI from './listproperties/listpropertiesui';
 
 /**
  * The list properties feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/listpropertiesediting~ListPropertiesEditing list properties editing feature}
- * and the {@link module:list/listpropertiesui~ListPropertiesUI list properties UI feature}.
+ * This is a "glue" plugin that loads the {@link module:list/listproperties/listpropertiesediting~ListPropertiesEditing list properties
+ * editing feature} and the {@link module:list/listproperties/listpropertiesui~ListPropertiesUI list properties UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -39,10 +39,10 @@ export default class ListProperties extends Plugin {
  * The configuration of the {@link module:list/listproperties~ListProperties list properties} feature.
  *
  * This configuration controls the individual list properties. For instance, it enables or disables specific editor commands
- * operating on lists ({@link module:list/liststylecommand~ListStyleCommand `'listStyle'`},
- * {@link module:list/liststartcommand~ListStartCommand `'listStart'`},
- * {@link module:list/listreversedcommand~ListReversedCommand `'listReversed'`}), the look of the UI
- * (`'numberedList'` and `'bulletedList'` dropdowns), and the editor data pipeline (allowed HTML attributes).
+ * operating on lists ({@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`},
+ * {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`},
+ * {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`}), the look of the UI
+ * (`numberedList` and `bulletedList` dropdowns), and the editor data pipeline (allowed HTML attributes).
  *
  *		ClassicEditor
  *			.create( editorElement, {
