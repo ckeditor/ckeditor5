@@ -36,13 +36,12 @@ export function createInlineImageViewElement( writer ) {
  *
  * @protected
  * @param {module:engine/view/downcastwriter~DowncastWriter} writer
- * @param {module:engine/view/element~Element} slotElement
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createBlockImageViewElement( writer, slotElement ) {
+export function createBlockImageViewElement( writer ) {
 	return writer.createContainerElement( 'figure', { class: 'image' }, [
 		writer.createEmptyElement( 'img' ),
-		slotElement
+		writer.createSlot()
 	] );
 }
 
