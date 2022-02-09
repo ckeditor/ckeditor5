@@ -1657,9 +1657,8 @@ function _logUnsafeElement( elementName ) {
  */
 
 /**
- * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may disrupt the
- * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} of the editor. To avoid this,
- * the `<script>` element was renamed to `<span data-ck-unsafe-element="script"></span>`.
+ * While rendering the editor content, the {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may
+ * disrupt the editing experience. To avoid this, the `<script>` element was replaced with `<span data-ck-unsafe-element="script"></span>`.
  *
  * @error domconverter-unsafe-script-element-detected
  */
