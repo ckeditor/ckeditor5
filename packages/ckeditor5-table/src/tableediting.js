@@ -75,8 +75,8 @@ export default class TableEditing extends Plugin {
 		} );
 
 		schema.register( 'tableCell', {
-			allowIn: 'tableRow',
 			allowContentOf: '$container',
+			allowIn: 'tableRow',
 			allowAttributes: [ 'colspan', 'rowspan' ],
 			isLimit: true,
 			isSelectable: true
