@@ -30,11 +30,12 @@ import priorities from './priorities';
 export default function insertToPriorityArray( objects, objectToInsert ) {
 	const priority = priorities.get( objectToInsert.priority );
 
-	for ( let i = 0; i <= objects.length; i++ ) {
-		if ( !objects[ i ] || priorities.get( objects[ i ].priority ) < priority ) {
+	for ( let i = 0; i < objects.length; i++ ) {
+		if ( priorities.get( objects[ i ].priority ) < priority ) {
 			objects.splice( i, 0, objectToInsert );
 
-			break;
+			return;
 		}
 	}
+	objects.push( objectToInsert );
 }
