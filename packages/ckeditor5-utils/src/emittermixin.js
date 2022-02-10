@@ -10,7 +10,7 @@
 import EventInfo from './eventinfo';
 import uid from './uid';
 import priorities from './priorities';
-import insertByPriority from './insertbypriority';
+import insertToPriorityArray from './inserttopriorityarray';
 
 // To check if component is loaded more than once.
 import './version';
@@ -299,7 +299,7 @@ const EmitterMixin = {
 		// Add the callback to all callbacks list.
 		for ( const callbacks of lists ) {
 			// Add the callback to the list in the right priority position.
-			insertByPriority( callbacks, callbackDefinition );
+			insertToPriorityArray( callbacks, callbackDefinition );
 		}
 	},
 

@@ -5,7 +5,7 @@
 
 import Command from './command';
 
-import insertByPriority from '@ckeditor/ckeditor5-utils/src/insertbypriority';
+import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorityarray';
 
 /**
  * @module core/multicommand
@@ -76,7 +76,7 @@ export default class MultiCommand extends Command {
 	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of command to register
 	 */
 	registerChildCommand( command, options = { priority: 'normal' } ) {
-		insertByPriority( this._childCommandsDefinitons, { command, priority: options.priority } );
+		insertToPriorityArray( this._childCommandsDefinitons, { command, priority: options.priority } );
 
 		// Change multi command enabled state when one of registered commands changes state.
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
