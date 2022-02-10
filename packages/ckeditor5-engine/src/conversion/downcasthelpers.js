@@ -141,7 +141,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * to the conversion process.
 	 *
 	 * You can read more about element-to-element conversion in the
-	 * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion} guide.
+	 * {@glink framework/guides/deep-dive/conversion/downcast downcast conversion} guide.
 	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
