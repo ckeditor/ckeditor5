@@ -42,8 +42,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * You can read more about conversion in the following guides:
  *
- * * {@glink framework/guides/deep-dive/conversion/conversion-introduction Advanced conversion concepts &mdash; attributes}
- * * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion}
+ * * {@glink framework/guides/deep-dive/conversion/upcast Upcast conversion}
  *
  * Examples of event-based converters:
  *

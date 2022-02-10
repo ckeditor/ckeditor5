@@ -3981,7 +3981,11 @@ describe( 'Renderer', () => {
 					.callsFake( () => {} );
 
 				console.warn
-					.withArgs( sinon.match( /^domconverter-unsafe-element-detected/ ) )
+					.withArgs( sinon.match( /^domconverter-unsafe-script-element-detected/ ) )
+					.callsFake( () => {} );
+
+				console.warn
+					.withArgs( sinon.match( /^domconverter-unsafe-style-element-detected/ ) )
 					.callsFake( () => {} );
 
 				console.warn.callThrough();
@@ -4023,6 +4027,24 @@ describe( 'Renderer', () => {
 				expect( window.spy.calledOnce ).to.be.false;
 				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="script">spy()</span>' );
+
+				delete window.spy;
+			} );
+
+			it( 'should replace style element with span and custom data attribute', () => {
+				window.spy = sinon.spy();
+
+				const viewA = new ViewElement( viewDoc, 'style' );
+
+				// Assign content of the `<style>` element, as the utility method `setVewData` will fail becasuse of brace characters.
+				viewA._appendChild( new ViewText( viewDoc, '.foo { color: red; }' ) );
+				viewRoot._appendChild( viewA );
+
+				view.forceRender();
+
+				expect( window.spy.calledOnce ).to.be.false;
+				expect( getViewData( view ) ).to.equal( '<style>.foo { color: red; }</style>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="style">.foo { color: red; }</span>' );
 
 				delete window.spy;
 			} );

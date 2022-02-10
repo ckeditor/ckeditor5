@@ -48,17 +48,17 @@ export default class HorizontalLineEditing extends Plugin {
 			}
 		} );
 
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'horizontalLine',
 			view: ( modelElement, { writer } ) => {
 				const label = t( 'Horizontal line' );
-				const viewWrapper = writer.createContainerElement( 'div' );
-				const viewHrElement = writer.createEmptyElement( 'hr' );
+
+				const viewWrapper = writer.createContainerElement( 'div', null,
+					writer.createEmptyElement( 'hr' )
+				);
 
 				writer.addClass( 'ck-horizontal-line', viewWrapper );
 				writer.setCustomProperty( 'hr', true, viewWrapper );
-
-				writer.insert( writer.createPositionAt( viewWrapper, 0 ), viewHrElement );
 
 				return toHorizontalLineWidget( viewWrapper, writer, label );
 			}

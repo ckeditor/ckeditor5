@@ -38,11 +38,21 @@ A Markdown code provided by the {@link features/autoformat autoformatting featur
 
 ## List properties
 
-Beside the basic functionality of creating the ordered and unordered list, CKEditor 5 offers additional formatting tools that allow controlling the lists.
+Beside the basic functionality of creating the ordered and unordered lists, CKEditor 5 offers additional formatting tools that allow controlling the lists. Features such as more styles for list markers, setting the start index or reversing the list order can be enabled separately or all together. Check out the individual demos below or see all list properties working together in the {@link examples/builds/full-featured-editor full-featured editor example}.
 
 <info-box info>
 	The {@link module:list/listproperties~ListProperties list properties feature} is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. See the [installation](#list-properties-2) section to learn how to enable it in your editor.
 </info-box>
+
+### List styles
+
+The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
+
+#### Demo
+
+In the editor below use the ordered or unordered list dropdown to choose the desired marker type for each list.
+
+{@snippet features/lists-style}
 
 ### List start index
 
@@ -67,16 +77,6 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#reve
 Click the second list and use the ordered list dropdown switch to choose whether it should be reversed.
 
 {@snippet features/lists-reversed}
-
-### List styles
-
-The list style feature introduces some more styles for the list item markers. When {@link module:list/listproperties~ListPropertiesConfig#styles enabled}, it adds 3 styles for unordered lists and 6 styles for ordered lists to choose from. The user will be able to set or change the list style via the dropdown that opens when you click the arrow next to the appropriate list button in the toolbar.
-
-#### Demo
-
-In the editor below use the ordered or unordered list dropdown to choose the desired marker type for each list.
-
-{@snippet features/lists-style}
 
 ## List indentation
 
@@ -153,23 +153,23 @@ ClassicEditor
 </info-box>
 
 <info-box warning>
-	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/listui~ListUI}.
+	The {@link module:list/listproperties~ListProperties} feature overrides UI button implementations from the {@link module:list/list/listui~ListUI}.
 </info-box>
 
 ## Common API
 
 The {@link module:list/list~List} plugin registers:
 
-* The {@link module:list/listcommand~ListCommand `'numberedList'`} command.
-* The {@link module:list/listcommand~ListCommand `'bulletedList'`} command.
-* The {@link module:list/indentcommand~IndentCommand `'indentList'`} command.
-* The {@link module:list/indentcommand~IndentCommand `'outdentList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'numberedList'`} command.
+* The {@link module:list/list/listcommand~ListCommand `'bulletedList'`} command.
+* The {@link module:list/list/indentcommand~IndentCommand `'indentList'`} command.
+* The {@link module:list/list/indentcommand~IndentCommand `'outdentList'`} command.
 * The `'numberedList'` UI button.
 * The `'bulletedList'` UI button.
 
 The {@link module:list/listproperties~ListProperties} plugin registers:
 
-* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
+* The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
     ```js
     editor.execute( 'listStyle', { type: 'lower-roman' } );
     ```
@@ -177,20 +177,20 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
     editor.execute( 'listStart', { startIndex: 3 } );
     ```
 
-* The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed'`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
+* The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
     editor.execute( 'listReversed', { reversed: 'true' } );
     ```
 
-* The `'numberedList'` UI split button that overrides the UI button registered by the `List` plugin.
-* The `'bulletedList'` UI split button that overrides the UI button registered by the `List` plugin.
+* The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
+* The `bulletedList` UI split button that overrides the UI button registered by the `List` plugin.
 
 ## Contribute
 

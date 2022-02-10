@@ -8,7 +8,7 @@
  */
 
 /**
- * Checks if the element is visible to the user in DOM:
+ * Checks whether the element is visible to the user in DOM:
  *
  * * connected to the root of the document,
  * * has no `display: none`,

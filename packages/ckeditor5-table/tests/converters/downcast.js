@@ -7,14 +7,15 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { modelTable, viewTable } from '../_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 
 describe( 'downcast converters', () => {
-	let editor, model, root, view;
+	let editor, model, root, view, viewRoot;
 
 	testUtils.createSinonSandbox();
 
@@ -24,13 +25,14 @@ describe( 'downcast converters', () => {
 		model = editor.model;
 		root = model.document.getRoot( 'main' );
 		view = editor.editing.view;
+		viewRoot = view.document.getRoot();
 	} );
 
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
-	describe( 'downcastInsertTable()', () => {
+	describe( 'downcastTable()', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should create table as a widget', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
@@ -49,6 +51,80 @@ describe( 'downcast converters', () => {
 						'</table>' +
 					'</figure>'
 				);
+			} );
+
+			it( 'should reconvert table on headingRows attribute change', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				] ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureBefore = viewRoot.getChild( 0 );
+				const viewTableBefore = viewFigureBefore.getChild( 1 );
+				const viewTableRow0Before = viewTableBefore.getChild( 0 ).getChild( 0 );
+				const viewTableRow1Before = viewTableBefore.getChild( 0 ).getChild( 1 );
+				const viewTableCell0Before = viewTableRow0Before.getChild( 0 );
+				const viewTableCell1Before = viewTableRow1Before.getChild( 1 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 1, root.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureAfter = viewRoot.getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+				const viewTableRow0After = viewTableAfter.getChild( 0 ).getChild( 0 );
+				const viewTableRow1After = viewTableAfter.getChild( 1 ).getChild( 0 );
+				const viewTableCell0After = viewTableRow0After.getChild( 0 );
+				const viewTableCell1After = viewTableRow1After.getChild( 1 );
+
+				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
+				expect( viewTableAfter ).to.not.equal( viewTableBefore );
+				expect( viewTableRow0After ).to.not.equal( viewTableRow0Before );
+				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
+				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
 			} );
 		} );
 
@@ -196,6 +272,7 @@ describe( 'downcast converters', () => {
 			it( 'should be possible to overwrite', () => {
 				editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
 				editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
+				editor.conversion.elementToElement( { model: 'paragraph', view: 'p', converterPriority: 'highest' } );
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
 					dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 						conversionApi.consumable.consume( data.item, 'insert' );
@@ -346,8 +423,7 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'downcastInsertRow()', () => {
-		// The insert row downcast conversion is not executed in data pipeline.
+	describe( 'downcastRow()', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should react to changed rows', () => {
 				setModelData( model, modelTable( [
@@ -572,11 +648,248 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'should react to removed row from the beginning of a body rows (no heading rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should react to removed row from the end of a body rows (no heading rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( table.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should react to removed row from the beginning of a heading rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.setAttribute( 'headingRows', 1, table );
+					writer.remove( table.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should react to removed row from the end of a heading rows (no body rows)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.setAttribute( 'headingRows', 1, table );
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should react to removed row from the end of a heading rows (first cell in body has colspan)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01', '02', '03' ],
+					[ { rowspan: 2, colspan: 2, contents: '10' }, '12', '13' ],
+					[ '22', '23' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.remove( table.getChild( 0 ) );
+					writer.setAttribute( 'headingRows', 0, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
+											'colspan="2" contenteditable="true" rowspan="2">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">12</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">13</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">22</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">23</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should remove empty thead if a last row was removed from a heading rows (has heading and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Removing row from a heading section changes requires changing heading rows attribute.
+					writer.removeAttribute( 'headingRows', table );
+					writer.remove( table.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">11</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should remove empty tbody if a last row was removed a body rows (has heading and body)', () => {
+				setModelData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.remove( table.getChild( 1 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">01</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
 		} );
 	} );
 
-	describe( 'downcastInsertCell()', () => {
-		// The insert table cell downcast conversion is not executed in data pipeline.
+	describe( 'downcastCell()', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should add tableCell on proper index in tr', () => {
 				setModelData( model, modelTable( [
@@ -708,8 +1021,7 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'downcastTableHeadingColumnsChange()', () => {
-		// The heading columns change downcast conversion is not executed in data pipeline.
+	describe( 'heading columns conversion', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should work for adding heading columns', () => {
 				setModelData( model, modelTable( [
@@ -784,6 +1096,11 @@ describe( 'downcast converters', () => {
 
 			it( 'should be possible to overwrite', () => {
 				editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
+				editor.conversion.elementToElement( {
+					model: 'tableCell',
+					view: ( tableCell, { writer } ) => toWidgetEditable( writer.createEditableElement( 'td' ), writer ),
+					converterPriority: 'high'
+				} );
 				setModelData( model, modelTable( [ [ '00[] ' ] ] ) );
 
 				const table = root.getChild( 0 );
@@ -809,10 +1126,17 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should work with adding table cells', () => {
+				// +----+----+----+----+
+				// | 00 | 01 | 02 | 03 |
+				// +    +----+----+----+
+				// |    | 11 | 12 | 13 |
+				// +----+----+----+----+
+				// | 20      | 22 | 23 |
+				// +----+----+----+----+
 				setModelData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '13', '14' ],
+					[ { contents: '00', rowspan: 2 }, '01', '02', '03' ],
 					[ '11', '12', '13' ],
-					[ { colspan: 2, contents: '20' }, '22', '23' ]
+					[ { contents: '20', colspan: 2 }, '22', '23' ]
 				], { headingColumns: 2 } ) );
 
 				const table = root.getChild( 0 );
@@ -826,13 +1150,19 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
 				} );
 
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01', '', '02', '03' ],
+					[ '11', '', '12', '13' ],
+					[ { contents: '20', colspan: 2 }, '', '22', '23' ]
+				], { headingColumns: 3 } ) );
+
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[
 						{ isHeading: true, rowspan: 2, contents: '00' },
 						{ isHeading: true, contents: '01' },
 						{ isHeading: true, contents: '' },
-						'13',
-						'14'
+						'02',
+						'03'
 					],
 					[
 						{ isHeading: true, contents: '11' },
@@ -876,10 +1206,7 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'downcastTableHeadingRowsChange', () => {
-		// The heading rows change downcast conversion is not executed in data pipeline.
-		// Note that headingRows table attribute triggers whole table downcast.
-
+	describe( 'heading rows conversion', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should work for adding heading rows', () => {
 				setModelData( model, modelTable( [
@@ -1190,249 +1517,6 @@ describe( 'downcast converters', () => {
 					[ '10', '11' ],
 					[ '20', '21' ]
 				], { headingRows: 1, asWidget: true } ) );
-			} );
-		} );
-	} );
-
-	describe( 'downcastRemoveRow()', () => {
-		// The remove row downcast conversion is not executed in data pipeline.
-		describe( 'editing pipeline', () => {
-			it( 'should react to removed row from the beginning of a body rows (no heading rows)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.remove( table.getChild( 1 ) );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">01</span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should react to removed row from the end of a body rows (no heading rows)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.remove( table.getChild( 0 ) );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">11</span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should react to removed row from the beginning of a heading rows (no body rows)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 2 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					// Removing row from a heading section changes requires changing heading rows attribute.
-					writer.setAttribute( 'headingRows', 1, table );
-					writer.remove( table.getChild( 0 ) );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<thead>' +
-								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">11</span>' +
-									'</th>' +
-								'</tr>' +
-							'</thead>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should react to removed row from the end of a heading rows (no body rows)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 2 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					// Removing row from a heading section changes requires changing heading rows attribute.
-					writer.setAttribute( 'headingRows', 1, table );
-					writer.remove( table.getChild( 1 ) );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<thead>' +
-								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">01</span>' +
-									'</th>' +
-								'</tr>' +
-							'</thead>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should react to removed row from the end of a heading rows (first cell in body has colspan)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01', '02', '03' ],
-					[ { rowspan: 2, colspan: 2, contents: '10' }, '12', '13' ],
-					[ '22', '23' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					// Removing row from a heading section changes requires changing heading rows attribute.
-					writer.remove( table.getChild( 0 ) );
-					writer.setAttribute( 'headingRows', 0, table );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
-										'colspan="2" contenteditable="true" rowspan="2">' +
-										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">12</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">13</span>' +
-									'</td>' +
-								'</tr>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">22</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">23</span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should remove empty thead if a last row was removed from a heading rows (has heading and body)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					// Removing row from a heading section changes requires changing heading rows attribute.
-					writer.removeAttribute( 'headingRows', table );
-					writer.remove( table.getChild( 0 ) );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">10</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">11</span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should remove empty tbody if a last row was removed a body rows (has heading and body)', () => {
-				setModelData( model, modelTable( [
-					[ '00[]', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.remove( table.getChild( 1 ) );
-				} );
-
-				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<thead>' +
-								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</th>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">01</span>' +
-									'</th>' +
-								'</tr>' +
-							'</thead>' +
-						'</table>' +
-					'</figure>'
-				);
 			} );
 		} );
 	} );

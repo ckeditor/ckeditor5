@@ -135,9 +135,6 @@ export default class ImageCaptionEditing extends Plugin {
 				return toWidgetEditable( figcaptionElement, writer );
 			}
 		} );
-
-		editor.editing.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
-		editor.data.mapper.on( 'modelToViewPosition', mapModelPositionToView( view ) );
 	}
 
 	/**
@@ -245,29 +242,4 @@ export default class ImageCaptionEditing extends Plugin {
 	_saveCaption( imageModelElement, caption ) {
 		this._savedCaptionsMap.set( imageModelElement, caption.toJSON() );
 	}
-}
-
-// Creates a mapper callback that reverses the order of `<img>` and `<figcaption>` in the image.
-// Without it, `<figcaption>` would precede the `<img>` in the conversion.
-//
-// <imageBlock>^</imageBlock> -> <figure><img>^<caption></caption></figure>
-//
-// @private
-// @param {module:engine/view/view~View} editingView
-// @returns {Function}
-function mapModelPositionToView( editingView ) {
-	return ( evt, data ) => {
-		const modelPosition = data.modelPosition;
-		const parent = modelPosition.parent;
-
-		if ( !parent.is( 'element', 'imageBlock' ) ) {
-			return;
-		}
-
-		const viewElement = data.mapper.toViewElement( parent );
-
-		// The "img" element is inserted by ImageBlockEditing during the downcast conversion via
-		// an explicit view position so the "0" position does not need any mapping.
-		data.viewPosition = editingView.createPositionAt( viewElement, modelPosition.offset + 1 );
-	};
 }
