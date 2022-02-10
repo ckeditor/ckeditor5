@@ -5,6 +5,7 @@
 
 /* globals console, document, window */
 
+import { formatHtml } from '@ckeditor/ckeditor5-source-editing/src/utils/formathtml';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '../../src/table';
@@ -14,7 +15,7 @@ import TableClipboard from '../../src/tableclipboard';
 import TableProperties from '../../src/tableproperties';
 import TableCellProperties from '../../src/tablecellproperties';
 import TableCaption from '../../src/tablecaption';
-import TableFigurelessEditing from '../../src/tablefigureless/tablefigurelessediting';
+import PlainTableOutput from '../../src/plaintableoutput';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
@@ -26,8 +27,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		TableClipboard,
 		TableProperties,
 		TableCellProperties,
-		TableFigurelessEditing,
-		TableCaption
+		TableCaption,
+		PlainTableOutput
 	],
 	toolbar: [
 		'heading',
@@ -58,6 +59,13 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 } )
 	.then( editor => {
 		window.editor = editor;
+
+		const element = document.getElementById( 'editor-data' );
+		element.innerText = formatHtml( editor.getData() );
+
+		editor.model.document.on( 'change:data', () => {
+			element.innerText = formatHtml( editor.getData() );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

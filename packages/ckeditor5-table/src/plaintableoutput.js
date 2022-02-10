@@ -4,25 +4,25 @@
  */
 
 /**
- * @module table/tablefigurelessediting
+ * @module table/plaintableoutput
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 
-import TableUtils from '../tableutils';
-import { isTable } from '../tablecaption/utils';
+import TableUtils from './tableutils';
+import { isTable } from './tablecaption/utils';
 
 /**
- * The figure less table editing feature.
+ * The plain table output feature.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TableFigurelessEditing extends Plugin {
+export default class PlainTableOutput extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'TableFigurelessEditing';
+		return 'PlainTableOutput';
 	}
 
 	/**
