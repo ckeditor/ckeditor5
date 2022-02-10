@@ -84,8 +84,8 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).to.be.true;
 	} );
 
-	it( 'inherits attributes from $container', () => {
-		model.schema.extend( '$container', {
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
 			allowAttributes: 'foo'
 		} );
 

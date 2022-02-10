@@ -62,11 +62,8 @@ export default class ImageBlockEditing extends Plugin {
 
 		// Converters 'alt' and 'srcset' are added in 'ImageEditing' plugin.
 		schema.register( 'imageBlock', {
-			isObject: true,
-			isBlock: true,
-			allowWhere: '$block',
-			allowAttributes: [ 'alt', 'src', 'srcset' ],
-			allowAttributesOf: '$container'
+			inheritAllFrom: '$blockObject',
+			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
 		this._setupConversion();
