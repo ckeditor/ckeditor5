@@ -27,6 +27,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^31.1.0",
     "@ckeditor/ckeditor5-image": "^31.1.0",
     "@ckeditor/ckeditor5-indent": "^31.1.0",
+    "@ckeditor/ckeditor5-list": "^31.1.0",
     "@ckeditor/ckeditor5-markdown-gfm": "^31.1.0",
     "@ckeditor/ckeditor5-paragraph": "^31.1.0",
     "@ckeditor/ckeditor5-theme-lark": "^31.1.0",
