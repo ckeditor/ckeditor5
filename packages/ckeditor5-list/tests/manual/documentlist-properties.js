@@ -41,77 +41,127 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 import DocumentList from '../../src/documentlist';
 import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
-			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
-			AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-			CloudServices, SourceEditing, DocumentList, DocumentListPropertiesEditing
+const config = {
+	plugins: [
+		Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
+		MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
+		AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
+		CloudServices, SourceEditing, DocumentList, DocumentListPropertiesEditing
+	],
+	toolbar: [
+		'sourceEditing', '|',
+		'numberedList', 'bulletedList',
+		'outdent', 'indent', '|',
+		'heading', '|',
+		'bold', 'italic', 'link', '|',
+		'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock', '|',
+		'htmlEmbed', '|',
+		'alignment', '|',
+		'pageBreak', 'horizontalLine', '|',
+		'undo', 'redo'
+	],
+	cloudServices: CS_CONFIG,
+	table: {
+		contentToolbar: [
+			'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+		]
+	},
+	image: {
+		styles: [
+			'alignCenter',
+			'alignLeft',
+			'alignRight'
+		],
+		resizeOptions: [
+			{
+				name: 'resizeImage:original',
+				label: 'Original size',
+				value: null
+			},
+			{
+				name: 'resizeImage:50',
+				label: '50%',
+				value: '50'
+			},
+			{
+				name: 'resizeImage:75',
+				label: '75%',
+				value: '75'
+			}
 		],
 		toolbar: [
-			'sourceEditing', '|',
-			'numberedList', 'bulletedList',
-			'outdent', 'indent', '|',
-			'heading', '|',
-			'bold', 'italic', 'link', '|',
-			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock', '|',
-			'htmlEmbed', '|',
-			'alignment', '|',
-			'pageBreak', 'horizontalLine', '|',
-			'undo', 'redo'
-		],
-		cloudServices: CS_CONFIG,
-		table: {
-			contentToolbar: [
-				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
-			]
-		},
-		image: {
-			styles: [
-				'alignCenter',
-				'alignLeft',
-				'alignRight'
-			],
-			resizeOptions: [
-				{
-					name: 'resizeImage:original',
-					label: 'Original size',
-					value: null
-				},
-				{
-					name: 'resizeImage:50',
-					label: '50%',
-					value: '50'
-				},
-				{
-					name: 'resizeImage:75',
-					label: '75%',
-					value: '75'
-				}
-			],
-			toolbar: [
-				'imageTextAlternative', 'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-				'resizeImage'
-			]
-		},
-		placeholder: 'Type the content here!',
-		htmlEmbed: {
-			showPreviews: true,
-			sanitizeHtml: html => ( { html, hasChange: false } )
-		},
-		list: {
-			properties: {
-				styles: true,
-				startIndex: true,
-				reversed: true
+			'imageTextAlternative', 'toggleImageCaption', '|',
+			'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+			'resizeImage'
+		]
+	},
+	placeholder: 'Type the content here!',
+	htmlEmbed: {
+		showPreviews: true,
+		sanitizeHtml: html => ( { html, hasChange: false } )
+	}
+};
+
+function createEditor( idSuffix, properties ) {
+	ClassicEditor
+		.create( document.querySelector( '#editor-' + idSuffix ), {
+			...config,
+			list: {
+				properties
 			}
-		}
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+		} )
+		.then( editor => {
+			window[ 'editor_' + idSuffix ] = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+}
+
+createEditor( 'a', {
+	styles: true,
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'b', {
+	styles: true,
+	startIndex: true,
+	reversed: false
+} );
+
+createEditor( 'c', {
+	styles: true,
+	startIndex: false,
+	reversed: true
+} );
+
+createEditor( 'd', {
+	styles: false,
+	startIndex: true,
+	reversed: true
+} );
+
+createEditor( 'e', {
+	styles: false,
+	startIndex: true,
+	reversed: false
+} );
+
+createEditor( 'f', {
+	styles: false,
+	startIndex: false,
+	reversed: true
+} );
+
+createEditor( 'g', {
+	styles: true,
+	startIndex: false,
+	reversed: false
+} );
+
+createEditor( 'f', {
+	styles: false,
+	startIndex: false,
+	reversed: false
+} );
