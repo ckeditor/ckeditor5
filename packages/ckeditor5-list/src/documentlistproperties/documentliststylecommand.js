@@ -12,7 +12,8 @@ import { expandListBlocksToCompleteItems, getListItems } from '../documentlist/u
 import { getListTypeFromListStyleType } from './utils/style';
 
 /**
- * The list style command. It changes `listStyle` attribute of the selected list items.
+ * The list style command. It changes `listStyle` attribute of the selected list items,
+ * letting the user choose styles for the list item markers.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
  * @extends module:core/command~Command
