@@ -124,6 +124,7 @@
   "packages/ckeditor5-list/src/listproperties.js": "Listproperties",
   "packages/ckeditor5-list/src/listpropertiesediting.js": "Listpropertiesediting",
   "packages/ckeditor5-list/src/listpropertiesui.js": "Listpropertiesui",
+  "packages/ckeditor5-list/src/liststyle.js": "Liststyle",
   "packages/ckeditor5-list/src/listui.js": "Listui",
   "packages/ckeditor5-list/src/todolist.js": "Todolist",
   "packages/ckeditor5-list/src/todolistediting.js": "Todolistediting",

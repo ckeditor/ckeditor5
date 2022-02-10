@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ListEditing from '../../src/list/listediting';
 import ListPropertiesEditing from '../../src/listproperties/listpropertiesediting';
 
-import { createViewListItemElement, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
+import { createViewListItemElement, getListTypeFromListStyleType, getSiblingListItem, getSiblingNodes } from '../../src/list/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 describe( 'utils', () => {
@@ -448,5 +448,27 @@ describe( 'utils', () => {
 				document.getRoot().getChild( 4 )
 			] );
 		} );
+	} );
+
+	describe( 'getListTypeFromListStyleType()', () => {
+		const testData = [
+			[ 'decimal', 'numbered' ],
+			[ 'decimal-leading-zero', 'numbered' ],
+			[ 'lower-roman', 'numbered' ],
+			[ 'upper-roman', 'numbered' ],
+			[ 'lower-latin', 'numbered' ],
+			[ 'upper-latin', 'numbered' ],
+			[ 'disc', 'bulleted' ],
+			[ 'circle', 'bulleted' ],
+			[ 'square', 'bulleted' ],
+			[ 'default', null ],
+			[ 'style-type-that-is-not-possibly-supported-by-css', null ]
+		];
+
+		for ( const [ style, type ] of testData ) {
+			it( `shoud return "${ type }" for "${ style }" style`, () => {
+				expect( getListTypeFromListStyleType( style ) ).to.equal( type );
+			} );
+		}
 	} );
 } );

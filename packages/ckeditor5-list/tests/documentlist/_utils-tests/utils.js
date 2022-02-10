@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -226,6 +226,110 @@ describe( 'mockList()', () => {
 		);
 	} );
 
+	it( 'should allow passing custom element (no selection)', () => {
+		expect( modelList( [
+			'* <objectElement></objectElement>'
+		] ) ).to.equalMarkup(
+			'<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (self closing, no attributes)', () => {
+		expect( modelList( [
+			'* <objectElement/>'
+		] ) ).to.equalMarkup(
+			'<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (self closing, with attributes)', () => {
+		expect( modelList( [
+			'* <objectElement foo="bar"/>'
+		] ) ).to.equalMarkup(
+			'<objectElement foo="bar" listIndent="0" listItemId="000" listType="bulleted"></objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (empty)', () => {
+		expect( modelList( [
+			'* [<objectElement></objectElement>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted"></objectElement>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (nested)', () => {
+		expect( modelList( [
+			'* [<paragraph><nested></nested></paragraph>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<paragraph listIndent="0" listItemId="000" listType="bulleted"><nested></nested></paragraph>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (nested mixed)', () => {
+		expect( modelList( [
+			'* [<objectElement>a<nested></nested>b</objectElement>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">a<nested></nested>b</objectElement>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selected)', () => {
+		expect( modelList( [
+			'* [<objectElement>foo</objectElement>]',
+			'* bar'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>]' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection starts before)', () => {
+		expect( modelList( [
+			'* [<objectElement>foo</objectElement>',
+			'* bar]'
+		] ) ).to.equalMarkup(
+			'[<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>' +
+			'<paragraph listIndent="0" listItemId="001" listType="bulleted">bar]</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection ends before)', () => {
+		expect( modelList( [
+			'* [bar',
+			'* ]<objectElement>foo</objectElement>'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[bar</paragraph>]' +
+			'<objectElement listIndent="0" listItemId="001" listType="bulleted">foo</objectElement>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection starts after)', () => {
+		expect( modelList( [
+			'* <objectElement>foo</objectElement>[',
+			'* bar]'
+		] ) ).to.equalMarkup(
+			'<objectElement listIndent="0" listItemId="000" listType="bulleted">foo</objectElement>' +
+			'[<paragraph listIndent="0" listItemId="001" listType="bulleted">bar]</paragraph>'
+		);
+	} );
+
+	it( 'should allow passing custom element (selection ends after)', () => {
+		expect( modelList( [
+			'* [bar',
+			'* <objectElement>foo</objectElement>]'
+		] ) ).to.equalMarkup(
+			'<paragraph listIndent="0" listItemId="000" listType="bulleted">[bar</paragraph>' +
+			'<objectElement listIndent="0" listItemId="001" listType="bulleted">foo</objectElement>]'
+		);
+	} );
+
 	it( 'should allow to customize the list item id (suffix)', () => {
 		expect( modelList( [
 			'* foo{abc}',
@@ -281,6 +385,13 @@ describe( 'mockList()', () => {
 			'    baz'
 		] ) ).to.throw( Error, 'Invalid indent:     bar' );
 	} );
+
+	it( 'should throw when ID is reused', () => {
+		expect( () => modelList( [
+			'* foo',
+			'* bar {id:000}'
+		] ) ).to.throw( Error, 'ID conflict: 000' );
+	} );
 } );
 
 describe( 'stringifyList()', () => {
@@ -293,48 +404,390 @@ describe( 'stringifyList()', () => {
 		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
 	} );
 
-	it( 'flat list', () => {
-		const input = parseModel(
-			'<paragraph listIndent="0" listItemId="foo" listType="bulleted">aaa</paragraph>' +
-			'<paragraph listIndent="0" listItemId="bar" listType="bulleted">bbb</paragraph>',
-			model.schema
-		);
+	describe( 'bulleted list', () => {
+		it( 'flat list', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="foo" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="bar" listType="bulleted">bbb</paragraph>',
+				model.schema
+			);
 
-		expect( stringifyList( input ) ).to.equal( [
-			'* aaa',
-			'* bbb'
-		].join( '\n' ) );
+			expect( stringifyList( input ) ).to.equal( [
+				'* aaa',
+				'* bbb'
+			].join( '\n' ) );
+		} );
+
+		it( 'flat list with multi-block items', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="foo" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="foo" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="0" listItemId="bar" listType="bulleted">ccc</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'* aaa',
+				'  bbb',
+				'* ccc'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested list with multi-block items', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">ccc</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'* aaa',
+				'  * bbb',
+				'  ccc'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested list with many items', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="bulleted">ccc</paragraph>' +
+				'<paragraph listIndent="1" listItemId="d" listType="bulleted">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'* aaa',
+				'  * bbb',
+				'  * ccc',
+				'  * ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'many indentations', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">ccc</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="bulleted">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'* aaa',
+				'  * bbb',
+				'    * ccc',
+				'      * ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'many indentations with multiple blocks', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">ccc</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="bulleted">ccc</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="bulleted">ddd</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="bulleted">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* aaa',
+				'  aaa',
+				'  * bbb',
+				'    bbb',
+				'    * ccc',
+				'      ccc',
+				'      * ddd',
+				'        ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested multi-blocks item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">ccc</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* aaa',
+				'  * bbb',
+				'    ccc'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested multi-blocks item followed by a list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="bulleted">ccc</paragraph>' +
+				'<paragraph listIndent="0" listItemId="c" listType="bulleted">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* aaa',
+				'  * bbb',
+				'    ccc',
+				'* ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'single list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* a'
+			].join( '\n' ) );
+		} );
+
+		it( 'empty list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted"></paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* '
+			].join( '\n' ) );
+		} );
 	} );
 
-	it( 'flat list with multi-block items', () => {
-		const input = parseModel(
-			'<paragraph listIndent="0" listItemId="foo" listType="bulleted">aaa</paragraph>' +
-			'<paragraph listIndent="0" listItemId="foo" listType="bulleted">bbb</paragraph>' +
-			'<paragraph listIndent="0" listItemId="bar" listType="bulleted">ccc</paragraph>',
-			model.schema
-		);
+	describe( 'numbered list', () => {
+		it( 'flat list', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="foo" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="bar" listType="numbered">bbb</paragraph>',
+				model.schema
+			);
 
-		expect( stringifyList( input ) ).to.equal( [
-			'* aaa',
-			'  bbb',
-			'* ccc'
-		].join( '\n' ) );
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'# bbb'
+			].join( '\n' ) );
+		} );
+
+		it( 'flat list with multi-block items', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="foo" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="foo" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="0" listItemId="bar" listType="numbered">ccc</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  bbb',
+				'# ccc'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested list with multi-block items', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">ccc</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  # bbb',
+				'  ccc'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested list with many items', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="c" listType="numbered">ccc</paragraph>' +
+				'<paragraph listIndent="1" listItemId="d" listType="numbered">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  # bbb',
+				'  # ccc',
+				'  # ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'many indentations', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="numbered">ccc</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="numbered">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  # bbb',
+				'    # ccc',
+				'      # ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'many indentations with multiple blocks', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="numbered">ccc</paragraph>' +
+				'<paragraph listIndent="2" listItemId="c" listType="numbered">ccc</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="numbered">ddd</paragraph>' +
+				'<paragraph listIndent="3" listItemId="d" listType="numbered">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  aaa',
+				'  # bbb',
+				'    bbb',
+				'    # ccc',
+				'      ccc',
+				'      # ddd',
+				'        ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested multi-blocks item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">ccc</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  # bbb',
+				'    ccc'
+			].join( '\n' ) );
+		} );
+
+		it( 'nested multi-blocks item followed by a list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">aaa</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">bbb</paragraph>' +
+				'<paragraph listIndent="1" listItemId="b" listType="numbered">ccc</paragraph>' +
+				'<paragraph listIndent="0" listItemId="c" listType="numbered">ddd</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# aaa',
+				'  # bbb',
+				'    ccc',
+				'# ddd'
+			].join( '\n' ) );
+		} );
+
+		it( 'single list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered">a</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# a'
+			].join( '\n' ) );
+		} );
+
+		it( 'empty list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="numbered"></paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equal( [
+				'# '
+			].join( '\n' ) );
+		} );
 	} );
 
-	it( 'nested list with multi-block items', () => {
-		const input = parseModel(
-			'<paragraph listIndent="0" listItemId="a" listType="bulleted">aaa</paragraph>' +
-			'<paragraph listIndent="1" listItemId="b" listType="bulleted">bbb</paragraph>' +
-			'<paragraph listIndent="0" listItemId="a" listType="bulleted">ccc</paragraph>',
-			model.schema
-		);
+	describe( 'mixed lists', () => {
+		it( 'bulleted and numbered list', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="a" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="b" listType="numbered">0</paragraph>',
+				model.schema
+			);
 
-		expect( stringifyList( input ) ).to.equal( [
-			'* aaa',
-			'  * bbb',
-			'  ccc'
-		].join( '\n' ) );
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* a',
+				'# 0'
+			].join( '\n' ) );
+		} );
+
+		it( 'numbered list item with nested bulleted list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="0" listType="numbered">0</paragraph>' +
+				'<paragraph listIndent="1" listItemId="1" listType="bulleted">a</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'# 0',
+				'  * a'
+			].join( '\n' ) );
+		} );
+
+		it( 'bulleted list item with nested numbered list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="0" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="1" listItemId="1" listType="numbered">0</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* a',
+				'  # 0'
+			].join( '\n' ) );
+		} );
+
+		it( 'numbered list with many blocks and nested bulleted list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="0" listType="numbered">0</paragraph>' +
+				'<paragraph listIndent="0" listItemId="0" listType="numbered">1</paragraph>' +
+				'<paragraph listIndent="1" listItemId="1" listType="bulleted">a</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'# 0',
+				'  1',
+				'  * a'
+			].join( '\n' ) );
+		} );
+
+		it( 'bulleted list with many blocks and nested numbered list item', () => {
+			const input = parseModel(
+				'<paragraph listIndent="0" listItemId="0" listType="bulleted">a</paragraph>' +
+				'<paragraph listIndent="0" listItemId="0" listType="bulleted">b</paragraph>' +
+				'<paragraph listIndent="1" listItemId="1" listType="numbered">0</paragraph>',
+				model.schema
+			);
+
+			expect( stringifyList( input ) ).to.equalMarkup( [
+				'* a',
+				'  b',
+				'  # 0'
+			].join( '\n' ) );
+		} );
 	} );
-
-	// TODO
 } );

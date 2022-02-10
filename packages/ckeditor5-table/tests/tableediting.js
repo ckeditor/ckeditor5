@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -84,8 +84,8 @@ describe( 'TableEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'table', 'tableRow', 'tableCell' ], 'imageBlock' ) ).to.be.true;
 	} );
 
-	it( 'inherits attributes from $container', () => {
-		model.schema.extend( '$container', {
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
 			allowAttributes: 'foo'
 		} );
 

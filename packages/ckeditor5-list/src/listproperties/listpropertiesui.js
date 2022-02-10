@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,8 +28,8 @@ import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 import '../../theme/liststyles.css';
 
 /**
- * The list style UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
- * buttons that allow users to change styles of individual lists in the content.
+ * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
+ * buttons that allow users to control such aspects of list as the marker, start index or order.
  *
  * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/list/listui~ListUI}
  * (because they share the same names).
@@ -47,80 +47,91 @@ export default class ListPropertiesUI extends Plugin {
 	init() {
 		const editor = this.editor;
 		const t = editor.locale.t;
+		const enabledProperties = editor.config.get( 'list.properties' );
 
-		editor.ui.componentFactory.add( 'bulletedList', getDropdownViewCreator( {
-			editor,
-			parentCommandName: 'bulletedList',
-			buttonLabel: t( 'Bulleted List' ),
-			buttonIcon: bulletedListIcon,
-			styleGridAriaLabel: t( 'Bulleted list styles toolbar' ),
-			styleDefinitions: [
-				{
-					label: t( 'Toggle the disc list style' ),
-					tooltip: t( 'Disc' ),
-					type: 'disc',
-					icon: listStyleDiscIcon
-				},
-				{
-					label: t( 'Toggle the circle list style' ),
-					tooltip: t( 'Circle' ),
-					type: 'circle',
-					icon: listStyleCircleIcon
-				},
-				{
-					label: t( 'Toggle the square list style' ),
-					tooltip: t( 'Square' ),
-					type: 'square',
-					icon: listStyleSquareIcon
-				}
-			]
-		} ) );
+		// Note: When this plugin does not register the "bulletedList" dropdown due to properties configuration,
+		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
+		// in most editor configuration because the List plugin automatically requires ListUI.
+		if ( enabledProperties.styles ) {
+			editor.ui.componentFactory.add( 'bulletedList', getDropdownViewCreator( {
+				editor,
+				parentCommandName: 'bulletedList',
+				buttonLabel: t( 'Bulleted List' ),
+				buttonIcon: bulletedListIcon,
+				styleGridAriaLabel: t( 'Bulleted list styles toolbar' ),
+				styleDefinitions: [
+					{
+						label: t( 'Toggle the disc list style' ),
+						tooltip: t( 'Disc' ),
+						type: 'disc',
+						icon: listStyleDiscIcon
+					},
+					{
+						label: t( 'Toggle the circle list style' ),
+						tooltip: t( 'Circle' ),
+						type: 'circle',
+						icon: listStyleCircleIcon
+					},
+					{
+						label: t( 'Toggle the square list style' ),
+						tooltip: t( 'Square' ),
+						type: 'square',
+						icon: listStyleSquareIcon
+					}
+				]
+			} ) );
+		}
 
-		editor.ui.componentFactory.add( 'numberedList', getDropdownViewCreator( {
-			editor,
-			parentCommandName: 'numberedList',
-			buttonLabel: t( 'Numbered List' ),
-			buttonIcon: numberedListIcon,
-			styleGridAriaLabel: t( 'Numbered list styles toolbar' ),
-			styleDefinitions: [
-				{
-					label: t( 'Toggle the decimal list style' ),
-					tooltip: t( 'Decimal' ),
-					type: 'decimal',
-					icon: listStyleDecimalIcon
-				},
-				{
-					label: t( 'Toggle the decimal with leading zero list style' ),
-					tooltip: t( 'Decimal with leading zero' ),
-					type: 'decimal-leading-zero',
-					icon: listStyleDecimalWithLeadingZeroIcon
-				},
-				{
-					label: t( 'Toggle the lower–roman list style' ),
-					tooltip: t( 'Lower–roman' ),
-					type: 'lower-roman',
-					icon: listStyleLowerRomanIcon
-				},
-				{
-					label: t( 'Toggle the upper–roman list style' ),
-					tooltip: t( 'Upper-roman' ),
-					type: 'upper-roman',
-					icon: listStyleUpperRomanIcon
-				},
-				{
-					label: t( 'Toggle the lower–latin list style' ),
-					tooltip: t( 'Lower-latin' ),
-					type: 'lower-latin',
-					icon: listStyleLowerLatinIcon
-				},
-				{
-					label: t( 'Toggle the upper–latin list style' ),
-					tooltip: t( 'Upper-latin' ),
-					type: 'upper-latin',
-					icon: listStyleUpperLatinIcon
-				}
-			]
-		} ) );
+		// Note: When this plugin does not register the "numberedList" dropdown due to properties configuration,
+		// a simple button will be still registered under the same name by ListUI as a fallback. This should happen
+		// in most editor configuration because the List plugin automatically requires ListUI.
+		if ( enabledProperties.styles || enabledProperties.startIndex || enabledProperties.reversed ) {
+			editor.ui.componentFactory.add( 'numberedList', getDropdownViewCreator( {
+				editor,
+				parentCommandName: 'numberedList',
+				buttonLabel: t( 'Numbered List' ),
+				buttonIcon: numberedListIcon,
+				styleGridAriaLabel: t( 'Numbered list styles toolbar' ),
+				styleDefinitions: [
+					{
+						label: t( 'Toggle the decimal list style' ),
+						tooltip: t( 'Decimal' ),
+						type: 'decimal',
+						icon: listStyleDecimalIcon
+					},
+					{
+						label: t( 'Toggle the decimal with leading zero list style' ),
+						tooltip: t( 'Decimal with leading zero' ),
+						type: 'decimal-leading-zero',
+						icon: listStyleDecimalWithLeadingZeroIcon
+					},
+					{
+						label: t( 'Toggle the lower–roman list style' ),
+						tooltip: t( 'Lower–roman' ),
+						type: 'lower-roman',
+						icon: listStyleLowerRomanIcon
+					},
+					{
+						label: t( 'Toggle the upper–roman list style' ),
+						tooltip: t( 'Upper-roman' ),
+						type: 'upper-roman',
+						icon: listStyleUpperRomanIcon
+					},
+					{
+						label: t( 'Toggle the lower–latin list style' ),
+						tooltip: t( 'Lower-latin' ),
+						type: 'lower-latin',
+						icon: listStyleLowerLatinIcon
+					},
+					{
+						label: t( 'Toggle the upper–latin list style' ),
+						tooltip: t( 'Upper-latin' ),
+						type: 'upper-latin',
+						icon: listStyleUpperLatinIcon
+					}
+				]
+			} ) );
+		}
 	}
 }
 
@@ -217,10 +228,9 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 					editor.execute( 'listStyle', { type: listStyleCommand._defaultType } );
 				}
 			}
-			// If the content the selection is anchored to is not a list, let's create a list of a desired style.
+			// Otherwise, leave the creation of the styled list to the `ListStyleCommand`.
 			else {
 				editor.model.change( () => {
-					editor.execute( parentCommandName );
 					editor.execute( 'listStyle', { type } );
 				} );
 			}

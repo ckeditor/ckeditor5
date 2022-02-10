@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -76,11 +76,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * When providing custom listeners for a downcast dispatcher, remember to use the provided
  * {@link module:engine/view/downcastwriter~DowncastWriter view downcast writer} to apply changes to the view document.
  *
- * You can read more about conversion in the following guides:
+ * You can read more about conversion in the following guide:
  *
- * * {@glink framework/guides/deep-dive/conversion/conversion-introduction Advanced conversion concepts &mdash; attributes}
- * * {@glink framework/guides/deep-dive/conversion/conversion-extending-output Extending the editor output }
- * * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion}
+ * * {@glink framework/guides/deep-dive/conversion/downcast Downcast conversion}
  *
  * An example of a custom converter for the downcast dispatcher:
  *

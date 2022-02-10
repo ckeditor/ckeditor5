@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -233,40 +233,44 @@ export function mergeListItemBefore( listBlock, parentBlock, writer ) {
  * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
  * @param {module:engine/model/writer~Writer} writer The model writer.
  * @param {Object} [options]
- * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
- * (all blocks of given list items).
+ * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items.
+ * @param {Number} [options.indentBy=1] The number of levels the indentation should change (could be negative).
  */
-export function indentBlocks( blocks, writer, { expand } = {} ) {
+export function indentBlocks( blocks, writer, { expand, indentBy = 1 } = {} ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
 	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
 
 	for ( const block of allBlocks ) {
-		writer.setAttribute( 'listIndent', block.getAttribute( 'listIndent' ) + 1, block );
+		const blockIndent = block.getAttribute( 'listIndent' ) + indentBy;
+
+		if ( blockIndent < 0 ) {
+			removeListAttributes( block, writer );
+		} else {
+			writer.setAttribute( 'listIndent', blockIndent, block );
+		}
 	}
 
 	return allBlocks;
 }
 
 /**
- * Decreases indentation of given list blocks.
+ * Decreases indentation of given list of blocks. If the indentation of some blocks matches the indentation
+ * of surrounding blocks, they get merged together.
  *
  * @protected
  * @param {module:engine/model/element~Element|Iterable.<module:engine/model/element~Element>} blocks The block or iterable of blocks.
  * @param {module:engine/model/writer~Writer} writer The model writer.
- * @param {Object} [options]
- * @param {Boolean} [options.expand=false] Whether should expand the list of blocks to include complete list items
- * (all blocks of given list items).
  */
-export function outdentBlocks( blocks, writer, { expand } = {} ) {
+export function outdentBlocksWithMerge( blocks, writer ) {
 	blocks = toArray( blocks );
 
 	// Expand the selected blocks to contain the whole list items.
-	const allBlocks = expand ? expandListBlocksToCompleteItems( blocks ) : blocks;
+	const allBlocks = expandListBlocksToCompleteItems( blocks );
 	const visited = new Set();
 
-	const referenceIndex = Math.min( ...allBlocks.map( block => block.getAttribute( 'listIndent' ) ) );
+	const referenceIndent = Math.min( ...allBlocks.map( block => block.getAttribute( 'listIndent' ) ) );
 	const parentBlocks = new Map();
 
 	// Collect parent blocks before the list structure gets altered.
@@ -290,7 +294,7 @@ export function outdentBlocks( blocks, writer, { expand } = {} ) {
 		}
 
 		// Merge with parent list item while outdenting and indent matches reference indent.
-		if ( block.getAttribute( 'listIndent' ) == referenceIndex ) {
+		if ( block.getAttribute( 'listIndent' ) == referenceIndent ) {
 			const mergedBlocks = mergeListItemIfNotLast( block, parentBlocks.get( block ), writer );
 
 			// All list item blocks are updated while merging so add those to visited set.
@@ -425,7 +429,7 @@ export function outdentFollowingItems( lastBlock, writer ) {
 			break;
 		}
 
-		// We check if that's item indent is lower as current relative indent.
+		// We check if that's item indent is lower than current relative indent.
 		if ( indent < currentIndent ) {
 			// If it is, current relative indent becomes that indent.
 			currentIndent = indent;
@@ -435,9 +439,6 @@ export function outdentFollowingItems( lastBlock, writer ) {
 		// Note, that if we just changed the current relative indent, the newIndent will be equal to 0.
 		const newIndent = indent - currentIndent;
 
-		// Save the entry in changes array. We do not apply it at the moment, because we will need to
-		// reverse the changes so the last item is changed first.
-		// This is to keep model in correct state all the time.
 		writer.setAttribute( 'listIndent', newIndent, node );
 		changedBlocks.push( node );
 	}
@@ -453,7 +454,31 @@ export function outdentFollowingItems( lastBlock, writer ) {
  * @returns {Array.<module:engine/model/element~Element>} The sorted array of blocks.
  */
 export function sortBlocks( blocks ) {
-	return Array.from( blocks ).sort( ( a, b ) => a.index - b.index );
+	return Array.from( blocks )
+		.filter( block => block.root.rootName !== '$graveyard' )
+		.sort( ( a, b ) => a.index - b.index );
+}
+
+/**
+ * Returns a selected block object. If a selected object is inline or when there is no selected
+ * object, `null` is returned.
+ *
+ * @protected
+ * @param {module:engine/model/model~Model} model The instance of editor model.
+ * @returns {module:engine/model/element~Element|null} Selected block object or `null`.
+ */
+export function getSelectedBlockObject( model ) {
+	const selectedElement = model.document.selection.getSelectedElement();
+
+	if ( !selectedElement ) {
+		return null;
+	}
+
+	if ( model.schema.isObject( selectedElement ) && model.schema.isBlock( selectedElement ) ) {
+		return selectedElement;
+	}
+
+	return null;
 }
 
 // Merges a given block to the given parent block if parent is a list item and there is no more blocks in the same item.

@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -18,7 +18,7 @@ msgstr ""
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Επεξεργαστής Πλούσιου Κειμένου, 0%"
+msgstr "Επεξεργαστής Πλούσιου Κειμένου, %0"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,8 +14,8 @@ import { logWarning } from 'ckeditor5/src/utils';
 /**
  * The list style feature.
  *
- * This is an obsolete plugin that exists for backward-compatibility.
- * Use {@link module:list/listproperties~ListProperties list properties plugin} instead.
+ * This is an obsolete plugin that exists for backward compatibility only.
+ * Use the {@link module:list/listproperties~ListProperties list properties plugin} instead.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -37,6 +37,6 @@ export default class ListStyle extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		logWarning( '`ListStyle` plugin is obsolete. User `ListProperties` instead.' );
+		logWarning( 'The `ListStyle` plugin is obsolete. Use `ListProperties` instead.' );
 	}
 }

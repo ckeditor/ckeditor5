@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,6 +87,7 @@ export default class CodeBlockEditing extends Plugin {
 		const schema = editor.model.schema;
 		const model = editor.model;
 		const view = editor.editing.view;
+		const isDocumentListEditingLoaded = editor.plugins.has( 'DocumentListEditing' );
 
 		const normalizedLanguagesDefs = getNormalizedAndLocalizedLanguageDefinitions( editor );
 
@@ -115,12 +116,20 @@ export default class CodeBlockEditing extends Plugin {
 			allowWhere: '$block',
 			allowChildren: '$text',
 			isBlock: true,
-			allowAttributes: [ 'language' ],
-			allowAttributesOf: '$container'
+			allowAttributes: [ 'language' ]
 		} );
 
+		// Allow all list* attributes on `codeBlock` (integration with DocumentList).
 		// Disallow all attributes on $text inside `codeBlock`.
-		schema.addAttributeCheck( context => {
+		schema.addAttributeCheck( ( context, attributeName ) => {
+			const isDocumentListAttributeOnCodeBlock = context.endsWith( 'codeBlock' ) &&
+				attributeName.startsWith( 'list' ) &&
+				attributeName !== 'list';
+
+			if ( isDocumentListEditingLoaded && isDocumentListAttributeOnCodeBlock ) {
+				return true;
+			}
+
 			if ( context.endsWith( 'codeBlock $text' ) ) {
 				return false;
 			}

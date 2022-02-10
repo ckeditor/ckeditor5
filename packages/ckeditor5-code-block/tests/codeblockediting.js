@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -154,14 +154,6 @@ describe( 'CodeBlockEditing', () => {
 		editor.execute( 'bold' );
 
 		expect( getModelData( model ) ).to.equal( '<codeBlock language="css">f[o]o</codeBlock>' );
-	} );
-
-	it( 'inherits attributes from $container', () => {
-		model.schema.extend( '$container', {
-			allowAttributes: 'foo'
-		} );
-
-		expect( model.schema.checkAttribute( 'codeBlock', 'foo' ) ).to.be.true;
 	} );
 
 	describe( 'tab key handling', () => {

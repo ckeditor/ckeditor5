@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -68,7 +68,7 @@ export default class CollapsibleView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * The id of the label inside the {@link #buttonView} that describes the collapsible
+		 * The ID of the label inside the {@link #buttonView} that describes the collapsible
 		 * container for assistive technologies. Set after the button was {@link #render rendered}.
 		 *
 		 * @private

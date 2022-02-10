@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,7 +18,7 @@ describe( 'ListStyle', () => {
 	} );
 
 	it( 'should emit warning when instantiated', () => {
-		const expectedMessage = '`ListStyle` plugin is obsolete. User `ListProperties` instead.';
+		const expectedMessage = '`ListStyle` plugin is obsolete. Use `ListProperties` instead.';
 
 		try {
 			sinon.stub( console, 'warn' );

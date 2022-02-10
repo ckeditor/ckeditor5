@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,9 @@ import { Command } from 'ckeditor5/src/core';
 import { getSelectedListItems } from '../list/utils';
 
 /**
- * The list reversed command. It changes `listReversed` attribute of the selected list items.
- * It is used by the {@link module:list/listproperties~ListProperties list style feature}.
+ * The reversed list command. It changes the `listReversed` attribute of the selected list items. As a result, the list order will be
+ * reversed.
+ * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  *
  * @extends module:core/command~Command
  */

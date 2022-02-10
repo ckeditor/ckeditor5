@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1135,19 +1135,39 @@ mix( Schema, ObservableMixin );
  *
  * # Generic items
  *
- * There are three basic generic items: `$root`, `$block` and `$text`.
- * They are defined as follows:
+ * There are several generic items (classes of elements) available: `$root`, `$container`, `$block`, `$blockObject`,
+ * `$inlineObject`, and `$text`. They are defined as follows:
  *
- *		this.schema.register( '$root', {
+ *		schema.register( '$root', {
  *			isLimit: true
  *		} );
- *		this.schema.register( '$block', {
- *			allowIn: '$root',
+ *
+ *		schema.register( '$container', {
+ *			allowIn: [ '$root', '$container' ]
+ *		} );
+ *
+ *		schema.register( '$block', {
+ *			allowIn: [ '$root', '$container' ],
  *			isBlock: true
  *		} );
- *		this.schema.register( '$text', {
+ *
+ *		schema.register( '$blockObject', {
+ *			allowWhere: '$block',
+ *			isBlock: true,
+ *			isObject: true
+ *		} );
+ *
+ *		schema.register( '$inlineObject', {
+ *			allowWhere: '$text',
+ *			allowAttributesOf: '$text',
+ *			isInline: true,
+ *			isObject: true
+ *		} );
+ *
+ *		schema.register( '$text', {
  *			allowIn: '$block',
- *			isInline: true
+ *			isInline: true,
+ *			isContent: true
  *		} );
  *
  * They reflect typical editor content that is contained within one root, consists of several blocks
@@ -1180,14 +1200,18 @@ mix( Schema, ObservableMixin );
  *			isBlock: true
  *		} );
  *
+ * The previous rule can be written in a shorter form using inheritance:
+ *
+ *		schema.register( 'paragraph', {
+ *			inheritAllFrom: '$block'
+ *		} );
+ *
  * Make `imageBlock` a block object, which is allowed everywhere where `$block` is.
  * Also, allow `src` and `alt` attributes in it:
  *
  *		schema.register( 'imageBlock', {
- *			allowWhere: '$block',
+ *			inheritAllFrom: '$blockObject',
  *			allowAttributes: [ 'src', 'alt' ],
- *			isBlock: true,
- *			isObject: true
  *		} );
  *
  * Make `caption` allowed in `imageBlock` and make it allow all the content of `$block`s (usually, `$text`).

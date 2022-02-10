@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,7 @@ import {
 	isSingleListItem,
 	ListItemUid,
 	mergeListItemBefore,
-	outdentBlocks,
+	outdentBlocksWithMerge,
 	outdentFollowingItems,
 	removeListAttributes,
 	splitListItemBefore
@@ -1050,7 +1050,7 @@ describe( 'DocumentList - utils - model', () => {
 
 		it( 'should not apply non-list attributes', () => {
 			const input = modelList( [
-				'* <paragraph alignment="right">0</paragraph>{a}',
+				'* <paragraph alignment="right">0</paragraph>',
 				'  * 1',
 				'* 2'
 			] );
@@ -1063,8 +1063,8 @@ describe( 'DocumentList - utils - model', () => {
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* <paragraph alignment="right">0</paragraph>{a}',
-				'* 1{a}',
+				'* <paragraph alignment="right">0</paragraph>',
+				'  1',
 				'* 2'
 			] ) );
 
@@ -1075,229 +1075,233 @@ describe( 'DocumentList - utils - model', () => {
 	} );
 
 	describe( 'indentBlocks()', () => {
-		it( 'flat items', () => {
-			const input = modelList( [
-				'* a',
-				'  b',
-				'* c',
-				'  d'
-			] );
+		describe( 'indentBy = 1', () => {
+			it( 'flat items', () => {
+				const input = modelList( [
+					'* a',
+					'  b',
+					'* c',
+					'  d'
+				] );
 
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 1 ),
-				fragment.getChild( 2 )
-			];
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 )
+				];
 
-			stubUid();
+				stubUid();
 
-			model.change( writer => indentBlocks( blocks, writer ) );
+				model.change( writer => indentBlocks( blocks, writer ) );
 
-			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* a',
-				'  * b{000}',
-				'  * c',
-				'* d{002}'
-			] ) );
+				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+					'* a',
+					'  b',
+					'  * c',
+					'    d'
+				] ) );
+			} );
+
+			it( 'nested lists should keep structure', () => {
+				const input = modelList( [
+					'* a',
+					'  * b',
+					'    * c',
+					'  * d',
+					'* e'
+				] );
+
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 1 ),
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 )
+				];
+
+				stubUid();
+
+				model.change( writer => indentBlocks( blocks, writer ) );
+
+				expect( stringifyModel( fragment ) ).to.equal( modelList( [
+					'* a',
+					'    * b',
+					'      * c',
+					'    * d',
+					'* e'
+				] ) );
+			} );
+
+			it( 'should apply indentation on all blocks of given items (expand = true)', () => {
+				const input = modelList( [
+					'* 0',
+					'* 1',
+					'  2',
+					'* 3',
+					'  4',
+					'* 5'
+				] );
+
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 )
+				];
+
+				model.change( writer => indentBlocks( blocks, writer, { expand: true } ) );
+
+				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'  * 1',
+					'    2',
+					'  * 3',
+					'    4',
+					'* 5'
+				] ) );
+			} );
 		} );
 
-		it( 'nested lists should keep structure', () => {
-			const input = modelList( [
-				'* a',
-				'  * b',
-				'    * c',
-				'  * d',
-				'* e'
-			] );
+		describe( 'indentBy = -1', () => {
+			it( 'should handle outdenting', () => {
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    * 2',
+					'  * 3',
+					'* 4'
+				] );
 
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 1 ),
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 )
-			];
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 1 ),
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 )
+				];
 
-			stubUid();
+				let changedBlocks;
 
-			model.change( writer => indentBlocks( blocks, writer ) );
+				model.change( writer => {
+					changedBlocks = indentBlocks( blocks, writer, { indentBy: -1 } );
+				} );
 
-			expect( stringifyModel( fragment ) ).to.equal( modelList( [
-				'* a',
-				'    * b',
-				'      * c',
-				'    * d',
-				'* e'
-			] ) );
-		} );
+				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'* 1',
+					'  * 2',
+					'* 3',
+					'* 4'
+				] ) );
 
-		it( 'should apply indentation on all blocks of given items (expand = true)', () => {
-			const input = modelList( [
-				'* 0',
-				'* 1',
-				'  2',
-				'* 3',
-				'  4',
-				'* 5'
-			] );
+				expect( changedBlocks ).to.deep.equal( blocks );
+			} );
 
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 )
-			];
+			it( 'should remove list attributes if outdented below 0', () => {
+				const input = modelList( [
+					'* 0',
+					'* 1',
+					'* 2',
+					'  * 3',
+					'* 4'
+				] );
 
-			model.change( writer => indentBlocks( blocks, writer, { expand: true } ) );
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 ),
+					fragment.getChild( 4 )
+				];
 
-			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0',
-				'  * 1',
-				'    2',
-				'  * 3',
-				'    4',
-				'* 5'
-			] ) );
+				let changedBlocks;
+
+				model.change( writer => {
+					changedBlocks = indentBlocks( blocks, writer, { indentBy: -1 } );
+				} );
+
+				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'* 1',
+					'2',
+					'* 3',
+					'4'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( blocks );
+			} );
+
+			it( 'should not remove attributes other than lists if outdented below 0', () => {
+				const input = modelList( [
+					'* <paragraph alignment="right">0</paragraph>',
+					'* <paragraph alignment="right">1</paragraph>',
+					'  * <paragraph alignment="right">2</paragraph>',
+					'* <paragraph alignment="right">3</paragraph>',
+					'  * <paragraph alignment="right">4</paragraph>'
+				] );
+
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 ),
+					fragment.getChild( 4 )
+				];
+
+				let changedBlocks;
+
+				model.change( writer => {
+					changedBlocks = indentBlocks( blocks, writer, { indentBy: -1 } );
+				} );
+
+				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+					'* <paragraph alignment="right">0</paragraph>',
+					'* <paragraph alignment="right">1</paragraph>',
+					'* <paragraph alignment="right">2</paragraph>',
+					'<paragraph alignment="right">3</paragraph>',
+					'* <paragraph alignment="right">4</paragraph>'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( blocks );
+			} );
+
+			it( 'should apply indentation on all blocks of given items (expand = true)', () => {
+				const input = modelList( [
+					'* 0',
+					'  * 1',
+					'    2',
+					'  * 3',
+					'    4',
+					'  * 5'
+				] );
+
+				const fragment = parseModel( input, schema );
+				const blocks = [
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 )
+				];
+
+				let changedBlocks;
+
+				model.change( writer => {
+					changedBlocks = indentBlocks( blocks, writer, { expand: true, indentBy: -1 } );
+				} );
+
+				expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
+					'* 0',
+					'* 1',
+					'  2',
+					'* 3',
+					'  4',
+					'  * 5'
+				] ) );
+
+				expect( changedBlocks ).to.deep.equal( [
+					fragment.getChild( 1 ),
+					fragment.getChild( 2 ),
+					fragment.getChild( 3 ),
+					fragment.getChild( 4 )
+				] );
+			} );
 		} );
 	} );
 
-	describe( 'outdentBlocks()', () => {
-		it( 'should handle outdenting', () => {
-			const input = modelList( [
-				'* 0',
-				'  * 1',
-				'    * 2',
-				'  * 3',
-				'* 4'
-			] );
-
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 1 ),
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 )
-			];
-
-			let changedBlocks;
-
-			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer );
-			} );
-
-			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0',
-				'* 1',
-				'  * 2',
-				'* 3',
-				'* 4'
-			] ) );
-
-			expect( changedBlocks ).to.deep.equal( blocks );
-		} );
-
-		it( 'should remove list attributes if outdented below 0', () => {
-			const input = modelList( [
-				'* 0',
-				'* 1',
-				'* 2',
-				'  * 3',
-				'* 4'
-			] );
-
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 ),
-				fragment.getChild( 4 )
-			];
-
-			let changedBlocks;
-
-			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer );
-			} );
-
-			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0',
-				'* 1',
-				'2',
-				'* 3',
-				'4'
-			] ) );
-
-			expect( changedBlocks ).to.deep.equal( blocks );
-		} );
-
-		it( 'should not remove attributes other than lists if outdented below 0', () => {
-			const input = modelList( [
-				'* <paragraph alignment="right">0</paragraph>',
-				'* <paragraph alignment="right">1</paragraph>',
-				'  * <paragraph alignment="right">2</paragraph>',
-				'* <paragraph alignment="right">3</paragraph>',
-				'  * <paragraph alignment="right">4</paragraph>'
-			] );
-
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 ),
-				fragment.getChild( 4 )
-			];
-
-			let changedBlocks;
-
-			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer );
-			} );
-
-			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* <paragraph alignment="right">0</paragraph>',
-				'* <paragraph alignment="right">1</paragraph>',
-				'* <paragraph alignment="right">2</paragraph>',
-				'<paragraph alignment="right">3</paragraph>',
-				'* <paragraph alignment="right">4</paragraph>'
-			] ) );
-
-			expect( changedBlocks ).to.deep.equal( blocks );
-		} );
-
-		it( 'should apply indentation on all blocks of given items (expand = true)', () => {
-			const input = modelList( [
-				'* 0',
-				'  * 1',
-				'    2',
-				'  * 3',
-				'    4',
-				'  * 5'
-			] );
-
-			const fragment = parseModel( input, schema );
-			const blocks = [
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 )
-			];
-
-			let changedBlocks;
-
-			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
-			} );
-
-			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
-				'* 0',
-				'* 1',
-				'  2',
-				'* 3',
-				'  4',
-				'  * 5'
-			] ) );
-
-			expect( changedBlocks ).to.deep.equal( [
-				fragment.getChild( 1 ),
-				fragment.getChild( 2 ),
-				fragment.getChild( 3 ),
-				fragment.getChild( 4 )
-			] );
-		} );
-
+	describe( 'outdentBlocksWithMerge()', () => {
 		it( 'should merge nested items to the parent item if nested block is not the last block of parent list item', () => {
 			const input = modelList( [
 				'* 0',
@@ -1315,7 +1319,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+				changedBlocks = outdentBlocksWithMerge( blocks, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -1349,7 +1353,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+				changedBlocks = outdentBlocksWithMerge( blocks, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [
@@ -1383,7 +1387,7 @@ describe( 'DocumentList - utils - model', () => {
 			let changedBlocks;
 
 			model.change( writer => {
-				changedBlocks = outdentBlocks( blocks, writer, { expand: true } );
+				changedBlocks = outdentBlocksWithMerge( blocks, writer );
 			} );
 
 			expect( stringifyModel( fragment ) ).to.equalMarkup( modelList( [

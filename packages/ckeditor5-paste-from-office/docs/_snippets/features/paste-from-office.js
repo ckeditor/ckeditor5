@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -72,6 +72,13 @@ ClassicEditor
 		fontSize: {
 			options: [ 10, 12, 14, 'default', 18, 20, 22 ],
 			supportAllValues: true
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: false
+			}
 		},
 		placeholder: 'Paste the content here to test the feature.',
 		cloudServices: CS_CONFIG
