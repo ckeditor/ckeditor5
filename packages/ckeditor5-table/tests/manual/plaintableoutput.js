@@ -18,7 +18,6 @@ import TableCaption from '../../src/tablecaption';
 import PlainTableOutput from '../../src/plaintableoutput';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	image: { toolbar: [ 'toggleImageCaption', 'imageTextAlternative' ] },
 	plugins: [
 		ArticlePluginSet,
 		Table,
