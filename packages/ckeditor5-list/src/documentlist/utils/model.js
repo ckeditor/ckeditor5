@@ -29,8 +29,16 @@ export class ListItemUid {
 }
 
 /**
+ * A list of base list model attributes.
+ *
+ * @protected
+ */
+export const LIST_BASE_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
+
+/**
  * Returns true if the given model node is a list item block.
  *
+ * @protected
  * @param {module:engine/model/node~Node} node A model node.
  * @returns {Boolean}
  */

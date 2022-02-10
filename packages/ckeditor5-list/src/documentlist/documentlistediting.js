@@ -34,14 +34,13 @@ import {
 	isLastBlockOfListItem,
 	isSingleListItem,
 	getSelectedBlockObject,
-	isListItemBlock
+	isListItemBlock,
+	LIST_BASE_ATTRIBUTES
 } from './utils/model';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
 import { getViewElementNameForListType } from './utils/view';
-
-const LIST_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
@@ -88,17 +87,9 @@ export default class DocumentListEditing extends Plugin {
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
 
-		model.schema.extend( '$container', {
-			allowAttributes: LIST_ATTRIBUTES
-		} );
-
-		model.schema.extend( '$block', {
-			allowAttributes: LIST_ATTRIBUTES
-		} );
-
-		model.schema.extend( '$blockObject', {
-			allowAttributes: LIST_ATTRIBUTES
-		} );
+		model.schema.extend( '$container', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		model.schema.extend( '$block', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		model.schema.extend( '$blockObject', { allowAttributes: LIST_BASE_ATTRIBUTES } );
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
@@ -319,7 +310,6 @@ export default class DocumentListEditing extends Plugin {
 	_setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
-		const attributes = [ 'listItemId', 'listType', 'listIndent' ];
 
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
@@ -345,8 +335,8 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				for ( const attributeName of attributes ) {
-					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
+				for ( const attributeName of LIST_BASE_ATTRIBUTES ) {
+					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( LIST_BASE_ATTRIBUTES, model ) );
 				}
 			} );
 

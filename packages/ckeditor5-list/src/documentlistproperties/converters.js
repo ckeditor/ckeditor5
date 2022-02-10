@@ -10,6 +10,7 @@
 import ListWalker from '../documentlist/utils/listwalker';
 import { findMappedViewElement } from '../documentlist/converters';
 import { createListElement, isListView } from '../documentlist/utils/view';
+import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
 
 /**
  * Returns a converter consumes the `style`, `reversed` and `start` attribute.
@@ -68,18 +69,17 @@ export function listPropertiesUpcastConverter( strategy ) {
  * The `"default"` values are removed and not present in the view/data.
  *
  * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy} strategy
- * @param {Array.<String>} baseListAttributes The base list attributes.
  * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}
  */
-export function listPropertiesDowncastConverter( strategy, baseListAttributes, model ) {
+export function listPropertiesDowncastConverter( strategy, model ) {
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 		const listItem = data.item;
 
 		// Check and consume only the list properties attributes (the base list attributes are already consumed
 		// but should also trigger conversion of list properties).
-		if ( !baseListAttributes.includes( data.attributeKey ) && !consumable.consume( listItem, evt.name ) ) {
+		if ( !LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) && !consumable.consume( listItem, evt.name ) ) {
 			return;
 		}
 
