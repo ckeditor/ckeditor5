@@ -37,5 +37,6 @@ export default function insertToPriorityArray( objects, objectToInsert ) {
 			return;
 		}
 	}
+
 	objects.push( objectToInsert );
 }
