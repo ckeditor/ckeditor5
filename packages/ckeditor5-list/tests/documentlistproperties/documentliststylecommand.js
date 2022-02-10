@@ -43,7 +43,7 @@ describe( 'DocumentListStyleCommand', () => {
 
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
-		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStyle' ] } );
 
 		bulletedListCommand = new DocumentListCommand( editor, 'bulleted' );
 		numberedListCommand = new DocumentListCommand( editor, 'numbered' );
@@ -253,7 +253,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 		} );
 
-		it( 'should stop searching for the list items when spotted listItem with different listStyle attribute', () => {
+		it( 'should stop searching for the list items when spotted listItem with different `listStyle` attribute', () => {
 			setData( model, modelList( `
 				Foo.
 				* 1.[] {style:default}

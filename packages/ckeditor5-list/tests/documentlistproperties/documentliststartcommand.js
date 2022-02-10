@@ -38,7 +38,7 @@ describe( 'DocumentListStartCommand', () => {
 
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
-		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStart' ] } );
 
 		listStartCommand = new DocumentListStartCommand( editor );
 

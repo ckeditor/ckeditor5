@@ -4,20 +4,20 @@
  */
 
 /**
- * @module list/documentlistproperties/documentliststartcommand
+ * @module list/documentlistproperties/documentlistreversedcommand
  */
 
 import { Command } from 'ckeditor5/src/core';
 import { expandListBlocksToCompleteItems, getListItems } from '../documentlist/utils/model';
 
 /**
- * The list start index command. It changes the `listStart` attribute of the selected list items,
- * letting the user to choose the starting point of an ordered list.
+ * The list start index command. It changes the `listReversed` attribute of the selected list items,
+ * letting the user to choose the order of an ordered list.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
  * @extends module:core/command~Command
  */
-export default class DocumentListStartCommand extends Command {
+export default class DocumentListReversedCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -32,13 +32,13 @@ export default class DocumentListStartCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options]
-	 * @param {Number} [options.startIndex=1] The list start index.
+	 * @param {Boolean} [options.reversed=false] Whether the list should be reversed.
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
 		let blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => block.hasAttribute( 'listStart' ) && block.getAttribute( 'listType' ) == 'numbered' );
+			.filter( block => block.hasAttribute( 'listReversed' ) && block.getAttribute( 'listType' ) == 'numbered' );
 
 		if ( document.selection.isCollapsed ) {
 			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
@@ -50,7 +50,7 @@ export default class DocumentListStartCommand extends Command {
 
 		model.change( writer => {
 			for ( const block of blocks ) {
-				writer.setAttribute( 'listStart', options.startIndex || 1, block );
+				writer.setAttribute( 'listReversed', !!options.reversed, block );
 			}
 		} );
 	}
@@ -59,13 +59,13 @@ export default class DocumentListStartCommand extends Command {
 	 * Checks the command's {@link #value}.
 	 *
 	 * @private
-	 * @returns {Number|null} The current value.
+	 * @returns {Boolean|null} The current value.
 	 */
 	_getValue() {
 		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
 
 		if ( listItem && listItem.hasAttribute( 'listItemId' ) && listItem.getAttribute( 'listType' ) == 'numbered' ) {
-			return listItem.getAttribute( 'listStart' );
+			return listItem.getAttribute( 'listReversed' );
 		}
 
 		return null;

@@ -11,6 +11,7 @@ import { Plugin } from 'ckeditor5/src/core';
 import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
+import DocumentListReversedCommand from './documentlistreversedcommand';
 import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
 
@@ -175,8 +176,8 @@ function createAttributeStrategies( enabledProperties ) {
 			defaultValue: false,
 			viewConsumables: { attributes: 'reversed' },
 
-			addCommand( /* editor */ ) {
-				// editor.commands.add( 'listReversed', new ListReversedCommand( editor ) );
+			addCommand( editor ) {
+				editor.commands.add( 'listReversed', new DocumentListReversedCommand( editor ) );
 			},
 
 			appliesToListItem( item ) {
