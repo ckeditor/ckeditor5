@@ -8,7 +8,7 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { expandListBlocksToCompleteItems, getListItems } from '../documentlist/utils/model';
+import { expandListBlocksToCompleteItems, getListItems, isListItemBlock } from '../documentlist/utils/model';
 import { getListTypeFromListStyleType } from './utils/style';
 
 /**
@@ -91,7 +91,7 @@ export default class DocumentListStyleCommand extends Command {
 	_getValue() {
 		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
 
-		if ( listItem && listItem.hasAttribute( 'listItemId' ) ) {
+		if ( isListItemBlock( listItem ) ) {
 			return listItem.getAttribute( 'listStyle' );
 		}
 

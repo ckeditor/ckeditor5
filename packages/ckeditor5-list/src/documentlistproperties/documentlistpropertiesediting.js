@@ -64,13 +64,12 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		const enabledProperties = editor.config.get( 'list.properties' );
 		const strategies = createAttributeStrategies( enabledProperties );
 
-		model.schema.extend( '$container', {
-			allowAttributes: strategies.map( s => s.attributeName )
-		} );
-
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
 			documentListEditing.registerSameListDefiningAttributes( strategy.attributeName );
+			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
 		}
 
 		// Set up conversion.

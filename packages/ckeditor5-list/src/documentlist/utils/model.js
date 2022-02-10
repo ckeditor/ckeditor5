@@ -29,6 +29,16 @@ export class ListItemUid {
 }
 
 /**
+ * Returns true if the given model node is a list item block.
+ *
+ * @param {module:engine/model/node~Node} node A model node.
+ * @returns {Boolean}
+ */
+export function isListItemBlock( node ) {
+	return !!node && node.is( 'element' ) && node.hasAttribute( 'listItemId' );
+}
+
+/**
  * Returns an array with all elements that represents the same list item.
  *
  * It means that values for `listIndent`, and `listItemId` for all items are equal.
