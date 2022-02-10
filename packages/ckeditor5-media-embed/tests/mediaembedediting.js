@@ -495,12 +495,12 @@ describe( 'MediaEmbedEditing', () => {
 				} );
 		} );
 
-		it( 'inherits attributes from $container', () => {
+		it( 'inherits attributes from $blockObject', () => {
 			return createTestEditor()
 				.then( newEditor => {
 					model = newEditor.model;
 
-					model.schema.extend( '$container', {
+					model.schema.extend( '$blockObject', {
 						allowAttributes: 'foo'
 					} );
 

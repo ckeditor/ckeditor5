@@ -40,6 +40,8 @@ import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 import '../../theme/documentlist.css';
 import { getViewElementNameForListType } from './utils/view';
 
+const LIST_ATTRIBUTES = [ 'listType', 'listIndent', 'listItemId' ];
+
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
  *
@@ -86,7 +88,15 @@ export default class DocumentListEditing extends Plugin {
 		}
 
 		model.schema.extend( '$container', {
-			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
+			allowAttributes: LIST_ATTRIBUTES
+		} );
+
+		model.schema.extend( '$block', {
+			allowAttributes: LIST_ATTRIBUTES
+		} );
+
+		model.schema.extend( '$blockObject', {
+			allowAttributes: LIST_ATTRIBUTES
 		} );
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );

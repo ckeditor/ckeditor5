@@ -40,7 +40,7 @@ class ExtendHTMLSupport extends Plugin {
 			view: 'xyz',
 			isObject: true,
 			modelSchema: {
-				inheritAllFrom: '$htmlObjectBlock'
+				inheritAllFrom: '$blockObject'
 			}
 		} );
 
