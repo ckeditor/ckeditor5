@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -87,25 +87,29 @@ export default class UndoEditing extends Plugin {
 
 			const isRedoBatch = this._redoCommand._createdBatches.has( batch );
 			const isUndoBatch = this._undoCommand._createdBatches.has( batch );
-			const isRegisteredBatch = this._batchRegistry.has( batch );
+			const wasProcessed = this._batchRegistry.has( batch );
 
-			// If changes are not a part of a batch or this is not a new batch, omit those changes.
-			if ( isRegisteredBatch || ( batch.type == 'transparent' && !isRedoBatch && !isUndoBatch ) ) {
+			// Skip the batch if it was already processed.
+			if ( wasProcessed ) {
 				return;
-			} else {
-				if ( isRedoBatch ) {
-					// If this batch comes from `redoCommand`, add it to `undoCommand` stack.
-					this._undoCommand.addBatch( batch );
-				} else if ( !isUndoBatch ) {
-					// A default batch - these are new changes in the document, not introduced by undo feature.
-					// Add them to `undoCommand` stack and clear `redoCommand` stack.
-					this._undoCommand.addBatch( batch );
-					this._redoCommand.clearStack();
-				}
 			}
 
 			// Add the batch to the registry so it will not be processed again.
 			this._batchRegistry.add( batch );
+
+			if ( !batch.isUndoable ) {
+				return;
+			}
+
+			if ( isRedoBatch ) {
+				// If this batch comes from `redoCommand`, add it to the `undoCommand` stack.
+				this._undoCommand.addBatch( batch );
+			} else if ( !isUndoBatch ) {
+				// If the batch comes neither  from `redoCommand` nor from `undoCommand` then it is a new, regular batch.
+				// Add the batch to the `undoCommand` stack and clear the `redoCommand` stack.
+				this._undoCommand.addBatch( batch );
+				this._redoCommand.clearStack();
+			}
 		}, { priority: 'highest' } );
 
 		this.listenTo( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {

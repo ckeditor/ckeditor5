@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -129,7 +129,7 @@ export default class ImageUploadEditing extends Plugin {
 				}
 
 				// Upload images after the selection has changed in order to ensure the command's state is refreshed.
-				editor.model.enqueueChange( 'default', () => {
+				editor.model.enqueueChange( () => {
 					editor.execute( 'uploadImage', { file: images } );
 				} );
 			} );
@@ -277,7 +277,7 @@ export default class ImageUploadEditing extends Plugin {
 		const imageUtils = editor.plugins.get( 'ImageUtils' );
 		const imageUploadElements = this._uploadImageElements;
 
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.setAttribute( 'uploadStatus', 'reading', imageUploadElements.get( loader.id ) );
 		} );
 
@@ -317,14 +317,14 @@ export default class ImageUploadEditing extends Plugin {
 					} );
 				}
 
-				model.enqueueChange( 'transparent', writer => {
+				model.enqueueChange( { isUndoable: false }, writer => {
 					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
 				} );
 
 				return promise;
 			} )
 			.then( data => {
-				model.enqueueChange( 'transparent', writer => {
+				model.enqueueChange( { isUndoable: false }, writer => {
 					const imageElement = imageUploadElements.get( loader.id );
 
 					writer.setAttribute( 'uploadStatus', 'complete', imageElement );
@@ -378,7 +378,7 @@ export default class ImageUploadEditing extends Plugin {
 				}
 
 				// Permanently remove image from insertion batch.
-				model.enqueueChange( 'transparent', writer => {
+				model.enqueueChange( { isUndoable: false }, writer => {
 					writer.remove( imageUploadElements.get( loader.id ) );
 				} );
 
@@ -386,7 +386,7 @@ export default class ImageUploadEditing extends Plugin {
 			} );
 
 		function clean() {
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				const imageElement = imageUploadElements.get( loader.id );
 
 				writer.removeAttribute( 'uploadId', imageElement );

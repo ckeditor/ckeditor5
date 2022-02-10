@@ -17,6 +17,10 @@ Basic formatting options may be applied with the toolbar buttons (pictured below
 * Code &ndash; Use the code toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/code.svg Code} or type ``` `text` ```
 * Strikethrough &ndash; Use the strikethrough toolbar button {@icon @ckeditor/ckeditor5-basic-styles/theme/icons/strikethrough.svg Strikethrough} or type `~~text~~`.
 
+<info-box info>
+	Bold and italic styles are enabled by default in all {@link builds/guides/overview predefined builds}. Strikethrough and underline are available in the {@link builds/guides/overview#document-editor document editor build} only. The code style is not present in any of the predefined builds.
+</info-box>
+
 ## Demo
 
 {@snippet features/basic-styles}

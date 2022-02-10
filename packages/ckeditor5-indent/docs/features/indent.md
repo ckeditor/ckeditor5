@@ -13,6 +13,10 @@ Its main purpose is to visually distinguish parts of the content. Block indentat
 	Block indentation can be removed with the {@link features/remove-format remove format} feature.
 </info-box>
 
+<info-box info>
+	The block indent feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the indent {@icon @ckeditor/ckeditor5-indent/theme/icons/indent.svg Indent} or outdent {@icon @ckeditor/ckeditor5-indent/theme/icons/outdent.svg Outdent} toolbar buttons in the editor below to control the level of indentation of the content, both for paragraph text, headers and list items.

@@ -19,6 +19,10 @@ The plugin enables the following features in the rich-text editor:
 	All font formatting can be removed with the {@link features/remove-format remove format} feature.
 </info-box>
 
+<info-box info>
+	The font styles feature is enabled by default in the {@link builds/guides/overview#document-editor document editor build} only. See the [installation](#installation) section to learn how to enable it in your editor.
+</info-box>
+
 ## Demo
 
 Use the toolbar dropdowns in the demo below to control font size {@icon @ckeditor/ckeditor5-font/theme/icons/font-size.svg Font size} and font family {@icon @ckeditor/ckeditor5-font/theme/icons/font-family.svg Font family}. You can also change both the font color {@icon @ckeditor/ckeditor5-font/theme/icons/font-color.svg Font color} and font background color {@icon @ckeditor/ckeditor5-font/theme/icons/font-background.svg Font background color}.

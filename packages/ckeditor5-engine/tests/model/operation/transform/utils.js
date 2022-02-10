@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -335,7 +335,7 @@ export function syncClients() {
 				remoteOperationsTransformed = transformSets( remoteOperations, localOperations, options ).operationsA;
 			}
 
-			localClient.editor.model.enqueueChange( 'transparent', writer => {
+			localClient.editor.model.enqueueChange( { isUndoable: false }, writer => {
 				for ( const operation of remoteOperationsTransformed ) {
 					writer.batch.addOperation( operation );
 					localClient.editor.model.applyOperation( operation );

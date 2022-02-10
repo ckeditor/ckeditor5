@@ -40,7 +40,7 @@ The availability of these plugins varies in different {@link installation/advanc
 		<thead>
 			<tr>
 				<th rowspan="2" colspan="2" style="vertical-align: middle">Image feature (plugin)</th>
-				<th colspan="5">Ready–to–use editor build</th>
+				<th colspan="5">Predefined editor build</th>
 			</tr>
 			<tr>
 				<th>{@link installation/advanced/predefined-builds#classic-editor Classic}</th>

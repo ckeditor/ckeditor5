@@ -12,6 +12,10 @@ Tables are great for schedules, timetables, price lists or menus; for listing te
 
 You may look for more interesting details in the [Tables in CKEditor 5](https://ckeditor.com/blog/feature-of-the-month-tables-in-ckeditor-5/) blog post after reading this guide.
 
+<info-box info>
+	The basic table feature feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+</info-box>
+
 ## Demos
 
 ### Basic table features

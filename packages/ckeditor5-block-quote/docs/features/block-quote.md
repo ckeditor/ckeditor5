@@ -10,6 +10,10 @@ The {@link module:block-quote/blockquote~BlockQuote} feature allows you to easil
 
 The block quote feature provides an attractive way to draw the readers' attention to selected parts of text and enriches the reading experience with additional data. It also helps organize the content in a structured, elegant way to manage the flow better.
 
+<info-box info>
+	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
+</info-box>
+
 ## Demo
 
 Use the block quote toolbar button {@icon @ckeditor/ckeditor5-core/theme/icons/quote.svg Insert block quote} in the editor below to see the feature in action. You can also precede the quotation with the `>` inline code (followed by a space) to format it on the go thanks to the {@link features/autoformat autoformatting} feature.
@@ -38,6 +42,10 @@ Here are some other CKEditor 5 features that you can use similarly to the block 
 * {@link features/autoformat Autoformatting} &ndash; Add formatting elements (such as block quotes) as you type with Markdown code.
 
 ## Installation
+
+<info-box info>
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
+</info-box>
 
 To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-block-quote`](https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote) package:
 

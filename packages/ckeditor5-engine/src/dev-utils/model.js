@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -102,7 +102,7 @@ getData._stringify = stringify;
  * name will be used.
  * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
- * @param {String} [options.batchType='default'] Batch type used for inserting elements.
+ * @param {Object} [options.batchType] Batch type used for inserting elements. See {@link module:engine/model/batch~Batch#constructor}.
  * See {@link module:engine/model/batch~Batch#type}.
  */
 export function setData( model, data, options = {} ) {
@@ -128,7 +128,7 @@ export function setData( model, data, options = {} ) {
 		modelDocumentFragment = parsedResult;
 	}
 
-	if ( typeof options.batchType === 'string' ) {
+	if ( options.batchType !== undefined ) {
 		model.enqueueChange( options.batchType, writeToModel );
 	} else {
 		model.change( writeToModel );

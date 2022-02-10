@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -214,8 +214,13 @@ export default class Model {
 	 * done in the outer `change()` block.
 	 *
 	 * Second, it lets you define the {@link module:engine/model/batch~Batch} into which you want to add your changes.
-	 * By default, a new batch is created. In the sample above, `change` and `enqueueChange` blocks use a different
-	 * batch (and different {@link module:engine/model/writer~Writer} since each of them operates on the separate batch).
+	 * By default, a new batch with the default {@link module:engine/model/batch~Batch#constructor batch type} is created.
+	 * In the sample above, the `change` and `enqueueChange` blocks will use a different batch (and a different
+	 * {@link module:engine/model/writer~Writer} instance since each of them operates on a separate batch).
+	 *
+	 *		model.enqueueChange( { isUndoable: false }, writer => {
+	 *			writer.insertText( 'foo', paragraph, 'end' );
+	 *		} );
 	 *
 	 * When using the `enqueueChange()` block you can also add some changes to the batch you used before.
 	 *
@@ -226,17 +231,20 @@ export default class Model {
 	 * In order to make a nested `enqueueChange()` create a single undo step together with the changes done in the outer `change()`
 	 * block, you can obtain the batch instance from the  {@link module:engine/model/writer~Writer#batch writer} of the outer block.
 	 *
-	 * @param {module:engine/model/batch~Batch|'transparent'|'default'} batchOrType Batch or batch type should be used in the callback.
-	 * If not defined, a new batch will be created.
+	 * @param {module:engine/model/batch~Batch|Object} [batchOrType] A batch or a
+	 * {@link module:engine/model/batch~Batch#constructor batch type} that should be used in the callback. If not defined, a new batch with
+	 * the default type will be created.
 	 * @param {Function} callback Callback function which may modify the model.
 	 */
 	enqueueChange( batchOrType, callback ) {
 		try {
-			if ( typeof batchOrType === 'string' ) {
-				batchOrType = new Batch( batchOrType );
-			} else if ( typeof batchOrType == 'function' ) {
+			if ( !batchOrType ) {
+				batchOrType = new Batch();
+			} else if ( typeof batchOrType === 'function' ) {
 				callback = batchOrType;
 				batchOrType = new Batch();
+			} else if ( !( batchOrType instanceof Batch ) ) {
+				batchOrType = new Batch( batchOrType );
 			}
 
 			this._pendingChanges.push( { batch: batchOrType, callback } );
@@ -791,7 +799,7 @@ export default class Model {
 	 * * {@link #change `change()`},
 	 * * {@link #enqueueChange `enqueueChange()`}.
 	 *
-	 * @param {'transparent'|'default'} [type='default'] The type of the batch.
+	 * @param {Object} [type] {@link module:engine/model/batch~Batch#constructor The type} of the batch.
 	 * @returns {module:engine/model/batch~Batch}
 	 */
 	createBatch( type ) {

@@ -33,6 +33,12 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 
 ## Quick start
 
+<info-box>
+	CKEditor 5 packages do not include TypeScript typings yet. With strict mode enabled, you must take care of the typings yourself. Otherwise, you might see the `Could not find a declaration file for module` error. **Please bear in mind that projects generated using Angular CLI have strict mode enabled by default.**
+	
+	For more information, please see [Strict mode project tips](#strict-mode-project-tips).
+</info-box>
+
 In your existing Angular project, install the [CKEditor 5 WYSIWYG editor component for Angular](https://www.npmjs.com/package/@ckeditor/ckeditor5-angular):
 
 ```bash
