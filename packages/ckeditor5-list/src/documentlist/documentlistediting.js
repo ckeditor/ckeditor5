@@ -33,7 +33,9 @@ import {
 	isFirstBlockOfListItem,
 	isLastBlockOfListItem,
 	isSingleListItem,
-	getSelectedBlockObject
+	getSelectedBlockObject,
+	isListItemBlock,
+	LIST_BASE_ATTRIBUTES
 } from './utils/model';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
@@ -85,9 +87,9 @@ export default class DocumentListEditing extends Plugin {
 			throw new CKEditorError( 'document-list-feature-conflict', this, { conflictPlugin: 'ListEditing' } );
 		}
 
-		model.schema.extend( '$container', {
-			allowAttributes: [ 'listType', 'listIndent', 'listItemId' ]
-		} );
+		model.schema.extend( '$container', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		model.schema.extend( '$block', { allowAttributes: LIST_BASE_ATTRIBUTES } );
+		model.schema.extend( '$blockObject', { allowAttributes: LIST_BASE_ATTRIBUTES } );
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );
 
@@ -171,7 +173,7 @@ export default class DocumentListEditing extends Plugin {
 
 					const positionParent = firstPosition.parent;
 
-					if ( !positionParent.hasAttribute( 'listItemId' ) ) {
+					if ( !isListItemBlock( positionParent ) ) {
 						return;
 					}
 
@@ -241,7 +243,7 @@ export default class DocumentListEditing extends Plugin {
 			const doc = model.document;
 			const positionParent = doc.selection.getFirstPosition().parent;
 
-			if ( doc.selection.isCollapsed && positionParent.hasAttribute( 'listItemId' ) && positionParent.isEmpty ) {
+			if ( doc.selection.isCollapsed && isListItemBlock( positionParent ) && positionParent.isEmpty ) {
 				const isFirstBlock = isFirstBlockOfListItem( positionParent );
 				const isLastBlock = isLastBlockOfListItem( positionParent );
 
@@ -308,7 +310,6 @@ export default class DocumentListEditing extends Plugin {
 	_setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
-		const attributes = [ 'listItemId', 'listType', 'listIndent' ];
 
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
@@ -334,8 +335,8 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				for ( const attributeName of attributes ) {
-					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( attributes, model ) );
+				for ( const attributeName of LIST_BASE_ATTRIBUTES ) {
+					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( LIST_BASE_ATTRIBUTES, model ) );
 				}
 			} );
 
@@ -436,7 +437,7 @@ function modelChangePostFixer( model, writer, emitter ) {
 
 			// Check if there is no nested list.
 			for ( const { item: innerItem, previousPosition } of model.createRangeIn( item ) ) {
-				if ( innerItem.is( 'element' ) && innerItem.hasAttribute( 'listItemId' ) ) {
+				if ( isListItemBlock( innerItem ) ) {
 					findAndAddListHeadToMap( previousPosition, itemToListHead );
 				}
 			}
@@ -493,7 +494,7 @@ function createModelIndentPasteFixer( model ) {
 		// would create incorrect model.
 		const item = content.is( 'documentFragment' ) ? content.getChild( 0 ) : content;
 
-		if ( !item || !item.hasAttribute( 'listItemId' ) ) {
+		if ( !isListItemBlock( item ) ) {
 			return;
 		}
 
@@ -509,9 +510,9 @@ function createModelIndentPasteFixer( model ) {
 		const pos = selection.getFirstPosition();
 		let refItem = null;
 
-		if ( pos.parent.hasAttribute( 'listItemId' ) ) {
+		if ( isListItemBlock( pos.parent ) ) {
 			refItem = pos.parent;
-		} else if ( pos.nodeBefore && pos.nodeBefore.hasAttribute( 'listItemId' ) ) {
+		} else if ( isListItemBlock( pos.nodeBefore ) ) {
 			refItem = pos.nodeBefore;
 		}
 

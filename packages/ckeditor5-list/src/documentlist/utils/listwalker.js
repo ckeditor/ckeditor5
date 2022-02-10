@@ -8,6 +8,7 @@
  */
 
 import { first, toArray } from 'ckeditor5/src/utils';
+import { isListItemBlock } from './model';
 
 /**
  * Document list blocks iterator.
@@ -215,7 +216,7 @@ export function* iterateSiblingListBlocks( node, direction ) {
 	const isForward = direction == 'forward';
 	let previous = null;
 
-	while ( node && node.hasAttribute( 'listItemId' ) ) {
+	while ( isListItemBlock( node ) ) {
 		yield { node, previous };
 
 		previous = node;

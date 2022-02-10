@@ -492,7 +492,6 @@ export default class DomConverter {
 				yield this._getBlockFiller( domDocument );
 			}
 
-			// TODO add tests
 			const transparentRendering = childView.is( 'element' ) && childView.getCustomProperty( 'dataPipeline:transparentRendering' );
 
 			if ( transparentRendering && this.renderingMode == 'data' ) {

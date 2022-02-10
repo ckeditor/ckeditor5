@@ -12,6 +12,7 @@ import {
 	expandListBlocksToCompleteItems,
 	indentBlocks,
 	isFirstBlockOfListItem,
+	isListItemBlock,
 	isSingleListItem,
 	outdentBlocksWithMerge,
 	sortBlocks,
@@ -170,7 +171,7 @@ export default class DocumentListIndentCommand extends Command {
 // Returns an array of selected blocks truncated to the first non list block element.
 function getSelectedListBlocks( selection ) {
 	const blocks = Array.from( selection.getSelectedBlocks() );
-	const firstNonListBlockIndex = blocks.findIndex( block => !block.hasAttribute( 'listItemId' ) );
+	const firstNonListBlockIndex = blocks.findIndex( block => !isListItemBlock( block ) );
 
 	if ( firstNonListBlockIndex != -1 ) {
 		blocks.length = firstNonListBlockIndex;

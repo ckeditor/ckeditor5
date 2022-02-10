@@ -10,6 +10,7 @@
 import {
 	getAllListItemBlocks,
 	getListItemBlocks,
+	isListItemBlock,
 	ListItemUid
 } from './utils/model';
 import {
@@ -53,7 +54,7 @@ export function listItemUpcastConverter() {
 
 		for ( const item of items ) {
 			// Set list attributes only on same level items, those nested deeper are already handled by the recursive conversion.
-			if ( !item.hasAttribute( 'listItemId' ) ) {
+			if ( !isListItemBlock( item ) ) {
 				writer.setAttributes( attributes, item );
 			}
 		}
@@ -148,7 +149,7 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 					} else {
 						changedItems.add( item );
 					}
-				} else if ( item.hasAttribute( 'listItemId' ) ) {
+				} else if ( isListItemBlock( item ) ) {
 					// Some other attribute was changed on the list item,
 					// check if paragraph does not need to be converted to bogus or back.
 					if ( doesItemParagraphRequiresRefresh( item ) ) {
@@ -431,7 +432,7 @@ function createAttributesConsumer( attributes ) {
 
 // Whether the given item should be rendered as a bogus paragraph.
 function shouldUseBogusParagraph( item, blocks = getAllListItemBlocks( item ) ) {
-	if ( !item.hasAttribute( 'listItemId' ) ) {
+	if ( !isListItemBlock( item ) ) {
 		return false;
 	}
 

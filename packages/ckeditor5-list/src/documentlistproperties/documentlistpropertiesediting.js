@@ -14,6 +14,7 @@ import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
 import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
+import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -66,18 +67,15 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		const enabledProperties = editor.config.get( 'list.properties' );
 		const strategies = createAttributeStrategies( enabledProperties );
 
-		model.schema.extend( '$container', {
-			allowAttributes: strategies.map( s => s.attributeName )
-		} );
-
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
 			documentListEditing.registerSameListDefiningAttributes( strategy.attributeName );
+			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
+			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
 		}
 
 		// Set up conversion.
-		const baseListAttributes = [ 'listItemId', 'listType', 'listIndent' ];
-
 		editor.conversion.for( 'upcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
 				dispatcher.on( 'element:ol', listPropertiesUpcastConverter( strategy ) );
@@ -86,8 +84,8 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
-				for ( const attributeName of [ ...baseListAttributes, strategy.attributeName ] ) {
-					dispatcher.on( `attribute:${ attributeName }`, listPropertiesDowncastConverter( strategy, baseListAttributes, model ) );
+				for ( const attributeName of [ ...LIST_BASE_ATTRIBUTES, strategy.attributeName ] ) {
+					dispatcher.on( `attribute:${ attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
 				}
 			}
 		} );

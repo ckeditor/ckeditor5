@@ -8,11 +8,12 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { expandListBlocksToCompleteItems, getListItems } from '../documentlist/utils/model';
+import { expandListBlocksToCompleteItems, getListItems, isListItemBlock } from '../documentlist/utils/model';
 import { getListTypeFromListStyleType } from './utils/style';
 
 /**
- * The list style command. It changes `listStyle` attribute of the selected list items.
+ * The list style command. It changes `listStyle` attribute of the selected list items,
+ * letting the user choose styles for the list item markers.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
  * @extends module:core/command~Command
@@ -90,7 +91,7 @@ export default class DocumentListStyleCommand extends Command {
 	_getValue() {
 		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
 
-		if ( listItem && listItem.hasAttribute( 'listItemId' ) ) {
+		if ( isListItemBlock( listItem ) ) {
 			return listItem.getAttribute( 'listStyle' );
 		}
 
