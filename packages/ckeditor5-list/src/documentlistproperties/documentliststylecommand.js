@@ -8,7 +8,13 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { expandListBlocksToCompleteItems, getListItems, isListItemBlock } from '../documentlist/utils/model';
+import { first } from 'ckeditor5/src/utils';
+import {
+	expandListBlocksToCompleteItems,
+	getListItems,
+	getSelectedBlockObject,
+	isListItemBlock
+} from '../documentlist/utils/model';
 import { getListTypeFromListStyleType } from './utils/style';
 
 /**
@@ -61,6 +67,8 @@ export default class DocumentListStyleCommand extends Command {
 		model.change( writer => {
 			this._tryToConvertItemsToList( options );
 
+			const selectedBlockObject = getSelectedBlockObject( model );
+
 			let blocks = Array.from( document.selection.getSelectedBlocks() )
 				.filter( block => block.hasAttribute( 'listType' ) );
 
@@ -68,10 +76,10 @@ export default class DocumentListStyleCommand extends Command {
 				return;
 			}
 
-			if ( document.selection.isCollapsed ) {
+			if ( document.selection.isCollapsed || selectedBlockObject ) {
 				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
 
-				blocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
+				blocks = getListItems( selectedBlockObject || blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
 			} else {
 				blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
 			}
@@ -89,7 +97,7 @@ export default class DocumentListStyleCommand extends Command {
 	 * @returns {String|null} The current value.
 	 */
 	_getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		if ( isListItemBlock( listItem ) ) {
 			return listItem.getAttribute( 'listStyle' );
