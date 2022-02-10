@@ -16,7 +16,8 @@ import {
 	removeListAttributes,
 	outdentFollowingItems,
 	ListItemUid,
-	sortBlocks
+	sortBlocks,
+	getSelectedBlockObject
 } from './utils/model';
 
 /**
@@ -72,6 +73,8 @@ export default class DocumentListCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
+		const selectedBlockObject = getSelectedBlockObject( model );
+
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
 			.filter( block => model.schema.checkAttribute( block, 'listType' ) );
 
@@ -99,9 +102,10 @@ export default class DocumentListCommand extends Command {
 				this._fireAfterExecute( changedBlocks );
 			}
 			// Turning on the list items for a collapsed selection inside a list item.
-			else if ( document.selection.isCollapsed && blocks[ 0 ].hasAttribute( 'listType' ) ) {
+			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && blocks[ 0 ].hasAttribute( 'listType' ) ) {
 				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
-				const changedBlocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
+				const sameListDefiningAttributes = documentListEditingPlugin.getSameListDefiningAttributes();
+				const changedBlocks = getListItems( selectedBlockObject || blocks[ 0 ], sameListDefiningAttributes );
 
 				for ( const block of changedBlocks ) {
 					writer.setAttribute( 'listType', this.type, block );

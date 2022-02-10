@@ -35,18 +35,19 @@ import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import DocumentList from '../../src/documentlist';
-import DocumentListPropertiesEditing from '../../src/documentlistproperties/documentlistpropertiesediting';
+import DocumentListProperties from '../../src/documentlistproperties';
 
 const config = {
 	plugins: [
 		Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
 		MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
 		AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-		CloudServices, SourceEditing, DocumentList, DocumentListPropertiesEditing
+		CloudServices, SourceEditing, DocumentList, DocumentListProperties
 	],
 	toolbar: [
 		'sourceEditing', '|',
@@ -112,6 +113,8 @@ function createEditor( idSuffix, properties ) {
 		} )
 		.then( editor => {
 			window[ 'editor_' + idSuffix ] = editor;
+
+			CKEditorInspector.attach( { [ idSuffix ]: editor } );
 		} )
 		.catch( err => {
 			console.error( err.stack );
@@ -160,7 +163,7 @@ createEditor( 'g', {
 	reversed: false
 } );
 
-createEditor( 'f', {
+createEditor( 'h', {
 	styles: false,
 	startIndex: false,
 	reversed: false

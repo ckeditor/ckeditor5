@@ -8,7 +8,13 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { expandListBlocksToCompleteItems, getListItems } from '../documentlist/utils/model';
+import { first } from 'ckeditor5/src/utils';
+import {
+	expandListBlocksToCompleteItems,
+	getListItems,
+	getSelectedBlockObject,
+	isListItemBlock
+} from '../documentlist/utils/model';
 
 /**
  * The list start index command. It changes the `listReversed` attribute of the selected list items,
@@ -23,6 +29,7 @@ export default class DocumentListReversedCommand extends Command {
 	 */
 	refresh() {
 		const value = this._getValue();
+
 		this.value = value;
 		this.isEnabled = value != null;
 	}
@@ -37,13 +44,15 @@ export default class DocumentListReversedCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
-		let blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => block.hasAttribute( 'listReversed' ) && block.getAttribute( 'listType' ) == 'numbered' );
+		const selectedBlockObject = getSelectedBlockObject( model );
 
-		if ( document.selection.isCollapsed ) {
+		let blocks = Array.from( document.selection.getSelectedBlocks() )
+			.filter( block => isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' );
+
+		if ( document.selection.isCollapsed || selectedBlockObject ) {
 			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
 
-			blocks = getListItems( blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
+			blocks = getListItems( selectedBlockObject || blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
 		} else {
 			blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
 		}
@@ -62,10 +71,13 @@ export default class DocumentListReversedCommand extends Command {
 	 * @returns {Boolean|null} The current value.
 	 */
 	_getValue() {
-		const listItem = this.editor.model.document.selection.getFirstPosition().parent;
+		const model = this.editor.model;
+		const document = model.document;
 
-		if ( listItem && listItem.hasAttribute( 'listItemId' ) && listItem.getAttribute( 'listType' ) == 'numbered' ) {
-			return listItem.getAttribute( 'listReversed' );
+		const block = first( document.selection.getSelectedBlocks() );
+
+		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
+			return block.getAttribute( 'listReversed' );
 		}
 
 		return null;
