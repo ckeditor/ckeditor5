@@ -106,6 +106,22 @@ describe( 'DeleteCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>fo[]bar</paragraph>' );
 		} );
 
+		it( 'deletes previous multi-character emoji when selection is collapsed', () => {
+			setData( model, '<paragraph>foo\u{1F3F4}\u{E0067}\u{E0062}\u{E0065}\u{E006E}\u{E0067}\u{E007F}[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
+		} );
+
+		it( 'deletes only one of previous multi-character emojis', () => {
+			setData( model, '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}\u{1F1E7}\u{1F1EA}[]bar</paragraph>' );
+
+			editor.execute( 'delete' );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foo\u{1F469}\u{1F3FB}\u{200D}\u{1F9B2}[]bar</paragraph>' );
+		} );
+
 		it( 'deletes selection contents', () => {
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
@@ -159,6 +175,7 @@ describe( 'DeleteCommand', () => {
 			const modifyOpts = spy.args[ 0 ][ 1 ][ 1 ];
 			expect( modifyOpts ).to.have.property( 'direction', 'forward' );
 			expect( modifyOpts ).to.have.property( 'unit', 'word' );
+			expect( modifyOpts ).to.have.property( 'treatEmojiAsSingleUnit', true );
 		} );
 
 		it( 'passes options to deleteContent #1', () => {

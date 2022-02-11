@@ -93,21 +93,33 @@ export default class Model {
 
 		// Register some default abstract entities.
 		this.schema.register( '$root', {
-			allowContentOf: '$container',
 			isLimit: true
 		} );
 
 		this.schema.register( '$container', {
-			allowChildren: [ '$block', '$container' ]
+			allowIn: [ '$root', '$container' ]
 		} );
 
 		this.schema.register( '$block', {
-			allowChildren: '$text',
-			allowAttributesOf: '$container',
+			allowIn: [ '$root', '$container' ],
 			isBlock: true
 		} );
 
+		this.schema.register( '$blockObject', {
+			allowWhere: '$block',
+			isBlock: true,
+			isObject: true
+		} );
+
+		this.schema.register( '$inlineObject', {
+			allowWhere: '$text',
+			allowAttributesOf: '$text',
+			isInline: true,
+			isObject: true
+		} );
+
 		this.schema.register( '$text', {
+			allowIn: '$block',
 			isInline: true,
 			isContent: true
 		} );
@@ -521,6 +533,7 @@ export default class Model {
 	 * @param {Object} [options]
 	 * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
 	 * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
+	 * @param {Boolean} [options.treatEmojiAsSingleUnit=false] Whether multi-characer emoji sequences should be handled as single unit.
 	 */
 	modifySelection( selection, options ) {
 		modifySelection( this, selection, options );

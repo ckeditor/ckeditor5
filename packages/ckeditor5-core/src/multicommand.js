@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-
 import Command from './command';
+
+import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorityarray';
 
 /**
  * @module core/multicommand
@@ -24,8 +24,8 @@ import Command from './command';
  *		const commandBar = new Command( editor );
  *
  *		// Register child commands.
- *		multiCommand.registerChildCommand( commandFoo, 'low' );
- *		multiCommand.registerChildCommand( commandBar, 'high' );
+ *		multiCommand.registerChildCommand( commandFoo, { priority: 'low' } );
+ *		multiCommand.registerChildCommand( commandBar ); // Register with default 'normal' priority
  *
  *		// Enable one of the commands.
  *		commandBar.isEnabled = true;
@@ -69,33 +69,14 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Inserts command definition at correct index by priority so registered commands are always sorted from lowest priority to highest
-	 *
-	 * @param {Object} newCommandDefinition Object with `command` and `priority` properties
-	 * Object
-	 * @returns {undefined}
-	 * @private
-	 */
-	_insertCommandDefinitionByPriority( newCommandDefinition ) {
-		for ( let i = 0; i <= this._childCommandsDefinitons.length; i++ ) {
-			const registeredCommand = this._childCommandsDefinitons[ i ];
-
-			if ( !registeredCommand || priorities.get( registeredCommand.priority ) >= priorities.get( newCommandDefinition.priority ) ) {
-				this._childCommandsDefinitons.splice( i, 0, newCommandDefinition );
-
-				break;
-			}
-		}
-	}
-
-	/**
 	 * Registers a child command.
 	 *
 	 * @param {module:core/command~Command} command
-	 * @param {String|Number} priority Priority of command. Command with highest priority will be executed over others.
+	 * @param {Object} options An object with configuration options.
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of command to register
 	 */
-	registerChildCommand( command, priority = 'normal' ) {
-		this._insertCommandDefinitionByPriority( { command, priority } );
+	registerChildCommand( command, options = { priority: 'normal' } ) {
+		insertToPriorityArray( this._childCommandsDefinitons, { command, priority: options.priority } );
 
 		// Change multi command enabled state when one of registered commands changes state.
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
@@ -119,9 +100,8 @@ export default class MultiCommand extends Command {
 	 * @private
 	 */
 	_getFirstEnabledCommand() {
-		const definitonsWithEnabledCommand = this._childCommandsDefinitons.filter( definition => definition.command.isEnabled );
-		const definitionWithHighestPriority = definitonsWithEnabledCommand[ definitonsWithEnabledCommand.length - 1 ];
+		const commandDefinition = this._childCommandsDefinitons.find( ( { command } ) => command.isEnabled );
 
-		return definitionWithHighestPriority && definitionWithHighestPriority.command;
+		return commandDefinition && commandDefinition.command;
 	}
 }

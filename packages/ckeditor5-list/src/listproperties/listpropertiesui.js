@@ -28,8 +28,8 @@ import listStyleUpperLatinIcon from '../../theme/icons/liststyleupperlatin.svg';
 import '../../theme/liststyles.css';
 
 /**
- * The list style UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
- * buttons that allow users to change styles of individual lists in the content.
+ * The list properties UI plugin. It introduces the extended `'bulletedList'` and `'numberedList'` toolbar
+ * buttons that allow users to control such aspects of list as the marker, start index or order.
  *
  * **Note**: Buttons introduced by this plugin override implementations from the {@link module:list/list/listui~ListUI}
  * (because they share the same names).
@@ -228,10 +228,9 @@ function getStyleButtonCreator( { editor, listStyleCommand, parentCommandName } 
 					editor.execute( 'listStyle', { type: listStyleCommand._defaultType } );
 				}
 			}
-			// If the content the selection is anchored to is not a list, let's create a list of a desired style.
+			// Otherwise, leave the creation of the styled list to the `ListStyleCommand`.
 			else {
 				editor.model.change( () => {
-					editor.execute( parentCommandName );
 					editor.execute( 'listStyle', { type } );
 				} );
 			}

@@ -46,8 +46,8 @@ describe( 'HorizontalLineEditing', () => {
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'horizontalLine' ) ).to.be.false;
 	} );
 
-	it( 'inherits attributes from $container', () => {
-		model.schema.extend( '$container', {
+	it( 'inherits attributes from $blockObject', () => {
+		model.schema.extend( '$blockObject', {
 			allowAttributes: 'foo'
 		} );
 

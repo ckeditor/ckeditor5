@@ -8,10 +8,13 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { getSelectedListItems } from '../list/utils';
+import { getListTypeFromListStyleType, getSelectedListItems } from '../list/utils';
 
 /**
- * The list style command. It changes `listStyle` attribute of the selected list items.
+ * The list style command. It changes the `listStyle` attribute of the selected list items.
+ *
+ * If the list type (numbered or bulleted) can be inferred from the passed style type,
+ * the command tries to convert selected items to a list of that type.
  * It is used by the {@link module:list/listproperties~ListProperties list properties feature}.
  *
  * @extends module:core/command~Command
@@ -48,11 +51,13 @@ export default class ListStyleCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @param {Object} options
-	 * @param {String|null} options.type The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
+	 * @param {String|null} [options.type] The type of the list style, e.g. `'disc'` or `'square'`. If `null` is specified, the default
 	 * style will be applied.
 	 * @protected
 	 */
 	execute( options = {} ) {
+		this._tryToConvertItemsToList( options );
+
 		const model = this.editor.model;
 		const listItems = getSelectedListItems( model );
 
@@ -96,5 +101,32 @@ export default class ListStyleCommand extends Command {
 		const bulletedList = editor.commands.get( 'bulletedList' );
 
 		return numberedList.isEnabled || bulletedList.isEnabled;
+	}
+
+	/**
+	 * Check if the provided list style is valid. Also change the selection to a list if it's not set yet.
+	 *
+	 * @param {Object} options
+	 * @param {String|null} [options.type] The type of the list style. If `null` is specified, the function does nothing.
+	 * @private
+	*/
+	_tryToConvertItemsToList( options ) {
+		if ( !options.type ) {
+			return;
+		}
+
+		const listType = getListTypeFromListStyleType( options.type );
+
+		if ( !listType ) {
+			return;
+		}
+
+		const editor = this.editor;
+		const commandName = listType + 'List';
+		const command = editor.commands.get( commandName );
+
+		if ( !command.value ) {
+			editor.execute( commandName );
+		}
 	}
 }

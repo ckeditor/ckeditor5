@@ -294,7 +294,7 @@ dataSchema.registerInlineElement( {
 	model: 'myObjectInline',
 	isObject: true,
 	modelSchema: {
-		inheritAllFrom: '$htmlObjectInline'
+		inheritAllFrom: '$inlineObject'
 	}
 } );
 
@@ -306,7 +306,7 @@ dataSchema.registerBlockElement( {
 	model: 'myObjectBlock',
 	isObject: true,
 	modelSchema: {
-		inheritAllFrom: '$htmlObjectBlock'
+		inheritAllFrom: '$blockObject'
 	}
 } );
 
