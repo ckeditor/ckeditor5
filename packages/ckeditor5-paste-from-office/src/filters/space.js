@@ -41,7 +41,7 @@ export function normalizeSpacerunSpans( htmlDocument ) {
 	htmlDocument.querySelectorAll( 'span[style*=spacerun]' ).forEach( el => {
 		// For paste contents from WPS Office, the span's inner text is not all of spaces or blank,
 		// so we should keep the origin contents, or replace ONLY space characters.
-		if ( /[^\b]/.test( el.innerText.trim() ) === false ) {
+		if ( el.innerText.trim().length === 0 ) {
 			const innerTextLength = el.innerText.length || 0;
 
 			el.innerHTML = Array( innerTextLength + 1 ).join( '\u00A0 ' ).substr( 0, innerTextLength );
