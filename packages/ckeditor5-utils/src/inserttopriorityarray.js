@@ -18,14 +18,14 @@ import priorities from './priorities';
  *
  * @typedef {Object} module:utils/inserttopriorityarray~ObjectWithPriority
  *
- * @property {module:utils/inserttopriorityarray~PriorityString} priority Priority of the object.
+ * @property {module:utils/priorities~PriorityString|Number} priority Priority of the object.
  */
 
 /**
  * Inserts any object with priority at correct index by priority so registered objects are always sorted from highest to lowest priority.
  *
  * @param {Array.<module:utils/inserttopriorityarray~ObjectWithPriority>} objects Array of objects with priority to insert object to.
- * @param {Object.<String,module:utils/inserttopriorityarray~ObjectWithPriority>} objectToInsert Object with `priority` property.
+ * @param {module:utils/inserttopriorityarray~ObjectWithPriority} objectToInsert Object with `priority` property.
  */
 export default function insertToPriorityArray( objects, objectToInsert ) {
 	const priority = priorities.get( objectToInsert.priority );
