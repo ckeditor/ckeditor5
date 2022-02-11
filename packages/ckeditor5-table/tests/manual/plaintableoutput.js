@@ -8,6 +8,7 @@
 import { formatHtml } from '@ckeditor/ckeditor5-source-editing/src/utils/formathtml';
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import Table from '../../src/table';
 import TableToolbar from '../../src/tabletoolbar';
 import TableSelection from '../../src/tableselection';
@@ -27,7 +28,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		TableProperties,
 		TableCellProperties,
 		TableCaption,
-		PlainTableOutput
+		PlainTableOutput,
+		SourceEditing
 	],
 	toolbar: [
 		'heading',
@@ -43,7 +45,8 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		'blockQuote',
 		'|',
 		'undo',
-		'redo'
+		'redo',
+		'sourceEditing'
 	],
 	table: {
 		contentToolbar: [

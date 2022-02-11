@@ -9,8 +9,9 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 
+import Table from './table';
+import TableCaption from './tablecaption';
 import TableUtils from './tableutils';
-import { isTable } from './tablecaption/utils';
 
 /**
  * The plain table output feature.
@@ -29,7 +30,7 @@ export default class PlainTableOutput extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TableUtils ];
+		return [ Table, TableCaption, TableUtils ];
 	}
 
 	/**
@@ -40,58 +41,46 @@ export default class PlainTableOutput extends Plugin {
 		const conversion = editor.conversion;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		function downcastTable() {
-			return ( table, { writer } ) => {
-				const headingRows = table.getAttribute( 'headingRows' ) || 0;
-				const tableSections = [];
-
-				// Table head slot.
-				if ( headingRows > 0 ) {
-					tableSections.push(
-						writer.createContainerElement( 'thead', null,
-							writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
-						)
-					);
-				}
-
-				// Table body slot.
-				if ( headingRows < tableUtils.getRows( table ) ) {
-					tableSections.push(
-						writer.createContainerElement( 'tbody', null,
-							writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
-						)
-					);
-				}
-
-				const tableElement = writer.createContainerElement( 'table', null, [
-					// Slot for the children (for example caption).
-					writer.createSlot( element => !element.is( 'element', 'tableRow' ) ),
-					// Table with proper sections (thead, tbody).
-					...tableSections
-				] );
-
-				return tableElement;
-			};
-		}
-
+		// Override default table data downcast converter.
 		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
-			view: downcastTable( tableUtils ),
+			view: ( table, { writer } ) => {
+				const headingRows = table.getAttribute( 'headingRows' ) || 0;
+				const tableSections = [];
+
+				// Table heading rows slot.
+				if ( headingRows > 0 ) {
+					tableSections.push(
+						writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
+					);
+				}
+
+				// Table body rows slot.
+				if ( headingRows < tableUtils.getRows( table ) ) {
+					tableSections.push(
+						writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
+					);
+				}
+
+				// Table children slot.
+				const childrenSlot = writer.createSlot( element => !element.is( 'element', 'tableRow' ) );
+
+				// Create <table>{children-slot}{table-rows-slot}</table> structure.
+				return writer.createContainerElement( 'table', null, [
+					childrenSlot,
+					writer.createContainerElement( 'tbody', null, tableSections )
+				] );
+			},
 			converterPriority: 'high'
 		} );
 
+		// Make sure <caption> is always downcasted to <caption> in the data pipeline.
 		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
-			view: ( modelElement, { writer } ) => {
-				if ( !isTable( modelElement.parent ) ) {
-					return null;
-				}
-
-				return writer.createContainerElement( 'caption' );
-			},
+			view: 'caption',
 			converterPriority: 'high'
 		} );
 	}
