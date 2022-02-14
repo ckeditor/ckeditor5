@@ -56,7 +56,18 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 			'tableProperties',
 			'tableCellProperties',
 			'toggleTableCaption'
-		]
+		],
+		tableProperties: {
+			defaultProperties: {
+				borderStyle: 'dashed',
+				borderColor: 'red',
+				borderWidth: '3px',
+				alignment: 'left',
+				width: '550px',
+				height: '450px',
+				backgroundColor: 'green'
+			}
+		}
 	}
 } )
 	.then( editor => {
