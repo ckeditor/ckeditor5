@@ -213,7 +213,7 @@ class App extends Component {
 
 						this.editor = editor;
 					} }
-					onError={ ( { willEditorRestart } ) => {
+					onError={ ( { phase, willEditorRestart } ) => {
 						// If the editor is restarted, the toolbar element will be created once again.
 						// The `onReady` callback will be called again and the new toolbar will be added.
 						// This is why you need to remove the older toolbar.
