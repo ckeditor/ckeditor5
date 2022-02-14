@@ -151,6 +151,131 @@ describe( 'PlainTableOutput', () => {
 					'</table>'
 				);
 			} );
+
+			it( 'should be overridable', () => {
+				const table = createEmptyTable();
+
+				editor.conversion.for( 'dataDowncast' ).add( dispatcher =>
+					dispatcher.on( 'attribute:tableBorderColor:table', ( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, evt.name );
+					}, { priority: 'highest' } ) );
+
+				model.change( writer => writer.setAttribute( 'tableBorderColor', '#f00', table ) );
+
+				assertPlainTableStyle( editor, '' );
+			} );
+
+			describe( 'should create attribute', () => {
+				let table;
+
+				beforeEach( () => {
+					table = createEmptyTable();
+				} );
+
+				it( 'tableBorderStyle', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
+
+					assertPlainTableStyle( editor, 'border-style:dotted;' );
+				} );
+
+				it( 'tableBorderColor', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
+
+					assertPlainTableStyle( editor, 'border-color:red;' );
+				} );
+
+				it( 'tableBorderWidth', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
+
+					assertPlainTableStyle( editor, 'border-width:1px;' );
+				} );
+
+				it( 'border shorthand', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
+
+					assertPlainTableStyle( editor, 'border:1px dotted red;' );
+				} );
+			} );
+
+			describe( 'should remove attribute', () => {
+				let table;
+
+				beforeEach( () => {
+					table = createEmptyTable();
+				} );
+
+				it( 'tableBorderStyle', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
+
+					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', '', table ) );
+
+					assertPlainTableStyle( editor, 'border-color:red;' );
+				} );
+
+				it( 'tableBorderColor', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
+
+					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+
+					model.change( writer => writer.setAttribute( 'tableBorderColor', '', table ) );
+
+					assertPlainTableStyle( editor, 'border-style:dotted;' );
+				} );
+
+				it( 'tableBorderWidth', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
+
+					assertPlainTableStyle( editor, 'border-style:dotted;border-width:1px;' );
+
+					model.change( writer => writer.setAttribute( 'tableBorderWidth', '', table ) );
+
+					assertPlainTableStyle( editor, 'border-style:dotted;' );
+				} );
+
+				it( 'from border shorthand', () => {
+					model.change( writer => writer.setAttribute( 'tableBorderStyle', 'dotted', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderColor', 'red', table ) );
+					model.change( writer => writer.setAttribute( 'tableBorderWidth', '1px', table ) );
+
+					assertPlainTableStyle( editor, 'border:1px dotted red;' );
+
+					model.change( writer => writer.setAttribute( 'tableBorderWidth', '', table ) );
+
+					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+				} );
+			} );
+
+			function createEmptyTable() {
+				setModelData(
+					model,
+					'<table>' +
+						'<tableRow>' +
+							'<tableCell>' +
+								'<paragraph>foo</paragraph>' +
+							'</tableCell>' +
+						'</tableRow>' +
+					'</table>'
+				);
+
+				return model.document.getRoot().getNodeByPath( [ 0 ] );
+			}
+
+			function assertPlainTableStyle( editor, tableStyle ) {
+				const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
+
+				expect( editor.getData() ).to.equalMarkup(
+					`<table${ tableStyleEntry }>` +
+						'<tbody><tr><td>foo</td></tr></tbody>' +
+					'</table>'
+				);
+			}
 		} );
 	} );
 } );
