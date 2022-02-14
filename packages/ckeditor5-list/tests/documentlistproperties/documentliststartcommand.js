@@ -42,6 +42,13 @@ describe( 'DocumentListStartCommand', () => {
 		model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStart' ] } );
 		model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStart' ] } );
 
+		model.schema.register( 'blockWidget', {
+			isObject: true,
+			isBlock: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
+		} );
+
 		listStartCommand = new DocumentListStartCommand( editor );
 
 		editor.commands.add( 'listStart', listStartCommand );
@@ -209,6 +216,22 @@ describe( 'DocumentListStartCommand', () => {
 				  # 2.2
 				# 3.
 				  # 3.1. {start:4}
+			` ) );
+		} );
+
+		it( 'should set the `listStart` attribute for all the same list items (block widget selected)', () => {
+			setData( model, modelList( `
+				# Foo. {start:1}
+				# [<blockWidget></blockWidget>]
+				# Bar.
+			` ) );
+
+			listStartCommand.execute( { startIndex: 5 } );
+
+			expect( getData( model ) ).to.equalMarkup( modelList( `
+				# Foo. {start:5}
+				# [<blockWidget></blockWidget>]
+				# Bar.
 			` ) );
 		} );
 

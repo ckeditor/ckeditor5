@@ -47,6 +47,13 @@ describe( 'DocumentListStyleCommand', () => {
 		model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStyle' ] } );
 		model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStyle' ] } );
 
+		model.schema.register( 'blockWidget', {
+			isObject: true,
+			isBlock: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
+		} );
+
 		bulletedListCommand = new DocumentListCommand( editor, 'bulleted' );
 		numberedListCommand = new DocumentListCommand( editor, 'numbered' );
 		listStyleCommand = new DocumentListStyleCommand( editor, 'default' );
@@ -194,6 +201,22 @@ describe( 'DocumentListStyleCommand', () => {
 				  * 2.2
 				* 3.
 				  * 3.1. {style:disc}
+			` ) );
+		} );
+
+		it( 'should set the `listStyle` attribute for all the same list items (block widget selected)', () => {
+			setData( model, modelList( `
+				* Foo. {style:default}
+				* [<blockWidget></blockWidget>]
+				* Bar.
+			` ) );
+
+			listStyleCommand.execute( { type: 'circle' } );
+
+			expect( getData( model ) ).to.equalMarkup( modelList( `
+				* Foo. {style:circle}
+				* [<blockWidget></blockWidget>]
+				* Bar.
 			` ) );
 		} );
 

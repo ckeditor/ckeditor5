@@ -42,6 +42,13 @@ describe( 'DocumentListReversedCommand', () => {
 		model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listReversed' ] } );
 		model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listReversed' ] } );
 
+		model.schema.register( 'blockWidget', {
+			isObject: true,
+			isBlock: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
+		} );
+
 		listReversedCommand = new DocumentListReversedCommand( editor );
 
 		editor.commands.add( 'listReversed', listReversedCommand );
@@ -227,6 +234,22 @@ describe( 'DocumentListReversedCommand', () => {
 				  # 2.2
 				# 3.
 				  # 3.1. {reversed:true}
+			` ) );
+		} );
+
+		it( 'should set the `listReversed` attribute for all the same list items (block widget selected)', () => {
+			setData( model, modelList( `
+				# Foo. {reversed:false}
+				# [<blockWidget></blockWidget>]
+				# Bar.
+			` ) );
+
+			listReversedCommand.execute( { reversed: true } );
+
+			expect( getData( model ) ).to.equalMarkup( modelList( `
+				# Foo. {reversed:true}
+				# [<blockWidget></blockWidget>]
+				# Bar.
 			` ) );
 		} );
 
