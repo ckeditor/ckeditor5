@@ -55,8 +55,8 @@ export default class PlainTableOutput extends Plugin {
 			converterPriority: 'high'
 		} );
 
-		// Handle border-style, border-color and border-width table attributes.
-		downcastTableBorderAttributes( editor );
+		// Handle border-style, border-color, border-width and background-color table attributes.
+		downcastTableBorderAndBackgroundAttributes( editor );
 	}
 }
 
@@ -87,15 +87,16 @@ function downcastTableElement( modelElement, { writer } ) {
 	return writer.createContainerElement( 'table', null, [ childrenSlot, tbodyElement ] );
 }
 
-// Register table border attributes converters.
+// Register table border and background attributes converters.
 //
 // @private
 // @param {module:core/editor/editor~Editor} editor
-function downcastTableBorderAttributes( editor ) {
+function downcastTableBorderAndBackgroundAttributes( editor ) {
 	const modelAttributes = {
 		'border-width': 'tableBorderWidth',
 		'border-color': 'tableBorderColor',
-		'border-style': 'tableBorderStyle'
+		'border-style': 'tableBorderStyle',
+		'background-color': 'tableBackgroundColor'
 	};
 
 	for ( const [ styleName, modelAttribute ] of Object.entries( modelAttributes ) ) {

@@ -215,6 +215,12 @@ describe( 'PlainTableOutput', () => {
 
 					assertPlainTableStyle( editor, 'height:500px;' );
 				} );
+
+				it( 'tableBackgroundColor', () => {
+					model.change( writer => writer.setAttribute( 'tableBackgroundColor', 'red', table ) );
+
+					assertPlainTableStyle( editor, 'background-color:red;' );
+				} );
 			} );
 
 			describe( 'should remove attribute', () => {
@@ -295,6 +301,16 @@ describe( 'PlainTableOutput', () => {
 					assertPlainTableStyle( editor, 'height:500px;' );
 
 					model.change( writer => writer.removeAttribute( 'tableHeight', table ) );
+
+					assertPlainTableStyle( editor, '' );
+				} );
+
+				it( 'tableBackgroundColor', () => {
+					model.change( writer => writer.setAttribute( 'tableBackgroundColor', 'red', table ) );
+
+					assertPlainTableStyle( editor, 'background-color:red;' );
+
+					model.change( writer => writer.removeAttribute( 'tableBackgroundColor', table ) );
 
 					assertPlainTableStyle( editor, '' );
 				} );
