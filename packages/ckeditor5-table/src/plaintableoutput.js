@@ -8,10 +8,9 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
-
 import Table from './table';
 import TableCaption from './tablecaption';
-import TableUtils from './tableutils';
+import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 
 /**
  * The plain table output feature.
@@ -30,58 +29,84 @@ export default class PlainTableOutput extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Table, TableCaption, TableUtils ];
+		return [ Table, TablePropertiesEditing, TableCaption ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-		const conversion = editor.conversion;
-		const tableUtils = editor.plugins.get( TableUtils );
+		this._downcastTableElement();
+		this._downcastCaptionElement();
+		this._downcastTableBorderAttributes();
+	}
 
+	_downcastTableElement() {
 		// Override default table data downcast converter.
-		conversion.for( 'dataDowncast' ).elementToStructure( {
+		this.editor.conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
 			view: ( table, { writer } ) => {
-				const headingRows = table.getAttribute( 'headingRows' ) || 0;
-				const tableSections = [];
-
-				// Table heading rows slot.
-				if ( headingRows > 0 ) {
-					tableSections.push(
-						writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
-					);
-				}
-
 				// Table body rows slot.
-				if ( headingRows < tableUtils.getRows( table ) ) {
-					tableSections.push(
-						writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
-					);
-				}
+				const rowsSlot = writer.createSlot( element => element.is( 'element', 'tableRow' ) );
 
 				// Table children slot.
 				const childrenSlot = writer.createSlot( element => !element.is( 'element', 'tableRow' ) );
 
-				// Create <table>{children-slot}{table-rows-slot}</table> structure.
+				/**
+				 * Create table structure.
+				 *
+				 * <table>
+				 *   {children-slot-like-caption}
+				 *   {table-rows-slot}
+				 * </table>
+				 */
 				return writer.createContainerElement( 'table', null, [
 					childrenSlot,
-					writer.createContainerElement( 'tbody', null, tableSections )
+					writer.createContainerElement( 'tbody', null, rowsSlot )
 				] );
 			},
 			converterPriority: 'high'
 		} );
+	}
 
+	_downcastCaptionElement() {
 		// Make sure <caption> is always downcasted to <caption> in the data pipeline.
-		editor.conversion.for( 'dataDowncast' ).elementToElement( {
+		this.editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: 'caption',
 			converterPriority: 'high'
 		} );
+	}
+
+	_downcastTableBorderAttributes() {
+		const modelAttributes = {
+			'border-width': 'tableBorderWidth',
+			'border-color': 'tableBorderColor',
+			'border-style': 'tableBorderStyle'
+		};
+
+		for ( const [ styleName, modelAttribute ] of Object.entries( modelAttributes ) ) {
+			this.editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+				return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
+					const { item, attributeNewValue } = data;
+					const { mapper, writer } = conversionApi;
+
+					if ( !conversionApi.consumable.consume( item, evt.name ) ) {
+						return;
+					}
+
+					const table = mapper.toViewElement( item );
+
+					if ( attributeNewValue ) {
+						writer.setStyle( styleName, attributeNewValue, table );
+					} else {
+						writer.removeStyle( styleName, table );
+					}
+				}, { priority: 'high' } );
+			} );
+		}
 	}
 }

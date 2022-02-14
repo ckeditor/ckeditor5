@@ -13,6 +13,7 @@ import TableUtils from '../src/tableutils';
 import PlainTableOutput from '../src/plaintableoutput';
 import { modelTable } from './_utils/utils';
 import TableCaption from '../src/tablecaption';
+import TablePropertiesEditing from '../src/tableproperties/tablepropertiesediting';
 
 describe( 'PlainTableOutput', () => {
 	let editor, editorElement, model;
@@ -33,8 +34,13 @@ describe( 'PlainTableOutput', () => {
 		await editor.destroy();
 	} );
 
-	it( 'requires Table and TableUtils', () => {
-		expect( PlainTableOutput.requires ).to.deep.equal( [ Table, TableCaption, TableUtils ] );
+	it( 'requires Table, TablePropertiesEditing, TableCaption and  TableUtils', () => {
+		expect( PlainTableOutput.requires ).to.deep.equal( [
+			Table,
+			TablePropertiesEditing,
+			TableCaption,
+			TableUtils
+		] );
 	} );
 
 	it( 'should have pluginName', () => {
