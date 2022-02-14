@@ -9,7 +9,6 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Table from '../src/table';
-import TableUtils from '../src/tableutils';
 import PlainTableOutput from '../src/plaintableoutput';
 import { modelTable } from './_utils/utils';
 import TableCaption from '../src/tablecaption';
@@ -34,12 +33,11 @@ describe( 'PlainTableOutput', () => {
 		await editor.destroy();
 	} );
 
-	it( 'requires Table, TablePropertiesEditing, TableCaption and  TableUtils', () => {
+	it( 'requires Table, TablePropertiesEditing and TableCaption', () => {
 		expect( PlainTableOutput.requires ).to.deep.equal( [
 			Table,
 			TablePropertiesEditing,
-			TableCaption,
-			TableUtils
+			TableCaption
 		] );
 	} );
 
