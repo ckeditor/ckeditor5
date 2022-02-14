@@ -203,6 +203,18 @@ describe( 'PlainTableOutput', () => {
 
 					assertPlainTableStyle( editor, 'float:right;' );
 				} );
+
+				it( 'tableWidth', () => {
+					model.change( writer => writer.setAttribute( 'tableWidth', '500px', table ) );
+
+					assertPlainTableStyle( editor, 'width:500px;' );
+				} );
+
+				it( 'tableHeight', () => {
+					model.change( writer => writer.setAttribute( 'tableHeight', '500px', table ) );
+
+					assertPlainTableStyle( editor, 'height:500px;' );
+				} );
 			} );
 
 			describe( 'should remove attribute', () => {
@@ -263,6 +275,26 @@ describe( 'PlainTableOutput', () => {
 					assertPlainTableStyle( editor, 'float:right;' );
 
 					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
+
+					assertPlainTableStyle( editor, '' );
+				} );
+
+				it( 'tableWidth', () => {
+					model.change( writer => writer.setAttribute( 'tableWidth', '500px', table ) );
+
+					assertPlainTableStyle( editor, 'width:500px;' );
+
+					model.change( writer => writer.removeAttribute( 'tableWidth', table ) );
+
+					assertPlainTableStyle( editor, '' );
+				} );
+
+				it( 'tableHeight', () => {
+					model.change( writer => writer.setAttribute( 'tableHeight', '500px', table ) );
+
+					assertPlainTableStyle( editor, 'height:500px;' );
+
+					model.change( writer => writer.removeAttribute( 'tableHeight', table ) );
 
 					assertPlainTableStyle( editor, '' );
 				} );
