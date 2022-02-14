@@ -221,69 +221,6 @@ describe( 'PlainTableOutput', () => {
 
 					assertPlainTableStyle( editor, 'background-color:red;' );
 				} );
-
-				// TODO: currently there's an issue with upcasting default table properties.
-				// This should be first fixed in the general table properties editing plugin.
-				//
-				// describe( 'from default value', () => {
-				// 	beforeEach( async () => {
-				// 		editorElement = document.createElement( 'div' );
-				// 		document.body.appendChild( editorElement );
-
-				// 		editor = await ClassicTestEditor.create( editorElement, {
-				// 			plugins: [ Paragraph, Table, TableCaption, PlainTableOutput ],
-				// 			table: {
-				// 				tableProperties: {
-				// 					defaultProperties: {
-				// 						borderStyle: 'dashed',
-				// 						borderColor: 'red',
-				// 						borderWidth: '1px',
-				// 						alignment: 'right',
-				// 						width: '500px',
-				// 						height: '500px',
-				// 						backgroundColor: 'red'
-				// 					}
-				// 				}
-				// 			}
-				// 		} );
-
-				// 		model = editor.model;
-				// 		table = createEmptyTable();
-				// 	} );
-
-				// 	afterEach( async () => {
-				// 		editorElement.remove();
-				// 		await editor.destroy();
-				// 	} );
-
-				// 	it( 'of tableBorderStyle', () => {
-				// 		assertPlainTableStyle( editor, 'border-style:dashed;' );
-				// 	} );
-
-				// 	it( 'of tableBorderColor', () => {
-				// 		assertPlainTableStyle( editor, 'border-color:red;' );
-				// 	} );
-
-				// 	it( 'of tableBorderWidth', () => {
-				// 		assertPlainTableStyle( editor, 'border-width:1px;' );
-				// 	} );
-
-				// 	it( 'of tableAlignment', () => {
-				// 		assertPlainTableStyle( editor, 'float:right;' );
-				// 	} );
-
-				// 	it( 'of tableWidth', () => {
-				// 		assertPlainTableStyle( editor, 'width:500px;' );
-				// 	} );
-
-				// 	it( 'of tableHeight', () => {
-				// 		assertPlainTableStyle( editor, 'height:500px;' );
-				// 	} );
-
-				// 	it( 'of tableBackgroundColor', () => {
-				// 		assertPlainTableStyle( editor, 'background-color:red;' );
-				// 	} );
-				// } );
 			} );
 
 			describe( 'should remove attribute', () => {

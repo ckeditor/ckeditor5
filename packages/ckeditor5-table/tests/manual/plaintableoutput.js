@@ -61,7 +61,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 			defaultProperties: {
 				borderStyle: 'dashed',
 				borderColor: 'red',
-				borderWidth: '3px',
+				borderWidth: '10px',
 				alignment: 'left',
 				width: '550px',
 				height: '450px',
