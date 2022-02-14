@@ -36,77 +36,86 @@ export default class PlainTableOutput extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		this._downcastTableElement();
-		this._downcastCaptionElement();
-		this._downcastTableBorderAttributes();
-	}
+		const editor = this.editor;
 
-	_downcastTableElement() {
 		// Override default table data downcast converter.
-		this.editor.conversion.for( 'dataDowncast' ).elementToStructure( {
+		editor.conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: {
 				name: 'table',
 				attributes: [ 'headingRows' ]
 			},
-			view: ( table, { writer } ) => {
-				// Table body rows slot.
-				const rowsSlot = writer.createSlot( element => element.is( 'element', 'tableRow' ) );
-
-				// Table children slot.
-				const childrenSlot = writer.createSlot( element => !element.is( 'element', 'tableRow' ) );
-
-				/**
-				 * Create table structure.
-				 *
-				 * <table>
-				 *   {children-slot-like-caption}
-				 *   {table-rows-slot}
-				 * </table>
-				 */
-				return writer.createContainerElement( 'table', null, [
-					childrenSlot,
-					writer.createContainerElement( 'tbody', null, rowsSlot )
-				] );
-			},
+			view: downcastTableElement,
 			converterPriority: 'high'
 		} );
-	}
 
-	_downcastCaptionElement() {
 		// Make sure <caption> is always downcasted to <caption> in the data pipeline.
-		this.editor.conversion.for( 'dataDowncast' ).elementToElement( {
+		editor.conversion.for( 'dataDowncast' ).elementToElement( {
 			model: 'caption',
 			view: 'caption',
 			converterPriority: 'high'
 		} );
+
+		// Handle border-style, border-color and border-width table attributes.
+		downcastTableBorderAttributes( editor );
 	}
+}
 
-	_downcastTableBorderAttributes() {
-		const modelAttributes = {
-			'border-width': 'tableBorderWidth',
-			'border-color': 'tableBorderColor',
-			'border-style': 'tableBorderStyle'
-		};
+// The plain table downcast converter callback.
+//
+// @private
+// @param {module:engine/model/element~Element} Table model element.
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
+// @returns {module:engine/view/containerelement~ContainerElement} Created element.
+function downcastTableElement( modelElement, { writer } ) {
+	// Table body rows slot.
+	const rowsSlot = writer.createSlot( element => element.is( 'element', 'tableRow' ) );
 
-		for ( const [ styleName, modelAttribute ] of Object.entries( modelAttributes ) ) {
-			this.editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
-				return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
-					const { item, attributeNewValue } = data;
-					const { mapper, writer } = conversionApi;
+	// Table children slot.
+	const childrenSlot = writer.createSlot( element => !element.is( 'element', 'tableRow' ) );
 
-					if ( !conversionApi.consumable.consume( item, evt.name ) ) {
-						return;
-					}
+	// Table <tbody> element with all the rows.
+	const tbodyElement = writer.createContainerElement( 'tbody', null, rowsSlot );
 
-					const table = mapper.toViewElement( item );
+	// Create table structure.
+	//
+	// <table>
+	//    {children-slot-like-caption}
+	//    <tbody>
+	//        {table-rows-slot}
+	//    </tbody>
+	// </table>
+	return writer.createContainerElement( 'table', null, [ childrenSlot, tbodyElement ] );
+}
 
-					if ( attributeNewValue ) {
-						writer.setStyle( styleName, attributeNewValue, table );
-					} else {
-						writer.removeStyle( styleName, table );
-					}
-				}, { priority: 'high' } );
-			} );
-		}
+// Register table border attributes converters.
+//
+// @private
+// @param {module:core/editor/editor~Editor} editor
+function downcastTableBorderAttributes( editor ) {
+	const modelAttributes = {
+		'border-width': 'tableBorderWidth',
+		'border-color': 'tableBorderColor',
+		'border-style': 'tableBorderStyle'
+	};
+
+	for ( const [ styleName, modelAttribute ] of Object.entries( modelAttributes ) ) {
+		editor.conversion.for( 'dataDowncast' ).add( dispatcher => {
+			return dispatcher.on( `attribute:${ modelAttribute }:table`, ( evt, data, conversionApi ) => {
+				const { item, attributeNewValue } = data;
+				const { mapper, writer } = conversionApi;
+
+				if ( !conversionApi.consumable.consume( item, evt.name ) ) {
+					return;
+				}
+
+				const table = mapper.toViewElement( item );
+
+				if ( attributeNewValue ) {
+					writer.setStyle( styleName, attributeNewValue, table );
+				} else {
+					writer.removeStyle( styleName, table );
+				}
+			}, { priority: 'high' } );
+		} );
 	}
 }
