@@ -197,6 +197,12 @@ describe( 'PlainTableOutput', () => {
 
 					assertPlainTableStyle( editor, 'border:1px dotted red;' );
 				} );
+
+				it( 'tableAlignment', () => {
+					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
+
+					assertPlainTableStyle( editor, 'float:right;' );
+				} );
 			} );
 
 			describe( 'should remove attribute', () => {
@@ -249,6 +255,16 @@ describe( 'PlainTableOutput', () => {
 					model.change( writer => writer.setAttribute( 'tableBorderWidth', '', table ) );
 
 					assertPlainTableStyle( editor, 'border-color:red;border-style:dotted;' );
+				} );
+
+				it( 'tableAlignment', () => {
+					model.change( writer => writer.setAttribute( 'tableAlignment', 'right', table ) );
+
+					assertPlainTableStyle( editor, 'float:right;' );
+
+					model.change( writer => writer.removeAttribute( 'tableAlignment', table ) );
+
+					assertPlainTableStyle( editor, '' );
 				} );
 			} );
 
