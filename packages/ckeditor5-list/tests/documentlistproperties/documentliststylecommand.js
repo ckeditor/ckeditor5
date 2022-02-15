@@ -43,9 +43,16 @@ describe( 'DocumentListStyleCommand', () => {
 
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		model.schema.register( 'blockQuote', { inheritAllFrom: '$container' } );
-		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
-		model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
-		model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId' ] } );
+		model.schema.extend( '$container', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStyle' ] } );
+		model.schema.extend( '$block', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStyle' ] } );
+		model.schema.extend( '$blockObject', { allowAttributes: [ 'listType', 'listIndent', 'listItemId', 'listStyle' ] } );
+
+		model.schema.register( 'blockWidget', {
+			isObject: true,
+			isBlock: true,
+			allowIn: '$root',
+			allowAttributesOf: '$container'
+		} );
 
 		bulletedListCommand = new DocumentListCommand( editor, 'bulleted' );
 		numberedListCommand = new DocumentListCommand( editor, 'numbered' );
@@ -197,6 +204,22 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 		} );
 
+		it( 'should set the `listStyle` attribute for all the same list items (block widget selected)', () => {
+			setData( model, modelList( `
+				* Foo. {style:default}
+				* [<blockWidget></blockWidget>]
+				* Bar.
+			` ) );
+
+			listStyleCommand.execute( { type: 'circle' } );
+
+			expect( getData( model ) ).to.equalMarkup( modelList( `
+				* Foo. {style:circle}
+				* [<blockWidget></blockWidget>]
+				* Bar.
+			` ) );
+		} );
+
 		it( 'should set the `listStyle` attribute for all the same list items and ignores "parent" list (selection in nested list)', () => {
 			setData( model, modelList( `
 				* 1. {style:square}
@@ -255,7 +278,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 		} );
 
-		it( 'should stop searching for the list items when spotted listItem with different listStyle attribute', () => {
+		it( 'should stop searching for the list items when spotted listItem with different `listStyle` attribute', () => {
 			setData( model, modelList( `
 				Foo.
 				* 1.[] {style:default}

@@ -293,7 +293,11 @@ export function modelList( lines, { ignoreIdConflicts = false } = {} ) {
 
 				seenIds.add( props.listItemId );
 
-				stack[ listIndent ] = Object.assign( stack[ listIndent ] || {}, props );
+				if ( stack[ listIndent ] && stack[ listIndent ].listType != props.listType ) {
+					stack[ listIndent ] = Object.assign( {}, props );
+				} else {
+					stack[ listIndent ] = Object.assign( stack[ listIndent ] || {}, props );
+				}
 			}
 
 			items.push( stringifyElement( content, { listIndent, ...stack[ listIndent ] } ) );
