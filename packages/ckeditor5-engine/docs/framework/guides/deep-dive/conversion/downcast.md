@@ -108,7 +108,7 @@ The above converter will handle the conversion of every `bold` model text node a
 
 ## Converting element to element
 
-Similar to the previous example, you can convert a `<heading>` model element into an `<h1>` view element with the use of the`elementToElement()` conversion helper. A code to achieve it would look like this:
+Similar to the previous example, you can convert a `<heading>` model element into an `<h1>` view element with the use of the `elementToElement()` conversion helper. A code to achieve it would look like this:
 
 ```js
 editor.conversion
