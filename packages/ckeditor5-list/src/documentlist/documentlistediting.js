@@ -123,11 +123,11 @@ export default class DocumentListEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
+			indent.registerChildCommand( commands.get( 'indentList' ), { priority: 'high' } );
 		}
 
 		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
 	}
 
