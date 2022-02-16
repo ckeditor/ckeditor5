@@ -285,7 +285,7 @@ export default class LinkFormView extends View {
 			} );
 
 			switchButton.bind( 'isOn' ).toMany( [ manualDecorator, linkCommand ], 'value', ( decoratorValue, commandValue ) => {
-				return commandValue === undefined && decoratorValue === undefined ? manualDecorator.defaultValue : decoratorValue;
+				return commandValue === false && decoratorValue === false ? manualDecorator.defaultValue : decoratorValue;
 			} );
 
 			switchButton.on( 'execute', () => {
