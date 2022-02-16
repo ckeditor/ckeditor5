@@ -149,7 +149,7 @@ Another thing to remember is that in the real life scenario it would be recommen
 
 ### Handling model element’s children
 
-The example above uses an empty model element. If your model element may contain children you need to specify in the view where these children should be placed. To do that use `slotFor( 'children' )`
+The example above uses an empty model element. If your model element may contain children you need to specify in the view where these children should be placed. To do that use `writer.createSlot()`
 
 ```js
 editor.conversion
@@ -157,9 +157,9 @@ editor.conversion
 	.elementToStructure( {
 		model: 'wrappedParagraph',
 		view: ( modelElement, conversionApi ) => {
-			const { writer, slotFor } = conversionApi;
+			const { writer } = conversionApi;
 			const paragraphViewElement = writer.createContainerElement( 'p', {}, [
-				slotFor( 'children' )
+				writer.createSlot()
 			] );
 
 			return writer.createContainerElement( 'div', { class: 'wrapper' }, [

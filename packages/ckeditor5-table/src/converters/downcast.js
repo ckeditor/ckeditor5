@@ -19,7 +19,7 @@ import { toWidget, toWidgetEditable } from 'ckeditor5/src/widget';
  * @returns {Function} Element creator.
  */
 export function downcastTable( tableUtils, options = {} ) {
-	return ( table, { writer, slotFor } ) => {
+	return ( table, { writer } ) => {
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 		const tableSections = [];
 
@@ -27,7 +27,7 @@ export function downcastTable( tableUtils, options = {} ) {
 		if ( headingRows > 0 ) {
 			tableSections.push(
 				writer.createContainerElement( 'thead', null,
-					slotFor( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
+					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index < headingRows )
 				)
 			);
 		}
@@ -36,7 +36,7 @@ export function downcastTable( tableUtils, options = {} ) {
 		if ( headingRows < tableUtils.getRows( table ) ) {
 			tableSections.push(
 				writer.createContainerElement( 'tbody', null,
-					slotFor( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
+					writer.createSlot( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows )
 				)
 			);
 		}
@@ -46,7 +46,7 @@ export function downcastTable( tableUtils, options = {} ) {
 			writer.createContainerElement( 'table', null, tableSections ),
 
 			// Slot for the rest (for example caption).
-			slotFor( element => !element.is( 'element', 'tableRow' ) )
+			writer.createSlot( element => !element.is( 'element', 'tableRow' ) )
 		] );
 
 		return options.asWidget ? toTableWidget( figureElement, writer ) : figureElement;

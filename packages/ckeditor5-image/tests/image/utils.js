@@ -290,8 +290,11 @@ describe( 'image utils', () => {
 		} );
 
 		it( 'should create a figure element for "image" type', () => {
-			const slotElement = writer.createEmptyElement( '$slot' );
-			const element = createBlockImageViewElement( writer, slotElement );
+			sinon.stub( writer, 'createSlot' ).callsFake( function createSlot() {
+				return writer.createEmptyElement( '$slot' );
+			} );
+
+			const element = createBlockImageViewElement( writer );
 
 			expect( element.is( 'element', 'figure' ) ).to.be.true;
 			expect( element.hasClass( 'image' ) ).to.be.true;

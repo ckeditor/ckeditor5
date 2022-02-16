@@ -10,7 +10,7 @@
  */
 
 /**
- * Checks if the object is a native DOM Comment node.
+ * Checks whether the object is a native DOM Comment node.
  *
  * @param {*} obj
  * @returns {Boolean}

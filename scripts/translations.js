@@ -146,7 +146,7 @@ function getCKEditor5PackagePaths( { includeExternalDirectory } ) {
 	const glob = require( 'glob' );
 
 	const patterns = [
-		path.posix.join( 'packages', '* ' )
+		path.posix.join( 'packages', '*' )
 	];
 
 	if ( includeExternalDirectory ) {
