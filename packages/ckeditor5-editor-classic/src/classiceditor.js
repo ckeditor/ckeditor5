@@ -186,22 +186,24 @@ export default class ClassicEditor extends Editor {
 	 */
 	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
+			// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
+			if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
+				// Documented in core/editor/editorconfig.jsdoc.
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-create-initial-data', null );
+			}
+
+			// If `config.initialData` is not set, use DOM element or initial data set in `create()` parameter.
+			if ( config.initialData === undefined ) {
+				config.initialData = getInitialData( sourceElementOrData );
+			}
+
 			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => {
-						if ( !isElement( sourceElementOrData ) && config.initialData ) {
-							// Documented in core/editor/editorconfig.jdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);

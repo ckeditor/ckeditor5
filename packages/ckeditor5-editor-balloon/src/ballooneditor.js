@@ -199,24 +199,24 @@ export default class BalloonEditor extends Editor {
 				throw new CKEditorError( 'editor-wrong-element', null );
 			}
 
+			// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
+			if ( !isHTMLElement && config.initialData !== undefined ) {
+				// Documented in core/editor/editorconfig.jsdoc.
+				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+				throw new CKEditorError( 'editor-create-initial-data', null );
+			}
+
+			// If `config.initialData` is not set, use DOM element or initial data set in `create()` parameter.
+			if ( config.initialData === undefined ) {
+				config.initialData = getInitialData( sourceElementOrData );
+			}
+
 			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
-					.then( () => {
-						editor.ui.init();
-					} )
-					.then( () => {
-						if ( !isHTMLElement && config.initialData ) {
-							// Documented in core/editor/editorconfig.jdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.ui.init() )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
