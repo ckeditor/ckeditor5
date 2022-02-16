@@ -22,7 +22,7 @@ const DEFAULT_LIST_TYPE = 'default';
  * The document list properties engine feature.
  *
  * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they're enabled in config.
- * Read more in {@link module:list/documentlistproperties~DocumentListPropertiesConfig}.
+ * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
  */

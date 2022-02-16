@@ -37,7 +37,7 @@ export default class List extends Plugin {
 }
 
 /**
- * The configuration of the {@link module:list/list~List list} feature.
+ * The configuration of the {@link module:list/list~List list} feature and the {@link module:list/documentlist~DocumentList} feature.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -52,7 +52,7 @@ export default class List extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:list/list~List} feature.
+ * The configuration of the {@link module:list/list~List} feature and the {@link module:list/documentlist~DocumentList} feature.
  *
  * Read more in {@link module:list/list~ListConfig}.
  *

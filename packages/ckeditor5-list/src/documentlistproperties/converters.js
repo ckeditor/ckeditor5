@@ -18,7 +18,7 @@ import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
  * If not found, the `"default"` value will be used.
  *
  * @protected
- * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>} strategy
+ * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy} strategy
  * @returns {Function}
  */
 export function listPropertiesUpcastConverter( strategy ) {
@@ -68,6 +68,7 @@ export function listPropertiesUpcastConverter( strategy ) {
  * Returns a converter that adds `reversed`, `start` attributes and adds `list-style-type` definition as a value for the `style` attribute.
  * The `"default"` values are removed and not present in the view/data.
  *
+ * @protected
  * @param {module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy} strategy
  * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}

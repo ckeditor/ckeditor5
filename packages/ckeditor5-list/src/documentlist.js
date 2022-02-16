@@ -34,26 +34,3 @@ export default class DocumentList extends Plugin {
 		return 'DocumentList';
 	}
 }
-
-/**
- * The configuration of the {@link module:list/documentlist~DocumentList document list} feature.
- *
- *		ClassicEditor
- *			.create( editorElement, {
- *				list:  ... // The list feature configuration.
- *			} )
- *			.then( ... )
- *			.catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface DocumentListConfig
- */
-
-/**
- * The configuration of the {@link module:list/documentlist~DocumentList} feature.
- *
- * Read more in {@link module:list/documentlist~DocumentListConfig}.
- *
- * @member {module:module:list/documentlist~DocumentListConfig} module:core/editor/editorconfig~EditorConfig#list
- */
