@@ -4,20 +4,44 @@
  */
 
 /**
- * @module TODO
+ * @module style/utils
  */
 
-export function normalizeConfig( rawConfig ) {
-	// Clone. Don't override the user config.
-	const normalizedConfig = { ...rawConfig };
+/**
+ * Normalizes {@link module:style/style~StyleConfig#definitions} in the configuration of the styles feature.
+ * The structure of normalized styles looks as follows:
+ *
+ *		{
+ *			block: [
+ *				<module:style/style~StyleDefinition>,
+ *				<module:style/style~StyleDefinition>,
+ *				...
+ *			],
+ *			inline: [
+ *				<module:style/style~StyleDefinition>,
+ *				<module:style/style~StyleDefinition>,
+ *				...
+ *			]
+ *		}
+ *
+ * @protected
+ * @param {module:html-support/dataschema~DataSchema} dataSchema
+ * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions
+ * @returns {Object} And object with normalized style definitions grouped into `block` and `inline` categories (arrays).
+ */
+export function normalizeConfig( dataSchema, styleDefinitions = [] ) {
+	const normalizedDefinitions = {
+		block: [],
+		inline: []
+	};
 
-	if ( !normalizedConfig.block ) {
-		normalizedConfig.block = [];
+	// Use DataSchema here. But to do that, elements must be enabled in GHS first.
+	for ( const definition of styleDefinitions ) {
+		if ( definition.element === 'span' ) {
+			normalizedDefinitions.inline.push( definition );
+		} else {
+			normalizedDefinitions.block.push( definition );
+		}
 	}
-
-	if ( !normalizedConfig.inline ) {
-		normalizedConfig.inline = [];
-	}
-
-	return normalizedConfig;
+	return normalizedDefinitions;
 }

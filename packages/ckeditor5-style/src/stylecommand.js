@@ -19,6 +19,9 @@ export default class StyleCommand extends Command {
 	constructor( editor ) {
 		super( editor );
 
+		/**
+		 * TODO
+		 */
 		this.set( 'enabledStyles', [] );
 
 		this.refresh();
@@ -28,24 +31,30 @@ export default class StyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const config = normalizeConfig( this.editor.config.get( 'style.definitions' ) );
+		const editor = this.editor;
+		const dataSchema = editor.plugins.get( 'DataSchema' );
+		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
 
+		// TODO: This is just a mock.
 		this.value = [
 			'Large heading',
 			'Typewriter'
 		];
 
+		// TODO: This is just a mock.
 		this.enabledStyles = [
-			...config.block.map( ( { name } ) => name ),
-			...config.inline.map( ( { name } ) => name )
+			...normalizedStyleDefinitions.block.map( ( { name } ) => name ),
+			...normalizedStyleDefinitions.inline.map( ( { name } ) => name )
 		].filter( ( item, index ) => {
 			return ![ 2, 7 ].includes( index );
 		} );
 
+		// TODO: This is just a mock.
 		this.isEnabled = true;
 	}
 
 	/**
+	 * TODO: This is just a mock.
 	 *
 	 * @param {TODO} definition
 	 */

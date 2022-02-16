@@ -4,7 +4,7 @@
  */
 
 /**
- * @module TODO
+ * @module style/ui/stylepanelview
  */
 
 import {
@@ -18,13 +18,20 @@ import StyleGroupView from './stylegroupview';
 import '../../theme/stylepanel.css';
 
 /**
- * TODO
+ * A class representing a panel with available content styles. It renders styles in button grids, grouped
+ * in categories.
  *
+ * @protected
  * @extends module:ui/view~View
  */
 export default class StylePanelView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:style/ui/stylegroupview~StyleGroupView} class.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 * @param {Object} styleDefinitions Normalized definitions of the styles.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions.block Definitions of block styles.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions.inline Definitions of inline styles.
 	 */
 	constructor( locale, styleDefinitions ) {
 		super( locale );
@@ -48,7 +55,7 @@ export default class StylePanelView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * TODO
+		 * A collection of panel children.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -56,22 +63,42 @@ export default class StylePanelView extends View {
 		this.children = this.createCollection();
 
 		/**
-		 * TODO
+		 * A view representing block styles group.
+		 *
+		 * @readonly
+		 * @member {module:style/ui/stylegroupview~StyleGroupView}
 		 */
 		this.blockStylesGroupView = new StyleGroupView( locale, t( 'Block styles' ), styleDefinitions.block );
 
 		/**
-		 * TODO
+		 * A view representing inline styles group.
+		 *
+		 * @readonly
+		 * @member {module:style/ui/stylegroupview~StyleGroupView}
 		 */
 		this.inlineStylesGroupView = new StyleGroupView( locale, t( 'Inline styles' ), styleDefinitions.inline );
 
 		/**
-		 * TODO
+		 * Array of active style names. They must correspond to the names of styles from
+		 * definitions passed to the {@link #constructor}.
+		 *
+		 * @observable
+		 * @readonly
+		 * @default []
+		 * @member {Array.<String>} #activeStyles
 		 */
-		this.set( {
-			activeStyles: [],
-			enabledStyles: []
-		} );
+		this.set( 'activeStyles', [] );
+
+		/**
+		 * Array of enabled style names. They must correspond to the names of styles from
+		 * definitions passed to the {@link #constructor}.
+		 *
+		 * @observable
+		 * @readonly
+		 * @default []
+		 * @member {Array.<String>} #enabledStyles
+		 */
+		this.set( 'enabledStyles', [] );
 
 		/**
 		 * A collection of views that can be focused in the panel.
@@ -110,7 +137,6 @@ export default class StylePanelView extends View {
 			this.children.add( this.inlineStylesGroupView );
 		}
 
-		// TODO docs for #execute.
 		this.blockStylesGroupView.gridView.delegate( 'execute' ).to( this );
 		this.inlineStylesGroupView.gridView.delegate( 'execute' ).to( this );
 
@@ -129,6 +155,12 @@ export default class StylePanelView extends View {
 
 			children: this.children
 		} );
+
+		/**
+		 * Fired when a style was selected (clicked) by the user.
+		 *
+		 * @event execute
+		 */
 	}
 
 	/**
@@ -153,10 +185,16 @@ export default class StylePanelView extends View {
 		this.keystrokes.listenTo( this.element );
 	}
 
+	/**
+	 * Focuses the first focusable element in the panel.
+	 */
 	focus() {
 		this._focusCycler.focusFirst();
 	}
 
+	/**
+	 * Focuses the last focusable element in the panel.
+	 */
 	focusLast() {
 		this._focusCycler.focusLast();
 	}

@@ -4,13 +4,13 @@
  */
 
 /**
- * @module TODO
+ * @module style/style
  */
 
 import { Plugin } from 'ckeditor5/src/core';
 
 import StyleUI from './styleui';
-import StyleCommand from './stylecommand';
+import StyleEditing from './styleediting';
 
 /**
  * TODO
@@ -25,14 +25,47 @@ export default class Style extends Plugin {
 		return 'Style';
 	}
 
-	static get requires() {
-		return [ StyleUI ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		this.editor.commands.add( 'style', new StyleCommand( this.editor ) );
+	static get requires() {
+		return [ StyleEditing, StyleUI ];
 	}
 }
+
+/**
+ * The configuration of the {@link module:style/style~Style} feature.
+ *
+ * Read more in {@link module:style/style~StyleConfig}.
+ *
+ * @member {module:style/style~StyleConfig} module:core/editor/editorconfig~EditorConfig#style
+ */
+
+/**
+ * The configuration of the style feature.
+ *
+ *		ClassicEditor
+ *			.create( {
+ * 				style: ... // Style feature config.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface StyleConfig
+ */
+
+/**
+ * The available style definitions.
+ *
+ * @member {Array.<module:style/style~StyleDefinition>} module:style/style~StyleConfig#definitions
+ */
+
+/**
+ * Style definition.
+ *
+ * TODO
+ *
+ * @typedef {Object} module:style/style~StyleDefinition
+ */

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module TODO
+ * @module style/ui/stylegroupview
  */
 
 import {
@@ -16,25 +16,39 @@ import StyleGridView from './stylegridview';
 import '../../theme/stylegroup.css';
 
 /**
- * TODO
+ * A class representing a group of styles (e.g. "block" or "inline").
  *
+ * Renders a {@link module:style/ui/stylegridview~StyleGridView style grid} and a label.
+ *
+ * @protected
  * @extends module:ui/view~View
  */
 export default class StyleGroupView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the {@link module:style/ui/stylegroupview~StyleGroupView} class.
+	 *
+	 * @param {module:utils/locale~Locale} locale The localization services instance.
+	 * @param {String} label The localized label of the group.
+	 * @param {Array.<module:style/style~StyleDefinition>} styleDefinitions Definitions of the styles in the group.
 	 */
 	constructor( locale, label, styleDefinitions ) {
 		super( locale );
 
 		/**
-		 * TODO
+		 * The label of the group.
+		 *
+		 * @protected
+		 * @readonly
+		 * @member {module:ui/label~LabelView} #labelView
 		 */
 		this.labelView = new LabelView( locale );
 		this.labelView.text = label;
 
 		/**
-		 * TODO
+		 * The styles grid of the group.
+		 *
+		 * @readonly
+		 * @member {module:style/ui/stylegridview~StyleGridView} #gridView
 		 */
 		this.gridView = new StyleGridView( locale, styleDefinitions );
 

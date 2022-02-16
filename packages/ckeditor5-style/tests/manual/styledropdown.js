@@ -34,88 +34,84 @@ ClassicEditor
 			'redo'
 		],
 		style: {
-			definitions: {
-				block: [
-					{
-						name: 'Red heading',
-						element: 'h2',
-						classes: [ 'red-heading' ]
-					},
-					{
-						name: 'Large heading',
-						element: 'h2',
-						classes: [ 'large-heading' ]
-					},
-					{
-						name: 'Rounded container',
-						element: 'p',
-						classes: [ 'rounded-container' ]
-					},
-					{
-						name: 'Large preview',
-						element: 'p',
-						classes: [ 'large-preview' ]
-					},
-					{
-						name: 'Colorfull cell',
-						element: 'td',
-						classes: [ 'colorful-cell' ]
-					}
-				],
-				inline: [
-					{
-						name: 'Marker',
-						element: 'span',
-						classes: [ 'marker' ]
-					},
-					{
-						name: 'Typewriter',
-						element: 'span',
-						classes: [ 'typewriter' ]
-					},
-					{
-						name: 'Deleted text',
-						element: 'span',
-						classes: [ 'deleted' ]
-					},
-					{
-						name: 'Cited work',
-						element: 'span',
-						classes: [ 'cited', 'another-class' ]
-					},
-					{
-						name: 'Small text',
-						element: 'span',
-						classes: [ 'small' ]
-					},
-					{
-						name: 'Very long name of the style',
-						element: 'span',
-						classes: [ 'foo' ]
-					},
+			definitions: [
+				{
+					name: 'Red heading',
+					element: 'h2',
+					classes: [ 'red-heading' ]
+				},
+				{
+					name: 'Large heading',
+					element: 'h2',
+					classes: [ 'large-heading' ]
+				},
+				{
+					name: 'Rounded container',
+					element: 'p',
+					classes: [ 'rounded-container' ]
+				},
+				{
+					name: 'Large preview',
+					element: 'p',
+					classes: [ 'large-preview' ]
+				},
+				{
+					name: 'Colorfull cell',
+					element: 'td',
+					classes: [ 'colorful-cell' ]
+				},
+				{
+					name: 'Marker',
+					element: 'span',
+					classes: [ 'marker' ]
+				},
+				{
+					name: 'Typewriter',
+					element: 'span',
+					classes: [ 'typewriter' ]
+				},
+				{
+					name: 'Deleted text',
+					element: 'span',
+					classes: [ 'deleted' ]
+				},
+				{
+					name: 'Cited work',
+					element: 'span',
+					classes: [ 'cited', 'another-class' ]
+				},
+				{
+					name: 'Small text',
+					element: 'span',
+					classes: [ 'small' ]
+				},
+				{
+					name: 'Very long name of the style',
+					element: 'span',
+					classes: [ 'foo' ]
+				},
 
-					{
-						name: 'Foo',
-						element: 'span',
-						classes: [ 'Foo' ]
-					},
-					{
-						name: 'Bar',
-						element: 'span',
-						classes: [ 'Bar' ]
-					},
-					{
-						name: 'Baz',
-						element: 'span',
-						classes: [ 'Baz' ]
-					},
-					{
-						name: 'Qux',
-						element: 'span',
-						classes: [ 'Qux' ]
-					}
-				]
-			}
+				{
+					name: 'Foo',
+					element: 'span',
+					classes: [ 'Foo' ]
+				},
+				{
+					name: 'Bar',
+					element: 'span',
+					classes: [ 'Bar' ]
+				},
+				{
+					name: 'Baz',
+					element: 'span',
+					classes: [ 'Baz' ]
+				},
+				{
+					name: 'Qux',
+					element: 'span',
+					classes: [ 'Qux' ]
+				}
+			]
 		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
@@ -159,25 +155,23 @@ ClassicEditor
 			'redo'
 		],
 		style: {
-			definitions: {
-				inline: [
-					{
-						name: 'Marker',
-						element: 'span',
-						classes: [ 'marker' ]
-					},
-					{
-						name: 'Typewriter',
-						element: 'span',
-						classes: [ 'typewriter' ]
-					},
-					{
-						name: 'Deleted text',
-						element: 'span',
-						classes: [ 'deleted' ]
-					}
-				]
-			}
+			definitions: [
+				{
+					name: 'Marker',
+					element: 'span',
+					classes: [ 'marker' ]
+				},
+				{
+					name: 'Typewriter',
+					element: 'span',
+					classes: [ 'typewriter' ]
+				},
+				{
+					name: 'Deleted text',
+					element: 'span',
+					classes: [ 'deleted' ]
+				}
+			]
 		},
 		image: {
 			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
