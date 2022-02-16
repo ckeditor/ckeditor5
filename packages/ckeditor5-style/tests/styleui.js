@@ -88,6 +88,16 @@ describe( 'StyleUI', () => {
 				expect( dropdown.class ).to.equal( 'ck-style-dropdown ck-style-dropdown_multiple-active' );
 			} );
 
+			it( 'should close when a style was #executed in the panel', () => {
+				testUtils.sinon.stub( editor, 'execute' );
+
+				dropdown.isOpen = true;
+
+				dropdown.panelView.children.first.fire( 'execute' );
+
+				expect( dropdown.isOpen ).to.be.false;
+			} );
+
 			describe( '#buttonView', () => {
 				it( 'should display text and no icon', () => {
 					expect( dropdown.buttonView.withText ).to.be.true;
