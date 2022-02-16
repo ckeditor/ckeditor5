@@ -176,7 +176,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should execute indentCodeBlock command on tab key', () => {
 			setModelData( model, '<codeBlock language="plaintext">[]foo</codeBlock>' );
 
-			editor.editing.view.document.fire( 'tab', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
 			sinon.assert.calledWithExactly( editor.execute, 'indentCodeBlock' );
@@ -194,7 +194,7 @@ describe( 'CodeBlockEditing', () => {
 				writer.insertText( '	', model.document.getRoot().getChild( 0 ) );
 			} );
 
-			editor.editing.view.document.fire( 'tab', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.calledOnce( editor.execute );
 			sinon.assert.calledWithExactly( editor.execute, 'outdentCodeBlock' );
@@ -205,7 +205,7 @@ describe( 'CodeBlockEditing', () => {
 		it( 'should not indent if command is disabled', () => {
 			setModelData( model, '<paragraph>[]foo</paragraph>' );
 
-			editor.editing.view.document.fire( 'tab', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );

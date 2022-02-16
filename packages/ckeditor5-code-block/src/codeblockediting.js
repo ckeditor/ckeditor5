@@ -98,15 +98,6 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
 		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
-		// const executeCommand = commandName => {
-		// 	const command = this.editor.commands.get( commandName );
-
-		// 	if ( command.isEnabled ) {
-		// 		this.editor.execute( commandName );
-		// 		return true;
-		// 	}
-		// };
-
 		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
 			const command = this.editor.commands.get( commandName );
@@ -228,7 +219,7 @@ export default class CodeBlockEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentCodeBlock' ), 'highest' );
+			indent.registerChildCommand( commands.get( 'indentCodeBlock' ), { priority: 'highest' } );
 		}
 
 		if ( outdent ) {
