@@ -359,6 +359,11 @@ export default class DataFilter extends Plugin {
 		const { view: viewName, model: modelName } = definition;
 
 		if ( !schema.isRegistered( definition.model ) ) {
+			if ( !definition.modelSchema ) {
+				// TODO is this temporary? disabling listItem for li
+				return;
+			}
+
 			schema.register( definition.model, definition.modelSchema );
 
 			if ( !viewName ) {

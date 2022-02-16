@@ -117,10 +117,22 @@ export function createListElement( writer, indent, type ) {
  */
 export function createListItemElement( writer, indent, id ) {
 	// Negative priorities so that restricted editing attribute won't wrap list items.
-	return writer.createAttributeElement( 'li', null, {
+	const viewElement = writer.createAttributeElement( 'li', null, {
 		priority: ( 2 * indent + 1 ) / 100 - 100,
-		id
+		// id
 	} );
+
+	writer.setCustomProperty( 'listItemId', id, viewElement );
+
+	viewElement.isSimilar = function( otherElement ) {
+		if ( this.getCustomProperty( 'listItemId' ) == otherElement.getCustomProperty( 'listItemId' ) ) {
+			return true;
+		}
+
+		return Object.getPrototypeOf( viewElement ).isSimilar.call( viewElement, otherElement );
+	};
+
+	return viewElement;
 }
 
 /**
