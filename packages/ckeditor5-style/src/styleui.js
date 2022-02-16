@@ -13,6 +13,8 @@ import { createDropdown } from 'ckeditor5/src/ui';
 import StylePanelView from './ui/stylepanelview';
 import { normalizeConfig } from './utils';
 
+import '../theme/style.css';
+
 /**
  * The UI plugin of the style feature .
  *
