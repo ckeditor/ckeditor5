@@ -98,9 +98,9 @@ export default class CodeBlockEditing extends Plugin {
 		editor.commands.add( 'indentCodeBlock', new IndentCodeBlockCommand( editor ) );
 		editor.commands.add( 'outdentCodeBlock', new OutdentCodeBlockCommand( editor ) );
 
-		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+		this.listenTo( view.document, 'tab', ( evt, data ) => {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
-			const command = this.editor.commands.get( commandName );
+			const command = editor.commands.get( commandName );
 
 			if ( command.isEnabled ) {
 				editor.execute( commandName );

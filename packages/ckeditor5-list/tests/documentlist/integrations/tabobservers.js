@@ -12,7 +12,6 @@ import stubUid from '../_utils/uid';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Table from '@ckeditor/ckeditor5-table/src/table';
-import TableKeyboard from '@ckeditor/ckeditor5-table/src/tablekeyboard';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import { Paragraph } from 'ckeditor5/src/paragraph';
 
@@ -44,7 +43,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [
-				Paragraph, CodeBlockEditing, DocumentListEditing, IndentEditing, BlockQuoteEditing, Table, TableKeyboard
+				Paragraph, CodeBlockEditing, DocumentListEditing, IndentEditing, BlockQuoteEditing, Table
 			]
 		} );
 
