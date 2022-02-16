@@ -48,7 +48,7 @@ export default class MultiCommand extends Command {
 		 * @type {Array.<Object>}
 		 * @private
 		 */
-		this._childCommandsDefinitons = [];
+		this._childCommandsDefinitions = [];
 	}
 
 	/**
@@ -77,7 +77,7 @@ export default class MultiCommand extends Command {
 	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of a command to register.
 	 */
 	registerChildCommand( command, options = { priority: 'normal' } ) {
-		insertToPriorityArray( this._childCommandsDefinitons, { command, priority: options.priority } );
+		insertToPriorityArray( this._childCommandsDefinitions, { command, priority: options.priority } );
 
 		// Change multi command enabled state when one of registered commands changes state.
 		command.on( 'change:isEnabled', () => this._checkEnabled() );
@@ -101,7 +101,7 @@ export default class MultiCommand extends Command {
 	 * @private
 	 */
 	_getFirstEnabledCommand() {
-		const commandDefinition = this._childCommandsDefinitons.find( ( { command } ) => command.isEnabled );
+		const commandDefinition = this._childCommandsDefinitions.find( ( { command } ) => command.isEnabled );
 
 		return commandDefinition && commandDefinition.command;
 	}
