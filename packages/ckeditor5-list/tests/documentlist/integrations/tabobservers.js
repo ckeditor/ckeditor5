@@ -1,16 +1,17 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global document */
 
 import DocumentListEditing from '../../../src/documentlist/documentlistediting';
+import { modelList } from '../_utils/utils';
+import stubUid from '../_utils/uid';
 
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
-import TableEditing from '@ckeditor/ckeditor5-table/src/tableediting';
+import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableKeyboard from '@ckeditor/ckeditor5-table/src/tablekeyboard';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
 import { Paragraph } from 'ckeditor5/src/paragraph';
@@ -20,15 +21,11 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
 
-import { modelList } from '../_utils/utils';
-
 import {
 	getData as getModelData,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { DomEventData } from '@ckeditor/ckeditor5-engine';
-
-import stubUid from '../_utils/uid';
 
 describe( 'DocumentListEditing integrations: tab key', () => {
 	const blocksChangedByCommands = [];
@@ -36,8 +33,8 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 	let element;
 	let editor, model, view;
 	let eventInfo, tabDomEventData, shiftTabDomEventData;
-	let indentListcommand, outdentListcommand,
-		commandSpies;
+	let indentListcommand, outdentListcommand;
+	let commandSpies;
 
 	testUtils.createSinonSandbox();
 
@@ -47,8 +44,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 
 		editor = await ClassicTestEditor.create( element, {
 			plugins: [
-				Paragraph, CodeBlockEditing, DocumentListEditing, IndentEditing, IndentBlock,
-				BlockQuoteEditing, TableEditing, TableKeyboard
+				Paragraph, CodeBlockEditing, DocumentListEditing, IndentEditing, BlockQuoteEditing, Table, TableKeyboard
 			]
 		} );
 
@@ -1023,7 +1019,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 		} );
 
 		describe( 'tab key handling', () => {
-			it( 'should indent code block when in a list item', () => {
+			it( 'should indent code block when in a list item that cannot be indented', () => {
 				runTest( {
 					input: [
 						'* <codeBlock language="language-plaintext">[]foo</codeBlock>'
@@ -1043,7 +1039,29 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 				} );
 			} );
 
-			it( 'should indent code block when in a list item block', () => {
+			it( 'should indent code block when in a list item that can be indented', () => {
+				runTest( {
+					input: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">[]bar</codeBlock>'
+					],
+					expected: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">	[]bar</codeBlock>'
+					],
+					domEventData: tabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 0,
+						indentList: 0,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 1
+					},
+					changedBlocks: [ ]
+				} );
+			} );
+
+			it( 'should indent a code block when in a list item block', () => {
 				runTest( {
 					input: [
 						'* foo',
@@ -1065,7 +1083,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 				} );
 			} );
 
-			it( 'should not indent code block when multiple items are selected', () => {
+			it( 'should not indent a code block when multiple items are selected', () => {
 				runTest( {
 					input: [
 						'* f[oo',
@@ -1084,6 +1102,106 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 						indentList: 0,
 						outdentCodeBlock: 0,
 						indentCodeBlock: 0
+					},
+					changedBlocks: [ ]
+				} );
+			} );
+
+			it( 'should indent list items when selection spans code block in the middle', () => {
+				runTest( {
+					input: [
+						'* foo',
+						'* b[ar',
+						'  <codeBlock language="language-plaintext">foo</codeBlock>',
+						'* ya]r'
+					],
+					expected: [
+						'* foo',
+						'  * b[ar',
+						'    <codeBlock language="language-plaintext">foo</codeBlock>',
+						'  * ya]r'
+					],
+					domEventData: tabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 0,
+						indentList: 1,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 0
+					},
+					changedBlocks: [ 1, 2, 3 ]
+				} );
+			} );
+
+			it( 'should indent list item when selection starts above and ends at codeblock', () => {
+				runTest( {
+					input: [
+						'* foo',
+						'* b[ar',
+						'  <codeBlock language="language-plaintext">fo]o</codeBlock>'
+					],
+					expected: [
+						'* foo',
+						'  * b[ar {id:001}',
+						'    <codeBlock language="language-plaintext">fo]o</codeBlock>'
+					],
+					domEventData: tabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 0,
+						indentList: 1,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 0
+					},
+					changedBlocks: [ 1, 2 ]
+				} );
+			} );
+
+			it( 'should indent code block when selection starts at code block and ends below', () => {
+				runTest( {
+					input: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">ba[r</codeBlock>',
+						'* yar]'
+					],
+					expected: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">	ba[r</codeBlock>',
+						'* yar]'
+					],
+					domEventData: tabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 0,
+						indentList: 0,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 1
+					},
+					changedBlocks: [ ]
+				} );
+			} );
+
+			it( 'should indent code block when selection starts at code block and ends outside list', () => {
+				runTest( {
+					input: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">ba[r</codeBlock>',
+						'* yar',
+						'tar]'
+					],
+					expected: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">	ba[r</codeBlock>',
+						'* yar',
+						'tar]'
+					],
+					domEventData: tabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 0,
+						indentList: 0,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 1
 					},
 					changedBlocks: [ ]
 				} );
@@ -1107,6 +1225,94 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 				runTest( {
 					expected: [
 						'* <codeBlock language="language-plaintext">[]foo</codeBlock>'
+					],
+					domEventData: shiftTabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 0,
+						indentList: 0,
+						outdentCodeBlock: 1,
+						indentCodeBlock: 0
+					},
+					changedBlocks: [ ],
+					customSetModelData
+				} );
+			} );
+
+			it( 'should outdent list item if a code block does not have indent', () => {
+				runTest( {
+					input: [
+						'* <codeBlock language="language-plaintext">[]foo</codeBlock>'
+					],
+					expected: [
+						'<codeBlock language="language-plaintext">[]foo</codeBlock>'
+					],
+					domEventData: shiftTabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 1,
+						indentList: 0,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 0
+					},
+					changedBlocks: [ 0 ]
+				} );
+			} );
+
+			it( 'should outdent list items if a selection starts before code block and ends at a code block', () => {
+				const customSetModelData = () => {
+					setModelData(
+						model,
+						modelList( [
+							'* foo',
+							'* b[ar',
+							'* <codeBlock language="language-plaintext">y]ar</codeBlock>'
+						] ) );
+
+					model.change( writer => {
+						writer.insertText( '	', model.document.getRoot().getChild( 2 ) );
+					} );
+				};
+
+				runTest( {
+					expected: [
+						'* foo',
+						'b[ar',
+						'<codeBlock language="language-plaintext">	y]ar</codeBlock>'
+					],
+					domEventData: shiftTabDomEventData,
+					eventStopped: true,
+					executedCommands: {
+						outdentList: 1,
+						indentList: 0,
+						outdentCodeBlock: 0,
+						indentCodeBlock: 0
+					},
+					changedBlocks: [ 1, 2 ],
+					customSetModelData
+				} );
+			} );
+
+			it( 'should outdent a code block if a selection starts at a code block and ends after it', () => {
+				const customSetModelData = () => {
+					setModelData(
+						model,
+						modelList( [
+							'* foo',
+							'* <codeBlock language="language-plaintext">b[ar</codeBlock>',
+							'* y]ar'
+						] ) );
+
+					model.change( writer => {
+						writer.insertText( '	', model.document.getRoot().getChild( 1 ) );
+					} );
+				};
+
+				runTest( {
+					expected: [
+						'* foo',
+						'* <codeBlock language="language-plaintext">b[ar</codeBlock>',
+						'* y]ar'
 					],
 					domEventData: shiftTabDomEventData,
 					eventStopped: true,
@@ -1176,39 +1382,137 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 			} );
 		} );
 
-		// it( 'TableKeyboard tab observer should capture tab press event with shift when whole table is selected', () => {
-		// 	const inputTable = modelTable( [
-		// 		[ 'foo', 'bar' ]
-		// 	] );
+		it( 'TableKeyboard tab observer should capture tab press event with shift when whole table is selected', () => {
+			const inputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
 
-		// 	const outputTable = modelTable( [
-		// 		[ '[foo]', 'bar' ]
-		// 	] );
+			const outputTable = modelTable( [
+				[ '[foo]', 'bar' ]
+			] );
 
-		// 	runTest( {
-		// 		input: [
-		// 			'* [' + inputTable + ']'
-		// 		],
-		// 		expected: [
-		// 			'* ' + outputTable
-		// 		],
-		// 		domEventData: tabDomEventData,
-		// 		eventStopped: true,
-		// 		executedCommands: {
-		// 			outdentList: 0,
-		// 			indentList: 0
-		// 		},
-		// 		changedBlocks: [ ]
-		// 	} );
-		// } );
+			runTest( {
+				input: [
+					'* [' + inputTable + ']'
+				],
+				expected: [
+					'* ' + outputTable
+				],
+				domEventData: tabDomEventData,
+				eventStopped: true,
+				executedCommands: {
+					outdentList: 0,
+					indentList: 0
+				},
+				changedBlocks: [ ]
+			} );
+		} );
+
+		it( 'should indent list items if selection spans a table', () => {
+			const inputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
+
+			const outputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
+
+			runTest( {
+				input: [
+					'* foo',
+					'* ba[r',
+					'* ' + inputTable,
+					'* ya]r'
+				],
+				expected: [
+					'* foo',
+					'  * ba[r',
+					'  * ' + outputTable,
+					'  * ya]r'
+				],
+				domEventData: tabDomEventData,
+				eventStopped: true,
+				executedCommands: {
+					outdentList: 0,
+					indentList: 1
+				},
+				changedBlocks: [ 1, 2, 3 ]
+			} );
+		} );
+
+		it( 'nothing should happen if selection spans a table but one of the list items cannot be indented', () => {
+			const inputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
+
+			const outputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
+
+			runTest( {
+				input: [
+					'* fo[o',
+					'* bar',
+					'* ' + inputTable,
+					'* ya]r'
+				],
+				expected: [
+					'* fo[o',
+					'* bar',
+					'* ' + outputTable,
+					'* ya]r'
+				],
+				domEventData: tabDomEventData,
+				eventStopped: false,
+				executedCommands: {
+					outdentList: 0,
+					indentList: 0
+				},
+				changedBlocks: [ ]
+			} );
+		} );
+
+		it( 'should outdent list items if a selection spans table', () => {
+			const inputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
+
+			const outputTable = modelTable( [
+				[ 'foo', 'bar' ]
+			] );
+
+			runTest( {
+				input: [
+					'* foo',
+					'* ba[r',
+					'* ' + inputTable,
+					'* ya]r'
+				],
+				expected: [
+					'* foo',
+					'ba[r',
+					outputTable,
+					'ya]r'
+				],
+				domEventData: shiftTabDomEventData,
+				eventStopped: true,
+				executedCommands: {
+					outdentList: 1,
+					indentList: 0
+				},
+				changedBlocks: [ 1, 2, 3 ]
+			} );
+		} );
 	} );
 
 	// @param {Iterable.<String>} input
 	// @param {Iterable.<String>} expected
+	// @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	// @param {Boolean|Object.<String,Boolean>} eventStopped Boolean when preventDefault() and stop() were called/not called together.
 	// Object, when mixed behavior was expected.
 	// @param {Object.<String,Number>} executedCommands Numbers of command executions.
 	// @param {Array.<Number>} changedBlocks Indexes of changed blocks.
+	// @param {Function} customSetModelData Function to alter how model data is set.
 	function runTest( { input, expected, domEventData, eventStopped, executedCommands = {}, changedBlocks = [], customSetModelData } ) {
 		if ( customSetModelData ) {
 			customSetModelData();
