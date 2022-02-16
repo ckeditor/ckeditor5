@@ -24,7 +24,8 @@ ClassicEditor
 			feeds: [
 				{
 					marker: '@',
-					feed: [ '@Barney', '@Lily', '@Marshall', '@Robin', '@Ted' ]
+					feed: [ '@Barney', '@Lily', '@Marry Ann', '@Marshall', '@Robin', '@Ted' ],
+					minimumCharacters: 1
 				}
 			]
 		}

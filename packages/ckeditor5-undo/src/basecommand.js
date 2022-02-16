@@ -59,7 +59,7 @@ export default class BaseCommand extends Command {
 
 		// Clear the stack for the `transparent` batches.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
-			// We can assume that the object exists and it has `batchType` property.
+			// We can assume that the object exists and it has a `batchType` property.
 			// It was ensured with a higher priority listener before.
 			const options = data[ 1 ];
 

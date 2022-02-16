@@ -21,7 +21,6 @@ import ConversionHelpers from './conversionhelpers';
 import { cloneDeep } from 'lodash-es';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
-import { logWarning } from '@ckeditor/ckeditor5-utils';
 
 /**
  * Downcast conversion helper functions.
@@ -190,13 +189,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
 	 *			model: 'wrappedParagraph',
 	 *			view: ( modelElement, conversionApi ) => {
-	 *				const { writer, slotFor } = conversionApi;
+	 *				const { writer } = conversionApi;
 	 *
 	 *				const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
 	 *				const paragraphViewElement = writer.createContainerElement( 'p' );
 	 *
 	 *				writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
-	 *				writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), slotFor( 'children' ) );
+	 *				writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), writer.createSlot() );
 	 *
 	 *				return wrapperViewElement;
 	 *			}
@@ -243,7 +242,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *				attributes: [ 'headingRows' ]
 	 *			},
 	 *			view: ( modelElement, conversionApi ) => {
-	 *				const { writer, slotFor } = conversionApi;
+	 *				const { writer } = conversionApi;
 	 *
 	 *				const figureElement = writer.createContainerElement( 'figure', { class: 'table' } );
 	 *				const tableElement = writer.createContainerElement( 'table' );
@@ -255,7 +254,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *				if ( headingRows > 0 ) {
 	 *					const tableHead = writer.createContainerElement( 'thead' );
 	 *
-	 *					const headSlot = slotFor( element => element.is( 'element', 'tableRow' ) && element.index < headingRows );
+	 *					const headSlot = writer.createSlot( node => node.is( 'element', 'tableRow' ) && node.index < headingRows );
 	 *
 	 *					writer.insert( writer.createPositionAt( tableElement, 'end' ), tableHead );
 	 *					writer.insert( writer.createPositionAt( tableHead, 0 ), headSlot );
@@ -264,13 +263,13 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *				if ( headingRows < tableUtils.getRows( table ) ) {
 	 *					const tableBody = writer.createContainerElement( 'tbody' );
 	 *
-	 *					const bodySlot = slotFor( element => element.is( 'element', 'tableRow' ) && element.index >= headingRows );
+	 *					const bodySlot = writer.createSlot( node => node.is( 'element', 'tableRow' ) && node.index >= headingRows );
 	 *
 	 *					writer.insert( writer.createPositionAt( tableElement, 'end' ), tableBody );
 	 *					writer.insert( writer.createPositionAt( tableBody, 0 ), bodySlot );
 	 *				}
 	 *
-	 *				const restSlot = slotFor( element => !element.is( 'element', 'tableRow' ) );
+	 *				const restSlot = writer.createSlot( node => !node.is( 'element', 'tableRow' ) );
 	 *
 	 *				writer.insert( writer.createPositionAt( figureElement, 'end' ), restSlot );
 	 *
@@ -291,7 +290,7 @@ export default class DowncastHelpers extends ConversionHelpers {
  	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
 	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
 	 * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view A function
-	 * that takes the model element and {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi downcast
+	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
 	 * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
@@ -1045,9 +1044,6 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
 			return;
 		}
 
-		// Check if only one element has been created.
-		validateChildren( viewElement );
-
 		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
 		consumer( data.item, conversionApi.consumable );
 
@@ -1068,7 +1064,7 @@ export function insertElement( elementCreator, consumer = defaultConsumer ) {
  * Function factory that creates a converter which converts a single model node insertion to a view structure.
  *
  * It is expected that the passed element creator function returns an {@link module:engine/view/element~Element} with attached slots
- * created with `conversionApi.slotFor()` to indicate where child nodes should be converted.
+ * created with `writer.createSlot()` to indicate where child nodes should be converted.
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  *
@@ -1087,11 +1083,12 @@ export function insertStructure( elementCreator, consumer ) {
 
 		const slotsMap = new Map();
 
+		conversionApi.writer._registerSlotFactory( createSlotFactory( data.item, slotsMap, conversionApi ) );
+
 		// View creation.
-		const viewElement = elementCreator( data.item, {
-			...conversionApi,
-			slotFor: createSlotFactory( data.item, slotsMap, conversionApi )
-		}, data );
+		const viewElement = elementCreator( data.item, conversionApi, data );
+
+		conversionApi.writer._clearSlotFactory();
 
 		if ( !viewElement ) {
 			return;
@@ -1706,6 +1703,48 @@ function downcastElementToStructure( config ) {
 	config.model.children = true;
 
 	return dispatcher => {
+		if ( dispatcher._conversionApi.schema.checkChild( config.model.name, '$text' ) ) {
+			/**
+			 * This error occurs when a {@link module:engine/model/element~Element model element} is downcasted
+			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
+			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
+			 *
+			 * For instance, this may be the result of `myElement` allowing the content of
+			 * {@glink framework/guides/deep-dive/schema#generic-items `$block`} in its schema definition:
+			 *
+			 *		// Element definition in schema.
+			 *		schema.register( 'myElement', {
+			 *			allowContentOf: '$block',
+			 *
+			 *			// ...
+			 *		} );
+			 *
+			 *		// ...
+			 *
+			 *		// Conversion of myElement with the use of elementToStructure().
+			 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * In such case, {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} helper
+			 * can be used instead to get around this problem:
+			 *
+			 *		editor.conversion.for( 'downcast' ).elementToElement( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * @error conversion-element-to-structure-disallowed-text
+			 * @param {String} elementName The name of the element the structure is to be created for.
+			 */
+			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: config.model.name } );
+		}
+
 		dispatcher.on(
 			'insert:' + config.model.name,
 			insertStructure( config.view, createConsumer( config.model ) ),
@@ -2126,40 +2165,15 @@ function createConsumer( model ) {
 	};
 }
 
-// Check if given element children list contains only UI elements and warns otherwise.
-//
-// @param {module:engine/view/element~Element} viewElement.
-function validateChildren( viewElement ) {
-	const children = Array.from( viewElement.getChildren() );
-	const hasNonUiChildren = children.some( element => !element.is( 'uiElement' ) );
-
-	if ( hasNonUiChildren ) {
-		/**
-		 * Only one container element without any children elements other than
-		 * {@link module:engine/view/uielement~UIElement `UIElement`}s should be created in
-		 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} function.
-		 *
-		 * Please make sure you don't create more than one element in
-		 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and if you need
-		 * to create multiple elements use {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure}
-		 * instead.
-		 *
-		 * @error conversion-element-to-element-created-multiple-elements
-		 * @param {module:engine/model/element~Element} viewElement
-		 */
-		logWarning( 'conversion-element-to-element-created-multiple-elements', { viewElement } );
-	}
-}
-
 // Creates a function that create view slots.
 //
 // @param {module:engine/model/element~Element} element
 // @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
-// @returns {Function} Exposed by conversionApi as {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor}.
+// @returns {Function} Exposed by writer as createSlot().
 function createSlotFactory( element, slotsMap, conversionApi ) {
-	return modeOrFilter => {
-		const slot = conversionApi.writer.createContainerElement( '$slot' );
+	return ( writer, modeOrFilter = 'children' ) => {
+		const slot = writer.createContainerElement( '$slot' );
 
 		let children = null;
 
@@ -2169,7 +2183,7 @@ function createSlotFactory( element, slotsMap, conversionApi ) {
 			children = Array.from( element.getChildren() ).filter( element => modeOrFilter( element ) );
 		} else {
 			/**
-			 * Unknown slot mode was provided to `conversionApi.slotFor()` in downcast converter.
+			 * Unknown slot mode was provided to `writer.createSlot()` in downcast converter.
 			 *
 			 * @error conversion-slot-mode-unknown
 			 */
@@ -2193,7 +2207,7 @@ function validateSlotsChildren( element, slotsMap, conversionApi ) {
 
 	if ( uniqueChildrenInSlots.size != childrenInSlots.length ) {
 		/**
-		 * Filters provided to `conversionApi.slotFor()` overlap (at least two filters accept the same child element).
+		 * Filters provided to `writer.createSlot()` overlap (at least two filters accept the same child element).
 		 *
 		 * @error conversion-slot-filter-overlap
 		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
@@ -2204,7 +2218,7 @@ function validateSlotsChildren( element, slotsMap, conversionApi ) {
 
 	if ( uniqueChildrenInSlots.size != element.childCount ) {
 		/**
-		 * Filters provided to `conversionApi.slotFor()` are incomplete and exclude at least one children element (one of
+		 * Filters provided to `writer.createSlot()` are incomplete and exclude at least one children element (one of
 		 * the children elements would not be assigned to any of the slots).
 		 *
 		 * @error conversion-slot-filter-incomplete
@@ -2363,7 +2377,7 @@ function defaultConsumer( item, consumable, { preflight } = {} ) {
 
 /**
  * A filtering function used to choose model child nodes to be downcasted into the specific view
- * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor "slot"} while executing the
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createSlot "slot"} while executing the
  * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`} converter.
  *
  * @callback module:engine/conversion/downcasthelpers~SlotFilter
@@ -2371,47 +2385,9 @@ function defaultConsumer( item, consumable, { preflight } = {} ) {
  * @param {module:engine/model/node~Node} node A model node.
  * @returns {Boolean} Whether provided model node should be downcasted into this slot.
  *
- * @see module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor
+ * @see module:engine/view/downcastwriter~DowncastWriter#createSlot
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
  * @see module:engine/conversion/downcasthelpers~insertStructure
- */
-
-/**
- * An extended {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `DowncastConversionApi`} that adds a
- * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor `slotFor()`} helper to create placeholders for
- * child elements converion.
- *
- * @interface module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi
- * @extends module:engine/conversion/downcastdispatcher~DowncastConversionApi
- *
- * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
- * @see module:engine/conversion/downcasthelpers~insertStructure
- */
-
-/**
- * A helper that creates placeholders for child elements.
- *
- *		const viewSlot = conversionApi.slotFor( 'children' );
- *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
- *
- *		conversionApi.writer.insert( viewPosition, viewSlot );
- *
- * It could be filtered to a specific subset of children (only `<foo>` model elements in this case):
- *
- *		const viewSlot = conversionApi.slotFor( node => node.is( 'element', 'foo' ) );
- *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
- *
- *		conversionApi.writer.insert( viewPosition, viewSlot );
- *
- * While providing a filtered slot make sure to provide slots for all child nodes. A single node can not be downcasted into
- * multiple slots.
- *
- * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
- *
- * @method #slotFor
- * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} modeOrFilter The filter for child nodes.
- * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
- * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
  */
 
 /**
@@ -2432,17 +2408,16 @@ function defaultConsumer( item, consumable, { preflight } = {} ) {
  */
 
 /**
- * A function that takes the model element and {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi downcast
+ * A function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
  * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
  *
  * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
  * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
- * @param {module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi} conversionApi The conversion interface with
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion interface.
  * @param {Object} data Additional information about the change (same as for
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert`} event).
  * @param {module:engine/model/item~Item} data.item Inserted item.
  * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
- * {@link module:engine/conversion/downcasthelpers~DowncastConversionWithSlotsApi#slotFor `slotFor()`} factory.
  * @returns {module:engine/view/element~Element} The view structure with slots for model child nodes.
  *
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure

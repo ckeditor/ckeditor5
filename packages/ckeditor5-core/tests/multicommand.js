@@ -136,7 +136,7 @@ describe( 'MultiCommand', () => {
 		} );
 	} );
 
-	describe( 'priority', () => {
+	describe( 'support for command\'s priority', () => {
 		it( 'should execute command with higher priority', () => {
 			const commandA = new Command( editor );
 			const commandB = new Command( editor );
