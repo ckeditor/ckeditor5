@@ -44,22 +44,18 @@ export default class TableKeyboard extends Plugin {
 
 		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
 
-		this.listenTo( this.editor.editing.view.document, 'tab', ( eventInfo, domEventData ) => {
-			this._handleTabOnSelectedTable( eventInfo, domEventData );
-		}, { context: 'figure' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { context: 'figure' } );
 
-		this.listenTo( this.editor.editing.view.document, 'tab', ( eventInfo, domEventData ) => {
-			this._handleTab( !domEventData.shiftKey, eventInfo, domEventData );
-		}, { context: 'td' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTab( ...args ), { context: 'td' } );
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * when the table widget is selected.
 	 *
 	 * @private
-	 * @param {module:engine/view/observer/keyobserver~KeyEventData} domEventData Key event data.
-	 * @param {Function} cancel The stop/stopPropagation/preventDefault function.
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
 	_handleTabOnSelectedTable( eventInfo, domEventData ) {
 		const editor = this.editor;
@@ -84,12 +80,15 @@ export default class TableKeyboard extends Plugin {
 	 * inside table cells.
 	 *
 	 * @private
-	 * @param {Boolean} isForward Whether this handler will move the selection to the next or the previous cell.
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTab( isForward, eventInfo, domEventData ) {
+	_handleTab( eventInfo, domEventData ) {
 		const editor = this.editor;
 
 		const selection = editor.model.document.selection;
+		const isForward = !domEventData.shiftKey;
+
 		let tableCell = getTableCellsContainingSelection( selection )[ 0 ];
 
 		if ( !tableCell ) {

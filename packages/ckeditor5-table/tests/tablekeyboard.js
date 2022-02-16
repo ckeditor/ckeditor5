@@ -63,7 +63,8 @@ describe( 'TableKeyboard', () => {
 			domEvtDataStub = {
 				keyCode: getCode( 'Tab' ),
 				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
+				stopPropagation: sinon.spy(),
+				domTarget: global.document.body
 			};
 		} );
 
@@ -74,7 +75,7 @@ describe( 'TableKeyboard', () => {
 
 			domEvtDataStub.keyCode = getCode( 'a' );
 
-			editor.editing.view.document.fire( 'keydown', { domEvent: domEvtDataStub } );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
@@ -103,7 +104,7 @@ describe( 'TableKeyboard', () => {
 			it( 'should do nothing if the selection is not in a table', () => {
 				setModelData( model, '<paragraph>[]</paragraph>' + modelTable( [ [ '11', '12' ] ] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
@@ -117,7 +118,7 @@ describe( 'TableKeyboard', () => {
 					[ '11[]', '12' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
@@ -131,7 +132,7 @@ describe( 'TableKeyboard', () => {
 					[ '11', '[12]' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
@@ -161,7 +162,7 @@ describe( 'TableKeyboard', () => {
 					'</table>'
 				);
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<table>' +
@@ -187,7 +188,7 @@ describe( 'TableKeyboard', () => {
 
 				insertTableRowBelowCommand.forceDisabled( 'test' );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'[' + modelTable( [ [ '11', '12' ] ] ) + ']'
@@ -200,7 +201,7 @@ describe( 'TableKeyboard', () => {
 					[ '21', '22' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '12' ],
@@ -213,7 +214,7 @@ describe( 'TableKeyboard', () => {
 					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 					[
@@ -229,7 +230,7 @@ describe( 'TableKeyboard', () => {
 					[ '11[]', '<paragraph>foo</paragraph><imageBlock><caption></caption></imageBlock>' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
@@ -249,7 +250,7 @@ describe( 'TableKeyboard', () => {
 					[ '11[]', '<blockQuote><paragraph>foo</paragraph></blockQuote>' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
@@ -278,7 +279,7 @@ describe( 'TableKeyboard', () => {
 					[ '11[]', '12' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
@@ -308,7 +309,7 @@ describe( 'TableKeyboard', () => {
 						[ '11', '12' ]
 					] ) + ']' );
 
-					editor.editing.view.document.fire( 'tab', domEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 					sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
@@ -328,7 +329,7 @@ describe( 'TableKeyboard', () => {
 
 					setModelData( model, '[<block>foo</block>]' );
 
-					editor.editing.view.document.fire( 'tab', domEvtDataStub );
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 					sinon.assert.notCalled( domEvtDataStub.preventDefault );
 					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
@@ -354,7 +355,7 @@ describe( 'TableKeyboard', () => {
 				domEvtDataStub.keyCode = getCode( 'Tab' );
 				domEvtDataStub.shiftKey = true;
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
@@ -368,7 +369,7 @@ describe( 'TableKeyboard', () => {
 					[ '11', '12[]' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
@@ -383,7 +384,7 @@ describe( 'TableKeyboard', () => {
 					[ '[]11', '12' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup(
 					'<paragraph>foo</paragraph>[' + modelTable( [ [ '11', '12' ] ] ) + ']'
@@ -396,7 +397,7 @@ describe( 'TableKeyboard', () => {
 					[ '[]21', '22' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '11', '[12]' ],
@@ -409,7 +410,7 @@ describe( 'TableKeyboard', () => {
 					[ '11', '<paragraph>12</paragraph><paragraph>[foo]</paragraph><paragraph>bar</paragraph>', '13' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 					[
@@ -425,7 +426,7 @@ describe( 'TableKeyboard', () => {
 					[ '<paragraph>foo</paragraph><imageBlock><caption></caption></imageBlock>', 'bar[]' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
