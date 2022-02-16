@@ -28,7 +28,11 @@ export default class TabObserver extends Observer {
 		const doc = this.document;
 
 		doc.on( 'keydown', ( evt, data ) => {
-			if ( !this.isEnabled || data.keyCode != keyCodes.tab ) {
+			if (
+				!this.isEnabled ||
+				data.keyCode != keyCodes.tab ||
+				data.ctrlKey
+			) {
 				return;
 			}
 
