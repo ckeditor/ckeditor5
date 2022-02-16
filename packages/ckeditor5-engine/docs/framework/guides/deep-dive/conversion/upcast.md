@@ -17,7 +17,7 @@ The upcast process conversion happens every time any data is being loaded into t
 
 Incoming data becomes the view which is then converted into the model via registered converters.
 
-{@snippet framework/mini-inspector}<!-- this snippet does NOT display in the nightly docs; errors in the console -->
+{@snippet framework/mini-inspector}
 
 ## Registering a converter
 
