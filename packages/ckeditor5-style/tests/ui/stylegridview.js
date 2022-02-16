@@ -6,6 +6,7 @@
 import { ViewCollection } from '@ckeditor/ckeditor5-ui';
 import { Locale } from '@ckeditor/ckeditor5-utils';
 
+import StyleGridButtonView from '../../src/ui/stylegridbuttonview';
 import StyleGridView from '../../src/ui/stylegridview';
 
 describe( 'StyleGridView', () => {
@@ -54,6 +55,10 @@ describe( 'StyleGridView', () => {
 		} );
 
 		it( 'should create #children from style definitions', () => {
+			for ( const child of grid.children ) {
+				expect( child ).to.be.instanceOf( StyleGridButtonView );
+			}
+
 			expect( grid.children.map( ( { label } ) => label ) ).to.deep.equal( [ 'Red heading', 'Large heading' ] );
 		} );
 
