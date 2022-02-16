@@ -76,7 +76,7 @@ export default class StylePanelView extends View {
 		 * @readonly
 		 * @member {module:style/ui/stylegroupview~StyleGroupView}
 		 */
-		this.inlineStylesGroupView = new StyleGroupView( locale, t( 'Inline styles' ), styleDefinitions.inline );
+		this.inlineStylesGroupView = new StyleGroupView( locale, t( 'Text styles' ), styleDefinitions.inline );
 
 		/**
 		 * Array of active style names. They must correspond to the names of styles from

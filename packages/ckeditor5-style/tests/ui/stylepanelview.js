@@ -75,7 +75,7 @@ describe( 'StylePanelView', () => {
 
 		it( 'should set #inlineStylesGroupView', () => {
 			expect( panel.inlineStylesGroupView ).to.be.instanceOf( StyleGroupView );
-			expect( panel.inlineStylesGroupView.labelView.text ).to.equal( 'Inline styles' );
+			expect( panel.inlineStylesGroupView.labelView.text ).to.equal( 'Text styles' );
 			expect( panel.inlineStylesGroupView.gridView.children.length ).to.equal( 3 );
 		} );
 
