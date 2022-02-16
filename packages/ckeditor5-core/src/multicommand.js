@@ -23,9 +23,10 @@ import insertToPriorityArray from '@ckeditor/ckeditor5-utils/src/inserttopriorit
  *		const commandFoo = new Command( editor );
  *		const commandBar = new Command( editor );
  *
- *		// Register child commands.
- *		multiCommand.registerChildCommand( commandFoo, { priority: 'low' } );
- *		multiCommand.registerChildCommand( commandBar ); // Register with default 'normal' priority
+ *		// Register a child command.
+ *		multiCommand.registerChildCommand( commandFoo );
+ *		// Register a child command with a low priority.
+ *		multiCommand.registerChildCommand( commandBar, { priority: 'low' } );
  *
  *		// Enable one of the commands.
  *		commandBar.isEnabled = true;
@@ -73,7 +74,7 @@ export default class MultiCommand extends Command {
 	 *
 	 * @param {module:core/command~Command} command
 	 * @param {Object} options An object with configuration options.
-	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of command to register
+	 * @param {module:utils/priorities~PriorityString} [options.priority='normal'] Priority of a command to register.
 	 */
 	registerChildCommand( command, options = { priority: 'normal' } ) {
 		insertToPriorityArray( this._childCommandsDefinitons, { command, priority: options.priority } );
@@ -94,7 +95,7 @@ export default class MultiCommand extends Command {
 	}
 
 	/**
-	 * Returns a first enabled command with highest priority or undefined if none of them is enabled.
+	 * Returns a first enabled command with the highest priority or `undefined` if none of them is enabled.
 	 *
 	 * @returns {module:core/command~Command|undefined}
 	 * @private
