@@ -24,6 +24,10 @@ The easiest way to use CKEditor 5 in your Vue.js application is by choosing one 
 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
+<info-box>
+	The {@link features/watchdog watchdog feature} is available for the {@link builds/guides/frameworks/react React} and {@link builds/guides/frameworks/angular Angular} integrations, but is not supported in Vue yet.
+</info-box>
+
 ## Quick start
 
 Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds editor build of your choice}.
@@ -196,8 +200,8 @@ npm install --save \
     @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
-    postcss-loader@3 \
-    raw-loader@0.5.1
+    postcss-loader@4 \
+    raw-loader@4
 ```
 
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
@@ -265,12 +269,14 @@ module.exports = {
 			.use( 'postcss-loader' )
 			.loader( 'postcss-loader' )
 			.tap( () => {
-				return styles.getPostCssConfig( {
-					themeImporter: {
-						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
-					},
-					minify: true
-				} );
+				return {
+					postcssOptions: styles.getPostCssConfig( {
+						themeImporter: {
+							themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+						},
+						minify: true
+					} )
+				};
 			} );
 	}
 };

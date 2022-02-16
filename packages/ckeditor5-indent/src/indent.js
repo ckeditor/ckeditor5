@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -19,7 +19,7 @@ import IndentUI from './indentui';
  *
  * The compatible features are:
  *
- * * The {@link module:list/list~List} or {@link module:list/listediting~ListEditing} feature for list indentation.
+ * * The {@link module:list/list~List} or {@link module:list/list/listediting~ListEditing} feature for list indentation.
  * * The {@link module:indent/indentblock~IndentBlock} feature for block indentation.
  *
  * This is a "glue" plugin that loads the following plugins:

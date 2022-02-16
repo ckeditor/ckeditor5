@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { isShiftDeleteOnNonCollapsedSelection } from './utils';
 
 /**
  * Handles keystrokes which are unsafe for typing. This handler's logic is explained
@@ -49,6 +50,15 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 	//
 	// @param {module:engine/view/observer/keyobserver~KeyEventData} evtData
 	function handleUnsafeKeystroke( evtData ) {
+		// Do not delete the content, if Shift + Delete key combination was pressed on a non-collapsed selection on Windows.
+		//
+		// The Shift + Delete key combination should work in the same way as the `cut` event on a non-collapsed selection on Windows.
+		// In fact, the native `cut` event is actually emitted in this case, but with lower priority. Therefore, in order to handle the
+		// Shift + Delete key combination correctly, it is enough to prevent the content deletion here.
+		if ( env.isWindows && isShiftDeleteOnNonCollapsedSelection( evtData, view.document ) ) {
+			return;
+		}
+
 		const doc = model.document;
 		const isComposing = view.document.isComposing;
 		const isSelectionUnchanged = latestCompositionSelection && latestCompositionSelection.isEqual( doc.selection );
@@ -111,7 +121,6 @@ export default function injectUnsafeKeystrokesHandling( editor ) {
 		buffer.lock();
 
 		const batch = buffer.batch;
-		inputCommand._batches.add( batch );
 
 		model.enqueueChange( batch, () => {
 			model.deleteContent( model.document.selection );

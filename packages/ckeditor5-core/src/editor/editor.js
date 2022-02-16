@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -52,6 +52,9 @@ export default class Editor {
 	 * @param {Object} [config={}] The editor configuration.
 	 */
 	constructor( config = {} ) {
+		// Prefer the language passed as the argument to the constructor instead of the constructor's `defaultConfig`, if both are set.
+		const language = config.language || ( this.constructor.defaultConfig && this.constructor.defaultConfig.language );
+
 		/**
 		 * The editor context.
 		 * When it is not provided through the configuration, the editor creates it.
@@ -59,7 +62,7 @@ export default class Editor {
 		 * @protected
 		 * @type {module:core/context~Context}
 		 */
-		this._context = config.context || new Context( { language: config.language } );
+		this._context = config.context || new Context( { language } );
 		this._context._addEditor( this, !config.context );
 
 		// Clone the plugins to make sure that the plugin array will not be shared

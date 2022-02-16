@@ -1,9 +1,8 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import TableWalker from '../../src/tablewalker';
 
@@ -220,7 +219,7 @@ export function assertTableStyle( editor, tableStyle, figureStyle ) {
 	const tableStyleEntry = tableStyle ? ` style="${ tableStyle }"` : '';
 	const figureStyleEntry = figureStyle ? ` style="${ figureStyle }"` : '';
 
-	assertEqualMarkup( editor.getData(),
+	expect( editor.getData() ).to.equalMarkup(
 		`<figure class="table"${ figureStyleEntry }>` +
 			`<table${ tableStyleEntry }>` +
 				'<tbody><tr><td>foo</td></tr></tbody>' +
@@ -236,7 +235,7 @@ export function assertTableStyle( editor, tableStyle, figureStyle ) {
  * @param {String} [tableCellStyle=''] A style to assert on td.
  */
 export function assertTableCellStyle( editor, tableCellStyle ) {
-	assertEqualMarkup( editor.getData(),
+	expect( editor.getData() ).to.equalMarkup(
 		'<figure class="table"><table><tbody><tr>' +
 		`<td${ tableCellStyle ? ` style="${ tableCellStyle }"` : '' }>foo</td>` +
 		'</tr></tbody></table></figure>'

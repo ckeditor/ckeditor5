@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -15,7 +15,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
@@ -101,8 +100,8 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		sinon.assert.notCalled( leftArrowDomEvtDataStub.preventDefault );
 		sinon.assert.notCalled( leftArrowDomEvtDataStub.stopPropagation );
 
-		assertEqualMarkup(
-			getModelData( model ),
+		expect(
+			getModelData( model ) ).to.equalMarkup(
 			'<paragraph>foo</paragraph>' +
 			'<paragraph>b[]ar</paragraph>' +
 			'<paragraph>abc</paragraph>'
@@ -121,8 +120,8 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 		sinon.assert.notCalled( rightArrowDomEvtDataStub.preventDefault );
 		sinon.assert.notCalled( rightArrowDomEvtDataStub.stopPropagation );
 
-		assertEqualMarkup(
-			getModelData( model ),
+		expect(
+			getModelData( model ) ).to.equalMarkup(
 			'<paragraph>foo</paragraph>' +
 			'<paragraph>b[]ar</paragraph>' +
 			'<paragraph>abc</paragraph>'
@@ -166,7 +165,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foobar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -179,7 +178,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>[]foobar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -202,7 +201,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foobar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -215,7 +214,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>[]foobar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -230,7 +229,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ),
+						expect( getModelData( model ) ).to.equalMarkup(
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>fo[obar]</paragraph>' +
 							'<horizontalLine></horizontalLine>'
@@ -263,7 +262,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>foobar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -276,7 +275,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<horizontalLine></horizontalLine>' +
 						'<paragraph>[]foobar</paragraph>' +
 						'<horizontalLine></horizontalLine>'
@@ -299,7 +298,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ),
+						expect( getModelData( model ) ).to.equalMarkup(
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>[foob]ar</paragraph>' +
 							'<horizontalLine></horizontalLine>'
@@ -353,7 +352,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>baar[]</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -394,7 +393,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<paragraph>foo</paragraph>' +
 						'<paragraph>bar</paragraph>' +
 						'<horizontalLine></horizontalLine>' +
@@ -445,7 +444,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-			assertEqualMarkup( getModelData( model ),
+			expect( getModelData( model ) ).to.equalMarkup(
 				'<blockQuote>' +
 					'<paragraph>foo[]</paragraph>' +
 				'</blockQuote>' +
@@ -468,7 +467,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 			sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-			assertEqualMarkup( getModelData( model ),
+			expect( getModelData( model ) ).to.equalMarkup(
 				'<paragraph>foo</paragraph>' +
 				'<horizontalLine></horizontalLine>' +
 				'<blockQuote>' +
@@ -491,7 +490,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the end of the nested editable content', () => {
@@ -500,7 +499,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -515,7 +514,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>' );
+						expect( getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>[foo]bar</paragraph></nested></widget>'
+						);
 					} );
 
 					it( 'should expand selection to the end of the nested editable content', () => {
@@ -524,7 +525,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>' );
+						expect( getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>foo[bar]</paragraph></nested></widget>'
+						);
 					} );
 				} );
 			} );
@@ -556,7 +559,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should collapse selection if selection is at the end of the nested editable content', () => {
@@ -567,7 +570,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -607,7 +610,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the end of the nested editable content', () => {
@@ -616,7 +619,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -631,7 +634,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.notCalled( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.notCalled( upArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>' );
+						expect( getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>'
+						);
 					} );
 
 					it( 'should expand selection to the end of the nested editable content', () => {
@@ -640,7 +645,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>fo[obar]</paragraph></nested></widget>' );
+						expect( getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>fo[obar]</paragraph></nested></widget>'
+						);
 					} );
 				} );
 			} );
@@ -656,7 +663,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>[]foobar</paragraph></nested></widget>' );
 				} );
 
 				it( 'should move caret to the end of the nested editable content', () => {
@@ -665,7 +672,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
+					expect( getModelData( model ) ).to.equalMarkup( '<widget><nested><paragraph>foobar[]</paragraph></nested></widget>' );
 				} );
 
 				describe( 'when shift key is pressed', () => {
@@ -680,7 +687,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>[foob]ar</paragraph></nested></widget>' );
+						expect( getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>[foob]ar</paragraph></nested></widget>'
+						);
 					} );
 
 					it( 'should not prevent default browser behavior on arrow down press', () => {
@@ -689,7 +698,9 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.notCalled( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.notCalled( downArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ), '<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>' );
+						expect( getModelData( model ) ).to.equalMarkup(
+							'<widget><nested><paragraph>fo[ob]ar</paragraph></nested></widget>'
+						);
 					} );
 				} );
 			} );
@@ -728,7 +739,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					`<widget><nested><paragraph>${ '[]word word' + text }</paragraph></nested></widget>`
 				);
 			} );
@@ -741,7 +752,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					`<widget><nested><paragraph>${ text + 'word word[]' }</paragraph></nested></widget>`
 				);
 			} );
@@ -778,7 +789,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ '[word] word' + text }</paragraph></nested></widget>`
 					);
 				} );
@@ -803,7 +814,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ '[word word]' + text }</paragraph></nested></widget>`
 					);
 				} );
@@ -816,7 +827,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + 'word[ word]' }</paragraph></nested></widget>`
 					);
 				} );
@@ -841,7 +852,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + '[word word]' }</paragraph></nested></widget>`
 					);
 				} );
@@ -864,7 +875,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + ' word word word[]' }</paragraph></nested></widget>`
 					);
 				} );
@@ -877,7 +888,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						`<widget><nested><paragraph>${ text + ' word word word[]' }</paragraph></nested></widget>`
 					);
 				} );
@@ -909,7 +920,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ),
+						expect( getModelData( model ) ).to.equalMarkup(
 							`<widget><nested><paragraph>${ text + '[ word word word]' }</paragraph></nested></widget>`
 						);
 					} );
@@ -922,7 +933,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 						sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-						assertEqualMarkup( getModelData( model ),
+						expect( getModelData( model ) ).to.equalMarkup(
 							`<widget><nested><paragraph>${ text + '[ word word word]' }</paragraph></nested></widget>`
 						);
 					} );
@@ -960,7 +971,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>[]word${ text }</paragraph>` +
 						'<paragraph>foobar</paragraph>' +
@@ -995,7 +1006,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						'<paragraph>foobar</paragraph>' +
 						`<paragraph>${ text }word word[]</paragraph>` +
@@ -1022,7 +1033,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							`<paragraph>[word] ${ text }</paragraph>` +
 							`<paragraph>${ text }</paragraph>` +
@@ -1043,7 +1054,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							`<paragraph>${ text }</paragraph>` +
 							`<paragraph>${ text } [word]</paragraph>` +
@@ -1083,7 +1094,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						'<horizontalLine></horizontalLine>' +
 						`<paragraph>[]word ${ text }</paragraph>` +
@@ -1104,7 +1115,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>${ text } word word[]</paragraph>` +
 						'<horizontalLine></horizontalLine>' +
@@ -1127,7 +1138,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>${ text }</paragraph>` +
 						'<horizontalLine></horizontalLine>' +
@@ -1147,7 +1158,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 				editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<paragraph>${ text }</paragraph>` +
 						'[<horizontalLine></horizontalLine>]' +
@@ -1174,7 +1185,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							'<horizontalLine></horizontalLine>' +
 							'<paragraph>[foo]bar</paragraph>' +
@@ -1195,7 +1206,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-					assertEqualMarkup( getModelData( model ),
+					expect( getModelData( model ) ).to.equalMarkup(
 						'<widget><nested>' +
 							'<paragraph>foo[bar]</paragraph>' +
 							'<horizontalLine></horizontalLine>' +
@@ -1219,7 +1230,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ), '<widget><nested>' +
+				expect( getModelData( model ) ).to.equalMarkup( '<widget><nested>' +
 					'<paragraph>foo</paragraph>' +
 					`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 					'</nested></widget>'
@@ -1253,7 +1264,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( upArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 						`<imageBlock src="${ imageUrl }"><caption>[]barbaz</caption></imageBlock>` +
 						'<paragraph>foo</paragraph>' +
@@ -1274,7 +1285,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 					`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 					'<paragraph>foo</paragraph>' +
@@ -1295,7 +1306,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( downArrowDomEvtDataStub.stopPropagation );
 
-				assertEqualMarkup( getModelData( model ),
+				expect( getModelData( model ) ).to.equalMarkup(
 					'<widget><nested>' +
 					`<imageBlock src="${ imageUrl }"><caption>barbaz[]</caption></imageBlock>` +
 					'<paragraph>foo</paragraph>' +
@@ -1334,7 +1345,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			editor.editing.view.document.fire( 'keydown', upArrowDomEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ),
+			expect( getModelData( model ) ).to.equalMarkup(
 				'<widget>' +
 					'<nested>' +
 						'<paragraph>foo</paragraph>' +
@@ -1363,7 +1374,7 @@ describe( 'Widget - vertical keyboard navigation near widgets', () => {
 
 			editor.editing.view.document.fire( 'keydown', downArrowDomEvtDataStub );
 
-			assertEqualMarkup( getModelData( model ),
+			expect( getModelData( model ) ).to.equalMarkup(
 				'<widget>' +
 					'[<nested>' +
 						'<paragraph>foo</paragraph>' +

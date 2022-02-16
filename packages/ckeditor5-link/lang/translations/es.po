@@ -1,4 +1,4 @@
-# Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 #
 #                                     !!! IMPORTANT !!!
 #
@@ -30,7 +30,7 @@ msgstr "URL del enlace"
 
 msgctxt "Label for the image link button."
 msgid "Link image"
-msgstr ""
+msgstr "URL de la imagen"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

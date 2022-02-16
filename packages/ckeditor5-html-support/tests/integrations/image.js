@@ -1,7 +1,7 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
-*/
+ */
 
 import { range } from 'lodash-es';
 
@@ -262,6 +262,24 @@ describe( 'ImageElementSupport', () => {
 					}
 				}
 			} );
+
+			expect( editor.getData() ).to.equal( expectedHtml );
+		} );
+
+		it( 'should not double convert figure element', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: /^.*$/,
+				styles: true,
+				attributes: true,
+				classes: true
+			} ] );
+
+			const expectedHtml =
+				'<figure class="image">' +
+					'<img src="/assets/sample.png">' +
+				'</figure>';
+
+			editor.setData( expectedHtml );
 
 			expect( editor.getData() ).to.equal( expectedHtml );
 		} );

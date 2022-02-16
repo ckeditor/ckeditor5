@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -642,9 +642,9 @@ function shouldCopyAttributes( model ) {
 // @params {module:core/editor/editor~Editor} editor
 // @returns {Boolean}
 function isTyping( editor ) {
-	const input = editor.plugins.get( 'Input' );
+	const currentBatch = editor.model.change( writer => writer.batch );
 
-	return input.isInput( editor.model.change( writer => writer.batch ) );
+	return currentBatch.isTyping;
 }
 
 // Returns an array containing names of the attributes allowed on `$text` that describes the link item.

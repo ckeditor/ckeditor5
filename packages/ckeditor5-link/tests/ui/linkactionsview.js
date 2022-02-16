@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* globals document */
 
 import LinkActionsView from '../../src/ui/linkactionsview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
@@ -20,6 +22,12 @@ describe( 'LinkActionsView', () => {
 	beforeEach( () => {
 		view = new LinkActionsView( { t: val => val } );
 		view.render();
+		document.body.appendChild( view.element );
+	} );
+
+	afterEach( () => {
+		view.element.remove();
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -139,22 +147,26 @@ describe( 'LinkActionsView', () => {
 		it( 'should register child views\' #element in #focusTracker', () => {
 			const spy = testUtils.sinon.spy( FocusTracker.prototype, 'add' );
 
-			view = new LinkActionsView( { t: () => {} } );
+			const view = new LinkActionsView( { t: () => {} } );
 			view.render();
 
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.previewButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.editButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.unlinkButtonView.element );
+
+			view.destroy();
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
-			view = new LinkActionsView( { t: () => {} } );
+			const view = new LinkActionsView( { t: () => {} } );
 
 			const spy = sinon.spy( view.keystrokes, 'listenTo' );
 
 			view.render();
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWithExactly( spy, view.element );
+
+			view.destroy();
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
@@ -196,6 +208,24 @@ describe( 'LinkActionsView', () => {
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 				sinon.assert.calledOnce( spy );
 			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

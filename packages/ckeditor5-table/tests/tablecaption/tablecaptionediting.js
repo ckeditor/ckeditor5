@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -26,11 +26,18 @@ describe( 'TableCaptionEditing', () => {
 				isBlock: true,
 				allowWhere: '$block'
 			} );
-			schema.register( 'caption', {
-				allowIn: 'foo',
-				allowContentOf: '$block',
-				isLimit: true
-			} );
+
+			if ( schema.isRegistered( 'caption' ) ) {
+				schema.extend( 'caption', {
+					allowIn: 'foo'
+				} );
+			} else {
+				schema.register( 'caption', {
+					allowIn: 'foo',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+			}
 
 			conversion.elementToElement( {
 				view: 'foo',
@@ -87,9 +94,7 @@ describe( 'TableCaptionEditing', () => {
 			it( 'should not convert caption outside of the table', async () => {
 				const editor = await VirtualTestEditor
 					.create( {
-						plugins: [
-							FakePlugin,
-							TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing ]
+						plugins: [ TableEditing, TableCaptionEditing, Paragraph, TableCaptionEditing, FakePlugin ]
 					} );
 
 				setModelData( editor.model,

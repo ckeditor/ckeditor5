@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,15 +7,15 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { modelTable, viewTable } from '../_utils/utils';
 
 import TableEditing from '../../src/tableediting';
 
 describe( 'downcast converters', () => {
-	let editor, model, root, view;
+	let editor, model, root, view, viewRoot;
 
 	testUtils.createSinonSandbox();
 
@@ -25,18 +25,19 @@ describe( 'downcast converters', () => {
 		model = editor.model;
 		root = model.document.getRoot( 'main' );
 		view = editor.editing.view;
+		viewRoot = view.document.getRoot();
 	} );
 
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
-	describe( 'downcastInsertTable()', () => {
+	describe( 'downcastTable()', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should create table as a widget', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -51,6 +52,80 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 			} );
+
+			it( 'should reconvert table on headingRows attribute change', () => {
+				setModelData( model, modelTable( [
+					[ '00' ],
+					[ '10' ]
+				] ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureBefore = viewRoot.getChild( 0 );
+				const viewTableBefore = viewFigureBefore.getChild( 1 );
+				const viewTableRow0Before = viewTableBefore.getChild( 0 ).getChild( 0 );
+				const viewTableRow1Before = viewTableBefore.getChild( 0 ).getChild( 1 );
+				const viewTableCell0Before = viewTableRow0Before.getChild( 0 );
+				const viewTableCell1Before = viewTableRow1Before.getChild( 1 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 1, root.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">10</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+
+				const viewFigureAfter = viewRoot.getChild( 0 );
+				const viewTableAfter = viewFigureAfter.getChild( 1 );
+				const viewTableRow0After = viewTableAfter.getChild( 0 ).getChild( 0 );
+				const viewTableRow1After = viewTableAfter.getChild( 1 ).getChild( 0 );
+				const viewTableCell0After = viewTableRow0After.getChild( 0 );
+				const viewTableCell1After = viewTableRow1After.getChild( 1 );
+
+				expect( viewFigureAfter ).to.not.equal( viewFigureBefore );
+				expect( viewTableAfter ).to.not.equal( viewTableBefore );
+				expect( viewTableRow0After ).to.not.equal( viewTableRow0Before );
+				expect( viewTableCell0After ).to.not.equal( viewTableCell0Before );
+				expect( viewTableRow1After ).to.equal( viewTableRow1Before );
+				expect( viewTableCell1After ).to.equal( viewTableCell1Before );
+			} );
 		} );
 
 		describe( 'data pipeline', () => {
@@ -60,7 +135,7 @@ describe( 'downcast converters', () => {
 					[ '10' ]
 				], { headingRows: 1 } ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<thead>' +
@@ -80,7 +155,7 @@ describe( 'downcast converters', () => {
 					[ '10' ]
 				], { headingRows: 2 } ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<thead>' +
@@ -98,7 +173,7 @@ describe( 'downcast converters', () => {
 					[ '10', '11', '12', '13' ]
 				], { headingColumns: 3, headingRows: 1 } ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<thead>' +
@@ -117,7 +192,7 @@ describe( 'downcast converters', () => {
 					[ '<paragraph>00</paragraph><paragraph>foo</paragraph>', '01' ]
 				] ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -147,7 +222,7 @@ describe( 'downcast converters', () => {
 					[ '<paragraph alignment="right">00</paragraph>' ]
 				] ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -179,7 +254,7 @@ describe( 'downcast converters', () => {
 					'</block>'
 				);
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<block>' +
 						'<figure class="table">' +
 							'<table>' +
@@ -197,6 +272,7 @@ describe( 'downcast converters', () => {
 			it( 'should be possible to overwrite', () => {
 				editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
 				editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
+				editor.conversion.elementToElement( { model: 'paragraph', view: 'p', converterPriority: 'highest' } );
 				editor.conversion.for( 'downcast' ).add( dispatcher => {
 					dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 						conversionApi.consumable.consume( data.item, 'insert' );
@@ -211,7 +287,7 @@ describe( 'downcast converters', () => {
 
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<table foo="bar">' +
 						'<tr><td><p>&nbsp;</p></td></tr>' +
 					'</table>'
@@ -227,7 +303,7 @@ describe( 'downcast converters', () => {
 
 				setModelData( model, modelTable( [ [ '[]' ] ] ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -245,7 +321,7 @@ describe( 'downcast converters', () => {
 					writer.wrap( range, wrapper );
 				} );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<div>' +
 						'<figure class="table">' +
 							'<table>' +
@@ -265,7 +341,7 @@ describe( 'downcast converters', () => {
 						[ '10', '11', '12' ]
 					], { headingColumns: 2 } ) );
 
-					assertEqualMarkup( editor.getData(),
+					expect( editor.getData() ).to.equalMarkup(
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -283,7 +359,7 @@ describe( 'downcast converters', () => {
 						[ { colspan: 2, contents: '10' }, '12', '13' ]
 					], { headingColumns: 3 } ) );
 
-					assertEqualMarkup( editor.getData(),
+					expect( editor.getData() ).to.equalMarkup(
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -316,7 +392,7 @@ describe( 'downcast converters', () => {
 						[ '32', '33' ]
 					], { headingColumns: 3 } ) );
 
-					assertEqualMarkup( editor.getData(),
+					expect( editor.getData() ).to.equalMarkup(
 						'<figure class="table">' +
 							'<table>' +
 								'<tbody>' +
@@ -334,7 +410,7 @@ describe( 'downcast converters', () => {
 			it( 'should create table with tbody', () => {
 				setModelData( model, modelTable( [ [ '' ] ] ) );
 
-				assertEqualMarkup( editor.getData(),
+				expect( editor.getData() ).to.equalMarkup(
 					'<figure class="table">' +
 						'<table>' +
 							'<tbody>' +
@@ -347,8 +423,7 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'downcastInsertRow()', () => {
-		// The insert row downcast conversion is not executed in data pipeline.
+	describe( 'downcastRow()', () => {
 		describe( 'editing pipeline', () => {
 			it( 'should react to changed rows', () => {
 				setModelData( model, modelTable( [
@@ -366,7 +441,7 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '', '' ]
 				], { asWidget: true } ) );
@@ -388,7 +463,7 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '', '' ]
 				], { asWidget: true } ) );
@@ -402,7 +477,7 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '', '' ],
 					[ '', '' ]
@@ -427,7 +502,7 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '', '' ],
 					[ '21', '22' ],
@@ -453,7 +528,7 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '', '' ],
 					[ '21', '22' ],
@@ -481,7 +556,7 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingRows', 3, table );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ '00', '01' ],
 					[ '', '' ],
 					[ '21', '22' ],
@@ -505,7 +580,7 @@ describe( 'downcast converters', () => {
 					writer.insertElement( 'tableCell', row, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ { rowspan: 2, contents: '00' }, '01' ],
 					[ '22' ],
 					[ '', '' ]
@@ -533,7 +608,7 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
 					[ { rowspan: 2, contents: '00', isHeading: true }, '01' ],
 					[ '22' ],
 					[ { contents: '', isHeading: true }, '' ],
@@ -553,7 +628,7 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -573,631 +648,7 @@ describe( 'downcast converters', () => {
 					'</figure>'
 				);
 			} );
-		} );
-	} );
 
-	describe( 'downcastInsertCell()', () => {
-		// The insert table cell downcast conversion is not executed in data pipeline.
-		describe( 'editing pipeline', () => {
-			it( 'should add tableCell on proper index in tr', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const row = table.getChild( 0 );
-
-					writer.insertElement( 'tableCell', row, 1 );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '', '01' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should add tableCell on proper index in tr when previous have colspans', () => {
-				setModelData( model, modelTable( [
-					[ { colspan: 2, contents: '00' }, '13' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const row = table.getChild( 0 );
-
-					writer.insertElement( 'tableCell', row, 1 );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { colspan: 2, contents: '00' }, '', '13' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should add tableCell on proper index in tr when previous row have rowspans', () => {
-				setModelData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '02' ],
-					[ '11', '12' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.insertElement( 'tableCell', table.getChild( 0 ), 1 );
-					writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { rowspan: 2, contents: '00' }, '', '01', '02' ],
-					[ '', '11', '12' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'split cell simulation - simple', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const firstRow = table.getChild( 0 );
-					const secondRow = table.getChild( 1 );
-
-					writer.insertElement( 'tableCell', firstRow, 1 );
-					writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '', '01' ],
-					[ { colspan: 2, contents: '10' }, '11' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'merge simulation - simple', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const firstRow = table.getChild( 0 );
-
-					writer.setAttribute( 'colspan', 2, firstRow.getChild( 0 ) );
-					writer.remove( firstRow.getChild( 1 ) );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { colspan: 2, contents: '00' } ],
-					[ '10', '11' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should create inserted table cell as a widget', () => {
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					const row = table.getChild( 0 );
-
-					writer.insert( writer.createElement( 'tableCell' ), row, 'end' );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</td>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph"></span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-		} );
-	} );
-
-	describe( 'downcastTableHeadingColumnsChange()', () => {
-		// The heading columns change downcast conversion is not executed in data pipeline.
-		describe( 'editing pipeline', () => {
-			it( 'should work for adding heading columns', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingColumns', 1, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: '00' }, '01' ],
-					[ { isHeading: true, contents: '10' }, '11' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should work for changing heading columns to a bigger number', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02', '03' ],
-					[ '10', '11', '12', '13' ]
-				], { headingColumns: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingColumns', 3, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
-					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should work for changing heading columns to a smaller number', () => {
-				setModelData( model, modelTable( [
-					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
-					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
-				], { headingColumns: 3 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingColumns', 1, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
-					[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should work for removing heading columns', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { headingColumns: 1 } ) );
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'headingColumns', table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should be possible to overwrite', () => {
-				editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
-				setModelData( model, modelTable( [ [ '00[] ' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingColumns', 1, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false" headingColumns="1">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</td>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should work with adding table cells', () => {
-				setModelData( model, modelTable( [
-					[ { rowspan: 2, contents: '00' }, '01', '13', '14' ],
-					[ '11', '12', '13' ],
-					[ { colspan: 2, contents: '20' }, '22', '23' ]
-				], { headingColumns: 2 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					// Inserting column in heading columns so update table's attribute also
-					writer.setAttribute( 'headingColumns', 3, table );
-
-					writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
-					writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
-					writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[
-						{ isHeading: true, rowspan: 2, contents: '00' },
-						{ isHeading: true, contents: '01' },
-						{ isHeading: true, contents: '' },
-						'13',
-						'14'
-					],
-					[
-						{ isHeading: true, contents: '11' },
-						{ isHeading: true, contents: '' },
-						'12',
-						'13'
-					],
-					[
-						{ isHeading: true, colspan: 2, contents: '20' },
-						{ isHeading: true, contents: '' },
-						'22',
-						'23'
-					]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should create renamed cell as a widget', () => {
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 1, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-						'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<thead>' +
-								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</th>' +
-								'</tr>' +
-							'</thead>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-		} );
-	} );
-
-	describe( 'downcastTableHeadingRowsChange', () => {
-		// The heading rows change downcast conversion is not executed in data pipeline.
-		// Note that headingRows table attribute triggers whole table downcast.
-
-		describe( 'editing pipeline', () => {
-			it( 'should work for adding heading rows', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 2, asWidget: true } ) );
-			} );
-
-			it( 'should work for changing number of heading rows to a bigger number', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 2, asWidget: true } ) );
-			} );
-
-			it( 'should work for changing number of heading rows to a smaller number', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ],
-					[ '30', '31' ]
-				], { headingRows: 3 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ],
-					[ '30', '31' ]
-				], { headingRows: 2, asWidget: true } ) );
-			} );
-
-			it( 'should work for removing heading rows', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 2 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.removeAttribute( 'headingRows', table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should work for making heading rows without tbody', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 2, asWidget: true } ) );
-			} );
-
-			it( 'should work with adding table rows at the beginning of a table', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-
-					const tableRow = writer.createElement( 'tableRow' );
-
-					writer.insert( tableRow, table, 0 );
-					writer.insertElement( 'tableCell', tableRow, 'end' );
-					writer.insertElement( 'tableCell', tableRow, 'end' );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '', '' ],
-					[ '00', '01' ],
-					[ '10', '11' ]
-				], { headingRows: 2, asWidget: true } ) );
-			} );
-
-			it( 'should work with adding a table row and expanding heading', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-
-					const tableRow = writer.createElement( 'tableRow' );
-
-					writer.insert( tableRow, table, 1 );
-					writer.insertElement( 'tableCell', tableRow, 'end' );
-					writer.insertElement( 'tableCell', tableRow, 'end' );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '', '' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 2, asWidget: true } ) );
-			} );
-
-			it( 'should reorder rows with header correctly - up direction', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				editor.model.change( writer => {
-					writer.move(
-						writer.createRangeOn( table.getChild( 1 ) ),
-						writer.createPositionAt( table, 0 )
-					);
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '10', '11', '12' ],
-					[ '00', '01', '02' ]
-				], { headingRows: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '10', '11', '12' ],
-					[ '00', '01', '02' ]
-				], { headingRows: 1, asWidget: true } ) );
-			} );
-
-			it( 'should reorder rows with header correctly - down direction', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				editor.model.change( writer => {
-					writer.move(
-						writer.createRangeOn( table.getChild( 0 ) ),
-						writer.createPositionAt( table, 2 )
-					);
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '10', '11', '12' ],
-					[ '00', '01', '02' ]
-				], { headingRows: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '10', '11', '12' ],
-					[ '00', '01', '02' ]
-				], { headingRows: 1, asWidget: true } ) );
-			} );
-
-			it( 'should reorder columns with header correctly - left direction', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { headingColumns: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				editor.model.change( writer => {
-					for ( const tableRow of table.getChildren() ) {
-						writer.move(
-							writer.createRangeOn( tableRow.getChild( 1 ) ),
-							writer.createPositionAt( tableRow, 0 )
-						);
-					}
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '01', '00', '02' ],
-					[ '11', '10', '12' ]
-				], { headingColumns: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: '01' }, '00', '02' ],
-					[ { isHeading: true, contents: '11' }, '10', '12' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should reorder columns with header correctly - right direction', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { headingColumns: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				editor.model.change( writer => {
-					for ( const tableRow of table.getChildren() ) {
-						writer.move(
-							writer.createRangeOn( tableRow.getChild( 0 ) ),
-							writer.createPositionAt( tableRow, 2 )
-						);
-					}
-				} );
-
-				assertEqualMarkup( getModelData( model, { withoutSelection: true } ), modelTable( [
-					[ '01', '00', '02' ],
-					[ '11', '10', '12' ]
-				], { headingColumns: 1 } ) );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ { isHeading: true, contents: '01' }, '00', '02' ],
-					[ { isHeading: true, contents: '11' }, '10', '12' ]
-				], { asWidget: true } ) );
-			} );
-
-			it( 'should create renamed cell as a widget', () => {
-				setModelData( model, modelTable( [ [ '00' ] ] ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingColumns', 1, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
-					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
-						'<table>' +
-							'<tbody>' +
-								'<tr>' +
-									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
-										'<span class="ck-table-bogus-paragraph">00</span>' +
-									'</th>' +
-								'</tr>' +
-							'</tbody>' +
-						'</table>' +
-					'</figure>'
-				);
-			} );
-
-			it( 'should properly integrate with undo', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 1 } ) );
-
-				const table = root.getChild( 0 );
-
-				model.change( writer => {
-					writer.setAttribute( 'headingRows', 2, table );
-				} );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 2, asWidget: true } ) );
-
-				editor.execute( 'undo' );
-
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ), viewTable( [
-					[ '00', '01' ],
-					[ '10', '11' ],
-					[ '20', '21' ]
-				], { headingRows: 1, asWidget: true } ) );
-			} );
-		} );
-	} );
-
-	describe( 'downcastRemoveRow()', () => {
-		// The remove row downcast conversion is not executed in data pipeline.
-		describe( 'editing pipeline', () => {
 			it( 'should react to removed row from the beginning of a body rows (no heading rows)', () => {
 				setModelData( model, modelTable( [
 					[ '00[]', '01' ],
@@ -1210,7 +661,7 @@ describe( 'downcast converters', () => {
 					writer.remove( table.getChild( 1 ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1241,7 +692,7 @@ describe( 'downcast converters', () => {
 					writer.remove( table.getChild( 0 ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1274,7 +725,7 @@ describe( 'downcast converters', () => {
 					writer.remove( table.getChild( 0 ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1307,7 +758,7 @@ describe( 'downcast converters', () => {
 					writer.remove( table.getChild( 1 ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1341,14 +792,14 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingRows', 0, table );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
-					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" ' +
-										'colspan="2" contenteditable="true" rowspan="2">' +
+											'colspan="2" contenteditable="true" rowspan="2">' +
 										'<span class="ck-table-bogus-paragraph">10</span>' +
 									'</td>' +
 									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
@@ -1386,7 +837,7 @@ describe( 'downcast converters', () => {
 					writer.remove( table.getChild( 0 ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1417,7 +868,7 @@ describe( 'downcast converters', () => {
 					writer.remove( table.getChild( 1 ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1434,6 +885,638 @@ describe( 'downcast converters', () => {
 						'</table>' +
 					'</figure>'
 				);
+			} );
+		} );
+	} );
+
+	describe( 'downcastCell()', () => {
+		describe( 'editing pipeline', () => {
+			it( 'should add tableCell on proper index in tr', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = table.getChild( 0 );
+
+					writer.insertElement( 'tableCell', row, 1 );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '', '01' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should add tableCell on proper index in tr when previous have colspans', () => {
+				setModelData( model, modelTable( [
+					[ { colspan: 2, contents: '00' }, '13' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = table.getChild( 0 );
+
+					writer.insertElement( 'tableCell', row, 1 );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { colspan: 2, contents: '00' }, '', '13' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should add tableCell on proper index in tr when previous row have rowspans', () => {
+				setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ '11', '12' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.insertElement( 'tableCell', table.getChild( 0 ), 1 );
+					writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { rowspan: 2, contents: '00' }, '', '01', '02' ],
+					[ '', '11', '12' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'split cell simulation - simple', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const firstRow = table.getChild( 0 );
+					const secondRow = table.getChild( 1 );
+
+					writer.insertElement( 'tableCell', firstRow, 1 );
+					writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '', '01' ],
+					[ { colspan: 2, contents: '10' }, '11' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'merge simulation - simple', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const firstRow = table.getChild( 0 );
+
+					writer.setAttribute( 'colspan', 2, firstRow.getChild( 0 ) );
+					writer.remove( firstRow.getChild( 1 ) );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { colspan: 2, contents: '00' } ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should create inserted table cell as a widget', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = table.getChild( 0 );
+
+					writer.insert( writer.createElement( 'tableCell' ), row, 'end' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph"></span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'heading columns conversion', () => {
+		describe( 'editing pipeline', () => {
+			it( 'should work for adding heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '00' }, '01' ],
+					[ { isHeading: true, contents: '10' }, '11' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should work for changing heading columns to a bigger number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ '10', '11', '12', '13' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 3, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
+					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should work for changing heading columns to a smaller number', () => {
+				setModelData( model, modelTable( [
+					[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
+					[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
+				], { headingColumns: 3 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
+					[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should work for removing heading columns', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingColumns: 1 } ) );
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.removeAttribute( 'headingColumns', table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should be possible to overwrite', () => {
+				editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
+				editor.conversion.elementToElement( {
+					model: 'tableCell',
+					view: ( tableCell, { writer } ) => toWidgetEditable( writer.createEditableElement( 'td' ), writer ),
+					converterPriority: 'high'
+				} );
+				setModelData( model, modelTable( [ [ '00[] ' ] ] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false" headingColumns="1">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should work with adding table cells', () => {
+				// +----+----+----+----+
+				// | 00 | 01 | 02 | 03 |
+				// +    +----+----+----+
+				// |    | 11 | 12 | 13 |
+				// +----+----+----+----+
+				// | 20      | 22 | 23 |
+				// +----+----+----+----+
+				setModelData( model, modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01', '02', '03' ],
+					[ '11', '12', '13' ],
+					[ { contents: '20', colspan: 2 }, '22', '23' ]
+				], { headingColumns: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					// Inserting column in heading columns so update table's attribute also
+					writer.setAttribute( 'headingColumns', 3, table );
+
+					writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
+					writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
+					writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ { contents: '00', rowspan: 2 }, '01', '', '02', '03' ],
+					[ '11', '', '12', '13' ],
+					[ { contents: '20', colspan: 2 }, '', '22', '23' ]
+				], { headingColumns: 3 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[
+						{ isHeading: true, rowspan: 2, contents: '00' },
+						{ isHeading: true, contents: '01' },
+						{ isHeading: true, contents: '' },
+						'02',
+						'03'
+					],
+					[
+						{ isHeading: true, contents: '11' },
+						{ isHeading: true, contents: '' },
+						'12',
+						'13'
+					],
+					[
+						{ isHeading: true, colspan: 2, contents: '20' },
+						{ isHeading: true, contents: '' },
+						'22',
+						'23'
+					]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should create renamed cell as a widget', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 1, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+						'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<thead>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+								'</tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'heading rows conversion', () => {
+		describe( 'editing pipeline', () => {
+			it( 'should work for adding heading rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work for changing number of heading rows to a bigger number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work for changing number of heading rows to a smaller number', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 3 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ],
+					[ '30', '31' ]
+				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work for removing heading rows', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.removeAttribute( 'headingRows', table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should work for making heading rows without tbody', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work with adding table rows at the beginning of a table', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+
+					const tableRow = writer.createElement( 'tableRow' );
+
+					writer.insert( tableRow, table, 0 );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '', '' ],
+					[ '00', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should work with adding a table row and expanding heading', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+
+					const tableRow = writer.createElement( 'tableRow' );
+
+					writer.insert( tableRow, table, 1 );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+					writer.insertElement( 'tableCell', tableRow, 'end' );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '', '' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with header correctly - up direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 1 ) ),
+						writer.createPositionAt( table, 0 )
+					);
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder rows with header correctly - down direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					writer.move(
+						writer.createRangeOn( table.getChild( 0 ) ),
+						writer.createPositionAt( table, 2 )
+					);
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '10', '11', '12' ],
+					[ '00', '01', '02' ]
+				], { headingRows: 1, asWidget: true } ) );
+			} );
+
+			it( 'should reorder columns with header correctly - left direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					for ( const tableRow of table.getChildren() ) {
+						writer.move(
+							writer.createRangeOn( tableRow.getChild( 1 ) ),
+							writer.createPositionAt( tableRow, 0 )
+						);
+					}
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '01', '00', '02' ],
+					[ '11', '10', '12' ]
+				], { headingColumns: 1 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '01' }, '00', '02' ],
+					[ { isHeading: true, contents: '11' }, '10', '12' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should reorder columns with header correctly - right direction', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				editor.model.change( writer => {
+					for ( const tableRow of table.getChildren() ) {
+						writer.move(
+							writer.createRangeOn( tableRow.getChild( 0 ) ),
+							writer.createPositionAt( tableRow, 2 )
+						);
+					}
+				} );
+
+				expect( getModelData( model, { withoutSelection: true } ) ).to.equalMarkup( modelTable( [
+					[ '01', '00', '02' ],
+					[ '11', '10', '12' ]
+				], { headingColumns: 1 } ) );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ { isHeading: true, contents: '01' }, '00', '02' ],
+					[ { isHeading: true, contents: '11' }, '10', '12' ]
+				], { asWidget: true } ) );
+			} );
+
+			it( 'should create renamed cell as a widget', () => {
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingColumns', 1, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
+					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
+					'<div class="ck ck-widget__selection-handle"></div>' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">' +
+										'<span class="ck-table-bogus-paragraph">00</span>' +
+									'</th>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				);
+			} );
+
+			it( 'should properly integrate with undo', () => {
+				setModelData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1 } ) );
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 2, table );
+				} );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 2, asWidget: true } ) );
+
+				editor.execute( 'undo' );
+
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup( viewTable( [
+					[ '00', '01' ],
+					[ '10', '11' ],
+					[ '20', '21' ]
+				], { headingRows: 1, asWidget: true } ) );
 			} );
 		} );
 	} );
@@ -1464,7 +1547,7 @@ describe( 'downcast converters', () => {
 					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1483,7 +1566,7 @@ describe( 'downcast converters', () => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1520,7 +1603,7 @@ describe( 'downcast converters', () => {
 				const cell = root.getNodeByPath( [ 0, 1, 0 ] );
 				checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 					'<div class="ck ck-widget__selection-handle"></div>' +
 					'<table>' +
@@ -1544,7 +1627,7 @@ describe( 'downcast converters', () => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1584,7 +1667,7 @@ describe( 'downcast converters', () => {
 				const cell = root.getNodeByPath( [ 0, 0, 1 ] );
 				checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1606,7 +1689,7 @@ describe( 'downcast converters', () => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1720,7 +1803,7 @@ describe( 'downcast converters', () => {
 					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1740,7 +1823,7 @@ describe( 'downcast converters', () => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1782,7 +1865,7 @@ describe( 'downcast converters', () => {
 					checkCustomPropertyForHighlight( editor.editing.mapper.toViewElement( cell ) );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +
@@ -1802,7 +1885,7 @@ describe( 'downcast converters', () => {
 					writer.removeMarker( 'marker:yellow' );
 				} );
 
-				assertEqualMarkup( getViewData( view, { withoutSelection: true } ),
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equalMarkup(
 					'<figure class="ck-widget ck-widget_with-selection-handle table" contenteditable="false">' +
 						'<div class="ck ck-widget__selection-handle"></div>' +
 						'<table>' +

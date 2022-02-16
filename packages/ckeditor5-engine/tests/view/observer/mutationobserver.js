@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -535,8 +535,9 @@ describe( 'MutationObserver', () => {
 
 	describe( 'UIElement integration', () => {
 		const renderStub = sinon.stub();
+
 		function createUIElement( name ) {
-			const element = new UIElement( name );
+			const element = new UIElement( viewDocument, name );
 
 			element.render = function( domDocument ) {
 				const root = this.toDomElement( domDocument );
@@ -594,8 +595,9 @@ describe( 'MutationObserver', () => {
 
 	describe( 'RawElement integration', () => {
 		const renderStub = sinon.stub();
+
 		function createRawElement( name ) {
-			const element = new RawElement( name );
+			const element = new RawElement( viewDocument, name );
 
 			element.render = function( domElement ) {
 				domElement.innerHTML = 'foo bar';

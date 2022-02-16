@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -7,7 +7,7 @@
  * @module ui/focuscycler
  */
 
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 
 /**
  * A utility class that helps cycling over focusable {@link module:ui/view~View views} in a
@@ -131,6 +131,8 @@ export default class FocusCycler {
 	 * Returns the first focusable view in {@link #focusables}.
 	 * Returns `null` if there is none.
 	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
+	 *
 	 * @readonly
 	 * @member {module:ui/view~View|null} #first
 	 */
@@ -141,6 +143,8 @@ export default class FocusCycler {
 	/**
 	 * Returns the last focusable view in {@link #focusables}.
 	 * Returns `null` if there is none.
+	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 *
 	 * @readonly
 	 * @member {module:ui/view~View|null} #last
@@ -153,6 +157,8 @@ export default class FocusCycler {
 	 * Returns the next focusable view in {@link #focusables} based on {@link #current}.
 	 * Returns `null` if there is none.
 	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
+	 *
 	 * @readonly
 	 * @member {module:ui/view~View|null} #next
 	 */
@@ -163,6 +169,8 @@ export default class FocusCycler {
 	/**
 	 * Returns the previous focusable view in {@link #focusables} based on {@link #current}.
 	 * Returns `null` if there is none.
+	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 *
 	 * @readonly
 	 * @member {module:ui/view~View|null} #previous
@@ -201,6 +209,8 @@ export default class FocusCycler {
 
 	/**
 	 * Focuses the {@link #first} item in {@link #focusables}.
+	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	focusFirst() {
 		this._focus( this.first );
@@ -208,6 +218,8 @@ export default class FocusCycler {
 
 	/**
 	 * Focuses the {@link #last} item in {@link #focusables}.
+	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	focusLast() {
 		this._focus( this.last );
@@ -215,6 +227,8 @@ export default class FocusCycler {
 
 	/**
 	 * Focuses the {@link #next} item in {@link #focusables}.
+	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	focusNext() {
 		this._focus( this.next );
@@ -222,6 +236,8 @@ export default class FocusCycler {
 
 	/**
 	 * Focuses the {@link #previous} item in {@link #focusables}.
+	 *
+	 * **Note**: Hidden views (e.g. with `display: none`) are ignored.
 	 */
 	focusPrevious() {
 		this._focus( this.previous );
@@ -269,7 +285,6 @@ export default class FocusCycler {
 		do {
 			const view = this.focusables.get( index );
 
-			// TODO: Check if view is visible.
 			if ( isFocusable( view ) ) {
 				return view;
 			}
@@ -288,5 +303,5 @@ export default class FocusCycler {
 // @param {module:ui/view~View} view A view to be checked.
 // @returns {Boolean}
 function isFocusable( view ) {
-	return !!( view.focus && global.window.getComputedStyle( view.element ).display != 'none' );
+	return !!( view.focus && isVisible( view.element ) );
 }

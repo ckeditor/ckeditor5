@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -234,6 +234,11 @@ export default class EditorWatchdog extends Watchdog {
 				const editor = this._editor;
 
 				this._editor = null;
+
+				// Remove the `change:data` listener before destroying the editor.
+				// Incorrectly written plugins may trigger firing `change:data` events during the editor destruction phase
+				// causing the watchdog to call `editor.getData()` when some parts of editor are already destroyed.
+				editor.model.document.off( 'change:data', this._throttledSave );
 
 				return this._destructor( editor );
 			} );

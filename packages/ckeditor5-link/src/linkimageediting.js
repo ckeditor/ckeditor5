@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -42,10 +42,6 @@ export default class LinkImageEditing extends Plugin {
 
 		if ( editor.plugins.has( 'ImageBlockEditing' ) ) {
 			schema.extend( 'imageBlock', { allowAttributes: [ 'linkHref' ] } );
-		}
-
-		if ( editor.plugins.has( 'ImageInlineEditing' ) ) {
-			schema.extend( 'imageInline', { allowAttributes: [ 'linkHref' ] } );
 		}
 
 		editor.conversion.for( 'upcast' ).add( upcastLink( editor ) );
@@ -256,6 +252,7 @@ function downcastImageLinkManualDecorator( decorator ) {
 // @private
 // @returns {Function}
 function upcastImageLinkManualDecorator( editor, decorator ) {
+	const isImageInlinePluginLoaded = editor.plugins.has( 'ImageInlineEditing' );
 	const imageUtils = editor.plugins.get( 'ImageUtils' );
 
 	return dispatcher => {
@@ -266,6 +263,12 @@ function upcastImageLinkManualDecorator( editor, decorator ) {
 			// We need to check whether an image is inside a link because the converter handles
 			// only manual decorators for linked images. See #7975.
 			if ( !imageInLink ) {
+				return;
+			}
+
+			const blockImageView = imageInLink.findAncestor( element => imageUtils.isBlockImageView( element ) );
+
+			if ( isImageInlinePluginLoaded && !blockImageView ) {
 				return;
 			}
 

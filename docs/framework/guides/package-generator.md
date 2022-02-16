@@ -1,13 +1,13 @@
 ---
 menu-title: Using package generator
-category: framework-guides
+category: framework-plugins
 order: 35
-modified_at: 2021-11-01
+modified_at: 2021-11-15
 ---
 
 # Using package generator
 
-The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers, and it creates a working package with the development environment that allows writing new plugins for CKEditor 5.
+The [`ckeditor5-package-generator`](https://www.npmjs.com/package/ckeditor5-package-generator) is a tool for developers, and it creates a working package with the development environment that allows writing new custom plugins for CKEditor 5.
 
 ## Quick start
 
@@ -32,14 +32,14 @@ Available modifiers for the command are:
 
 After successfully creating the new package, enter it by executing the following command:
 
-```
-// assuming that your package was created with `ckeditor5-foo` as its name
+```bash
+# Assuming that your package was created with `ckeditor5-foo` as its name.
 cd ckeditor5-foo
 ```
 
 Then run the test environment for the plugin by executing:
 
-```
+```bash
 npm run start
 ```
 
@@ -50,6 +50,8 @@ There, the plugin can be seen within the example editor.
 An overview of the project's directory structure:
 
 ```plain-text
+├─ lang
+│  └─ contexts.json        # Entries used for creating translations.
 ├─ sample
 │  ├─ dll.html             # The editor initialized using the DLL builds.
 │  ├─ index.html           # The sample file.
@@ -100,6 +102,8 @@ Starts a HTTP server with the live-reload mechanism that allows previewing and t
 
 When the server has been started, the default browser will open the developer sample. This can be disabled by passing the `--no-open` option to that command.
 
+You can also define the language that will translate the created editor by specifying the `--language [LANG]` option. It defaults to `'en'`.
+
 Examples:
 
 ```bash
@@ -108,6 +112,9 @@ npm run start
 
 # Disable auto-opening the browser.
 npm run start -- --no-open
+
+# Create the editor with the interface in German.
+npm run start -- --language=de
 ```
 
 ### `test`
@@ -176,6 +183,54 @@ Examples:
 npm run dll:serve
 ```
 
+### `translations:collect`
+
+Collects translation messages (arguments of the `t()` function) and context files, then validates whether the provided values do not interfere with the values specified in the `@ckeditor/ckeditor5-core` package.
+
+The task may end with an error if one of the following conditions is met:
+
+* Found the `Unused context` error &ndash; entries specified in the `lang/contexts.json` file are not used in source files. They should be removed.
+* Found the `Context is duplicated for the id` error &ndash; some of the entries are duplicated. Consider removing them from the `lang/contexts.json` file, or rewrite them.
+* Found the `Context for the message id is missing` error &ndash; entries specified in source files are not described in the `lang/contexts.json` file. They should be added.
+
+Examples:
+
+```bash
+npm run translations:collect
+```
+
+### `translations:download`
+
+Download translations from the Transifex server. Depending on users' activity in the project, it creates translations files used for building the editor.
+
+<info-box info>
+The task requires passing the URL to Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+
+To avoid passing the `--transifex` option every time when calls the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+</info-box>
+
+Examples:
+
+```bash
+npm run translations:download -- --transifex [API URL]
+```
+
+### `translations:upload`
+
+Uploads translation messages onto the Transifex server. It allows for the creation of translations into other languages by users using the Transifex platform.
+
+<info-box info>
+The task requires passing the URL to the Transifex API. Usually, it matches the following format: `https://www.transifex.com/api/2/project/[PROJECT_SLUG]`.
+
+To avoid passing the `--transifex` option every time when you call the command, you can store it in `package.json`, next to the `ckeditor5-package-tools translations:upload` command.
+</info-box>
+
+Examples:
+
+```bash
+npm run translations:upload -- --transifex [API URL]
+```
+
 ### `prepare` and `prepublishOnly`
 
 Npm supports some special [life cycle scripts](https://docs.npmjs.com/cli/v7/using-npm/scripts#life-cycle-scripts) that allow performing operations on your package before it is published. In the context of the generated package, they just create a DLL-compatible package build.
@@ -191,6 +246,14 @@ To make CKEditor 5 plugins compatible with each other, we needed to introduce li
 ## Translations
 
 Packages created by this tool, just like the entirety of the CKEditor 5 ecosystem include full support for localization. If you wish to include translations for your package, {@link framework/guides/deep-dive/localization visit the docs page} and learn more.
+
+The package contains several tools for handling translations in the created package. We recommend the following flow when dealing with translations:
+
+1. Call `npm run translations:download` &ndash; download the latest version of translations.
+    * If there are changes in the `lang/translations/*` files, commit them as they represent new or updated translation files.
+1. Call `npm run translations:collect` &ndash; verify whether contexts are up-to-date.
+1. Call `npm run translations:upload` &ndash; upload new translations.
+1. Call `npm run translations:download` &ndash; if new contexts were uploaded, it updates the `en.po` file in the package. Do not forget to commit the change.
 
 ## Reporting issues
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,8 +25,6 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { isLinkElement } from '../src/utils';
 import { env } from 'ckeditor5/src/utils';
-
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
 /* global document, window */
 

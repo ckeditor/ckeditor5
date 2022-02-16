@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -98,6 +98,14 @@ export default class Differ {
 		 * @type {Array.<Object>|null}
 		 */
 		this._cachedChangesWithGraveyard = null;
+
+		/**
+		 * Set of model items that were marked to get refreshed in {@link #_refreshItem}.
+		 *
+		 * @private
+		 * @type {Set.<module:engine/model/item~Item>}
+		 */
+		this._refreshedItems = new Set();
 	}
 
 	/**
@@ -108,32 +116,6 @@ export default class Differ {
 	 */
 	get isEmpty() {
 		return this._changesInElement.size == 0 && this._changedMarkers.size == 0;
-	}
-
-	/**
-	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
-	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
-	 *
-	 * @param {module:engine/model/item~Item} item Item to refresh.
-	 */
-	refreshItem( item ) {
-		if ( this._isInInsertedElement( item.parent ) ) {
-			return;
-		}
-
-		this._markRemove( item.parent, item.startOffset, item.offsetSize );
-		this._markInsert( item.parent, item.startOffset, item.offsetSize );
-
-		const range = Range._createOn( item );
-
-		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
-			const markerRange = marker.getRange();
-
-			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
-		}
-
-		// Clear cache after each buffered operation as it is no longer valid.
-		this._cachedChanges = null;
 	}
 
 	/**
@@ -540,14 +522,23 @@ export default class Differ {
 		this._changeCount = 0;
 
 		// Cache changes.
-		this._cachedChangesWithGraveyard = diffSet.slice();
+		this._cachedChangesWithGraveyard = diffSet;
 		this._cachedChanges = diffSet.filter( _changesInGraveyardFilter );
 
 		if ( options.includeChangesInGraveyard ) {
-			return this._cachedChangesWithGraveyard;
+			return this._cachedChangesWithGraveyard.slice();
 		} else {
-			return this._cachedChanges;
+			return this._cachedChanges.slice();
 		}
+	}
+
+	/**
+	 * Returns a set of model items that were marked to get refreshed.
+	 *
+	 * @return {Set.<module:engine/model/item~Item>}
+	 */
+	getRefreshedItems() {
+		return new Set( this._refreshedItems );
 	}
 
 	/**
@@ -557,6 +548,36 @@ export default class Differ {
 		this._changesInElement.clear();
 		this._elementSnapshots.clear();
 		this._changedMarkers.clear();
+		this._refreshedItems = new Set();
+		this._cachedChanges = null;
+	}
+
+	/**
+	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
+	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 *
+	 * @protected
+	 * @param {module:engine/model/item~Item} item Item to refresh.
+	 */
+	_refreshItem( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
+		this._markRemove( item.parent, item.startOffset, item.offsetSize );
+		this._markInsert( item.parent, item.startOffset, item.offsetSize );
+
+		this._refreshedItems.add( item );
+
+		const range = Range._createOn( item );
+
+		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+			const markerRange = marker.getRange();
+
+			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+		}
+
+		// Clear cache after each buffered operation as it is no longer valid.
 		this._cachedChanges = null;
 	}
 
