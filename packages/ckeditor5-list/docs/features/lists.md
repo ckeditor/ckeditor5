@@ -169,7 +169,7 @@ The {@link module:list/list~List} plugin registers:
 
 The {@link module:list/listproperties~ListProperties} plugin registers:
 
-* The {@link module:list/liststylecommand~ListStyleCommand `'listStyle'`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
+* The {@link module:list/listproperties/liststylecommand~ListStyleCommand `listStyle`} command that accepts the `type` of the list style to set. If not set, is uses the default marker (usually decimal).
     ```js
     editor.execute( 'listStyle', { type: 'lower-roman' } );
     ```
@@ -177,20 +177,20 @@ The {@link module:list/listproperties~ListProperties} plugin registers:
 
     * For bulleted lists: `'disc'`, `'circle'` and `'square'`.
     * For numbered lists: `'decimal'`, `'decimal-leading-zero'`, `'lower-roman'`, `'upper-roman'`, `'lower-latin'` and `'upper-latin'`.
-* The {@link module:list/liststartcommand~ListStartCommand `'listStart'`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
+* The {@link module:list/listproperties/liststartcommand~ListStartCommand `listStart`} command which is a Boolean and defaults to `false` (meaning a list starts with `1`). If enabled, it accepts a numerical value for the `start` attribute.
 
 	```js
     editor.execute( 'listStart', { startIndex: 3 } );
     ```
 
-* The {@link module:list/listreversedcommand~ListReversedCommand `'listReversed'`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
+* The {@link module:list/listproperties/listreversedcommand~ListReversedCommand `listReversed`} command which is a Boolean and defaults to `false` (meaning the list order is ascending).
 
 	```js
     editor.execute( 'listReversed', { reversed: 'true' } );
     ```
 
-* The `'numberedList'` UI split button that overrides the UI button registered by the `List` plugin.
-* The `'bulletedList'` UI split button that overrides the UI button registered by the `List` plugin.
+* The `numberedList` UI split button that overrides the UI button registered by the `List` plugin.
+* The `bulletedList` UI split button that overrides the UI button registered by the `List` plugin.
 
 ## Contribute
 

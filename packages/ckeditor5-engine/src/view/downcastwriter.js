@@ -58,6 +58,14 @@ export default class DowncastWriter {
 		 * @type {Map.<String,Set>}
 		 */
 		this._cloneGroups = new Map();
+
+		/**
+		 * The slot factory used by the `elementToStructure` downcast helper.
+		 *
+		 * @private
+		 * @type {Function|null}
+		 */
+		this._slotFactory = null;
 	}
 
 	/**
@@ -1144,7 +1152,7 @@ export default class DowncastWriter {
 	}
 
 	/**
-	 Creates new {@link module:engine/view/selection~Selection} instance.
+	 * Creates new {@link module:engine/view/selection~Selection} instance.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = writer.createSelection();
@@ -1205,6 +1213,63 @@ export default class DowncastWriter {
 	 */
 	createSelection( selectable, placeOrOffset, options ) {
 		return new Selection( selectable, placeOrOffset, options );
+	}
+
+	/**
+	 * Creates placeholders for child elements of {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+	 * `elementToStructure()`} conversion helper.
+	 *
+	 *		const viewSlot = conversionApi.writer.createSlot();
+	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 *
+	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 *
+	 * It could be filtered to a specific subset of children (only `<foo>` model elements in this case):
+	 *
+	 *		const viewSlot = conversionApi.writer.createSlot( node => node.is( 'element', 'foo' ) );
+	 *		const viewPosition = conversionApi.writer.createPositionAt( viewElement, 0 );
+	 *
+	 *		conversionApi.writer.insert( viewPosition, viewSlot );
+	 *
+	 * While providing a filtered slot make sure to provide slots for all child nodes. A single node can not be downcasted into
+	 * multiple slots.
+	 *
+	 * **Note**: You should not change the order of nodes. View elements should be in the same order as model nodes.
+	 *
+	 * @param {'children'|module:engine/conversion/downcasthelpers~SlotFilter} [modeOrFilter='children'] The filter for child nodes.
+	 * @returns {module:engine/view/element~Element} The slot element to be placed in to the view structure while processing
+	 * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`}.
+	 */
+	createSlot( modeOrFilter ) {
+		if ( !this._slotFactory ) {
+			/**
+			 * The `createSlot()` method is allowed only inside the `elementToStructure` downcast helper callback.
+			 *
+			 * @error view-writer-invalid-create-slot-context
+			 */
+			throw new CKEditorError( 'view-writer-invalid-create-slot-context', this.document );
+		}
+
+		return this._slotFactory( this, modeOrFilter );
+	}
+
+	/**
+	 * Registers a slot factory.
+	 *
+	 * @protected
+	 * @param {Function} slotFactory The slot factory.
+	 */
+	_registerSlotFactory( slotFactory ) {
+		this._slotFactory = slotFactory;
+	}
+
+	/**
+	 * Clears the registered slot factory.
+	 *
+	 * @protected
+	 */
+	_clearSlotFactory() {
+		this._slotFactory = null;
 	}
 
 	/**

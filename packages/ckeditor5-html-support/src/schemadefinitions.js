@@ -803,7 +803,7 @@ export default {
 				inheritAllFrom: '$inlineObject'
 			}
 		},
-		// TODO it could be probably represented as non-object element, although it has grafical representation,
+		// TODO it could be probably represented as non-object element, although it has graphical representation,
 		// so probably makes more sense to keep it as an object.
 		{
 			model: 'htmlProgress',
@@ -816,6 +816,14 @@ export default {
 		{
 			model: 'htmlScript',
 			view: 'script',
+			modelSchema: {
+				allowWhere: [ '$text', '$block' ],
+				isInline: true
+			}
+		},
+		{
+			model: 'htmlStyle',
+			view: 'style',
 			modelSchema: {
 				allowWhere: [ '$text', '$block' ],
 				isInline: true

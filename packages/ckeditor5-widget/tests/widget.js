@@ -96,13 +96,12 @@ describe( 'Widget', () => {
 					.elementToElement( { model: 'imageBlock', view: 'img' } )
 					.elementToElement( { model: 'blockQuote', view: 'blockquote' } )
 					.elementToElement( { model: 'div', view: 'div' } )
-					.elementToStructure( {
+					.elementToElement( {
 						model: 'widget',
-						view: ( modelItem, { writer, slotFor } ) => {
+						view: ( modelItem, { writer } ) => {
 							const b = writer.createAttributeElement( 'b' );
 							const div = writer.createContainerElement( 'div' );
 							writer.insert( writer.createPositionAt( div, 0 ), b );
-							writer.insert( writer.createPositionAt( div, 0 ), slotFor( 'children' ) );
 
 							return toWidget( div, writer, { label: 'element label' } );
 						}

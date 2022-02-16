@@ -26,6 +26,7 @@ import PageBreak from '@ckeditor/ckeditor5-page-break/src/pagebreak';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Subscript from '@ckeditor/ckeditor5-basic-styles/src/subscript';
 import Superscript from '@ckeditor/ckeditor5-basic-styles/src/superscript';
+import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
 import TableCellProperties from '@ckeditor/ckeditor5-table/src/tablecellproperties';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
 import TableCaption from '@ckeditor/ckeditor5-table/src/tablecaption';
@@ -46,9 +47,12 @@ ClassicEditor
 			Alignment, IndentBlock,
 			PageBreak, HorizontalLine,
 			ImageUpload, CloudServices,
+			SourceEditing,
 			GeneralHtmlSupport
 		],
 		toolbar: [
+			'sourceEditing',
+			'|',
 			'heading',
 			'|',
 			'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'link',

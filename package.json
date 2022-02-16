@@ -174,8 +174,7 @@
   "resolutions": {
     "eslint-config-ckeditor5": "^3.0.0",
     "postcss-loader": "^4.0.0",
-    "colors": "1.4.0",
-    "mini-css-extract-plugin": "2.4.2"
+    "karma-coverage": "2.1.0"
   },
   "lint-staged": {
     "**/*.js": [

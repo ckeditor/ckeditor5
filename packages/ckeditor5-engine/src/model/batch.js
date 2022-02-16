@@ -27,20 +27,20 @@ export default class Batch {
 	 *
 	 * @see module:engine/model/model~Model#enqueueChange
 	 * @see module:engine/model/model~Model#change
-	 * @param {Object} [type] Set of flags that specifies the type of the batch. Batch type can alter how some of the features work when
-	 * encountering given `Batch` instance (for example, when a feature listens to applied operations).
-	 * @param {Boolean} [type.isUndoable=true] Whether batch can be undone through undo feature.
-	 * @param {Boolean} [type.isLocal=true] Whether batch includes operations created locally (`true`) or operations created on
+	 * @param {Object} [type] A set of flags that specify the type of the batch. Batch type can alter how some of the features work
+	 * when encountering a given `Batch` instance (for example, when a feature listens to applied operations).
+	 * @param {Boolean} [type.isUndoable=true] Whether a batch can be undone through undo feature.
+	 * @param {Boolean} [type.isLocal=true] Whether a batch includes operations created locally (`true`) or operations created on
 	 * other, remote editors (`false`).
-	 * @param {Boolean} [type.isUndo=false] Whether batch was created by the undo feature and undoes other operations.
-	 * @param {Boolean} [type.isTyping=false] Whether batch includes operations connected with typing action.
+	 * @param {Boolean} [type.isUndo=false] Whether a batch was created by the undo feature and undoes other operations.
+	 * @param {Boolean} [type.isTyping=false] Whether a batch includes operations connected with a typing action.
 	 */
 	constructor( type = {} ) {
 		if ( typeof type === 'string' ) {
 			type = type === 'transparent' ? { isUndoable: false } : {};
 
 			/**
-			 * The string value for `type` property of the `Batch` constructor has been deprecated and will be removed in the near future.
+			 * The string value for a `type` property of the `Batch` constructor has been deprecated and will be removed in the near future.
 			 * Please refer to the {@link module:engine/model/batch~Batch#constructor `Batch` constructor API documentation} for more
 			 * information.
 			 *
@@ -60,7 +60,7 @@ export default class Batch {
 		this.operations = [];
 
 		/**
-		 * Whether batch can be undone through the undo feature.
+		 * Whether the batch can be undone through the undo feature.
 		 *
 		 * @readonly
 		 * @type {Boolean}
@@ -68,7 +68,7 @@ export default class Batch {
 		this.isUndoable = isUndoable;
 
 		/**
-		 * Whether batch includes operations created locally (`true`) or operations created on other, remote editors (`false`).
+		 * Whether the batch includes operations created locally (`true`) or operations created on other, remote editors (`false`).
 		 *
 		 * @readonly
 		 * @type {Boolean}
@@ -76,7 +76,7 @@ export default class Batch {
 		this.isLocal = isLocal;
 
 		/**
-		 * Whether batch was created by the undo feature and undoes other operations.
+		 * Whether the batch was created by the undo feature and undoes other operations.
 		 *
 		 * @readonly
 		 * @type {Boolean}
@@ -84,7 +84,7 @@ export default class Batch {
 		this.isUndo = isUndo;
 
 		/**
-		 * Whether batch includes operations connected with typing.
+		 * Whether the batch includes operations connected with typing.
 		 *
 		 * @readonly
 		 * @type {Boolean}
@@ -95,7 +95,7 @@ export default class Batch {
 	/**
 	 * The type of the batch.
 	 *
-	 * **This property has been deprecated and is always set to `'default'` value.**
+	 * **This property has been deprecated and is always set to the `'default'` value.**
 	 *
 	 * It can be one of the following values:
 	 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.

@@ -87,7 +87,7 @@ By default, enabling the {@link module:html-support/generalhtmlsupport~GeneralHt
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	htmlSupport: {
-		allow: [ /* HTML features to allow */ ]
+		allow: [ /* HTML features to allow */ ],
 		disallow: [ /* HTML features to disallow */ ]
 	}
 } )

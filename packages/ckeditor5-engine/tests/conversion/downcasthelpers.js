@@ -826,7 +826,7 @@ describe( 'DowncastHelpers', () => {
 		} );
 
 		describe( 'with multiple child elements', () => {
-			it( 'warns if multiple child elements are created', () => {
+			it( 'does not warn if multiple child elements are created', () => {
 				let viewElement;
 
 				testUtils.sinon.stub( console, 'warn' );
@@ -846,12 +846,7 @@ describe( 'DowncastHelpers', () => {
 					writer.insertElement( 'multiItemBox', null, modelRoot, 0 );
 				} );
 
-				sinon.assert.calledOnce( console.warn );
-				sinon.assert.calledWithExactly( console.warn,
-					sinon.match( /^conversion-element-to-element-created-multiple-elements/ ),
-					{ viewElement },
-					sinon.match.string // Link to the documentation
-				);
+				sinon.assert.notCalled( console.warn );
 			} );
 
 			it( 'does not warn if multiple child UI elements are created', () => {
@@ -1210,10 +1205,10 @@ describe( 'DowncastHelpers', () => {
 						name: 'simpleBlock',
 						attributes: [ 'toStyle', 'toClass' ]
 					},
-					view: ( modelElement, { writer, slotFor } ) => {
+					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
-						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createSlot() );
 
 						return viewElement;
 					}
@@ -1371,10 +1366,10 @@ describe( 'DowncastHelpers', () => {
 
 				downcastHelpers.elementToStructure( {
 					model: 'simpleBlock',
-					view: ( modelElement, { writer, slotFor } ) => {
+					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
-						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createSlot() );
 
 						return viewElement;
 					}
@@ -1546,10 +1541,10 @@ describe( 'DowncastHelpers', () => {
 						name: 'simpleBlock2',
 						children: true
 					},
-					view: ( modelElement, { writer, slotFor } ) => {
+					view: ( modelElement, { writer } ) => {
 						const viewElement = writer.createContainerElement( 'div', { class: 'second' } );
 
-						writer.insert( writer.createPositionAt( viewElement, 0 ), slotFor( 'children' ) );
+						writer.insert( writer.createPositionAt( viewElement, 0 ), writer.createSlot() );
 
 						return viewElement;
 					}
@@ -1653,12 +1648,12 @@ describe( 'DowncastHelpers', () => {
 						attributes: [ 'toStyle', 'toClass' ],
 						children: true
 					},
-					view: ( modelElement, { writer, slotFor } ) => {
+					view: ( modelElement, { writer } ) => {
 						const outer = writer.createContainerElement( 'div', { class: 'complex-outer' } );
 						const inner = writer.createContainerElement( 'div', getViewAttributes( modelElement ) );
 
 						writer.insert( writer.createPositionAt( outer, 0 ), inner );
-						writer.insert( writer.createPositionAt( inner, 0 ), slotFor( 'children' ) );
+						writer.insert( writer.createPositionAt( inner, 0 ), writer.createSlot() );
 
 						return outer;
 					}
@@ -1968,7 +1963,7 @@ describe( 'DowncastHelpers', () => {
 						name: 'complex',
 						children: true
 					},
-					view: ( modelElement, { writer, slotFor } ) => {
+					view: ( modelElement, { writer } ) => {
 						const outer = writer.createContainerElement( 'div', { class: 'complex-outer' } );
 						const inner1 = writer.createContainerElement( 'div', { class: 'inner-first' } );
 						const inner2 = writer.createContainerElement( 'div', { class: 'inner-second' } );
@@ -1976,8 +1971,8 @@ describe( 'DowncastHelpers', () => {
 						writer.insert( writer.createPositionAt( outer, 'end' ), inner1 );
 						writer.insert( writer.createPositionAt( outer, 'end' ), inner2 );
 
-						writer.insert( writer.createPositionAt( inner1, 0 ), slotFor( element => element.index < 2 ) );
-						writer.insert( writer.createPositionAt( inner2, 0 ), slotFor( element => element.index >= 2 ) );
+						writer.insert( writer.createPositionAt( inner1, 0 ), writer.createSlot( element => element.index < 2 ) );
+						writer.insert( writer.createPositionAt( inner2, 0 ), writer.createSlot( element => element.index >= 2 ) );
 
 						return outer;
 					}
@@ -2214,10 +2209,10 @@ describe( 'DowncastHelpers', () => {
 					name: 'simple',
 					children: true
 				},
-				view: ( modelElement, { writer, slotFor } ) => {
+				view: ( modelElement, { writer } ) => {
 					const element = writer.createContainerElement( 'div' );
 
-					writer.insert( writer.createPositionAt( element, 0 ), slotFor( 'foo' ) );
+					writer.insert( writer.createPositionAt( element, 0 ), writer.createSlot( 'foo' ) );
 
 					return element;
 				}
@@ -2254,7 +2249,7 @@ describe( 'DowncastHelpers', () => {
 					name: 'complex',
 					children: true
 				},
-				view: ( modelElement, { writer, slotFor } ) => {
+				view: ( modelElement, { writer } ) => {
 					const outer = writer.createContainerElement( 'div' );
 					const inner1 = writer.createContainerElement( 'div', { class: 'inner-first' } );
 					const inner2 = writer.createContainerElement( 'div', { class: 'inner-second' } );
@@ -2262,8 +2257,8 @@ describe( 'DowncastHelpers', () => {
 					writer.insert( writer.createPositionAt( outer, 'end' ), inner1 );
 					writer.insert( writer.createPositionAt( outer, 'end' ), inner2 );
 
-					writer.insert( writer.createPositionAt( inner1, 0 ), slotFor( element => element.index <= 1 ) );
-					writer.insert( writer.createPositionAt( inner2, 0 ), slotFor( element => element.index >= 1 ) );
+					writer.insert( writer.createPositionAt( inner1, 0 ), writer.createSlot( element => element.index <= 1 ) );
+					writer.insert( writer.createPositionAt( inner2, 0 ), writer.createSlot( element => element.index >= 1 ) );
 
 					return outer;
 				}
@@ -2301,7 +2296,7 @@ describe( 'DowncastHelpers', () => {
 					name: 'complex',
 					children: true
 				},
-				view: ( modelElement, { writer, slotFor } ) => {
+				view: ( modelElement, { writer } ) => {
 					const outer = writer.createContainerElement( 'div' );
 					const inner1 = writer.createContainerElement( 'div', { class: 'inner-first' } );
 					const inner2 = writer.createContainerElement( 'div', { class: 'inner-second' } );
@@ -2309,8 +2304,8 @@ describe( 'DowncastHelpers', () => {
 					writer.insert( writer.createPositionAt( outer, 'end' ), inner1 );
 					writer.insert( writer.createPositionAt( outer, 'end' ), inner2 );
 
-					writer.insert( writer.createPositionAt( inner1, 0 ), slotFor( element => element.index < 1 ) );
-					writer.insert( writer.createPositionAt( inner2, 0 ), slotFor( element => element.index > 1 ) );
+					writer.insert( writer.createPositionAt( inner1, 0 ), writer.createSlot( element => element.index < 1 ) );
+					writer.insert( writer.createPositionAt( inner2, 0 ), writer.createSlot( element => element.index > 1 ) );
 
 					return outer;
 				}
@@ -2336,6 +2331,25 @@ describe( 'DowncastHelpers', () => {
 					writer.insert( complex, modelRoot, 0 );
 				} );
 			}, /^conversion-slot-filter-incomplete/, controller.downcastDispatcher );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/11163
+		it( 'should throw an exception when invoked for a model element that allows $text', () => {
+			model.schema.register( 'myElement', {
+				allowIn: '$root',
+
+				// This makes it accept $text.
+				allowContentOf: '$block'
+			} );
+
+			expectToThrowCKEditorError( () => {
+				downcastHelpers.elementToStructure( {
+					model: 'myElement',
+					view: ( modelElement, { writer } ) => {
+						return writer.createContainerElement( 'div' );
+					}
+				} );
+			}, /^conversion-element-to-structure-disallowed-text/, controller.downcastDispatcher, { elementName: 'myElement' } );
 		} );
 	} );
 
