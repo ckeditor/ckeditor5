@@ -8,11 +8,15 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+
 import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
-import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
+import {
+	listPropertiesDowncastConverter,
+	listPropertiesUpcastConverter
+} from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
 import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
 
@@ -82,6 +86,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 				dispatcher.on( 'element:ul', listPropertiesUpcastConverter( strategy ) );
 			}
 		} );
+
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
 				for ( const attributeName of [ ...LIST_BASE_ATTRIBUTES, strategy.attributeName ] ) {
@@ -91,7 +96,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 
 		// Verify if the list view element (ul or ol) requires refreshing.
-		documentListEditing.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
+		documentListEditing.on( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
 			for ( const strategy of strategies ) {
 				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
 					evt.return = true;
