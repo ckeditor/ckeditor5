@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* global document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -17,8 +19,6 @@ import { getModelDataWithAttributes } from './_utils/utils';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
-
-/* global document */
 
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
@@ -174,6 +174,10 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should filter the editing view', () => {
+			testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
+
 			dataFilter.allowElement( 'video' );
 
 			editor.setData( '<p><video>' +
@@ -188,8 +192,6 @@ describe( 'DataFilter', () => {
 				'</paragraph>'
 			);
 
-			editor.editing.view.domConverter.experimentalRenderingMode = true;
-
 			expect( getViewData( editor.editing.view, {
 				withoutSelection: true,
 				renderRawElements: true,
@@ -198,18 +200,10 @@ describe( 'DataFilter', () => {
 				'<p>' +
 					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
 						'<video class="html-object-embed__content">' +
-							'<source src="https://example.com/video.mp4" type="video/mp4">' +
+							'<source src="https://example.com/video.mp4" type="video/mp4" data-ck-unsafe-attribute-onclick="action()">' +
 							'Your browser does not support the video tag.' +
 						'</video>' +
 					'</span>' +
-				'</p>'
-			);
-
-			editor.editing.view.domConverter.experimentalRenderingMode = false;
-
-			expect( editor.getData() ).to.equal( '<p><video>' +
-				'<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
-					'Your browser does not support the video tag.</video>' +
 				'</p>'
 			);
 		} );

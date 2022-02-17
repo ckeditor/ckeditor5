@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -142,6 +142,24 @@ describe( 'ColorTableView', () => {
 
 		it( 'should have correct amount of children', () => {
 			expect( colorTableView.items.length ).to.equal( 4 );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( colorTableView.focusTracker, 'destroy' );
+
+			colorTableView.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( colorTableView.keystrokes, 'destroy' );
+
+			colorTableView.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

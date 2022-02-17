@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,13 +24,17 @@ import {
 } from './filler';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 
 const BR_FILLER_REF = BR_FILLER( document ); // eslint-disable-line new-cap
 const NBSP_FILLER_REF = NBSP_FILLER( document ); // eslint-disable-line new-cap
 const MARKED_NBSP_FILLER_REF = MARKED_NBSP_FILLER( document ); // eslint-disable-line new-cap
+const UNSAFE_ATTRIBUTE_NAME_PREFIX = 'data-ck-unsafe-attribute-';
+const UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE = 'data-ck-unsafe-element';
 
 /**
  * `DomConverter` is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -71,14 +75,6 @@ export default class DomConverter {
 		 * @member {'data'|'editing'} module:engine/view/domconverter~DomConverter#renderingMode
 		 */
 		this.renderingMode = options.renderingMode || 'editing';
-
-		/**
-		 * Main switch for new rendering approach in the editing view.
-		 *
-		 * @protected
-		 * @member {Boolean}
-		 */
-		this.experimentalRenderingMode = false;
 
 		/**
 		 * The mode of a block filler used by the DOM converter.
@@ -246,17 +242,43 @@ export default class DomConverter {
 	 *
 	 * @param {String} attributeKey
 	 * @param {String} attributeValue
+	 * @param {String} elementName Element name in lower case.
 	 * @returns {Boolean}
 	 */
-	shouldRenderAttribute( attributeKey, attributeValue ) {
-		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
+	shouldRenderAttribute( attributeKey, attributeValue, elementName ) {
+		if ( this.renderingMode === 'data' ) {
 			return true;
 		}
 
-		return !( attributeKey.toLowerCase().startsWith( 'on' ) ||
-			attributeValue.match( /(\b)(on\S+)(\s*)=|javascript:|(<\s*)(\/*)script/i ) ||
-			attributeValue.match( /data:(?!image\/(png|jpeg|gif|webp))/i )
-		);
+		attributeKey = attributeKey.toLowerCase();
+
+		if ( attributeKey.startsWith( 'on' ) ) {
+			return false;
+		}
+
+		if (
+			attributeKey === 'srcdoc' &&
+			attributeValue.match( /\bon\S+\s*=|javascript:|<\s*\/*script/i )
+		) {
+			return false;
+		}
+
+		if (
+			elementName === 'img' &&
+			( attributeKey === 'src' || attributeKey === 'srcset' )
+		) {
+			return true;
+		}
+
+		if ( elementName === 'source' && attributeKey === 'srcset' ) {
+			return true;
+		}
+
+		if ( attributeValue.match( /^\s*(javascript:|data:(image\/svg|text\/x?html))/i ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -267,7 +289,7 @@ export default class DomConverter {
 	 */
 	setContentOf( domElement, html ) {
 		// For data pipeline we pass the HTML as-is.
-		if ( !this.experimentalRenderingMode || this.renderingMode === 'data' ) {
+		if ( this.renderingMode === 'data' ) {
 			domElement.innerHTML = html;
 
 			return;
@@ -294,17 +316,15 @@ export default class DomConverter {
 		for ( const currentNode of nodes ) {
 			// Go through nodes to remove those that are prohibited in editing pipeline.
 			for ( const attributeName of currentNode.getAttributeNames() ) {
-				const attributeValue = currentNode.getAttribute( attributeName );
-
-				if ( !this.shouldRenderAttribute( attributeName, attributeValue ) ) {
-					currentNode.removeAttribute( attributeName );
-				}
+				this.setDomElementAttribute( currentNode, attributeName, currentNode.getAttribute( attributeName ) );
 			}
 
 			const elementName = currentNode.tagName.toLowerCase();
 
 			// There are certain nodes, that should be renamed to <span> in editing pipeline.
 			if ( this._shouldRenameElement( elementName ) ) {
+				logWarning( 'domconverter-unsafe-element-detected', { unsafeElement: currentNode } );
+
 				currentNode.replaceWith( this._createReplacementDomElement( elementName, currentNode ) );
 			}
 		}
@@ -364,6 +384,8 @@ export default class DomConverter {
 			} else {
 				// Create DOM element.
 				if ( this._shouldRenameElement( viewNode.name ) ) {
+					logWarning( 'domconverter-unsafe-element-detected', { unsafeElement: viewNode } );
+
 					domElement = this._createReplacementDomElement( viewNode.name );
 				} else if ( viewNode.hasAttribute( 'xmlns' ) ) {
 					domElement = domDocument.createElementNS( viewNode.getAttribute( 'xmlns' ), viewNode.name );
@@ -383,13 +405,7 @@ export default class DomConverter {
 
 				// Copy element's attributes.
 				for ( const key of viewNode.getAttributeKeys() ) {
-					const value = viewNode.getAttribute( key );
-
-					if ( !this.shouldRenderAttribute( key, value ) ) {
-						continue;
-					}
-
-					domElement.setAttribute( key, value );
+					this.setDomElementAttribute( domElement, key, viewNode.getAttribute( key ), viewNode );
 				}
 			}
 
@@ -401,6 +417,60 @@ export default class DomConverter {
 
 			return domElement;
 		}
+	}
+
+	/**
+	 * Sets the attribute on a DOM element.
+	 *
+	 * **Note**: To remove the attribute, use {@link #removeDomElementAttribute}.
+	 *
+	 * @param {HTMLElement} domElement The DOM element the attribute should be set on.
+	 * @param {String} key The name of the attribute.
+	 * @param {String} value The value of the attribute.
+	 * @param {module:engine/view/element~Element} [relatedViewElement] The view element related to the `domElement` (if there is any).
+	 * It helps decide whether the attribute set is unsafe. For instance, view elements created via the
+	 * {@link module:engine/view/downcastwriter~DowncastWriter} methods can allow certain attributes that would normally be filtered out.
+	 */
+	setDomElementAttribute( domElement, key, value, relatedViewElement = null ) {
+		const shouldRenderAttribute = this.shouldRenderAttribute( key, value, domElement.tagName.toLowerCase() ) ||
+			relatedViewElement && relatedViewElement.shouldRenderUnsafeAttribute( key );
+
+		if ( !shouldRenderAttribute ) {
+			logWarning( 'domconverter-unsafe-attribute-detected', { domElement, key, value } );
+		}
+
+		// The old value was safe but the new value is unsafe.
+		if ( domElement.hasAttribute( key ) && !shouldRenderAttribute ) {
+			domElement.removeAttribute( key );
+		}
+		// The old value was unsafe (but prefixed) but the new value will be safe (will be unprefixed).
+		else if ( domElement.hasAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key ) && shouldRenderAttribute ) {
+			domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
+		}
+
+		// If the attribute should not be rendered, rename it (instead of removing) to give developers some idea of what
+		// is going on (https://github.com/ckeditor/ckeditor5/issues/10801).
+		domElement.setAttribute( shouldRenderAttribute ? key : UNSAFE_ATTRIBUTE_NAME_PREFIX + key, value );
+	}
+
+	/**
+	 * Removes an attribute from a DOM element.
+	 *
+	 * **Note**: To set the attribute, use {@link #setDomElementAttribute}.
+	 *
+	 * @param {HTMLElement} domElement The DOM element the attribute should be removed from.
+	 * @param {String} key The name of the attribute.
+	 */
+	removeDomElementAttribute( domElement, key ) {
+		// See #_createReplacementDomElement() to learn what this is.
+		if ( key == UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE ) {
+			return;
+		}
+
+		domElement.removeAttribute( key );
+
+		// See setDomElementAttribute() to learn what this is.
+		domElement.removeAttribute( UNSAFE_ATTRIBUTE_NAME_PREFIX + key );
 	}
 
 	/**
@@ -548,7 +618,7 @@ export default class DomConverter {
 			return hostElement;
 		}
 
-		if ( this.isComment( domNode ) && options.skipComments ) {
+		if ( isComment( domNode ) && options.skipComments ) {
 			return null;
 		}
 
@@ -593,8 +663,8 @@ export default class DomConverter {
 
 				// Treat this element's content as a raw data if it was registered as such.
 				// Comment node is also treated as an element with raw data.
-				if ( this._isViewElementWithRawContent( viewElement, options ) || this.isComment( domNode ) ) {
-					const rawContent = this.isComment( domNode ) ? domNode.data : domNode.innerHTML;
+				if ( this._isViewElementWithRawContent( viewElement, options ) || isComment( domNode ) ) {
+					const rawContent = isComment( domNode ) ? domNode.data : domNode.innerHTML;
 
 					viewElement._setCustomProperty( '$rawContent', rawContent );
 
@@ -961,16 +1031,6 @@ export default class DomConverter {
 	 */
 	isDocumentFragment( node ) {
 		return node && node.nodeType == Node.DOCUMENT_FRAGMENT_NODE;
-	}
-
-	/**
-	 * Returns `true` when `node.nodeType` equals `Node.COMMENT_NODE`.
-	 *
-	 * @param {Node} node Node to check.
-	 * @returns {Boolean}
-	 */
-	isComment( node ) {
-		return node && node.nodeType == Node.COMMENT_NODE;
 	}
 
 	/**
@@ -1457,7 +1517,7 @@ export default class DomConverter {
 	 * @returns {Element}
 	 */
 	_createViewElement( node, options ) {
-		if ( this.isComment( node ) ) {
+		if ( isComment( node ) ) {
 			return new ViewUIElement( this.document, '$comment' );
 		}
 
@@ -1486,7 +1546,7 @@ export default class DomConverter {
 	 * @returns {Boolean}
 	 */
 	_shouldRenameElement( elementName ) {
-		return this.experimentalRenderingMode && this.renderingMode == 'editing' && elementName == 'script';
+		return this.renderingMode == 'editing' && elementName.toLowerCase() == 'script';
 	}
 
 	/**
@@ -1502,7 +1562,7 @@ export default class DomConverter {
 		const newDomElement = document.createElement( 'span' );
 
 		// Mark the span replacing a script as hidden.
-		newDomElement.setAttribute( 'data-ck-hidden', elementName );
+		newDomElement.setAttribute( UNSAFE_ELEMENT_REPLACEMENT_ATTRIBUTE, elementName );
 
 		if ( originalDomElement ) {
 			while ( originalDomElement.firstChild ) {
@@ -1577,4 +1637,45 @@ function hasBlockParent( domNode, blockElements ) {
  * used in the data.
  *
  * @typedef {String} module:engine/view/filler~BlockFillerMode
+ */
+
+/**
+ * The {@link module:engine/view/domconverter~DomConverter} detected a `<script>` element that may disrupt the
+ * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline} of the editor. To avoid this,
+ * the `<script>` element was renamed to `<span data-ck-unsafe-element="script"></span>`.
+ *
+ * @error domconverter-unsafe-element-detected
+ * @param {module:engine/model/element~Element|HTMLElement} unsafeElement The editing view or DOM element
+ * that was renamed.
+ */
+
+/**
+ * The {@link module:engine/view/domconverter~DomConverter} detected an interactive attribute in the
+ * {@glink framework/guides/architecture/editing-engine#editing-pipeline editing pipeline}. For the best
+ * editing experience, the attribute was renamed to `data-ck-unsafe-attribute-[original attribute name]`.
+ *
+ * If you are the author of the plugin that generated this attribute and you want it to be preserved
+ * in the editing pipeline, you can configure this when creating the element
+ * using {@link module:engine/view/downcastwriter~DowncastWriter} during the
+ * {@glink framework/guides/architecture/editing-engine#conversion model–view conversion}. Methods such as
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement},
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createAttributeElement}, or
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createEmptyElement}
+ * accept an option that will disable filtering of specific attributes:
+ *
+ *		const paragraph = writer.createContainerElement( 'p',
+ *			{
+ *				class: 'clickable-paragraph',
+ *				onclick: 'alert( "Paragraph clicked!" )'
+ *			},
+ *			{
+ *				// Make sure the "onclick" attribute will pass through.
+ *				renderUnsafeAttributes: [ 'onclick' ]
+ *			}
+ *		);
+ *
+ * @error domconverter-unsafe-attribute-detected
+ * @param {HTMLElement} domElement The DOM element the attribute was set on.
+ * @param {String} key The original name of the attribute
+ * @param {String} value The value of the original attribute
  */

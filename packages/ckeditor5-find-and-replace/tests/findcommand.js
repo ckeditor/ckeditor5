@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -297,6 +297,14 @@ describe( 'FindCommand', () => {
 					const { results } = command.execute( 'bar', { wholeWords: true } );
 
 					expect( results.length ).to.equal( 0 );
+				} );
+
+				it( 'set to true matches words separated by a single space', () => {
+					editor.setData( '<p>bar bar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 2 );
 				} );
 
 				it( 'is disabled by default', () => {

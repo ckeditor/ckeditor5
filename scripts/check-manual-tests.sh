@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+# @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
 # For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
 
 # `set -e` cannot be used because if the web crawler will fail, the HTTP server will not be closed.
@@ -14,7 +14,7 @@ do
   esac
 done
 
-MANUAL_TEST_SERVER_OPTIONS="--silent -r $REPOSITORY"
+MANUAL_TEST_SERVER_OPTIONS="--disable-watch --silent -r $REPOSITORY"
 
 if [ ! -z "$FILES" ]
 then
@@ -34,7 +34,7 @@ node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/te
 MANUAL_TEST_SERVER_PROCESS_ID=$!
 
 echo "Waiting for the server..."
-node_modules/.bin/wait-on http://localhost:8125 && yarn run manual:verify
+node_modules/.bin/wait-on http://localhost:8125 && yarn run manual:verify --no-spinner
 
 MANUAL_VERIFY_EXIT_CODE=$?
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,11 +16,14 @@ import WidgetTypeAround from '../../src/widgettypearound/widgettypearound';
 import { TYPE_AROUND_SELECTION_ATTRIBUTE } from '../../src/widgettypearound/utils';
 import { toWidget } from '../../src/utils';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'WidgetTypeAround', () => {
 	let element, plugin, editor, editingView, viewDocument, modelRoot, viewRoot;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
 		element = global.document.createElement( 'div' );
@@ -493,9 +496,6 @@ describe( 'WidgetTypeAround', () => {
 
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_before' ) ).to.be.false;
 				expect( viewWidget.hasClass( 'ck-widget_type-around_show-fake-caret_after' ) ).to.be.false;
-
-				sinon.assert.notCalled( eventInfoStub.stop );
-				sinon.assert.notCalled( domEventDataStub.domEvent.preventDefault );
 			} );
 
 			describe( 'selection containing more than a widget', () => {

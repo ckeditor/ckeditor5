@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,8 +16,6 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
-
-import '@ckeditor/ckeditor5-core/tests/_utils/assertions/attribute';
 
 describe( 'TwoStepCaretMovement()', () => {
 	let editor, model, emitter, selection, view, plugin;
@@ -822,7 +820,7 @@ describe( 'TwoStepCaretMovement()', () => {
 		] );
 
 		// Simulate an external text insertion BEFORE the user selection to trigger #change:range.
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			writer.insertText( 'x', selection.getFirstPosition().getShiftedBy( -2 ) );
 		} );
 

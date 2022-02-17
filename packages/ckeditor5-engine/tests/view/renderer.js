@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement */
+/* globals document, window, NodeFilter, MutationObserver, HTMLImageElement, console */
 
 import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
@@ -3970,12 +3970,21 @@ describe( 'Renderer', () => {
 			}
 		} );
 
-		describe( 'script tag should not be executed', () => {
+		describe( 'filtering out unsafe content', () => {
 			let view, viewDoc, viewRoot, domRoot;
 
 			beforeEach( () => {
 				view = new View( new StylesProcessor() );
-				view.domConverter.experimentalRenderingMode = true;
+
+				testUtils.sinon.stub( console, 'warn' )
+					.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+					.callsFake( () => {} );
+
+				console.warn
+					.withArgs( sinon.match( /^domconverter-unsafe-element-detected/ ) )
+					.callsFake( () => {} );
+
+				console.warn.callThrough();
 
 				viewDoc = view.document;
 				domRoot = document.createElement( 'div' );
@@ -4013,12 +4022,12 @@ describe( 'Renderer', () => {
 
 				expect( window.spy.calledOnce ).to.be.false;
 				expect( getViewData( view ) ).to.equal( '<script>spy()</script>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-hidden="script">spy()</span>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<span data-ck-unsafe-element="script">spy()</span>' );
 
 				delete window.spy;
 			} );
 
-			it( 'should remove attributes that can affect editing pipeline', () => {
+			it( 'should rename attributes that can affect editing pipeline', () => {
 				setViewData( view,
 					'<container:p onclick="test">' +
 						'foo' +
@@ -4028,10 +4037,31 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="test">foo</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foo</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="test">foo</p>' );
 			} );
 
-			it( 'should remove attributes from the View that can are not present in the DOM', () => {
+			it( 'should rename attributes that can affect editing pipeline unless permitted when the element was created', () => {
+				view.change( writer => {
+					const containerElement = writer.createContainerElement( 'p', {
+						onclick: 'foo',
+						onkeydown: 'bar'
+					}, {
+						renderUnsafeAttributes: [ 'onclick' ]
+					} );
+
+					writer.insert( writer.createPositionAt( containerElement, 'start' ), writer.createText( 'baz' ) );
+					writer.insert( writer.createPositionAt( view.document.getRoot(), 'start' ), containerElement );
+				} );
+
+				view.forceRender();
+
+				expect( getViewData( view ) ).to.equal( '<p onclick="foo" onkeydown="bar">baz</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+					'<p data-ck-unsafe-attribute-onkeydown="bar" onclick="foo">baz</p>'
+				);
+			} );
+
+			it( 'should rename attributes that can not be rendered in the editing pipeline', () => {
 				setViewData( view,
 					'<container:p>' +
 						'bar' +
@@ -4047,7 +4077,7 @@ describe( 'Renderer', () => {
 				view.forceRender();
 
 				expect( getViewData( view ) ).to.equal( '<p onclick="foo">bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p data-ck-unsafe-attribute-onclick="foo">bar</p>' );
 			} );
 
 			it( 'should remove attributes not present in the DOM if the view node is just a script element', () => {
@@ -4067,27 +4097,8 @@ describe( 'Renderer', () => {
 
 				expect( getViewData( view ) ).to.equal( '<script>bar</script>' );
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
-					'<span data-ck-hidden="script">bar</span>'
+					'<span data-ck-unsafe-element="script">bar</span>'
 				);
-			} );
-
-			it( 'should remove attributes not present in the DOM if the view node is not script, but has data-ck-hidden attribute', () => {
-				setViewData( view,
-					'<container:p data-ck-hidden="foo">' +
-						'bar' +
-					'</container:p>'
-				);
-
-				view.forceRender();
-
-				view.change( writer => {
-					writer.removeAttribute( 'data-ck-hidden', viewRoot.getChild( 0 ) );
-				} );
-
-				view.forceRender();
-
-				expect( getViewData( view ) ).to.equal( '<p>bar</p>' );
-				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>bar</p>' );
 			} );
 		} );
 	} );

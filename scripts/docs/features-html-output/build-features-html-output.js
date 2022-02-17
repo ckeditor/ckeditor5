@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -60,22 +60,27 @@ module.exports = function createHtmlOutputMarkup() {
 		.map( packageMetadata => {
 			const outputRows = packageMetadata.plugins
 				.map( plugin => {
-					const numberOfRowsPerPlugin = plugin.htmlOutputMarkup.length;
+					const numberOfRowsPerPlugin = plugin.htmlOutput.length;
 
 					const pluginNameRowspan = numberOfRowsPerPlugin > 1 ?
 						`rowspan="${ numberOfRowsPerPlugin }"` :
 						'';
 
-					return plugin.htmlOutputMarkup
-						.map( ( htmlOutputMarkup, htmlOutputIndex ) => {
+					return plugin.htmlOutput
+						.map( ( htmlOutput, htmlOutputIndex ) => {
 							const pluginNameCell = htmlOutputIndex === 0 ?
 								`<td class="plugin" ${ pluginNameRowspan }>${ plugin.pluginNameMarkup }</td>` :
 								'';
 
+							const classNames = [
+								'html-output',
+								htmlOutput.isAlternative ? '' : 'html-output-default'
+							].filter( className => !!className ).join( ' ' );
+
 							return (
 								'<tr>' +
 									pluginNameCell +
-									`<td class="html-output">${ htmlOutputMarkup }</td>` +
+									`<td class="${ classNames }">${ htmlOutput.markup }</td>` +
 								'</tr>'
 							);
 						} )
@@ -248,13 +253,26 @@ function createHtmlOutputMarkupForPackage( packageData, plugins = [] ) {
 				}
 			}
 
-			const htmlOutputMarkup = plugin.htmlOutput ?
-				createHtmlOutputMarkupForPlugin( plugin.htmlOutput ) :
-				[ '<p>None.</p>' ];
+			if ( !plugin.htmlOutput ) {
+				const htmlOutput = [
+					{
+						// This value dictates whether or not the "None" output is considered to be default.
+						isAlternative: true,
+						markup: '<p>None.</p>'
+					}
+				];
+
+				return {
+					pluginNameMarkup,
+					htmlOutput
+				};
+			}
+
+			const htmlOutput = createHtmlOutputMarkupForPlugin( plugin.htmlOutput );
 
 			return {
 				pluginNameMarkup,
-				htmlOutputMarkup
+				htmlOutput
 			};
 		} );
 }
@@ -310,11 +328,14 @@ function createApiLink( packageData, plugin ) {
 }
 
 /**
- * Prepares the HTML output to a format, that is ready to be displayed. The generated array of strings contains preformatted paragraphs with
- * applied visual formatting (i.e. <strong> or <code> tags).
- *
+ * Prepares the HTML output to a format, that is ready to be displayed. In the generated array of objects each object contains two keys:
+ * <String> markup: All elements, classes, styles, attributes and comment combined together with applied visual formatting
+ * (i.e. working links, visual emphasis, etc.) and ready to be displayed.
+ * <Boolean> isAlternative: If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  * @param {HtmlOutput} htmlOutput
- * @returns {Array.<String>}
+ * @returns {Array.<ParsedHtmlOutput>}
  */
 function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 	const appendClasses = ( classes, separators ) => output => {
@@ -407,9 +428,17 @@ function createHtmlOutputMarkupForPlugin( htmlOutput ) {
 				}</p>` :
 				'';
 
-			return [ elements, others, comment ]
+			const markup = [ elements, others, comment ]
 				.filter( item => !!item )
 				.join( '' );
+
+			const isAlternative = entry.isAlternative || false;
+
+			return { markup, isAlternative };
+		} )
+		.sort( ( a, b ) => {
+			const shift = a.isAlternative ? 1 : -1;
+			return a.isAlternative === b.isAlternative ? 0 : shift;
 		} );
 }
 
@@ -442,6 +471,9 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
  * @property {String|Array.<String>} styles Inline CSS styles, that may be applied to the HTML elements.
  * @property {String|Array.<String>} attributes Other HTML attributes, that may be applied to the HTML elements.
  * @property {String} implements A name of an element or a pseudo-element, which classes, styles or attributes may be inherited from.
+ * @property {Boolean} isAlternative If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  * @property {String} _comment A human-readable description.
  */
 
@@ -457,9 +489,17 @@ function wrapBy( { prefix = '', suffix = '' } = {} ) {
 /**
  * @typedef {Object} ParsedPlugin
  * @property {String} pluginNameMarkup HTML markup containing plugin name.
- * @property {Array.<String>} htmlOutputMarkup Each item in this array contains a separate output definition. This output definition is
- * a string with all elements, classes, styles, attributes and comment combined together with applied visual formatting (i.e. working links,
- * visual emphasis, etc.) and ready to be displayed.
+ * @property {Array.<ParsedHtmlOutput>} htmlOutput An array of objects, each containing string with HTML markup and boolean defining
+ * whether this output is alternative or default.
+ */
+
+/**
+ * @typedef {Object} ParsedHtmlOutput
+ * @property {String} markup All elements, classes, styles, attributes and comment combined together with applied visual formatting
+ * (i.e. working links, visual emphasis, etc.) and ready to be displayed.
+ * @property {Boolean} isAlternative If the plugin output depends on its configuration, this value should be set to `true` to mark
+ * outputs that are not produced by the default configuration. If this value is either missing or `false`, the output will be
+ * considered as default output.
  */
 
 /**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -306,10 +306,46 @@ describe( 'Editor', () => {
 			expect( editor.t ).to.equal( editor._context.t );
 		} );
 
-		it( 'should use locale instance with a proper configuration', () => {
+		it( 'should use locale instance with a proper configuration passed as the argument to the constructor', () => {
 			const editor = new TestEditor( {
 				language: 'pl'
 			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should use locale instance with a proper configuration set as the defaultConfig option on the constructor', () => {
+			TestEditor.defaultConfig = {
+				language: 'pl'
+			};
+
+			const editor = new TestEditor();
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should prefer the language passed as the argument to the constructor instead of the defaultConfig if both are set', () => {
+			TestEditor.defaultConfig = {
+				language: 'de'
+			};
+
+			const editor = new TestEditor( {
+				language: 'pl'
+			} );
+
+			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
+			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );
+		} );
+
+		it( 'should prefer the language from the context instead of the constructor config or defaultConfig if all are set', async () => {
+			TestEditor.defaultConfig = {
+				language: 'de'
+			};
+
+			const context = await Context.create( { language: 'pl' } );
+			const editor = new TestEditor( { context, language: 'ru' } );
 
 			expect( editor.locale ).to.have.property( 'uiLanguage', 'pl' );
 			expect( editor.locale ).to.have.property( 'contentLanguage', 'pl' );

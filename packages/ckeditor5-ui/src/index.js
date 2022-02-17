@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -32,7 +32,9 @@ export { default as FormHeaderView } from './formheader/formheaderview';
 export { default as FocusCycler } from './focuscycler';
 
 export { default as IconView } from './icon/iconview';
+export { default as InputView } from './input/inputview';
 export { default as InputTextView } from './inputtext/inputtextview';
+export { default as InputNumberView } from './inputnumber/inputnumberview';
 
 export { default as IframeView } from './iframe/iframeview';
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -775,6 +775,30 @@ describe( 'ContextualBalloon', () => {
 
 			expect( editor.ui.view.body.getIndex( balloon.view ) ).to.not.equal( -1 );
 		} );
+
+		it( 'should destroy the #view', () => {
+			const destroySpy = sinon.spy( balloon.view, 'destroy' );
+
+			balloon.destroy();
+
+			sinon.assert.called( destroySpy );
+		} );
+
+		it( 'should destroy the #_rotatorView', () => {
+			const destroySpy = sinon.spy( balloon._rotatorView, 'destroy' );
+
+			balloon.destroy();
+
+			sinon.assert.called( destroySpy );
+		} );
+
+		it( 'should destroy the #_fakePanelsView', () => {
+			const destroySpy = sinon.spy( balloon._rotatorView, 'destroy' );
+
+			balloon.destroy();
+
+			sinon.assert.called( destroySpy );
+		} );
 	} );
 
 	describe( 'rotator view', () => {
@@ -1081,6 +1105,16 @@ describe( 'ContextualBalloon', () => {
 					expect( rotatorView.buttonPrevView.labelView.element.textContent ).to.equal( 'Poprzedni' );
 					expect( rotatorView.buttonNextView.labelView.element.textContent ).to.equal( 'Następny' );
 				} );
+		} );
+
+		describe( 'destroy()', () => {
+			it( 'should destroy the FocusTracker instance', () => {
+				const destroySpy = sinon.spy( rotatorView.focusTracker, 'destroy' );
+
+				rotatorView.destroy();
+
+				sinon.assert.calledOnce( destroySpy );
+			} );
 		} );
 
 		describe( 'singleViewMode', () => {

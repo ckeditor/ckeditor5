@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListStyleEditing from '../src/liststyleediting';
+import ListPropertiesEditing from '../src/listpropertiesediting';
 
 describe( 'ListStyleCommand', () => {
 	let editor, model, bulletedListCommand, numberedListCommand, listStyleCommand;
@@ -14,7 +14,7 @@ describe( 'ListStyleCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ListStyleEditing ]
+				plugins: [ Paragraph, ListPropertiesEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

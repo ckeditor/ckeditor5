@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -750,239 +750,303 @@ BalloonPanelView._getOptimalPosition = getOptimalPosition;
  *
  * Positioning functions must be compatible with {@link module:utils/dom/position~Position}.
  *
+ * Default positioning functions with customized offsets can be generated using
+ * {@link module:ui/panel/balloon/balloonpanelview~generatePositions}.
+ *
  * The name that the position function returns will be reflected in the balloon panel's class that
  * controls the placement of the "arrow". See {@link #position} to learn more.
  *
  * @member {Object.<String,module:utils/dom/position~positioningFunction>}
  * module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions
  */
-BalloonPanelView.defaultPositions = {
+BalloonPanelView.defaultPositions = generatePositions();
 
-	// ------- North west
+/**
+ * Returns available {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
+ * {@link module:utils/dom/position~positioningFunction positioning functions} adjusted by the specific offsets.
+ *
+ * @protected
+ * @param {Object} [options] Options to generate positions. If not specified, this helper will simply return
+ * {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.defaultPositions}.
+ * @param {Number} [options.horizontalOffset] A custom horizontal offset (in pixels) of each position. If
+ * not specified, {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowHorizontalOffset the default value}
+ * will be used.
+ * @param {Number} [options.verticalOffset] A custom vertical offset (in pixels) of each position. If
+ * not specified, {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset the default value}
+ * will be used.
+ * @param {Number} [options.stickyVerticalOffset] A custom offset (in pixels) of the `viewportStickyNorth` positioning function.
+ * If not specified, {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView.stickyVerticalOffset the default value}
+ * will be used.
+ * @param {Object} [options.config] Additional configuration of the balloon balloon panel view.
+ * Currently only {@link module:ui/panel/balloon/balloonpanelview~BalloonPanelView#withArrow} is supported. Learn more
+ * about {@link module:utils/dom/position~positioningFunction positioning functions}.
+ * @returns {Object.<String,module:utils/dom/position~positioningFunction>}
+ */
+export function generatePositions( {
+	horizontalOffset = BalloonPanelView.arrowHorizontalOffset,
+	verticalOffset = BalloonPanelView.arrowVerticalOffset,
+	stickyVerticalOffset = BalloonPanelView.stickyVerticalOffset,
+	config
+} = {} ) {
+	return {
+		// ------- North west
 
-	northWestArrowSouthWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sw'
-	} ),
+		northWestArrowSouthWest: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left - horizontalOffset,
+			name: 'arrow_sw',
+			...( config && { config } )
+		} ),
 
-	northWestArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_smw'
-	} ),
+		northWestArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left - ( balloonRect.width * .25 ) - horizontalOffset,
+			name: 'arrow_smw',
+			...( config && { config } )
+		} ),
 
-	northWestArrowSouth: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left - balloonRect.width / 2,
-		name: 'arrow_s'
-	} ),
+		northWestArrowSouth: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left - balloonRect.width / 2,
+			name: 'arrow_s',
+			...( config && { config } )
+		} ),
 
-	northWestArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sme'
-	} ),
+		northWestArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left - ( balloonRect.width * .75 ) + horizontalOffset,
+			name: 'arrow_sme',
+			...( config && { config } )
+		} ),
 
-	northWestArrowSouthEast: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_se'
-	} ),
+		northWestArrowSouthEast: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left - balloonRect.width + horizontalOffset,
+			name: 'arrow_se',
+			...( config && { config } )
+		} ),
 
-	// ------- North
+		// ------- North
 
-	northArrowSouthWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sw'
-	} ),
+		northArrowSouthWest: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - horizontalOffset,
+			name: 'arrow_sw',
+			...( config && { config } )
+		} ),
 
-	northArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_smw'
-	} ),
+		northArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .25 ) - horizontalOffset,
+			name: 'arrow_smw',
+			...( config && { config } )
+		} ),
 
-	northArrowSouth: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'arrow_s'
-	} ),
-
-	northArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sme'
-	} ),
-
-	northArrowSouthEast: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_se'
-	} ),
-
-	// ------- North east
-
-	northEastArrowSouthWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sw'
-	} ),
-
-	northEastArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_smw'
-	} ),
-
-	northEastArrowSouth: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - balloonRect.width / 2,
-		name: 'arrow_s'
-	} ),
-
-	northEastArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_sme'
-	} ),
-
-	northEastArrowSouthEast: ( targetRect, balloonRect ) => ( {
-		top: getNorthTop( targetRect, balloonRect ),
-		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_se'
-	} ),
-
-	// ------- South west
-
-	southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nw'
-	} ),
-
-	southWestArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nmw'
-	} ),
-
-	southWestArrowNorth: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left - balloonRect.width / 2,
-		name: 'arrow_n'
-	} ),
-
-	southWestArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nme'
-	} ),
-
-	southWestArrowNorthEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_ne'
-	} ),
-
-	// ------- South
-
-	southArrowNorthWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nw'
-	} ),
-	southArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.25 ) - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nmw'
-	} ),
-
-	southArrowNorth: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-		name: 'arrow_n'
-	} ),
-
-	southArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.75 ) + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nme'
-	} ),
-
-	southArrowNorthEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.left + targetRect.width / 2 - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_ne'
-	} ),
-
-	// ------- South east
-
-	southEastArrowNorthWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.right - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nw'
-	} ),
-
-	southEastArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.right - ( balloonRect.width * .25 ) - BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nmw'
-	} ),
-
-	southEastArrowNorth: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.right - balloonRect.width / 2,
-		name: 'arrow_n'
-	} ),
-
-	southEastArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.right - ( balloonRect.width * .75 ) + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_nme'
-	} ),
-
-	southEastArrowNorthEast: ( targetRect, balloonRect ) => ( {
-		top: getSouthTop( targetRect, balloonRect ),
-		left: targetRect.right - balloonRect.width + BalloonPanelView.arrowHorizontalOffset,
-		name: 'arrow_ne'
-	} ),
-
-	// ------- Sticky
-
-	viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
-		if ( !targetRect.getIntersection( viewportRect ) ) {
-			return null;
-		}
-
-		return {
-			top: viewportRect.top + BalloonPanelView.stickyVerticalOffset,
+		northArrowSouth: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
 			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
-			name: 'arrowless',
-			config: {
-				withArrow: false
+			name: 'arrow_s',
+			...( config && { config } )
+		} ),
+
+		northArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * .75 ) + horizontalOffset,
+			name: 'arrow_sme',
+			...( config && { config } )
+		} ),
+
+		northArrowSouthEast: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width + horizontalOffset,
+			name: 'arrow_se',
+			...( config && { config } )
+		} ),
+
+		// ------- North east
+
+		northEastArrowSouthWest: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.right - horizontalOffset,
+			name: 'arrow_sw',
+			...( config && { config } )
+		} ),
+
+		northEastArrowSouthMiddleWest: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.right - ( balloonRect.width * .25 ) - horizontalOffset,
+			name: 'arrow_smw',
+			...( config && { config } )
+		} ),
+
+		northEastArrowSouth: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.right - balloonRect.width / 2,
+			name: 'arrow_s',
+			...( config && { config } )
+		} ),
+
+		northEastArrowSouthMiddleEast: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.right - ( balloonRect.width * .75 ) + horizontalOffset,
+			name: 'arrow_sme',
+			...( config && { config } )
+		} ),
+
+		northEastArrowSouthEast: ( targetRect, balloonRect ) => ( {
+			top: getNorthTop( targetRect, balloonRect ),
+			left: targetRect.right - balloonRect.width + horizontalOffset,
+			name: 'arrow_se',
+			...( config && { config } )
+		} ),
+
+		// ------- South west
+
+		southWestArrowNorthWest: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left - horizontalOffset,
+			name: 'arrow_nw',
+			...( config && { config } )
+		} ),
+
+		southWestArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left - ( balloonRect.width * .25 ) - horizontalOffset,
+			name: 'arrow_nmw',
+			...( config && { config } )
+		} ),
+
+		southWestArrowNorth: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left - balloonRect.width / 2,
+			name: 'arrow_n',
+			...( config && { config } )
+		} ),
+
+		southWestArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left - ( balloonRect.width * .75 ) + horizontalOffset,
+			name: 'arrow_nme',
+			...( config && { config } )
+		} ),
+
+		southWestArrowNorthEast: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left - balloonRect.width + horizontalOffset,
+			name: 'arrow_ne',
+			...( config && { config } )
+		} ),
+
+		// ------- South
+
+		southArrowNorthWest: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - horizontalOffset,
+			name: 'arrow_nw',
+			...( config && { config } )
+		} ),
+
+		southArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.25 ) - horizontalOffset,
+			name: 'arrow_nmw',
+			...( config && { config } )
+		} ),
+
+		southArrowNorth: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+			name: 'arrow_n',
+			...( config && { config } )
+		} ),
+
+		southArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - ( balloonRect.width * 0.75 ) + horizontalOffset,
+			name: 'arrow_nme',
+			...( config && { config } )
+		} ),
+
+		southArrowNorthEast: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.left + targetRect.width / 2 - balloonRect.width + horizontalOffset,
+			name: 'arrow_ne',
+			...( config && { config } )
+		} ),
+
+		// ------- South east
+
+		southEastArrowNorthWest: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.right - horizontalOffset,
+			name: 'arrow_nw',
+			...( config && { config } )
+		} ),
+
+		southEastArrowNorthMiddleWest: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.right - ( balloonRect.width * .25 ) - horizontalOffset,
+			name: 'arrow_nmw',
+			...( config && { config } )
+		} ),
+
+		southEastArrowNorth: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.right - balloonRect.width / 2,
+			name: 'arrow_n',
+			...( config && { config } )
+		} ),
+
+		southEastArrowNorthMiddleEast: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.right - ( balloonRect.width * .75 ) + horizontalOffset,
+			name: 'arrow_nme',
+			...( config && { config } )
+		} ),
+
+		southEastArrowNorthEast: ( targetRect, balloonRect ) => ( {
+			top: getSouthTop( targetRect, balloonRect ),
+			left: targetRect.right - balloonRect.width + horizontalOffset,
+			name: 'arrow_ne',
+			...( config && { config } )
+		} ),
+
+		// ------- Sticky
+
+		viewportStickyNorth: ( targetRect, balloonRect, viewportRect ) => {
+			if ( !targetRect.getIntersection( viewportRect ) ) {
+				return null;
 			}
-		};
+
+			return {
+				top: viewportRect.top + stickyVerticalOffset,
+				left: targetRect.left + targetRect.width / 2 - balloonRect.width / 2,
+				name: 'arrowless',
+				config: {
+					withArrow: false,
+					...config
+				}
+			};
+		}
+	};
+
+	// Returns the top coordinate for positions starting with `north*`.
+	//
+	// @private
+	// @param {utils/dom/rect~Rect} targetRect A rect of the target.
+	// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
+	// @returns {Number}
+	function getNorthTop( targetRect, balloonRect ) {
+		return targetRect.top - balloonRect.height - verticalOffset;
 	}
-};
 
-// Returns the top coordinate for positions starting with `north*`.
-//
-// @private
-// @param {utils/dom/rect~Rect} targetRect A rect of the target.
-// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
-// @returns {Number}
-function getNorthTop( targetRect, balloonRect ) {
-	return targetRect.top - balloonRect.height - BalloonPanelView.arrowVerticalOffset;
-}
-
-// Returns the top coordinate for positions starting with `south*`.
-//
-// @private
-// @param {utils/dom/rect~Rect} targetRect A rect of the target.
-// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
-// @returns {Number}
-function getSouthTop( targetRect ) {
-	return targetRect.bottom + BalloonPanelView.arrowVerticalOffset;
+	// Returns the top coordinate for positions starting with `south*`.
+	//
+	// @private
+	// @param {utils/dom/rect~Rect} targetRect A rect of the target.
+	// @param {utils/dom/rect~Rect} elementRect A rect of the balloon.
+	// @returns {Number}
+	function getSouthTop( targetRect ) {
+		return targetRect.bottom + verticalOffset;
+	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -225,9 +225,30 @@ describe( 'Image converters', () => {
 			expectModel( '' );
 		} );
 
-		it( 'should not left unconverted figure media element', () => {
+		it( 'should not consume if the img element was not converted', () => {
+			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'high' } );
+
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.true;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
+
+		it( 'should not left unconsumed figure media element', () => {
 			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
+
+		it( 'should consume the figure element before the img conversion starts', () => {
+			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'image' } ) ).to.be.false;
 			}, { priority: 'low' } );
 
 			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );

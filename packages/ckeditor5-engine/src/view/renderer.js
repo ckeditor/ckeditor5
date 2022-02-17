@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,6 +20,7 @@ import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 import env from '@ckeditor/ckeditor5-utils/src/env';
@@ -555,25 +556,14 @@ export default class Renderer {
 
 		// Add or overwrite attributes.
 		for ( const key of viewAttrKeys ) {
-			const value = viewElement.getAttribute( key );
-
-			if ( !this.domConverter.shouldRenderAttribute( key, value ) ) {
-				domElement.removeAttribute( key );
-			} else {
-				domElement.setAttribute( key, value );
-			}
+			this.domConverter.setDomElementAttribute( domElement, key, viewElement.getAttribute( key ), viewElement );
 		}
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
-			// Do not remove attributes on `script` elements with special data attributes `data-ck-hidden`.
-			if ( viewElement.name === 'script' && key === 'data-ck-hidden' ) {
-				continue;
-			}
-
 			// All other attributes not present in the DOM should be removed.
 			if ( !viewElement.hasAttribute( key ) ) {
-				domElement.removeAttribute( key );
+				this.domConverter.removeDomElementAttribute( domElement, key );
 			}
 		}
 	}
@@ -1000,7 +990,7 @@ function addInlineFiller( domDocument, domParentOrArray, offset ) {
 function areSimilar( node1, node2 ) {
 	return isNode( node1 ) && isNode( node2 ) &&
 		!isText( node1 ) && !isText( node2 ) &&
-		node1.nodeType !== Node.COMMENT_NODE && node2.nodeType !== Node.COMMENT_NODE &&
+		!isComment( node1 ) && !isComment( node2 ) &&
 		node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
 }
 

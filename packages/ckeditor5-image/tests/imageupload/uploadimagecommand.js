@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -55,7 +55,7 @@ describe( 'UploadImageCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when the selection directly in the root', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.enqueueChange( { isUndoable: false }, () => {
 				setModelData( model, '[]' );
 
 				command.refresh();
@@ -223,10 +223,6 @@ describe( 'UploadImageCommand', () => {
 		it( 'should set document selection attributes on an image to maintain attribute continuity in downcast (e.g. links)', () => {
 			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
 
-			editor.model.schema.extend( 'imageInline', {
-				allowAttributes: [ 'foo', 'bar' ]
-			} );
-
 			const file = createNativeFileMock();
 			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
 
@@ -237,7 +233,7 @@ describe( 'UploadImageCommand', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
-					`[<imageInline bar="b" foo="a" uploadId="${ id }"></imageInline>]` +
+					`[<imageInline bar="b" baz="c" foo="a" uploadId="${ id }"></imageInline>]` +
 					'<$text bar="b" baz="c" foo="a">o</$text>' +
 				'</paragraph>'
 			);
@@ -245,10 +241,6 @@ describe( 'UploadImageCommand', () => {
 
 		it( 'should set document selection attributes on multiple images to maintain attribute continuity in downcast (e.g. links)', () => {
 			editor.model.schema.extend( '$text', { allowAttributes: [ 'foo', 'bar', 'baz' ] } );
-
-			editor.model.schema.extend( 'imageInline', {
-				allowAttributes: [ 'foo', 'bar' ]
-			} );
 
 			const file = [ createNativeFileMock(), createNativeFileMock(), createNativeFileMock() ];
 			setModelData( model, '<paragraph><$text bar="b" baz="c" foo="a">f[o]o</$text></paragraph>' );
@@ -262,9 +254,9 @@ describe( 'UploadImageCommand', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>' +
 					'<$text bar="b" baz="c" foo="a">f</$text>' +
-					`<imageInline bar="b" foo="a" uploadId="${ idA }"></imageInline>` +
-					`<imageInline bar="b" foo="a" uploadId="${ idB }"></imageInline>` +
-					`[<imageInline bar="b" foo="a" uploadId="${ idC }"></imageInline>]` +
+					`<imageInline bar="b" baz="c" foo="a" uploadId="${ idA }"></imageInline>` +
+					`<imageInline bar="b" baz="c" foo="a" uploadId="${ idB }"></imageInline>` +
+					`[<imageInline bar="b" baz="c" foo="a" uploadId="${ idC }"></imageInline>]` +
 					'<$text bar="b" baz="c" foo="a">o</$text>' +
 				'</paragraph>'
 			);

@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /* global window, document, Event */
 
 import ViewCollection from '../../../src/viewcollection';
-import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
+import BalloonPanelView, { generatePositions } from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { Rect } from '@ckeditor/ckeditor5-utils';
@@ -1087,6 +1087,128 @@ describe( 'BalloonPanelView', () => {
 			} );
 
 			expect( positions.viewportStickyNorth( targetRect, balloonRect, viewportRect ) ).to.equal( null );
+		} );
+	} );
+
+	describe( 'generatePositions()', () => {
+		let defaultPositions, balloonRect, targetRect, viewportRect;
+
+		beforeEach( () => {
+			defaultPositions = BalloonPanelView.defaultPositions;
+
+			viewportRect = new Rect( {
+				top: 300,
+				bottom: 800,
+				left: 0,
+				right: 200,
+				width: 0,
+				height: 0
+			} );
+
+			targetRect = new Rect( {
+				top: 200,
+				bottom: 400,
+				left: 50,
+				right: 100,
+				width: 0,
+				height: 0
+			} );
+
+			balloonRect = new Rect( {
+				top: 0,
+				bottom: 0,
+				left: 0,
+				right: 0,
+				width: 50,
+				height: 50
+			} );
+		} );
+
+		it( 'should generate the same set of positions as BalloonPanelView#defaultPositions when no options specified', () => {
+			const generatedPositions = generatePositions();
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "horizontalOffset" option', () => {
+			const generatedPositions = generatePositions( {
+				horizontalOffset: BalloonPanelView.arrowHorizontalOffset + 100
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				if ( name.match( /Arrow(South|North)(.+)?East/ ) ) {
+					generatedResult.left -= 100;
+				} else if ( name.match( /Arrow(South|North)(.+)?West/ ) ) {
+					generatedResult.left += 100;
+				}
+
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "verticalOffset" option', () => {
+			const generatedPositions = generatePositions( {
+				verticalOffset: BalloonPanelView.arrowVerticalOffset + 100
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				if ( name.match( /^south/ ) ) {
+					generatedResult.top -= 100;
+				} else if ( name.match( /^north/ ) ) {
+					generatedResult.top += 100;
+				}
+
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "stickyVerticalOffset" option', () => {
+			const generatedPositions = generatePositions( {
+				stickyVerticalOffset: BalloonPanelView.stickyVerticalOffset + 100
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				if ( name.match( /sticky/i ) ) {
+					generatedResult.top -= 100;
+				}
+
+				const defaultResult = defaultPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult ).to.deep.equal( defaultResult, name );
+			}
+		} );
+
+		it( 'should respect the "config" option', () => {
+			const generatedPositions = generatePositions( {
+				config: {
+					foo: 'bar',
+					withArrow: true
+				}
+			} );
+
+			for ( const name in generatedPositions ) {
+				const generatedResult = generatedPositions[ name ]( targetRect, balloonRect, viewportRect );
+
+				expect( generatedResult.config ).to.deep.equal( {
+					foo: 'bar',
+					withArrow: true
+				}, name );
+			}
 		} );
 	} );
 } );

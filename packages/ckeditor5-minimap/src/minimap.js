@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,8 +11,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import { global } from 'ckeditor5/src/utils';
 import MinimapView from './minimapview';
 import {
-	// @if CK_DEBUG_MINIMAP // RectDrawer,
-
 	cloneEditingViewDomRoot,
 	getClientHeight,
 	getDomElementRect,
@@ -20,6 +18,8 @@ import {
 	getScrollable,
 	findClosestScrollableAncestor
 } from './utils';
+
+// @if CK_DEBUG_MINIMAP // import RectDrawer from '@ckeditor/ckeditor5-utils/tests/_utils/rectdrawer';
 
 import '../theme/minimap.css';
 

@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 /**
  * @module link/utils
  */
+
+/* global window */
 
 import { upperFirst } from 'lodash-es';
 
@@ -170,4 +172,13 @@ export function addLinkProtocolIfApplicable( link, defaultProtocol ) {
 	const isProtocolNeeded = !!protocol && !PROTOCOL_REG_EXP.test( link );
 
 	return link && isProtocolNeeded ? protocol + link : link;
+}
+
+/**
+ * Opens the link in a new browser tab.
+ *
+ * @param {String} link
+ */
+export function openLink( link ) {
+	window.open( link, '_blank', 'noopener' );
 }

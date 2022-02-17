@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+:root {
+	--ck-collapsible-arrow-size: calc(0.5 * var(--ck-icon-size));
+}
+
+.ck.ck-collapsible {
+	& > .ck.ck-button {
+		width: 100%;
+		font-weight: bold;
+		padding: var(--ck-spacing-medium) var(--ck-spacing-large);
+		border-radius: 0;
+
+		&:focus {
+			background: transparent;
+		}
+
+		&:active, &:not(:focus), &:hover:not(:focus) {
+			background: transparent;
+			border-color: transparent;
+			box-shadow: none;
+		}
+
+		& > .ck-icon {
+			margin-right: var(--ck-spacing-medium);
+			width: var(--ck-collapsible-arrow-size);
+		}
+	}
+
+	& > .ck-collapsible__children {
+		padding: 0 var(--ck-spacing-large) var(--ck-spacing-large);
+	}
+
+	&.ck-collapsible_collapsed {
+		& > .ck.ck-button .ck-icon {
+			transform: rotate(-90deg);
+		}
+	}
+}
