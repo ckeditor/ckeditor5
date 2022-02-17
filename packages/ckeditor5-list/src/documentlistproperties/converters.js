@@ -32,10 +32,7 @@ export function listPropertiesUpcastConverter( strategy ) {
 		}
 
 		if ( !data.modelRange ) {
-			const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
-
-			data.modelRange = modelRange;
-			data.modelCursor = modelCursor;
+			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
 		let applied = false;

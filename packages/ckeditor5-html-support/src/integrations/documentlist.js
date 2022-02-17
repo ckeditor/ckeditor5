@@ -41,30 +41,17 @@ export default class DocumentListElementSupport extends Plugin {
 
 		dataFilter.on( 'register:li', registerFilter( {
 			attributeName: 'htmlLiAttributes',
-			viewElementName: 'li',
-
-			appliesToListItem() {
-				return true;
-			}
-
+			viewElementNames: [ 'li' ]
 		}, this.editor ) );
 
 		dataFilter.on( 'register:ul', registerFilter( {
-			attributeName: 'htmlUlAttributes',
-			viewElementName: 'ul',
-
-			appliesToListItem( item ) {
-				return item.getAttribute( 'listType' ) != 'numbered';
-			}
+			attributeName: 'htmlListAttributes',
+			viewElementNames: [ 'ul', 'ol' ]
 		}, this.editor ) );
 
 		dataFilter.on( 'register:ol', registerFilter( {
-			attributeName: 'htmlOlAttributes',
-			viewElementName: 'ol',
-
-			appliesToListItem( item ) {
-				return item.getAttribute( 'listType' ) == 'numbered';
-			}
+			attributeName: 'htmlListAttributes',
+			viewElementNames: [ 'ul', 'ol' ]
 		}, this.editor ) );
 	}
 }
@@ -79,6 +66,8 @@ function registerFilter( strategy, editor ) {
 
 	return evt => {
 		if ( schema.checkAttribute( '$block', attributeName ) ) {
+			evt.stop();
+
 			return;
 		}
 
@@ -105,25 +94,25 @@ function registerFilter( strategy, editor ) {
 // @param {module:html-support/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
 function viewToModelListAttributeConverter( strategy, dataFilter ) {
-	const { attributeName, viewElementName } = strategy;
+	const { attributeName, viewElementNames } = strategy;
 
 	return dispatcher => {
-		dispatcher.on( `element:${ viewElementName }`, ( evt, data, conversionApi ) => {
+		dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 			const viewElement = data.viewItem;
-			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
 
-			if ( !viewAttributes ) {
+			if ( !viewElement.is( 'element' ) || !viewElementNames.includes( viewElement.name ) ) {
 				return;
 			}
+
+			if ( !data.modelRange ) {
+				return;
+			}
+
+			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
 
 			for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
 				// Apply only to list item blocks.
 				if ( !item.hasAttribute( 'listItemId' ) ) {
-					continue;
-				}
-
-				// Apply only for the related list type.
-				if ( !strategy.appliesToListItem( item ) ) {
 					continue;
 				}
 
@@ -210,8 +199,8 @@ function wrapListItemBlock( listItem, viewRange, strategy, writer ) {
 	let currentListItem = listItem;
 
 	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-		if ( htmlAttributes && strategy.appliesToListItem( currentListItem ) ) {
-			const listViewElement = strategy.viewElementName == 'li' ?
+		if ( htmlAttributes ) {
+			const listViewElement = strategy.viewElementNames.includes( 'li' ) ?
 				createListItemElement( writer, indent, listItemId ) :
 				createListElement( writer, indent, listType );
 

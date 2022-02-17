@@ -37,10 +37,13 @@ import {
 	isListItemBlock,
 	LIST_BASE_ATTRIBUTES
 } from './utils/model';
+import {
+	getViewElementIdForListType,
+	getViewElementNameForListType
+} from './utils/view';
 import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
 
 import '../../theme/documentlist.css';
-import { getViewElementNameForListType } from './utils/view';
 
 /**
  * The editing part of the document-list feature. It handles creating, editing and removing lists and list items.
@@ -352,7 +355,10 @@ export default class DocumentListEditing extends Plugin {
 
 		// For UL and OL check if the name and ID of element is correct.
 		this.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
-			if ( viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ) {
+			if (
+				viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ||
+				viewElement.id != getViewElementIdForListType( modelAttributes.listType, modelAttributes.listIndent )
+			) {
 				evt.return = true;
 				evt.stop();
 			}

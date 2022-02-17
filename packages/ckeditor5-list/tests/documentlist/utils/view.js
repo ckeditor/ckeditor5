@@ -7,6 +7,7 @@ import {
 	createListElement,
 	createListItemElement,
 	getIndent,
+	getViewElementIdForListType,
 	getViewElementNameForListType,
 	isListItemView,
 	isListView
@@ -300,6 +301,17 @@ describe( 'DocumentList - utils - view', () => {
 			expect( getViewElementNameForListType( 'foo' ) ).to.equal( 'ul' );
 			expect( getViewElementNameForListType( 'bar' ) ).to.equal( 'ul' );
 			expect( getViewElementNameForListType( 'sth' ) ).to.equal( 'ul' );
+		} );
+	} );
+
+	describe( 'getViewElementIdForListType()', () => {
+		it( 'should generate view element ID for the given list type and indent', () => {
+			expect( getViewElementIdForListType( 'bulleted', 0 ) ).to.equal( 'list-bulleted-0' );
+			expect( getViewElementIdForListType( 'bulleted', 1 ) ).to.equal( 'list-bulleted-1' );
+			expect( getViewElementIdForListType( 'bulleted', 2 ) ).to.equal( 'list-bulleted-2' );
+			expect( getViewElementIdForListType( 'numbered', 0 ) ).to.equal( 'list-numbered-0' );
+			expect( getViewElementIdForListType( 'numbered', 1 ) ).to.equal( 'list-numbered-1' );
+			expect( getViewElementIdForListType( 'numbered', 2 ) ).to.equal( 'list-numbered-2' );
 		} );
 	} );
 } );

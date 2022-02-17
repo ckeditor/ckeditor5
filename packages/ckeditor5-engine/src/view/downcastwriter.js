@@ -2189,5 +2189,9 @@ function validateRangeContainer( range, errorContext ) {
 // @param {module:engine/view/element~Element} b
 // @returns {Boolean}
 function canBeJoined( a, b ) {
-	return a.id === null && b.id === null;
+	if ( a.id === null && b.id === null ) {
+		return true;
+	}
+
+	return a.id === b.id;
 }
