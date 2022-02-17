@@ -12,7 +12,7 @@ import DocumentListPropertiesEditing from './documentlistproperties/documentlist
 import ListPropertiesUI from './listproperties/listpropertiesui';
 
 /**
- * The document-list properties feature.
+ * The document list properties feature.
  *
  * This is a "glue" plugin that loads the
  * {@link module:list/documentlistproperties/documentlistpropertiesediting~DocumentListPropertiesEditing document list properties

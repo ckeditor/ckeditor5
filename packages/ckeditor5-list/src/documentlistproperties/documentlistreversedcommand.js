@@ -17,7 +17,7 @@ import {
 } from '../documentlist/utils/model';
 
 /**
- * The list start index command. It changes the `listReversed` attribute of the selected list items,
+ * The list reversed command. It changes the `listReversed` attribute of the selected list items,
  * letting the user to choose the order of an ordered list.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
@@ -76,7 +76,7 @@ export default class DocumentListReversedCommand extends Command {
 
 		const block = first( document.selection.getSelectedBlocks() );
 
-		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
+		if ( isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
 			return block.getAttribute( 'listReversed' );
 		}
 

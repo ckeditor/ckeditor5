@@ -13,8 +13,8 @@ import { createListElement, isListView } from '../documentlist/utils/view';
 import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
 
 /**
- * Returns a converter consumes the `style`, `reversed` and `start` attribute.
- * In `style` it searches for the `list-style-type` definition.
+ * Returns a converter that consumes the `style`, `reversed`, and `start` attributes.
+ * In `style`, it searches for the `list-style-type` definition.
  * If not found, the `"default"` value will be used.
  *
  * @protected

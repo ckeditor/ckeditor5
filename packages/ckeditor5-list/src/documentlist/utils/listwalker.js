@@ -21,7 +21,7 @@ export default class ListWalker {
 	 * @param {Object} options
 	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
-	 * @param {Array.<String>} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
+	 * @param {Array.<String>|String} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
@@ -102,7 +102,7 @@ export default class ListWalker {
 	 * @param {Object} options
 	 * @param {'forward'|'backward'} [options.direction='backward'] The iterating direction.
 	 * @param {Boolean} [options.includeSelf=false] Whether start block should be included in the result (if it's matching other criteria).
-	 * @param {Array.<String>} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
+	 * @param {Array.<String>|String} [options.sameListAttributes=[]] Additional attributes that must be the same for each block.
 	 * @param {Boolean} [options.sameIndent=false] Whether blocks with the same indent level as the start block should be included
 	 * in the result.
 	 * @param {Boolean} [options.lowerIndent=false] Whether blocks with a lower indent level than the start block should be included
