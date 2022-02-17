@@ -179,6 +179,60 @@ If you do not want the CKEditor component to be enabled globally, you can skip t
 </script>
 ```
 
+## Integrating a build from the online builder
+
+This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+The directory with the editor's build cannot be placed inside the `src/` directory because Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+
+```
+├── ckeditor5
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
+├── node_modules
+├── public
+├── src
+├── ...
+└── package.json
+```
+
+Then, add the package located in the `ckeditor5` directory as a dependency of your project:
+
+```
+yarn add file:./ckeditor5
+```
+
+Now, import the build in your application:
+
+```html
+<template>
+    <div id="app">
+        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+    </div>
+</template>
+
+<script>
+    import Editor from 'ckeditor5-custom-build/build/ckeditor';
+
+    export default {
+        name: 'app',
+        data() {
+            return {
+                editor: Editor,
+                editorData: '<p>Content of the editor.</p>',
+                editorConfig: {
+                    // The configuration of the editor.
+                }
+            };
+        }
+    }
+</script>
+```
+
 ## Using CKEditor from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.

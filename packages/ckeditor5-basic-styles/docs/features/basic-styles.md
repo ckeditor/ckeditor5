@@ -81,6 +81,10 @@ CKEditor 5 allows for typing both at inner and outer boundaries of code to make 
 
 ## Installation
 
+<info-box info>
+	Selected styles are enabled in certain predefined builds, as enumerated at the beginning of this guide. These installation instructions are for developers interested in building their own, custom editor.
+</info-box>
+
 To add the basic styles features to your editor install the [`@ckeditor/ckeditor5-basic-styles`](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles) package:
 
 ```
