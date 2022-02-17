@@ -4,11 +4,15 @@
  */
 
 import MultiCommand from '../src/multicommand';
-import ModelTestEditor from './_utils/modeltesteditor';
 import Command from '../src/command';
+
+import ModelTestEditor from './_utils/modeltesteditor';
+import testUtils from './_utils/utils';
 
 describe( 'MultiCommand', () => {
 	let editor, multiCommand;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor

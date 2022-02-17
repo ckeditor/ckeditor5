@@ -5,8 +5,12 @@
 
 import insertToPriorityArray from '../src/inserttopriorityarray';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
 describe( 'insertToPriorityArray()', () => {
 	let objectsWithPriority;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		objectsWithPriority = [];
