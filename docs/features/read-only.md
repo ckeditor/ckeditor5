@@ -7,7 +7,7 @@ modified_at: 2021-11-15
 
 {@snippet features/read-only-build}
 
-The editor can be set into a read-only mode by changing the value of the {@link module:core/editor/editor~Editor#isReadOnly `Editor#isReadOnly`} property.
+CKEditor 5 offers an out of the box read-only mode. The feature does not require any additional plugin and the editor can be set into a read-only mode simply by changing the value of the {@link module:core/editor/editor~Editor#isReadOnly `Editor#isReadOnly`} property.
 
 The read-only mode may have several applications. It may be used to impose user-based access restriction, where a selected user or a group of users is only allowed to access the content for evaluation purposes but not change it.
 
