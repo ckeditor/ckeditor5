@@ -78,6 +78,10 @@ Click the second list and use the ordered list dropdown switch to choose whether
 
 {@snippet features/lists-reversed}
 
+<info-box info>
+	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Full-featured editor} and {@link examples/builds/document-editor Document editor} examples.
+</info-box>
+
 ## List indentation
 
 Refer to the {@link features/indent#indenting-lists Indenting lists} section of the Block indentation feature guide.
