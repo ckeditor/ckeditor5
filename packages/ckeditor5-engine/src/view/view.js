@@ -55,6 +55,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+ * * {@link module:engine/view/observer/arrowkeysobserver~ArrowKeysObserver}.
  * * {@link module:engine/view/observer/tabobserver~TabObserver}.
  *
  * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
