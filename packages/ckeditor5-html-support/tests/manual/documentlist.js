@@ -29,12 +29,12 @@ class ExtendHTMLSupport extends Plugin {
 		const dataFilter = this.editor.plugins.get( 'DataFilter' );
 
 		dataFilter.allowElement( /^p$/ );
-		dataFilter.allowAttributes( { name: /^p$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^p$/, attributes: true, styles: true } );
 
 		dataFilter.allowElement( /^(ul|ol)$/ );
-		dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: true, styles: true } );
 		dataFilter.allowElement( /^(li)$/ );
-		dataFilter.allowAttributes( { name: /^(li)$/, attributes: true } );
+		dataFilter.allowAttributes( { name: /^(li)$/, attributes: true, styles: true } );
 	}
 }
 
@@ -50,7 +50,19 @@ ClassicEditor
 			Strikethrough,
 			SourceEditing
 		],
-		toolbar: [ 'sourceEditing', '|', 'bold', 'italic', 'strikethrough' ]
+		toolbar: [
+			'sourceEditing', '|',
+			'numberedList', 'bulletedList', '|',
+			'outdent', 'indent', '|',
+			'bold', 'italic', 'strikethrough'
+		],
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

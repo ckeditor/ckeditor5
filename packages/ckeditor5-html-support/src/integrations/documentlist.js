@@ -105,7 +105,7 @@ function viewToModelListAttributeConverter( strategy, dataFilter ) {
 			}
 
 			if ( !data.modelRange ) {
-				return;
+				Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 			}
 
 			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
@@ -135,29 +135,29 @@ function viewToModelListAttributeConverter( strategy, dataFilter ) {
 // @param {String} attributeName
 // @returns {Function} Returns a conversion callback.
 function modelToViewListAttributeConverter( strategy, model ) {
-	const { attributeName } = strategy;
-
 	return dispatcher => {
-		dispatcher.on( `attribute:${ attributeName }`, ( evt, data, conversionApi ) => {
-			const { writer, mapper, consumable } = conversionApi;
-			const listItem = data.item;
+		for ( const attributeName of [ ...LIST_BASE_ATTRIBUTES, strategy.attributeName ] ) {
+			dispatcher.on( `attribute:${ attributeName }`, ( evt, data, conversionApi ) => {
+				const { writer, mapper, consumable } = conversionApi;
+				const listItem = data.item;
 
-			// Check and consume only the list properties attributes (the base list attributes are already consumed
-			// but should also trigger conversion of list properties).
-			if ( !LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) && !consumable.consume( listItem, evt.name ) ) {
-				return;
-			}
+				// Check and consume only the list properties attributes (the base list attributes are already consumed
+				// but should also trigger conversion of list properties).
+				if ( !LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) && !consumable.consume( listItem, evt.name ) ) {
+					return;
+				}
 
-			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-			const viewElement = findMappedViewElement( listItem, mapper, model );
+				// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+				// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+				const viewElement = findMappedViewElement( listItem, mapper, model );
 
-			// Unwrap element from current list wrappers.
-			// unwrapListItemBlock( viewElement, strategy, writer );
+				// Unwrap element from current list wrappers.
+				// unwrapListItemBlock( viewElement, strategy, writer );
 
-			// Then wrap them with the new list wrappers.
-			wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
-		} );
+				// Then wrap them with the new list wrappers.
+				wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
+			} );
+		}
 	};
 }
 
