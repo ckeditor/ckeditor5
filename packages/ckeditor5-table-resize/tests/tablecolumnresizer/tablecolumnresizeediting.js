@@ -6,6 +6,7 @@
 /* global document */
 
 import TableColumnResizeEditing from '../../src/tablecolumnresize/tablecolumnresizeediting';
+import TableColumnResize from '../../src/tablecolumnresize';
 
 // ClassicTestEditor can't be used, as it doesn't handle the focus, which is needed to test resizer visual cues.
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
@@ -1388,7 +1389,7 @@ describe( 'TableColumnResizeEditing', () => {
 
 	async function createEditor( configCustomization ) {
 		const newEditor = await ClassicEditor.create( editorElement, Object.assign( {}, {
-			plugins: [ Table, TableColumnResizeEditing, Paragraph, WidgetResize ]
+			plugins: [ Table, TableColumnResize, TableColumnResizeEditing, Paragraph, WidgetResize ]
 		}, configCustomization ) );
 
 		await focusEditor( newEditor );
