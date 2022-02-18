@@ -14,7 +14,7 @@ Lists are useful when you want to emphasize selected information, highlight a se
 You may find additional interesting details and examples in the [Lists in CKEditor 5](https://ckeditor.com/blog/Feature-of-the-month-Lists-in-CKEditor-5/) blog post after reading this guide.
 
 <info-box info>
-	The base list feature is enabled by default in all predefined CKEditor 5 WYSIWYG editor builds.
+	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
 </info-box>
 
 {@snippet features/lists-source}
@@ -77,6 +77,10 @@ When this feature is {@link module:list/listproperties~ListPropertiesConfig#reve
 Click the second list and use the ordered list dropdown switch to choose whether it should be reversed.
 
 {@snippet features/lists-reversed}
+
+<info-box info>
+	You can see all the list properties together in action in the {@link examples/builds/full-featured-editor Full-featured editor} and {@link examples/builds/document-editor Document editor} examples.
+</info-box>
 
 ## List indentation
 

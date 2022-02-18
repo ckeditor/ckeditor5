@@ -167,6 +167,13 @@ ClassicEditor
 		htmlEmbed: {
 			showPreviews: true,
 			sanitizeHtml: html => ( { html, hasChange: false } )
+		},
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
 		}
 	} )
 	.then( editor => {

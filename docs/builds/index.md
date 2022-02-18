@@ -9,7 +9,7 @@ meta-description: Learn how to install, integrate, configure and develop CKEdito
 
 # Installing CKEditor 5
 
-Learn how to install CKEditor 5 from scratch or using predefined builds. Integrate CKEditor 5 with your software, keep it updated and find out how you can help developing it.
+Learn how to install CKEditor 5 from scratch or using predefined builds. Integrate CKEditor 5 with your software, keep it updated and find out how you can help develop it.
 
 <info-box>
 	Use the <span class="navigation-hint_desktop">**navigation tree on the left**</span><span class="navigation-hint_mobile">**main menu button in the upper-left corner**</span> to navigate through the documentation. Newly added or meaningfully updated guides are marked with a <span class="tree__item__badge tree__item__badge_new">NEW</span> icon for easy spotting.
