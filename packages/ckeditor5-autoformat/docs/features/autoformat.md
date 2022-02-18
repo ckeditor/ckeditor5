@@ -12,7 +12,7 @@ Coupled with the {@link features/markdown Markdown output} feature, the autoform
 If needed, the automattic change can be reverted simply by pressing <kbd>Backspace</kbd>.
 
 <info-box info>
-	This feature is enabled by default in all builds.
+	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
 </info-box>
 
 ## Block formatting
@@ -59,7 +59,7 @@ In addition to enabling automatic text formatting, you may want to check the fol
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-autoformat`](https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat) package:

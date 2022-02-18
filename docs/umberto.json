@@ -14,9 +14,13 @@
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"redirects": {
 		"api/module_adapter-ckfinder_uploadadapter-CKFinderAdapterConfig.html": "api/module_ckfinder_ckfinder-CKFinderConfig.html",
+		"api/easy-video.html": "api/media-embed.html",
+		"api/module_iframe-embed_iframeembed-IframeEmbed.html": "api/module_ui_iframe_iframeview.html",
+		"api/video.html": "api/media-embed.html",
 		"builds/guides/browser-compatibility.html": "builds/guides/support/browser-compatibility.html",
 		"builds/guides/development/installing-plugins.html": "builds/guides/integration/installing-plugins.html",
 		"builds/guides/integration/frameworks/vuejs.html": "builds/guides/integration/frameworks/vuejs-v3.html",
+		"builds/guides/integration/advancedsetup.html": "builds/guides/integration/advanced-setup.html",
 		"builds/guides/license-and-legal.html": "builds/guides/support/license-and-legal.html",
 		"builds/guides/migrate.html": "builds/guides/migration/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "builds/guides/migration/migration-to-25.html",
@@ -44,18 +48,28 @@
 		"features/collaboration/track-changes.html": "features/collaboration/track-changes/track-changes.html",
 		"features/collaboration/comments/comments-display-mode.html": "features/collaboration/annotations/annotations-display-mode.html",
 		"features/easy-image.html": "features/image-upload/easy-image.html",
+		"features/easy-video.html": "features/media-embed.html",
+		"features/iframe-embed.html": "features/media-embed.html",
 		"features/images/overview.html": "features/images/images-overview.html",
 		"features/image-upload.html": "features/image-upload/image-upload.html",
 		"features/image.html": "features/images/overview.html",
 		"features/mathtype.html": "features/math-equations.html",
+		"features/pagination.html": "features/pagination/pagination.html",
 		"features/paste-from-word.html": "features/pasting/paste-from-word.html",
-		"latest/features/pagination.html": "latest/features/pagination/pagination.html",
+		"features/paste-from-office.html": "features/pasting/paste-from-word.html",
 		"features/spell-checker.html": "features/spelling-and-grammar-checking.html",
+		"features/video.html": "features/media-embed.html",
+		"features/video-upload.html": "features/media-embed.html",
 		"framework/guides/ui/document-editor.html": "framework/guides/deep-dive/ui/document-editor.html",
 		"framework/guides/ui/external-ui.html": "framework/guides/deep-dive/ui/external-ui.html",
 		"framework/guides/ui/theme-customization.html": "framework/guides/deep-dive/ui/theme-customization.html",
 		"framework/guides/creating-simple-plugin.html": "framework/guides/plugins/creating-simple-plugin.html",
-		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html"
+		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
+		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -171,15 +185,15 @@
 							"order": 100
 						},
 						{
-							"name": "Tutorials",
-							"id": "framework-tutorials",
-							"slug": "tutorials",
-							"order": 200
-						},
-						{
 							"name": "Developing custom plugins",
 							"id": "framework-plugins",
 							"slug": "plugins",
+							"order": 200
+						},
+						{
+							"name": "Advanced tutorials",
+							"id": "framework-tutorials",
+							"slug": "tutorials",
 							"order": 250
 						},
 						{
@@ -192,7 +206,15 @@
 									"name": "Conversion",
 									"id": "framework-deep-dive-conversion",
 									"slug": "conversion",
-									"order": 100
+									"order": 100,
+									"categories": [
+										{
+											"name": "Conversion helpers",
+											"id": "framework-deep-dive-conversion-helpers",
+											"slug": "helpers",
+											"order": 100
+										}
+									]
 								},
 								{
 									"name": "User interface",

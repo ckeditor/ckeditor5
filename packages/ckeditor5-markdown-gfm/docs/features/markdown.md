@@ -16,16 +16,24 @@ Please remember that Markdown syntax is very simple and it does not cover all th
 
 The CKEditor 5 instance below is configured to output GitHub Flavored Markdown. Use the editor to create your content and see the Markdown output displayed as you type below the editor.
 
+<info-box info>
+	Please observe that the {@link features/source-editing source editing} in the demo below is a separate feature. If you would like to use it in your integration, it needs to be installed separately.
+</info-box>
+
 {@snippet features/markdown}
+
+
+## Extending formatting support
+If you need a more extensive Markdown support for formatting elements (for example, having the `title` attribute on links represented as `[Foo Bar](https://foo.bar "My link title")`), you can also install {@link features/general-html-support General HTML Support}. This advanced feature allows the integrators to provide additional tags, elements and attributes, not yet supported by other CKEditor 5 plugins and extend the formatting capabilities.
 
 ## Related features
 
 Some other ways to output the edited content include:
 
+* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 * {@link features/export-word Export to Word} &ndash; Generate editable `.docx` files out of your editor-created content.
 * {@link features/export-pdf Export to PDF} &ndash; Generate portable PDF files out of your editor-created content.
 * {@link features/autoformat Autoformatting} &ndash; Use Markdown syntax shortcodes to automatically format your content as you type!
-* {@link features/source-editing#markdown-source-view Source editing} &ndash; Allows for Markdown source edition if configured accordingly.
 
 ## The Markdown data processor
 
@@ -83,6 +91,10 @@ ClassicEditor
 	.catch( ... );
 
 ```
+
+<info-box info>
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+</info-box>
 
 ## Known issues
 

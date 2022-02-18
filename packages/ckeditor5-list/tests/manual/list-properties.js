@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ import Table from '@ckeditor/ckeditor5-table/src/table';
 import TablePropertiesEditing from '@ckeditor/ckeditor5-table/src/tableproperties/tablepropertiesediting';
 import TableCellPropertiesEditing from '@ckeditor/ckeditor5-table/src/tablecellproperties/tablecellpropertiesediting';
 import List from '../../src/list';
-import ListStyle from '../../src/liststyle';
+import ListProperties from '../../src/listproperties';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import TodoList from '../../src/todolist';
@@ -46,7 +46,7 @@ const config = {
 		List,
 		TodoList,
 		Paragraph,
-		ListStyle,
+		ListProperties,
 		Table,
 		TablePropertiesEditing,
 		TableCellPropertiesEditing,
@@ -173,6 +173,23 @@ ClassicEditor
 		list: {
 			properties: {
 				styles: true,
+				startIndex: false,
+				reversed: false
+			}
+		}
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+// ------------------------------------------------------------------
+
+ClassicEditor
+	.create( document.querySelector( '#editor-h' ), {
+		...config,
+		list: {
+			properties: {
+				styles: false,
 				startIndex: false,
 				reversed: false
 			}

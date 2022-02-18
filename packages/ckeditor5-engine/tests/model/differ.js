@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1791,11 +1791,11 @@ describe( 'Differ', () => {
 		} );
 	} );
 
-	describe( 'refreshItem()', () => {
+	describe( '#_refreshItem()', () => {
 		it( 'should mark given element to be removed and added again', () => {
 			const p = root.getChild( 0 );
 
-			differ.refreshItem( p );
+			differ._refreshItem( p );
 
 			expectChanges( [
 				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
@@ -1808,7 +1808,7 @@ describe( 'Differ', () => {
 			const range = model.createRangeIn( p );
 			const textProxy = [ ...range.getItems() ][ 0 ];
 
-			differ.refreshItem( textProxy );
+			differ._refreshItem( textProxy );
 
 			expectChanges( [
 				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
@@ -1821,7 +1821,7 @@ describe( 'Differ', () => {
 			model.change( () => {
 				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
 
-				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
+				differ._refreshItem( root.getChild( 2 ).getChild( 0 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
@@ -1846,7 +1846,7 @@ describe( 'Differ', () => {
 
 			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
 
-			differ.refreshItem( root.getChild( 1 ) );
+			differ._refreshItem( root.getChild( 1 ) );
 
 			expectChanges( [
 				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },

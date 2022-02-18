@@ -216,7 +216,7 @@ Command name changes (before → after):
 * `forwardDelete` → `deleteForward`
 * `todoListCheck` → `checkTodoList`
 
-The `TodoListCheckCommand` module was moved to {@link module:list/checktodolistcommand~CheckTodoListCommand `CheckTodoListCommand`}.
+The `TodoListCheckCommand` module was moved to {@link module:list/todolist/checktodolistcommand~CheckTodoListCommand `CheckTodoListCommand`}.
 
 The `ImageInsertCommand` module was moved to {@link module:image/image/insertimagecommand~InsertImageCommand `InsertImageCommand`}.
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -372,10 +372,12 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should consume htmlAttributes attribute (editing downcast)', () => {
-			const spy = sinon.spy();
+			let consumable;
 
 			editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-				dispatcher.on( 'attribute:htmlAttributes:htmlInput', spy );
+				dispatcher.on( 'insert:htmlInput', ( evt, data, conversionApi ) => {
+					consumable = conversionApi.consumable;
+				} );
 			} );
 
 			dataFilter.allowElement( 'input' );
@@ -383,7 +385,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="number"/></p>' );
 
-			expect( spy.called ).to.be.false;
+			expect( consumable.test( model.document.getRoot().getChild( 0 ).getChild( 0 ), 'attribute:htmlAttributes' ) ).to.be.false;
 		} );
 
 		function getObjectModelDataWithAttributes( model, options ) {

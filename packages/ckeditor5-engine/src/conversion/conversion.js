@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -140,6 +140,7 @@ export default class Conversion {
 	 * * downcast (model-to-view) conversion helpers:
 	 *
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`},
+	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`},
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToElement `attributeToElement()`},
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#attributeToAttribute `attributeToAttribute()`}.
 	 *	* {@link module:engine/conversion/downcasthelpers~DowncastHelpers#markerToElement `markerToElement()`}.

@@ -163,7 +163,7 @@ The `CKEditorContext` component supports the following properties:
 
 ## Customizing the builds
 
-The {@link builds/guides/overview CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
+The {@link builds/guides/overview CKEditor 5 predefined builds} come ready to use, with a set of built-in plugins and a preset configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
 
 There are three main ways to do that.
 
@@ -177,7 +177,7 @@ Create your own CKEditor 5 build with customized plugins, toolbar and language i
 
 ### Customizing one of the predefined builds
 
-This option requires making changes to a {@link builds/guides/development/custom-builds predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to `src/` directory and add it as a dependency using `yarn add file` command.
+This option requires making changes to the {@link builds/guides/development/custom-builds predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to the `src/` directory and add it as a dependency using `yarn add file` command.
 
 Read more about customising a predefined build in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
 
@@ -213,7 +213,7 @@ class App extends Component {
 
 						this.editor = editor;
 					} }
-					onError={ ( { willEditorRestart } ) => {
+					onError={ ( error, { willEditorRestart } ) => {
 						// If the editor is restarted, the toolbar element will be created once again.
 						// The `onReady` callback will be called again and the new toolbar will be added.
 						// This is why you need to remove the older toolbar.
@@ -481,18 +481,18 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader`. Find the last 
 ```js
 {
 	loader: require.resolve( 'file-loader' ),
-	// Exclude `js` files to keep the "css" loader working as it injects
-	// its runtime that would otherwise be processed through the "file" loader.
-	// Also exclude `html` and `json` extensions so they get processed
-	// by webpack's internal loaders.
-	exclude: [
-		/\.(js|mjs|jsx|ts|tsx)$/,
-		/\.html$/,
-		/\.json$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
-	],
 	options: {
+		// Exclude `js` files to keep the "css" loader working as it injects
+		// its runtime that would otherwise be processed through the "file" loader.
+		// Also exclude `html` and `json` extensions so they get processed
+		// by webpack's internal loaders.
+		exclude: [
+			/\.(js|mjs|jsx|ts|tsx)$/,
+			/\.html$/,
+			/\.json$/,
+			/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+			/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+		],
 		name: 'static/media/[name].[hash:8].[ext]',
 	}
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -125,7 +125,7 @@ export default function inlineAutoformatEditing( editor, plugin, testRegexpOrCal
 	} );
 
 	editor.model.document.on( 'change:data', ( evt, batch ) => {
-		if ( batch.type == 'transparent' || !plugin.isEnabled ) {
+		if ( batch.isUndo || !batch.isLocal || !plugin.isEnabled ) {
 			return;
 		}
 

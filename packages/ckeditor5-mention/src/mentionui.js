@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -658,8 +658,8 @@ function getBalloonPanelPositions( preferredPosition ) {
 	];
 }
 
-// Returns a marker definition of the last valid occuring marker in given string.
-// If there is no valid marker in string it returns undefined.
+// Returns a marker definition of the last valid occurring marker in a given string.
+// If there is no valid marker in a string, it returns undefined.
 //
 // Example of returned object:
 //
@@ -670,7 +670,7 @@ function getBalloonPanelPositions( preferredPosition ) {
 //		}
 //
 // @param {Array.<Object>} feedsWithPattern Registered feeds in editor for mention plugin with created RegExp for matching marker.
-// @param {String} text String to find marker in
+// @param {String} text String to find the marker in
 // @returns {Object} Matched marker's definition
 function getLastValidMarkerInText( feedsWithPattern, text ) {
 	let lastValidMarker;

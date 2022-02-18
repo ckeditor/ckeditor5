@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -14,7 +14,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Mapper from '../conversion/mapper';
 
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import { insertText } from '../conversion/downcasthelpers';
+import { insertAttributesAndChildren, insertText } from '../conversion/downcasthelpers';
 
 import UpcastDispatcher from '../conversion/upcastdispatcher';
 import { convertText, convertToModelFragment } from '../conversion/upcasthelpers';
@@ -81,6 +81,7 @@ export default class DataController {
 			schema: model.schema
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 
 		/**
 		 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.
@@ -156,7 +157,7 @@ export default class DataController {
 		// Fix empty roots after DataController is 'ready' (note that init method could be decorated and stopped).
 		// We need to handle this event because initial data could be empty and post-fixer would not get triggered.
 		this.on( 'ready', () => {
-			this.model.enqueueChange( 'transparent', autoParagraphEmptyRoots );
+			this.model.enqueueChange( { isUndoable: false }, autoParagraphEmptyRoots );
 		}, { priority: 'lowest' } );
 	}
 
@@ -243,27 +244,16 @@ export default class DataController {
 
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		// Make additional options available during conversion process through `conversionApi`.
-		this.downcastDispatcher.conversionApi.options = options;
-
-		// We have no view controller and rendering to DOM in DataController so view.change() block is not used here.
-		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
-
-		// Convert markers.
+		// Prepare list of markers.
 		// For document fragment, simply take the markers assigned to this document fragment.
 		// For model root, all markers in that root will be taken.
 		// For model element, we need to check which markers are intersecting with this element and relatively modify the markers' ranges.
 		// Collapsed markers at element boundary, although considered as not intersecting with the element, will also be returned.
 		const markers = modelElementOrFragment.is( 'documentFragment' ) ?
-			Array.from( modelElementOrFragment.markers ) :
+			modelElementOrFragment.markers :
 			_getMarkersRelativeToElement( modelElementOrFragment );
 
-		for ( const [ name, range ] of markers ) {
-			this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
-		}
-
-		// Clean `conversionApi`.
-		delete this.downcastDispatcher.conversionApi.options;
+		this.downcastDispatcher.convert( modelRange, markers, viewWriter, options );
 
 		return viewDocumentFragment;
 	}
@@ -323,7 +313,7 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-init-non-existent-root', this );
 		}
 
-		this.model.enqueueChange( 'transparent', writer => {
+		this.model.enqueueChange( { isUndoable: false }, writer => {
 			for ( const rootName of Object.keys( initialData ) ) {
 				const modelRoot = this.model.document.getRoot( rootName );
 				writer.insert( this.parse( initialData[ rootName ], modelRoot ), modelRoot, 0 );
@@ -350,17 +340,18 @@ export default class DataController {
 	 *
 	 *		dataController.set( { main: '<p>Foo</p>', title: '<h1>Bar</h1>' } ); // Sets data on the `main` and `title` roots.
 	 *
-	 * To set the data with preserved undo stacks and set the current change to this stack, use the `{ batchType: 'default' }` option.
+	 * To set the data with preserved undo stack and add the change to the undo stack, set `{ isUndoable: true }` as `batchType` option.
 	 *
-	 *		dataController.set( '<p>Foo</p>', { batchType: 'default' } ); // Sets data as a new change.
+	 *		dataController.set( '<p>Foo</p>', { batchType: { isUndoable: true } } );
 	 *
 	 * @fires set
 	 * @param {String|Object.<String,String>} data Input data as a string or an object containing `rootName` - `data`
 	 * pairs to set data on multiple roots at once.
 	 * @param {Object} [options={}] Options for setting data.
-	 * @param {'default'|'transparent'} [options.batchType='default'] The batch type that will be used to create a batch for the changes.
-	 * When set to `default`, the undo and redo stacks will be preserved. Note that when not set, the undo feature (when present) will
-	 * override it to `transparent` and all undo steps will be lost.
+	 * @param {Object} [options.batchType] The batch type that will be used to create a batch for the changes applied by this method.
+	 * By default, the batch will be set as {@link module:engine/model/batch~Batch#isUndoable not undoable} and the undo stack will be
+	 * cleared after the new data is applied (all undo steps will be removed). If batch type `isUndoable` flag will be set to `true`,
+	 * the undo stack will be preserved.
 	 */
 	set( data, options = {} ) {
 		let newData = {};
@@ -386,9 +377,7 @@ export default class DataController {
 			throw new CKEditorError( 'datacontroller-set-non-existent-root', this );
 		}
 
-		const batchType = options.batchType || 'default';
-
-		this.model.enqueueChange( batchType, writer => {
+		this.model.enqueueChange( options.batchType || {}, writer => {
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
@@ -548,7 +537,7 @@ function _getMarkersRelativeToElement( element ) {
 	const doc = element.root.document;
 
 	if ( !doc ) {
-		return [];
+		return new Map();
 	}
 
 	const elementRange = ModelRange._createIn( element );
@@ -582,7 +571,7 @@ function _getMarkersRelativeToElement( element ) {
 	// reverse DOM order, and intersecting ranges are in something approximating
 	// reverse DOM order (since reverse DOM order doesn't have a precise meaning
 	// when working with intersecting ranges).
-	return result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
+	result.sort( ( [ n1, r1 ], [ n2, r2 ] ) => {
 		if ( r1.end.compareWith( r2.start ) !== 'after' ) {
 			// m1.end <= m2.start -- m1 is entirely <= m2
 			return 1;
@@ -609,4 +598,6 @@ function _getMarkersRelativeToElement( element ) {
 			}
 		}
 	} );
+
+	return new Map( result );
 }

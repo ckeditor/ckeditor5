@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -64,7 +64,7 @@ export function isMediaWidget( viewElement ) {
  *			<div data-oembed-url="foo">[ non-semantic media preview for "foo" ]</div>
  *		</figure>
  *
- * @param {module:engine/view/downcastwriter~DowncastWriter} writer
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
  * @param {module:media-embed/mediaregistry~MediaRegistry} registry
  * @param {String} url
  * @param {Object} options
@@ -73,12 +73,11 @@ export function isMediaWidget( viewElement ) {
  * @param {Boolean} [options.renderForEditingView]
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createMediaFigureElement( writer, registry, url, options ) {
-	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
-
-	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
-
-	return figure;
+export function createMediaFigureElement( { writer }, registry, url, options ) {
+	return writer.createContainerElement( 'figure', { class: 'media' }, [
+		registry.getMediaViewElement( writer, url, options ),
+		writer.createSlot()
+	] );
 }
 
 /**
