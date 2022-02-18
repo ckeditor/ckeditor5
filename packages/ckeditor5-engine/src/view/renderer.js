@@ -12,6 +12,7 @@
 import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
+import { getDomSelection } from './observer/selectionobserver';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -790,7 +791,7 @@ export default class Renderer {
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
-		const domSelection = domDocument.getSelection();
+		const domSelection = getDomSelection( domRoot );
 		const domRange = domDocument.createRange();
 
 		domSelection.removeAllRanges();
@@ -805,7 +806,7 @@ export default class Renderer {
 	 * @param {HTMLElement} domRoot A valid DOM root where the DOM selection should be rendered.
 	 */
 	_updateDomSelection( domRoot ) {
-		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
+		const domSelection = getDomSelection( domRoot );
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
@@ -867,7 +868,7 @@ export default class Renderer {
 	 */
 	_fakeSelectionNeedsUpdate( domRoot ) {
 		const container = this._fakeSelectionContainer;
-		const domSelection = domRoot.ownerDocument.getSelection();
+		const domSelection = getDomSelection( domRoot );
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
@@ -890,14 +891,14 @@ export default class Renderer {
 	 */
 	_removeDomSelection() {
 		for ( const doc of this.domDocuments ) {
-			const domSelection = doc.getSelection();
+			const activeDomElement = doc.activeElement;
+			const domSelection = getDomSelection( activeDomElement );
 
 			if ( domSelection.rangeCount ) {
-				const activeDomElement = doc.activeElement;
 				const viewElement = this.domConverter.mapDomToView( activeDomElement );
 
 				if ( activeDomElement && viewElement ) {
-					doc.getSelection().removeAllRanges();
+					domSelection.removeAllRanges();
 				}
 			}
 		}

@@ -12,6 +12,9 @@
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import isShadowRoot from '@ckeditor/ckeditor5-utils/src/dom/isshadowroot';
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
@@ -142,8 +145,8 @@ export default class SelectionObserver extends Observer {
 		}
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
-			this._handleSelectionChange( domEvent, domDocument );
+		this.listenTo( domDocument, 'selectionchange', () => {
+			this._handleSelectionChange();
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
@@ -170,15 +173,14 @@ export default class SelectionObserver extends Observer {
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
-	 * @param {Event} domEvent DOM event.
-	 * @param {Document} domDocument DOM document.
 	 */
-	_handleSelectionChange( domEvent, domDocument ) {
+	_handleSelectionChange() {
 		if ( !this.isEnabled ) {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView.getSelection();
+		// const domSelection = domDocument.defaultView.getSelection();
+		const domSelection = getDomSelection( this.view.getDomRoot() );
 
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
@@ -251,6 +253,92 @@ export default class SelectionObserver extends Observer {
 	_clearInfiniteLoop() {
 		this._loopbackCounter = 0;
 	}
+}
+
+const webkitSelectionProxyHandler = {
+	_beforeInputRange: null,
+
+	get( target, propKey ) {
+		switch ( propKey ) {
+			case 'getRangeAt':
+				return () => this._beforeInputRange;
+			case 'rangeCount':
+				return Number( !!this._beforeInputRange );
+			case 'anchorNode':
+				return this._beforeInputRange ? this._beforeInputRange.startContainer : null;
+			case 'anchorOffset':
+				return this._beforeInputRange ? this._beforeInputRange.startOffset : null;
+			case 'focusNode':
+				return this._beforeInputRange ? this._beforeInputRange.endContainer : null;
+			case 'focusOffset':
+				return this._beforeInputRange ? this._beforeInputRange.endOffset : null;
+			case 'isCollapsed':
+				return this._beforeInputRange ? this._beforeInputRange.collapsed : true;
+			case 'removeAllRanges':
+				return () => {
+					this._beforeInputRange = null;
+
+					target.removeAllRanges();
+				};
+
+			// Pass other methods through.
+			default:
+				return ( ...args ) => target[ propKey ]( ...args );
+		}
+	}
+};
+
+export function getDomSelection( domNode ) {
+	const domRootNode = domNode.getRootNode();
+
+	if ( isShadowRoot( domRootNode ) ) {
+		// Chrome.
+		if ( env.features.isShadowDOMSelectionSupported ) {
+			return domRootNode.getSelection();
+		}
+
+		if ( env.isGecko ) {
+			return global.document.defaultView.getSelection();
+		}
+
+		// Safari.
+		return new Proxy( global.document.defaultView.getSelection(), webkitSelectionProxyHandler );
+	} else {
+		return global.document.getSelection();
+	}
+}
+
+if ( !env.features.isShadowDOMSelectionSupported && !env.isGecko ) {
+	let isSelectionChangeInProgress = false;
+
+	global.document.addEventListener( 'selectionchange', () => {
+		if ( isSelectionChangeInProgress ) {
+			return;
+		}
+
+		isSelectionChangeInProgress = true;
+
+		global.document.execCommand( 'outdent' );
+
+		isSelectionChangeInProgress = false;
+	}, true );
+
+	global.document.addEventListener( 'beforeinput', event => {
+		if ( !isSelectionChangeInProgress ) {
+			return;
+		}
+
+		if ( event.inputType !== 'formatOutdent' ) {
+			return;
+		}
+
+		const range = event.getTargetRanges()[ 0 ];
+
+		webkitSelectionProxyHandler._beforeInputRange = range;
+
+		event.preventDefault();
+		event.stopImmediatePropagation();
+	}, true );
 }
 
 /**

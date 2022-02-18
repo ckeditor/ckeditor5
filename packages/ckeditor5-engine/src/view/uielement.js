@@ -11,6 +11,7 @@ import Element from './element';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Node from './node';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import { getDomSelection } from './observer/selectionobserver';
 
 /**
  * UI element class. It should be used to represent editing UI which needs to be injected into the editing view
@@ -190,7 +191,7 @@ function getFillerOffset() {
 // ends up in ui element (in DOM) and is moved back to the left. This handler fixes this situation.
 function jumpOverUiElement( evt, data, domConverter ) {
 	if ( data.keyCode == keyCodes.arrowright ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+		const domSelection = getDomSelection( data.domTarget );
 		const domSelectionCollapsed = domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed;
 
 		// Jump over UI element if selection is collapsed or shift key is pressed. These are the cases when selection would extend.

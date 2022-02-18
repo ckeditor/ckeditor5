@@ -10,6 +10,7 @@
 import isRange from './isrange';
 import Rect from './rect';
 import isText from './istext';
+import isShadowRoot from './isshadowroot';
 
 const utils = {};
 
@@ -182,6 +183,11 @@ function scrollAncestorsToShowRect( parent, getRect ) {
 	let parentRect, targetRect;
 
 	while ( parent != parentWindow.document.body ) {
+		if ( isShadowRoot( parent ) ) {
+			parent = parent.host;
+			continue;
+		}
+
 		targetRect = getRect();
 		parentRect = new Rect( parent ).excludeScrollbarsAndBorders();
 

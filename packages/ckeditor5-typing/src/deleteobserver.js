@@ -13,6 +13,7 @@ import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubb
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import { isShiftDeleteOnNonCollapsedSelection } from './utils/utils';
+import { getDomSelection } from '@ckeditor/ckeditor5-engine/src/view/observer/selectionobserver';
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
@@ -83,7 +84,7 @@ export default class DeleteObserver extends Observer {
 				//
 				// Sometimes it is only expanding by a one character (in case of collapsed selection). In this case we don't need to
 				// set a different selection to remove, it will work just fine.
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+				const domSelection = getDomSelection( data.domTarget );
 
 				if ( domSelection.anchorNode == domSelection.focusNode && domSelection.anchorOffset + 1 != domSelection.focusOffset ) {
 					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );

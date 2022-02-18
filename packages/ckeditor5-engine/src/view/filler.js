@@ -5,6 +5,7 @@
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import { getDomSelection } from './observer/selectionobserver';
 
 /**
  * Set of utilities related to handling block and inline fillers.
@@ -141,21 +142,19 @@ export function getDataWithoutFiller( domText ) {
  * @param {module:engine/view/view~View} view View controller instance we should inject quirks handling on.
  */
 export function injectQuirksHandling( view ) {
-	view.document.on( 'arrowKey', jumpOverInlineFiller, { priority: 'low' } );
-}
+	// Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
+	view.document.on( 'arrowKey', ( evt, data ) => {
+		if ( data.keyCode == keyCodes.arrowleft ) {
+			const domSelection = getDomSelection( view.getDomRoot() );
 
-// Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
-function jumpOverInlineFiller( evt, data ) {
-	if ( data.keyCode == keyCodes.arrowleft ) {
-		const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+			if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
+				const domParent = domSelection.getRangeAt( 0 ).startContainer;
+				const domOffset = domSelection.getRangeAt( 0 ).startOffset;
 
-		if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
-			const domParent = domSelection.getRangeAt( 0 ).startContainer;
-			const domOffset = domSelection.getRangeAt( 0 ).startOffset;
-
-			if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
-				domSelection.collapse( domParent, 0 );
+				if ( startsWithFiller( domParent ) && domOffset <= INLINE_FILLER_LENGTH ) {
+					domSelection.collapse( domParent, 0 );
+				}
 			}
 		}
-	}
+	}, { priority: 'low' } );
 }
