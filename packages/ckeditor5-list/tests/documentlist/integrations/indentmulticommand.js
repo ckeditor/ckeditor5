@@ -6,24 +6,20 @@
 /* global document */
 
 import DocumentListEditing from '../../../src/documentlist/documentlistediting';
+import stubUid from '../_utils/uid';
+import { modelList } from '../_utils/utils';
 
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import { Paragraph } from 'ckeditor5/src/paragraph';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-
-import { modelList } from '../_utils/utils';
-
+import { Paragraph } from 'ckeditor5/src/paragraph';
 import {
 	getData as getModelData,
 	setData as setModelData
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-
-import stubUid from '../_utils/uid';
 
 describe( 'Indent MultiCommand integrations', () => {
 	const blocksChangedByCommands = [];
