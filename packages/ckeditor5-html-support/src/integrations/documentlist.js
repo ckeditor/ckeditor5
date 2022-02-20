@@ -136,14 +136,14 @@ function viewToModelListAttributeConverter( strategy, dataFilter ) {
 // @returns {Function} Returns a conversion callback.
 function modelToViewListAttributeConverter( strategy, model ) {
 	return dispatcher => {
-		for ( const attributeName of [ ...LIST_BASE_ATTRIBUTES, strategy.attributeName ] ) {
+		for ( const attributeName of [ /*...LIST_BASE_ATTRIBUTES,*/ strategy.attributeName ] ) {
 			dispatcher.on( `attribute:${ attributeName }`, ( evt, data, conversionApi ) => {
 				const { writer, mapper, consumable } = conversionApi;
 				const listItem = data.item;
 
 				// Check and consume only the list properties attributes (the base list attributes are already consumed
 				// but should also trigger conversion of list properties).
-				if ( !LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) && !consumable.consume( listItem, evt.name ) ) {
+				if ( /*!LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) &&*/ !consumable.consume( listItem, evt.name ) ) {
 					return;
 				}
 

@@ -84,7 +84,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
-				for ( const attributeName of [ ...LIST_BASE_ATTRIBUTES, strategy.attributeName ] ) {
+				for ( const attributeName of [ /*...LIST_BASE_ATTRIBUTES,*/ strategy.attributeName ] ) {
 					dispatcher.on( `attribute:${ attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
 				}
 			}

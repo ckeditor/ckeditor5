@@ -341,6 +341,42 @@ export default class DocumentListEditing extends Plugin {
 				for ( const attributeName of LIST_BASE_ATTRIBUTES ) {
 					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( LIST_BASE_ATTRIBUTES, model ) );
 				}
+
+				dispatcher.on( 'reduceChanges', ( evt, data ) => {
+					const reducedChanges = [];
+					const attributeNames = [
+						...LIST_BASE_ATTRIBUTES,
+						...this.getSameListDefiningAttributes(),
+						'htmlListAttributes',
+						'htmlLiAttributes'
+					];
+					const reWrappedItems = new Set();
+
+					for ( const change of data.changes ) {
+						if ( change.type == 'attribute' && attributeNames.includes( change.attributeKey ) ) {
+							const node = change.range.start.nodeAfter;
+
+							if ( reWrappedItems.has( node ) ) {
+								continue;
+							}
+
+							reWrappedItems.add( node );
+
+							for ( const key of attributeNames ) {
+								reducedChanges.push( {
+									type: 'attribute',
+									attributeKey: key,
+									attributeNewValue: node.getAttribute( key ),
+									range: change.range
+								} );
+							}
+						} else {
+							reducedChanges.push( change );
+						}
+					}
+
+					data.changes = reducedChanges;
+				} );
 			} );
 
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this ) );
