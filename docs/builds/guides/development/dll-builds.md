@@ -25,7 +25,7 @@ Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this in
 Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp; if you are interested in this functionality).
 
 <info-box>
-	For simplicity purposes, this guide does not include Collaboration Features. If you are interested in this kind of integration, please check {@link builds/guides/development/dll-builds-collaboration-features how to use CKEditor5 Collaboration Features with DLLs} after reading this guide.
+	For simplicity reasons, this guide does not include any collaboration features. If you are interested in adding these features, please check {@link builds/guides/development/dll-builds-collaboration-features how to use CKEditor5 Collaboration Features with DLLs} after reading this guide.
 </info-box>
 
 ## Anatomy of a DLL build

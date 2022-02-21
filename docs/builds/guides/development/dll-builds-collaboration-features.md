@@ -2,24 +2,22 @@
 menu-title: DLL builds for CKEditor 5 Collaboration Features
 category: builds-development
 order: 40
-modified_at: 2021-08-31
+modified_at: 2022-02-21
 ---
 
 # CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
 
-## Introduction
+<info-box>
+    This guide discusses using a DLL build together with CKEditor 5 Collaboration Features and is suplmental for the {@link builds/guides/development/dll-builds CKEditor 5 DLL builds guide}.
 
-To enable easier integrations we enabled the DLL integration for CKEditor 5 Collaboration Features.
-
-Make sure to read {@link builds/guides/development/dll-builds how to create a basic DLL build} first.
+    Make sure to read the {@link builds/guides/development/dll-builds base guide} first.
+</info-box>
 
 ## Integrating CKEditor 5 Collaboration Features as DLL builds
 
-<info-box>
-	This guide uses the {@link features/watchdog watchdog feature} feature. You can also integrate the collaboration features without it, but it is recommended to use the watchdog when the real-time collaboration is enabled.
-</info-box>
+...
 
-The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses the `<script>` tags.
+The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses `<script>` tags.
 
 In order to run the editor, you need to load the necessary files (base DLL + CF base DLL + editor creator + features). These files expose their content in the `CKEditor5` global, using the following format:
 
@@ -27,7 +25,11 @@ In order to run the editor, you need to load the necessary files (base DLL + CF 
 CKEditor5.packageName.moduleName
 ```
 
+<info-box>
+	This guide uses the {@link features/watchdog watchdog feature} feature. You can also integrate the collaboration features without it, but it is recommended to use the watchdog when the real-time collaboration is enabled.
+</info-box>
 
+Below is an example of an integration:
 
 ```html
 <div id="presence-list-container"></div>

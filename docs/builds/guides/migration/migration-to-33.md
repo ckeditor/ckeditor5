@@ -2,7 +2,7 @@
 category: builds-migration
 menu-title: Migration to v32.x
 order: 92
-modified_at: 2021-12-10
+modified_at: 2022-02-21
 ---
 
 # Migration to CKEditor 5 v33.0.0
@@ -15,63 +15,68 @@ modified_at: 2021-12-10
 
 ## Migration to CKEditor 5 v33.0.0
 
-For the entire list of changes introduced in version 32.0.0, see the [changelog for CKEditor 5 v33.0.0](TODO).
+For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0](TODO).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v33.0.0.
 
 ## Changes of imports in CKEditor 5 Collaboration Features
 
-As a result of introducing supports for DLL builds in collaboration features, some imports had to be changed to allow the new building process. From now, new plugins will be required when adding some of the CKEditor 5 collection features:
+DLL builds support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies had to be changed to allow for the new building process.
 
-Adding `TrackChanges` will require also adding these plugins to the build:
+From now on, additional plugins will be required, when following CKEditor 5 collaboration features are added to the editor:
 
-- `Comments` (`@ckeditor/ckeditor5-comments/src/comments`)
+Adding `TrackChanges` will also require adding these plugins to the list of the editor plugins:
 
-Adding `RealTimeCollaborativeEditing` will require also adding these plugins to the list of editor plugins:
+- `Comments` (`@ckeditor/ckeditor5-comments/src/comments`).
 
-- `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`)
+Adding `RealTimeCollaborativeEditing` will also require:
 
-Adding `RealTimeCollaborativeComments` will require also adding these plugins to the list of editor plugins:
+- `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`).
+
+Adding `RealTimeCollaborativeComments` will also require:
 
 - `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`),
-- `Comments` (`@ckeditor/ckeditor5-comments/src/comments`)
+- `Comments` (`@ckeditor/ckeditor5-comments/src/comments`).
 
-Adding `RealTimeCollaborativeTrackChanges` will require also adding these plugins to the list of editor plugins:
+Adding `RealTimeCollaborativeTrackChanges` will also require:
 
 - `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`),
 - `Comments` (`@ckeditor/ckeditor5-comments/src/comments`),
-- `TrackChanges` (`@ckeditor/ckeditor5-track-changes/src/trackchanges`)
+- `TrackChanges` (`@ckeditor/ckeditor5-track-changes/src/trackchanges`).
 
-Adding `RealTimeCollaborativeRevisionHistory` will require also adding these plugins to the list of editor plugins:
+Adding `RealTimeCollaborativeRevisionHistory` will also require:
 
-- `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`)
+- `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`).
 
-Adding `CloudServicesCommentsAdapter` will require also adding these plugins to the list of context plugins:
+Adding `CloudServicesCommentsAdapter` will also require:
 
 - `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`),
-- `CommentsRepository` (`@ckeditor/ckeditor5-comments/src/comments/commentsrepository`)
+- `CommentsRepository` (`@ckeditor/ckeditor5-comments/src/comments/commentsrepository`).
 
-Adding `CloudServicesTrackChangesAdapter` will require also adding these plugins to the list of context plugins:
+Adding `CloudServicesTrackChangesAdapter` will also require:
 
 - `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`),
 - `CommentsRepository` (`@ckeditor/ckeditor5-comments/src/comments/commentsrepository`),
-- `TrackChangesEditing` (`@ckeditor/ckeditor5-track-changes/src/trackchangesediting`)
+- `TrackChangesEditing` (`@ckeditor/ckeditor5-track-changes/src/trackchangesediting`).
 
-Adding `CloudServicesRevisionHistoryAdapter` will require also adding these plugins to the list of context plugins:
+Adding `CloudServicesRevisionHistoryAdapter` will also require:
 
-- `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`)
+- `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`).
 
 ## Comments editor configuration required
 
-As a result of the removed cross-package dependencies inside the project, the configuration for the comments feature became required. Now, the user should configure the comments feature plugin list by themself:
+Since cross-package dependencies inside the project were removed, the configuration for the comments editor became required. Keep in mind that the editor used in comments section is also a CKEditor 5 instance and is configured the same way as the regular editor.
 
+After the update, you should configure the comments editor using `config.comments.editorConfig` option:
+
+```js
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	// Other configurations...
+	// ...
 
 	comments: {
 		editorConfig: {
@@ -79,11 +84,19 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		}
 	}
 } );
+```
 
-Not providing the comments feature configuration will now result in a console warning: `Missing comments editor configuration (`comments.editorConfig`). Default configuration will be used instead`.
+<info-box>
+	Before the change, the comments editor included `Bold`, `Italic`, `Autoformat` and `List` plugins.
 
-To hide the warning it is possible to provide the empty configuration for the comments feature:
+	If you want to keep the same user experience after updating the editor, configure the comments editor as shown in the example above.
+</info-box>
 
+If the configuration is not provided, a warning will be logged in the console and the the comments editor will be initialized with the most basic features, that is typing, paragraph and undo. 
+
+To hide the warning (and use the basic configuration), provide an empty configuration for the comments editor:
+
+```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
 	// Other configurations...
 
@@ -91,5 +104,4 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		editorConfig: {}
 	}
 } );
-
-Note thought, that the new editor for comments will not provide `Bold`, `Italic`, `Autoformat` and `List` plugins out of the box like it has done previously.
+```
