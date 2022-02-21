@@ -825,6 +825,109 @@ describe( 'Indent MultiCommand integrations', () => {
 						changedBlocks: [ 1, 2, 3, 4 ]
 					} );
 				} );
+
+				it( 'should outdent a multi-indented block once if it is in a list item', () => {
+					runTest( {
+						input: [
+							'* <paragraph blockIndent="80px">A[]</paragraph>'
+						],
+						expected: [
+							'* <paragraph blockIndent="40px">A[]</paragraph>'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 0,
+							indentList: 0,
+							outdentBlock: 1,
+							indentBlock: 0
+						},
+						changedBlocks: [ ]
+					} );
+				} );
+
+				it( 'should outdent indented block if it is in a list item', () => {
+					runTest( {
+						input: [
+							'* <paragraph blockIndent="40px">A[]</paragraph>'
+						],
+						expected: [
+							'* A[]'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 0,
+							indentList: 0,
+							outdentBlock: 1,
+							indentBlock: 0
+						},
+						changedBlocks: [ ]
+					} );
+				} );
+
+				it( 'should outdent indented block if it is in a list item block', () => {
+					runTest( {
+						input: [
+							'* A',
+							'  <paragraph blockIndent="40px">B[]</paragraph>'
+						],
+						expected: [
+							'* A',
+							'  B[]'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 0,
+							indentList: 0,
+							outdentBlock: 1,
+							indentBlock: 0
+						},
+						changedBlocks: [ ]
+					} );
+				} );
+
+				it( 'should outdent indented block if it is in indented list item', () => {
+					runTest( {
+						input: [
+							'* A',
+							'  * <paragraph blockIndent="40px">B[]</paragraph>'
+						],
+						expected: [
+							'* A',
+							'  * B[]'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 0,
+							indentList: 0,
+							outdentBlock: 1,
+							indentBlock: 0
+						},
+						changedBlocks: [ ]
+					} );
+				} );
+
+				it( 'should outdent indented block if it is in indented list item block', () => {
+					runTest( {
+						input: [
+							'* A',
+							'  * B',
+							'    <paragraph blockIndent="40px">C[]</paragraph>'
+						],
+						expected: [
+							'* A',
+							'  * B',
+							'    C[]'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 0,
+							indentList: 0,
+							outdentBlock: 1,
+							indentBlock: 0
+						},
+						changedBlocks: [ ]
+					} );
+				} );
 			} );
 
 			describe( 'non-collapsed selection', () => {
@@ -1040,6 +1143,52 @@ describe( 'Indent MultiCommand integrations', () => {
 							indentBlock: 0
 						},
 						changedBlocks: [ 0, 1, 2 ]
+					} );
+				} );
+
+				it( 'should outdent indented block if a selection starts at indented block and ends below', () => {
+					runTest( {
+						input: [
+							'* A',
+							'  * <paragraph blockIndent="40px">[B</paragraph>',
+							'* C]'
+						],
+						expected: [
+							'* A',
+							'  * [B',
+							'* C]'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 0,
+							indentList: 0,
+							outdentBlock: 1,
+							indentBlock: 0
+						},
+						changedBlocks: [ ]
+					} );
+				} );
+
+				it( 'should outdent list itemsif a selection starts above indented code block and ends at it', () => {
+					runTest( {
+						input: [
+							'* [A',
+							'  * <paragraph blockIndent="40px">B]</paragraph>',
+							'* C'
+						],
+						expected: [
+							'[A',
+							'* <paragraph blockIndent="40px">B]</paragraph>',
+							'* C'
+						],
+						commandName: 'outdent',
+						executedCommands: {
+							outdentList: 1,
+							indentList: 0,
+							outdentBlock: 0,
+							indentBlock: 0
+						},
+						changedBlocks: [ 0, 1 ]
 					} );
 				} );
 			} );

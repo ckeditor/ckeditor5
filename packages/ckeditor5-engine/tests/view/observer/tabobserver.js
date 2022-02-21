@@ -67,15 +67,17 @@ describe( 'TabObserver', () => {
 
 		it( 'should not stop keydown event when tab event is not stopped', () => {
 			const keydownSpy = sinon.spy();
+			const tabSpy = sinon.spy();
 
 			viewDocument.on( 'keydown', keydownSpy );
-			viewDocument.on( 'tab', () => { } );
+			viewDocument.on( 'tab', tabSpy );
 
 			viewDocument.fire( 'keydown', {
 				keyCode: getCode( 'Tab' )
 			} );
 
 			sinon.assert.calledOnce( keydownSpy );
+			sinon.assert.calledOnce( tabSpy );
 		} );
 
 		it( 'should not be fired when tab key is pressed with ctrl key', () => {
