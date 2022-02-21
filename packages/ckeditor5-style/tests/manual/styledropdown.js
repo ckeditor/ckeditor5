@@ -56,6 +56,16 @@ ClassicEditor
 					classes: [ 'large-preview' ]
 				},
 				{
+					name: 'Bold table',
+					element: 'table',
+					classes: [ 'bold-table' ]
+				},
+				{
+					name: 'Facncy table',
+					element: 'table',
+					classes: [ 'fancy-table' ]
+				},
+				{
 					name: 'Colorfull cell',
 					element: 'td',
 					classes: [ 'colorful-cell' ]
@@ -103,13 +113,23 @@ ClassicEditor
 				},
 				{
 					name: 'Baz',
-					element: 'span',
+					element: 'strong',
 					classes: [ 'Baz' ]
 				},
 				{
 					name: 'Qux',
-					element: 'span',
+					element: 'code',
 					classes: [ 'Qux' ]
+				}
+			]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
 				}
 			]
 		},

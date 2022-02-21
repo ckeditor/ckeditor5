@@ -27,6 +27,15 @@
 			font-size: 90px;
 		}
 
+		.ck.ck-content .bold-table {
+			border: 3px solid hsl(0, 0%, 0%);
+		}
+
+		.ck.ck-content .fancy-table {
+			border-color: red;
+			border-style: dotted;
+		}
+
 		.ck.ck-content .colorful-cell {
 			background: hsl(300, 100%, 50%);
 			color: hsl(0, 0%, 100%);
@@ -67,7 +76,16 @@
 
 <div id="editor-full">
 	<h2>Heading 1</h2>
-	<p>Paragraph</p>
+	<p>Pa<span class="marker">ragrap</span>h</p>
+	<figure class="table">
+		<table>
+			<tbody>
+				<tr><td>Foo</td><td>Bar</td><td>Baz</td></tr>
+				<tr><td>Foo</td><td>Bar</td><td>Baz</td></tr>
+				<tr><td>Foo</td><td>Bar</td><td>Baz</td></tr>
+			</tbody>
+		</table>
+	</figure>
 	<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
 	<ul>
 		<li>UL List item 1</li>
