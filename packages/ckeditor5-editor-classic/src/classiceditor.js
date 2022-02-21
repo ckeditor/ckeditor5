@@ -58,6 +58,10 @@ export default class ClassicEditor extends Editor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
+		}
+
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
 		}
@@ -191,11 +195,6 @@ export default class ClassicEditor extends Editor {
 				// Documented in core/editor/editorconfig.jsdoc.
 				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'editor-create-initial-data', null );
-			}
-
-			// If `config.initialData` is not set, use DOM element or initial data set in `create()` parameter.
-			if ( config.initialData === undefined ) {
-				config.initialData = getInitialData( sourceElementOrData );
 			}
 
 			const editor = new this( sourceElementOrData, config );
