@@ -10,7 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 import {
-	expandListBlocksToCompleteItems,
 	getListItems,
 	getSelectedBlockObject,
 	isListItemBlock
@@ -76,13 +75,9 @@ export default class DocumentListStyleCommand extends Command {
 				return;
 			}
 
-			if ( document.selection.isCollapsed || selectedBlockObject ) {
-				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
 
-				blocks = getListItems( selectedBlockObject || blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
-			} else {
-				blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
-			}
+			blocks = getListItems( selectedBlockObject || blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
 
 			for ( const block of blocks ) {
 				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );

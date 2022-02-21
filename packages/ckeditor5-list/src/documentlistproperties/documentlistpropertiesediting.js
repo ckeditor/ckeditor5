@@ -19,6 +19,7 @@ import {
 } from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
 import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
+import { getListTypeFromListStyleType } from './utils/style';
 
 const DEFAULT_LIST_TYPE = 'default';
 
@@ -105,14 +106,75 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
-		// Fixing the missing list properties attributes.
+		// Add or remove list properties attributes depending of the list type.
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 				for ( const strategy of strategies ) {
 					if ( strategy.appliesToListItem( node ) ) {
 						// Add missing default property attributes.
-						if ( !node.hasAttribute( strategy.attributeName ) ) {
+						if ( !strategy.hasValidAttribute( node ) ) {
 							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+							evt.return = true;
+						}
+					} else {
+						// Remove invalid property attributes.
+						if ( node.hasAttribute( strategy.attributeName ) ) {
+							writer.removeAttribute( strategy.attributeName, node );
+							evt.return = true;
+						}
+					}
+				}
+			}
+		} );
+
+		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
+		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
+			const stack = [];
+			let listType = null;
+			let listProperties = null;
+			let indent = -1;
+
+			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+				const nodeIndent = node.getAttribute( 'listIndent' );
+
+				if ( nodeIndent > indent ) {
+					stack.push( {
+						listType,
+						listProperties,
+						indent
+					} );
+
+					listType = null;
+					listProperties = null;
+					indent = nodeIndent;
+				} else {
+					while ( nodeIndent < indent ) {
+						( { listType, listProperties, indent } = stack.pop() );
+					}
+				}
+
+				const nodeListType = node.getAttribute( 'listType' );
+
+				if ( nodeListType != listType ) {
+					// This node starts a list - save its properties.
+					listType = nodeListType;
+					listProperties = {};
+
+					for ( const strategy of strategies ) {
+						const { attributeName } = strategy;
+
+						listProperties[ attributeName ] = node.getAttribute( attributeName );
+					}
+				} else {
+					// This node belongs to already started list - copy properties from the first node.
+					for ( const strategy of strategies ) {
+						const { attributeName } = strategy;
+
+						if (
+							strategy.appliesToListItem( node ) &&
+							node.getAttribute( attributeName ) != listProperties[ attributeName ]
+						) {
+							writer.setAttribute( attributeName, listProperties[ attributeName ], node );
 							evt.return = true;
 						}
 					}
@@ -159,6 +221,20 @@ function createAttributeStrategies( enabledProperties ) {
 				return true;
 			},
 
+			hasValidAttribute( item ) {
+				if ( !item.hasAttribute( 'listStyle' ) ) {
+					return false;
+				}
+
+				const value = item.getAttribute( 'listStyle' );
+
+				if ( value == DEFAULT_LIST_TYPE ) {
+					return true;
+				}
+
+				return getListTypeFromListStyleType( value ) == item.getAttribute( 'listType' );
+			},
+
 			setAttributeOnDowncast( writer, listStyle, element ) {
 				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
 					writer.setStyle( 'list-style-type', listStyle, element );
@@ -187,6 +263,10 @@ function createAttributeStrategies( enabledProperties ) {
 				return item.getAttribute( 'listType' ) == 'numbered';
 			},
 
+			hasValidAttribute( item ) {
+				return item.hasAttribute( 'listReversed' );
+			},
+
 			setAttributeOnDowncast( writer, listReversed, element ) {
 				if ( listReversed ) {
 					writer.setAttribute( 'reversed', 'reversed', element );
@@ -213,6 +293,10 @@ function createAttributeStrategies( enabledProperties ) {
 
 			appliesToListItem( item ) {
 				return item.getAttribute( 'listType' ) == 'numbered';
+			},
+
+			hasValidAttribute( item ) {
+				return item.hasAttribute( 'listStart' );
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {
