@@ -537,6 +537,24 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 					expect( test.reconvertSpy.callCount ).to.equal( 0 );
 				} );
+
+				it( 'insert with attributes in a specific order', () => {
+					test.insert(
+						modelList( `
+							<paragraph>p</paragraph>
+							[<paragraph listIndent="0" listItemId="a" listType="bulleted" listStyle="circle">a</paragraph>
+							<paragraph listIndent="0" listItemId="b" listType="bulleted" listStyle="circle">b</paragraph>
+							<paragraph listIndent="0" listItemId="c" listType="bulleted" listStyle="circle">c</paragraph>]
+						` ),
+
+						'<p>p</p>' +
+						'<ul style="list-style-type:circle">' +
+							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
+							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
+						'</ul>'
+					);
+				} );
 			} );
 
 			describe( 'remove', () => {

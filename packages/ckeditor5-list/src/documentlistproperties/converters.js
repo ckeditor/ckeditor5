@@ -75,9 +75,7 @@ export function listPropertiesDowncastConverter( strategy, model ) {
 		const { writer, mapper, consumable } = conversionApi;
 		const listItem = data.item;
 
-		// Check and consume only the list properties attributes (the base list attributes are already consumed
-		// but should also trigger conversion of list properties).
-		if ( /*!LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) &&*/ !consumable.consume( listItem, evt.name ) ) {
+		if ( !consumable.consume( listItem, evt.name ) ) {
 			return;
 		}
 

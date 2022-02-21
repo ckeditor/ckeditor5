@@ -82,11 +82,10 @@ export default class DocumentListPropertiesEditing extends Plugin {
 				dispatcher.on( 'element:ul', listPropertiesUpcastConverter( strategy ) );
 			}
 		} );
+
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			for ( const strategy of strategies ) {
-				for ( const attributeName of [ /*...LIST_BASE_ATTRIBUTES,*/ strategy.attributeName ] ) {
-					dispatcher.on( `attribute:${ attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
-				}
+				dispatcher.on( `attribute:${ strategy.attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
 			}
 		} );
 

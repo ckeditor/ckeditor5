@@ -136,28 +136,24 @@ function viewToModelListAttributeConverter( strategy, dataFilter ) {
 // @returns {Function} Returns a conversion callback.
 function modelToViewListAttributeConverter( strategy, model ) {
 	return dispatcher => {
-		for ( const attributeName of [ /*...LIST_BASE_ATTRIBUTES,*/ strategy.attributeName ] ) {
-			dispatcher.on( `attribute:${ attributeName }`, ( evt, data, conversionApi ) => {
-				const { writer, mapper, consumable } = conversionApi;
-				const listItem = data.item;
+		dispatcher.on( `attribute:${ strategy.attributeName }`, ( evt, data, conversionApi ) => {
+			const { writer, mapper, consumable } = conversionApi;
+			const listItem = data.item;
 
-				// Check and consume only the list properties attributes (the base list attributes are already consumed
-				// but should also trigger conversion of list properties).
-				if ( /*!LIST_BASE_ATTRIBUTES.includes( data.attributeKey ) &&*/ !consumable.consume( listItem, evt.name ) ) {
-					return;
-				}
+			if ( !consumable.consume( listItem, evt.name ) ) {
+				return;
+			}
 
-				// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-				// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-				const viewElement = findMappedViewElement( listItem, mapper, model );
+			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
+			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
+			const viewElement = findMappedViewElement( listItem, mapper, model );
 
-				// Unwrap element from current list wrappers.
-				// unwrapListItemBlock( viewElement, strategy, writer );
+			// Unwrap element from current list wrappers.
+			// unwrapListItemBlock( viewElement, strategy, writer );
 
-				// Then wrap them with the new list wrappers.
-				wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
-			} );
-		}
+			// Then wrap them with the new list wrappers.
+			wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
+		} );
 	};
 }
 
