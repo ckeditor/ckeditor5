@@ -6,20 +6,18 @@
 /* global document */
 
 import DocumentListEditing from '../../../src/documentlist/documentlistediting';
-import { modelList } from '../_utils/utils';
 import stubUid from '../_utils/uid';
+import { modelList } from '../_utils/utils';
 
 import IndentEditing from '@ckeditor/ckeditor5-indent/src/indentediting';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import CodeBlockEditing from '@ckeditor/ckeditor5-code-block/src/codeblockediting';
-import { Paragraph } from 'ckeditor5/src/paragraph';
-
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
+import { Paragraph } from 'ckeditor5/src/paragraph';
 import { modelTable } from '@ckeditor/ckeditor5-table/tests/_utils/utils';
-
 import {
 	getData as getModelData,
 	setData as setModelData

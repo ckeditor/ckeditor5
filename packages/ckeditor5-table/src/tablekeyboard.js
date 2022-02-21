@@ -43,10 +43,8 @@ export default class TableKeyboard extends Plugin {
 		const viewDocument = view.document;
 
 		this.listenTo( viewDocument, 'arrowKey', ( ...args ) => this._onArrowKey( ...args ), { context: 'table' } );
-
 		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTabOnSelectedTable( ...args ), { context: 'figure' } );
-
-		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTab( ...args ), { context: 'td' } );
+		this.listenTo( viewDocument, 'tab', ( ...args ) => this._handleTab( ...args ), { context: [ 'th', 'td' ] } );
 	}
 
 	/**
@@ -54,10 +52,10 @@ export default class TableKeyboard extends Plugin {
 	 * when the table widget is selected.
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTabOnSelectedTable( eventInfo, domEventData ) {
+	_handleTabOnSelectedTable( bubblingEventInfo, domEventData ) {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 		const selectedElement = selection.getSelectedElement();
@@ -68,7 +66,7 @@ export default class TableKeyboard extends Plugin {
 
 		domEventData.preventDefault();
 		domEventData.stopPropagation();
-		eventInfo.stop();
+		bubblingEventInfo.stop();
 
 		editor.model.change( writer => {
 			writer.setSelection( writer.createRangeIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
@@ -76,14 +74,14 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Returns a handler for {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * Returns a handler for {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 *
 	 * @private
-	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/bubblingeventinfo~BubblingEventInfo} bubblingEventInfo
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
 	 */
-	_handleTab( eventInfo, domEventData ) {
+	_handleTab( bubblingEventInfo, domEventData ) {
 		const editor = this.editor;
 
 		const selection = editor.model.document.selection;
@@ -101,7 +99,7 @@ export default class TableKeyboard extends Plugin {
 
 		domEventData.preventDefault();
 		domEventData.stopPropagation();
-		eventInfo.stop();
+		bubblingEventInfo.stop();
 
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;

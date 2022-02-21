@@ -83,6 +83,7 @@ describe( 'Indent MultiCommand integrations', () => {
 			commandSpies.indentBlock = sinon.spy( indentBlockCommand, 'execute' );
 			commandSpies.outdentBlock = sinon.spy( outdentBlockCommand, 'execute' );
 		} );
+
 		describe( 'indent command', () => {
 			describe( 'collapsed selection', () => {
 				it( 'should execute the indentBlock command if cannot indent a list item (start of a list)', () => {
@@ -169,7 +170,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'should indent a list item if proceeded by a list item with the same indent', () => {
+				it( 'should indent a list item if preceded by a list item with the same indent', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -190,7 +191,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'should indent a list item if proceeded by a list item with higher indent', () => {
+				it( 'should indent a list item if preceded by a list item with higher indent', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -257,7 +258,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'should indent a list item with it\'s blocks', () => {
+				it( 'should indent a list item with its blocks', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -280,7 +281,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'should indent a list item with it\'s blocks and nested list items', () => {
+				it( 'should indent a list item with its blocks and nested list items', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -305,7 +306,7 @@ describe( 'Indent MultiCommand integrations', () => {
 					} );
 				} );
 
-				it( 'should indent a list item with it\'s blocks and nested multi-block list items', () => {
+				it( 'should indent a list item with its blocks and nested multi-block list items', () => {
 					runTest( {
 						input: [
 							'* A',
@@ -485,7 +486,7 @@ describe( 'Indent MultiCommand integrations', () => {
 
 		describe( 'outdent command', () => {
 			describe( 'collapsed selection', () => {
-				it( 'no command should be executed', () => {
+				it( 'no command should be executed when outside list', () => {
 					runTest( {
 						input: [
 							'A[]'

@@ -219,6 +219,10 @@ export default class CodeBlockEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
+			// Priority is highest due to integration with `IndentList` command of `List` plugin.
+			// If selection is in a code block we give priority to it. This way list item cannot be indented
+			// but if we would give priority to indenting list item then user would have to indent list item
+			// as much as possible and only then he could indent code block.
 			indent.registerChildCommand( commands.get( 'indentCodeBlock' ), { priority: 'highest' } );
 		}
 

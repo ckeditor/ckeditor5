@@ -6,8 +6,8 @@
 /* globals document */
 
 import TabObserver from '../../../src/view/observer/tabobserver';
-import View from '../../..//src/view/view';
-import createViewRoot from '../../..//tests/view/_utils/createroot';
+import View from '../../../src/view/view';
+import createViewRoot from '../../../tests/view/_utils/createroot';
 
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -54,6 +54,7 @@ describe( 'TabObserver', () => {
 
 		it( 'should stop keydown event when tab event is stopped', () => {
 			const keydownSpy = sinon.spy();
+
 			viewDocument.on( 'keydown', keydownSpy );
 			viewDocument.on( 'tab', evt => evt.stop() );
 
@@ -66,11 +67,12 @@ describe( 'TabObserver', () => {
 
 		it( 'should not stop keydown event when tab event is not stopped', () => {
 			const keydownSpy = sinon.spy();
+
 			viewDocument.on( 'keydown', keydownSpy );
-			viewDocument.on( 'tab', evt => evt.stop() );
+			viewDocument.on( 'tab', () => { } );
 
 			viewDocument.fire( 'keydown', {
-				keyCode: getCode( 'x' )
+				keyCode: getCode( 'Tab' )
 			} );
 
 			sinon.assert.calledOnce( keydownSpy );

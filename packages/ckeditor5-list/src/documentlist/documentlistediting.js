@@ -111,6 +111,7 @@ export default class DocumentListEditing extends Plugin {
 		this._setupConversion();
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
+		this._setupTabIntegration();
 	}
 
 	/**
@@ -123,10 +124,14 @@ export default class DocumentListEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
+			// Priority is high due to integration with `IndentBlock` plugin. We want to indent list first and if it's not possible
+			// user can indent content with `IndentBlock` plugin.
 			indent.registerChildCommand( commands.get( 'indentList' ), { priority: 'high' } );
 		}
 
 		if ( outdent ) {
+			// Priority is lowest due to integration with `IndentBlock` and `IndentCode` plugins.
+			// First we want to allow user to undo all changes he made with other plugins and finally we can oudent list item.
 			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
 	}
@@ -285,19 +290,6 @@ export default class DocumentListEditing extends Plugin {
 			}
 		}, { context: 'li' } );
 
-		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
-			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
-			const command = this.editor.commands.get( commandName );
-
-			if ( command.isEnabled ) {
-				editor.execute( commandName );
-
-				data.stopPropagation();
-				data.preventDefault();
-				evt.stop();
-			}
-		}, { context: 'li' } );
-
 		// In some cases, after the default block splitting, we want to modify the new block to become a new list item
 		// instead of an additional block in the same list item.
 		this.listenTo( enterCommand, 'afterExecute', () => {
@@ -325,6 +317,29 @@ export default class DocumentListEditing extends Plugin {
 				splitCommand.execute();
 			}
 		} );
+	}
+
+	/**
+	 * Attaches a listener to the {@link module:engine/view/document~Document#tab:tab} event and handles tab key and tab+shift keys presses
+	 * in document lists.
+	 *
+	 * @private
+	 */
+	_setupTabIntegration() {
+		const editor = this.editor;
+
+		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
+			const command = this.editor.commands.get( commandName );
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				data.stopPropagation();
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li' } );
 	}
 }
 

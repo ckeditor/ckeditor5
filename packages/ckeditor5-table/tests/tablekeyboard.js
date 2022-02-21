@@ -273,8 +273,6 @@ describe( 'TableKeyboard', () => {
 						priority: 'high'
 					} );
 
-				editor.keystrokes.set( 'Tab', ( data, cancel ) => cancel() );
-
 				setModelData( model, modelTable( [
 					[ '11[]', '12' ]
 				] ) );
@@ -2815,7 +2813,7 @@ describe( 'TableKeyboard', () => {
 							] ) );
 						} );
 
-						it( 'should not move the caret if it\'s 2 characters before the last space in the line next to last one', () => {
+						it( 'should not move the caret if its 2 characters before the last space in the line next to last one', () => {
 							setModelData( model, modelTable( [
 								[ '00', '01', '02' ],
 								[ '10', text.substring( 0, text.length - 2 ) + '[]od word word word', '12' ],
