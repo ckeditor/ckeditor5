@@ -553,8 +553,8 @@ export default class Differ {
 	}
 
 	/**
-	 * Marks given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted in the differ changes
-	 * set, so it will be effectively re-converted when differ changes will be handled by a dispatcher.
+	 * Marks the given `item` in differ to be "refreshed". It means that the item will be marked as removed and inserted
+	 * in the differ changes set, so it will be effectively re-converted when the differ changes are handled by a dispatcher.
 	 *
 	 * @protected
 	 * @param {module:engine/model/item~Item} item Item to refresh.

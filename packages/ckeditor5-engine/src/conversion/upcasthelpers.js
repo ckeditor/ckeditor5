@@ -12,7 +12,7 @@ import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { isParagraphable, wrapInParagraph } from '../model/utils/autoparagraphing';
 
 /**
- * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
+ * Contains the {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}.
  *
  * @module engine/conversion/upcasthelpers
