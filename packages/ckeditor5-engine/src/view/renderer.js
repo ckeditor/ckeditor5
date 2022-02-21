@@ -12,7 +12,7 @@
 import ViewText from './text';
 import ViewPosition from './position';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, startsWithFiller, isInlineFiller } from './filler';
-import { getDomSelection } from './observer/selectionobserver';
+import { getDomSelection, getActiveElement } from './observer/selectionobserver';
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
@@ -891,7 +891,7 @@ export default class Renderer {
 	 */
 	_removeDomSelection() {
 		for ( const doc of this.domDocuments ) {
-			const activeDomElement = doc.activeElement;
+			const activeDomElement = getActiveElement( doc );
 			const domSelection = getDomSelection( activeDomElement );
 
 			if ( domSelection.rangeCount ) {

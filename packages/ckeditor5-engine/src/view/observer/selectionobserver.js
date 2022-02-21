@@ -16,6 +16,40 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 import isShadowRoot from '@ckeditor/ckeditor5-utils/src/dom/isshadowroot';
 
+// TODO
+const webkitDomSelectionProxy = {
+	rangeFromBeforeInput: null,
+
+	get( target, propKey ) {
+		switch ( propKey ) {
+			case 'getRangeAt':
+				return () => this.rangeFromBeforeInput;
+			case 'rangeCount':
+				return Number( !!this.rangeFromBeforeInput );
+			case 'anchorNode':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.startContainer : null;
+			case 'anchorOffset':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.startOffset : null;
+			case 'focusNode':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.endContainer : null;
+			case 'focusOffset':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.endOffset : null;
+			case 'isCollapsed':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.collapsed : true;
+			case 'removeAllRanges':
+				return () => {
+					this.rangeFromBeforeInput = null;
+
+					target.removeAllRanges();
+				};
+
+			// Pass other methods through.
+			default:
+				return ( ...args ) => target[ propKey ]( ...args );
+		}
+	}
+};
+
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
  * observer checks if there are any mutations and if the DOM selection is different from the
@@ -153,6 +187,48 @@ export default class SelectionObserver extends Observer {
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
 
+		if ( !env.features.isShadowDOMSelectionSupported && !env.isGecko ) {
+			let isSelectionChangeInProgress = false;
+
+			this.listenTo( domDocument, 'selectionchange', () => {
+				// Can't check this earlier. domElement is disconnected when observer() is called.
+				if ( !isShadowRoot( domElement.getRootNode() ) ) {
+					return;
+				}
+
+				if ( isSelectionChangeInProgress ) {
+					return;
+				}
+
+				// Selectionchange outside the editing root (e.g. editor UI input or outside the editor).
+				if ( !this.view.document.isFocused ) {
+					return;
+				}
+
+				isSelectionChangeInProgress = true;
+
+				global.document.execCommand( 'outdent' );
+
+				isSelectionChangeInProgress = false;
+			}, { priority: 'highest', useCapture: true } );
+
+			this.listenTo( domDocument, 'beforeinput', ( evt, domEvt ) => {
+				if ( !isSelectionChangeInProgress ) {
+					return;
+				}
+
+				if ( domEvt.inputType !== 'formatOutdent' ) {
+					return;
+				}
+
+				// TODO: Some elegant architecture needed here.
+				webkitDomSelectionProxy.rangeFromBeforeInput = domEvt.getTargetRanges()[ 0 ];
+
+				domEvt.preventDefault();
+				domEvt.stopImmediatePropagation();
+			}, { priority: 'highest', useCapture: true } );
+		}
+
 		this._documents.add( domDocument );
 	}
 
@@ -255,46 +331,19 @@ export default class SelectionObserver extends Observer {
 	}
 }
 
-const webkitSelectionProxyHandler = {
-	_beforeInputRange: null,
-
-	get( target, propKey ) {
-		switch ( propKey ) {
-			case 'getRangeAt':
-				return () => this._beforeInputRange;
-			case 'rangeCount':
-				return Number( !!this._beforeInputRange );
-			case 'anchorNode':
-				return this._beforeInputRange ? this._beforeInputRange.startContainer : null;
-			case 'anchorOffset':
-				return this._beforeInputRange ? this._beforeInputRange.startOffset : null;
-			case 'focusNode':
-				return this._beforeInputRange ? this._beforeInputRange.endContainer : null;
-			case 'focusOffset':
-				return this._beforeInputRange ? this._beforeInputRange.endOffset : null;
-			case 'isCollapsed':
-				return this._beforeInputRange ? this._beforeInputRange.collapsed : true;
-			case 'removeAllRanges':
-				return () => {
-					this._beforeInputRange = null;
-
-					target.removeAllRanges();
-				};
-
-			// Pass other methods through.
-			default:
-				return ( ...args ) => target[ propKey ]( ...args );
-		}
-	}
-};
-
+/**
+ * TODO
+ *
+ * @param {Node} domNode
+ * @returns {Selection|Proxy}
+ */
 export function getDomSelection( domNode ) {
-	const domRootNode = domNode.getRootNode();
+	const domNodeRoot = domNode.getRootNode();
 
-	if ( isShadowRoot( domRootNode ) ) {
+	if ( isShadowRoot( domNodeRoot ) ) {
 		// Chrome.
 		if ( env.features.isShadowDOMSelectionSupported ) {
-			return domRootNode.getSelection();
+			return domNodeRoot.getSelection();
 		}
 
 		if ( env.isGecko ) {
@@ -302,43 +351,26 @@ export function getDomSelection( domNode ) {
 		}
 
 		// Safari.
-		return new Proxy( global.document.defaultView.getSelection(), webkitSelectionProxyHandler );
+		return new Proxy( global.document.defaultView.getSelection(), webkitDomSelectionProxy );
 	} else {
 		return global.document.getSelection();
 	}
 }
 
-if ( !env.features.isShadowDOMSelectionSupported && !env.isGecko ) {
-	let isSelectionChangeInProgress = false;
+/**
+ * TODO
+ *
+ * @param {Document} domDocument
+ * @returns {HTMLElement|null}
+ */
+export function getActiveElement( domDocument ) {
+	const activeElement = domDocument.activeElement;
 
-	global.document.addEventListener( 'selectionchange', () => {
-		if ( isSelectionChangeInProgress ) {
-			return;
-		}
+	if ( activeElement.shadowRoot ) {
+		return activeElement.shadowRoot.activeElement;
+	}
 
-		isSelectionChangeInProgress = true;
-
-		global.document.execCommand( 'outdent' );
-
-		isSelectionChangeInProgress = false;
-	}, true );
-
-	global.document.addEventListener( 'beforeinput', event => {
-		if ( !isSelectionChangeInProgress ) {
-			return;
-		}
-
-		if ( event.inputType !== 'formatOutdent' ) {
-			return;
-		}
-
-		const range = event.getTargetRanges()[ 0 ];
-
-		webkitSelectionProxyHandler._beforeInputRange = range;
-
-		event.preventDefault();
-		event.stopImmediatePropagation();
-	}, true );
+	return activeElement;
 }
 
 /**
