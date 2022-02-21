@@ -15,6 +15,7 @@ import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobser
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
+import ArrowKeysObserver from '../../../src/view/observer/arrowkeysobserver';
 import ViewRange from '../../../src/view/range';
 import ViewElement from '../../../src/view/element';
 import ViewContainerElement from '../../../src/view/containerelement';
@@ -89,6 +90,7 @@ describe( 'view', () => {
 		expect( view.getObserver( TabObserver ) ).to.be.instanceof( TabObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
 		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
+		expect( view.getObserver( ArrowKeysObserver ) ).to.be.instanceof( ArrowKeysObserver );
 	} );
 
 	it( 'should add InputObserver on Android devices', () => {
