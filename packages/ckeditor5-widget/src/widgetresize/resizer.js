@@ -225,7 +225,7 @@ export default class Resizer {
 		const domWrapper = this._domResizerWrapper;
 
 		// Refresh only if resizer exists in the DOM.
-		if ( !existsInDom( domWrapper ) ) {
+		if ( !domWrapper.isConnected ) {
 			return;
 		}
 
@@ -484,8 +484,4 @@ function extractCoordinates( event ) {
 		x: event.pageX,
 		y: event.pageY
 	};
-}
-
-function existsInDom( element ) {
-	return element && element.ownerDocument && element.ownerDocument.contains( element );
 }

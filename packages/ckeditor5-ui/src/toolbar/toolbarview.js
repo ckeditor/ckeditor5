@@ -750,7 +750,7 @@ class DynamicGrouping {
 		// from DOM. DOMRects won't work anyway and there will be tons of warning in the console and
 		// nothing else. This happens, for instance, when the toolbar is detached from DOM and
 		// some logic adds or removes its #items.
-		if ( !this.viewElement.ownerDocument.body.contains( this.viewElement ) ) {
+		if ( !this.viewElement.isConnected ) {
 			return;
 		}
 
