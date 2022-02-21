@@ -15,6 +15,7 @@ import TableEditing from '../src/tableediting';
 import TableUtils from '../src/tableutils';
 
 import { modelTable } from './_utils/utils';
+import TableWalker from '../src/tablewalker';
 
 describe( 'TableUtils', () => {
 	let editor, model, root, tableUtils;
@@ -2367,6 +2368,39 @@ describe( 'TableUtils - selection methods', () => {
 			} );
 
 			expect( tableUtils.getSelectionAffectedTableCells( selection ) ).to.be.empty;
+		} );
+	} );
+
+	describe( 'createTableWalker()', () => {
+		// More tests for the table walker are available in tests/tablewalker.js.
+		it( 'should create a table walker', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const walker = tableUtils.createTableWalker( editor.model.document.getRoot().getChild( 0 ) );
+
+			expect( walker ).to.be.instanceof( TableWalker );
+
+			const result = [ ...walker ].map( tableSlot => {
+				const { row, column, rowIndex, cell } = tableSlot;
+
+				return {
+					row,
+					column,
+					rowIndex,
+					data: cell && cell.getChild( 0 ).getChild( 0 ).data,
+					index: tableSlot.getPositionBefore().offset
+				};
+			} );
+
+			expect( result ).to.deep.equal( [
+				{ row: 0, column: 0, rowIndex: 0, index: 0, data: '00' },
+				{ row: 0, column: 1, rowIndex: 0, index: 1, data: '01' },
+				{ row: 1, column: 0, rowIndex: 1, index: 0, data: '10' },
+				{ row: 1, column: 1, rowIndex: 1, index: 1, data: '11' }
+			] );
 		} );
 	} );
 } );
