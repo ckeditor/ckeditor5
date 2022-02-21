@@ -186,6 +186,9 @@ class EditorComponent extends HTMLElement {
 	_setupContentContainer() {
 		const contentContainer = this.querySelector( '.editor-content' );
 
+		// DEV
+		contentContainer.innerHTML = document.querySelector( '.editor-content-fixture' ).innerHTML;
+
 		this.shadowRoot.appendChild( contentContainer );
 
 		return contentContainer;
@@ -200,7 +203,7 @@ class EditorComponent extends HTMLElement {
 
 		style.innerHTML = `
 			:host {
-				font-family: "Comic Sans MS", "Comic Sans", cursive;
+				font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 			}
 
 			:host > *.ck {
