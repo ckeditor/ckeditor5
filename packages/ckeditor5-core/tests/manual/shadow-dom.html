@@ -1,22 +1,24 @@
 <head>
 	<style>
 		body {
-			max-width: 800px;
+			max-width: 960px;
 			margin: 20px auto;
 		}
 
 		/* stylelint-disable-next-line */
-		ck-editor {
+		ck-editor-classic, ck-editor-inline, ck-editor-balloon {
 			display: block;
 			background: hsl(0, 0%, 93%);
-			border: 1px solid hsl(0, 0%, 87%);
-			padding: 20px;
+			padding: 30px;
+			margin-bottom: 50px;
+			box-shadow: 0 0 8px hsl(0deg 0% 0% / 44%) inset;
+			border-radius: 10px;
 		}
 	</style>
 </head>
 
-<ck-editor>
-	<div id="editor-element">
+<ck-editor-classic>
+	<div class="editor-content">
 		<h2>Heading 1</h2>
 		<p>Paragraph</p>
 		<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
@@ -41,5 +43,61 @@
 			<p>Quote</p>
 		</blockquote>
 	</div>
-</ck-editor>
+</ck-editor-classic>
+
+<ck-editor-inline>
+	<div class="editor-content">
+		<h2>Heading 1</h2>
+		<p>Paragraph</p>
+		<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+		<ul>
+			<li>UL List item 1</li>
+			<li>UL List item 2</li>
+		</ul>
+		<ol>
+			<li>OL List item 1</li>
+			<li>OL List item 2</li>
+		</ol>
+		<figure class="image image-style-side">
+			<img alt="bar" src="sample.jpg">
+			<figcaption>Caption</figcaption>
+		</figure>
+		<blockquote>
+			<p>Quote</p>
+			<ul>
+				<li>Quoted UL List item 1</li>
+				<li>Quoted UL List item 2</li>
+			</ul>
+			<p>Quote</p>
+		</blockquote>
+	</div>
+</ck-editor-inline>
+
+<ck-editor-balloon>
+	<div class="editor-content">
+		<h2>Heading 1</h2>
+		<p>Paragraph</p>
+		<p><strong>Bold</strong> <i>Italic</i> <a href="https://ckeditor.com">Link</a></p>
+		<ul>
+			<li>UL List item 1</li>
+			<li>UL List item 2</li>
+		</ul>
+		<ol>
+			<li>OL List item 1</li>
+			<li>OL List item 2</li>
+		</ol>
+		<figure class="image image-style-side">
+			<img alt="bar" src="sample.jpg">
+			<figcaption>Caption</figcaption>
+		</figure>
+		<blockquote>
+			<p>Quote</p>
+			<ul>
+				<li>Quoted UL List item 1</li>
+				<li>Quoted UL List item 2</li>
+			</ul>
+			<p>Quote</p>
+		</blockquote>
+	</div>
+</ck-editor-balloon>
 
