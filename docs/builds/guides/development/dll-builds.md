@@ -23,7 +23,7 @@ DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plu
 CKEditor 5 comes with ready-to-use DLL builds. These builds are added to the NPM packages and they are available inside the `/build` directory of each package.
 
 <info-box>
-	For simplicity reasons, this guide does not include any collaboration features. If you are interested in adding these features, please check {@link builds/guides/development/dll-builds-collaboration-features how to use CKEditor5 Collaboration Features with DLLs} after reading this guide.
+	For simplicity reasons, this guide does not include any collaboration features. If you are interested in adding these features, please check the {@link builds/guides/development/dll-builds-collaboration-features DLL builds for CKEditor 5 Collaboration Features} guide after reading this one.
 </info-box>
 
 ## Anatomy of a DLL build
