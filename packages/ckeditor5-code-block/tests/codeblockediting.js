@@ -223,6 +223,40 @@ describe( 'CodeBlockEditing', () => {
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
+
+		it( 'should not call indent block command when outside `pre` context', () => {
+			const indentBlockCommand = editor.commands.get( 'indentBlock' );
+			const indentBlockCommandSpy = sinon.spy( indentBlockCommand, 'execute' );
+
+			setModelData( model,
+				'<paragraph>[]foo</paragraph>',
+				'<codeBlock language="plaintext">bar</codeBlock>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( indentBlockCommandSpy );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not call outdent block command when outside `pre` context', () => {
+			const outdentBlockCommand = editor.commands.get( 'outdentBlock' );
+			const outdentBlockCommandSpy = sinon.spy( outdentBlockCommand, 'execute' );
+
+			domEvtDataStub.shiftKey = true;
+
+			setModelData( model,
+				'<paragraph>[]foo</paragraph>',
+				'<codeBlock language="plaintext">bar</codeBlock>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( outdentBlockCommandSpy );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
 	} );
 
 	describe( 'enter key handling', () => {

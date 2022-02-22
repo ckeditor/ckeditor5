@@ -24,7 +24,6 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
-import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 describe( 'TableKeyboard', () => {
 	let editor, model, modelRoot, tableSelection, tableKeyboard, selection, editorElement;
@@ -259,32 +258,184 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 
-			it( 'should listen with the lower priority than its children', () => {
-				// Cancel TAB event.
-				const emitter = Object.create( EmitterMixin );
-
-				emitter.listenTo( editor.editing.view.document, 'tab',
-					( eventInfo, domEventData ) => {
-						domEventData.preventDefault();
-						domEventData.stopPropagation();
-						eventInfo.stop();
-					}, {
-						context: 'td',
-						priority: 'high'
-					} );
-
+			it( 'should handle tab press when in table cell and create a new row', () => {
 				setModelData( model, modelTable( [
-					[ '11[]', '12' ]
+					[ '11', '12[]' ]
 				] ) );
 
-				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
-					[ '11[]', '12' ]
+					[ '11', '12' ],
+					[ '[]', '' ]
 				] ) );
+			} );
+
+			it( 'should handle tab press when in table header and create a new row', () => {
+				setModelData( model,
+					modelTable(
+						[
+							[ '11', '12[]' ]
+						],
+						{
+							headingRows: 1
+						}
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '11', '12' ],
+					[ '[]', '' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should not handle tab if it was handled by a listener with higher priority', () => {
+				setModelData( model,
+					modelTable(
+						[
+							[ '11', '12[]' ]
+						],
+						{ headingRows: 1 }
+					) );
+
+				editor.editing.view.document.on(
+					'tab',
+					( bubblingEventInfo, domEventData ) => {
+						domEventData.preventDefault();
+						domEventData.stopPropagation();
+						bubblingEventInfo.stop();
+					},
+					{
+						context: [ 'th', 'td' ],
+						priority: 'high'
+					}
+				);
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '11', '12[]' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should handle event over other listeners with lower priority', () => {
+				const lowerPriorityListenerSpy = sinon.spy();
+
+				setModelData( model, modelTable( [
+					[ '11', '12[]' ]
+				], { headingRows: 1 } ) );
+
+				editor.editing.view.document.on(
+					'tab',
+					lowerPriorityListenerSpy,
+					{
+						context: [ 'th', 'td' ],
+						priority: 'low'
+					}
+				);
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				sinon.assert.notCalled( lowerPriorityListenerSpy );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ '11', '12' ],
+					[ '[]', '' ]
+				], { headingRows: 1 } ) );
+			} );
+
+			it( 'should select whole next table cell if selection is in table header', () => {
+				const innerTable = modelTable( [
+					[ '' ]
+				] );
+
+				setModelData( model,
+					modelTable( [
+						[ innerTable + '<paragraph>[]A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
+						[ 'C', 'D' ]
+					],
+					{ headingColumns: 1 }
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ innerTable + '<paragraph>A</paragraph>', '[' + innerTable + '<paragraph>B]</paragraph>' ],
+					[ 'C', 'D' ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'should select whole next table cell if selection is in table data cell', () => {
+				const innerTable = modelTable( [
+					[ '' ]
+				] );
+
+				setModelData( model,
+					modelTable(
+						[
+							[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B[]</paragraph>' ],
+							[ 'C', 'D' ]
+						],
+						{ headingColumns: 1 }
+					) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
+					[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
+					[ '[C]', 'D' ]
+				], { headingColumns: 1 } ) );
+			} );
+
+			it( 'tab handler should execute at target and create a new cell in table header', () => {
+				const innerTable = modelTable( [
+					[ 'A[]' ]
+				] );
+
+				const innerTableOutput = modelTable( [
+					[ 'A' ],
+					[ '[]' ]
+				] );
+
+				setModelData( model, modelTable(
+					[
+						[ innerTable, 'B' ],
+						[ 'C', 'D' ]
+					],
+					{ headingColumns: 1 }
+				) );
+
+				editor.editing.view.document.fire( 'tab', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+				expect( getModelData( model ) ).to.equalMarkup(
+					modelTable(
+						[
+							[ innerTableOutput, 'B' ],
+							[ 'C', 'D' ]
+						],
+						{ headingColumns: 1 }
+					) );
 			} );
 
 			describe( 'on table widget selected', () => {
@@ -431,6 +582,16 @@ describe( 'TableKeyboard', () => {
 				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
 					[ '<paragraph>[foo</paragraph><imageBlock><caption></caption></imageBlock>]', 'bar' ]
 				] ) );
+			} );
+		} );
+
+		describe( 'tab listeners', () => {
+			describe( 'handling tab when selection is in cell (th and td context)', () => {
+
+			} );
+
+			describe( 'tab handling when whole table is selected (figure context)', () => {
+
 			} );
 		} );
 	} );
