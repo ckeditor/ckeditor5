@@ -5,6 +5,7 @@
 
 import {
 	expandListBlocksToCompleteItems,
+	expandListBlocksToCompleteList,
 	getAllListItemBlocks,
 	getListItemBlocks,
 	getListItems,
@@ -903,6 +904,141 @@ describe( 'DocumentList - utils - model', () => {
 			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 4 ) );
 			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 5 ) );
 			expect( blocks[ 5 ] ).to.equal( fragment.getChild( 6 ) );
+		} );
+	} );
+
+	describe( 'expandListBlocksToCompleteList()', () => {
+		it( 'should not include anything (no blocks given)', () => {
+			let blocks = [];
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			expect( blocks.length ).to.equal( 0 );
+		} );
+
+		it( 'should include all list item (single item given)', () => {
+			const input = modelList( [
+				'* a',
+				'* b', // this one
+				'* c',
+				'* d'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let blocks = [
+				fragment.getChild( 1 )
+			];
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			expect( blocks.length ).to.equal( 4 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 3 ) );
+		} );
+
+		it( 'should include all list item (two items given)', () => {
+			const input = modelList( [
+				'* a',
+				'* b', // this
+				'* c',
+				'* d' // and this
+			] );
+
+			const fragment = parseModel( input, schema );
+			let blocks = [
+				fragment.getChild( 1 ),
+				fragment.getChild( 3 )
+			];
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			expect( blocks.length ).to.equal( 4 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 3 ) );
+		} );
+
+		it( 'should include all list item (part of list item given)', () => {
+			const input = modelList( [
+				'* a',
+				'* b',
+				'  c', // this one
+				'* d',
+				'  e'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let blocks = [
+				fragment.getChild( 2 )
+			];
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			expect( blocks.length ).to.equal( 5 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 0 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 1 ) );
+			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 4 ) );
+		} );
+
+		it( 'should include all list item of nested list', () => {
+			const input = modelList( [
+				'* a',
+				'* b',
+				'  # b1',
+				'  # b2', // this one
+				'  # b3',
+				'* c',
+				'* d'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let blocks = [
+				fragment.getChild( 3 )
+			];
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			expect( blocks.length ).to.equal( 3 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 4 ) );
+		} );
+
+		it( 'should include all list item from many lists', () => {
+			const input = modelList( [
+				'* a',
+				'* b',
+				'  # b1', // this
+				'    * b1a', // and this
+				'    * b1b',
+				'      # b1b1',
+				'    * b1c',
+				'  # b2',
+				'  # b3',
+				'* c',
+				'* d'
+			] );
+
+			const fragment = parseModel( input, schema );
+			let blocks = [
+				fragment.getChild( 2 ),
+				fragment.getChild( 3 )
+			];
+
+			blocks = expandListBlocksToCompleteList( blocks );
+
+			expect( blocks.length ).to.equal( 6 );
+			expect( blocks[ 0 ] ).to.equal( fragment.getChild( 2 ) );
+			expect( blocks[ 1 ] ).to.equal( fragment.getChild( 3 ) );
+			expect( blocks[ 2 ] ).to.equal( fragment.getChild( 4 ) );
+			expect( blocks[ 3 ] ).to.equal( fragment.getChild( 6 ) );
+			expect( blocks[ 4 ] ).to.equal( fragment.getChild( 7 ) );
+			expect( blocks[ 5 ] ).to.equal( fragment.getChild( 8 ) );
 		} );
 	} );
 
