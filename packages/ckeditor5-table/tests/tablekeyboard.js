@@ -584,16 +584,6 @@ describe( 'TableKeyboard', () => {
 				] ) );
 			} );
 		} );
-
-		describe( 'tab listeners', () => {
-			describe( 'handling tab when selection is in cell (th and td context)', () => {
-
-			} );
-
-			describe( 'tab handling when whole table is selected (figure context)', () => {
-
-			} );
-		} );
 	} );
 
 	describe( 'Arrow keys handling', () => {
