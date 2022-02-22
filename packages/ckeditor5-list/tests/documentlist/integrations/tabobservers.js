@@ -1500,6 +1500,106 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 				changedBlocks: [ 1, 2, 3 ]
 			} );
 		} );
+
+		it( 'table listener should capture event when list cannot be indented', () => {
+			const innerList = modelList( [
+				'* A[]'
+			] );
+
+			const innerOutputList = modelList( [
+				'* A {id:a00}'
+			] );
+
+			const inputTable = modelTable( [
+				[ innerList, 'bar' ]
+			] );
+
+			const outputTable = modelTable( [
+				[ innerOutputList, '[bar]' ]
+			] );
+
+			runTest( {
+				input: [
+					'* ' + inputTable
+				],
+				expected: [
+					'* ' + outputTable
+				],
+				domEventData: tabDomEventData,
+				eventStopped: true,
+				executedCommands: {
+					outdentList: 0,
+					indentList: 0
+				},
+				changedBlocks: [ ]
+			} );
+		} );
+
+		it( 'should indent list item in a table', () => {
+			const innerList = modelList( [
+				'* A',
+				'* B[]'
+			] );
+
+			const innerOutputList = modelList( [
+				'* A {id:a00}',
+				'  * B[]'
+			] );
+
+			const inputTable = modelTable( [
+				[ innerList, 'bar' ]
+			] );
+
+			const outputTable = modelTable( [
+				[ innerOutputList, 'bar' ]
+			] );
+
+			runTest( {
+				input: [
+					'* ' + inputTable
+				],
+				expected: [
+					'* ' + outputTable
+				],
+				domEventData: tabDomEventData,
+				eventStopped: true,
+				executedCommands: {
+					outdentList: 0,
+					indentList: 1
+				},
+				changedBlocks: [ 1 ]
+			} );
+		} );
+
+		it( 'should outdent list item in a table', () => {
+			const innerList = modelList( [
+				'* A[]'
+			] );
+
+			const inputTable = modelTable( [
+				[ innerList, 'bar' ]
+			] );
+
+			const outputTable = modelTable( [
+				[ 'A[]', 'bar' ]
+			] );
+
+			runTest( {
+				input: [
+					'* ' + inputTable
+				],
+				expected: [
+					'* ' + outputTable
+				],
+				domEventData: shiftTabDomEventData,
+				eventStopped: true,
+				executedCommands: {
+					outdentList: 1,
+					indentList: 0
+				},
+				changedBlocks: [ 0 ]
+			} );
+		} );
 	} );
 
 	// @param {Iterable.<String>} input
