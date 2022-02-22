@@ -225,7 +225,7 @@ export default class Resizer {
 		const domWrapper = this._domResizerWrapper;
 
 		// Refresh only if resizer exists in the DOM.
-		if ( !domWrapper.isConnected ) {
+		if ( !domWrapper || !domWrapper.isConnected ) {
 			return;
 		}
 
