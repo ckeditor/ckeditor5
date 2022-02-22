@@ -98,7 +98,7 @@ To hide the warning (and use the basic configuration), provide an empty configur
 
 ```js
 ClassicEditor.create( document.querySelector( '#editor' ), {
-	// Other configurations...
+	// ...
 
 	comments: {
 		editorConfig: {}
