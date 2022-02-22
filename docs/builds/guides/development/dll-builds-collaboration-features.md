@@ -8,10 +8,20 @@ modified_at: 2022-02-21
 # CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
 
 <info-box>
-    This guide discusses using a DLL build together with CKEditor 5 Collaboration Features and is suplmental for the {@link builds/guides/development/dll-builds CKEditor 5 DLL builds guide}.
+    This guide discusses using a DLL build together with CKEditor 5 Collaboration Features and is supplemental for the {@link builds/guides/development/dll-builds CKEditor 5 DLL builds guide}.
 
     Make sure to read the {@link builds/guides/development/dll-builds base guide} first.
 </info-box>
+
+## Anatomy of a DLL build with CKEditor 5 collaboration features
+
+A DLL build of the editor consists of the following parts:
+
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations (`ckeditor5` on npm).
+* **Base DLL build for CKEditor 5 Collaboration Features**. It is a single JavaScript file that includes all necessary files for the Collaboration features packages and extends the base DLL for CKEditor 5 (`ckeditor5-collaboration` on NPM).
+* **DLL-compatible package builds**. Every package that is not part of the base DLL builds is built into a DLL-compatible JavaScript file (`@ckeditor/ckeditor5-*` on NPM) The CKEditor 5 Collaboration Features DLL builds are available in this format as well.
+
+In order to create an editor, you need to use the two base DLL builds plus several DLL-compatible package builds.
 
 ## Integrating CKEditor 5 Collaboration Features as DLL builds
 
@@ -41,34 +51,34 @@ Below is an example of an integration:
 
 <!-- Base DLL build. -->
 <!-- Note: It includes ckeditor5-paragraph too. -->
-<script src="path/to/ckeditor5/build/ckeditor5-dll.js"></script>
+<script src="path/to/node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- DLL-compatible build of ckeditor5-editor-classic. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
 
 <!-- DLL-compatible builds of editor features. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-autoformat/build/autoformat.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/basic-styles.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/block-quote.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-essentials/build/essentials.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/heading.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-image/build/image.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/indent.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-link/build/link.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-list/build/list.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/media-embed.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-table/build/table.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-cloud-services/build/cloud-services.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-watchdog/build/watchdog.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-cloud-services/build/cloud-services.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-watchdog/build/watchdog.js"></script>
 
 <!-- Base DLL build for Collaboration features -->
-<script src="path/to/ckeditor5-collaboration/build/ckeditor5-collaboration-dll.js"></script>
+<script src="path/to/node_modules/ckeditor5-collaboration/build/ckeditor5-collaboration-dll.js"></script>
 
 <!-- DLL-compatible builds of collaboration features. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-comments/build/comments.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-track-changes/build/track-changes.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-real-time-collaboration/build/real-time-collaboration.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-comments/build/comments.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-track-changes/build/track-changes.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-real-time-collaboration/build/real-time-collaboration.js"></script>
 
 <script>
 	const watchdog = new CKEditor5.watchdog.EditorWatchdog( Editor );
