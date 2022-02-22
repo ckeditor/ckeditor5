@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
 import DeleteObserver from './deleteobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import { getDomSelection } from '@ckeditor/ckeditor5-engine/src/view/observer/selectionobserver';
 
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
@@ -86,7 +87,7 @@ export default class Delete extends Plugin {
 			let domSelectionAfterDeletion = null;
 
 			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+				const domSelection = getDomSelection( data.domTarget );
 
 				domSelectionAfterDeletion = {
 					anchorNode: domSelection.anchorNode,
@@ -98,7 +99,7 @@ export default class Delete extends Plugin {
 
 			this.listenTo( viewDocument, 'keyup', ( evt, data ) => {
 				if ( domSelectionAfterDeletion ) {
-					const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
+					const domSelection = getDomSelection( data.domTarget );
 
 					domSelection.collapse( domSelectionAfterDeletion.anchorNode, domSelectionAfterDeletion.anchorOffset );
 					domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );

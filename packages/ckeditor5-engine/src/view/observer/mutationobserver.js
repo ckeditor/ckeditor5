@@ -13,6 +13,7 @@ import Observer from './observer';
 import ViewSelection from '../selection';
 import { startsWithFiller, getDataWithoutFiller } from '../filler';
 import { isEqualWith } from 'lodash-es';
+import { getDomSelection } from './selectionobserver';
 
 /**
  * Mutation observer class observes changes in the DOM, fires {@link module:engine/view/document~Document#event:mutations} event, mark view
@@ -224,7 +225,7 @@ export default class MutationObserver extends Observer {
 
 		// Retrieve `domSelection` using `ownerDocument` of one of mutated nodes.
 		// There should not be simultaneous mutation in multiple documents, so it's fine.
-		const domSelection = domMutations[ 0 ].target.ownerDocument.getSelection();
+		const domSelection = getDomSelection( domMutations[ 0 ].target );
 
 		let viewSelection = null;
 

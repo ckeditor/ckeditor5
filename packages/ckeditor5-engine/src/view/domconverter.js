@@ -22,6 +22,7 @@ import {
 	BR_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER, MARKED_NBSP_FILLER,
 	getDataWithoutFiller, isInlineFiller, startsWithFiller
 } from './filler';
+import { getActiveElement } from './observer/selectionobserver';
 
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -982,7 +983,7 @@ export default class DomConverter {
 	focus( viewEditable ) {
 		const domEditable = this.mapViewToDom( viewEditable );
 
-		if ( domEditable && domEditable.ownerDocument.activeElement !== domEditable ) {
+		if ( domEditable && getActiveElement( domEditable.ownerDocument ) !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
 			const scrollPositions = [];

@@ -358,7 +358,7 @@ class ResizeObserverPolyfill {
 	 * @returns {Boolean}
 	 */
 	_hasRectChanged( element ) {
-		if ( !element.ownerDocument.body.contains( element ) ) {
+		if ( !element.isConnected ) {
 			return false;
 		}
 

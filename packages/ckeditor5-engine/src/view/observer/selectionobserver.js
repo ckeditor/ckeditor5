@@ -12,6 +12,43 @@
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import isShadowRoot from '@ckeditor/ckeditor5-utils/src/dom/isshadowroot';
+
+// TODO
+const webkitDomSelectionProxy = {
+	rangeFromBeforeInput: null,
+
+	get( target, propKey ) {
+		switch ( propKey ) {
+			case 'getRangeAt':
+				return () => this.rangeFromBeforeInput;
+			case 'rangeCount':
+				return Number( !!this.rangeFromBeforeInput );
+			case 'anchorNode':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.startContainer : null;
+			case 'anchorOffset':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.startOffset : null;
+			case 'focusNode':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.endContainer : null;
+			case 'focusOffset':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.endOffset : null;
+			case 'isCollapsed':
+				return this.rangeFromBeforeInput ? this.rangeFromBeforeInput.collapsed : true;
+			case 'removeAllRanges':
+				return () => {
+					this.rangeFromBeforeInput = null;
+
+					target.removeAllRanges();
+				};
+
+			// Pass other methods through.
+			default:
+				return ( ...args ) => target[ propKey ]( ...args );
+		}
+	}
+};
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
@@ -142,13 +179,55 @@ export default class SelectionObserver extends Observer {
 		}
 
 		this.listenTo( domDocument, 'mouseup', endDocumentIsSelecting, { priority: 'highest' } );
-		this.listenTo( domDocument, 'selectionchange', ( evt, domEvent ) => {
-			this._handleSelectionChange( domEvent, domDocument );
+		this.listenTo( domDocument, 'selectionchange', () => {
+			this._handleSelectionChange();
 
 			// Defer the safety timeout when the selection changes (e.g. the user keeps extending the selection
 			// using their mouse).
 			this._documentIsSelectingInactivityTimeoutDebounced();
 		} );
+
+		if ( !env.features.isShadowDOMSelectionSupported && !env.isGecko ) {
+			let isSelectionChangeInProgress = false;
+
+			this.listenTo( domDocument, 'selectionchange', () => {
+				// Can't check this earlier. domElement is disconnected when observer() is called.
+				if ( !isShadowRoot( domElement.getRootNode() ) ) {
+					return;
+				}
+
+				if ( isSelectionChangeInProgress ) {
+					return;
+				}
+
+				// Selectionchange outside the editing root (e.g. editor UI input or outside the editor).
+				if ( !this.view.document.isFocused ) {
+					return;
+				}
+
+				isSelectionChangeInProgress = true;
+
+				global.document.execCommand( 'outdent' );
+
+				isSelectionChangeInProgress = false;
+			}, { priority: 'highest', useCapture: true } );
+
+			this.listenTo( domDocument, 'beforeinput', ( evt, domEvt ) => {
+				if ( !isSelectionChangeInProgress ) {
+					return;
+				}
+
+				if ( domEvt.inputType !== 'formatOutdent' ) {
+					return;
+				}
+
+				// TODO: Some elegant architecture needed here.
+				webkitDomSelectionProxy.rangeFromBeforeInput = domEvt.getTargetRanges()[ 0 ];
+
+				domEvt.preventDefault();
+				domEvt.stopImmediatePropagation();
+			}, { priority: 'highest', useCapture: true } );
+		}
 
 		this._documents.add( domDocument );
 	}
@@ -170,15 +249,14 @@ export default class SelectionObserver extends Observer {
 	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
-	 * @param {Event} domEvent DOM event.
-	 * @param {Document} domDocument DOM document.
 	 */
-	_handleSelectionChange( domEvent, domDocument ) {
+	_handleSelectionChange() {
 		if ( !this.isEnabled ) {
 			return;
 		}
 
-		const domSelection = domDocument.defaultView.getSelection();
+		// const domSelection = domDocument.defaultView.getSelection();
+		const domSelection = getDomSelection( this.view.getDomRoot() );
 
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
@@ -251,6 +329,48 @@ export default class SelectionObserver extends Observer {
 	_clearInfiniteLoop() {
 		this._loopbackCounter = 0;
 	}
+}
+
+/**
+ * TODO
+ *
+ * @param {Node} domNode
+ * @returns {Selection|Proxy}
+ */
+export function getDomSelection( domNode ) {
+	const domNodeRoot = domNode.getRootNode();
+
+	if ( isShadowRoot( domNodeRoot ) ) {
+		// Chrome.
+		if ( env.features.isShadowDOMSelectionSupported ) {
+			return domNodeRoot.getSelection();
+		}
+
+		if ( env.isGecko ) {
+			return global.document.defaultView.getSelection();
+		}
+
+		// Safari.
+		return new Proxy( global.document.defaultView.getSelection(), webkitDomSelectionProxy );
+	} else {
+		return global.document.getSelection();
+	}
+}
+
+/**
+ * TODO
+ *
+ * @param {Document} domDocument
+ * @returns {HTMLElement|null}
+ */
+export function getActiveElement( domDocument ) {
+	const activeElement = domDocument.activeElement;
+
+	if ( activeElement.shadowRoot ) {
+		return activeElement.shadowRoot.activeElement;
+	}
+
+	return activeElement;
 }
 
 /**

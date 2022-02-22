@@ -5,6 +5,8 @@
 
 /* globals navigator:false */
 
+import global from './dom/global';
+
 /**
  * @module utils/env
  */
@@ -87,7 +89,9 @@ const env = {
 		 *
 		 * @type {Boolean}
 		 */
-		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported()
+		isRegExpUnicodePropertySupported: isRegExpUnicodePropertySupported(),
+
+		isShadowDOMSelectionSupported: typeof global.window.ShadowRoot.prototype.getSelection === 'function'
 	}
 };
 
