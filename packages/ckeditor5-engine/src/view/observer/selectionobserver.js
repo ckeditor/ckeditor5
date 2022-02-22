@@ -7,7 +7,7 @@
  * @module engine/view/observer/selectionobserver
  */
 
-/* global setInterval, clearInterval */
+/* global Range, setInterval, clearInterval */
 
 import Observer from './observer';
 import MutationObserver from './mutationobserver';
@@ -222,7 +222,14 @@ export default class SelectionObserver extends Observer {
 				}
 
 				// TODO: Some elegant architecture needed here.
-				webkitDomSelectionProxy.rangeFromBeforeInput = domEvt.getTargetRanges()[ 0 ];
+				const [ targetRange ] = domEvt.getTargetRanges();
+				const range = new Range();
+
+				// getTargetRanges() returns a StaticRange (immutable) which causes problems in DomConverter.
+				range.setStart( targetRange.startContainer, targetRange.startOffset );
+				range.setEnd( targetRange.endContainer, targetRange.endOffset );
+
+				webkitDomSelectionProxy.rangeFromBeforeInput = range;
 
 				domEvt.preventDefault();
 				domEvt.stopImmediatePropagation();
