@@ -200,6 +200,28 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 }
 
 /**
+ * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
+ *
+ * @protected
+ * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.
+ * @param {Array.<String>} sameListDefiningAttributes The list of attributes that must be consistent among all items in the same list.
+ * @returns {Array.<module:engine/model/element~Element>}
+ */
+export function expandListBlocksToCompleteList( blocks, sameListDefiningAttributes ) {
+	blocks = toArray( blocks );
+
+	const allBlocks = new Set();
+
+	for ( const block of blocks ) {
+		for ( const itemBlock of getListItems( block, sameListDefiningAttributes ) ) {
+			allBlocks.add( itemBlock );
+		}
+	}
+
+	return sortBlocks( allBlocks );
+}
+
+/**
  * Splits the list item just before the provided list block.
  *
  * @protected

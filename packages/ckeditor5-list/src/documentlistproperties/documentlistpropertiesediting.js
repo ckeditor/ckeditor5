@@ -74,7 +74,6 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
-			documentListEditing.registerSameListDefiningAttributes( strategy.attributeName );
 			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );

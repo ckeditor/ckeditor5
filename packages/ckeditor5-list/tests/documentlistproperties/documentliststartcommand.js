@@ -311,7 +311,7 @@ describe( 'DocumentListStartCommand', () => {
 			` ) );
 		} );
 
-		it( 'should only set the `listStart` attribute for selected items (non-collapsed selection)', () => {
+		it( 'should set the `listStart` attribute for selected items (non-collapsed selection)', () => {
 			setData( model, modelList( `
 				# 1. {start:7}
 				# 2a.
@@ -325,17 +325,17 @@ describe( 'DocumentListStartCommand', () => {
 			listStartCommand.execute( { startIndex: 5 } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				# 1. {start:7}
-				# 2a. {start:5}
+				# 1. {start:5}
+				# 2a.
 				  [2b.
 				  2c.
 				# 3a].
 				  3b.
-				# 4. {start:7}
+				# 4.
 			` ) );
 		} );
 
-		it( 'should only set the `listStart` attribute for all blocks in the list item (non-collapsed selection)', () => {
+		it( 'should set the `listStart` attribute for all blocks in the list item (non-collapsed selection)', () => {
 			setData( model, modelList( `
 				# 1. {start:2}
 				# 2.
@@ -346,10 +346,10 @@ describe( 'DocumentListStartCommand', () => {
 			listStartCommand.execute( { startIndex: 5 } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				# 1. {start:2}
-				# 2. {start:5}
+				# 1. {start:5}
+				# 2.
 				  [3].
-				# 4. {start:2}
+				# 4.
 			` ) );
 		} );
 
@@ -360,13 +360,13 @@ describe( 'DocumentListStartCommand', () => {
 			// "2.1" a child list of the "2." element (listIndent=1)
 			// "2.1.1" a child list of the "2.1" element (listIndent=2)
 			//
-			// [ ] ■ 1.
+			// [x] ■ 1.
 			// [x] ■ [2.
 			// [x]     ○ 2.1.
 			// [X]         ▶ 2.1.1.]
-			// [ ]         ▶ 2.1.2.
-			// [ ]     ○ 2.2.
-			// [ ] ■ 3.
+			// [x]         ▶ 2.1.2.
+			// [x]     ○ 2.2.
+			// [x] ■ 3.
 			// [ ]     ○ 3.1.
 			// [ ]         ▶ 3.1.1.
 			//
@@ -386,13 +386,13 @@ describe( 'DocumentListStartCommand', () => {
 			listStartCommand.execute( { startIndex: 7 } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				# 1. {start:1}
-				# [2. {start:7}
+				# 1. {start:7}
+				# [2.
 				  # 2.1. {start:7}
 				    # 2.1.1.] {start:7}
-				    # 2.1.2. {start:3}
-				  # 2.2. {start:2}
-				# 3. {start:1}
+				    # 2.1.2.
+				  # 2.2.
+				# 3.
 				  # 3.1. {start:4}
 				    # 3.1.1. {start:5}
 			` ) );
