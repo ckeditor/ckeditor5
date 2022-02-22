@@ -21,7 +21,7 @@ A DLL build of the editor consists of the following parts:
 * **Base DLL build for CKEditor 5 Collaboration Features**. It is a single JavaScript file that includes all necessary files for the collaboration features packages and extends the base DLL for CKEditor 5 (`ckeditor5-collaboration` on NPM).
 * **DLL-compatible package builds**. Every package that is not a part of the base DLL builds, is built into a DLL-compatible JavaScript file (`@ckeditor/ckeditor5-*` on NPM). The CKEditor 5 Collaboration Features DLL builds are available in this format as well.
 
-In order to create an editor, you need to use the two base DLL builds plus several DLL-compatible package builds.
+In order to create an editor with collaboration features, you need to use the two base DLL builds plus a DLL-compatible package build for each plugin you would like to include.
 
 ## Integrating CKEditor 5 Collaboration Features as DLL builds
 
