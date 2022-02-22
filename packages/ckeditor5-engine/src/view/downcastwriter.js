@@ -672,6 +672,9 @@ export default class DowncastWriter {
 			const count = nodeBefore.childCount;
 			nodeBefore._appendChild( nodeAfter.getChildren() );
 
+			// Merge the element attributes in case those have a same ID (other attributes might differ).
+			this._mergeElementAttributes( nodeAfter, nodeBefore );
+
 			nodeAfter._remove();
 			this._removeFromClonedElementsGroup( nodeAfter );
 
@@ -1626,8 +1629,19 @@ export default class DowncastWriter {
 	 * 	@returns {Boolean} Returns `true` if elements are merged.
 	 */
 	_wrapAttributeElement( wrapper, toWrap ) {
-		if ( !canBeJoined( wrapper, toWrap ) ) {
+		// if ( !canBeJoined( wrapper, toWrap ) ) {
+		// 	return false;
+		// }
+
+		if ( wrapper.id !== toWrap.id ) {
 			return false;
+		}
+
+		if ( wrapper.id !== null ) {
+			// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
+			this._mergeElementAttributes( wrapper, toWrap );
+
+			return true;
 		}
 
 		// Can't merge if name or priority differs.
@@ -1656,6 +1670,17 @@ export default class DowncastWriter {
 		}
 
 		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
+		this._mergeElementAttributes( wrapper, toWrap );
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_mergeElementAttributes( wrapper, toWrap ) {
 		for ( const key of wrapper.getAttributeKeys() ) {
 			// Classes and styles should be checked separately.
 			if ( key === 'class' || key === 'style' ) {
@@ -1679,8 +1704,6 @@ export default class DowncastWriter {
 				this.addClass( key, toWrap );
 			}
 		}
-
-		return true;
 	}
 
 	/**
@@ -1694,8 +1717,19 @@ export default class DowncastWriter {
 	 * @returns {Boolean} Returns `true` if elements are unwrapped.
 	 **/
 	_unwrapAttributeElement( wrapper, toUnwrap ) {
-		if ( !canBeJoined( wrapper, toUnwrap ) ) {
+		// if ( !canBeJoined( wrapper, toUnwrap ) ) {
+		// 	return false;
+		// }
+
+		if ( wrapper.id !== toUnwrap.id ) {
 			return false;
+		}
+
+		if ( wrapper.id !== null ) {
+			// Remove all wrapper's attributes from unwrapped element.
+			this._unmergeElementAttributes( wrapper, toUnwrap );
+
+			return true;
 		}
 
 		// Can't unwrap if name or priority differs.
@@ -1730,6 +1764,17 @@ export default class DowncastWriter {
 		}
 
 		// Remove all wrapper's attributes from unwrapped element.
+		this._unmergeElementAttributes( wrapper, toUnwrap );
+
+		return true;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_unmergeElementAttributes( wrapper, toUnwrap ) {
 		for ( const key of wrapper.getAttributeKeys() ) {
 			// Classes and styles should be checked separately.
 			if ( key === 'class' || key === 'style' ) {
@@ -1744,8 +1789,6 @@ export default class DowncastWriter {
 
 		// Remove all wrapper's styles from unwrapped element.
 		this.removeStyle( Array.from( wrapper.getStyleNames() ), toUnwrap );
-
-		return true;
 	}
 
 	/**

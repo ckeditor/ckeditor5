@@ -346,7 +346,9 @@ export default class DocumentListEditing extends Plugin {
 					const reducedChanges = [];
 					const attributeNames = [
 						...LIST_BASE_ATTRIBUTES,
-						...this.getSameListDefiningAttributes(),
+						'listStyle',
+						'listStart',
+						'listReversed',
 						'htmlListAttributes',
 						'htmlLiAttributes'
 					];
@@ -362,10 +364,19 @@ export default class DocumentListEditing extends Plugin {
 
 							reWrappedItems.add( node );
 
+							reducedChanges.push( {
+								type: 'attribute',
+								attributeKey: 'listIndent',
+								attributeOldValue: node.getAttribute( 'listIndent' ),
+								attributeNewValue: null,
+								range: change.range
+							} );
+
 							for ( const key of attributeNames ) {
 								reducedChanges.push( {
 									type: 'attribute',
 									attributeKey: key,
+									attributeOldValue: null,
 									attributeNewValue: node.getAttribute( key ),
 									range: change.range
 								} );
@@ -392,8 +403,8 @@ export default class DocumentListEditing extends Plugin {
 		// For UL and OL check if the name and ID of element is correct.
 		this.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
 			if (
-				viewElement.name != getViewElementNameForListType( modelAttributes.listType ) /* ||
-				viewElement.id != getViewElementIdForListType( modelAttributes.listType, modelAttributes.listIndent ) */
+				viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ||
+				viewElement.id != getViewElementIdForListType( modelAttributes.listType, modelAttributes.listIndent )
 			) {
 				evt.return = true;
 				evt.stop();

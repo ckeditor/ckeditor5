@@ -148,37 +148,10 @@ function modelToViewListAttributeConverter( strategy, model ) {
 			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 			const viewElement = findMappedViewElement( listItem, mapper, model );
 
-			// Unwrap element from current list wrappers.
-			// unwrapListItemBlock( viewElement, strategy, writer );
-
 			// Then wrap them with the new list wrappers.
 			wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
 		} );
 	};
-}
-
-// Unwraps all ol, ul, and li attribute elements that are wrapping the provided view element.
-function unwrapListItemBlock( viewElement, strategy, writer ) {
-	let attributeElement = viewElement.parent;
-
-	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
-		const parentElement = attributeElement.parent;
-		const attributeValue = strategy.getAttributeOnUpcast( attributeElement );
-
-		// Unwrap only if the model attribute is really downcasted (it's not the default value).
-		if ( isListView( attributeElement ) && attributeValue !== strategy.defaultValue ) {
-			// Make a clone of an attribute element that only includes properties of list styles.
-			const element = writer.createAttributeElement( attributeElement.name, null, {
-				priority: attributeElement.priority,
-				id: attributeElement.id
-			} );
-
-			strategy.setAttributeOnDowncast( writer, attributeValue, element );
-			writer.unwrap( writer.createRangeOn( viewElement ), element );
-		}
-
-		attributeElement = parentElement;
-	}
 }
 
 // Wraps the given list item with appropriate attribute elements for ul, ol, and li.
@@ -196,12 +169,12 @@ function wrapListItemBlock( listItem, viewRange, strategy, writer ) {
 
 	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
 		if ( htmlAttributes ) {
-			const listViewElement = strategy.viewElementNames.includes( 'li' ) ?
+			const viewElement = strategy.viewElementNames.includes( 'li' ) ?
 				createListItemElement( writer, indent, listItemId ) :
 				createListElement( writer, indent, listType );
 
-			setViewAttributes( writer, htmlAttributes, listViewElement );
-			viewRange = writer.wrap( viewRange, listViewElement );
+			setViewAttributes( writer, htmlAttributes, viewElement );
+			viewRange = writer.wrap( viewRange, viewElement );
 		}
 
 		if ( indent == 0 ) {

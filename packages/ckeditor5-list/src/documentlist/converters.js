@@ -303,11 +303,13 @@ export function listItemDowncastConverter( attributes, model ) {
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model );
 
-		// Unwrap element from current list wrappers.
-		unwrapListItemBlock( viewElement, writer );
-
-		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), writer );
+		if ( data.attributeKey == 'listIndent' && data.attributeNewValue === null ) {
+			// Unwrap element from current list wrappers.
+			unwrapListItemBlock( viewElement, writer );
+		} else {
+			// Then wrap them with the new list wrappers.
+			wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), writer );
+		}
 	};
 }
 
