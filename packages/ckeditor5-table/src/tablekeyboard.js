@@ -74,7 +74,7 @@ export default class TableKeyboard extends Plugin {
 	}
 
 	/**
-	 * Returns a handler for {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
+	 * Handles {@link module:engine/view/document~Document#event:tab tab} events for the <kbd>Tab</kbd> key executed
 	 * inside table cells.
 	 *
 	 * @private
