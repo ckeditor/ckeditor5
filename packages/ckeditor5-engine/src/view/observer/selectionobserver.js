@@ -225,7 +225,7 @@ export default class SelectionObserver extends Observer {
 				const [ targetRange ] = domEvt.getTargetRanges();
 				const range = new Range();
 
-				// getTargetRanges() returns a StaticRange (immutable) which causes problems in DomConverter.
+				// getTargetRanges() returns a StaticRange (immutable) which causes problems, e.g. in the DomConverter.
 				range.setStart( targetRange.startContainer, targetRange.startOffset );
 				range.setEnd( targetRange.endContainer, targetRange.endOffset );
 
