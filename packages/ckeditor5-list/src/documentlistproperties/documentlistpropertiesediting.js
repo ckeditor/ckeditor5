@@ -109,19 +109,21 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 				for ( const strategy of strategies ) {
-					if ( strategy.appliesToListItem( node ) ) {
-						// Add missing default property attributes.
-						if ( !strategy.hasValidAttribute( node ) ) {
-							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
-							evt.return = true;
-						}
-					} else {
-						// Remove invalid property attributes.
-						if ( node.hasAttribute( strategy.attributeName ) ) {
-							writer.removeAttribute( strategy.attributeName, node );
-							evt.return = true;
-						}
+					// Check if attribute is valid.
+					if ( strategy.hasValidAttribute( node ) ) {
+						continue;
 					}
+
+					// Add missing default property attributes...
+					if ( strategy.appliesToListItem( node ) ) {
+						writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+					}
+					// ...or remove invalid property attributes.
+					else {
+						writer.removeAttribute( strategy.attributeName, node );
+					}
+
+					evt.return = true;
 				}
 			}
 		} );
@@ -263,7 +265,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			hasValidAttribute( item ) {
-				return item.hasAttribute( 'listReversed' );
+				return this.appliesToListItem( item ) == item.hasAttribute( 'listReversed' );
 			},
 
 			setAttributeOnDowncast( writer, listReversed, element ) {
@@ -295,7 +297,7 @@ function createAttributeStrategies( enabledProperties ) {
 			},
 
 			hasValidAttribute( item ) {
-				return item.hasAttribute( 'listStart' );
+				return this.appliesToListItem( item ) == item.hasAttribute( 'listStart' );
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {
