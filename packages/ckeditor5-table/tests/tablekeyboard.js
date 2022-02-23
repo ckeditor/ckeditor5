@@ -302,7 +302,9 @@ describe( 'TableKeyboard', () => {
 						[
 							[ '11', '12[]' ]
 						],
-						{ headingRows: 1 }
+						{
+							headingRows: 1
+						}
 					) );
 
 				editor.editing.view.document.on(
@@ -331,9 +333,14 @@ describe( 'TableKeyboard', () => {
 			it( 'should handle event over other listeners with lower priority', () => {
 				const lowerPriorityListenerSpy = sinon.spy();
 
-				setModelData( model, modelTable( [
-					[ '11', '12[]' ]
-				], { headingRows: 1 } ) );
+				setModelData( model, modelTable(
+					[
+						[ '11', '12[]' ]
+					],
+					{
+						headingRows: 1
+					}
+				) );
 
 				editor.editing.view.document.on(
 					'tab',
@@ -350,10 +357,15 @@ describe( 'TableKeyboard', () => {
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 				sinon.assert.notCalled( lowerPriorityListenerSpy );
 
-				expect( getModelData( model ) ).to.equalMarkup( modelTable( [
-					[ '11', '12' ],
-					[ '[]', '' ]
-				], { headingRows: 1 } ) );
+				expect( getModelData( model ) ).to.equalMarkup( modelTable(
+					[
+						[ '11', '12' ],
+						[ '[]', '' ]
+					],
+					{
+						headingRows: 1
+					}
+				) );
 			} );
 
 			it( 'should select whole next table cell if selection is in table header', () => {
@@ -362,11 +374,14 @@ describe( 'TableKeyboard', () => {
 				] );
 
 				setModelData( model,
-					modelTable( [
-						[ innerTable + '<paragraph>[]A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
-						[ 'C', 'D' ]
-					],
-					{ headingColumns: 1 }
+					modelTable(
+						[
+							[ innerTable + '<paragraph>[]A</paragraph>', innerTable + '<paragraph>B</paragraph>' ],
+							[ 'C', 'D' ]
+						],
+						{
+							headingColumns: 1
+						}
 					) );
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
@@ -391,7 +406,9 @@ describe( 'TableKeyboard', () => {
 							[ innerTable + '<paragraph>A</paragraph>', innerTable + '<paragraph>B[]</paragraph>' ],
 							[ 'C', 'D' ]
 						],
-						{ headingColumns: 1 }
+						{
+							headingColumns: 1
+						}
 					) );
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
@@ -420,7 +437,9 @@ describe( 'TableKeyboard', () => {
 						[ innerTable, 'B' ],
 						[ 'C', 'D' ]
 					],
-					{ headingColumns: 1 }
+					{
+						headingColumns: 1
+					}
 				) );
 
 				editor.editing.view.document.fire( 'tab', domEvtDataStub );
@@ -434,7 +453,9 @@ describe( 'TableKeyboard', () => {
 							[ innerTableOutput, 'B' ],
 							[ 'C', 'D' ]
 						],
-						{ headingColumns: 1 }
+						{
+							headingColumns: 1
+						}
 					) );
 			} );
 
