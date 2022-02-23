@@ -263,7 +263,7 @@ export default class SelectionObserver extends Observer {
 		}
 
 		// const domSelection = domDocument.defaultView.getSelection();
-		const domSelection = getDomSelection( this.view.getDomRoot() );
+		const domSelection = getDomSelection();
 
 		if ( this.checkShouldIgnoreEventFromTarget( domSelection.anchorNode ) ) {
 			return;
@@ -344,10 +344,11 @@ export default class SelectionObserver extends Observer {
  * @param {Node} domNode
  * @returns {Selection|Proxy}
  */
-export function getDomSelection( domNode ) {
-	const domNodeRoot = domNode.getRootNode();
+export function getDomSelection() {
+	const activeElement = getActiveElement();
+	const domNodeRoot = activeElement.getRootNode();
 
-	if ( isShadowRoot( domNodeRoot ) ) {
+	if ( domNodeRoot && isShadowRoot( domNodeRoot ) ) {
 		// Chrome.
 		if ( env.features.isShadowDOMSelectionSupported ) {
 			return domNodeRoot.getSelection();
@@ -367,11 +368,10 @@ export function getDomSelection( domNode ) {
 /**
  * TODO
  *
- * @param {Document} domDocument
  * @returns {HTMLElement|null}
  */
-export function getActiveElement( domDocument ) {
-	const activeElement = domDocument.activeElement;
+export function getActiveElement() {
+	const activeElement = global.document.activeElement;
 
 	if ( activeElement.shadowRoot ) {
 		return activeElement.shadowRoot.activeElement;

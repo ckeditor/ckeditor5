@@ -86,8 +86,8 @@ export default class Delete extends Plugin {
 		if ( env.isAndroid ) {
 			let domSelectionAfterDeletion = null;
 
-			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-				const domSelection = getDomSelection( data.domTarget );
+			this.listenTo( viewDocument, 'delete', () => {
+				const domSelection = getDomSelection();
 
 				domSelectionAfterDeletion = {
 					anchorNode: domSelection.anchorNode,
@@ -97,9 +97,9 @@ export default class Delete extends Plugin {
 				};
 			}, { priority: 'lowest' } );
 
-			this.listenTo( viewDocument, 'keyup', ( evt, data ) => {
+			this.listenTo( viewDocument, 'keyup', () => {
 				if ( domSelectionAfterDeletion ) {
-					const domSelection = getDomSelection( data.domTarget );
+					const domSelection = getDomSelection();
 
 					domSelection.collapse( domSelectionAfterDeletion.anchorNode, domSelectionAfterDeletion.anchorOffset );
 					domSelection.extend( domSelectionAfterDeletion.focusNode, domSelectionAfterDeletion.focusOffset );

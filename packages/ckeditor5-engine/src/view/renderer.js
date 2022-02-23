@@ -759,7 +759,7 @@ export default class Renderer {
 			this._updateFakeSelection( domRoot );
 		} else {
 			this._removeFakeSelection();
-			this._updateDomSelection( domRoot );
+			this._updateDomSelection();
 		}
 	}
 
@@ -791,7 +791,7 @@ export default class Renderer {
 
 		container.textContent = this.selection.fakeSelectionLabel || '\u00A0';
 
-		const domSelection = getDomSelection( domRoot );
+		const domSelection = getDomSelection();
 		const domRange = domDocument.createRange();
 
 		domSelection.removeAllRanges();
@@ -803,10 +803,9 @@ export default class Renderer {
 	 * Updates the DOM selection.
 	 *
 	 * @private
-	 * @param {HTMLElement} domRoot A valid DOM root where the DOM selection should be rendered.
 	 */
-	_updateDomSelection( domRoot ) {
-		const domSelection = getDomSelection( domRoot );
+	_updateDomSelection() {
+		const domSelection = getDomSelection();
 
 		// Let's check whether DOM selection needs updating at all.
 		if ( !this._domSelectionNeedsUpdate( domSelection ) ) {
@@ -868,7 +867,7 @@ export default class Renderer {
 	 */
 	_fakeSelectionNeedsUpdate( domRoot ) {
 		const container = this._fakeSelectionContainer;
-		const domSelection = getDomSelection( domRoot );
+		const domSelection = getDomSelection();
 
 		// Fake selection needs to be updated if there's no fake selection container, or the container currently sits
 		// in a different root.
@@ -890,9 +889,9 @@ export default class Renderer {
 	 * @private
 	 */
 	_removeDomSelection() {
-		for ( const doc of this.domDocuments ) {
-			const activeDomElement = getActiveElement( doc );
-			const domSelection = getDomSelection( activeDomElement );
+		this.domDocuments.forEach( () => {
+			const activeDomElement = getActiveElement();
+			const domSelection = getDomSelection();
 
 			if ( domSelection.rangeCount ) {
 				const viewElement = this.domConverter.mapDomToView( activeDomElement );
@@ -901,7 +900,7 @@ export default class Renderer {
 					domSelection.removeAllRanges();
 				}
 			}
-		}
+		} );
 	}
 
 	/**

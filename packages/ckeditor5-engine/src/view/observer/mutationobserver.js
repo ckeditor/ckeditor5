@@ -225,7 +225,7 @@ export default class MutationObserver extends Observer {
 
 		// Retrieve `domSelection` using `ownerDocument` of one of mutated nodes.
 		// There should not be simultaneous mutation in multiple documents, so it's fine.
-		const domSelection = getDomSelection( domMutations[ 0 ].target );
+		const domSelection = getDomSelection();
 
 		let viewSelection = null;
 

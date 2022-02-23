@@ -982,8 +982,9 @@ export default class DomConverter {
 	 */
 	focus( viewEditable ) {
 		const domEditable = this.mapViewToDom( viewEditable );
+		const activeElement = getActiveElement();
 
-		if ( domEditable && getActiveElement( domEditable.ownerDocument ) !== domEditable ) {
+		if ( domEditable && activeElement !== domEditable ) {
 			// Save the scrollX and scrollY positions before the focus.
 			const { scrollX, scrollY } = global.window;
 			const scrollPositions = [];

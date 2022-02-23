@@ -84,7 +84,7 @@ export default class DeleteObserver extends Observer {
 				//
 				// Sometimes it is only expanding by a one character (in case of collapsed selection). In this case we don't need to
 				// set a different selection to remove, it will work just fine.
-				const domSelection = getDomSelection( data.domTarget );
+				const domSelection = getDomSelection();
 
 				if ( domSelection.anchorNode == domSelection.focusNode && domSelection.anchorOffset + 1 != domSelection.focusOffset ) {
 					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );

@@ -145,7 +145,7 @@ export function injectQuirksHandling( view ) {
 	// Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.
 	view.document.on( 'arrowKey', ( evt, data ) => {
 		if ( data.keyCode == keyCodes.arrowleft ) {
-			const domSelection = getDomSelection( view.getDomRoot() );
+			const domSelection = getDomSelection();
 
 			if ( domSelection.rangeCount == 1 && domSelection.getRangeAt( 0 ).collapsed ) {
 				const domParent = domSelection.getRangeAt( 0 ).startContainer;
