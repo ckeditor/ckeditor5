@@ -17,11 +17,11 @@ modified_at: 2022-02-22
 
 A DLL build of the editor consists of the following parts:
 
-* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations (`ckeditor5` on npm).
-* **Base DLL build for CKEditor 5 Collaboration Features**. It is a single JavaScript file that includes all necessary files for the collaboration features packages and extends the base DLL for CKEditor 5 (`ckeditor5-collaboration` on NPM).
-* **DLL-compatible package builds**. Every package that is not a part of the base DLL builds, is built into a DLL-compatible JavaScript file (`@ckeditor/ckeditor5-*` on NPM). The CKEditor 5 Collaboration Features DLL builds are available in this format as well.
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
+* **Base DLL build for CKEditor 5 Collaboration Features**. It is a single JavaScript file that includes all necessary files for the collaboration features packages and extends the base DLL for CKEditor 5. The build is available on NPM in `ckeditor5-collaboration` package.
+* **DLL-compatible package builds**. Every package that is not a part of the base DLL builds, is built into a DLL-compatible JavaScript file. The CKEditor 5 Collaboration Features DLL builds are available in this format as well. These DLLs are available on NPM in `@ckeditor/ckeditor5-[FEATURE_NAME]` packages.
 
-In order to create an editor, you need to use the two base DLL builds plus several DLL-compatible package builds.
+In order to create an editor with collaboration features, you need to use the two base DLL builds plus a DLL-compatible package build for each plugin you would like to include.
 
 ## Integrating CKEditor 5 Collaboration Features as DLL builds
 
@@ -80,7 +80,6 @@ Below is an example of an integration:
 
 <script>
 	const watchdog = new CKEditor5.watchdog.EditorWatchdog( Editor );
-
 	watchdog.create( document.querySelector( '#editor', {
 		plugins: [
 			CKEditor5.autoformat.Autoformat,
