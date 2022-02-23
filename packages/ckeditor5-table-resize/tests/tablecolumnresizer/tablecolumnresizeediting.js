@@ -241,194 +241,49 @@ describe( 'TableColumnResizeEditing', () => {
 			} );
 		} );
 
-		describe( 'when downcasting "tableWidth" attribute', () => {
-			it( 'should ignore inline styles with pixel values and initialize table with equal widths by default', () => {
-				setModelData( model, modelTable( [
-					[ '00', { contents: '01', width: '200px' }, '02' ]
-				] ) );
+		describe( 'model change integration', () => {
+			describe( 'and the widhtStrategy is "manualWidth"', () => {
+				it( 'should create resizers when table is inserted', () => {
+					editor.execute( 'insertTable' );
 
-				model.change( writer => {
-					const table = model.document.getRoot().getChild( 0 );
+					model.change( writer => {
+						const table = model.document.getRoot().getChild( 0 );
 
-					writer.setAttribute( 'widthStrategy', 'manualWidth', table );
+						writer.setAttribute( 'widthStrategy', 'manualWidth', table );
+					} );
+
+					const domTable = getDomTable( view );
+					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+
+					expect( resizers.length ).to.equal( 4 );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="33.33%,33.33%,33.34%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="1">' +
-								'<paragraph>01</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="2">' +
-								'<paragraph>02</paragraph>' +
-								'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-			} );
+				it( 'should create resizers when row is inserted', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '[12]' ]
+					], { columnWidths: '25%,25%,50%' } ) );
 
-			it( 'should ignore inline styles with % values and initialize table with equal widths by default', () => {
-				setModelData( model, modelTable( [
-					[ '00', { contents: '01', width: '50%' }, '02' ]
-				] ) );
+					editor.execute( 'insertTableRowBelow' );
 
-				model.change( writer => {
-					const table = model.document.getRoot().getChild( 0 );
+					const domTable = getDomTable( view );
+					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
 
-					writer.setAttribute( 'widthStrategy', 'manualWidth', table );
+					expect( resizers.length ).to.equal( 9 );
 				} );
 
-				expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-					'<table columnWidths="33.33%,33.33%,33.34%">' +
-						'<tableRow>' +
-							'<tableCell columnIndex="0">' +
-								'<paragraph>00</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="1">' +
-								'<paragraph>01</paragraph>' +
-							'</tableCell>' +
-							'<tableCell columnIndex="2">' +
-								'<paragraph>02</paragraph>' +
-							'</tableCell>' +
-						'</tableRow>' +
-					'</table>'
-				);
-			} );
+				it( 'should create resizers when cell from splitting is inserted', () => {
+					setModelData( model, modelTable( [
+						[ '00', '01', '02' ],
+						[ '10', '11', '[12]' ]
+					], { columnWidths: '25%,25%,50%' } ) );
 
-			it( 'should create column resizers', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
+					editor.execute( 'splitTableCellVertically' );
 
-				const domTable = getDomTable( view );
-				const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
+					const domTable = getDomTable( view );
+					const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
 
-				expect( resizers.length ).to.equal( 6 );
-			} );
-
-			it( 'should remove column resizers after changing strategy to responsive', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
-
-				model.change( writer => {
-					const table = model.document.getRoot().getChild( 0 );
-
-					writer.setAttribute( 'widthStrategy', 'autoWidth', table );
-				} );
-
-				const domTable = getDomTable( view );
-				const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-				expect( resizers.length ).to.equal( 0 );
-			} );
-
-			it( 'should remove column resizers after changing strategy to full page', () => {
-				setModelData( model, modelTable( [
-					[ '00', '01', '02' ],
-					[ '10', '11', '12' ]
-				], { columnWidths: '25%,25%,50%' } ) );
-
-				model.change( writer => {
-					const table = model.document.getRoot().getChild( 0 );
-
-					writer.setAttribute( 'widthStrategy', 'fullPageWidth', table );
-				} );
-
-				const domTable = getDomTable( view );
-				const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-				expect( resizers.length ).to.equal( 0 );
-			} );
-
-			describe( 'when the model is changed', () => {
-				describe( 'and the widhtStrategy is "manualWidth"', () => {
-					it( 'should create resizers when table is inserted', () => {
-						editor.execute( 'insertTable' );
-
-						model.change( writer => {
-							const table = model.document.getRoot().getChild( 0 );
-
-							writer.setAttribute( 'widthStrategy', 'manualWidth', table );
-						} );
-
-						const domTable = getDomTable( view );
-						const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-						expect( resizers.length ).to.equal( 4 );
-					} );
-
-					it( 'should create resizers when row is inserted', () => {
-						setModelData( model, modelTable( [
-							[ '00', '01', '02' ],
-							[ '10', '11', '[12]' ]
-						], { columnWidths: '25%,25%,50%' } ) );
-
-						editor.execute( 'insertTableRowBelow' );
-
-						const domTable = getDomTable( view );
-						const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-						expect( resizers.length ).to.equal( 9 );
-					} );
-
-					it( 'should create resizers when cell from splitting is inserted', () => {
-						setModelData( model, modelTable( [
-							[ '00', '01', '02' ],
-							[ '10', '11', '[12]' ]
-						], { columnWidths: '25%,25%,50%' } ) );
-
-						editor.execute( 'splitTableCellVertically' );
-
-						const domTable = getDomTable( view );
-						const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-						expect( resizers.length ).to.equal( 7 );
-					} );
-				} );
-
-				describe( 'and the widhtStrategy is not "manualWidth"', () => {
-					it( 'should not create resizers when table is inserted', () => {
-						editor.execute( 'insertTable' );
-
-						const domTable = getDomTable( view );
-						const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-						expect( resizers.length ).to.equal( 0 );
-					} );
-
-					it( 'should not create resizers when row is inserted', () => {
-						setModelData( model, modelTable( [
-							[ '00', '01', '02' ],
-							[ '10', '11', '[12]' ]
-						] ) );
-
-						editor.execute( 'insertTableRowBelow' );
-
-						const domTable = getDomTable( view );
-						const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-						expect( resizers.length ).to.equal( 0 );
-					} );
-
-					it( 'should not create resizers when cell from splitting is inserted', () => {
-						setModelData( model, modelTable( [
-							[ '00', '01', '02' ],
-							[ '10', '11', '[12]' ]
-						] ) );
-
-						editor.execute( 'splitTableCellVertically' );
-
-						const domTable = getDomTable( view );
-						const resizers = Array.from( domTable.querySelectorAll( '.table-column-resizer' ) );
-
-						expect( resizers.length ).to.equal( 0 );
-					} );
+					expect( resizers.length ).to.equal( 7 );
 				} );
 			} );
 		} );
