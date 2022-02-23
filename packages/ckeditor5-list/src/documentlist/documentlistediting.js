@@ -443,8 +443,8 @@ function modelChangePostFixer( model, writer, emitter ) {
 				}
 			}
 		}
-		// Removed list item.
-		else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
+		// Removed list item or block adjacent to a list.
+		else if ( entry.type == 'remove' ) {
 			findAndAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
