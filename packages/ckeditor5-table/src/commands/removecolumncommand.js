@@ -10,7 +10,6 @@
 import { Command } from 'ckeditor5/src/core';
 
 import TableWalker from '../tablewalker';
-import { getColumnIndexes, getSelectionAffectedTableCells } from '../utils/selection';
 
 /**
  * The remove column command.
@@ -28,14 +27,15 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
 			const table = firstCell.findAncestor( 'table' );
-			const tableColumnCount = this.editor.plugins.get( 'TableUtils' ).getColumns( table );
+			const tableColumnCount = tableUtils.getColumns( table );
 
-			const { first, last } = getColumnIndexes( selectedCells );
+			const { first, last } = tableUtils.getColumnIndexes( selectedCells );
 
 			this.isEnabled = last - first < ( tableColumnCount - 1 );
 		} else {
@@ -47,7 +47,8 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	execute() {
-		const [ firstCell, lastCell ] = getBoundaryCells( this.editor.model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const [ firstCell, lastCell ] = getBoundaryCells( this.editor.model.document.selection, tableUtils );
 		const table = firstCell.parent.parent;
 
 		// Cache the table before removing or updating colspans.
@@ -111,8 +112,8 @@ function getCellToFocus( tableMap, firstCell, lastCell, removedColumnIndexes ) {
 }
 
 // Returns helper object returning the first and the last cell contained in given selection, based on DOM order.
-function getBoundaryCells( selection ) {
-	const referenceCells = getSelectionAffectedTableCells( selection );
+function getBoundaryCells( selection, tableUtils ) {
+	const referenceCells = tableUtils.getSelectionAffectedTableCells( selection );
 	const firstCell = referenceCells[ 0 ];
 	const lastCell = referenceCells.pop();
 
