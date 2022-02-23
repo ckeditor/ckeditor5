@@ -15,7 +15,7 @@ modified_at: 2022-02-21
 
 ## Migration to CKEditor 5 v33.0.0
 
-For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0](TODO).
+For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0] TODO: link.
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v33.0.0.
 
@@ -92,7 +92,7 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 	If you want to keep the same user experience after updating the editor, configure the comments editor as shown in the example above.
 </info-box>
 
-If the configuration is not provided, a warning will be logged in the console and the the comments editor will be initialized with the most basic features, that is typing, paragraph and undo. 
+If the configuration is not provided, a warning will be logged in the console and the the comments editor will be initialized with the most basic features, that is typing, paragraph and undo.
 
 To hide the warning (and use the basic configuration), provide an empty configuration for the comments editor:
 
