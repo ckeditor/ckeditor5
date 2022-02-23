@@ -59,7 +59,7 @@ describe( 'TabObserver', () => {
 			viewDocument.on( 'tab', evt => evt.stop() );
 
 			viewDocument.fire( 'keydown', {
-				keyCode: getCode( 'tab' )
+				keyCode: getCode( 'Tab' )
 			} );
 
 			sinon.assert.notCalled( keydownSpy );
@@ -88,7 +88,7 @@ describe( 'TabObserver', () => {
 			viewDocument.on( 'tab', tabSpy );
 
 			viewDocument.fire( 'keydown', {
-				keyCode: getCode( 'x' ),
+				keyCode: getCode( 'Tab' ),
 				ctrlKey: true
 			} );
 
