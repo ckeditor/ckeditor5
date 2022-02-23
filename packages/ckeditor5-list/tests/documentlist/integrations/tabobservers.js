@@ -1506,7 +1506,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 				'* A[]'
 			] );
 
-			const innerOutputList = modelList( [
+			const innerListOutput = modelList( [
 				'* A {id:a00}'
 			] );
 
@@ -1515,7 +1515,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 			] );
 
 			const outputTable = modelTable( [
-				[ innerOutputList, '[bar]' ]
+				[ innerListOutput, '[bar]' ]
 			] );
 
 			runTest( {
@@ -1541,7 +1541,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 				'* B[]'
 			] );
 
-			const innerOutputList = modelList( [
+			const innerListOutput = modelList( [
 				'* A {id:a00}',
 				'  * B[]'
 			] );
@@ -1551,7 +1551,7 @@ describe( 'DocumentListEditing integrations: tab key', () => {
 			] );
 
 			const outputTable = modelTable( [
-				[ innerOutputList, 'bar' ]
+				[ innerListOutput, 'bar' ]
 			] );
 
 			runTest( {
