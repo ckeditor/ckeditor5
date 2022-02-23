@@ -25,6 +25,8 @@ describe( 'FontSize', () => {
 	afterEach( async () => {
 		await editor.destroy();
 
+		document.body.removeChild( element );
+
 		sinon.restore();
 	} );
 
