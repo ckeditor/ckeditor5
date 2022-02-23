@@ -131,7 +131,7 @@ export default class DocumentListEditing extends Plugin {
 
 		if ( outdent ) {
 			// Priority is lowest due to integration with `IndentBlock` and `IndentCode` plugins.
-			// First we want to allow user to undo all changes he made with other plugins and finally we can oudent list item.
+			// First we want to allow user to outdent all indendations from other features then he can oudent list item.
 			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
 	}
