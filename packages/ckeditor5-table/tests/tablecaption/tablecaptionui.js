@@ -106,7 +106,7 @@ describe( 'TableCaptionUI', () => {
 		expect( tableCaption.isOn ).to.be.true;
 	} );
 
-	it( 'should have #label bound to the toggleImageCaption command', () => {
+	it( 'should have #label bound to the toggleTableCaption command', () => {
 		const command = editor.commands.get( 'toggleTableCaption' );
 
 		command.value = true;
