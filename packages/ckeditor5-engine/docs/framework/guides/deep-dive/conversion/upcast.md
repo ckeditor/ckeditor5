@@ -37,7 +37,7 @@ The above converter will handle the conversion of every `<p>` view element to a 
 {@snippet framework/mini-inspector-paragraph}
 
 <info-box>
-	You have just learnt about the `elementToElement()` **upcast** conversion helper method! More helpers are documented in the following chapters.
+	You have just learnt about the {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-element `elementToElement()` **upcast** conversion helper method}! More helpers are documented in the following chapters.
 </info-box>
 
 ## Upcast pipeline
@@ -54,7 +54,7 @@ The previous code example registers a converter for both pipelines at once. It m
 
 View elements representing inline text formatting (such as `<strong>` or `<i>`) need to be converted to an attribute on a model text node.
 
-To register such a converter, use the `elementToAttribute()` method:
+To register such a converter, use the {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-attribute `elementToAttribute()` method}:
 
 ```js
 editor.conversion
@@ -69,7 +69,7 @@ A text wrapped with the `<strong>` tag will be converted to a model text node wi
 
 {@snippet framework/mini-inspector-bold}
 
-If you need to “copy” an attribute from a view element to a model element, use the `attributeToAttribute()` method.
+If you need to “copy” an attribute from a view element to a model element, use the {@link framework/guides/deep-dive/conversion/helpers/upcast#attribute-to-attribute `attributeToAttribute()` method}.
 
 Keep in mind that the model element must have its own converter registered, otherwise there is nothing the attribute can be copied to.
 
@@ -92,7 +92,7 @@ Assuming that some other feature registered the `<img>` to `<image>` model eleme
 
 ## Converting to element
 
-Converting a view element to a corresponding model element can be achieved by registering the converter using the `elementToElement()` method:
+Converting a view element to a corresponding model element can be achieved by registering the converter using the {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-element `elementToElement()` method}:
 
 ```js
 editor.conversion
