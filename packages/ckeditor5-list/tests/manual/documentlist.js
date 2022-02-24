@@ -108,3 +108,9 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+const onShowBordersChange = () => {
+	document.body.classList.toggle( 'show-borders' );
+};
+
+document.getElementById( 'chbx-show-borders' ).addEventListener( 'change', onShowBordersChange );
