@@ -81,7 +81,7 @@ The table selection plugin is loaded automatically by the `Table` plugin and can
 ### Basic table features
 
 <info-box info>
-	The basic table features are enabled by default in all builds. The installation instructions are for developers interested in building their own, custom rich text editor.
+	The basic table features are enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom rich text editor.
 </info-box>
 
 To add only the basic table features to your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
@@ -133,7 +133,7 @@ Check the table with default headers applied to both the first row and the first
 
 ### Table and cell styling tools
 
-To enable not only the [basic table features](#basic-table-features-2) but also the rich table and cell styling tools in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+To enable not only the [basic table features](#basic-table-features-2) but also the rich table and cell styling tools in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
 
 ```
 npm install --save @ckeditor/ckeditor5-table
@@ -178,7 +178,7 @@ ClassicEditor
 
 ### Table caption
 
-To enable the table caption feature in your editor, install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+To enable the table caption feature in your editor, you need to have the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package installed (it is already present in the predefined builds):
 
 ```
 npm install --save @ckeditor/ckeditor5-table
@@ -212,7 +212,7 @@ ClassicEditor
 ## Configuring styling tools
 
 <info-box>
-	By default, table styling tools are not included in {@link builds/guides/overview ready–to–use editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
+	By default, table styling tools are not included in any {@link builds/guides/overview predefined editor builds} and must be installed separately. See the [installation](#table-and-cell-styling-tools-2) section to learn how to enable them in your editor.
 </info-box>
 
 Among other formatting options, table and cell styling tools allow users to create tables with colorful backgrounds and borders. These colors can be easily picked using color palettes in the **"Table properties"** and **"Cell properties"** pop–ups. To help users choose the right colors for the content, the color palettes can be pre–configured, like in the editor below:
