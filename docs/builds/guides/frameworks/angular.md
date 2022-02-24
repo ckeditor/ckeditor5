@@ -149,6 +149,52 @@ Note that to allow importing JavaScript files without providing their correspond
 	If you cannot set the target higher than `es5`, try to set `"buildOptimizer": false` which will produce a bigger, but correct production build.
 </info-box>
 
+### Integrating a build from the online builder
+
+This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+The directory with the editor's build cannot be placed inside the `src/` directory because Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+
+```
+├── ckeditor5
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
+├── node_modules
+├── src
+├── ...
+└── package.json
+```
+
+Then, add the package located in the `ckeditor5` directory as a dependency of your project:
+
+```
+yarn add file:./ckeditor5
+```
+
+Now, import the build in your application:
+
+```ts
+import { Component } from '@angular/core';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+
+export class AppComponent {
+  title = 'customEditor';
+  public Editor = Editor;
+}
+```
+
+When running the application, you might additionally get errors about missing types. You can handle them by setting `"strict": false` in `tsconfig.json` or by [adding a proper type definition](#strict-mode-project-tips).
+
 ### Using the editor with collaboration plugins
 
 The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and later import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).

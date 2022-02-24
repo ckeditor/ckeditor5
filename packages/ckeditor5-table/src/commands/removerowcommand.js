@@ -9,8 +9,6 @@
 
 import { Command } from 'ckeditor5/src/core';
 
-import { getRowIndexes, getSelectionAffectedTableCells } from '../utils/selection';
-
 /**
  * The remove row command.
  *
@@ -27,7 +25,8 @@ export default class RemoveRowCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const selectedCells = getSelectionAffectedTableCells( this.editor.model.document.selection );
+		const tableUtils = this.editor.plugins.get( 'TableUtils' );
+		const selectedCells = tableUtils.getSelectionAffectedTableCells( this.editor.model.document.selection );
 		const firstCell = selectedCells[ 0 ];
 
 		if ( firstCell ) {
@@ -35,7 +34,7 @@ export default class RemoveRowCommand extends Command {
 			const tableRowCount = this.editor.plugins.get( 'TableUtils' ).getRows( table );
 			const lastRowIndex = tableRowCount - 1;
 
-			const selectedRowIndexes = getRowIndexes( selectedCells );
+			const selectedRowIndexes = tableUtils.getRowIndexes( selectedCells );
 
 			const areAllRowsSelected = selectedRowIndexes.first === 0 && selectedRowIndexes.last === lastRowIndex;
 
@@ -53,8 +52,8 @@ export default class RemoveRowCommand extends Command {
 		const model = this.editor.model;
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-		const referenceCells = getSelectionAffectedTableCells( model.document.selection );
-		const removedRowIndexes = getRowIndexes( referenceCells );
+		const referenceCells = tableUtils.getSelectionAffectedTableCells( model.document.selection );
+		const removedRowIndexes = tableUtils.getRowIndexes( referenceCells );
 
 		const firstCell = referenceCells[ 0 ];
 		const table = firstCell.findAncestor( 'table' );

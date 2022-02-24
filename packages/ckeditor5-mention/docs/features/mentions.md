@@ -504,7 +504,7 @@ The {@link module:mention/mention~Mention} plugin registers:
 	You can insert a mention element by executing the following code:
 
 	```js
-	editor.execute( 'mention', { marker: '@', mention: 'John' } );
+	editor.execute( 'mention', { marker: '@', mention: '@John' } );
 	```
 
 <info-box>

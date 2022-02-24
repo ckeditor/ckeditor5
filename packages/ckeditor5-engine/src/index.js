@@ -28,6 +28,7 @@ export { default as LivePosition } from './model/liveposition';
 export { default as Model } from './model/model';
 export { default as TreeWalker } from './model/treewalker';
 export { default as Element } from './model/element';
+export { default as History } from './model/history';
 
 export { default as DomConverter } from './view/domconverter';
 export { default as Renderer } from './view/renderer';
