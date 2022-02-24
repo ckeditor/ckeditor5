@@ -133,42 +133,54 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
 			for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
-				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
-				const nodeIndent = node.getAttribute( 'listIndent' );
-
-				// Let's find previous node for the same indent.
-				if ( previous ) {
-					const previousNodeIndent = previous.getAttribute( 'listIndent' );
-
-					if ( nodeIndent > previousNodeIndent ) {
-						// We're going to need that when we get back to previous indent.
-						previousNodesByIndent[ previousNodeIndent ] = previous;
-					} else if ( nodeIndent < previousNodeIndent ) {
-						// Restore the one for given indent;
-						previousNodeInList = previousNodesByIndent[ nodeIndent ];
-						previousNodesByIndent.length = nodeIndent;
-					} else {
-						previousNodeInList = previous;
-					}
+				// For the first list block there is nothing to compare with.
+				if ( !previous ) {
+					continue;
 				}
 
-				const nodeListType = node.getAttribute( 'listType' );
+				const nodeIndent = node.getAttribute( 'listIndent' );
+				const previousNodeIndent = previous.getAttribute( 'listIndent' );
 
-				if ( previousNodeInList && previousNodeInList.getAttribute( 'listType' ) == nodeListType ) {
-					// Copy properties from the previous one.
-					for ( const strategy of strategies ) {
-						const { attributeName } = strategy;
+				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
 
-						if ( !strategy.appliesToListItem( node ) ) {
-							continue;
-						}
+				// Let's find previous node for the same indent.
+				// We're going to need that when we get back to previous indent.
+				if ( nodeIndent > previousNodeIndent ) {
+					previousNodesByIndent[ previousNodeIndent ] = previous;
+				}
+				// Restore the one for given indent.
+				else if ( nodeIndent < previousNodeIndent ) {
+					previousNodeInList = previousNodesByIndent[ nodeIndent ];
+					previousNodesByIndent.length = nodeIndent;
+				}
+				// Same indent.
+				else {
+					previousNodeInList = previous;
+				}
 
-						const value = previousNodeInList.getAttribute( attributeName );
+				// This is a first item of a nested list.
+				if ( !previousNodeInList ) {
+					continue;
+				}
 
-						if ( node.getAttribute( attributeName ) != value ) {
-							writer.setAttribute( attributeName, value, node );
-							evt.return = true;
-						}
+				// This is a first block of a list of a different type.
+				if ( previousNodeInList.getAttribute( 'listType' ) != node.getAttribute( 'listType' ) ) {
+					continue;
+				}
+
+				// Copy properties from the previous one.
+				for ( const strategy of strategies ) {
+					const { attributeName } = strategy;
+
+					if ( !strategy.appliesToListItem( node ) ) {
+						continue;
+					}
+
+					const value = previousNodeInList.getAttribute( attributeName );
+
+					if ( node.getAttribute( attributeName ) != value ) {
+						writer.setAttribute( attributeName, value, node );
+						evt.return = true;
 					}
 				}
 			}
