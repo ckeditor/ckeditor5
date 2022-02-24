@@ -19,7 +19,7 @@ CKEditor 5 consists of {@link installation/advanced/predefined-builds ready-to-u
 Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link installation/advanced/integrating-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
-	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start#building-the-editor-from-the-source create a custom build of CKEditor 5} and include it in your Angular application.
+	While there is no support to integrate CKEditor 5 from source yet, you can still {@link installation/getting-started/quick-start#building-the-editor-from-source create a custom build of CKEditor 5} and include it in your Angular application.
 </info-box>
 
 ## Supported Angular versions
@@ -35,7 +35,7 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 
 <info-box>
 	CKEditor 5 packages do not include TypeScript typings yet. With strict mode enabled, you must take care of the typings yourself. Otherwise, you might see the `Could not find a declaration file for module` error. **Please bear in mind that projects generated using Angular CLI have strict mode enabled by default.**
-	
+
 	For more information, please see [Strict mode project tips](#strict-mode-project-tips).
 </info-box>
 
@@ -119,7 +119,7 @@ And then, in the template:
 
 ### Using a custom CKEditor 5 build
 
-If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link installation/getting-started/configuration editor configuration} you should create a custom build first, using the {@link installation/getting-started/quick-start#building-the-editor-from-the-source create a custom build guide}.
+If you want to add more plugins to the existing build or customize something that cannot be controlled with the {@link installation/getting-started/configuration editor configuration} you should create a custom build first, using the {@link installation/getting-started/quick-start#building-the-editor-from-source create a custom build guide}.
 
 You should finish the above tutorial with the generated `ckeditor.js` file (and corresponding translation files). In the next step you should copy it to the `src` directory and import it to the component file.
 

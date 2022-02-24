@@ -44,7 +44,7 @@ CKEditor 5 should be {@link updating/updating upgraded frequently}, as bug fixes
 
 ### Update your custom builds
 
-If you want to skip some editor features, {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder customize your build with online builder} and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start#building-the-editor-from-the-source create your own customized build from scratch}. It is a bad practice to download a predefined editor build and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
+If you want to skip some editor features, {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder customize your build with online builder} and remove unneeded functionality. Alternatively, {@link installation/getting-started/quick-start#building-the-editor-from-source create your own customized build from scratch}. It is a bad practice to download a predefined editor build and then remove plugins or buttons in your configuration. You will only be loading unnecessary stuff without any good reason.
 
 ### Use online builder to add plugins
 

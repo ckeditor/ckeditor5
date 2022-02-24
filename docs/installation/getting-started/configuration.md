@@ -13,7 +13,7 @@ order: 20
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/quick-start last tutorial} you have learned about the quickest ways for setting up CKEditor 5 in the project. Now, you know how to use Online builder and create the editor from the source. It is time to play a bit with the configuration!
+In the {@link installation/getting-started/quick-start previous tutorial} you have learned about the quickest ways for setting up CKEditor 5 in the project. Now, you know how to use online builder or create the editor from source. It is time to play a bit with the configuration!
 </info-box>
 
 When creating an editor in your page, it is possible to set up {@link module:core/editor/editorconfig~EditorConfig configurations} that change many of its aspects. For example:
@@ -35,15 +35,15 @@ ClassicEditor
 	} );
 ```
 
-As you can see, configurations are set by a simple JavaScript object passed to the `create()` method.
+As you can see, the configuration is set by a simple JavaScript object passed to the `create()` method.
 
 ## Removing features
 
-The official builds come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor.
+The {@link installation/advanced/predefined-builds predefined CKEditor 5 builds} come with all the features included in the distribution package enabled by default. They are defined as plugins for CKEditor 5.
 
-In some cases, you may need to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
+In some cases, you may want to have different editor setups in your application, all based on the same build. For that purpose, you need to control the plugins available in the editor at runtime.
 
-In the example below `Heading` and `Link` plugins are removed:
+In the example below, the `Heading` and `Link` plugins are removed:
 
 ```js
 // Remove a few plugins from the default setup.
@@ -57,7 +57,7 @@ ClassicEditor
 	} );
 ```
 <info-box>
-	Be careful when removing plugins from CKEditor builds using `config.removePlugins`. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the {@link features/toolbar updated toolbar configuration} as in the example above or by providing only items that need to be removed using `config.toolbar.removeItems`.
+	Be careful when removing plugins from CKEditor builds using {@link module:core/editor/editorconfig~EditorConfig#removePlugins `config.removePlugins`}. If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build will become invalid. In such case you need to provide the {@link features/toolbar updated toolbar configuration} as in the example above or by providing only toolbar items that need to be removed using `config.toolbar.removeItems`.
 </info-box>
 
 ### List of plugins
@@ -72,7 +72,7 @@ ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
 
 ### Adding complex features
 
-As CKEditor builds do not include all possible features, the only way to add more features to them is to {@link installation/getting-started/quick-start#building-the-editor-from-the-source create a custom build}.
+As predefined CKEditor 5 builds do not include all possible features, the only way to add more features to them is to {@link installation/getting-started/quick-start create a custom build}.
 
 ### Adding simple (standalone) features
 
@@ -127,11 +127,13 @@ ClassicEditor
 
 In the builds that contain toolbars an optimal default configuration is defined for it. You may need a different toolbar arrangement, though, and this can be achieved through configuration. Check the detailed {@link features/toolbar toolbar feature guide} for the available options.
 
+When you create a {@link installation/getting-started/quick-start#creating-custom-builds-with-online-builder custom build using CKEditor 5 online builder}, setting up your toolbar configuration is one of the steps in the build creation process that uses an intuitive drag and drop interface.
+
 ## Other configuration options
 
 See {@link module:core/editor/editorconfig~EditorConfig} to learn about all available configuration options.
 
-Some of the options may require loading plugins which are not available in the build you use. Read more about {@link installation/getting-started/quick-start#building-the-editor-from-the-source customizing builds}.
+Some of the options may require loading plugins which are not available in the build you use. Return to the {@link installation/getting-started/quick-start Quick start} guide for instructions on creating a custom build.
 
 <info-box hint>
 **What's next?**

@@ -11,15 +11,15 @@ modified_at: 2022-01-13
 
 ## Introduction
 
-CKEditor 5 can provide any WYSIWYG editor type. From online editors similar to Google Docs and Medium, to Slack or Twitter like applications, CKEditor 5 editing framework provides solutions for every user, bot customized and out of the box. This modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM was written from scratch in ES6 with excellent webpack support.
+CKEditor 5 can provide any WYSIWYG editor type. From online editors similar to Google Docs and Medium, to Slack or Twitter like applications, the CKEditor 5 editing framework provides solutions for every user, both customized and out-of-the-box. This modern JavaScript rich text editor with MVC architecture, custom data model and virtual DOM was written from scratch in ES6 with excellent webpack support.
 
 In this guide, you will learn how to run your own CKEditor 5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor 5 journey!
 
 Available paths:
-* [Online builder path](#creating-custom-builds-with-online-builder) - the most beginners-friendly and quickest path.
-* [Building from the source path](#building-the-editor-from-the-source) - an advanced path including using `npm` and Webpack.
+* [online builder path](#creating-custom-builds-with-online-builder) &ndash; The most beginners-friendly and quickest path.
+* [Building from the source path](#building-the-editor-from-source) &ndash; An advanced path including using `npm` and webpack.
 
-## Creating custom builds with Online builder
+## Creating custom builds with online builder
 
 Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/advanced/predefined-builds predefined builds}, sometimes these predefined bundled versions are not enough and a need for more customized  builds arises. Some of the reasons for creating custom builds are:
 
@@ -29,9 +29,9 @@ Although the CKEditor 5 WYSIWYG editor comes with handy {@link installation/adva
 * Changing the {@link installation/advanced/predefined-builds#available-builds editor type build}.
 * Changing the {@link features/ui-language localization language} of the editor.
 
-This is where the online builder comes to aid the users needs.
+This is where the online builder comes to help you.
 
-The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you download CKEditor 5 builds and also allows you to create your own, customized builds (with a different set of plugins) in a few easy steps, through a simple and intuitive UI.
+The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) is an application that lets you design and download custom CKEditor 5 builds. It allows you to create your own bundles with your desired editor type, toolbar and set of plugins in a few easy steps, through a simple and intuitive UI.
 
 ### Choosing the editor type
 
@@ -39,13 +39,13 @@ The following editor types are currently available to choose from:
 
  * {@link installation/advanced/predefined-builds#classic-editor Classic editor}
  * {@link installation/advanced/predefined-builds#inline-editor Inline editor}
- * {@link installation/advanced/predefined-builds#balloon-editor Baloon editor}
- * {@link installation/advanced/predefined-builds#balloon-block-editor Baloon block editor}
+ * {@link installation/advanced/predefined-builds#balloon-editor Balloon editor}
+ * {@link installation/advanced/predefined-builds#balloon-block-editor Balloon block editor}
  * {@link installation/advanced/predefined-builds#document-editor Document editor}
 
- Refer to the predefined builds documentation and {@link examples/index examples} to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, press the **Next step** button on the top right.
+ Refer to the predefined builds documentation and {@link examples/index examples} to check what kind of WYSIWYG editor suits your needs best. Once you choose the desired editor type, select it to move to the next step.
 
- For the sake of clarity, this guide will use the Classic build as an example.
+ For the sake of clarity, this guide will use the classic build as an example.
 
  {@img assets/img/online-builder-01-editor-type-choice.png 778 Editor type selection.}
 
@@ -55,27 +55,25 @@ The basic build comes with a predefined set of plugins grouped in a bar at the t
 
 {@img assets/img/online-builder-02-predefined-plugins.png 778 Predefined plugins. Feel free to remove unneeded ones.}
 
-Below the top bar with preselected plugins, you will find a large collection of features that can be added to the custom build. Choose the ones that best suit your needs.
+Below the top bar with preselected plugins you will find a large collection of features that can be added to the custom build. Choose the ones that best suit your needs.
 
 {@img assets/img/online-builder-03-plugin-choice.png 778 Predefined plugins. Some of the plugins to choose from.}
 
 <info-box hint>
-	Note that some of the plugins require other plugins to work. These dependencies are mentioned in the **Require plugin** section of the description box for each plugin. If this section is not present - the plugin does not need any other plugin to work.
+	Note that some of the plugins require other plugins to work. These dependencies are mentioned in the **Requires plugins** section of the description box for each plugin. If this section is not present, the plugin does not need any other plugin to work.
 
-	Some of these plugins are **premium features** which require additional license to run.
+	Some of these plugins are **premium features** which require an additional license to run. They are marked with an appropriate <span class="tree__item__badge tree__item__badge_premium"><span class="tree__item__badge__text">Premium feature</span></span> badge.
 </info-box>
 
-Once you choose all the desired plugins, press the **Next step** button on the top right.
+Once you have chosen all the desired plugins, press the **Next step** button on the top right.
 
 ### Toolbar composition
 
-Next step allows you to compose the toolbar. A simple drag-and-drop workspace allows for adding buttons (representing the plugins chosen in the previous step) to the toolbar. The user may change the order of the buttons and dropdowns and group them accordingly.
+Next step allows you to compose the toolbar. A simple drag-and-drop workspace allows for adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Note that online builder allows you to create a multiline toolbar layout, too &mdash; just drag any button below the already placed ones to create a new toolbar line.
 
 {@img assets/img/online-builder-04-toolbar-configurator.png 753 The toolbar drag-and-drop configurator.}
 
-<info-box hint>
-	Some of the buttons are pre-placed on the layout but grayed-out. You still need, however, to drag them from the lower bar into the upper bar - only then will they become focused and can be then moved around.
-</info-box>
+Some of the buttons are pre-placed on the layout and thus grayed out in the workspace with available toolbar items. If you want to remove any buttons from your toolbar setup, drag them back to the upper workspace.
 
 Once you finish designing the toolbar, press the **Next step** button on the top right.
 
@@ -95,11 +93,11 @@ This is as simple as it gets: just press the **Start** button to download your c
 
 Refer to the *What's next?* note at the end of this page for further steps in your CKEditor 5 journey!
 
-## Building the editor from the source
+## Building the editor from source
 
 This scenario allows you to fully control the building process of CKEditor 5. This means that you will not actually use the builds introduced in the previous path, but instead build CKEditor from source directly into your project. This integration method gives you full control over which features will be included and how webpack will be configured.
 
-This path assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and keep your fingers crossed.
+This is an advanced path that assumes that you are familiar with npm and your project uses npm already. If not, see the [npm documentation](https://docs.npmjs.com/getting-started/what-is-npm) or call `npm init` in an empty directory and check the result.
 
 ### Setting up the environment
 
@@ -201,9 +199,9 @@ Based on these packages you can create a simple application.
 </info-box>
 
 <info-box warning>
-	Note that in this guide, the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
+	Note that in this guide, the editor class is used directly (i.e. you use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link installation/advanced/predefined-builds editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
+	No {@link installation/advanced/predefined-builds predefined editor builds} are used, because adding new plugins to these requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
 </info-box>
 
 ```js
@@ -255,9 +253,9 @@ npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you
 <info-box>
 	Use `webpack --mode production` if you want to build a minified and optimized application. Learn more about it in the [webpack documentation](https://webpack.js.org/concepts/mode/).
 
-	**Note:** Prior to version 1.2.7, `uglifyjs-webpack-plugin` (the default minifier used by webpack) had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contain an up-to-date version of this package (and that webpack uses this version).
+	**Note:** Prior to version 1.2.7, `uglifyjs-webpack-plugin` (the default minifier used by webpack) had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable`. If you experienced this error, make sure that your `node_modules` contain an up-to-date version of this package (and that webpack uses this version).
 
-	**Note:** CKEditor 5 Builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
+	**Note:** CKEditor 5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the latter one seems to no longer be supported](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
 If everything worked correctly, you should see:
@@ -290,7 +288,7 @@ Finally, it is time to create an HTML page:
 	</head>
 	<body>
 		<div id="editor">
-			<p>Editor content goes here.</p>
+			<p>The editor content goes here.</p>
 		</div>
 
 		<script src="dist/bundle.js"></script>
@@ -309,7 +307,7 @@ Open this page in your browser and you should see the simple WYSIWYG editor up a
 <info-box hint>
 **What's next?**
 
-Congratulations, you have run your first CKEditor 5 instance! Now, it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
+Congratulations, you have just run your first CKEditor 5 instance! Now it is time to learn more about customization, so jump in straight to the {@link installation/getting-started/configuration Configuration guide}.
 
-P.S. If you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, see the {@link installation/frameworks/overview Frameworks section}.
+P.S. If you use Angular, React or Vue.js and want to integrate CKEditor 5 in your application, refer to the {@link installation/frameworks/overview Frameworks section}.
 </info-box>
