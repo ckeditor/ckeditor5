@@ -105,7 +105,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
-		// Add or remove list properties attributes depending of the list type.
+		// Add or remove list properties attributes depending on the list type.
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 				for ( const strategy of strategies ) {

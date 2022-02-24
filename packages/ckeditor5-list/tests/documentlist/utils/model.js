@@ -916,10 +916,10 @@ describe( 'DocumentList - utils - model', () => {
 			expect( blocks.length ).to.equal( 0 );
 		} );
 
-		it( 'should include all list item (single item given)', () => {
+		it( 'should include all list items (single item given)', () => {
 			const input = modelList( [
 				'* a',
-				'* b', // this one
+				'* b', // <-- This one.
 				'* c',
 				'* d'
 			] );
