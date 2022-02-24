@@ -403,12 +403,12 @@ export default class DocumentListEditing extends Plugin {
 		// Then the callbacks for the specific lists.
 		// The indentation fixing must be the first one...
 		this.on( 'postFixer', ( evt, { listHead, writer } ) => {
-			evt.return = fixListIndents( listHead, writer );
+			evt.return = fixListIndents( listHead, writer ) || evt.return;
 		}, { priority: 'high' } );
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
 		this.on( 'postFixer', ( evt, { listHead, writer, seenIds } ) => {
-			evt.return = fixListItemIds( listHead, seenIds, writer );
+			evt.return = fixListItemIds( listHead, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
 	}
 }
@@ -471,12 +471,12 @@ function modelChangePostFixer( model, writer, emitter ) {
 				}
 			}
 		}
-		// Removed list item.
-		else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
+		// Removed list item or block adjacent to a list.
+		else if ( entry.type == 'remove' ) {
 			findAndAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
-		else if ( entry.type == 'attribute' && [ 'listIndent', 'listType' ].includes( entry.attributeKey ) ) {
+		else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
 			findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 			if ( entry.attributeNewValue === null ) {

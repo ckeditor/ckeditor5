@@ -17,7 +17,9 @@ const NUMBERED_LIST_STYLE_TYPES = [
 	'lower-roman',
 	'upper-roman',
 	'lower-latin',
-	'upper-latin'
+	'upper-latin',
+	'lower-alpha',
+	'upper-alpha'
 ];
 
 /**

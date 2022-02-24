@@ -386,9 +386,9 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				it( 'should be able to downcast part of a nested list', () => {
 					setModelData( model, modelList( `
 						* A
-						  * [B1 {style:foo}
+						  * [B1 {style:circle}
 						    B2
-						    * C1] {style:bar}
+						    * C1] {style:square}
 						      C2
 					` ) );
 
@@ -397,11 +397,11 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
 					expect( data ).to.equal(
-						'<ul style="list-style-type:foo;">' +
+						'<ul style="list-style-type:circle;">' +
 							'<li>' +
 								'<p>B1</p>' +
 								'<p>B2</p>' +
-								'<ul style="list-style-type:bar;">' +
+								'<ul style="list-style-type:square;">' +
 									'<li>C1</li>' +
 								'</ul>' +
 							'</li>' +
@@ -412,9 +412,9 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				it( 'should be able to downcast part of a deep nested list', () => {
 					setModelData( model, modelList( `
 						* A
-						  * B1 {style:foo}
+						  * B1 {style:circle}
 						    B2
-						    * [C1 {style:bar}
+						    * [C1 {style:square}
 						      C2]
 					` ) );
 
@@ -423,7 +423,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					const data = editor.data.htmlProcessor.toData( viewFragment );
 
 					expect( data ).to.equal(
-						'<ul style="list-style-type:bar;">' +
+						'<ul style="list-style-type:square;">' +
 							'<li>' +
 								'<p>C1</p>' +
 								'<p>C2</p>' +
@@ -629,8 +629,8 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 				it( 'on a list with nested lists', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {style:foo}
-						  * <paragraph>b</paragraph> {style:bar}
+						* [<paragraph>a</paragraph> {style:square}
+						  * <paragraph>b</paragraph> {style:disc}
 						* <paragraph>c</paragraph>]
 					` );
 
@@ -638,7 +638,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 						'<ul>' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">a</span>' +
-								'<ul style="list-style-type:bar">' +
+								'<ul style="list-style-type:disc">' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 								'</ul>' +
 							'</li>' +
@@ -680,35 +680,35 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			describe( 'change list style', () => {
 				it( 'on a flat list', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {style:foo}
+						* [<paragraph>a</paragraph> {style:disc}
 						* <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ul style="list-style-type:bar">' +
+						'<ul style="list-style-type:circle">' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>';
 
 					test.test( input, output, selection => {
 						model.change( writer => {
-							writer.setAttribute( 'listStyle', 'bar', selection.getFirstRange() );
+							writer.setAttribute( 'listStyle', 'circle', selection.getFirstRange() );
 						} );
 					} );
 				} );
 
 				it( 'on a list with nested lists', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {style:foo}
-						  * <paragraph>b</paragraph> {style:bar}
+						* [<paragraph>a</paragraph> {style:square}
+						  * <paragraph>b</paragraph> {style:disc}
 						* <paragraph>c</paragraph>]
 					` );
 
 					const output =
-						'<ul style="list-style-type:bar">' +
+						'<ul style="list-style-type:circle">' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">a</span>' +
-								'<ul style="list-style-type:bar">' +
+								'<ul style="list-style-type:disc">' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 								'</ul>' +
 							'</li>' +
@@ -719,7 +719,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 						model.change( writer => {
 							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
 								if ( item.getAttribute( 'listIndent' ) == 0 ) {
-									writer.setAttribute( 'listStyle', 'bar', item );
+									writer.setAttribute( 'listStyle', 'circle', item );
 								}
 							}
 						} );
@@ -730,12 +730,12 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			describe( 'change list type', () => {
 				it( 'on a flat list', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {style:foo}
+						* [<paragraph>a</paragraph> {style:circle}
 						* <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol style="list-style-type:foo">' +
+						'<ol>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -749,16 +749,16 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 				it( 'on a list with nested lists', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {style:foo}
-						  * <paragraph>b</paragraph> {style:bar}
+						* [<paragraph>a</paragraph> {style:circle}
+						  * <paragraph>b</paragraph> {style:disc}
 						* <paragraph>c</paragraph>]
 					` );
 
 					const output =
-						'<ol style="list-style-type:foo">' +
+						'<ol>' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">a</span>' +
-								'<ul style="list-style-type:bar">' +
+								'<ul style="list-style-type:disc">' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 								'</ul>' +
 							'</li>' +
@@ -782,7 +782,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					const input = modelList( [
 						'* <paragraph>a</paragraph>',
 						'* [<paragraph>b</paragraph>',
-						'  # <paragraph>c</paragraph>] {style:roman}'
+						'  # <paragraph>c</paragraph>] {style:upper-roman}'
 					] );
 
 					const output =
@@ -792,7 +792,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 								'<ul>' +
 									'<li>' +
 										'<span class="ck-list-bogus-paragraph">b</span>' +
-										'<ol style="list-style-type:roman">' +
+										'<ol style="list-style-type:upper-roman">' +
 											'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 										'</ol>' +
 									'</li>' +
@@ -1381,12 +1381,12 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			describe( 'change list type', () => {
 				it( 'on a flat list', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {reversed:true}
+						* [<paragraph>a</paragraph>
 						* <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed">' +
+						'<ol>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -1400,18 +1400,18 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 
 				it( 'on a list with nested lists', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {reversed:true}
-						  * <paragraph>b</paragraph> {reversed:true}
+						* [<paragraph>a</paragraph>
+						  # <paragraph>b</paragraph> {reversed:true}
 						* <paragraph>c</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed">' +
+						'<ol>' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">a</span>' +
-								'<ul>' +
+								'<ol reversed="reversed">' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-								'</ul>' +
+								'</ol>' +
 							'</li>' +
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
 						'</ol>';
@@ -2025,46 +2025,46 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			describe( 'change list type', () => {
 				it( 'on a flat list', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {start:2}
-						* <paragraph>b</paragraph>]
+						# [<paragraph>a</paragraph> {start:2}
+						# <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol start="2">' +
+						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-						'</ol>';
+						'</ul>';
 
 					test.test( input, output, selection => {
 						model.change( writer => {
-							writer.setAttribute( 'listType', 'numbered', selection.getFirstRange() );
+							writer.setAttribute( 'listType', 'bulleted', selection.getFirstRange() );
 						} );
 					} );
 				} );
 
 				it( 'on a list with nested lists', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {start:2}
-						  * <paragraph>b</paragraph> {start:5}
-						* <paragraph>c</paragraph>]
+						# [<paragraph>a</paragraph> {start:2}
+						  # <paragraph>b</paragraph> {start:5}
+						# <paragraph>c</paragraph>]
 					` );
 
 					const output =
-						'<ol start="2">' +
+						'<ul>' +
 							'<li>' +
 								'<span class="ck-list-bogus-paragraph">a</span>' +
-								'<ul>' +
+								'<ol start="5">' +
 									'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
-								'</ul>' +
+								'</ol>' +
 							'</li>' +
 							'<li><span class="ck-list-bogus-paragraph">c</span></li>' +
-						'</ol>';
+						'</ul>';
 
 					test.test( input, output, selection => {
 						model.change( writer => {
 							for ( const item of selection.getFirstRange().getItems( { shallow: true } ) ) {
 								if ( item.getAttribute( 'listIndent' ) == 0 ) {
-									writer.setAttribute( 'listType', 'numbered', item );
+									writer.setAttribute( 'listType', 'bulleted', item );
 								}
 							}
 						} );
@@ -2497,12 +2497,12 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 			describe( 'change list type', () => {
 				it( 'to numbered', () => {
 					const input = modelList( `
-						* [<paragraph>a</paragraph> {start:2} {style:lower-alpha} {reversed:true}
+						* [<paragraph>a</paragraph> {style:default}
 						* <paragraph>b</paragraph>]
 					` );
 
 					const output =
-						'<ol reversed="reversed" start="2" style="list-style-type:lower-alpha">' +
+						'<ol>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ol>';
@@ -2521,7 +2521,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 					` );
 
 					const output =
-						'<ul style="list-style-type:lower-alpha">' +
+						'<ul>' +
 							'<li><span class="ck-list-bogus-paragraph">a</span></li>' +
 							'<li><span class="ck-list-bogus-paragraph">b</span></li>' +
 						'</ul>';

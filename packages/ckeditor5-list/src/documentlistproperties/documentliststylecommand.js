@@ -10,9 +10,7 @@
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 import {
-	expandListBlocksToCompleteItems,
-	getListItems,
-	getSelectedBlockObject,
+	expandListBlocksToCompleteList,
 	isListItemBlock
 } from '../documentlist/utils/model';
 import { getListTypeFromListStyleType } from './utils/style';
@@ -67,8 +65,6 @@ export default class DocumentListStyleCommand extends Command {
 		model.change( writer => {
 			this._tryToConvertItemsToList( options );
 
-			const selectedBlockObject = getSelectedBlockObject( model );
-
 			let blocks = Array.from( document.selection.getSelectedBlocks() )
 				.filter( block => block.hasAttribute( 'listType' ) );
 
@@ -76,13 +72,9 @@ export default class DocumentListStyleCommand extends Command {
 				return;
 			}
 
-			if ( document.selection.isCollapsed || selectedBlockObject ) {
-				const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
 
-				blocks = getListItems( selectedBlockObject || blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
-			} else {
-				blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
-			}
+			blocks = expandListBlocksToCompleteList( blocks, documentListEditingPlugin.getSameListDefiningAttributes() );
 
 			for ( const block of blocks ) {
 				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
