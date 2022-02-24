@@ -10,6 +10,7 @@
 export { default as AutoImage } from './autoimage';
 export { default as Image } from './image';
 export { default as ImageEditing } from './image/imageediting';
+export { default as ImageCaptionUtils } from './imagecaption/imagecaptionutils';
 export { default as ImageCaption } from './imagecaption';
 export { default as ImageCaptionEditing } from './imagecaption/imagecaptionediting';
 export { default as ImageInsert } from './imageinsert';

@@ -14,9 +14,9 @@ See the demo of the placeholder feature:
 
 {@snippet features/placeholder}
 
-## Configuring the placeholder
+## Installation
 
-There are two different ways of configuring the editor placeholder text:
+The editor placeholder feature does not require a separate plugin installation. It does, however, require configuring the editor before use. There are two different ways of configuring the editor placeholder text:
 
 ### Using the `placeholder` attribute of a textarea
 

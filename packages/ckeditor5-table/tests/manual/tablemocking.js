@@ -14,7 +14,6 @@ import { diffString } from 'json-diff';
 import { debounce } from 'lodash-es';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import TableWalker from '../../src/tablewalker';
-import { getSelectionAffectedTableCells } from '../../src/utils/selection';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -120,8 +119,9 @@ ClassicEditor
 
 		function findTable( editor, useAnyTable = false ) {
 			const selection = editor.model.document.selection;
+			const tableUtils = this.editor.plugins.get( 'TableUtils' );
 
-			const tableCells = getSelectionAffectedTableCells( selection );
+			const tableCells = tableUtils.getSelectionAffectedTableCells( selection );
 
 			if ( tableCells.length ) {
 				return tableCells[ 0 ].findAncestor( 'table' );
