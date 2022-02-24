@@ -48,7 +48,7 @@ export default class StyleCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		let value;
+		let value = [];
 		const editor = this.editor;
 		const dataSchema = editor.plugins.get( 'DataSchema' );
 		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
@@ -59,33 +59,27 @@ export default class StyleCommand extends Command {
 		this.enabledStyles = [];
 
 		if ( isInline ) {
-			const inlineStylesNames = normalizedStyleDefinitions.inline.map(
-				( { name } ) => name
-			);
+			const inlineStylesNames = normalizedStyleDefinitions.inline.map( ( { name } ) => name );
 
 			this.enabledStyles = [ ...this.enabledStyles, ...inlineStylesNames ];
 
 			const attributes = selection.getAttributes();
 
-			value = [];
-
 			for ( const [ attribute ] of attributes ) {
 				value = [ ...value, ...this._getValue( attribute ) ];
 			}
-		} else if ( block ) {
-			const availableDefinitions = this.stylesMap
-				.get( 'elementToDefinition' )
-				.get( block.name );
+		}
+
+		if ( block ) {
+			const availableDefinitions = this.stylesMap.get( 'elementToDefinition' ).get( block.name );
 
 			if ( availableDefinitions ) {
-				this.enabledStyles = availableDefinitions.map(
-					( { name } ) => name
-				);
-			} else {
-				this.enabledStyles = [];
+				const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
+
+				this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
 			}
 
-			value = this._getValue( 'htmlAttributes' );
+			value = [ ...value, ...this._getValue( 'htmlAttributes' ) ];
 		}
 
 		this.isEnabled = this.enabledStyles.length > 0;
@@ -183,7 +177,7 @@ export default class StyleCommand extends Command {
 	 */
 	_getValue( attribute ) {
 		const value = [];
-		const classes = this._getValueFromFirstAllowedNode( attribute );
+		const classes = attribute === 'htmlAttributes' ? this._getValueFromBlockElement() : this._getValueFromFirstAllowedNode( attribute );
 
 		if ( !classes ) {
 			return value;
@@ -195,6 +189,54 @@ export default class StyleCommand extends Command {
 		}
 
 		return value;
+	}
+
+	/**
+	 * TODO
+	 */
+	_getValueFromBlockElement() {
+		const selection = this.editor.model.document.selection;
+		const block = first( selection.getSelectedBlocks() );
+		const attributes = block.getAttribute( 'htmlAttributes' );
+
+		if ( attributes ) {
+			return attributes.classes;
+		}
+
+		return [];
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {TODO} attributeName
+	 */
+	_getValueFromFirstAllowedNode( attributeName ) {
+		const model = this.editor.model;
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		if ( selection.isCollapsed ) {
+			const attribute = selection.getAttribute( attributeName );
+
+			if ( attribute && Object.prototype.hasOwnProperty.call( attribute, 'classes' ) ) {
+				return attribute.classes;
+			}
+		}
+
+		for ( const range of selection.getRanges() ) {
+			for ( const item of range.getItems() ) {
+				if ( schema.checkAttribute( item, attributeName ) ) {
+					const { classes } = item.getAttribute( attributeName ) || {};
+
+					if ( classes ) {
+						return classes;
+					}
+				}
+			}
+		}
+
+		return [];
 	}
 
 	/**
@@ -251,41 +293,5 @@ export default class StyleCommand extends Command {
 		}
 
 		return styleClasses;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @param {TODO} attributeKey
-	 */
-	_getValueFromFirstAllowedNode( attributeKey ) {
-		const model = this.editor.model;
-		const schema = model.schema;
-		const selection = model.document.selection;
-
-		if ( selection.isCollapsed ) {
-			const attribute = selection.getAttribute( attributeKey );
-
-			if (
-				attribute &&
-				Object.prototype.hasOwnProperty.call( attribute, 'classes' )
-			) {
-				return attribute.classes;
-			}
-		}
-
-		for ( const range of selection.getRanges() ) {
-			for ( const item of range.getItems() ) {
-				if ( schema.checkAttribute( item, attributeKey ) ) {
-					const { classes } = item.getAttribute( attributeKey ) || {};
-
-					if ( classes ) {
-						return classes;
-					}
-				}
-			}
-		}
-
-		return [];
 	}
 }
