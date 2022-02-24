@@ -448,12 +448,7 @@ function modelChangePostFixer( model, writer, emitter ) {
 			findAndAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
-		else if (
-			entry.type == 'attribute' && (
-				entry.attributeKey == 'listIndent' ||
-				emitter._sameListDefiningAttributes.includes( entry.attributeKey )
-			)
-		) {
+		else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
 			findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 			if ( entry.attributeNewValue === null ) {

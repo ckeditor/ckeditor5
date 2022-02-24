@@ -122,6 +122,42 @@ describe( 'DocumentListPropertiesEditing', () => {
 					'<paragraph listItemId="04" listStyle="circle" listType="bulleted">4.</paragraph>'
 				);
 			} );
+
+			it( 'should restore `listStyle` attribute after it\'s changed in one of the following items', () => {
+				setData( model, modelList( `
+					# 1. {style:upper-roman}
+					# 2.
+					# 3.
+				` ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'listStyle', 'decimal', model.document.getRoot().getChild( 2 ) );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					# 1. {style:upper-roman}
+					# 2.
+					# 3.
+				` ) );
+			} );
+
+			it( 'should change `listStyle` attribute for all the following items after the first one is changed', () => {
+				setData( model, modelList( `
+					# 1. {style:upper-roman}
+					# 2.
+					# 3.
+				` ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'listStyle', 'decimal', model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					# 1. {style:decimal}
+					# 2.
+					# 3.
+				` ) );
+			} );
 		} );
 	} );
 
@@ -204,6 +240,42 @@ describe( 'DocumentListPropertiesEditing', () => {
 					'<paragraph listItemId="04" listReversed="true" listType="numbered">4.</paragraph>'
 				);
 			} );
+
+			it( 'should restore `listReversed` attribute after it\'s changed in one of the following items', () => {
+				setData( model, modelList( `
+					# 1. {reversed:true}
+					# 2.
+					# 3.
+				` ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'listReversed', false, model.document.getRoot().getChild( 2 ) );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					# 1. {reversed:true}
+					# 2.
+					# 3.
+				` ) );
+			} );
+
+			it( 'should change `listReversed` attribute for all the following items after the first one is changed', () => {
+				setData( model, modelList( `
+					# 1. {reversed:false}
+					# 2.
+					# 3.
+				` ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'listReversed', true, model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					# 1. {reversed:true}
+					# 2.
+					# 3.
+				` ) );
+			} );
 		} );
 	} );
 
@@ -285,6 +357,42 @@ describe( 'DocumentListPropertiesEditing', () => {
 					'<paragraph listItemId="03" listStart="2" listType="numbered">3.</paragraph>' +
 					'<paragraph listItemId="04" listStart="2" listType="numbered">4.</paragraph>'
 				);
+			} );
+
+			it( 'should restore `listStart` attribute after it\'s changed in one of the following items', () => {
+				setData( model, modelList( `
+					# 1. {start:2}
+					# 2.
+					# 3.
+				` ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'listStart', 5, model.document.getRoot().getChild( 2 ) );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					# 1. {start:2}
+					# 2.
+					# 3.
+				` ) );
+			} );
+
+			it( 'should change `listStart` attribute for all the following items after the first one is changed', () => {
+				setData( model, modelList( `
+					# 1. {start:2}
+					# 2.
+					# 3.
+				` ) );
+
+				model.change( writer => {
+					writer.setAttribute( 'listStart', 5, model.document.getRoot().getChild( 0 ) );
+				} );
+
+				expect( getData( model, { withoutSelection: true } ) ).to.equalMarkup( modelList( `
+					# 1. {start:5}
+					# 2.
+					# 3.
+				` ) );
 			} );
 		} );
 	} );

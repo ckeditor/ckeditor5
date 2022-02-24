@@ -200,7 +200,7 @@ export function expandListBlocksToCompleteItems( blocks, options = {} ) {
 }
 
 /**
- * Expands the given list of selected blocks to include the leading and tailing blocks of partially selected list items.
+ * Expands the given list of selected blocks to include all the items of the lists they're in.
  *
  * @protected
  * @param {module:engine/model/element~Element|Array.<module:engine/model/element~Element>} blocks The list of selected blocks.

@@ -130,52 +130,43 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
-			const stack = [];
-			let listType = null;
-			let listProperties = null;
-			let indent = -1;
+			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
 
-			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+			for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
 				const nodeIndent = node.getAttribute( 'listIndent' );
 
-				if ( nodeIndent > indent ) {
-					stack.push( {
-						listType,
-						listProperties,
-						indent
-					} );
+				// Let's find previous node for the same indent.
+				if ( previous ) {
+					const previousNodeIndent = previous.getAttribute( 'listIndent' );
 
-					listType = null;
-					listProperties = null;
-					indent = nodeIndent;
-				} else {
-					while ( nodeIndent < indent ) {
-						( { listType, listProperties, indent } = stack.pop() );
+					if ( nodeIndent > previousNodeIndent ) {
+						// We're going to need that when we get back to previous indent.
+						previousNodesByIndent[ previousNodeIndent ] = previous;
+					} else if ( nodeIndent < previousNodeIndent ) {
+						// Restore the one for given indent;
+						previousNodeInList = previousNodesByIndent[ nodeIndent ];
+						previousNodesByIndent.length = nodeIndent;
+					} else {
+						previousNodeInList = previous;
 					}
 				}
 
 				const nodeListType = node.getAttribute( 'listType' );
 
-				if ( nodeListType != listType ) {
-					// This node starts a list - save its properties.
-					listType = nodeListType;
-					listProperties = {};
-
+				if ( previousNodeInList && previousNodeInList.getAttribute( 'listType' ) == nodeListType ) {
+					// Copy properties from the previous one.
 					for ( const strategy of strategies ) {
 						const { attributeName } = strategy;
 
-						listProperties[ attributeName ] = node.getAttribute( attributeName );
-					}
-				} else {
-					// This node belongs to already started list - copy properties from the first node.
-					for ( const strategy of strategies ) {
-						const { attributeName } = strategy;
+						if ( !strategy.appliesToListItem( node ) ) {
+							continue;
+						}
 
-						if (
-							strategy.appliesToListItem( node ) &&
-							node.getAttribute( attributeName ) != listProperties[ attributeName ]
-						) {
-							writer.setAttribute( attributeName, listProperties[ attributeName ], node );
+						const value = previousNodeInList.getAttribute( attributeName );
+
+						if ( node.getAttribute( attributeName ) != value ) {
+							writer.setAttribute( attributeName, value, node );
 							evt.return = true;
 						}
 					}
