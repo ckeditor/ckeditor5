@@ -38,10 +38,7 @@ export default class PlainTableOutput extends Plugin {
 
 		// Override default table data downcast converter.
 		editor.conversion.for( 'dataDowncast' ).elementToStructure( {
-			model: {
-				name: 'table',
-				attributes: [ 'headingRows' ]
-			},
+			model: 'table',
 			view: downcastTableElement,
 			converterPriority: 'high'
 		} );
