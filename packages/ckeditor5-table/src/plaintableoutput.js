@@ -9,8 +9,6 @@
 
 import { Plugin } from 'ckeditor5/src/core';
 import Table from './table';
-import TableCaption from './tablecaption';
-import TablePropertiesEditing from './tableproperties/tablepropertiesediting';
 
 /**
  * The plain table output feature.
@@ -29,7 +27,7 @@ export default class PlainTableOutput extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ Table, TablePropertiesEditing, TableCaption ];
+		return [ Table ];
 	}
 
 	/**
