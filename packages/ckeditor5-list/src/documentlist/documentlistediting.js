@@ -111,6 +111,7 @@ export default class DocumentListEditing extends Plugin {
 		this._setupConversion();
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
+		this._setupTabIntegration();
 	}
 
 	/**
@@ -123,11 +124,15 @@ export default class DocumentListEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
+			// Priority is high due to integration with `IndentBlock` plugin. We want to indent list first and if it's not possible
+			// user can indent content with `IndentBlock` plugin.
+			indent.registerChildCommand( commands.get( 'indentList' ), { priority: 'high' } );
 		}
 
 		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+			// Priority is lowest due to integration with `IndentBlock` and `IndentCode` plugins.
+			// First we want to allow user to outdent all indendations from other features then he can oudent list item.
+			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
 	}
 
@@ -312,6 +317,29 @@ export default class DocumentListEditing extends Plugin {
 				splitCommand.execute();
 			}
 		} );
+	}
+
+	/**
+	 * Attaches a listener to the {@link module:engine/view/document~Document#tab:tab} event and handles tab key and tab+shift keys presses
+	 * in document lists.
+	 *
+	 * @private
+	 */
+	_setupTabIntegration() {
+		const editor = this.editor;
+
+		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
+			const command = this.editor.commands.get( commandName );
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				data.stopPropagation();
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li' } );
 	}
 }
 
