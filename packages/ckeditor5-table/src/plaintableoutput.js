@@ -51,7 +51,9 @@ export default class PlainTableOutput extends Plugin {
 		} );
 
 		// Handle border-style, border-color, border-width and background-color table attributes.
-		downcastTableBorderAndBackgroundAttributes( editor );
+		if ( editor.plugins.has( 'TableProperties' ) ) {
+			downcastTableBorderAndBackgroundAttributes( editor );
+		}
 	}
 }
 

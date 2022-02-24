@@ -12,7 +12,7 @@ import Table from '../src/table';
 import PlainTableOutput from '../src/plaintableoutput';
 import { modelTable } from './_utils/utils';
 import TableCaption from '../src/tablecaption';
-import TablePropertiesEditing from '../src/tableproperties/tablepropertiesediting';
+import TableProperties from '../src/tableproperties';
 
 describe( 'PlainTableOutput', () => {
 	let editor, editorElement, model;
@@ -22,23 +22,19 @@ describe( 'PlainTableOutput', () => {
 		document.body.appendChild( editorElement );
 
 		editor = await ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Table, TableCaption, PlainTableOutput ]
+			plugins: [ Paragraph, Table, TableCaption, TableProperties, PlainTableOutput ]
 		} );
 
 		model = editor.model;
 	} );
 
 	afterEach( async () => {
-		editorElement.remove();
 		await editor.destroy();
+		await editorElement.remove();
 	} );
 
-	it( 'requires Table, TablePropertiesEditing and TableCaption', () => {
-		expect( PlainTableOutput.requires ).to.deep.equal( [
-			Table,
-			TablePropertiesEditing,
-			TableCaption
-		] );
+	it( 'requires Table', () => {
+		expect( PlainTableOutput.requires ).to.deep.equal( [ Table ] );
 	} );
 
 	it( 'should have pluginName', () => {
@@ -145,6 +141,29 @@ describe( 'PlainTableOutput', () => {
 				expect( editor.getData() ).to.equal(
 					'<table>' +
 						'<caption>Foo</caption>' +
+						'<tbody>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+			} );
+
+			it( 'should not create caption element without TableCaption plugin', async () => {
+				editor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ Paragraph, Table, PlainTableOutput ]
+				} );
+
+				editor.setData(
+					'<table>' +
+						'<caption>Foo</caption>' +
+						'<tbody>' +
+							'<tr><td>1</td><td>2</td></tr>' +
+						'</tbody>' +
+					'</table>'
+				);
+
+				expect( editor.getData() ).to.equal(
+					'<table>' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
@@ -313,6 +332,89 @@ describe( 'PlainTableOutput', () => {
 					model.change( writer => writer.removeAttribute( 'tableBackgroundColor', table ) );
 
 					assertPlainTableStyle( editor, '' );
+				} );
+			} );
+
+			describe( 'should not create attribute', () => {
+				let table;
+
+				beforeEach( async () => {
+					editor = await ClassicTestEditor.create( editorElement, {
+						plugins: [ Paragraph, Table, PlainTableOutput ]
+					} );
+
+					model = editor.model;
+					table = createEmptyTable();
+				} );
+
+				it( 'tableBorderStyle without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableBorderStyle', 'dotted', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'tableBorderColor without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableBorderColor', 'red', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'tableBorderWidth without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableBorderWidth', '1px', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'border shorthand without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableBorderStyle', 'dotted', table )
+					);
+					model.change( writer =>
+						writer.setAttribute( 'tableBorderColor', 'red', table )
+					);
+					model.change( writer =>
+						writer.setAttribute( 'tableBorderWidth', '1px', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'tableAlignment without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableAlignment', 'right', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'tableWidth without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableWidth', '500px', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'tableHeight without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableHeight', '500px', table )
+					);
+
+					assertPlainTableStyle( editor );
+				} );
+
+				it( 'tableBackgroundColor without TableProperties plugin', () => {
+					model.change( writer =>
+						writer.setAttribute( 'tableBackgroundColor', 'red', table )
+					);
+
+					assertPlainTableStyle( editor );
 				} );
 			} );
 
