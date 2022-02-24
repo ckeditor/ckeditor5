@@ -37,7 +37,7 @@ import Font from "@ckeditor/ckeditor5-font/src/font";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeBlock";
 import FindAndReplace from '@ckeditor/ckeditor5-find-and-replace/src/findandreplace';
 import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
-import {AutoImage, ImageInsert, ImageResize} from "@ckeditor/ckeditor5-image";
+import {AutoImage, ImageInsert, ImageResize, ImageUpload} from "@ckeditor/ckeditor5-image";
 import {HorizontalLine} from "@ckeditor/ckeditor5-horizontal-line";
 import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/src/specialcharactersessentials';
@@ -70,6 +70,7 @@ const plugins = [
 	Heading,
 	Image,
 	AutoImage,
+	ImageUpload,
 	ImageCaption,
 	ImageStyle,
 	ImageToolbar,
