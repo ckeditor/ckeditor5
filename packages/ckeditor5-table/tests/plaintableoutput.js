@@ -67,9 +67,11 @@ describe( 'PlainTableOutput', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<table>' +
-						'<tbody>' +
+						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
+						'</thead>' +
+						'<tbody>' +
 							'<tr><td>5</td><td>6</td></tr>' +
 						'</tbody>' +
 					'</table>'
@@ -103,8 +105,10 @@ describe( 'PlainTableOutput', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<table>' +
-						'<tbody>' +
+						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
+						'</thead>' +
+						'<tbody>' +
 							'<tr><th>3</th><td>4</td></tr>' +
 							'<tr><th>5</th><td>6</td></tr>' +
 						'</tbody>' +
@@ -120,10 +124,10 @@ describe( 'PlainTableOutput', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<table>' +
-						'<tbody>' +
+						'<thead>' +
 							'<tr><th>1</th><th>2</th></tr>' +
 							'<tr><th>3</th><th>4</th></tr>' +
-						'</tbody>' +
+						'</thead>' +
 					'</table>'
 				);
 			} );
@@ -433,14 +437,14 @@ describe( 'PlainTableOutput', () => {
 
 				testEditor.setData(
 					'<figure class="image">' +
-						'<img src="sample.jpg" />' +
+						'<img src="/assets/sample.png" />' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);
 
 				expect( testEditor.getData() ).to.equal(
 					'<figure class="image">' +
-						'<img src="sample.jpg">' +
+						'<img src="/assets/sample.png">' +
 						'<figcaption>Caption</figcaption>' +
 					'</figure>'
 				);

@@ -71,25 +71,51 @@ export default class PlainTableOutput extends Plugin {
 // @param {module:engine/model/element~Element} Table model element.
 // @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion API object.
 // @returns {module:engine/view/containerelement~ContainerElement} Created element.
-function downcastTableElement( modelElement, { writer } ) {
+function downcastTableElement( table, { writer } ) {
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+	// Table head rows slot.
+	const headRowsSlot = writer.createSlot( element =>
+		element.is( 'element', 'tableRow' ) && element.index < headingRows
+	);
+
 	// Table body rows slot.
-	const rowsSlot = writer.createSlot( element => element.is( 'element', 'tableRow' ) );
+	const bodyRowsSlot = writer.createSlot( element =>
+		element.is( 'element', 'tableRow' ) && element.index >= headingRows
+	);
 
 	// Table children slot.
 	const childrenSlot = writer.createSlot( element => !element.is( 'element', 'tableRow' ) );
 
-	// Table <tbody> element with all the rows.
-	const tbodyElement = writer.createContainerElement( 'tbody', null, rowsSlot );
+	// Table <thead> element with all the heading rows.
+	const theadElement = writer.createContainerElement( 'thead', null, headRowsSlot );
+
+	// Table <tbody> element with all the body rows.
+	const tbodyElement = writer.createContainerElement( 'tbody', null, bodyRowsSlot );
+
+	// Table contents element containing <thead> and <tbody> when necessary.
+	const tableContentElements = [];
+
+	if ( headingRows ) {
+		tableContentElements.push( theadElement );
+	}
+
+	if ( headingRows < table.childCount ) {
+		tableContentElements.push( tbodyElement );
+	}
 
 	// Create table structure.
 	//
 	// <table>
 	//    {children-slot-like-caption}
+	//    <thead>
+	//        {table-head-rows-slot}
+	//    </thead>
 	//    <tbody>
-	//        {table-rows-slot}
+	//        {table-body-rows-slot}
 	//    </tbody>
 	// </table>
-	return writer.createContainerElement( 'table', null, [ childrenSlot, tbodyElement ] );
+	return writer.createContainerElement( 'table', null, [ childrenSlot, ...tableContentElements ] );
 }
 
 // Register table border and background attributes converters.
