@@ -508,6 +508,63 @@ describe( 'TableKeyboard', () => {
 					// Should not cancel event.
 					sinon.assert.calledOnce( spy );
 				} );
+
+				it( 'table tab handler for selected table should not capture event if selection is not a table', () => {
+					editor.conversion.elementToElement( {
+						model: 'fakeFigure',
+						view: 'figure'
+					} );
+
+					model.schema.register( 'fakeFigure', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					setModelData( model, '<fakeFigure>[]</fakeFigure>' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( getModelData( model ) ).to.equalMarkup( '[<fakeFigure></fakeFigure>]' );
+				} );
+
+				it( 'table tab handler for td should not capture event if selection is not in a tableCell', () => {
+					editor.conversion.elementToElement( {
+						model: 'fakeTableCell',
+						view: 'td'
+					} );
+
+					model.schema.register( 'fakeTableCell', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					setModelData( model, '<fakeTableCell>[]</fakeTableCell>' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( getModelData( model ) ).to.equalMarkup( '[<fakeTableCell></fakeTableCell>]' );
+				} );
+
+				it( 'table tab handler for th should not capture event if selection is not in a tableCell marked as a header', () => {
+					editor.conversion.elementToElement( {
+						model: 'fakeTableHeader',
+						view: 'th'
+					} );
+
+					model.schema.register( 'fakeTableHeader', {
+						inheritAllFrom: '$blockObject'
+					} );
+
+					setModelData( model, '<fakeTableHeader>[]</fakeTableHeader>' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+					expect( getModelData( model ) ).to.equalMarkup( '[<fakeTableHeader></fakeTableHeader>]' );
+				} );
 			} );
 		} );
 
