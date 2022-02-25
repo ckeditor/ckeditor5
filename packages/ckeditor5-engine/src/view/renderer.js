@@ -817,15 +817,14 @@ export default class Renderer {
 		// and focus of view selection.
 		// Since we are not supporting multi-range selection, we also do not need to check if proper editable is
 		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
-		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
-		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
+		const domRange = this.domConverter.viewRangeToDom( this.selection.getFirstRange() );
 
-		domSelection.collapse( anchor.parent, anchor.offset );
-		domSelection.extend( focus.parent, focus.offset );
+		domSelection.removeAllRanges();
+		domSelection.addRange( domRange );
 
 		// Firefox–specific hack (https://github.com/ckeditor/ckeditor5-engine/issues/1439).
 		if ( env.isGecko ) {
-			fixGeckoSelectionAfterBr( focus, domSelection );
+			fixGeckoSelectionAfterBr( this.domConverter.viewPositionToDom( this.selection.focus ), domSelection );
 		}
 	}
 
