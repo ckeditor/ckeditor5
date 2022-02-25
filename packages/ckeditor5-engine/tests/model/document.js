@@ -515,6 +515,9 @@ describe( 'Document', () => {
 			sinon.assert.notCalled( changeDataSpy );
 		} );
 
+		// There are no strong preferences here.
+		// This case is a bit artificial so perhaps it's better to stay on the safe side and fire the change:data event
+		// even when the marker is empty. But if there is a problem with it, this behavior can be easily changed.
 		it( 'should be fired when the marker updates range from null to null', () => {
 			const root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
