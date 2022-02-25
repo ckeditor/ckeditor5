@@ -476,7 +476,8 @@ describe( 'Document', () => {
 			sandbox.resetHistory();
 
 			model.change( writer => {
-				writer.updateMarker( 'name', { affectsData: true } );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 3 ) );
+				writer.updateMarker( 'name', { range, affectsData: true } );
 			} );
 
 			sinon.assert.calledOnce( changeSpy );
@@ -485,10 +486,102 @@ describe( 'Document', () => {
 			sandbox.resetHistory();
 
 			model.change( writer => {
-				writer.updateMarker( 'name', { affectsData: false } );
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.updateMarker( 'name', { affectsData: false, range } );
 			} );
 
 			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should not be fired when the marker range does not change', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.updateMarker( 'name', { range } );
+			} );
+
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should be fired when the marker updates range from null to null', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should be fired when the marker updates range from non-null range to null', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			sinon.assert.notCalled( changeDataSpy );
+		} );
+
+		it( 'should be fired when the marker updates range from null to a non-null range', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const changeDataSpy = sinon.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { range: null, usingOperation: true } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+
+				writer.updateMarker( 'name', { range, usingOperation: true } );
+			} );
+
 			sinon.assert.notCalled( changeDataSpy );
 		} );
 	} );

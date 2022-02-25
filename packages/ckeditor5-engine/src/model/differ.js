@@ -340,6 +340,11 @@ export default class Differ {
 	hasDataChanges() {
 		for ( const [ , change ] of this._changedMarkers ) {
 			if ( change.affectsData ) {
+				// Skip markers, which ranges have not changed.
+				if ( change.oldRange && change.newRange && change.oldRange.isEqual( change.newRange ) ) {
+					return false;
+				}
+
 				return true;
 			}
 		}
