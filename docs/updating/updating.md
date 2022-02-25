@@ -14,14 +14,14 @@ Before proceeding with an update, it is highly recommended to [read the changelo
 To help you with a smooth update, we have prepared migration guides that describe adjustments that need to be done before moving to the production environment. You can find them in the sidebar located on the left side of the page.
 
 <info-box>
-  Always remember to test your editor before deploying the changes into the production environment, to make sure that the update will not have a negative impact on your application and user experience.
+  Always remember to test your editor before deploying the changes into the production environment. This will help ensure that the update will not have a negative impact on your application and user experience.
 </info-box>
 
 ## Updating CKEditor 5
 
 ### Process
 
-CKEditor 5 is delivered in several ways and the most flexible and popular one is by using `npm` packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or update packages versions in the `package.json` file.
+CKEditor 5 is delivered in several ways and the most flexible and popular one is by using npm packages. The updating process is simple and narrows down to, depending on the installation method, downloading a new package or updating package versions in the `package.json` file.
 
 If you use a {@link installation/advanced/predefined-builds predefined build}, you can simply visit our [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and get the latest editor version from there. However, if you created your own customized editor, the process can be described in a few steps:
 1. Read the changelog.
@@ -34,19 +34,19 @@ Below you will find an example that will guide you through the updating process 
 
 ### Example
 
-Let's imagine that we use the editor version 30.0.0 and we want to update it to version 31.0.0.
+Imagine that you use the editor version 30.0.0 and you want to update it to version 31.0.0.
 
-The first step is to identify changes introduced with the 31.0.0 version, so we navigate to the [changelog section for version 31.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3100-2021-10-25). The release introduced one major breaking change:
+The first step is to identify changes introduced with the 31.0.0 version, so you navigate to the [changelog section for version 31.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3100-2021-10-25). The release introduced one major breaking change:
 
 {@img assets/img/updating-changelog.png 778 Breaking change in the changelog.}
 
-The change affects the {@link features/html-embed HTML embed feature}, so if we used this feature's API in our project, it should be reviewed. Fortunately, our {@link updating/migration-to-31#migration-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in our code!
+The change affects the {@link features/html-embed HTML embed feature}, so if you used this feature's API in your project, it should be reviewed. Fortunately, the {@link updating/migration-to-31#migration-to-ckeditor-5-v3100 migration guide for version 31.0.0} explains what should be updated in your code!
 
 <info-box>
-  It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.
+	It is recommended to update regularly. Sometimes, however, it could happen that you skip a few releases and need to update to a non-adjacent version. In such a case, remember to verify the changelog and migration guides for **all** missing versions, not only the one you are updating to.
 </info-box>
 
-When we already know what has changed and which parts of our custom code need to be adjusted, it is time to make the update. If you use a predefined build hosted on CDN or downloaded ZIP package, you can simply visit our [CKEditor 5 download section](https://ckeditor.com/ckeditor-5/download/) and get the latest version. However, the most common way for installing CKEditor 5 is using `npm` packages.
+When you already know what has changed and which parts of your custom code need to be adjusted, it is time to make the update. If you use a predefined build hosted on CDN or a downloaded ZIP package, you can simply visit the [CKEditor 5 download section](https://ckeditor.com/ckeditor-5/download/) and get the latest version. However, the most common way for installing CKEditor 5 is using npm packages.
 
 The example `package.json` file with the editor version 30.0.0 looks as below:
 
@@ -74,7 +74,7 @@ The example `package.json` file with the editor version 30.0.0 looks as below:
   }
   ```
 
-To perform the update, we can simply change the version from 30.0.0 to 31.0.0 or use some automated tool (e.g. [npm-check-updates](https://www.npmjs.com/package/npm-check-updates)):
+To perform the update, you can simply change the version from 30.0.0 to 31.0.0 or use some automated tool (e.g. [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates)):
 
 ```json
   "dependencies": {
@@ -100,7 +100,7 @@ To perform the update, we can simply change the version from 30.0.0 to 31.0.0 or
   }
   ```
 
-Finally, we reinstall the packages and rebuild the editor (sometimes it might be required to remove the `package-lock.json` or `yarn.lock` files):
+Finally, you reinstall the packages and rebuild the editor. Note that sometimes it might be required to remove the `package-lock.json` or `yarn.lock` files.
 
 ```sh
 rm -rf node_modules && yarn install && yarn run build
@@ -115,5 +115,5 @@ While using real-time collaboration it is important to remember about preparing 
 To avoid such a situation, you should flush the existing documents using Cloud Services REST API before connecting a user with the updated editor.
 
 <info-box>
-If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.
+	If you are using Collaboration Server On-premises, it is recommended to keep it updated at all times, just like CKEditor 5. Our collaboration features are strongly linked with Cloud Services, so it is important to keep compatibility between On-premises and CKEditor 5.
 </info-box>
