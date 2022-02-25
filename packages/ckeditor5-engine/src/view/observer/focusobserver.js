@@ -25,11 +25,11 @@ export default class FocusObserver extends DomEventObserver {
 	constructor( view ) {
 		super( view );
 
-		this.domEventType = [ 'focus', 'blur' ];
+		this.domEventType = [ 'focusin', 'focusout' ];
 		this.useCapture = true;
 		const document = this.document;
 
-		document.on( 'focus', () => {
+		document.on( 'focusin', () => {
 			document.isFocused = true;
 
 			// Unfortunately native `selectionchange` event is fired asynchronously.
@@ -43,16 +43,23 @@ export default class FocusObserver extends DomEventObserver {
 			this._renderTimeoutId = setTimeout( () => view.change( () => {} ), 50 );
 		} );
 
-		document.on( 'blur', ( evt, data ) => {
-			const selectedEditable = document.selection.editableElement;
+		document.on( 'focusout', ( evt, data ) => {
+			const { relatedTarget } = data.domEvent;
 
-			if ( selectedEditable === null || selectedEditable === data.target ) {
-				document.isFocused = false;
+			if ( relatedTarget ) {
+				const hasFocusMovedBetweenEditablesInTheSameEditor = Array.from( view.domRoots.values() )
+					.some( domRoot => domRoot == relatedTarget || domRoot.contains( relatedTarget ) );
 
-				// Re-render the document to update view elements
-				// (changing document.isFocused already marked view as changed since last rendering).
-				view.change( () => {} );
+				if ( hasFocusMovedBetweenEditablesInTheSameEditor ) {
+					return;
+				}
 			}
+
+			document.isFocused = false;
+
+			// Re-render the document to update view elements
+			// (changing document.isFocused already marked view as changed since last rendering).
+			view.change( () => {} );
 		} );
 
 		/**
