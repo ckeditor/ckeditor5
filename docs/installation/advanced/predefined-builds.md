@@ -4,7 +4,7 @@ category: alternative-setups
 order: 30
 ---
 
-# Predefined builds
+# Predefined CKEditor 5 builds
 
 ## Overview
 
@@ -52,9 +52,9 @@ The following are **some** common use cases:
 	* Social messaging and content sharing.
 	* Creation of ads in recruitment software.
 
-### When NOT to use builds?
+### When NOT to use predefined builds?
 
-{@link framework/index CKEditor 5 Framework} should be used, instead of builds, in the following cases:
+{@link framework/index CKEditor 5 Framework} or a {@link installation/getting-started/quick-start custom build} should be used, instead of predefined builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
@@ -65,16 +65,9 @@ In the following cases [CKEditor 4](https://ckeditor.com/ckeditor-4/) should be 
 * If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
 * If CKEditor 4 is already in use in your application and you are still not ready to replace it with CKEditor 5.
 
-In the following cases [Letters](https://ckeditor.com/letters/) may be used instead:
-
-* When you want an easy way to enable, as part of your application, the creation of articles and documents that feature:
-	* Real-time collaborative writing.
-	* Inline comments and discussion in the content.
-	* Advanced writing features.
-
 ### Download options
 
-There are several options to download CKEditor 5 builds:
+There are several options to download predefined CKEditor 5 builds:
 
 * [CDN](#cdn)
 * [npm](#npm)
@@ -83,11 +76,11 @@ There are several options to download CKEditor 5 builds:
 
 #### CDN
 
-Builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super fast content delivery. When using CDN no download is actually needed.
+Predefined CKEditor 5 builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckeditor.com/#ckeditor5), which is optimized for worldwide super-fast content delivery. When using CDN no download is actually needed.
 
 #### npm
 
-All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor) to view all official build packages available in npm.
+All predefined builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor) to view all official build packages available in npm.
 
 Installing a build with npm is as simple as calling one of the following commands in your project:
 
@@ -103,7 +96,7 @@ npm install --save @ckeditor/ckeditor5-build-balloon-block
 npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 
-CKEditor will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
+CKEditor 5 will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
 
 #### Online builder
 
@@ -111,9 +104,9 @@ The [online builder](https://ckeditor.com/ckeditor-5/online-builder/) lets you d
 
 #### Zip download
 
-Go to the [CKEditor 5 builds download page](https://ckeditor.com/ckeditor-5-builds/download/) and download your preferred build. For example, you may download the `ckeditor5-build-classic-1.0.0.zip` file for the Classic editor build.
+Go to the [CKEditor 5 download page](https://ckeditor.com/ckeditor-5/download/) and download your preferred build. For example, you may download the `ckeditor5-build-classic-32.0.0.zip` file for the classic editor build.
 
-Extract the `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor is installed.
+Extract the `.zip` file into a dedicated directory inside your project. It is recommended to include the editor version in the directory name to ensure proper cache invalidation once a new version of CKEditor 5 is installed.
 
 ##### Included files
 
@@ -124,7 +117,7 @@ Extract the `.zip` file into a dedicated directory inside your project. It is re
 
 ### Loading the API
 
-After downloading and installing a CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
+After downloading and installing a predefined CKEditor 5 build in your application, it is time to make the editor API available in your pages. For that purpose, it is enough to load the API entry point script:
 
 ```html
 <script src="[ckeditor-build-path]/ckeditor.js"></script>
@@ -140,7 +133,7 @@ Once the CKEditor script is loaded, you can {@link installation/getting-started/
 
 ### Classic editor
 
-Classic editor is what most users traditionally learnt to associate with a rich text editor &mdash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+Classic editor is what most users traditionally learnt to associate with a rich-text editor &mdash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
 During its initialization the editor hides the used editable element on the page and renders "instead" of it. This is why it is usually used to replace `<textarea>` elements.
 
@@ -156,13 +149,13 @@ To try it out online, check the {@link examples/builds/classic-editor classic ed
 
 #### Installation example
 
-In your HTML page add an element that CKEditor should replace:
+In your HTML page add an element that CKEditor 5 should replace:
 
 ```html
 <div id="editor"></div>
 ```
 
-Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the classic editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
@@ -218,13 +211,13 @@ To try it out online, check the {@link examples/builds/inline-editor inline edit
 
 #### Installation example
 
-In your HTML page add an element that CKEditor should make editable:
+In your HTML page add an element that CKEditor 5 should make editable:
 
 ```html
 <div id="editor"></div>
 ```
 
-Load the inline editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the inline editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/inline/ckeditor.js"></script>
@@ -278,7 +271,7 @@ To try it out online, check the {@link examples/builds/balloon-editor balloon ed
 
 #### Installation example
 
-In your HTML page add an element that CKEditor should make editable:
+In your HTML page add an element that CKEditor 5 should make editable:
 
 ```html
 <div id="editor"></div>
@@ -338,13 +331,13 @@ To try it out online, check the {@link examples/builds/balloon-block-editor ball
 
 #### Installation example
 
-In your HTML page add an element that CKEditor should make editable:
+In your HTML page add an element that CKEditor 5 should make editable:
 
 ```html
 <div id="editor"></div>
 ```
 
-Load the balloon block editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the balloon block editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/balloon-block/ckeditor.js"></script>
@@ -392,7 +385,7 @@ Full code example:
 
 ### Document editor
 
-The document editor is focused on rich text editing experience similar to the native word processors. It works best for creating documents which are usually later printed or exported to PDF files.
+The document editor is focused on rich-text editing experience similar to the native word processors. It works best for creating documents which are usually later printed or exported to PDF files.
 
 {@img assets/img/editor-document.png 843 Screenshot of the user interface of the document editor.}
 
@@ -400,7 +393,7 @@ To try it out online, check the {@link examples/builds/document-editor document 
 
 #### Installation example
 
-Load the document editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the document editor build (here, the [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
@@ -488,14 +481,14 @@ Some of the reasons for creating custom builds are:
 * Enabling bug fixes which are still not a part of any public release.
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor 5, check also the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create easily a custom build through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor 5, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a custom build through a simple and intuitive UI.
 </info-box>
 
 ### Requirements
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 12.0.0+
+* [Node.js](https://nodejs.org/en/) 14.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
@@ -514,7 +507,7 @@ For example, use the following command to get to the classic build:
 cd packages/ckeditor5-build-classic
 ```
 
-To make updating easier you may optionally add the original build repository to your Git remotes:
+To make updating easier, you may optionally add the original build repository to your Git remotes:
 
 ```bash
 git remote add upstream https://github.com/ckeditor/ckeditor5.git
@@ -536,7 +529,7 @@ Every build contains the following files:
 
 * `build/ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
 * `src/ckeditor.js` &ndash; The source entry point of the build. Based on it the `build/ckeditor.js` file is created by [webpack](https://webpack.js.org). It defines the editor creator, the list of plugins and the default configuration of a build.
-* `webpack-config.js` &ndash; webpack configuration used to build the editor.
+* `webpack-config.js` &ndash; The webpack configuration used to build the editor.
 
 ### Customizing a build
 
@@ -560,7 +553,7 @@ Then, you can add missing dependencies (i.e. packages you want to add to your bu
 npm install --save-dev <package-name>
 ```
 
-This will install the package and add it to `package.json`. You can also edit `package.json` manually. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
+This will install the package and add it to `package.json`. You can also edit `package.json` manually. Keep in mind, however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
 
 <info-box hint>
 	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
