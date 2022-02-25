@@ -6,6 +6,7 @@
 /* globals document */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Table from '../src/table';
@@ -422,6 +423,28 @@ describe( 'PlainTableOutput', () => {
 
 					assertPlainTableStyle( testEditor );
 				} );
+			} );
+
+			it( 'should not convert image captions', async () => {
+				const testEditor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput ]
+				} );
+
+				testEditor.setData(
+					'<figure class="image">' +
+						'<img src="sample.jpg" />' +
+						'<figcaption>Caption</figcaption>' +
+					'</figure>'
+				);
+
+				expect( testEditor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<img src="sample.jpg">' +
+						'<figcaption>Caption</figcaption>' +
+					'</figure>'
+				);
+
+				testEditor.destroy();
 			} );
 
 			function createEmptyTable() {

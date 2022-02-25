@@ -29,3 +29,7 @@ The markup should be similar to this:
     </tbody>
 </table>
 ```
+
+#### Image captions
+
+Image captions should still be `<figcpation>` elements.
