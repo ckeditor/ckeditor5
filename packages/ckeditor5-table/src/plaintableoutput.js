@@ -46,7 +46,7 @@ export default class PlainTableOutput extends Plugin {
 		// Make sure table <caption> is always downcasted to <caption> in the data pipeline.
 		if ( editor.plugins.has( 'TableCaption' ) ) {
 			editor.conversion.for( 'dataDowncast' ).elementToElement( {
-				model: '$root',
+				model: 'caption',
 				view: ( modelElement, { writer } ) => {
 					if ( modelElement.parent.name === 'table' ) {
 						return writer.createContainerElement( 'caption' );
