@@ -427,7 +427,8 @@ describe( 'PlainTableOutput', () => {
 
 			it( 'should not convert image captions', async () => {
 				const testEditor = await ClassicTestEditor.create( editorElement, {
-					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput ]
+					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput ],
+					image: { toolbar: [ '|' ] }
 				} );
 
 				testEditor.setData(
