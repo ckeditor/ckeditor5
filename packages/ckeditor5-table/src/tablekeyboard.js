@@ -119,8 +119,6 @@ export default class TableKeyboard extends Plugin {
 			return;
 		}
 
-		let cellToFocus;
-
 		const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
 		const isLastRow = currentRowIndex === tableUtils.getRows( table ) - 1;
 
@@ -137,6 +135,8 @@ export default class TableKeyboard extends Plugin {
 				return;
 			}
 		}
+
+		let cellToFocus;
 
 		// Move to the first cell in the next row.
 		if ( isForward && isLastCellInRow ) {
