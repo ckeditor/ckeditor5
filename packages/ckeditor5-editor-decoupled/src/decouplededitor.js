@@ -60,7 +60,14 @@ export default class DecoupledEditor extends Editor {
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( sourceElementOrData, config ) {
+	constructor( sourceElementOrData, config = {} ) {
+		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
+		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
+			// Documented in core/editor/editorconfig.jsdoc.
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+			throw new CKEditorError( 'editor-create-initial-data', null );
+		}
+
 		super( config );
 
 		if ( this.config.get( 'initialData' ) === undefined ) {
@@ -220,19 +227,10 @@ export default class DecoupledEditor extends Editor {
 	 */
 	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
-			const isHTMLElement = isElement( sourceElementOrData );
-
-			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
+			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
 				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'editor-wrong-element', null );
-			}
-
-			// If both `config.initialData` and initial data parameter in `create()` are set, then throw.
-			if ( !isHTMLElement && config.initialData !== undefined ) {
-				// Documented in core/editor/editorconfig.jsdoc.
-				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-				throw new CKEditorError( 'editor-create-initial-data', null );
 			}
 
 			const editor = new this( sourceElementOrData, config );
