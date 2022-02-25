@@ -10,18 +10,18 @@ order: 30
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/configuration last tutorial} you have learned how to configure your editor with various options. Now, we will be extending it with some additional features.
+In the {@link installation/getting-started/configuration previous tutorial} you have learned how to configure your editor with various options. Now, you will be extending it with some {@link features/index additional features}.
 </info-box>
 
 CKEditor 5 plugins are distributed through [npm](https://www.npmjs.com) packages and are implemented in a modular way, which means that a single plugin may consist of multiple JavaScript files.
 
 In this guide you can learn how to add plugins to your editor in the two most common scenarios:
 
-* When you use an {@link installation/advanced/predefined-builds editor build},
+* When you use a {@link installation/advanced/predefined-builds predefined editor build}.
 * When you {@link framework/guides/quick-start build your editor from source}.
 
 <info-box hint>
-	If you are looking for an easy way to create a custom build of CKEditor 5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create easily a build with a custom set of plugins through a simple and intuitive UI.
+	If you are looking for an easy way to create a custom build of CKEditor 5 without installing anything, check the [online builder](https://ckeditor.com/ckeditor-5/online-builder/), which allows you to create a build with a custom set of plugins through a simple and intuitive UI.
 </info-box>
 
 ## Requirements
@@ -32,16 +32,16 @@ In order to start developing CKEditor 5 you will require:
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
 <info-box warning>
-	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example - if you'd like to install `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the Alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
+	When installing CKEditor 5 Framework packages, you need to make sure their versions match the version of the base editor package. For example: if you would like to install the `@ckeditor/ckeditor5-alignment` package and your other packages are outdated, e.g. at version `18.0.0`, you should consider updating your editor and other packages to the latest version or install the alignment package at version `18.0.0`. Otherwise, this will result in [`ckeditor-duplicated-modules error`](https://ckeditor.com/docs/ckeditor5/latest/support/error-codes.html#error-ckeditor-duplicated-modules).
 
-	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [npm-check-updates](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
+	The simplest way to avoid such situations is to always use the latest versions of the official packages. If you already stumbled upon this error, you can use [`npm-check-updates`](https://www.npmjs.com/package/npm-check-updates), which is a handy tool for keeping your packages up to date.
 
-	**NOTE:** the above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
+	**NOTE:** The above rule rule does not apply to packages named `@ckeditor/ckeditor5-dev-*`.
 </info-box>
 
 ## Adding a plugin to a build
 
-Adding plugins to existing builds is done through their customization. Editor builds are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic) you need to:
+Adding plugins to existing, predefined builds is done through their customization. {@link installation/advanced/predefined-builds Predefined editor builds} are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic), you need to:
 
 1. Clone the build repository.
 2. Install the plugin package.
@@ -152,7 +152,7 @@ If everything worked, the editor build (which is available in the `build/` direc
 
 You can open the `sample/index.html` file in your browser to see whether the plugin was installed correctly.
 
-This was a quick version of how a build can be customized. Read more about {@link installation/getting-started/quick-start#building-the-editor-from-source customizing existing editor builds} in a separate guide.
+This was a quick version of how a build can be customized. Read more about {@link installation/getting-started/quick-start customizing existing editor builds} in a separate guide.
 
 ## Adding a plugin to an editor
 
@@ -293,5 +293,5 @@ So, in short, both methods use very similar mechanisms. However, adding a plugin
 <info-box hint>
 **What's next?**
 
-That was fun, right? Don't hesitate and [explore available CKEditor 5 features](https://ckeditor.com/docs/ckeditor5/latest/features/index.html), they are waiting to be installed! {@link installation/getting-started/basic-api In the next article}, you will learn more about the editor API and how to use it.
+That was fun, right? Don't hesitate and {@link features/index explore available CKEditor 5 features}, they are waiting to be installed! {@link installation/getting-started/basic-api In the next article}, you will learn more about the editor API and how to use it.
 </info-box>

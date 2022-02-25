@@ -11,7 +11,7 @@ order: 40
 <info-box hint>
 **Quick recap**
 
-In the {@link installation/getting-started/installing-plugins last tutorial} you have explored available features and learned how to add them to your editor. This article shows the basic API which you can use for the interaction with the editor.
+In the {@link installation/getting-started/installing-plugins previous tutorial} you have explored available features and learned how to add them to your editor. This article shows the basic API which you can use for the interaction with the editor.
 </info-box>
 
 Each CKEditor 5 **build** provides a different **editor class** that handles the creation of editor instances:
@@ -31,7 +31,7 @@ Most of the examples in the documentation use the `ClassicEditor` class, but thi
 
 Regardless of the chosen build, creating an editor is done using the static `create()` method.
 
-### Example – Classic editor
+### Example – classic editor
 
 Add an element that CKEditor should replace to your HTML page:
 
@@ -41,7 +41,7 @@ Add an element that CKEditor should replace to your HTML page:
 </div>
 ```
 
-Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link installation/advanced/predefined-builds#classic-editor Classic editor}:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link installation/advanced/predefined-builds#classic-editor classic editor}:
 
 ```js
 ClassicEditor
@@ -56,9 +56,9 @@ ClassicEditor
 
 In this case the `<textarea>` element is hidden and replaced with an editor. The `<textarea>` data is used to initialize the editor content. A `<div>` element can be used in the same way.
 
-### Example – Inline editor
+### Example – inline editor
 
-Similarly to the previous example, add an element where CKEditor should initialize to your page:
+Similarly to the previous example, add an element where CKEditor 5 should initialize to your page:
 
 ```html
 <div id="editor">
@@ -66,7 +66,7 @@ Similarly to the previous example, add an element where CKEditor should initiali
 </div>
 ```
 
-Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#inline-editor Inline editor} to the `<div>` element:
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#inline-editor inline editor} to the `<div>` element:
 
 ```js
 InlineEditor
@@ -79,9 +79,9 @@ InlineEditor
 	} );
 ```
 
-### Example – Balloon editor
+### Example – balloon editor
 
-The procedure is the same as for Inline editor. The only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
+The procedure is the same as for inline editor. The only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 Add an element where CKEditor should initialize to your page:
 
@@ -91,7 +91,7 @@ Add an element where CKEditor should initialize to your page:
 </div>
 ```
 
-Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#balloon-editor Balloon editor} to the `<div>` element:
+Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link installation/advanced/predefined-builds#balloon-editor balloon editor} to the `<div>` element:
 
 ```js
 BalloonEditor
@@ -104,7 +104,7 @@ BalloonEditor
 	} );
 ```
 
-### Example – Decoupled editor
+### Example – decoupled editor
 
 Add the elements where CKEditor should initialize the toolbar and the editable to your page:
 
@@ -118,7 +118,7 @@ Add the elements where CKEditor should initialize the toolbar and the editable t
 </div>
 ```
 
-Then call {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
+Then call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
 
 ```js
 DecoupledEditor
@@ -161,7 +161,7 @@ const data = editor.getData();
 
 ### Destroying the editor
 
-In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor instances should be destroyed by using the `destroy()` method:
+In modern applications, it is common to create and remove elements from the page interactively through JavaScript. In such cases CKEditor 5 instances should be destroyed by using the `destroy()` method:
 
 ```js
 editor.destroy()
@@ -174,7 +174,7 @@ Once destroyed, resources used by the editor instance are released and the origi
 
 ### Listening to changes
 
-{@link module:engine/model/document~Document#change:data `Document#change:data`}.
+The {@link module:engine/model/document~Document#change:data `Document#change:data`} event is fired when the document changes in such a way which is "visible" in the editor data.
 
 ```js
 editor.model.document.on( 'change:data', () => {
@@ -182,7 +182,7 @@ editor.model.document.on( 'change:data', () => {
 } );
 ```
 
-This event is fired when the document changes in such a way which is "visible" in the editor data. There is also a group of changes, like selection position changes, marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#change `Document#change`} event.
+There is also a group of changes like selection position changes or marker changes which do not affect the result of `editor.getData()`. To listen to all these changes, you can use a wider {@link module:engine/model/document~Document#change `Document#change`} event.
 
 ## UMD support
 
