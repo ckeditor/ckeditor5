@@ -29,8 +29,8 @@ describe( 'PlainTableOutput', () => {
 	} );
 
 	afterEach( async () => {
+		editorElement.remove();
 		await editor.destroy();
-		await editorElement.remove();
 	} );
 
 	it( 'requires Table', () => {
@@ -149,11 +149,11 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			it( 'should not create caption element without TableCaption plugin', async () => {
-				editor = await ClassicTestEditor.create( editorElement, {
+				const testEditor = await ClassicTestEditor.create( editorElement, {
 					plugins: [ Paragraph, Table, PlainTableOutput ]
 				} );
 
-				editor.setData(
+				testEditor.setData(
 					'<table>' +
 						'<caption>Foo</caption>' +
 						'<tbody>' +
@@ -162,13 +162,15 @@ describe( 'PlainTableOutput', () => {
 					'</table>'
 				);
 
-				expect( editor.getData() ).to.equal(
+				expect( testEditor.getData() ).to.equal(
 					'<table>' +
 						'<tbody>' +
 							'<tr><td>1</td><td>2</td></tr>' +
 						'</tbody>' +
 					'</table>'
 				);
+
+				testEditor.destroy();
 			} );
 
 			it( 'should be overridable', () => {
@@ -336,15 +338,19 @@ describe( 'PlainTableOutput', () => {
 			} );
 
 			describe( 'should not create attribute', () => {
-				let table;
+				let table, testEditor;
 
 				beforeEach( async () => {
-					editor = await ClassicTestEditor.create( editorElement, {
+					testEditor = await ClassicTestEditor.create( editorElement, {
 						plugins: [ Paragraph, Table, PlainTableOutput ]
 					} );
 
-					model = editor.model;
+					model = testEditor.model;
 					table = createEmptyTable();
+				} );
+
+				afterEach( async () => {
+					await testEditor.destroy();
 				} );
 
 				it( 'tableBorderStyle without TableProperties plugin', () => {
@@ -352,7 +358,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableBorderStyle', 'dotted', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'tableBorderColor without TableProperties plugin', () => {
@@ -360,7 +366,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableBorderColor', 'red', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'tableBorderWidth without TableProperties plugin', () => {
@@ -368,7 +374,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableBorderWidth', '1px', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'border shorthand without TableProperties plugin', () => {
@@ -382,7 +388,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableBorderWidth', '1px', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'tableAlignment without TableProperties plugin', () => {
@@ -390,7 +396,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableAlignment', 'right', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'tableWidth without TableProperties plugin', () => {
@@ -398,7 +404,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableWidth', '500px', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'tableHeight without TableProperties plugin', () => {
@@ -406,7 +412,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableHeight', '500px', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 
 				it( 'tableBackgroundColor without TableProperties plugin', () => {
@@ -414,7 +420,7 @@ describe( 'PlainTableOutput', () => {
 						writer.setAttribute( 'tableBackgroundColor', 'red', table )
 					);
 
-					assertPlainTableStyle( editor );
+					assertPlainTableStyle( testEditor );
 				} );
 			} );
 

@@ -44,11 +44,13 @@ export default class PlainTableOutput extends Plugin {
 		} );
 
 		// Make sure <caption> is always downcasted to <caption> in the data pipeline.
-		editor.conversion.for( 'dataDowncast' ).elementToElement( {
-			model: 'caption',
-			view: 'caption',
-			converterPriority: 'high'
-		} );
+		if ( editor.plugins.has( 'TableCaption' ) ) {
+			editor.conversion.for( 'dataDowncast' ).elementToElement( {
+				model: 'caption',
+				view: 'caption',
+				converterPriority: 'high'
+			} );
+		}
 
 		// Handle border-style, border-color, border-width and background-color table attributes.
 		if ( editor.plugins.has( 'TableProperties' ) ) {
