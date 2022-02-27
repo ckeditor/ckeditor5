@@ -102,13 +102,15 @@ export default class CodeBlockEditing extends Plugin {
 			const commandName = data.shiftKey ? 'outdentCodeBlock' : 'indentCodeBlock';
 			const command = editor.commands.get( commandName );
 
-			if ( command.isEnabled ) {
-				editor.execute( commandName );
-
-				data.stopPropagation();
-				data.preventDefault();
-				evt.stop();
+			if ( !command.isEnabled ) {
+				return;
 			}
+
+			editor.execute( commandName );
+
+			data.stopPropagation();
+			data.preventDefault();
+			evt.stop();
 		}, { context: 'pre' } );
 
 		schema.register( 'codeBlock', {

@@ -357,6 +357,46 @@ describe( 'CodeBlockEditing', () => {
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 			sinon.assert.notCalled( onTabPressSpy );
 		} );
+
+		it( 'should not stop tab event if indent command was not executed', () => {
+			model.schema.register( 'fakePre', {
+				allowIn: '$root'
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'fakePre',
+				view: 'pre'
+			} );
+
+			setModelData( model, '<fakePre>[]</fakePre>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.neverCalledWith( editor.execute, 'indentCodeBlock' );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not stop tab event if outdent command was not executed', () => {
+			model.schema.register( 'fakePre', {
+				allowIn: '$root'
+			} );
+
+			editor.conversion.elementToElement( {
+				model: 'fakePre',
+				view: 'pre'
+			} );
+
+			setModelData( model, '<fakePre>[]</fakePre>' );
+
+			domEvtDataStub.shiftKey = true;
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.neverCalledWith( editor.execute, 'outdentCodeBlock' );
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
 	} );
 
 	describe( 'enter key handling', () => {
