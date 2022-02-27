@@ -113,6 +113,7 @@ export default class DocumentListEditing extends Plugin {
 		this._setupConversion();
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
+		this._setupTabIntegration();
 	}
 
 	/**
@@ -125,11 +126,15 @@ export default class DocumentListEditing extends Plugin {
 		const outdent = commands.get( 'outdent' );
 
 		if ( indent ) {
-			indent.registerChildCommand( commands.get( 'indentList' ) );
+			// Priority is high due to integration with `IndentBlock` plugin. We want to indent list first and if it's not possible
+			// user can indent content with `IndentBlock` plugin.
+			indent.registerChildCommand( commands.get( 'indentList' ), { priority: 'high' } );
 		}
 
 		if ( outdent ) {
-			outdent.registerChildCommand( commands.get( 'outdentList' ) );
+			// Priority is lowest due to integration with `IndentBlock` and `IndentCode` plugins.
+			// First we want to allow user to outdent all indendations from other features then he can oudent list item.
+			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
 	}
 
@@ -307,6 +312,29 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
+	 * Attaches a listener to the {@link module:engine/view/document~Document#tab:tab} event and handles tab key and tab+shift keys presses
+	 * in document lists.
+	 *
+	 * @private
+	 */
+	_setupTabIntegration() {
+		const editor = this.editor;
+
+		this.listenTo( editor.editing.view.document, 'tab', ( evt, data ) => {
+			const commandName = data.shiftKey ? 'outdentList' : 'indentList';
+			const command = this.editor.commands.get( commandName );
+
+			if ( command.isEnabled ) {
+				editor.execute( commandName );
+
+				data.stopPropagation();
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { context: 'li' } );
+	}
+
+	/**
 	 * Registers the conversion helpers for the document-list feature.
 	 * @private
 	 */
@@ -393,7 +421,7 @@ export default class DocumentListEditing extends Plugin {
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this ) );
 
 		// For LI verify if an ID of the attribute element is correct.
-		this.on( 'refreshChecker:item', ( evt, { viewElement, modelAttributes } ) => {
+		this.on( 'checkAttributes:item', ( evt, { viewElement, modelAttributes } ) => {
 			if ( viewElement.id != modelAttributes.listItemId ) {
 				evt.return = true;
 				evt.stop();
@@ -401,7 +429,7 @@ export default class DocumentListEditing extends Plugin {
 		} );
 
 		// For UL and OL check if the name and ID of element is correct.
-		this.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
+		this.on( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
 			if (
 				viewElement.name != getViewElementNameForListType( modelAttributes.listType ) ||
 				viewElement.id != getViewElementIdForListType( modelAttributes.listType, modelAttributes.listIndent )
@@ -427,12 +455,12 @@ export default class DocumentListEditing extends Plugin {
 		// Then the callbacks for the specific lists.
 		// The indentation fixing must be the first one...
 		this.on( 'postFixer', ( evt, { listHead, writer } ) => {
-			evt.return = fixListIndents( listHead, writer );
+			evt.return = fixListIndents( listHead, writer ) || evt.return;
 		}, { priority: 'high' } );
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
 		this.on( 'postFixer', ( evt, { listHead, writer, seenIds } ) => {
-			evt.return = fixListItemIds( listHead, seenIds, writer );
+			evt.return = fixListItemIds( listHead, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
 	}
 }
@@ -495,12 +523,12 @@ function modelChangePostFixer( model, writer, emitter ) {
 				}
 			}
 		}
-		// Removed list item.
-		else if ( entry.type == 'remove' && entry.attributes.has( 'listItemId' ) ) {
+		// Removed list item or block adjacent to a list.
+		else if ( entry.type == 'remove' ) {
 			findAndAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
-		else if ( entry.type == 'attribute' && [ 'listIndent', 'listType' ].includes( entry.attributeKey ) ) {
+		else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
 			findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 			if ( entry.attributeNewValue === null ) {

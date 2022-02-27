@@ -10,14 +10,12 @@
 import { Command } from 'ckeditor5/src/core';
 import { first } from 'ckeditor5/src/utils';
 import {
-	expandListBlocksToCompleteItems,
-	getListItems,
-	getSelectedBlockObject,
+	expandListBlocksToCompleteList,
 	isListItemBlock
 } from '../documentlist/utils/model';
 
 /**
- * The list start index command. It changes the `listReversed` attribute of the selected list items,
+ * The list reversed command. It changes the `listReversed` attribute of the selected list items,
  * letting the user to choose the order of an ordered list.
  * It is used by the {@link module:list/documentlistproperties~DocumentListProperties list properties feature}.
  *
@@ -44,18 +42,13 @@ export default class DocumentListReversedCommand extends Command {
 	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
-		const selectedBlockObject = getSelectedBlockObject( model );
 
 		let blocks = Array.from( document.selection.getSelectedBlocks() )
 			.filter( block => isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' );
 
-		if ( document.selection.isCollapsed || selectedBlockObject ) {
-			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
+		const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
 
-			blocks = getListItems( selectedBlockObject || blocks[ 0 ], documentListEditingPlugin.getSameListDefiningAttributes() );
-		} else {
-			blocks = expandListBlocksToCompleteItems( blocks, { withNested: false } );
-		}
+		blocks = expandListBlocksToCompleteList( blocks, documentListEditingPlugin.getSameListDefiningAttributes() );
 
 		model.change( writer => {
 			for ( const block of blocks ) {
@@ -76,7 +69,7 @@ export default class DocumentListReversedCommand extends Command {
 
 		const block = first( document.selection.getSelectedBlocks() );
 
-		if ( block && isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
+		if ( isListItemBlock( block ) && block.getAttribute( 'listType' ) == 'numbered' ) {
 			return block.getAttribute( 'listReversed' );
 		}
 

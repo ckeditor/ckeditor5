@@ -313,7 +313,7 @@ describe( 'DocumentListReversedCommand', () => {
 			` ) );
 		} );
 
-		it( 'should only set the `listReversed` attribute for selected items (non-collapsed selection)', () => {
+		it( 'should set the `listReversed` attribute for selected items (non-collapsed selection)', () => {
 			setData( model, modelList( `
 				# 1. {reversed:false}
 				# 2a.
@@ -327,17 +327,17 @@ describe( 'DocumentListReversedCommand', () => {
 			listReversedCommand.execute( { reversed: true } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				# 1. {reversed:false}
-				# 2a. {reversed:true}
+				# 1. {reversed:true}
+				# 2a.
 				  [2b.
 				  2c.
 				# 3a].
 				  3b.
-				# 4. {reversed:false}
+				# 4.
 			` ) );
 		} );
 
-		it( 'should only set the `listReversed` attribute for all blocks in the list item (non-collapsed selection)', () => {
+		it( 'should set the `listReversed` attribute for all blocks in the list item (non-collapsed selection)', () => {
 			setData( model, modelList( `
 				# 1. {reversed:true}
 				# 2.
@@ -348,10 +348,10 @@ describe( 'DocumentListReversedCommand', () => {
 			listReversedCommand.execute( { reversed: false } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				# 1. {reversed:true}
-				# 2. {reversed:false}
+				# 1. {reversed:false}
+				# 2.
 				  [3].
-				# 4. {reversed:true}
+				# 4.
 			` ) );
 		} );
 
@@ -362,13 +362,13 @@ describe( 'DocumentListReversedCommand', () => {
 			// "2.1" a child list of the "2." element (listIndent=1)
 			// "2.1.1" a child list of the "2.1" element (listIndent=2)
 			//
-			// [ ] ■ 1.
+			// [x] ■ 1.
 			// [x] ■ [2.
 			// [x]     ○ 2.1.
 			// [X]         ▶ 2.1.1.]
-			// [ ]         ▶ 2.1.2.
-			// [ ]     ○ 2.2.
-			// [ ] ■ 3.
+			// [x]         ▶ 2.1.2.
+			// [x]     ○ 2.2.
+			// [x] ■ 3.
 			// [ ]     ○ 3.1.
 			// [ ]         ▶ 3.1.1.
 			//
@@ -381,21 +381,21 @@ describe( 'DocumentListReversedCommand', () => {
 					# 2.1.2.
 				  # 2.2.
 				# 3.
-				  # 3.1. {reversed:true}
+				  # 3.1. {reversed:false}
 				    # 3.1.1. {reversed:false}
 			` ) );
 
 			listReversedCommand.execute( { reversed: true } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				# 1. {reversed:false}
-				# [2. {reversed:true}
+				# 1. {reversed:true}
+				# [2.
 				  # 2.1. {reversed:true}
 				    # 2.1.1.] {reversed:true}
-				    # 2.1.2. {reversed:false}
-				  # 2.2. {reversed:false}
-				# 3. {reversed:false}
-				  # 3.1. {reversed:true}
+				    # 2.1.2.
+				  # 2.2.
+				# 3.
+				  # 3.1. {reversed:false}
 				    # 3.1.1. {reversed:false}
 			` ) );
 		} );

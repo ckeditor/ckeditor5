@@ -8,20 +8,24 @@
  */
 
 import { Plugin } from 'ckeditor5/src/core';
+
 import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
-import { listPropertiesDowncastConverter, listPropertiesUpcastConverter } from './converters';
+import {
+	listPropertiesDowncastConverter,
+	listPropertiesUpcastConverter
+} from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
-import { LIST_BASE_ATTRIBUTES } from '../documentlist/utils/model';
+import { getListTypeFromListStyleType } from './utils/style';
 
 const DEFAULT_LIST_TYPE = 'default';
 
 /**
  * The document list properties engine feature.
  *
- * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they're enabled in config.
+ * It registers the `'listStyle'`, `'listReversed'` and `'listStart'` commands if they are enabled in the configuration.
  * Read more in {@link module:list/listproperties~ListPropertiesConfig}.
  *
  * @extends module:core/plugin~Plugin
@@ -69,7 +73,6 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
-			documentListEditing.registerSameListDefiningAttributes( strategy.attributeName );
 			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
@@ -90,7 +93,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 		} );
 
 		// Verify if the list view element (ul or ol) requires refreshing.
-		documentListEditing.on( 'refreshChecker:list', ( evt, { viewElement, modelAttributes } ) => {
+		documentListEditing.on( 'checkAttributes:list', ( evt, { viewElement, modelAttributes } ) => {
 			for ( const strategy of strategies ) {
 				if ( strategy.getAttributeOnUpcast( viewElement ) != modelAttributes[ strategy.attributeName ] ) {
 					evt.return = true;
@@ -99,16 +102,82 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
-		// Fixing the missing list properties attributes.
+		// Add or remove list properties attributes depending on the list type.
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
 				for ( const strategy of strategies ) {
+					// Check if attribute is valid.
+					if ( strategy.hasValidAttribute( node ) ) {
+						continue;
+					}
+
+					// Add missing default property attributes...
 					if ( strategy.appliesToListItem( node ) ) {
-						// Add missing default property attributes.
-						if ( !node.hasAttribute( strategy.attributeName ) ) {
-							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
-							evt.return = true;
-						}
+						writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+					}
+					// ...or remove invalid property attributes.
+					else {
+						writer.removeAttribute( strategy.attributeName, node );
+					}
+
+					evt.return = true;
+				}
+			}
+		} );
+
+		// Make sure that all items in a single list (items at the same level & listType) have the same properties.
+		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
+			const previousNodesByIndent = []; // Last seen nodes of lower indented lists.
+
+			for ( const { node, previous } of iterateSiblingListBlocks( listHead, 'forward' ) ) {
+				// For the first list block there is nothing to compare with.
+				if ( !previous ) {
+					continue;
+				}
+
+				const nodeIndent = node.getAttribute( 'listIndent' );
+				const previousNodeIndent = previous.getAttribute( 'listIndent' );
+
+				let previousNodeInList = null; // It's like `previous` but has the same indent as current node.
+
+				// Let's find previous node for the same indent.
+				// We're going to need that when we get back to previous indent.
+				if ( nodeIndent > previousNodeIndent ) {
+					previousNodesByIndent[ previousNodeIndent ] = previous;
+				}
+				// Restore the one for given indent.
+				else if ( nodeIndent < previousNodeIndent ) {
+					previousNodeInList = previousNodesByIndent[ nodeIndent ];
+					previousNodesByIndent.length = nodeIndent;
+				}
+				// Same indent.
+				else {
+					previousNodeInList = previous;
+				}
+
+				// This is a first item of a nested list.
+				if ( !previousNodeInList ) {
+					continue;
+				}
+
+				// This is a first block of a list of a different type.
+				if ( previousNodeInList.getAttribute( 'listType' ) != node.getAttribute( 'listType' ) ) {
+					continue;
+				}
+
+				// Copy properties from the previous one.
+				for ( const strategy of strategies ) {
+					const { attributeName } = strategy;
+
+					if ( !strategy.appliesToListItem( node ) ) {
+						continue;
+					}
+
+					const value = previousNodeInList.getAttribute( attributeName );
+
+					if ( node.getAttribute( attributeName ) != value ) {
+						writer.setAttribute( attributeName, value, node );
+						evt.return = true;
 					}
 				}
 			}
@@ -153,6 +222,20 @@ function createAttributeStrategies( enabledProperties ) {
 				return true;
 			},
 
+			hasValidAttribute( item ) {
+				if ( !item.hasAttribute( 'listStyle' ) ) {
+					return false;
+				}
+
+				const value = item.getAttribute( 'listStyle' );
+
+				if ( value == DEFAULT_LIST_TYPE ) {
+					return true;
+				}
+
+				return getListTypeFromListStyleType( value ) == item.getAttribute( 'listType' );
+			},
+
 			setAttributeOnDowncast( writer, listStyle, element ) {
 				if ( listStyle && listStyle !== DEFAULT_LIST_TYPE ) {
 					writer.setStyle( 'list-style-type', listStyle, element );
@@ -181,6 +264,10 @@ function createAttributeStrategies( enabledProperties ) {
 				return item.getAttribute( 'listType' ) == 'numbered';
 			},
 
+			hasValidAttribute( item ) {
+				return this.appliesToListItem( item ) == item.hasAttribute( 'listReversed' );
+			},
+
 			setAttributeOnDowncast( writer, listReversed, element ) {
 				if ( listReversed ) {
 					writer.setAttribute( 'reversed', 'reversed', element );
@@ -207,6 +294,10 @@ function createAttributeStrategies( enabledProperties ) {
 
 			appliesToListItem( item ) {
 				return item.getAttribute( 'listType' ) == 'numbered';
+			},
+
+			hasValidAttribute( item ) {
+				return this.appliesToListItem( item ) == item.hasAttribute( 'listStart' );
 			},
 
 			setAttributeOnDowncast( writer, listStart, element ) {

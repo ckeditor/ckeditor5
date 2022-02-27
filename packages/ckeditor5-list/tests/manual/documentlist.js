@@ -29,6 +29,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
+import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
@@ -43,7 +44,7 @@ import DocumentList from '../../src/documentlist';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
-			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
+			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, IndentBlock, Italic, Link,
 			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
 			AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
 			CloudServices, SourceEditing, DocumentList
@@ -107,3 +108,9 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+const onShowBordersChange = () => {
+	document.body.classList.toggle( 'show-borders' );
+};
+
+document.getElementById( 'chbx-show-borders' ).addEventListener( 'change', onShowBordersChange );

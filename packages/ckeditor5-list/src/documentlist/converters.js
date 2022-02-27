@@ -255,7 +255,7 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 				continue;
 			}
 
-			const needsRefresh = emitter.fire( `refreshChecker:${ isListItemElement ? 'item' : 'list' }`, {
+			const needsRefresh = emitter.fire( `checkAttributes:${ isListItemElement ? 'item' : 'list' }`, {
 				viewElement: element,
 				modelAttributes: stack[ indent ]
 			} );

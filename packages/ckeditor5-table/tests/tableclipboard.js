@@ -25,12 +25,13 @@ describe( 'table clipboard', () => {
 	} );
 
 	describe( 'TableClipboard', () => {
-		it( 'should have pluginName', () => {
-			expect( TableClipboard.pluginName ).to.equal( 'TableClipboard' );
+		it( 'should be a named plugin', () => {
+			expect( editor.plugins.get( 'TableClipboard' ) ).to.be.instanceOf( TableClipboard );
 		} );
 
-		it( 'requires TableSelection and TableUtils ', () => {
-			expect( TableClipboard.requires ).to.deep.equal( [ TableSelection, TableUtils ] );
+		it( 'requires TableSelection plugins and utilities', () => {
+			expect( editor.plugins.has( TableSelection ) ).to.be.true;
+			expect( editor.plugins.has( TableUtils ) ).to.be.true;
 		} );
 	} );
 } );

@@ -296,7 +296,7 @@ describe( 'DocumentListStyleCommand', () => {
 			` ) );
 		} );
 
-		it( 'should only set the `listStyle` attribute for selected items (non-collapsed selection)', () => {
+		it( 'should set the `listStyle` attribute for selected items (non-collapsed selection)', () => {
 			setData( model, modelList( `
 				* 1. {style:disc}
 				* 2a.
@@ -310,17 +310,17 @@ describe( 'DocumentListStyleCommand', () => {
 			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				* 1. {style:disc}
-				* 2a. {style:circle}
+				* 1. {style:circle}
+				* 2a.
 				  [2b.
 				  2c.
 				* 3a].
 				  3b.
-				* 4. {style:disc}
+				* 4.
 			` ) );
 		} );
 
-		it( 'should only set the `listStyle` attribute for all blocks in the list item (non-collapsed selection)', () => {
+		it( 'should set the `listStyle` attribute for all blocks in the list item (non-collapsed selection)', () => {
 			setData( model, modelList( `
 				* 1. {style:disc}
 				* [2.
@@ -331,10 +331,10 @@ describe( 'DocumentListStyleCommand', () => {
 			listStyleCommand.execute( { type: 'circle' } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				* 1. {style:disc}
-				* [2. {style:circle}
+				* 1. {style:circle}
+				* [2.
 				* 3].
-				* 4. {style:disc}
+				* 4.
 			` ) );
 		} );
 
@@ -345,13 +345,13 @@ describe( 'DocumentListStyleCommand', () => {
 			// "2.1" a child list of the "2." element (listIndent=1)
 			// "2.1.1" a child list of the "2.1" element (listIndent=2)
 			//
-			// [ ] ■ 1.
+			// [x] ■ 1.
 			// [x] ■ [2.
 			// [x]     ○ 2.1.
 			// [X]         ▶ 2.1.1.]
-			// [ ]         ▶ 2.1.2.
-			// [ ]     ○ 2.2.
-			// [ ] ■ 3.
+			// [x]         ▶ 2.1.2.
+			// [x]     ○ 2.2.
+			// [x] ■ 3.
 			// [ ]     ○ 3.1.
 			// [ ]         ▶ 3.1.1.
 			//
@@ -371,13 +371,13 @@ describe( 'DocumentListStyleCommand', () => {
 			listStyleCommand.execute( { type: 'disc' } );
 
 			expect( getData( model ) ).to.equalMarkup( modelList( `
-				* 1. {style:square}
-				* [2. {style:disc}
+				* 1. {style:disc}
+				* [2.
 				  * 2.1. {style:disc}
 				    * 2.1.1.] {style:disc}
-				    * 2.1.2. {style:square}
-				  * 2.2. {style:circle}
-				* 3. {style:square}
+				    * 2.1.2.
+				  * 2.2.
+				* 3.
 				  * 3.1. {style:square}
 				    * 3.1.1. {style:square}
 			` ) );

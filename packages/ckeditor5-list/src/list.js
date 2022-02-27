@@ -37,7 +37,8 @@ export default class List extends Plugin {
 }
 
 /**
- * The configuration of the {@link module:list/list~List list} feature and the {@link module:list/documentlist~DocumentList} feature.
+ * The configuration of the {@link module:list/list~List list} feature
+ * and the {@link module:list/documentlist~DocumentList document list} feature.
  *
  *		ClassicEditor
  *			.create( editorElement, {

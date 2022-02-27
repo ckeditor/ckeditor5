@@ -1,6 +1,6 @@
 # List properties feature
 
-Several editors were configured in this manual.
+Several editors were configured in this manual test.
 
 ## Basics
 
