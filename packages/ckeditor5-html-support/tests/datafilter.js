@@ -117,7 +117,12 @@ describe( 'DataFilter', () => {
 				// register it before DataFilter listener.
 				this.editor.data.on( 'init', evt => {
 					evt.stop();
-				}, { priority: 'high' } );
+				}, {
+					// The actual RTC client listens on 'high' but in these tests we're making a point
+					// of GHS registering its converters before anything else triggers the downcast conversion.
+					// See https://github.com/ckeditor/ckeditor5/issues/11356.
+					priority: 'highest'
+				} );
 			}
 		}
 
