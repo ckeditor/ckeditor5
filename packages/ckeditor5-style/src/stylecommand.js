@@ -92,9 +92,6 @@ export default class StyleCommand extends Command {
 	 * @param {TODO} definition
 	 */
 	execute( definition ) {
-		// eslint-disable-next-line
-		console.log('Style applied:', definition);
-
 		const editor = this.editor;
 		const model = editor.model;
 		const doc = model.document;
@@ -102,6 +99,10 @@ export default class StyleCommand extends Command {
 		const value = definition.classes.join( ' ' );
 		const isBlock = definition.isBlock;
 		const block = first( selection.getSelectedBlocks() );
+
+		if ( !this.isEnabled ) {
+			return;
+		}
 
 		model.change( writer => {
 			let selectedElement = selection.getSelectedElement();

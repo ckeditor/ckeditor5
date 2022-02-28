@@ -6,7 +6,8 @@
 /* global document */
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Style from '../src/style';
 
@@ -37,13 +38,29 @@ describe( 'StyleCommand', () => {
 	// 	classes: [ 'deleted' ]
 	// };
 
+	const bigHeadingStyleDefinition = {
+		isBlock: true,
+		modelElements: [ 'heading2', 'htmlH2' ],
+		name: 'Big heading',
+		element: 'h2',
+		classes: [ 'big-heading' ]
+	};
+
+	const redHeadingStyleDefinition = {
+		isBlock: true,
+		modelElements: [ 'heading2', 'htmlH2' ],
+		name: 'Red heading',
+		element: 'h2',
+		classes: [ 'red-heading' ]
+	};
+
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Style ],
+				plugins: [ Paragraph, Heading, Style ],
 				style: {
 					definitions: [
 						{
@@ -60,6 +77,16 @@ describe( 'StyleCommand', () => {
 							name: 'Deleted text',
 							element: 'span',
 							classes: [ 'deleted' ]
+						},
+						{
+							name: 'Big heading',
+							element: 'h2',
+							classes: [ 'big-heading' ]
+						},
+						{
+							name: 'Red heading',
+							element: 'h2',
+							classes: [ 'red-heading' ]
 						}
 					]
 				},
@@ -105,7 +132,7 @@ describe( 'StyleCommand', () => {
 		} );
 
 		describe( 'inline styles', () => {
-			it( 'should add inline htmlSpan attribute with proper class to the selected text', () => {
+			it( 'should add htmlSpan attribute with proper class to the selected text', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 				command.execute( markerStyleDefinition );
@@ -115,7 +142,7 @@ describe( 'StyleCommand', () => {
 				);
 			} );
 
-			it( 'should add multiple inline htmlSpan attributes with proper class to the selected text', () => {
+			it( 'should add multiple htmlSpan attributes with proper class to the selected text', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
 				command.execute( markerStyleDefinition );
@@ -126,8 +153,8 @@ describe( 'StyleCommand', () => {
 				);
 			} );
 
-			it( 'should add inline htmlSpan attribute classes to elements with other htmlSpan attributes existing', () => {
-			// initial selection [foo b]ar baz.
+			it( 'should add htmlSpan attribute classes to elements with other htmlSpan attributes existing', () => {
+				// initial selection [foo b]ar baz.
 				setData( model, '<paragraph>[foo b]ar baz</paragraph>' );
 
 				command.execute( markerStyleDefinition );
@@ -152,6 +179,29 @@ describe( 'StyleCommand', () => {
 						'<$text htmlSpan="{"classes":["typewriter"]}">ar ba</$text>]' +
 						'z' +
 					'</paragraph>'
+				);
+			} );
+		} );
+
+		describe( 'block styles', () => {
+			it( 'should add htmlAttribute with proper class to the selected element', () => {
+				setData( model, '<heading2>foo[]bar</heading2>' );
+
+				command.execute( bigHeadingStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<heading2 htmlAttributes="{"classes":["big-heading"]}">foo[]bar</heading2>'
+				);
+			} );
+
+			it( 'should add multiple htmlAttribute classes the selected element', () => {
+				setData( model, '<heading2>foo[]bar</heading2>' );
+
+				command.execute( bigHeadingStyleDefinition );
+				command.execute( redHeadingStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<heading2 htmlAttributes="{"classes":["red-heading","big-heading"]}">foo[]bar</heading2>'
 				);
 			} );
 		} );
