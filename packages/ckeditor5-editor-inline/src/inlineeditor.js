@@ -53,7 +53,7 @@ export default class InlineEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 */
 	constructor( sourceElementOrData, config = {} ) {
 		// If both `config.initialData` and initial data parameter in `create()` are set, then throw.

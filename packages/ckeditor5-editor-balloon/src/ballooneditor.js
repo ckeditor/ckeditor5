@@ -54,7 +54,7 @@ export default class BalloonEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 */
 	constructor( sourceElementOrData, config = {} ) {
 		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
