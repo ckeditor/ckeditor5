@@ -71,7 +71,7 @@ Once you have chosen all the desired plugins, press the **Next step** button on 
 
 Next step allows you to compose the toolbar. A simple drag-and-drop workspace allows for adding buttons (representing the plugins chosen in the previous step) to the toolbar. You may also change the order of the buttons and dropdowns and group them accordingly. Note that online builder allows you to create a multiline toolbar layout, too &mdash; just drag any button below the already placed ones to create a new toolbar line.
 
-{@img assets/img/online-builder-04-toolbar-configurator.png 753 The toolbar drag-and-drop configurator.}
+{@img assets/img/online-builder-04-toolbar-configurator.gif 753 The toolbar drag-and-drop configurator.}
 
 Some of the buttons are pre-placed on the layout and thus grayed out in the workspace with available toolbar items. If you want to remove any buttons from your toolbar setup, drag them back to the upper workspace.
 
