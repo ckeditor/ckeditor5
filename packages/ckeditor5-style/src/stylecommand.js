@@ -111,16 +111,10 @@ export default class StyleCommand extends Command {
 			}
 
 			if ( selectedElement ) {
-				writer.setAttribute(
-					'htmlAttributes',
-					{
-						classes: this._mergeElementClasses(
-							selectedElement,
-							value
-						)
-					},
-					selectedElement
-				);
+				writer.setAttribute( 'htmlAttributes', {
+					classes: this._mergeElementClasses( value, selectedElement )
+				}, selectedElement );
+
 				return;
 			}
 
@@ -150,17 +144,13 @@ export default class StyleCommand extends Command {
 				for ( const range of ranges ) {
 					if ( value ) {
 						for ( const item of range.getItems() ) {
-							writer.setAttribute(
-								attributeElement,
-								{
-									classes: this._mergeRangeItemClasses(
-										item,
-										value,
-										attributeElement
-									)
-								},
-								item
-							);
+							writer.setAttribute( attributeElement, {
+								classes: this._mergeRangeItemClasses(
+									value,
+									attributeElement,
+									item
+								)
+							}, item );
 						}
 					} else {
 						writer.removeAttribute( attributeElement, range );
@@ -177,7 +167,10 @@ export default class StyleCommand extends Command {
 	 */
 	_getValue( attribute ) {
 		const value = [];
-		const classes = attribute === 'htmlAttributes' ? this._getValueFromBlockElement() : this._getValueFromFirstAllowedNode( attribute );
+		const classes =
+			attribute === 'htmlAttributes' ?
+				this._getValueFromBlockElement() :
+				this._getValueFromFirstAllowedNode( attribute );
 
 		if ( !classes ) {
 			return value;
@@ -185,6 +178,7 @@ export default class StyleCommand extends Command {
 
 		for ( const htmlClass of classes ) {
 			const { name } = this.stylesMap.get( 'classToDefinition' ).get( htmlClass );
+
 			value.push( name );
 		}
 
@@ -242,10 +236,10 @@ export default class StyleCommand extends Command {
 	/**
 	 * TODO
 	 *
-	 * @param {TODO} element
 	 * @param {TODO} value
+	 * @param {TODO} element
 	 */
-	_mergeElementClasses( element, value ) {
+	_mergeElementClasses( value, element ) {
 		const styleClasses = [ value ];
 
 		const { classes } = element.getAttribute( 'htmlAttributes' ) || {};
@@ -279,11 +273,11 @@ export default class StyleCommand extends Command {
 	/**
 	 * TODO
 	 *
-	 * @param {TODO} item
 	 * @param {TODO} value
+	 * @param {TODO} item
 	 * @param {TODO} attributeElement
 	 */
-	_mergeRangeItemClasses( item, value, attributeElement ) {
+	_mergeRangeItemClasses( value, attributeElement, item ) {
 		const styleClasses = [ value ];
 
 		const { classes } = item.getAttribute( attributeElement ) || {};
