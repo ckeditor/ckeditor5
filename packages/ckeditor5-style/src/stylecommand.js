@@ -100,10 +100,6 @@ export default class StyleCommand extends Command {
 		const isBlock = definition.isBlock;
 		const block = first( selection.getSelectedBlocks() );
 
-		if ( !this.isEnabled ) {
-			return;
-		}
-
 		model.change( writer => {
 			let selectedElement = selection.getSelectedElement();
 
