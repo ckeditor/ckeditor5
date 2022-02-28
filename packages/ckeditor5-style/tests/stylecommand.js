@@ -132,6 +132,24 @@ describe( 'StyleCommand', () => {
 		} );
 
 		describe( 'inline styles', () => {
+			it( 'should add htmlSpan attribute with proper class to the collapsed selection', () => {
+				setData( model, '<paragraph>foobar[]</paragraph>' );
+
+				command.execute( markerStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foobar<$text htmlSpan="{"classes":["marker"]}">[]</$text></paragraph>'
+				);
+
+				model.change( writer => {
+					model.insertContent( writer.createText( 'baz', doc.selection.getAttributes() ), doc.selection );
+				} );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foobar<$text htmlSpan="{"classes":["marker"]}">baz[]</$text></paragraph>'
+				);
+			} );
+
 			it( 'should add htmlSpan attribute with proper class to the selected text', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
