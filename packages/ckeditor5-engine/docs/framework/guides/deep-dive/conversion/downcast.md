@@ -15,13 +15,13 @@ The process of converting the **model** to the **view** is called a **downcast**
 
 The downcast process happens every time a model node or attribute needs to be converted into a view node or attribute.
 
-The editor engine runs the conversion process and uses converters registered by plugins.
+The editor engine runs the conversion process and uses converters registered by the plugins.
 
 {@snippet framework/mini-inspector}
 
 ## Registering a converter
 
-In order to tell the engine how to convert a specific model element into a view element, you need to register a **downcast converter** by using the `editor.conversion.for( 'downcast' )` method:
+In order to tell the engine how to convert a specific model element into a view element, you need to register a **downcast converter** by using the `editor.conversion.for( 'downcast' )` method, listing the elements that should be converted in the process:
 
 ```js
 editor.conversion
@@ -32,31 +32,31 @@ editor.conversion
 	} );
 ```
 
-The above converter will handle the conversion of every `<paragraph>` model element to a `<p>` view element.
+The above converter will handle the conversion of every `<paragraph>` model element into a `<p>` view element. You can see the input and output in the snippet below.
 
 {@snippet framework/mini-inspector-paragraph}
 
 <info-box>
-	This is just an example. Paragraph support is provided by the {@link api/paragraph paragraph plugin} so you don't have to write your own `<paragraph>` element to `<p>` element conversion.
+	This is just an example. In fact, paragraph support is already provided by the {@link api/paragraph paragraph plugin} so you do not really need to write your own `<paragraph>` element to `<p>` element conversion.
 </info-box>
 
 <info-box>
-	You just learned about the `elementToElement()` **downcast** conversion helper method! More helpers are documented in the following chapters.
+	You just learned about the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-element `elementToElement()` **downcast** conversion helper method}! More helpers are documented in the following chapters.
 </info-box>
 
 ## Downcast pipelines
 
-CKEditor 5 engine uses two different views: **data view** and **editing view**.
+The CKEditor 5 engine uses two different views: the **data view** and the **editing view**.
 
-**The data view** is used when generating editor output. This process is controlled by the data pipeline.
+The **data view** is used when generating the editor output. This process is controlled by the data pipeline.
 
-**The editing view**, on the other hand, is what you see when you open the editor, which is controlled by the editing pipeline.
+The **editing view**, on the other hand, is what you see when you open the editor. This is controlled by the editing pipeline.
 
 {@img assets/img/downcast-pipelines.svg 444 Downcast conversion pipelines diagram.}
 
-The previous code example registers a converter for both pipelines at once. It means that `<paragraph>` model element will be converted to a `<p>` view element in both **data view** and **editing view**.
+The simple code example presented before registers a converter for both of these pipelines at once. It means that a `<paragraph>` model element will be converted to a `<p>` view element in both the **data view** and the **editing view** all the same.
 
-Sometimes you may want to alter converter logic for a specific pipeline. For example, in editing view you want to add some additional class to the view element.
+Sometimes you may want to alter the converter logic for a specific pipeline. For example, in the editing view you may want to add some additional class to the view element. This kind of operation requires setting separate converters for both views, unlike the previous example where one, general downcast was set up.
 
 ```js
 // dataDowncast for data pipeline
@@ -83,11 +83,11 @@ editor.conversion
 
 ## Converting text attributes
 
-As you may know from the chapter about the model, an **attribute** can be applied to a model text node.
+As you should already know from the {@link framework/guides/architecture/editing-engine#model chapter about the model}, an **attribute** may be applied to a model text node.
 
-Such text nodes attributes can be converted into view elements.
+Such text node attributes may be converted into view elements.
 
-In order to do so, you can register a converter by using `attributeToElement()` conversion helper:
+In order to do so, you can register a converter by using the {@link framework/guides/deep-dive/conversion/helpers/downcast#attribute-to-element `attributeToElement()` conversion helper}:
 
 ```js
 editor.conversion
@@ -98,17 +98,17 @@ editor.conversion
 	} );
 ```
 
-The above converter will handle the conversion of every `bold` model text node attribute to a `<strong>` view element.
+The above converter will handle the conversion of every `bold` model text node attribute to a `<strong>` view element, as shown in the snippet below.
 
 {@snippet framework/mini-inspector-bold}
 
 <info-box>
-	This is just an example. Bold support is provided by the {@link features/basic-styles basic styles} plugin so you don't have to write your own bold attribute to strong element conversion.
+	Again, this is just an example for the sake of simplicity. Bold support is actually provided by the {@link features/basic-styles basic styles} plugin so you do not have to write your own bold attribute to strong element conversion.
 </info-box>
 
 ## Converting element to element
 
-Similar to the basic example, you can convert `<heading>` model element into `<h1>` view element with `elementToElement()` conversion helper.
+Similar to the previous example, you can convert a `<heading>` model element into an `<h1>` view element with the use of the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-element `elementToElement()` conversion helper}. A code to achieve it would look like this:
 
 ```js
 editor.conversion
@@ -134,13 +134,13 @@ editor.conversion
 	} );
 ```
 
-You learned that the `view` property can be a simple string or an object. The example above shows it is also possible to define a custom callback function to return created element instead.
+You have previously learnt that the `view` property can be a simple string or an object. The example above shows it is also possible to define a custom callback function to return the created element instead. The effect for this kind of conversion can be observed in the snippet below:
 
 {@snippet framework/mini-inspector-heading}
 
-The `<heading>` element makes the most sense if you can set the heading level.
+The `<heading>` element makes the most sense if you can set the heading level in the view.
 
-From the previous chapter you learned that you can apply attributes to text nodes. It is also possible to add attributes to elements.
+In the previous chapter you have learnt that you can apply attributes to text nodes. It is also possible to add attributes to elements, like in this example:
 
 ```js
 editor.conversion
@@ -158,21 +158,21 @@ editor.conversion
 	} );
 ```
 
-From now on, every time level attribute updates, the whole `<heading>` element will be converted to the `<h[level]>` element (for example `<h1>`, `<h2>`, etc).
+From now on, every time a level attribute updates, the whole `<heading>` element will be converted to the `<h[level]>` element (for example `<h1>`, `<h2>`, etc).
 
-You can check this in action by using the example below:
+You can check this in action by using the example below. Use the dropdown to change heading level in the model and see how view elements are updated by the converter:
 
 {@snippet framework/mini-inspector-heading-interactive}
 
 <info-box>
-	This is just an example. Heading support is provided by the {@link features/headings headings feature} so you don't have to write your own `<heading level="1">` to `<h1>` element conversion.
+	This, again, is just an example. Heading support is actually provided by the {@link features/headings headings feature} so you do not have to write your own `<heading level="1">` to `<h1>` element conversion.
 </info-box>
 
 ## Converting element to structure
 
-Sometimes you may want to convert a **single model** element into a more complex view structure consisting of a **single view element with children**.
+Sometimes you may want to convert a **single model element** into a more complex view structure consisting of a **single view element with children**.
 
-You can use `elementToStructure()` conversion helper for this purpose:
+You can use the {@link framework/guides/deep-dive/conversion/helpers/downcast#element-to-structure `elementToStructure()` conversion helper} for this purpose:
 
 ```js
 editor.conversion
@@ -188,12 +188,12 @@ editor.conversion
 	} );
 ```
 
-The above converter will convert all `<myElement>` model elements to `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures.
+The above converter will convert all `<myElement>` model elements to `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures, as shown below:
 
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema.
+	Using your own custom model element requires defining it in the schema first.
 </info-box>
 
 ## Read next

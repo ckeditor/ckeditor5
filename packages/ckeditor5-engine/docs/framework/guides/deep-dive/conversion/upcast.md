@@ -21,7 +21,7 @@ Incoming data becomes the view which is then converted into the model via regist
 
 ## Registering a converter
 
-In order to tell the engine how to convert a specific view element into a model element, you need to register an **upcast converter** by using the `editor.conversion.for( 'upcast' )` method:
+In order to instruct the engine how to convert a specific view element into a model element, you need to register an **upcast converter** by using the `editor.conversion.for( 'upcast' )` method:
 
 ```js
 editor.conversion
@@ -37,28 +37,24 @@ The above converter will handle the conversion of every `<p>` view element to a 
 {@snippet framework/mini-inspector-paragraph}
 
 <info-box>
-	This is just an example. Paragraph support is provided by the {@link api/paragraph paragraph plugin} so you don't have to write your own `<p>` element to `<paragraph>` element conversion.
-</info-box>
-
-<info-box>
-	You just learned about the `elementToElement()` **upcast** conversion helper method! More helpers are documented in the following chapters.
+	You have just learnt about the {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-element `elementToElement()` **upcast** conversion helper method}! More helpers are documented in the following chapters.
 </info-box>
 
 ## Upcast pipeline
 
-Contrary to the downcast, the upcast process happens only in the data pipeline and is called **data upcast.**
+Contrary to the downcast where you deal with both the data and editing pipelines, the upcast process only happens in the data pipeline and is called **data upcast**.
 
-The editing view may be changed only via changing the model first, hence editing pipeline needs only the downcast process.
+The editing view may be only changed via changing the model first, hence editing pipeline needs only the downcast process.
 
 {@img assets/img/upcast-pipeline.svg 612 Upcast conversion pipeline diagram.}
 
-The previous code example registers a converter for both pipelines at once. It means that `<paragraph>` model element will be converted to a `<p>` view element in both **data view** and **editing view**.
+The previous code example registers a converter for both pipelines at once. It means that a `<paragraph>` model element will be converted to a `<p>` view element in both the **data view** and the **editing view**.
 
 ## Converting to text attribute
 
 View elements representing inline text formatting (such as `<strong>` or `<i>`) need to be converted to an attribute on a model text node.
 
-To register such a converter, use `elementToAttribute()`:
+To register such a converter, use the {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-attribute `elementToAttribute()` method}:
 
 ```js
 editor.conversion
@@ -69,15 +65,11 @@ editor.conversion
 	} );
 ```
 
-Text wrapped with the `<strong>` tag will be converted to a model text node with a `bold` attribute applied to it.
+A text wrapped with the `<strong>` tag will be converted to a model text node with a `bold` attribute applied to it, as shown:
 
 {@snippet framework/mini-inspector-bold}
 
-<info-box>
-	This is just an example. Bold support is provided by the {@link features/basic-styles basic styles} plugin so you don't have to write your own strong element to bold attribute conversion.
-</info-box>
-
-If you need to “copy” an attribute from a view element to a model element, use `attributeToAttribute()`.
+If you need to “copy” an attribute from a view element to a model element, use the {@link framework/guides/deep-dive/conversion/helpers/upcast#attribute-to-attribute `attributeToAttribute()` method}.
 
 Keep in mind that the model element must have its own converter registered, otherwise there is nothing the attribute can be copied to.
 
@@ -90,17 +82,17 @@ editor.conversion
 	} );
 ```
 
-Assuming that in the editor some other feature did register the `<img>` to `<image>` model element upcast converter, you can extend this feature to allow `src` attribute. This attribute will be converted into `source` attribute on a model element.
+Assuming that some other feature registered the `<img>` to `<image>` model element upcast converter in the editor, you can extend this feature to allow the `src` attribute. This attribute will be converted into a `source` attribute on a model element, the way it is shown in the following snippet:
 
 {@snippet framework/mini-inspector-upcast-attribute}
 
 <info-box>
-	This is just an example. Image elements and source attributes support is provided by the {@link features/images-overview images feature} so you don't have to write your own `<image source="xxx">` to `<img src="xxx">` element conversion.
+	This is just an example. Actually, the image elements and source attributes support is provided by the {@link features/images-overview images feature} so you do not have to write your own `<image source="xxx">` to `<img src="xxx">` element conversion.
 </info-box>
 
 ## Converting to element
 
-Converting a view element to a corresponding model element can be achieved by registering the converter by using the `elementToElement()` method:
+Converting a view element to a corresponding model element can be achieved by registering the converter using the {@link framework/guides/deep-dive/conversion/helpers/upcast#element-to-element `elementToElement()` method}:
 
 ```js
 editor.conversion
@@ -119,16 +111,16 @@ The above converter will handle the conversion of every `<div class="example">` 
 {@snippet framework/mini-inspector-upcast-element}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema.
+	Using your own custom model element requires defining it in the schema first.
 </info-box>
 
 ## Converting structures
 
-As you may learned in the {@link framework/guides/deep-dive/conversion/downcast previous chapter}, a single model element can be downcasted into a structure of multiple view elements.
+As you have learnt in the {@link framework/guides/deep-dive/conversion/downcast previous chapter}, a single model element can be downcast into a structure of multiple view elements.
 
-The opposite process will have to detect that structure (e.g. the main element) and convert that into a simple model element.
+The opposite process will have to detect that structure (e.g. the main element) and convert it into a simple model element.
 
-There is no `structureToElement()` helper available for the upcast conversion. In order to register upcast converter for the entire structure and create just one model element, you must use the event based API like in the following example:
+There is no `structureToElement()` helper available for the upcast conversion. In order to register an upcast converter for the entire structure and create a single model element, you must use the event based API. The following example shows how to achieve it:
 
 ```js
 editor.conversion.for( 'upcast' ).add( dispatcher => {
@@ -196,12 +188,12 @@ editor.conversion.for( 'upcast' ).add( dispatcher => {
 } );
 ```
 
-The above converter will detect all `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures (by scanning for the outer `<div>` and turn those into a single `<myElement>` model element).
+The above converter will detect all `<div class="wrapper"><div class="inner-wrapper"><p>...</p></div></div>` structures (by scanning for the outer `<div>`s and turning those into a single `<myElement>` model element). The effect should return as follows:
 
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema.
+	Using your own custom model element requires defining it in the schema first.
 </info-box>
 
 ## Read next

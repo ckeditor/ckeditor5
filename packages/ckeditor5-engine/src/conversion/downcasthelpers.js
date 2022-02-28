@@ -61,11 +61,11 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 * The element-to-element conversion supports the reconversion mechanism. It can be enabled by using either `attributes` or `children`
-	 * props on a model description. Couple examples below.
+	 * The element-to-element conversion supports the reconversion mechanism. It can be enabled by using either the `attributes` or
+	 * the `children` props on a model description. You will find a couple examples below.
 	 *
-	 * In order to reconvert element if any of its direct children have been added or removed use `children` property on a `model`
-	 * description. For example, model:
+	 * In order to reconvert an element if any of its direct children have been added or removed, use the `children` property on a `model`
+	 * description. For example, this model:
 	 *
 	 *		<box>
 	 *			<paragraph>Some text.</paragraph>
@@ -77,7 +77,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			<p>Some text.</p>
 	 *		</div>
 	 *
-	 * But if more items inserted in the model:
+	 * But if more items were inserted in the model:
 	 *
 	 *		<box>
 	 *			<paragraph>Some text.</paragraph>
@@ -91,7 +91,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			<p>Other item.</p>
 	 *		</div>
 	 *
-	 * Such a converter would look like this (note that `paragraph` elements are converted separately):
+	 * Such a converter would look like this (note that the `paragraph` elements are converted separately):
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: {
@@ -108,8 +108,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 * In order to reconvert element if any of its attributes have been updated use `attributes` property on a `model`
-	 * description. For example, model:
+	 * In order to reconvert element if any of its attributes have been updated, use the `attributes` property on a `model`
+	 * description. For example, this model:
 	 *
 	 *		<heading level="2">Some text.</heading>
 	 *
@@ -117,12 +117,12 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 *		<h2>Some text.</h2>
 	 *
-	 * But if `heading` element `level` attribute has been updated to `3` for example, then
+	 * But if the `heading` element's `level` attribute has been updated to `3` for example, then
 	 * it will be converted into this structure in the view:
 	 *
 	 *		<h3>Some text.</h3>
 	 *
-	 * Such a converter would look like this:
+	 * Such a converter would look as follows:
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
 	 *			model: {
@@ -139,16 +139,16 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * You can read more about element-to-element conversion in the
+	 * You can read more about the element-to-element conversion in the
 	 * {@glink framework/guides/deep-dive/conversion/downcast downcast conversion} guide.
 	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
 	 * @param {String|Object} config.model The description or a name of the model element to convert.
 	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
-	 * the view element. Note that the view will be reconverted if any of the listed attributes will change.
+	 * the view element. Note that the view will be reconverted if any of the listed attributes changes.
  	 * @param {Boolean} [config.model.children] Specifies whether the view element requires reconversion if the list
-	 * of model child nodes changed.
+	 * of the model child nodes changed.
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
@@ -159,9 +159,9 @@ export default class DowncastHelpers extends ConversionHelpers {
 	}
 
 	/**
-	 * Model element to view structure (several elements) conversion helper.
+	 * The model element to view structure (several elements) conversion helper.
 	 *
-	 * This conversion results in creating a view structure with defined one or more slots for the child nodes.
+	 * This conversion results in creating a view structure with one or more slots defined for the child nodes.
 	 * For example, a model `<table>` may become this structure in the view:
 	 *
 	 *		<figure class="table">
@@ -171,7 +171,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		</figure>
 	 *
 	 * The children of the model's `<table>` element will be inserted into the `<tbody>` element.
-	 * If a `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
+	 * If the `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
 	 *
 	 * An example converter that converts the following model structure:
 	 *
@@ -212,7 +212,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			<caption>Caption text</caption>
 	 *		</table>
 	 *
-	 * We want to generate this view structure:
+	 * we want to generate this view structure:
 	 *
 	 *		<figure class="table">
 	 *			<table>
@@ -227,11 +227,11 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			<figcaption>Caption text</figcaption>
 	 *		</figure>
 	 *
-	 * The converter has to take `headingRows` attribute into consideration when allocating `<tableRow>` elements
-	 * into the `<tbody>` and `<thead>` elements. Hence, we need two slots and define proper filter callbacks for them.
+	 * The converter has to take the `headingRows` attribute into consideration when allocating the `<tableRow>` elements
+	 * into the `<tbody>` and `<thead>` elements. Hence, we need two slots and need to define proper filter callbacks for them.
 	 *
-	 * Additionally, all other elements than `<tableRow>` should be placed outside `<table>`. In the example above, this will
-	 * handle the table caption.
+	 * Additionally, all elements other than `<tableRow>` should be placed outside the `<table>` tag.
+	 * In the example above, this will handle the table caption.
 	 *
 	 * Such a converter would look like this:
 	 *
@@ -459,8 +459,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * the attribute key, possible values and, optionally, an element name to convert from.
 	 * @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
 	 * the model attribute value and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
-	 * as parameters and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
-	 * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
+	 * as parameters and returns a `{ key, value }` object. If the `key` is `'class'`, the `value` can be a `String` or an
+	 * array of `String`s. If the `key` is `'style'`, the `value` is an object with key-value pairs. In other cases, `value` is a `String`.
 	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
 	 * `{ key, value }` objects or a functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
@@ -473,14 +473,14 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
-	 * **Note**: This method should be used mainly for editing downcast and it is recommended
-	 * to use {@link #markerToData `#markerToData()`} helper instead.
+	 * **Note**: This method should be used mainly for editing the downcast and it is recommended
+	 * to use the {@link #markerToData `#markerToData()`} helper instead.
 	 *
 	 * This helper may produce invalid HTML code (e.g. a span between table cells).
-	 * It should be used only when you are sure that the produced HTML will be semantically correct.
+	 * It should only be used when you are sure that the produced HTML will be semantically correct.
 	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
-	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
+	 * is collapsed, only one element is created. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
 	 * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
 	 *
 	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
@@ -522,7 +522,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` object and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `conversionApi`} are passed from
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
-	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
+	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` for
 	 * the marker end boundary element.
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -545,7 +545,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * Model marker to highlight conversion helper.
 	 *
 	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
-	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
+	 * the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
 	 *
 	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
@@ -583,7 +583,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
 	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
-	 * as a parameters and should return a
+	 * as the parameters and should return a
 	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
@@ -931,7 +931,7 @@ export function clearAttributes() {
 }
 
 /**
- * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
+ * Function factory that creates a converter which converts the set/change/remove attribute changes from the model to the view.
  * It can also be used to convert selection attributes. In that case, an empty attribute element will be created and the
  * selection will be put inside it.
  *
@@ -1339,7 +1339,7 @@ function removeMarkerData( viewCreator ) {
 	};
 }
 
-// Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
+// Function factory that creates a converter which converts the set/change/remove attribute changes from the model to the view.
 //
 // Attributes from the model are converted to the view element attributes in the view. You may provide a custom function to generate
 // a key-value attribute pair to add/change/remove. If not provided, model attributes will be converted to view element
@@ -1391,7 +1391,7 @@ function changeAttribute( attributeCreator ) {
 		if ( !viewElement ) {
 			/**
 			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node's} attribute is to be downcasted
-			 * by {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
+			 * by an {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
 			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
 			 *
 			 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
@@ -2377,7 +2377,7 @@ function defaultConsumer( item, consumable, { preflight } = {} ) {
  * @callback module:engine/conversion/downcasthelpers~SlotFilter
  *
  * @param {module:engine/model/node~Node} node A model node.
- * @returns {Boolean} Whether provided model node should be downcasted into this slot.
+ * @returns {Boolean} Whether the provided model node should be downcasted into this slot.
  *
  * @see module:engine/view/downcastwriter~DowncastWriter#createSlot
  * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
