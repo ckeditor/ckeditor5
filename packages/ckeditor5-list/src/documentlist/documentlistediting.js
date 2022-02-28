@@ -77,6 +77,14 @@ export default class DocumentListEditing extends Plugin {
 		 */
 		this._sameListDefiningAttributes = [ 'listType' ];
 
+		/**
+		 * TODO
+		 *
+		 * @private
+		 * @type {Set.<TODO>}
+		 */
+		this._nodesToRewrap = new Set();
+
 		const editor = this.editor;
 		const model = editor.model;
 
@@ -155,6 +163,15 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	getSameListDefiningAttributes() {
 		return this._sameListDefiningAttributes;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @protected
+	 */
+	_markToReWrapNode( node ) {
+		this._nodesToRewrap.add( node );
 	}
 
 	/**
@@ -364,6 +381,15 @@ export default class DocumentListEditing extends Plugin {
 				converterPriority: 'high'
 			} );
 
+		const attributeNames = [
+			...LIST_BASE_ATTRIBUTES,
+			'listStyle',
+			'listStart',
+			'listReversed',
+			'htmlListAttributes',
+			'htmlLiAttributes'
+		];
+
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
 				for ( const attributeName of LIST_BASE_ATTRIBUTES ) {
@@ -372,50 +398,85 @@ export default class DocumentListEditing extends Plugin {
 
 				dispatcher.on( 'reduceChanges', ( evt, data ) => {
 					const reducedChanges = [];
-					const attributeNames = [
-						...LIST_BASE_ATTRIBUTES,
-						'listStyle',
-						'listStart',
-						'listReversed',
-						'htmlListAttributes',
-						'htmlLiAttributes'
-					];
 					const reWrappedItems = new Set();
 
+					const rangesToReWrap = Array.from( this._nodesToRewrap.values() )
+						.map( node => model.createRange( model.createPositionBefore( node ), model.createPositionAt( node, 0 ) ) )
+						.sort( compareRangeOrder );
+					let rangesToReWrapIndex = 0;
+
 					for ( const change of data.changes ) {
+						const position = change.position || change.range.start;
+
+						while ( rangesToReWrapIndex < rangesToReWrap.length ) {
+							const range = rangesToReWrap[ rangesToReWrapIndex ];
+
+							if ( !position.isAfter( range.start ) ) {
+								break;
+							}
+
+							const node = range.start.nodeAfter;
+
+							if ( !reWrappedItems.has( node ) ) {
+								reWrappedItems.add( node );
+								reducedChanges.push( ...createChanges( range, node ) );
+							}
+
+							rangesToReWrapIndex++;
+						}
+
 						if ( change.type == 'attribute' && attributeNames.includes( change.attributeKey ) ) {
-							const node = change.range.start.nodeAfter;
+							const node = position.nodeAfter;
 
 							if ( reWrappedItems.has( node ) ) {
 								continue;
 							}
 
 							reWrappedItems.add( node );
-
-							reducedChanges.push( {
-								type: 'attribute',
-								attributeKey: 'listIndent',
-								attributeOldValue: node.getAttribute( 'listIndent' ),
-								attributeNewValue: null,
-								range: change.range
-							} );
-
-							for ( const key of attributeNames ) {
-								reducedChanges.push( {
-									type: 'attribute',
-									attributeKey: key,
-									attributeOldValue: null,
-									attributeNewValue: node.getAttribute( key ),
-									range: change.range
-								} );
-							}
+							reducedChanges.push( ...createChanges( change.range, node ) );
 						} else {
 							reducedChanges.push( change );
 						}
 					}
 
+					while ( rangesToReWrapIndex < rangesToReWrap.length ) {
+						const range = rangesToReWrap[ rangesToReWrapIndex ];
+						const node = range.start.nodeAfter;
+
+						if ( !reWrappedItems.has( node ) ) {
+							reWrappedItems.add( node );
+							reducedChanges.push( ...createChanges( range, node ) );
+						}
+
+						rangesToReWrapIndex++;
+					}
+
 					data.changes = reducedChanges;
 				} );
+
+				function createChanges( range, node ) {
+					const changes = [ {
+						type: 'attribute',
+						attributeKey: 'listIndent',
+						attributeOldValue: node.getAttribute( 'listIndent' ),
+						attributeNewValue: null,
+						range
+					} ];
+
+					for ( const [ attributeKey, attributeValue ] of node.getAttributes() ) {
+						if ( attributeNames.includes( attributeKey ) ) {
+							changes.push( {
+								type: 'attribute',
+								attributeKey,
+								attributeOldValue: null,
+								attributeNewValue: attributeValue,
+								range
+							} );
+						}
+					}
+
+					return changes;
+				}
 			} );
 
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this ) );
@@ -652,4 +713,16 @@ function shouldMergeOnBlocksContentLevel( model, direction ) {
 	}
 
 	return isSingleListItem( [ positionParent, previousSibling ] );
+}
+
+// TODO this is copy from tableutils - should be extracted to utils package.
+function compareRangeOrder( rangeA, rangeB ) {
+	// Since table cell ranges are disjoint, it's enough to check their start positions.
+	const posA = rangeA.start;
+	const posB = rangeB.start;
+
+	// Checking for equal position (returning 0) is not needed because this would be either:
+	// a. Intersecting range (not allowed by model)
+	// b. Collapsed range on the same position (allowed by model but should not happen).
+	return posA.isBefore( posB ) ? -1 : 1;
 }

@@ -673,7 +673,7 @@ export default class DowncastWriter {
 			nodeBefore._appendChild( nodeAfter.getChildren() );
 
 			// Merge the element attributes in case those have a same ID (other attributes might differ).
-			this._mergeElementAttributes( nodeAfter, nodeBefore );
+			// this._mergeElementAttributes( nodeAfter, nodeBefore );
 
 			nodeAfter._remove();
 			this._removeFromClonedElementsGroup( nodeAfter );

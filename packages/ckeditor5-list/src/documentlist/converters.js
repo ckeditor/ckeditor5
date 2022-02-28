@@ -106,14 +106,12 @@ export function listUpcastCleanList() {
  * @protected
  * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
- * @param {module:utils/emittermixin~Emitter} emitter The emitter that will fire events for checking whether given
- * view element requires refresh.
+ * @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
  * @return {Function}
  */
-export function reconvertItemsOnDataChange( model, editing, emitter ) {
+export function reconvertItemsOnDataChange( model, editing, documentListEditing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
-		const itemsToRefresh = [];
 		const itemToListHead = new Map();
 		const changedItems = new Set();
 
@@ -144,7 +142,7 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
 						if ( doesItemParagraphRequiresRefresh( item ) ) {
-							itemsToRefresh.push( item );
+							editing.reconvertItem( item );
 						}
 					} else {
 						changedItems.add( item );
@@ -153,23 +151,18 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 					// Some other attribute was changed on the list item,
 					// check if paragraph does not need to be converted to bogus or back.
 					if ( doesItemParagraphRequiresRefresh( item ) ) {
-						itemsToRefresh.push( item );
+						editing.reconvertItem( item );
 					}
 				}
 			}
 		}
 
 		for ( const listHead of itemToListHead.values() ) {
-			itemsToRefresh.push( ...collectListItemsToRefresh( listHead, changedItems ) );
-		}
-
-		for ( const item of new Set( itemsToRefresh ) ) {
-			editing.reconvertItem( item );
+			collectListItemsToRefresh( listHead, changedItems );
 		}
 	};
 
 	function collectListItemsToRefresh( listHead, changedItems ) {
-		const itemsToRefresh = [];
 		const visited = new Set();
 		const stack = [];
 
@@ -199,16 +192,14 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 
 				// Check if bogus vs plain paragraph needs refresh.
 				if ( doesItemParagraphRequiresRefresh( block, blocks ) ) {
-					itemsToRefresh.push( block );
+					editing.reconvertItem( block );
 				}
 				// Check if wrapping with UL, OL, LIs needs refresh.
 				else if ( doesItemWrappingRequiresRefresh( block, stack, changedItems ) ) {
-					itemsToRefresh.push( block );
+					documentListEditing._markToReWrapNode( block );
 				}
 			}
 		}
-
-		return itemsToRefresh;
 	}
 
 	function doesItemParagraphRequiresRefresh( item, blocks ) {
@@ -255,7 +246,8 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 				continue;
 			}
 
-			const needsRefresh = emitter.fire( `checkAttributes:${ isListItemElement ? 'item' : 'list' }`, {
+			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }`;
+			const needsRefresh = documentListEditing.fire( eventName, {
 				viewElement: element,
 				modelAttributes: stack[ indent ]
 			} );
