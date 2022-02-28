@@ -104,53 +104,56 @@ describe( 'StyleCommand', () => {
 			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
-		it( 'should add inline htmlSpan attribute with proper class to the selected text', () => {
-			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+		describe( 'inline styles', () => {
+			it( 'should add inline htmlSpan attribute with proper class to the selected text', () => {
+				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			command.execute( markerStyleDefinition );
+				command.execute( markerStyleDefinition );
 
-			expect( getData( model ) ).to.equal(
-				'<paragraph>fo[<$text htmlSpan="{"classes":["marker"]}">ob</$text>]ar</paragraph>'
-			);
-		} );
-
-		it( 'should add multiple inline htmlSpan attributes with proper class to the selected text', () => {
-			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
-
-			command.execute( markerStyleDefinition );
-			command.execute( typewriterStyleDefinition );
-
-			expect( getData( model ) ).to.equal(
-				'<paragraph>fo[<$text htmlSpan="{"classes":["typewriter","marker"]}">ob</$text>]ar</paragraph>'
-			);
-		} );
-
-		it( 'should add inline htmlSpan attribute classes to elements with other htmlSpan attributes existing', () => {
-			// initial selection [foo b]ar baz.
-			setData( model, '<paragraph>[foo b]ar baz</paragraph>' );
-
-			command.execute( markerStyleDefinition );
-
-			expect( getData( model ) ).to.equal(
-				'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foo b</$text>]ar baz</paragraph>'
-			);
-
-			// set selection to [foo bar ba]z.
-			model.change( writer => {
-				writer.setSelection( writer.createRange(
-					writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 0 ),
-					writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 10 )
-				) );
+				expect( getData( model ) ).to.equal(
+					'<paragraph>fo[<$text htmlSpan="{"classes":["marker"]}">ob</$text>]ar</paragraph>'
+				);
 			} );
 
-			command.execute( typewriterStyleDefinition );
+			it( 'should add multiple inline htmlSpan attributes with proper class to the selected text', () => {
+				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
-			expect( getData( model ) ).to.equal(
-				'<paragraph>' +
-					'[<$text htmlSpan="{"classes":["typewriter","marker"]}">foo b</$text>' +
-					'<$text htmlSpan="{"classes":["typewriter"]}">ar ba</$text>]' +
-				'z</paragraph>'
-			);
+				command.execute( markerStyleDefinition );
+				command.execute( typewriterStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>fo[<$text htmlSpan="{"classes":["typewriter","marker"]}">ob</$text>]ar</paragraph>'
+				);
+			} );
+
+			it( 'should add inline htmlSpan attribute classes to elements with other htmlSpan attributes existing', () => {
+			// initial selection [foo b]ar baz.
+				setData( model, '<paragraph>[foo b]ar baz</paragraph>' );
+
+				command.execute( markerStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foo b</$text>]ar baz</paragraph>'
+				);
+
+				// set selection to [foo bar ba]z.
+				model.change( writer => {
+					writer.setSelection( writer.createRange(
+						writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 0 ),
+						writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 10 )
+					) );
+				} );
+
+				command.execute( typewriterStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>[' +
+						'<$text htmlSpan="{"classes":["typewriter","marker"]}">foo b</$text>' +
+						'<$text htmlSpan="{"classes":["typewriter"]}">ar ba</$text>]' +
+						'z' +
+					'</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );
