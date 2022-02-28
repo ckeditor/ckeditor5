@@ -150,6 +150,25 @@ describe( 'StyleCommand', () => {
 				);
 			} );
 
+			it( 'should add multiple htmlSpan attributes with proper classes to the collapsed selection', () => {
+				setData( model, '<paragraph>foobar[]</paragraph>' );
+
+				command.execute( markerStyleDefinition );
+				command.execute( typewriterStyleDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foobar<$text htmlSpan="{"classes":["typewriter","marker"]}">[]</$text></paragraph>'
+				);
+
+				model.change( writer => {
+					model.insertContent( writer.createText( 'baz', doc.selection.getAttributes() ), doc.selection );
+				} );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>foobar<$text htmlSpan="{"classes":["typewriter","marker"]}">baz[]</$text></paragraph>'
+				);
+			} );
+
 			it( 'should add htmlSpan attribute with proper class to the selected text', () => {
 				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
