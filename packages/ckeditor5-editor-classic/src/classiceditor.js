@@ -53,10 +53,21 @@ export default class ClassicEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or the editor's initial data. For more information see
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 */
-	constructor( sourceElementOrData, config ) {
+	constructor( sourceElementOrData, config = {} ) {
+		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
+		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
+			// Documented in core/editor/editorconfig.jsdoc.
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+			throw new CKEditorError( 'editor-create-initial-data', null );
+		}
+
 		super( config );
+
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
+		}
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
@@ -191,17 +202,7 @@ export default class ClassicEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init( isElement( sourceElementOrData ) ? sourceElementOrData : null ) )
-					.then( () => {
-						if ( !isElement( sourceElementOrData ) && config.initialData ) {
-							// Documented in core/editor/editorconfig.jdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);

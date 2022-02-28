@@ -54,10 +54,21 @@ export default class BalloonEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
-	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
+	 * @param {module:core/editor/editorconfig~EditorConfig} [config] The editor configuration.
 	 */
-	constructor( sourceElementOrData, config ) {
+	constructor( sourceElementOrData, config = {} ) {
+		// If both `config.initialData` is set and initial data is passed as the constructor parameter, then throw.
+		if ( !isElement( sourceElementOrData ) && config.initialData !== undefined ) {
+			// Documented in core/editor/editorconfig.jsdoc.
+			// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
+			throw new CKEditorError( 'editor-create-initial-data', null );
+		}
+
 		super( config );
+
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			this.config.set( 'initialData', getInitialData( sourceElementOrData ) );
+		}
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
@@ -191,9 +202,7 @@ export default class BalloonEditor extends Editor {
 	 */
 	static create( sourceElementOrData, config = {} ) {
 		return new Promise( resolve => {
-			const isHTMLElement = isElement( sourceElementOrData );
-
-			if ( isHTMLElement && sourceElementOrData.tagName === 'TEXTAREA' ) {
+			if ( isElement( sourceElementOrData ) && sourceElementOrData.tagName === 'TEXTAREA' ) {
 				// Documented in core/editor/editor.js
 				// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
 				throw new CKEditorError( 'editor-wrong-element', null );
@@ -203,20 +212,8 @@ export default class BalloonEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => {
-						editor.ui.init();
-					} )
-					.then( () => {
-						if ( !isHTMLElement && config.initialData ) {
-							// Documented in core/editor/editorconfig.jdoc.
-							// eslint-disable-next-line ckeditor5-rules/ckeditor-error-message
-							throw new CKEditorError( 'editor-create-initial-data', null );
-						}
-
-						const initialData = config.initialData !== undefined ? config.initialData : getInitialData( sourceElementOrData );
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.ui.init() )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
