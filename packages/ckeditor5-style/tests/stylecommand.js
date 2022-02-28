@@ -126,6 +126,7 @@ describe( 'StyleCommand', () => {
 		} );
 
 		it( 'should add inline htmlSpan attribute classes to elements with other htmlSpan attributes existing', () => {
+			// initial selection [foo b]ar baz.
 			setData( model, '<paragraph>[foo b]ar baz</paragraph>' );
 
 			command.execute( markerStyleDefinition );
@@ -134,6 +135,7 @@ describe( 'StyleCommand', () => {
 				'<paragraph>[<$text htmlSpan="{"classes":["marker"]}">foo b</$text>]ar baz</paragraph>'
 			);
 
+			// set selection to [foo bar ba]z.
 			model.change( writer => {
 				writer.setSelection( writer.createRange(
 					writer.createPositionAt( root.getNodeByPath( [ 0 ] ), 0 ),
