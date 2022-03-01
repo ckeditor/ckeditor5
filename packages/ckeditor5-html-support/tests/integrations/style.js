@@ -90,6 +90,7 @@ describe( 'StyleElementSupport', () => {
 		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++">${ STYLE }</style>` );
 	} );
 
+	// See: https://github.com/ckeditor/ckeditor5/issues/11247
 	it( 'should allow element in the empty editor', () => {
 		editor.setData( `<style>${ STYLE }</style>` );
 

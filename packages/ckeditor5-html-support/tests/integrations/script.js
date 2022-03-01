@@ -91,6 +91,7 @@ describe( 'ScriptElementSupport', () => {
 		expect( editor.getData() ).to.equal( `<p>Foo</p><script type="c++">${ CODE_CPP }</script>` );
 	} );
 
+	// See: https://github.com/ckeditor/ckeditor5/issues/11247
 	it( 'should allow element in the empty editor', () => {
 		editor.setData( `<script>${ CODE }</script>` );
 
