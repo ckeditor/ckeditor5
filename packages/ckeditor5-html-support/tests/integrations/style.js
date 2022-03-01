@@ -90,6 +90,16 @@ describe( 'StyleElementSupport', () => {
 		expect( editor.getData() ).to.equal( `<p>Foo</p><style type="c++">${ STYLE }</style>` );
 	} );
 
+	it( 'should allow element in the empty editor', () => {
+		editor.setData( `<style>${ STYLE }</style>` );
+
+		expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+			`<htmlStyle htmlContent="${ STYLE }"></htmlStyle>`
+		);
+
+		expect( editor.getData() ).to.equal( `<style>${ STYLE }</style>` );
+	} );
+
 	describe( 'element position', () => {
 		const testCases = [ {
 			name: 'paragraph',
