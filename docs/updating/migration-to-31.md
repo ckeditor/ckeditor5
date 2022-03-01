@@ -6,7 +6,7 @@ order: 93
 modified_at: 2021-11-03
 ---
 
-# Migration to CKEditor 5 v31.x.0
+# Migration to CKEditor 5 v31.x
 
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.

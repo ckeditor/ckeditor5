@@ -6,15 +6,13 @@ order: 92
 modified_at: 2021-12-10
 ---
 
-# Migration to CKEditor 5 v32.0.0
-
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
 
-## Migration to CKEditor 5 v32.0.0
+# Migration to CKEditor 5 v32.0.0
 
 For the entire list of changes introduced in version 32.0.0, see the [changelog for CKEditor 5 v32.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3200-2022-01-26).
 
