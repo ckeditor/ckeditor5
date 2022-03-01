@@ -157,14 +157,20 @@ export default class Document {
 		// Buffer marker changes.
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
-		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
+		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange, oldMarkerData ) => {
 			// Whenever marker is updated, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, oldRange, newRange, marker.affectsData );
+			this.differ.bufferMarkerChange( marker.name, oldMarkerData, { ...marker.getData(), range: newRange } );
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
 				marker.on( 'change', ( evt, oldRange ) => {
-					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange(), marker.affectsData );
+					const markerData = marker.getData();
+
+					this.differ.bufferMarkerChange(
+						marker.name,
+						{ ...markerData, range: oldRange },
+						markerData
+					);
 				} );
 			}
 		} );

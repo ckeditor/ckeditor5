@@ -58,8 +58,11 @@ export default class Differ {
 		 * A map that stores all changed markers.
 		 *
 		 * The keys of the map are marker names.
-		 * The values of the map are objects with the `oldRange` and `newRange` properties. They store the marker range
-		 * state before and after the change.
+		 * The values of the map are objects with the following properties:
+		 * - `oldRange`,
+		 * - `newRange`,
+		 * - `affectsData`,
+		 * - `changesDataAffecting`.
 		 *
 		 * @private
 		 * @type {Map}
@@ -190,9 +193,9 @@ export default class Differ {
 				const range = Range._createFromPositionAndShift( operation.position, 1 );
 
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
-					const markerRange = marker.getRange();
+					const markerData = marker.getData();
 
-					this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+					this.bufferMarkerChange( marker.name, markerData, markerData );
 				}
 
 				break;
@@ -249,23 +252,29 @@ export default class Differ {
 	 * Buffers a marker change.
 	 *
 	 * @param {String} markerName The name of the marker that changed.
-	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
-	 * been created.
-	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
-	 * @param {Boolean} affectsData Flag indicating whether marker affects the editor data.
+	 * @param {module:engine/model/markercollection~MarkerData} oldMarkerData Marker range before the change
+	 * or `null` if the marker has just been created.
+	 * @param {module:engine/model/markercollection~MarkerData} newMarkerData Marker range after the change
+	 * or `null` if the marker was removed.
 	 */
-	bufferMarkerChange( markerName, oldRange, newRange, affectsData ) {
+	bufferMarkerChange( markerName, oldMarkerData, newMarkerData ) {
 		const buffered = this._changedMarkers.get( markerName );
 
 		if ( !buffered ) {
 			this._changedMarkers.set( markerName, {
-				oldRange,
-				newRange,
-				affectsData
+				oldRange: oldMarkerData.range,
+				newRange: newMarkerData.range,
+				affectsData: oldMarkerData.affectsData,
+				changesDataAffecting: oldMarkerData.affectsData !== newMarkerData.affectsData
 			} );
 		} else {
-			buffered.newRange = newRange;
-			buffered.affectsData = affectsData;
+			buffered.newRange = newMarkerData.range;
+
+			if ( newMarkerData ) {
+				buffered.affectsData = newMarkerData.affectsData;
+				buffered.changesDataAffecting = buffered.changesDataAffecting ||
+					( oldMarkerData.affectsData !== newMarkerData.affectsData );
+			}
 
 			if ( buffered.oldRange == null && buffered.newRange == null ) {
 				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
@@ -333,12 +342,16 @@ export default class Differ {
 	 *
 	 * * model structure changes,
 	 * * attribute changes,
-	 * * changes of markers which were defined as `affectingData`.
+	 * * changes of markers which were defined as `affectsData`.
 	 *
 	 * @returns {Boolean}
 	 */
 	hasDataChanges() {
 		for ( const [ , change ] of this._changedMarkers ) {
+			if ( change.changesDataAffecting ) {
+				return true;
+			}
+
 			if ( change.affectsData ) {
 				// Skip markers, which ranges have not changed.
 				if ( change.oldRange && change.newRange && change.oldRange.isEqual( change.newRange ) ) {
@@ -577,9 +590,9 @@ export default class Differ {
 		const range = Range._createOn( item );
 
 		for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
-			const markerRange = marker.getRange();
+			const markerData = marker.getData();
 
-			this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
+			this.bufferMarkerChange( marker.name, markerData, markerData );
 		}
 
 		// Clear cache after each buffered operation as it is no longer valid.
