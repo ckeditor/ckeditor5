@@ -13,10 +13,7 @@ import DocumentListEditing from '../documentlist/documentlistediting';
 import DocumentListStartCommand from './documentliststartcommand';
 import DocumentListStyleCommand from './documentliststylecommand';
 import DocumentListReversedCommand from './documentlistreversedcommand';
-import {
-	listPropertiesDowncastConverter,
-	listPropertiesUpcastConverter
-} from './converters';
+import { listPropertiesUpcastConverter } from './converters';
 import { iterateSiblingListBlocks } from '../documentlist/utils/listwalker';
 import { getListTypeFromListStyleType } from './utils/style';
 
@@ -76,6 +73,9 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
+
+			// Register downcast strategy.
+			documentListEditing.registerDowncastStrategy( strategy );
 		}
 
 		// Set up conversion.
@@ -83,12 +83,6 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			for ( const strategy of strategies ) {
 				dispatcher.on( 'element:ol', listPropertiesUpcastConverter( strategy ) );
 				dispatcher.on( 'element:ul', listPropertiesUpcastConverter( strategy ) );
-			}
-		} );
-
-		editor.conversion.for( 'downcast' ).add( dispatcher => {
-			for ( const strategy of strategies ) {
-				dispatcher.on( `attribute:${ strategy.attributeName }`, listPropertiesDowncastConverter( strategy, model ) );
 			}
 		} );
 
@@ -210,6 +204,7 @@ function createAttributeStrategies( enabledProperties ) {
 
 	if ( enabledProperties.styles ) {
 		strategies.push( {
+			scope: 'list',
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
 			viewConsumables: { styles: 'list-style-type' },
@@ -252,6 +247,7 @@ function createAttributeStrategies( enabledProperties ) {
 
 	if ( enabledProperties.reversed ) {
 		strategies.push( {
+			scope: 'list',
 			attributeName: 'listReversed',
 			defaultValue: false,
 			viewConsumables: { attributes: 'reversed' },
@@ -284,6 +280,7 @@ function createAttributeStrategies( enabledProperties ) {
 
 	if ( enabledProperties.startIndex ) {
 		strategies.push( {
+			scope: 'list',
 			attributeName: 'listStart',
 			defaultValue: 1,
 			viewConsumables: { attributes: 'start' },

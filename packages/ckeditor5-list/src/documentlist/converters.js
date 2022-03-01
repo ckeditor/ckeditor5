@@ -112,6 +112,7 @@ export function listUpcastCleanList() {
 export function reconvertItemsOnDataChange( model, editing, documentListEditing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
+		const itemsToRefresh = [];
 		const itemToListHead = new Map();
 		const changedItems = new Set();
 
@@ -142,7 +143,7 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 
 						// Check if paragraph should be converted from bogus to plain paragraph.
 						if ( doesItemParagraphRequiresRefresh( item ) ) {
-							editing.reconvertItem( item );
+							itemsToRefresh.push( item );
 						}
 					} else {
 						changedItems.add( item );
@@ -151,18 +152,23 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 					// Some other attribute was changed on the list item,
 					// check if paragraph does not need to be converted to bogus or back.
 					if ( doesItemParagraphRequiresRefresh( item ) ) {
-						editing.reconvertItem( item );
+						itemsToRefresh.push( item );
 					}
 				}
 			}
 		}
 
 		for ( const listHead of itemToListHead.values() ) {
-			collectListItemsToRefresh( listHead, changedItems );
+			itemsToRefresh.push( ...collectListItemsToRefresh( listHead, changedItems ) );
+		}
+
+		for ( const item of new Set( itemsToRefresh ) ) {
+			editing.reconvertItem( item );
 		}
 	};
 
 	function collectListItemsToRefresh( listHead, changedItems ) {
+		const itemsToRefresh = [];
 		const visited = new Set();
 		const stack = [];
 
@@ -192,14 +198,16 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 
 				// Check if bogus vs plain paragraph needs refresh.
 				if ( doesItemParagraphRequiresRefresh( block, blocks ) ) {
-					editing.reconvertItem( block );
+					itemsToRefresh.push( block );
 				}
 				// Check if wrapping with UL, OL, LIs needs refresh.
 				else if ( doesItemWrappingRequiresRefresh( block, stack, changedItems ) ) {
-					documentListEditing._markToReWrapNode( block );
+					itemsToRefresh.push( block );
 				}
 			}
 		}
+
+		return itemsToRefresh;
 	}
 
 	function doesItemParagraphRequiresRefresh( item, blocks ) {
@@ -275,10 +283,11 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
  *
  * @protected
  * @param {Array.<String>} attributes A list of attribute names that should be converted if are set.
+ * @param {TODO} strategies TODO
  * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}
  */
-export function listItemDowncastConverter( attributes, model ) {
+export function listItemDowncastConverter( attributes, strategies, model ) {
 	const consumer = createAttributesConsumer( attributes );
 
 	return ( evt, data, conversionApi ) => {
@@ -295,13 +304,11 @@ export function listItemDowncastConverter( attributes, model ) {
 		// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
 		const viewElement = findMappedViewElement( listItem, mapper, model );
 
-		if ( data.attributeKey == 'listIndent' && data.attributeNewValue === null ) {
-			// Unwrap element from current list wrappers.
-			unwrapListItemBlock( viewElement, writer );
-		} else {
-			// Then wrap them with the new list wrappers.
-			wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), writer );
-		}
+		// Unwrap element from current list wrappers.
+		unwrapListItemBlock( viewElement, writer );
+
+		// Then wrap them with the new list wrappers.
+		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategies, writer );
 	};
 }
 
@@ -354,33 +361,34 @@ function unwrapListItemBlock( viewElement, viewWriter ) {
 	while ( attributeElement.is( 'attributeElement' ) && [ 'ul', 'ol', 'li' ].includes( attributeElement.name ) ) {
 		const parentElement = attributeElement.parent;
 
-		// Make a clone of an attribute element that only includes properties of generic list (i.e., without list styles).
-		const element = viewWriter.createAttributeElement( attributeElement.name, null, {
-			priority: attributeElement.priority,
-			id: attributeElement.id
-		} );
-
-		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), element );
+		viewWriter.unwrap( viewWriter.createRangeOn( viewElement ), attributeElement );
 
 		attributeElement = parentElement;
 	}
 }
 
 // Wraps the given list item with appropriate attribute elements for ul, ol, and li.
-function wrapListItemBlock( listItem, viewRange, writer ) {
+function wrapListItemBlock( listItem, viewRange, strategies, writer ) {
 	if ( !listItem.hasAttribute( 'listIndent' ) ) {
 		return;
 	}
 
 	const listItemIndent = listItem.getAttribute( 'listIndent' );
-	let listItemId = listItem.getAttribute( 'listItemId' );
-	let listType = listItem.getAttribute( 'listType' );
-
 	let currentListItem = listItem;
 
 	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-		const listItemViewElement = createListItemElement( writer, indent, listItemId );
-		const listViewElement = createListElement( writer, indent, listType );
+		const listItemViewElement = createListItemElement( writer, indent, currentListItem.getAttribute( 'listItemId' ) );
+		const listViewElement = createListElement( writer, indent, currentListItem.getAttribute( 'listType' ) );
+
+		for ( const strategy of strategies ) {
+			if ( currentListItem.hasAttribute( strategy.attributeName ) ) {
+				strategy.setAttributeOnDowncast(
+					writer,
+					currentListItem.getAttribute( strategy.attributeName ),
+					strategy.scope == 'list' ? listViewElement : listItemViewElement
+				);
+			}
+		}
 
 		viewRange = writer.wrap( viewRange, listItemViewElement );
 		viewRange = writer.wrap( viewRange, listViewElement );
@@ -396,9 +404,6 @@ function wrapListItemBlock( listItem, viewRange, writer ) {
 		if ( !currentListItem ) {
 			break;
 		}
-
-		listItemId = currentListItem.getAttribute( 'listItemId' );
-		listType = currentListItem.getAttribute( 'listType' );
 	}
 }
 

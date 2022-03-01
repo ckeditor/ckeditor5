@@ -11,10 +11,6 @@ import { Plugin } from 'ckeditor5/src/core';
 import { setViewAttributes } from '../conversionutils.js';
 
 import DataFilter from '../datafilter';
-import { LIST_BASE_ATTRIBUTES } from '@ckeditor/ckeditor5-list/src/documentlist/utils/model';
-import { findMappedViewElement } from '@ckeditor/ckeditor5-list/src/documentlist/converters';
-import { createListElement, createListItemElement, isListView } from '@ckeditor/ckeditor5-list/src/documentlist/utils/view';
-import ListWalker from '@ckeditor/ckeditor5-list/src/documentlist/utils/listwalker';
 
 /**
  * Provides the General HTML Support integration with {@link module:list/documentlist~DocumentList Document List} feature.
@@ -40,18 +36,21 @@ export default class DocumentListElementSupport extends Plugin {
 		const dataFilter = this.editor.plugins.get( DataFilter );
 
 		dataFilter.on( 'register:li', registerFilter( {
+			scope: 'item',
 			attributeName: 'htmlLiAttributes',
-			viewElementNames: [ 'li' ]
+			setAttributeOnDowncast: setViewAttributes
 		}, this.editor ) );
 
 		dataFilter.on( 'register:ul', registerFilter( {
+			scope: 'list',
 			attributeName: 'htmlListAttributes',
-			viewElementNames: [ 'ul', 'ol' ]
+			setAttributeOnDowncast: setViewAttributes
 		}, this.editor ) );
 
 		dataFilter.on( 'register:ol', registerFilter( {
+			scope: 'list',
 			attributeName: 'htmlListAttributes',
-			viewElementNames: [ 'ul', 'ol' ]
+			setAttributeOnDowncast: setViewAttributes
 		}, this.editor ) );
 	}
 }
@@ -65,9 +64,9 @@ function registerFilter( strategy, editor ) {
 	const dataFilter = editor.plugins.get( DataFilter );
 
 	return evt => {
-		if ( schema.checkAttribute( '$block', attributeName ) ) {
-			evt.stop();
+		evt.stop();
 
+		if ( schema.checkAttribute( '$block', attributeName ) ) {
 			return;
 		}
 
@@ -76,10 +75,17 @@ function registerFilter( strategy, editor ) {
 		schema.extend( '$blockObject', { allowAttributes: [ attributeName ] } );
 		schema.extend( '$container', { allowAttributes: [ attributeName ] } );
 
-		conversion.for( 'upcast' ).add( viewToModelListAttributeConverter( strategy, dataFilter ) );
-		conversion.for( 'downcast' ).add( modelToViewListAttributeConverter( strategy, editor.model ) );
+		conversion.for( 'upcast' ).add( dispatcher => {
+			if ( strategy.scope == 'list' ) {
+				dispatcher.on( 'element:ul', viewToModelListAttributeConverter( strategy, dataFilter ), { priority: 'low' } );
+				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( strategy, dataFilter ), { priority: 'low' } );
+			} else /* if ( strategy.scope == 'item' ) */ {
+				dispatcher.on( 'element:li', viewToModelListAttributeConverter( strategy, dataFilter ), { priority: 'low' } );
+			}
+		} );
 
-		evt.stop();
+		// Register downcast strategy.
+		editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( strategy );
 	};
 }
 
@@ -94,103 +100,30 @@ function registerFilter( strategy, editor ) {
 // @param {module:html-support/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
 function viewToModelListAttributeConverter( strategy, dataFilter ) {
-	const { attributeName, viewElementNames } = strategy;
+	const { attributeName } = strategy;
 
-	return dispatcher => {
-		dispatcher.on( 'element', ( evt, data, conversionApi ) => {
-			const viewElement = data.viewItem;
+	return ( evt, data, conversionApi ) => {
+		const viewElement = data.viewItem;
 
-			if ( !viewElement.is( 'element' ) || !viewElementNames.includes( viewElement.name ) ) {
-				return;
+		if ( !data.modelRange ) {
+			Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+		}
+
+		const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
+
+		for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
+			// Apply only to list item blocks.
+			if ( !item.hasAttribute( 'listItemId' ) ) {
+				continue;
 			}
 
-			if ( !data.modelRange ) {
-				Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+			// Set list attributes only on same level items, those nested deeper are already handled
+			// by the recursive conversion.
+			if ( item.hasAttribute( attributeName ) ) {
+				continue;
 			}
 
-			const viewAttributes = dataFilter._consumeAllowedAttributes( viewElement, conversionApi );
-
-			for ( const item of data.modelRange.getItems( { shallow: true } ) ) {
-				// Apply only to list item blocks.
-				if ( !item.hasAttribute( 'listItemId' ) ) {
-					continue;
-				}
-
-				// Set list attributes only on same level items, those nested deeper are already handled
-				// by the recursive conversion.
-				if ( item.hasAttribute( attributeName ) ) {
-					continue;
-				}
-
-				conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
-			}
-		}, { priority: 'low' } );
+			conversionApi.writer.setAttribute( attributeName, viewAttributes || {}, item );
+		}
 	};
-}
-
-// Model-to-view conversion helper applying attributes from {@link module:code-block/codeblock~CodeBlock Code Block}
-// feature model element.
-//
-// @private
-// @param {String} attributeName
-// @returns {Function} Returns a conversion callback.
-function modelToViewListAttributeConverter( strategy, model ) {
-	return dispatcher => {
-		dispatcher.on( `attribute:${ strategy.attributeName }`, ( evt, data, conversionApi ) => {
-			const { writer, mapper, consumable } = conversionApi;
-			const listItem = data.item;
-
-			if ( !consumable.consume( listItem, evt.name ) ) {
-				return;
-			}
-
-			// Use positions mapping instead of mapper.toViewElement( listItem ) to find outermost view element.
-			// This is for cases when mapping is using inner view element like in the code blocks (pre > code).
-			const viewElement = findMappedViewElement( listItem, mapper, model );
-
-			// Then wrap them with the new list wrappers.
-			wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategy, writer );
-		} );
-	};
-}
-
-// Wraps the given list item with appropriate attribute elements for ul, ol, and li.
-function wrapListItemBlock( listItem, viewRange, strategy, writer ) {
-	if ( !listItem.hasAttribute( 'listIndent' ) ) {
-		return;
-	}
-
-	const listItemIndent = listItem.getAttribute( 'listIndent' );
-	let listType = listItem.getAttribute( 'listType' );
-	let listItemId = listItem.getAttribute( 'listItemId' );
-	let htmlAttributes = listItem.getAttribute( strategy.attributeName );
-
-	let currentListItem = listItem;
-
-	for ( let indent = listItemIndent; indent >= 0; indent-- ) {
-		if ( htmlAttributes ) {
-			const viewElement = strategy.viewElementNames.includes( 'li' ) ?
-				createListItemElement( writer, indent, listItemId ) :
-				createListElement( writer, indent, listType );
-
-			setViewAttributes( writer, htmlAttributes, viewElement );
-			viewRange = writer.wrap( viewRange, viewElement );
-		}
-
-		if ( indent == 0 ) {
-			break;
-		}
-
-		currentListItem = ListWalker.first( currentListItem, { lowerIndent: true } );
-
-		// There is no list item with lower indent, this means this is a document fragment containing
-		// only a part of nested list (like copy to clipboard) so we don't need to try to wrap it further.
-		if ( !currentListItem ) {
-			break;
-		}
-
-		listType = currentListItem.getAttribute( 'listType' );
-		listItemId = currentListItem.getAttribute( 'listItemId' );
-		htmlAttributes = currentListItem.getAttribute( strategy.attributeName );
-	}
 }

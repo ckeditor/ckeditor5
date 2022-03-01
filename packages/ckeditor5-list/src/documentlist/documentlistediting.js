@@ -81,9 +81,8 @@ export default class DocumentListEditing extends Plugin {
 		 * TODO
 		 *
 		 * @private
-		 * @type {Set.<TODO>}
 		 */
-		this._nodesToRewrap = new Set();
+		this._downcastStrategies = [];
 
 		const editor = this.editor;
 		const model = editor.model;
@@ -118,7 +117,6 @@ export default class DocumentListEditing extends Plugin {
 		editor.commands.add( 'splitListItemAfter', new DocumentListSplitCommand( editor, 'after' ) );
 
 		this._setupModelPostFixing();
-		this._setupConversion();
 		this._setupDeleteIntegration();
 		this._setupEnterIntegration();
 		this._setupTabIntegration();
@@ -144,6 +142,9 @@ export default class DocumentListEditing extends Plugin {
 			// First we want to allow user to outdent all indendations from other features then he can oudent list item.
 			outdent.registerChildCommand( commands.get( 'outdentList' ), { priority: 'lowest' } );
 		}
+
+		// Register conversion after other plugins had a chance to register their attributes.
+		this._setupConversion();
 	}
 
 	/**
@@ -167,11 +168,9 @@ export default class DocumentListEditing extends Plugin {
 
 	/**
 	 * TODO
-	 *
-	 * @protected
 	 */
-	_markToReWrapNode( node ) {
-		this._nodesToRewrap.add( node );
+	registerDowncastStrategy( strategy ) {
+		this._downcastStrategies.push( strategy );
 	}
 
 	/**
@@ -383,99 +382,16 @@ export default class DocumentListEditing extends Plugin {
 
 		const attributeNames = [
 			...LIST_BASE_ATTRIBUTES,
-			'listStyle',
-			'listStart',
-			'listReversed',
-			'htmlListAttributes',
-			'htmlLiAttributes'
+			...this._downcastStrategies.map( strategy => strategy.attributeName )
 		];
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				for ( const attributeName of LIST_BASE_ATTRIBUTES ) {
-					dispatcher.on( `attribute:${ attributeName }`, listItemDowncastConverter( LIST_BASE_ATTRIBUTES, model ) );
-				}
-
-				dispatcher.on( 'reduceChanges', ( evt, data ) => {
-					const reducedChanges = [];
-					const reWrappedItems = new Set();
-
-					const rangesToReWrap = Array.from( this._nodesToRewrap.values() )
-						.map( node => model.createRange( model.createPositionBefore( node ), model.createPositionAt( node, 0 ) ) )
-						.sort( compareRangeOrder );
-					let rangesToReWrapIndex = 0;
-
-					for ( const change of data.changes ) {
-						const position = change.position || change.range.start;
-
-						while ( rangesToReWrapIndex < rangesToReWrap.length ) {
-							const range = rangesToReWrap[ rangesToReWrapIndex ];
-
-							if ( !position.isAfter( range.start ) ) {
-								break;
-							}
-
-							const node = range.start.nodeAfter;
-
-							if ( !reWrappedItems.has( node ) ) {
-								reWrappedItems.add( node );
-								reducedChanges.push( ...createChanges( range, node ) );
-							}
-
-							rangesToReWrapIndex++;
-						}
-
-						if ( change.type == 'attribute' && attributeNames.includes( change.attributeKey ) ) {
-							const node = position.nodeAfter;
-
-							if ( reWrappedItems.has( node ) ) {
-								continue;
-							}
-
-							reWrappedItems.add( node );
-							reducedChanges.push( ...createChanges( change.range, node ) );
-						} else {
-							reducedChanges.push( change );
-						}
-					}
-
-					while ( rangesToReWrapIndex < rangesToReWrap.length ) {
-						const range = rangesToReWrap[ rangesToReWrapIndex ];
-						const node = range.start.nodeAfter;
-
-						if ( !reWrappedItems.has( node ) ) {
-							reWrappedItems.add( node );
-							reducedChanges.push( ...createChanges( range, node ) );
-						}
-
-						rangesToReWrapIndex++;
-					}
-
-					data.changes = reducedChanges;
-				} );
-
-				function createChanges( range, node ) {
-					const changes = [ {
-						type: 'attribute',
-						attributeKey: 'listIndent',
-						attributeOldValue: node.getAttribute( 'listIndent' ),
-						attributeNewValue: null,
-						range
-					} ];
-
-					for ( const [ attributeKey, attributeValue ] of node.getAttributes() ) {
-						if ( attributeNames.includes( attributeKey ) ) {
-							changes.push( {
-								type: 'attribute',
-								attributeKey,
-								attributeOldValue: null,
-								attributeNewValue: attributeValue,
-								range
-							} );
-						}
-					}
-
-					return changes;
+				for ( const attributeName of attributeNames ) {
+					dispatcher.on(
+						`attribute:${ attributeName }`,
+						listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
+					);
 				}
 			} );
 
@@ -713,16 +629,4 @@ function shouldMergeOnBlocksContentLevel( model, direction ) {
 	}
 
 	return isSingleListItem( [ positionParent, previousSibling ] );
-}
-
-// TODO this is copy from tableutils - should be extracted to utils package.
-function compareRangeOrder( rangeA, rangeB ) {
-	// Since table cell ranges are disjoint, it's enough to check their start positions.
-	const posA = rangeA.start;
-	const posB = rangeB.start;
-
-	// Checking for equal position (returning 0) is not needed because this would be either:
-	// a. Intersecting range (not allowed by model)
-	// b. Collapsed range on the same position (allowed by model but should not happen).
-	return posA.isBefore( posB ) ? -1 : 1;
 }
