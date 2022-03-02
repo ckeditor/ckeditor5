@@ -76,14 +76,6 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	init() {
 		/**
-		 * The list of attributes that must be consistent among all items in the same list.
-		 *
-		 * @private
-		 * @type {Array.<String>}
-		 */
-		this._sameListDefiningAttributes = [ 'listType' ];
-
-		/**
 		 * TODO
 		 *
 		 * @private
@@ -154,25 +146,6 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * Register attribute that must be that must be consistent among all items in the same list.
-	 * If list items have different values of registered attributes, they belong to different lists.
-	 *
-	 * @param {String} attributeName
-	 */
-	registerSameListDefiningAttributes( attributeName ) {
-		this._sameListDefiningAttributes.push( attributeName );
-	}
-
-	/**
-	 * Gets the list of attributes that must be consistent among all items in the same list.
-	 *
-	 * @returns {Array.<String>}
-	 */
-	getSameListDefiningAttributes() {
-		return this._sameListDefiningAttributes;
-	}
-
-	/**
 	 * TODO
 	 */
 	registerDowncastStrategy( strategy ) {
@@ -220,7 +193,7 @@ export default class DocumentListEditing extends Plugin {
 					}
 
 					const previousBlock = ListWalker.first( positionParent, {
-						sameListAttributes: this.getSameListDefiningAttributes(),
+						sameAttributes: 'listType',
 						sameIndent: true
 					} );
 

@@ -5,7 +5,6 @@
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
-import { Plugin } from '@ckeditor/ckeditor5-core';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import DocumentListReversedCommand from '../../src/documentlistproperties/documentlistreversedcommand';
@@ -14,20 +13,8 @@ import { modelList } from '../documentlist/_utils/utils';
 describe( 'DocumentListReversedCommand', () => {
 	let editor, model, listReversedCommand;
 
-	class DocumentListEditingMock extends Plugin {
-		static get pluginName() {
-			return 'DocumentListEditing';
-		}
-
-		getSameListDefiningAttributes() {
-			return [ 'listType', 'listReversed' ];
-		}
-	}
-
 	beforeEach( async () => {
-		editor = new Editor( {
-			plugins: [ DocumentListEditingMock ]
-		} );
+		editor = new Editor();
 
 		await editor.initPlugins();
 

@@ -105,28 +105,6 @@ describe( 'DocumentListEditing', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'tableCell' ], 'listType' ) ).to.be.false;
 	} );
 
-	describe( 'same list-defining attributes', () => {
-		let plugin;
-
-		beforeEach( () => {
-			plugin = editor.plugins.get( DocumentListEditing );
-		} );
-
-		it( '`listType` should define list', () => {
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'listType' );
-		} );
-
-		it( 'should allow registering custom list-defining attributes', () => {
-			plugin.registerSameListDefiningAttributes( 'attr1' );
-			plugin.registerSameListDefiningAttributes( 'attr2' );
-			plugin.registerSameListDefiningAttributes( 'attr3' );
-
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'attr1' );
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'attr2' );
-			expect( plugin.getSameListDefiningAttributes() ).to.include( 'attr3' );
-		} );
-	} );
-
 	describe( 'commands', () => {
 		it( 'should register indent list command', () => {
 			const command = editor.commands.get( 'indentList' );

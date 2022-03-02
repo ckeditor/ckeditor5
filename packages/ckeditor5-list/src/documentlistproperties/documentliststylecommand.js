@@ -72,9 +72,7 @@ export default class DocumentListStyleCommand extends Command {
 				return;
 			}
 
-			const documentListEditingPlugin = this.editor.plugins.get( 'DocumentListEditing' );
-
-			blocks = expandListBlocksToCompleteList( blocks, documentListEditingPlugin.getSameListDefiningAttributes() );
+			blocks = expandListBlocksToCompleteList( blocks );
 
 			for ( const block of blocks ) {
 				writer.setAttribute( 'listStyle', options.type || this._defaultType, block );
