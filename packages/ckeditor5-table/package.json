@@ -24,6 +24,7 @@
     "@ckeditor/ckeditor5-editor-classic": "^32.0.0",
     "@ckeditor/ckeditor5-engine": "^32.0.0",
     "@ckeditor/ckeditor5-horizontal-line": "^32.0.0",
+    "@ckeditor/ckeditor5-html-support": "^32.0.0",
     "@ckeditor/ckeditor5-image": "^32.0.0",
     "@ckeditor/ckeditor5-indent": "^32.0.0",
     "@ckeditor/ckeditor5-list": "^32.0.0",

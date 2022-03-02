@@ -9,6 +9,7 @@ import { formatHtml } from '@ckeditor/ckeditor5-source-editing/src/utils/formath
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import GeneralHtmlSupport from '@ckeditor/ckeditor5-html-support/src/generalhtmlsupport';
 import Table from '../../src/table';
 import TableToolbar from '../../src/tabletoolbar';
 import TableSelection from '../../src/tableselection';
@@ -18,58 +19,62 @@ import TableCellProperties from '../../src/tablecellproperties';
 import TableCaption from '../../src/tablecaption';
 import PlainTableOutput from '../../src/plaintableoutput';
 
-ClassicEditor.create( document.querySelector( '#editor' ), {
-	plugins: [
-		ArticlePluginSet,
-		Table,
-		TableToolbar,
-		TableSelection,
-		TableClipboard,
-		TableProperties,
-		TableCellProperties,
-		TableCaption,
-		PlainTableOutput,
-		SourceEditing
-	],
-	toolbar: [
-		'heading',
-		'|',
-		'insertTable',
-		'|',
-		'bold',
-		'italic',
-		'link',
-		'|',
-		'bulletedList',
-		'numberedList',
-		'blockQuote',
-		'|',
-		'undo',
-		'redo',
-		'sourceEditing'
-	],
-	table: {
-		contentToolbar: [
-			'tableColumn',
-			'tableRow',
-			'mergeTableCells',
-			'tableProperties',
-			'tableCellProperties',
-			'toggleTableCaption'
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			ArticlePluginSet,
+			Table,
+			TableToolbar,
+			TableSelection,
+			TableClipboard,
+			TableProperties,
+			TableCellProperties,
+			TableCaption,
+			PlainTableOutput,
+			GeneralHtmlSupport,
+			SourceEditing
 		],
-		tableProperties: {
-			defaultProperties: {
-				borderStyle: 'dashed',
-				borderColor: 'red',
-				borderWidth: '10px',
-				alignment: 'left',
-				width: '550px',
-				height: '450px',
-				backgroundColor: 'green'
-			}
+		toolbar: [
+			'heading',
+			'|',
+			'insertTable',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'|',
+			'bulletedList',
+			'numberedList',
+			'blockQuote',
+			'|',
+			'undo',
+			'redo',
+			'sourceEditing'
+		],
+		table: {
+			contentToolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeTableCells',
+				'tableProperties',
+				'tableCellProperties',
+				'toggleTableCaption'
+			]
+		},
+		image: {
+			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^(table|tbody|thead|tr|td|th|caption)$/,
+					attributes: true,
+					classes: true,
+					styles: true
+				}
+			]
 		}
-	}
-} )
+	} )
 	.then( editor => {
 		window.editor = editor;
 
