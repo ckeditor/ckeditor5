@@ -284,7 +284,7 @@ mix( MarkerCollection, EmitterMixin );
 /**
  * @typedef {Object} module:engine/model/markercollection~MarkerData
  *
- * @property {module:engine/model/range~Range|null} range Marker range.
+ * @property {module:engine/model/range~Range|null} range Marker range. `null` if the marker was removed.
  * @property {Boolean} affectsData A property defining if the marker affects data.
  * @property {Boolean} managedUsingOperations A property defining if the marker is managed using operations.
  */

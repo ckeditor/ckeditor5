@@ -252,10 +252,8 @@ export default class Differ {
 	 * Buffers a marker change.
 	 *
 	 * @param {String} markerName The name of the marker that changed.
-	 * @param {module:engine/model/markercollection~MarkerData} oldMarkerData Marker range before the change
-	 * or `null` if the marker has just been created.
-	 * @param {module:engine/model/markercollection~MarkerData} newMarkerData Marker range after the change
-	 * or `null` if the marker was removed.
+	 * @param {module:engine/model/markercollection~MarkerData} oldMarkerData Marker data before the change.
+	 * @param {module:engine/model/markercollection~MarkerData} newMarkerData Marker data after the change.
 	 */
 	bufferMarkerChange( markerName, oldMarkerData, newMarkerData ) {
 		const buffered = this._changedMarkers.get( markerName );
