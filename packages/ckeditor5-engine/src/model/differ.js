@@ -267,12 +267,9 @@ export default class Differ {
 			} );
 		} else {
 			buffered.newRange = newMarkerData.range;
-
-			if ( newMarkerData ) {
-				buffered.affectsData = newMarkerData.affectsData;
-				buffered.changesDataAffecting = buffered.changesDataAffecting ||
-					( oldMarkerData.affectsData !== newMarkerData.affectsData );
-			}
+			buffered.affectsData = newMarkerData.affectsData;
+			buffered.changesDataAffecting = buffered.changesDataAffecting ||
+				( oldMarkerData.affectsData !== newMarkerData.affectsData );
 
 			if ( buffered.oldRange == null && buffered.newRange == null ) {
 				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
