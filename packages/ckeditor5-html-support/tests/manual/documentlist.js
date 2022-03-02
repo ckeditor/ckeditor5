@@ -13,30 +13,8 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
-
-/**
- * Client custom plugin extending HTML support for compatibility.
- */
-class ExtendHTMLSupport extends Plugin {
-	static get requires() {
-		return [ GeneralHtmlSupport ];
-	}
-
-	init() {
-		const dataFilter = this.editor.plugins.get( 'DataFilter' );
-
-		dataFilter.allowElement( /^p$/ );
-		dataFilter.allowAttributes( { name: /^p$/, attributes: true, styles: true } );
-
-		dataFilter.allowElement( /^(ul|ol)$/ );
-		dataFilter.allowAttributes( { name: /^(ul|ol)$/, attributes: true, styles: true } );
-		dataFilter.allowElement( /^(li)$/ );
-		dataFilter.allowAttributes( { name: /^(li)$/, attributes: true, styles: true } );
-	}
-}
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -44,11 +22,11 @@ ClassicEditor
 			Bold,
 			DocumentListProperties,
 			Essentials,
-			ExtendHTMLSupport,
 			Italic,
 			Paragraph,
 			Strikethrough,
-			SourceEditing
+			SourceEditing,
+			GeneralHtmlSupport
 		],
 		toolbar: [
 			'sourceEditing', '|',
@@ -62,6 +40,16 @@ ClassicEditor
 				startIndex: true,
 				reversed: true
 			}
+		},
+		htmlSupport: {
+			allow: [
+				{
+					name: /^.*$/,
+					styles: true,
+					attributes: true,
+					classes: true
+				}
+			]
 		}
 	} )
 	.then( editor => {

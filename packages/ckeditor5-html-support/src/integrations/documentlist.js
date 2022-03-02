@@ -29,79 +29,63 @@ export default class DocumentListElementSupport extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		if ( !this.editor.plugins.has( 'DocumentListEditing' ) ) {
+		const editor = this.editor;
+
+		if ( !editor.plugins.has( 'DocumentListEditing' ) ) {
 			return;
 		}
 
-		const dataFilter = this.editor.plugins.get( DataFilter );
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
+		const dataFilter = editor.plugins.get( DataFilter );
+		const documentListEditing = editor.plugins.get( 'DocumentListEditing' );
 
-		dataFilter.on( 'register:li', registerFilter( {
-			scope: 'item',
-			attributeName: 'htmlLiAttributes',
-			setAttributeOnDowncast: setViewAttributes
-		}, this.editor ) );
-
-		dataFilter.on( 'register:ul', registerFilter( {
-			scope: 'list',
-			attributeName: 'htmlListAttributes',
-			setAttributeOnDowncast: setViewAttributes
-		}, this.editor ) );
-
-		dataFilter.on( 'register:ol', registerFilter( {
-			scope: 'list',
-			attributeName: 'htmlListAttributes',
-			setAttributeOnDowncast: setViewAttributes
-		}, this.editor ) );
-	}
-}
-
-// TODO
-function registerFilter( strategy, editor ) {
-	const { attributeName } = strategy;
-
-	const schema = editor.model.schema;
-	const conversion = editor.conversion;
-	const dataFilter = editor.plugins.get( DataFilter );
-
-	return evt => {
-		evt.stop();
-
-		if ( schema.checkAttribute( '$block', attributeName ) ) {
-			return;
-		}
-
-		// Extend codeBlock to allow attributes required by attribute filtration.
-		schema.extend( '$block', { allowAttributes: [ attributeName ] } );
-		schema.extend( '$blockObject', { allowAttributes: [ attributeName ] } );
-		schema.extend( '$container', { allowAttributes: [ attributeName ] } );
-
-		conversion.for( 'upcast' ).add( dispatcher => {
-			if ( strategy.scope == 'list' ) {
-				dispatcher.on( 'element:ul', viewToModelListAttributeConverter( strategy, dataFilter ), { priority: 'low' } );
-				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( strategy, dataFilter ), { priority: 'low' } );
-			} else /* if ( strategy.scope == 'item' ) */ {
-				dispatcher.on( 'element:li', viewToModelListAttributeConverter( strategy, dataFilter ), { priority: 'low' } );
+		dataFilter.on( 'register', ( evt, definition ) => {
+			if ( ![ 'ul', 'ol', 'li' ].includes( definition.view ) ) {
+				return;
 			}
-		} );
 
-		// Register downcast strategy.
-		editor.plugins.get( 'DocumentListEditing' ).registerDowncastStrategy( strategy );
-	};
+			evt.stop();
+
+			// Do not register same converters twice.
+			if ( schema.checkAttribute( '$block', 'htmlListAttributes' ) ) {
+				return;
+			}
+
+			schema.extend( '$block', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
+			schema.extend( '$blockObject', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
+			schema.extend( '$container', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
+
+			conversion.for( 'upcast' ).add( dispatcher => {
+				dispatcher.on( 'element:ul', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
+				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
+				dispatcher.on( 'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' } );
+			} );
+
+			// Register downcast strategy.
+			documentListEditing.registerDowncastStrategy( {
+				scope: 'item',
+				attributeName: 'htmlLiAttributes',
+				setAttributeOnDowncast: setViewAttributes
+			} );
+
+			documentListEditing.registerDowncastStrategy( {
+				scope: 'list',
+				attributeName: 'htmlListAttributes',
+				setAttributeOnDowncast: setViewAttributes
+			} );
+		} );
+	}
 }
 
 // View-to-model conversion helper preserving allowed attributes on {@link TODO}
 // feature model element.
 //
-// Attributes are preserved as a value of `htmlLiAttributes` model attribute.
-//
 // @private
 // @param {String} attributeName
-// @param {String} viewElementName
 // @param {module:html-support/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
-function viewToModelListAttributeConverter( strategy, dataFilter ) {
-	const { attributeName } = strategy;
-
+function viewToModelListAttributeConverter( attributeName, dataFilter ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = data.viewItem;
 

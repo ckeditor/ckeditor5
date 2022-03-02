@@ -672,9 +672,6 @@ export default class DowncastWriter {
 			const count = nodeBefore.childCount;
 			nodeBefore._appendChild( nodeAfter.getChildren() );
 
-			// Merge the element attributes in case those have a same ID (other attributes might differ).
-			// this._mergeElementAttributes( nodeAfter, nodeBefore );
-
 			nodeAfter._remove();
 			this._removeFromClonedElementsGroup( nodeAfter );
 
@@ -1629,14 +1626,11 @@ export default class DowncastWriter {
 	 * 	@returns {Boolean} Returns `true` if elements are merged.
 	 */
 	_wrapAttributeElement( wrapper, toWrap ) {
-		// if ( !canBeJoined( wrapper, toWrap ) ) {
-		// 	return false;
-		// }
-
 		if ( wrapper.id !== toWrap.id ) {
 			return false;
 		}
 
+		// Those elements have the same ID so just wrap those without further checking.
 		if ( wrapper.id !== null ) {
 			// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
 			this._mergeElementAttributes( wrapper, toWrap );
@@ -1717,14 +1711,11 @@ export default class DowncastWriter {
 	 * @returns {Boolean} Returns `true` if elements are unwrapped.
 	 **/
 	_unwrapAttributeElement( wrapper, toUnwrap ) {
-		// if ( !canBeJoined( wrapper, toUnwrap ) ) {
-		// 	return false;
-		// }
-
 		if ( wrapper.id !== toUnwrap.id ) {
 			return false;
 		}
 
+		// Those elements have the same ID so just unwrap those without further checking.
 		if ( wrapper.id !== null ) {
 			// Remove all wrapper's attributes from unwrapped element.
 			this._unmergeElementAttributes( wrapper, toUnwrap );
@@ -2222,19 +2213,4 @@ function validateRangeContainer( range, errorContext ) {
 		 */
 		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
-}
-
-// Checks if two attribute elements can be joined together. Elements can be joined together if, and only if
-// they do not have ids specified.
-//
-// @private
-// @param {module:engine/view/element~Element} a
-// @param {module:engine/view/element~Element} b
-// @returns {Boolean}
-function canBeJoined( a, b ) {
-	if ( a.id === null && b.id === null ) {
-		return true;
-	}
-
-	return a.id === b.id;
 }
