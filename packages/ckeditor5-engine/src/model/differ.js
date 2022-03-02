@@ -337,7 +337,8 @@ export default class Differ {
 	 *
 	 * * model structure changes,
 	 * * attribute changes,
-	 * * changes of markers which were defined as `affectsData`.
+	 * * changes of markers which were defined as `affectsData`,
+	 * * changes of markers `affectsData` property.
 	 *
 	 * @returns {Boolean}
 	 */
