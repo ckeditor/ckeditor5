@@ -105,6 +105,22 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
+		// Reset list properties after indenting list items.
+		this.listenTo( editor.commands.get( 'indentList' ), 'afterExecute', ( evt, changedBlocks ) => {
+			model.change( writer => {
+				for ( const node of changedBlocks ) {
+					for ( const strategy of strategies ) {
+						if ( strategy.appliesToListItem( node ) ) {
+							// Just reset the attribute.
+							// If there is a previous indented list that this node should be merged into,
+							// the postfixer will unify all the attributes of both sub-lists.
+							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+						}
+					}
+				}
+			} );
+		} );
+
 		// Add or remove list properties attributes depending on the list type.
 		documentListEditing.on( 'postFixer', ( evt, { listHead, writer } ) => {
 			for ( const { node } of iterateSiblingListBlocks( listHead, 'forward' ) ) {

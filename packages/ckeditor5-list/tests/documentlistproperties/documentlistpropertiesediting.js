@@ -159,6 +159,86 @@ describe( 'DocumentListPropertiesEditing', () => {
 				` ) );
 			} );
 		} );
+
+		describe( 'indenting lists', () => {
+			it( 'should reset `listStyle` attribute after indenting a single item', () => {
+				setData( model, modelList( `
+					* 1. {style:circle}
+					  * 1a. {style:square}
+					* 2.
+					* 3.[]
+					* 4.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					* 1. {style:circle}
+					  * 1a. {style:square}
+					* 2.
+					  * 3.[] {style:default}
+					* 4.
+				` ) );
+			} );
+
+			it( 'should reset `listStyle` attribute after indenting a few items', () => {
+				setData( model, modelList( `
+					# 1. {style:decimal}
+					# [2.
+					# 3.]
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {style:decimal}
+					  # [2. {style:default}
+					  # 3.]
+				` ) );
+			} );
+
+			it( 'should copy `listStyle` attribute after indenting a single item into previously nested list', () => {
+				setData( model, modelList( `
+					* 1. {style:circle}
+					  * 1a. {style:square}
+					  * 1b.
+					* 2.[]
+					* 3.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					* 1. {style:circle}
+					  * 1a. {style:square}
+					  * 1b.
+					  * 2.[]
+					* 3.
+				` ) );
+			} );
+
+			it( 'should copy `listStyle` attribute after indenting a few items into previously nested list', () => {
+				setData( model, modelList( `
+					* 1. {style:circle}
+					  * 1a. {style:square}
+					  * 1b.
+					* [2.
+					* 3.]
+					* 4.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					* 1. {style:circle}
+					  * 1a. {style:square}
+					  * 1b.
+					  * [2.
+					  * 3.]
+					* 4.
+				` ) );
+			} );
+		} );
 	} );
 
 	describe( 'listReversed', () => {
@@ -277,6 +357,100 @@ describe( 'DocumentListPropertiesEditing', () => {
 				` ) );
 			} );
 		} );
+
+		describe( 'indenting lists', () => {
+			it( 'should reset `listReversed` attribute after indenting a single item', () => {
+				setData( model, modelList( `
+					# 1. {reversed:true}
+					  # 1a. {reversed:true}
+					# 2.
+					# 3.[]
+					# 4.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {reversed:true}
+					  # 1a. {reversed:true}
+					# 2.
+					  # 3.[] {reversed:false}
+					# 4.
+				` ) );
+			} );
+
+			it( 'should reset `listReversed` attribute after indenting a few items', () => {
+				setData( model, modelList( `
+					# 1. {reversed:true}
+					# [2.
+					# 3.]
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {reversed:true}
+					  # [2. {reversed:false}
+					  # 3.]
+				` ) );
+			} );
+
+			it( 'should copy `listReversed` attribute after indenting a single item into previously nested list', () => {
+				setData( model, modelList( `
+					# 1. {reversed:false}
+					  # 1a. {reversed:true}
+					  # 1b.
+					# 2.[]
+					# 3.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {reversed:false}
+					  # 1a. {reversed:true}
+					  # 1b.
+					  # 2.[]
+					# 3.
+				` ) );
+			} );
+
+			it( 'should copy `listReversed` attribute after indenting a few items into previously nested list', () => {
+				setData( model, modelList( `
+					# 1. {reversed:false}
+					  # 1a. {reversed:true}
+					  # 1b.
+					# [2.
+					# 3.]
+					# 4.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {reversed:false}
+					  # 1a. {reversed:true}
+					  # 1b.
+					  # [2.
+					  # 3.]
+					# 4.
+				` ) );
+			} );
+
+			it( 'should not do anything with bulleted lists', () => {
+				setData( model, modelList( `
+					* 1.
+					* 2.[]
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					* 1.
+					  * 2.[]
+				` ) );
+			} );
+		} );
 	} );
 
 	describe( 'listStart', () => {
@@ -392,6 +566,100 @@ describe( 'DocumentListPropertiesEditing', () => {
 					# 1. {start:5}
 					# 2.
 					# 3.
+				` ) );
+			} );
+		} );
+
+		describe( 'indenting lists', () => {
+			it( 'should reset `listStart` attribute after indenting a single item', () => {
+				setData( model, modelList( `
+					# 1. {start:5}
+					  # 1a. {start:3}
+					# 2.
+					# 3.[]
+					# 4.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {start:5}
+					  # 1a. {start:3}
+					# 2.
+					  # 3.[] {start:1}
+					# 4.
+				` ) );
+			} );
+
+			it( 'should reset `listStart` attribute after indenting a few items', () => {
+				setData( model, modelList( `
+					# 1. {start:2}
+					# [2.
+					# 3.]
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {start:2}
+					  # [2. {start:1}
+					  # 3.]
+				` ) );
+			} );
+
+			it( 'should copy `listStart` attribute after indenting a single item into previously nested list', () => {
+				setData( model, modelList( `
+					# 1. {start:3}
+					  # 1a. {start:7}
+					  # 1b.
+					# 2.[]
+					# 3.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {start:3}
+					  # 1a. {start:7}
+					  # 1b.
+					  # 2.[]
+					# 3.
+				` ) );
+			} );
+
+			it( 'should copy `listStart` attribute after indenting a few items into previously nested list', () => {
+				setData( model, modelList( `
+					# 1. {start:42}
+					  # 1a. {start:2}
+					  # 1b.
+					# [2.
+					# 3.]
+					# 4.
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					# 1. {start:42}
+					  # 1a. {start:2}
+					  # 1b.
+					  # [2.
+					  # 3.]
+					# 4.
+				` ) );
+			} );
+
+			it( 'should not do anything with bulleted lists', () => {
+				setData( model, modelList( `
+					* 1.
+					* 2.[]
+				` ) );
+
+				editor.execute( 'indentList' );
+
+				expect( getData( model ) ).to.equalMarkup( modelList( `
+					* 1.
+					  * 2.[]
 				` ) );
 			} );
 		} );

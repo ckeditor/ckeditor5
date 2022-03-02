@@ -354,7 +354,7 @@ export default class Differ {
 	 *
 	 * The diff set is returned as an array of {@link module:engine/model/differ~DiffItem diff items}, each describing a change done
 	 * on the model. The items are sorted by the position on which the change happened. If a position
-	 * {@link module:engine/model/position~Position#isBefore is before} another one, it will be on an earlier index in the diff set.
+	 * {@link module:engine/model/position~Position#isBefore} is before another one, it will be on an earlier index in the diff set.
 	 *
 	 * **Note**: Elements inside inserted element will not have a separate diff item, only the top most element change will be reported.
 	 *
