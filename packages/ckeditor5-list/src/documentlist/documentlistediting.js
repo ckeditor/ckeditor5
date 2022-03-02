@@ -446,13 +446,13 @@ export default class DocumentListEditing extends Plugin {
 
 		// Then the callbacks for the specific lists.
 		// The indentation fixing must be the first one...
-		this.on( 'postFixer', ( evt, { listHead, writer } ) => {
-			evt.return = fixListIndents( listHead, writer ) || evt.return;
+		this.on( 'postFixer', ( evt, { listNodes, writer } ) => {
+			evt.return = fixListIndents( listNodes, writer ) || evt.return;
 		}, { priority: 'high' } );
 
 		// ...then the item ids... and after that other fixers that rely on the correct indentation and ids.
-		this.on( 'postFixer', ( evt, { listHead, writer, seenIds } ) => {
-			evt.return = fixListItemIds( listHead, seenIds, writer ) || evt.return;
+		this.on( 'postFixer', ( evt, { listNodes, writer, seenIds } ) => {
+			evt.return = fixListItemIds( listNodes, seenIds, writer ) || evt.return;
 		}, { priority: 'high' } );
 	}
 }
@@ -534,7 +534,9 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 	const seenIds = new Set();
 
 	for ( const listHead of itemToListHead.values() ) {
-		applied = documentListEditing.fire( 'postFixer', { listHead, writer, seenIds } ) || applied;
+		const listNodes = { [ Symbol.iterator ]: () => iterateSiblingListBlocks( listHead, 'forward' ) };
+
+		applied = documentListEditing.fire( 'postFixer', { listHead, writer, seenIds, listNodes } ) || applied;
 	}
 
 	return applied;
