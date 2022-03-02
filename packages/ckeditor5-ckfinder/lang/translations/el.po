@@ -12,26 +12,26 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
-"Language: es\n"
+"Language-Team: Greek (https://www.transifex.com/ckeditor/teams/11143/el/)\n"
+"Language: el\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for inserting an image or file via a CKFinder file browser."
 msgid "Insert image or file"
-msgstr "Insertar imagen o archivo"
+msgstr "Εισαγωγή εικόνας ή αρχείου"
 
 msgctxt "Error message displayed when inserting a resized version of an image failed."
 msgid "Could not obtain resized image URL."
-msgstr "No se pudo obtener el URL de la imagen redimensionada."
+msgstr "Αδύνατη η λήψη URL εικόνας με αλλαγμένο μέγεθος."
 
 msgctxt "Title of a notification displayed when inserting a resized version of an image failed."
 msgid "Selecting resized image failed"
-msgstr "No se pudo seleccionar la imagen redimensionada"
+msgstr "Η επιλογή εικόνας με αλλαγμένο μέγεθος απέτυχε"
 
 msgctxt "Error message displayed when an image cannot be inserted at the current position."
 msgid "Could not insert image at the current position."
-msgstr "No se pudo insertar la imagen en la posición actual."
+msgstr "Αδύνατη η εισαγωγή εικόνας στην τρέχουσα θέση."
 
 msgctxt "Title of a notification displayed when an image cannot be inserted at the current position."
 msgid "Inserting image failed"
-msgstr "Error al insertar la imagen"
+msgstr "Η εισαγωγή εικόνας απέτυχε."
