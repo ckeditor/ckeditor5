@@ -131,8 +131,8 @@ export default class WidgetToolbarRepository extends Plugin {
 			 *
 			 * See for instance:
 			 *
-			 * * {@link module:table/table~TableConfig#contentToolbar `editor.config.table.contentToolbar`}
-			 * * {@link module:image/image~ImageConfig#toolbar `editor.config.image.toolbar`}
+			 * * {@link module:table/table~TableConfig#contentToolbar `config.table.contentToolbar`}
+			 * * {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}
 			 *
 			 * @error widget-toolbar-no-items
 			 * @param {String} toolbarId The id of the toolbar that has not been configured correctly.
