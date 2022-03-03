@@ -68,13 +68,19 @@ export default class DocumentListElementSupport extends Plugin {
 			documentListEditing.registerDowncastStrategy( {
 				scope: 'item',
 				attributeName: 'listHtmlLiAttributes',
-				setAttributeOnDowncast: setViewAttributes
+
+				setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+					setViewAttributes( writer, attributeValue, viewElement );
+				}
 			} );
 
 			documentListEditing.registerDowncastStrategy( {
 				scope: 'list',
 				attributeName: 'listHtmlListAttributes',
-				setAttributeOnDowncast: setViewAttributes
+
+				setAttributeOnDowncast( writer, viewAttributes, viewElement ) {
+					setViewAttributes( writer, viewAttributes, viewElement );
+				}
 			} );
 
 			// Make sure that all items in a single list (items at the same level & listType) have the same properties.

@@ -69,12 +69,20 @@ export default class DocumentListPropertiesEditing extends Plugin {
 
 		for ( const strategy of strategies ) {
 			strategy.addCommand( editor );
+
 			model.schema.extend( '$container', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$block', { allowAttributes: strategy.attributeName } );
 			model.schema.extend( '$blockObject', { allowAttributes: strategy.attributeName } );
 
 			// Register downcast strategy.
-			documentListEditing.registerDowncastStrategy( strategy );
+			documentListEditing.registerDowncastStrategy( {
+				scope: 'list',
+				attributeName: strategy.attributeName,
+
+				setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+					strategy.setAttributeOnDowncast( writer, attributeValue, viewElement );
+				}
+			} );
 		}
 
 		// Set up conversion.
@@ -203,7 +211,6 @@ function createAttributeStrategies( enabledProperties ) {
 
 	if ( enabledProperties.styles ) {
 		strategies.push( {
-			scope: 'list',
 			attributeName: 'listStyle',
 			defaultValue: DEFAULT_LIST_TYPE,
 			viewConsumables: { styles: 'list-style-type' },
@@ -246,7 +253,6 @@ function createAttributeStrategies( enabledProperties ) {
 
 	if ( enabledProperties.reversed ) {
 		strategies.push( {
-			scope: 'list',
 			attributeName: 'listReversed',
 			defaultValue: false,
 			viewConsumables: { attributes: 'reversed' },
@@ -279,7 +285,6 @@ function createAttributeStrategies( enabledProperties ) {
 
 	if ( enabledProperties.startIndex ) {
 		strategies.push( {
-			scope: 'list',
 			attributeName: 'listStart',
 			defaultValue: 1,
 			viewConsumables: { attributes: 'start' },
