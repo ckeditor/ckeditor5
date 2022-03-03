@@ -1626,16 +1626,8 @@ export default class DowncastWriter {
 	 * 	@returns {Boolean} Returns `true` if elements are merged.
 	 */
 	_wrapAttributeElement( wrapper, toWrap ) {
-		if ( wrapper.id !== toWrap.id ) {
+		if ( !canBeJoined( wrapper, toWrap ) ) {
 			return false;
-		}
-
-		// Those elements have the same ID so just wrap those without further checking.
-		if ( wrapper.id !== null ) {
-			// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
-			this._mergeElementAttributes( wrapper, toWrap );
-
-			return true;
 		}
 
 		// Can't merge if name or priority differs.
@@ -1664,17 +1656,6 @@ export default class DowncastWriter {
 		}
 
 		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
-		this._mergeElementAttributes( wrapper, toWrap );
-
-		return true;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @private
-	 */
-	_mergeElementAttributes( wrapper, toWrap ) {
 		for ( const key of wrapper.getAttributeKeys() ) {
 			// Classes and styles should be checked separately.
 			if ( key === 'class' || key === 'style' ) {
@@ -1698,6 +1679,8 @@ export default class DowncastWriter {
 				this.addClass( key, toWrap );
 			}
 		}
+
+		return true;
 	}
 
 	/**
@@ -1711,16 +1694,8 @@ export default class DowncastWriter {
 	 * @returns {Boolean} Returns `true` if elements are unwrapped.
 	 **/
 	_unwrapAttributeElement( wrapper, toUnwrap ) {
-		if ( wrapper.id !== toUnwrap.id ) {
+		if ( !canBeJoined( wrapper, toUnwrap ) ) {
 			return false;
-		}
-
-		// Those elements have the same ID so just unwrap those without further checking.
-		if ( wrapper.id !== null ) {
-			// Remove all wrapper's attributes from unwrapped element.
-			this._unmergeElementAttributes( wrapper, toUnwrap );
-
-			return true;
 		}
 
 		// Can't unwrap if name or priority differs.
@@ -1755,17 +1730,6 @@ export default class DowncastWriter {
 		}
 
 		// Remove all wrapper's attributes from unwrapped element.
-		this._unmergeElementAttributes( wrapper, toUnwrap );
-
-		return true;
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @private
-	 */
-	_unmergeElementAttributes( wrapper, toUnwrap ) {
 		for ( const key of wrapper.getAttributeKeys() ) {
 			// Classes and styles should be checked separately.
 			if ( key === 'class' || key === 'style' ) {
@@ -1780,6 +1744,8 @@ export default class DowncastWriter {
 
 		// Remove all wrapper's styles from unwrapped element.
 		this.removeStyle( Array.from( wrapper.getStyleNames() ), toUnwrap );
+
+		return true;
 	}
 
 	/**
@@ -2213,4 +2179,15 @@ function validateRangeContainer( range, errorContext ) {
 		 */
 		throw new CKEditorError( 'view-writer-invalid-range-container', errorContext );
 	}
+}
+
+// Checks if two attribute elements can be joined together. Elements can be joined together if, and only if
+// they do not have ids specified.
+//
+// @private
+// @param {module:engine/view/element~Element} a
+// @param {module:engine/view/element~Element} b
+// @returns {Boolean}
+function canBeJoined( a, b ) {
+	return a.id === null && b.id === null;
 }
