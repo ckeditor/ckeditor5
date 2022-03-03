@@ -78,7 +78,7 @@ export default class DocumentListEditing extends Plugin {
 		/**
 		 * TODO
 		 *
-		 * @private
+		 * @protected
 		 */
 		this._downcastStrategies = [];
 
@@ -150,18 +150,6 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	registerDowncastStrategy( strategy ) {
 		this._downcastStrategies.push( strategy );
-	}
-
-	/**
-	 * TODO
-	 *
-	 * @private
-	 */
-	_getListAttributeNames() {
-		return [
-			...LIST_BASE_ATTRIBUTES,
-			...this._downcastStrategies.map( strategy => strategy.attributeName )
-		];
 	}
 
 	/**
@@ -348,7 +336,6 @@ export default class DocumentListEditing extends Plugin {
 	_setupConversion() {
 		const editor = this.editor;
 		const model = editor.model;
-		const attributeNames = this._getListAttributeNames();
 
 		editor.conversion.for( 'upcast' )
 			.elementToElement( { view: 'li', model: 'paragraph' } )
@@ -361,28 +348,23 @@ export default class DocumentListEditing extends Plugin {
 		editor.conversion.for( 'editingDowncast' )
 			.elementToElement( {
 				model: 'paragraph',
-				view: bogusParagraphCreator( attributeNames ),
+				view: bogusParagraphCreator(),
 				converterPriority: 'high'
 			} );
 
 		editor.conversion.for( 'dataDowncast' )
 			.elementToElement( {
 				model: 'paragraph',
-				view: bogusParagraphCreator( attributeNames, { dataPipeline: true } ),
+				view: bogusParagraphCreator( { dataPipeline: true } ),
 				converterPriority: 'high'
 			} );
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				for ( const attributeName of attributeNames ) {
-					dispatcher.on(
-						`attribute:${ attributeName }`,
-						listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
-					);
-				}
+				dispatcher.on( 'attribute', listItemDowncastConverter( this ) );
 			} );
 
-		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ) );
+		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, this ) );
 
 		// For LI verify if an ID of the attribute element is correct.
 		this.on( 'checkAttributes:item', ( evt, { viewElement, modelAttributes } ) => {
@@ -411,11 +393,10 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	_setupModelPostFixing() {
 		const model = this.editor.model;
-		const attributeNames = this._getListAttributeNames();
 
 		// Register list fixing.
 		// First the low level handler.
-		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, attributeNames, this ) );
+		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer, this ) );
 
 		// Then the callbacks for the specific lists.
 		// The indentation fixing must be the first one...
@@ -451,10 +432,9 @@ export default class DocumentListEditing extends Plugin {
 //
 // @param {module:engine/model/model~Model} model The data model.
 // @param {module:engine/model/writer~Writer} writer The writer to do changes with.
-// @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
 // @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
 // @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-function modelChangePostFixer( model, writer, attributeNames, documentListEditing ) {
+function modelChangePostFixer( model, writer, documentListEditing ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map();
 
@@ -467,7 +447,7 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 			// Remove attributes in case of renamed element.
 			if ( !model.schema.checkAttribute( item, 'listItemId' ) ) {
 				for ( const attributeName of Array.from( item.getAttributeKeys() ) ) {
-					if ( attributeNames.includes( attributeName ) ) {
+					if ( attributeName.startsWith( 'list' ) ) {
 						writer.removeAttribute( attributeName, item );
 
 						applied = true;
@@ -494,7 +474,7 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 			findAndAddListHeadToMap( entry.position, itemToListHead );
 		}
 		// Changed list item indent or type.
-		else if ( entry.type == 'attribute' && attributeNames.includes( entry.attributeKey ) ) {
+		else if ( entry.type == 'attribute' && entry.attributeKey.startsWith( 'list' ) ) {
 			findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 			if ( entry.attributeNewValue === null ) {

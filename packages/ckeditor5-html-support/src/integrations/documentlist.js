@@ -48,30 +48,32 @@ export default class DocumentListElementSupport extends Plugin {
 			evt.stop();
 
 			// Do not register same converters twice.
-			if ( schema.checkAttribute( '$block', 'htmlListAttributes' ) ) {
+			if ( schema.checkAttribute( '$block', 'listHtmlListAttributes' ) ) {
 				return;
 			}
 
-			schema.extend( '$block', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
-			schema.extend( '$blockObject', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
-			schema.extend( '$container', { allowAttributes: [ 'htmlListAttributes', 'htmlLiAttributes' ] } );
+			// Note that document list integration is using attributes prefixed by "list"
+			// to automatically use mechanisms built into the document lists.
+			schema.extend( '$block', { allowAttributes: [ 'listHtmlListAttributes', 'listHtmlLiAttributes' ] } );
+			schema.extend( '$blockObject', { allowAttributes: [ 'listHtmlListAttributes', 'listHtmlLiAttributes' ] } );
+			schema.extend( '$container', { allowAttributes: [ 'listHtmlListAttributes', 'listHtmlLiAttributes' ] } );
 
 			conversion.for( 'upcast' ).add( dispatcher => {
-				dispatcher.on( 'element:ul', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
-				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
-				dispatcher.on( 'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' } );
+				dispatcher.on( 'element:ul', upcastListAttributeConverter( 'listHtmlListAttributes', dataFilter ), { priority: 'low' } );
+				dispatcher.on( 'element:ol', upcastListAttributeConverter( 'listHtmlListAttributes', dataFilter ), { priority: 'low' } );
+				dispatcher.on( 'element:li', upcastListAttributeConverter( 'listHtmlLiAttributes', dataFilter ), { priority: 'low' } );
 			} );
 
 			// Register downcast strategy.
 			documentListEditing.registerDowncastStrategy( {
 				scope: 'item',
-				attributeName: 'htmlLiAttributes',
+				attributeName: 'listHtmlLiAttributes',
 				setAttributeOnDowncast: setViewAttributes
 			} );
 
 			documentListEditing.registerDowncastStrategy( {
 				scope: 'list',
-				attributeName: 'htmlListAttributes',
+				attributeName: 'listHtmlListAttributes',
 				setAttributeOnDowncast: setViewAttributes
 			} );
 
@@ -112,19 +114,19 @@ export default class DocumentListElementSupport extends Plugin {
 					}
 
 					if ( previousNodeInList.getAttribute( 'listType' ) == node.getAttribute( 'listType' ) ) {
-						const value = previousNodeInList.getAttribute( 'htmlListAttributes' );
+						const value = previousNodeInList.getAttribute( 'listHtmlListAttributes' );
 
-						if ( node.getAttribute( 'htmlListAttributes' ) != value ) {
-							writer.setAttribute( 'htmlListAttributes', value, node );
+						if ( node.getAttribute( 'listHtmlListAttributes' ) != value ) {
+							writer.setAttribute( 'listHtmlListAttributes', value, node );
 							evt.return = true;
 						}
 					}
 
 					if ( previousNodeInList.getAttribute( 'listItemId' ) == node.getAttribute( 'listItemId' ) ) {
-						const value = previousNodeInList.getAttribute( 'htmlLiAttributes' );
+						const value = previousNodeInList.getAttribute( 'listHtmlLiAttributes' );
 
-						if ( node.getAttribute( 'htmlLiAttributes' ) != value ) {
-							writer.setAttribute( 'htmlLiAttributes', value, node );
+						if ( node.getAttribute( 'listHtmlLiAttributes' ) != value ) {
+							writer.setAttribute( 'listHtmlLiAttributes', value, node );
 							evt.return = true;
 						}
 					}
@@ -141,7 +143,7 @@ export default class DocumentListElementSupport extends Plugin {
 // @param {String} attributeName
 // @param {module:html-support/datafilter~DataFilter} dataFilter
 // @returns {Function} Returns a conversion callback.
-function viewToModelListAttributeConverter( attributeName, dataFilter ) {
+function upcastListAttributeConverter( attributeName, dataFilter ) {
 	return ( evt, data, conversionApi ) => {
 		const viewElement = data.viewItem;
 
