@@ -430,7 +430,7 @@ class Marker {
 	}
 
 	/**
-	 * Gets the current marker's data.
+	 * Returns the marker data (properties defining the marker).
 	 *
 	 * @returns {module:engine/model/markercollection~MarkerData}
 	 */
