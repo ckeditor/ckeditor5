@@ -264,9 +264,9 @@ export default class Differ {
 		} else {
 			buffered.newMarkerData = newMarkerData;
 
-			if ( buffered.oldMarkerData.range == null && buffered.newMarkerData.range == null ) {
-				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
-				// (`buffered.oldRange == null`). In this case, do not keep the marker in buffer at all.
+			if ( buffered.oldMarkerData.range == null && newMarkerData.range == null ) {
+				// The marker is going to be removed (`newMarkerData.range == null`) but it did not exist before the first buffered change
+				// (`buffered.oldMarkerData.range == null`). In this case, do not keep the marker in buffer at all.
 				this._changedMarkers.delete( markerName );
 			}
 		}
