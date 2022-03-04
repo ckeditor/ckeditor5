@@ -60,7 +60,7 @@ export default class Differ {
 		 * The keys of the map are marker names.
 		 * The values of the map are objects with the following properties:
 		 * - `oldMarkerData`,
-		 * - `newMarkerData`,
+		 * - `newMarkerData`.
 		 *
 		 * @private
 		 * @type {Map.<String, Object>}
@@ -331,7 +331,7 @@ export default class Differ {
 	 * * model structure changes,
 	 * * attribute changes,
 	 * * changes of markers which were defined as `affectsData`,
-	 * * changes of markers `affectsData` property.
+	 * * changes of markers' `affectsData` property.
 	 *
 	 * @returns {Boolean}
 	 */
