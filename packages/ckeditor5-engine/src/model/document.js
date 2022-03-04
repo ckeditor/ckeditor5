@@ -158,8 +158,11 @@ export default class Document {
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange, oldMarkerData ) => {
+			// Copy the `newRange` to the new marker data as during the marker removal the range is not updated.
+			const newMarkerData = { ...marker.getData(), range: newRange };
+
 			// Whenever marker is updated, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, oldMarkerData, { ...marker.getData(), range: newRange } );
+			this.differ.bufferMarkerChange( marker.name, oldMarkerData, newMarkerData );
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
