@@ -43,7 +43,7 @@ export default class PlainTableOutput extends Plugin {
 			converterPriority: 'high'
 		} );
 
-		// Make sure table <caption> is always downcasted to <caption> in the data pipeline.
+		// Make sure table <caption> is downcasted into <caption> in the data pipeline when necessary.
 		if ( editor.plugins.has( 'TableCaption' ) ) {
 			editor.conversion.for( 'dataDowncast' ).elementToElement( {
 				model: 'caption',
@@ -51,8 +51,6 @@ export default class PlainTableOutput extends Plugin {
 					if ( modelElement.parent.name === 'table' ) {
 						return writer.createContainerElement( 'caption' );
 					}
-
-					return writer.createContainerElement( 'figcaption' );
 				},
 				converterPriority: 'high'
 			} );
