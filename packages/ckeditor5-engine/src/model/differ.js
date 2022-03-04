@@ -59,13 +59,11 @@ export default class Differ {
 		 *
 		 * The keys of the map are marker names.
 		 * The values of the map are objects with the following properties:
-		 * - `oldRange`,
-		 * - `newRange`,
-		 * - `affectsData`,
-		 * - `changesDataAffecting`.
+		 * - `oldMarkerData`,
+		 * - `newMarkerData`,
 		 *
 		 * @private
-		 * @type {Map}
+		 * @type {Map.<String, Object>}
 		 */
 		this._changedMarkers = new Map();
 
@@ -260,18 +258,13 @@ export default class Differ {
 
 		if ( !buffered ) {
 			this._changedMarkers.set( markerName, {
-				oldRange: oldMarkerData.range,
-				newRange: newMarkerData.range,
-				affectsData: oldMarkerData.affectsData,
-				changesDataAffecting: oldMarkerData.affectsData !== newMarkerData.affectsData
+				newMarkerData,
+				oldMarkerData
 			} );
 		} else {
-			buffered.newRange = newMarkerData.range;
-			buffered.affectsData = newMarkerData.affectsData;
-			buffered.changesDataAffecting = buffered.changesDataAffecting ||
-				( oldMarkerData.affectsData !== newMarkerData.affectsData );
+			buffered.newMarkerData = newMarkerData;
 
-			if ( buffered.oldRange == null && buffered.newRange == null ) {
+			if ( buffered.oldMarkerData.range == null && buffered.newMarkerData.range == null ) {
 				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
 				// (`buffered.oldRange == null`). In this case, do not keep the marker in buffer at all.
 				this._changedMarkers.delete( markerName );
@@ -288,8 +281,8 @@ export default class Differ {
 		const result = [];
 
 		for ( const [ name, change ] of this._changedMarkers ) {
-			if ( change.oldRange != null ) {
-				result.push( { name, range: change.oldRange } );
+			if ( change.oldMarkerData.range != null ) {
+				result.push( { name, range: change.oldMarkerData.range } );
 			}
 		}
 
@@ -305,8 +298,8 @@ export default class Differ {
 		const result = [];
 
 		for ( const [ name, change ] of this._changedMarkers ) {
-			if ( change.newRange != null ) {
-				result.push( { name, range: change.newRange } );
+			if ( change.newMarkerData.range != null ) {
+				result.push( { name, range: change.newMarkerData.range } );
 			}
 		}
 
@@ -319,12 +312,12 @@ export default class Differ {
 	 * @returns {Array.<Object>}
 	 */
 	getChangedMarkers() {
-		return Array.from( this._changedMarkers ).map( item => (
+		return Array.from( this._changedMarkers ).map( ( [ name, change ] ) => (
 			{
-				name: item[ 0 ],
+				name,
 				data: {
-					oldRange: item[ 1 ].oldRange,
-					newRange: item[ 1 ].newRange
+					oldRange: change.oldMarkerData.range,
+					newRange: change.newMarkerData.range
 				}
 			}
 		) );
@@ -343,14 +336,14 @@ export default class Differ {
 	 * @returns {Boolean}
 	 */
 	hasDataChanges() {
-		for ( const [ , change ] of this._changedMarkers ) {
-			if ( change.changesDataAffecting ) {
+		for ( const { newMarkerData, oldMarkerData } of this._changedMarkers.values() ) {
+			if ( newMarkerData.affectsData !== oldMarkerData.affectsData ) {
 				return true;
 			}
 
-			if ( change.affectsData ) {
+			if ( newMarkerData.affectsData ) {
 				// Skip markers, which ranges have not changed.
-				if ( change.oldRange && change.newRange && change.oldRange.isEqual( change.newRange ) ) {
+				if ( newMarkerData.range && oldMarkerData.range && newMarkerData.range.isEqual( oldMarkerData.range ) ) {
 					return false;
 				}
 
