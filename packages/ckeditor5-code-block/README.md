@@ -4,6 +4,7 @@ CKEditor 5 code block feature
 [![npm version](https://badge.fury.io/js/%40ckeditor%2Fckeditor5-code-block.svg)](https://www.npmjs.com/package/@ckeditor/ckeditor5-code-block)
 [![Coverage Status](https://coveralls.io/repos/github/ckeditor/ckeditor5/badge.svg?branch=master)](https://coveralls.io/github/ckeditor/ckeditor5?branch=master)
 [![Build Status](https://travis-ci.com/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.com/ckeditor/ckeditor5)
+![Dependency Status](https://img.shields.io/librariesio/release/npm/ckeditor5)
 
 This package implements the code block feature for CKEditor 5.
 
