@@ -13,7 +13,7 @@ modified_at: 2022-02-21
 
 # Migration to CKEditor 5 v33.0.0
 
-For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0] TODO: link.
+For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3300-2022-03-07).
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v33.0.0.
 
