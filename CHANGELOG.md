@@ -5,57 +5,73 @@ Changelog
 
 ### Release highlights
 
+We are happy to announce the release of CKEditor 5 v33.0.0.
+
+This release introduces the following new features:
+
+* [Redesign and introduce a new reconversion system](https://github.com/ckeditor/ckeditor5/issues/10294)
+* [Support for handling the `<style>` element in the General HTML Support feature](https://github.com/ckeditor/ckeditor5/issues/11104)
+* [DLL-compatible package builds](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/development/dll-builds.html) for [collaboration features](https://ckeditor.com/docs/ckeditor5/latest/features/collaboration/collaboration.html)
+* [Provide a solution for how to downcast a table to `table>caption`](https://github.com/ckeditor/ckeditor5/issues/10892)
+* [Real-time collaboration support in revision history](https://ckeditor.com/ckeditor-5/revision-history/)
+
+There were also a few bug fixes:
+
+* [Removing complex emojis doesn't work as expected](https://github.com/ckeditor/ckeditor5/issues/6504)
+* [Preparing DLL package builds in the development mode (the `--dev` flag) ends with an error](https://github.com/ckeditor/ckeditor5/issues/11170)
+* [Clicking content that has a comment causes content data change (resulting with extra autosave)](https://github.com/ckeditor/ckeditor5/issues/9901)
+* The `<CKEditorContext>` React component doesn't destroy properly](https://github.com/ckeditor/ckeditor5-react/issues/283)
+
 <!-- TODO: Add a link to the blog post. -->
 
 ### MAJOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Removed the Differ#refreshItem() method from the public API. Replaced by EditingController#reconvertItem() (see [#10659](https://github.com/ckeditor/ckeditor5/issues/10659)).
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The DowncastDispatcher will throw an error if any of the model items were not consumed while converting. Read the conversion-model-consumable-not-consumed error documentation for more information.
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The DowncastDispatcher#conversionApi property is no longer available. The instances of DowncastConversionApi being created at the start of conversion.
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The support for the triggerBy option for downcast helpers is removed and replaced with the new elementToStructure() options.
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The ListEditing, ListUI, ListStyleEditing, ListStyleUI, TodoListEditing, TodoListUI plugins were moved to the dedicated subdirectories (list, liststyle, todolist).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Removed the `Differ#refreshItem()` method from the public API. Replaced by `EditingController#reconvertItem()` (see [#10659](https://github.com/ckeditor/ckeditor5/issues/10659)).
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DowncastDispatcher` will throw an error if any of the model items were not consumed while converting. Read the `conversion-model-consumable-not-consumed` error documentation for more information.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DowncastDispatcher#conversionApi` property is no longer available. The instances of `DowncastConversionApi` being created at the start of conversion.
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Support for the `triggerBy` option for downcast helpers is removed and replaced with the new `elementToStructure()` options.
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `ListEditing`, `ListUI`, `ListStyleEditing`, `ListStyleUI`, `TodoListEditing`, `TodoListUI` plugins were moved to the dedicated subdirectories (`list`, `liststyle`, `todolist`).
 
 ### MINOR BREAKING CHANGES [ℹ️](https://ckeditor.com/docs/ckeditor5/latest/framework/guides/support/versioning-policy.html#major-and-minor-breaking-changes)
 
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Converted image caption utilities to the `ImageCaptionUtils` plugin.
-* **[media-embed](https://www.npmjs.com/package/@ckeditor/ckeditor5-media-embed)**: The createMediaFigureElement helper function first argument has been changed from writer object to conversionApi object.
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The downcast converters of the table feature has been rewritten with the use of elementToStructure() and the re-conversion mechanism. See [#10502](https://github.com/ckeditor/ckeditor5/issues/10502).
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: The downcast converters of the table feature has been rewritten with the use of `elementToStructure()` and the re-conversion mechanism. See [#10502](https://github.com/ckeditor/ckeditor5/issues/10502).
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Moved table selection utilities to the `TableUtils` plugin.
 * `config.initialData` now will be always set, even if it was not passed in the editor config.
 
 ### Features
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The DowncastWriter#createContainerElement() should accept a list of children so bigger view structures can be created in one call. Closes [#10714](https://github.com/ckeditor/ckeditor5/issues/10714). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The elementToElement downcast helper will log a console warning if multiple elements have been created. Closes [#10610](https://github.com/ckeditor/ckeditor5/issues/10610). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The DowncastDispatcher will throw an error if any of the model items were not consumed while converting. Closes [#10377](https://github.com/ckeditor/ckeditor5/issues/10377). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introducing convertItem(), convertChildren() and convertAttributes() in the downcast conversion API interface. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added support for reconversion in DowncastHelpers#elementToElement() downcast helper. Closes [#10359](https://github.com/ckeditor/ckeditor5/issues/10359). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added DowncastHelpers#elementToStructure() downcast helper with reconversion support. Closes [#10358](https://github.com/ckeditor/ckeditor5/issues/10358). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DowncastWriter#createContainerElement()` should accept a list of children so bigger view structures can be created in one call. Closes [#10714](https://github.com/ckeditor/ckeditor5/issues/10714). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `elementToElement()` downcast helper will log a console warning if multiple elements have been created. Closes [#10610](https://github.com/ckeditor/ckeditor5/issues/10610). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DowncastDispatcher` will throw an error if any of the model items were not consumed while converting. Closes [#10377](https://github.com/ckeditor/ckeditor5/issues/10377). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introducing `convertItem()`, `convertChildren()` and `convertAttributes()` in the downcast conversion API interface. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added support for reconversion in `DowncastHelpers#elementToElement()` downcast helper. Closes [#10359](https://github.com/ckeditor/ckeditor5/issues/10359). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Added `DowncastHelpers#elementToStructure()` downcast helper with reconversion support. Closes [#10358](https://github.com/ckeditor/ckeditor5/issues/10358). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: It's now possible to trigger a nested conversion while downcasting an element. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DeleteCommand` changed to delete the whole multi-character emoji at once. Closes [#6504](https://github.com/ckeditor/ckeditor5/issues/6504). ([commit](https://github.com/ckeditor/ckeditor5/commit/7ab70396f68bd9e3ef0ff7cbc3d62ae143c38ec4))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Introduced `Marker#getData()`. ([commit](https://github.com/ckeditor/ckeditor5/commit/7e8766dc0d4654c33fed5f5edeb5e09e0138b1b7))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Added `<style>` tag support in General HTML Support feature. Closes [#11104](https://github.com/ckeditor/ckeditor5/issues/11104). ([commit](https://github.com/ckeditor/ckeditor5/commit/483bcf91af1334e510462ef0b4723a2df2a30881))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Added the `<style>` element support in General HTML Support feature. Closes [#11104](https://github.com/ckeditor/ckeditor5/issues/11104). ([commit](https://github.com/ckeditor/ckeditor5/commit/483bcf91af1334e510462ef0b4723a2df2a30881))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Introduced the `PlainTableOutput` plugin to override the default `figure>caption` markup in the data pipeline (it outputs the table as `table>caption`). Closes: [#10892](https://github.com/ckeditor/ckeditor5/issues/10892). ([commit](https://github.com/ckeditor/ckeditor5/commit/9379c5cb35ed29229d1e9beebf5cdad0a32e008e))
 
 ### Bug fixes
 
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Setting a marker to the same range it was will not trigger the `change:data` event. This will prevent unnecessary autosave callbacks. Closes [#9901](https://github.com/ckeditor/ckeditor5/issues/9901). ([commit](https://github.com/ckeditor/ckeditor5/commit/0a9e5a9c34a83324fec2242f2d5c86669c08ed02))
-* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Prevent `<script>` and `<style>` tags removal when the only content in the editor. Closes [#11247](https://github.com/ckeditor/ckeditor5/issues/11247). ([commit](https://github.com/ckeditor/ckeditor5/commit/68cbac385caa5f60a4b1a96dc2e077242ff50d6c))
+* **[html-support](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support)**: Prevent the `<script>` and `<style>` elements removal when the only content in the editor. Closes [#11247](https://github.com/ckeditor/ckeditor5/issues/11247). ([commit](https://github.com/ckeditor/ckeditor5/commit/68cbac385caa5f60a4b1a96dc2e077242ff50d6c))
 * **[image](https://www.npmjs.com/package/@ckeditor/ckeditor5-image)**: Always create new instances of the default options for the `ImageStyle` plugin. Closes [#11328](https://github.com/ckeditor/ckeditor5/issues/11328). ([commit](https://github.com/ckeditor/ckeditor5/commit/7f7248df35fc7e57649b4a9e8fcfc4076547a300))
 * **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Prevent plain table output converter from interfering with other features caption converters. Closes [#11394](https://github.com/ckeditor/ckeditor5/issues/11394). ([commit](https://github.com/ckeditor/ckeditor5/commit/e102d21b9e58c464d5914f2bb556e9a7a98b947d))
 * Fixed the _"Unknown option --dev"_ error when building DLL files in the development mode enabled. Closes [#11170](https://github.com/ckeditor/ckeditor5/issues/11170). ([commit](https://github.com/ckeditor/ckeditor5/commit/9078c76e6e38428f36151f1f67ddc78b96930a3f))
 
 ### Other changes
 
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Implemented the EditingController#reconvertMarker() method to be used instead of Writer#updateMarker() for marker reconversion purposes. Implemented the EditingController#reconvertItem() method to replace Differ#refreshItem(). Closes [#10659](https://github.com/ckeditor/ckeditor5/issues/10659). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The attribute and child nodes conversion events are fired by the lowest priority handler for the insert event instead of by DowncastDispatcher itself. Closes [#10376](https://github.com/ckeditor/ckeditor5/issues/10376). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Events are fired by the DowncastDispatcher even if they were previously consumed. It's the conversion handler's responsibility to check if it can be consumed or if it was already consumed by other converters. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The DowncastDispatcher#convert() method introduced as a replacement to previously used convertInsert(). The new method handles not only nodes conversion but also markers. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Implemented the `EditingController#reconvertMarker()` method to be used instead of `Writer#updateMarker()` for marker reconversion purposes. Implemented the `EditingController#reconvertItem()` method to replace `Differ#refreshItem()`. Closes [#10659](https://github.com/ckeditor/ckeditor5/issues/10659). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The attribute and child nodes conversion events are fired by the lowest priority handler for the insert event instead of by the `DowncastDispatcher` itself. Closes [#10376](https://github.com/ckeditor/ckeditor5/issues/10376). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: Events are fired by the `DowncastDispatcher` even if they were previously consumed. It's the conversion handlers responsibility to check if it can be consumed or if it was already consumed by other converters. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `DowncastDispatcher#convert()` method introduced as a replacement to previously used `convertInsert()`. The new method handles not only nodes conversion but also markers. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
 * **[engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine)**: The `<style>` element will not interfere with the editing experience. See [#11104](https://github.com/ckeditor/ckeditor5/issues/11104). ([commit](https://github.com/ckeditor/ckeditor5/commit/483bcf91af1334e510462ef0b4723a2df2a30881))
 * **[font](https://www.npmjs.com/package/@ckeditor/ckeditor5-font)**: Moved utils functions as plugins to make them available in DLLs. ([commit](https://github.com/ckeditor/ckeditor5/commit/8df284e9b22b3fca3b87e056e81486035308d3e6))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The ckeditor5-list package was restructured into subdirectories. Closes [#10811](https://github.com/ckeditor/ckeditor5/issues/10811). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: Downcast conversion should consume downcasted attributes. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
-* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Table downcast conversion migrated to elementToStructure() downcast helper. Closes [#10502](https://github.com/ckeditor/ckeditor5/issues/10502). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The `ckeditor5-list` package was restructured into subdirectories. Closes [#10811](https://github.com/ckeditor/ckeditor5/issues/10811). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list)**: The downcast conversion should consume downcasted attributes. ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
+* **[table](https://www.npmjs.com/package/@ckeditor/ckeditor5-table)**: Table downcast conversion migrated to the `elementToStructure()` downcast helper. Closes [#10502](https://github.com/ckeditor/ckeditor5/issues/10502). ([commit](https://github.com/ckeditor/ckeditor5/commit/9f17c59e678c39c80beed98fa9dd092ba95369c5))
 * Updated translations. ([commit](https://github.com/ckeditor/ckeditor5/commit/1824dce6d132c3118d70ddf02a80ed5d1e118371))
 * `Editor.create()` will now set `config.initialData` value based on the first parameter, if `initialData` has not been set in the editor config. As a result, plugins can now easily read and modify the editor initial data. ([commit](https://github.com/ckeditor/ckeditor5/commit/66ea1af43163dacfb2ce353fc3a670535b6e5740))
 
