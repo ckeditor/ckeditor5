@@ -21,6 +21,7 @@ import TodoList from '../../src/todolist';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 const config = {
 	initialData: `
@@ -84,6 +85,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'a': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -99,6 +103,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'b': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -113,6 +120,9 @@ ClassicEditor
 				reversed: true
 			}
 		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'c': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -131,6 +141,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'd': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -146,6 +159,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'e': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -160,6 +176,9 @@ ClassicEditor
 				reversed: true
 			}
 		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'f': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -178,6 +197,9 @@ ClassicEditor
 			}
 		}
 	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'g': editor } );
+	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
@@ -194,6 +216,9 @@ ClassicEditor
 				reversed: false
 			}
 		}
+	} )
+	.then( editor => {
+		CKEditorInspector.attach( { 'h': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
