@@ -106,11 +106,10 @@ export function listUpcastCleanList() {
  * @protected
  * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
- * @param {module:utils/emittermixin~Emitter} emitter The emitter that will fire events for checking whether given
- * view element requires refresh.
+ * @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
  * @return {Function}
  */
-export function reconvertItemsOnDataChange( model, editing, emitter ) {
+export function reconvertItemsOnDataChange( model, editing, documentListEditing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
@@ -255,7 +254,21 @@ export function reconvertItemsOnDataChange( model, editing, emitter ) {
 				continue;
 			}
 
-			const needsRefresh = emitter.fire( `checkAttributes:${ isListItemElement ? 'item' : 'list' }`, {
+			/**
+			 * Event fired on changes detected on the model list element to verify if the view representation of a list element
+			 * is representing those attributes.
+			 *
+			 * It allows triggering a re-wrapping of a list item.
+			 *
+			 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+			 *
+			 * @protected
+			 * @event checkAttributes
+			 * @param {module:engine/view/element~Element} viewElement
+			 * @param {Object} modelAttributes
+			 */
+			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }`;
+			const needsRefresh = documentListEditing.fire( eventName, {
 				viewElement: element,
 				modelAttributes: stack[ indent ]
 			} );

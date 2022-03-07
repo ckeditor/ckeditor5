@@ -389,7 +389,7 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers model post-fixers.
 	 *
 	 * @private
 	 */
@@ -434,9 +434,9 @@ export default class DocumentListEditing extends Plugin {
 //
 // @param {module:engine/model/model~Model} model The data model.
 // @param {module:engine/model/writer~Writer} writer The writer to do changes with.
-// @param {module:utils/emittermixin~Emitter} emitter The emitter that will fire events for fixing a list.
+// @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
 // @returns {Boolean} `true` if any change has been applied, `false` otherwise.
-function modelChangePostFixer( model, writer, emitter ) {
+function modelChangePostFixer( model, writer, documentListEditing ) {
 	const changes = model.document.differ.getChanges();
 	const itemToListHead = new Map();
 
@@ -489,7 +489,23 @@ function modelChangePostFixer( model, writer, emitter ) {
 	const seenIds = new Set();
 
 	for ( const listHead of itemToListHead.values() ) {
-		applied = emitter.fire( 'postFixer', { listHead, writer, seenIds } ) || applied;
+		/**
+		 * Event fired on changes detected on the model list element to verify if the view representation of a list element
+		 * is representing those attributes.
+		 *
+		 * It allows triggering a re-wrapping of a list item.
+		 *
+		 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+		 *
+		 * @protected
+		 * @event postFixer
+		 * @param {module:engine/model/element~Element} listHead The head element of a list.
+		 * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
+		 * @param {Set.<String>} seenIds The set of already known IDs.
+		 * @param {Object} modelAttributes
+		 * @returns {Boolean} If a post-fixer made a change of the model tree, it should return `true`.
+		 */
+		applied = documentListEditing.fire( 'postFixer', { listHead, writer, seenIds } ) || applied;
 	}
 
 	return applied;

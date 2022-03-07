@@ -209,12 +209,15 @@ export default class DocumentListPropertiesEditing extends Plugin {
  *
  * @typedef {Object} AttributeStrategy
  * @protected
- * @property {String} #attributeName
- * @property {*} #defaultValue
- * @property {Function} #addCommand
- * @property {Function} #appliesToListItem
- * @property {Function} #setAttributeOnDowncast
- * @property {Function} #getAttributeOnUpcast
+ * @property {String} #attributeName The model attribute name.
+ * @property {*} #defaultValue The model attribute default value.
+ * @property {Object} viewConsumables The view consumable as expected by
+ * {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable`}.
+ * @property {Function} #addCommand Registers an editor command.
+ * @property {Function} #appliesToListItem Verifies whether the strategy is applicable for the specified model element.
+ * @property {Function} #hasValidAttribute Verifies whether the model attribute value is valid.
+ * @property {Function} #setAttributeOnDowncast Sets the property on the view element.
+ * @property {Function} #getAttributeOnUpcast Retrieves the property value from the view element.
  */
 
 // Creates an array of strategies for dealing with enabled listItem attributes.
