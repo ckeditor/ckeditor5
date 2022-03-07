@@ -197,6 +197,6 @@ The above converter will detect all `<div class="wrapper"><div class="inner-wrap
 	Using your own custom model element requires defining it in the schema first.
 </info-box>
 
-## Read next
+## Further reading
 
-{@link framework/guides/deep-dive/conversion/helpers/intro Conversion helpers}
+If you want to learn more about upcast helpers mentioned in this guide, we {@link framework/guides/deep-dive/conversion/helpers/upcast rounded them up} for you with complete descriptions and examples. Also, we recommend you to check out the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} guide and learn how to convert the editor model state into data output and editing view.
