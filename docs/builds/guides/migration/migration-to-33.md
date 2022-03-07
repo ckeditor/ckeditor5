@@ -17,7 +17,109 @@ For the entire list of changes introduced in version 33.0.0, see the [changelog 
 
 Listed below are the most important changes that require your attention when upgrading to CKEditor 5 v33.0.0.
 
-## Changes of imports in CKEditor 5 Collaboration Features
+## Important changes
+
+### New import paths in the ckeditor5-list package
+
+If your application [imports individual plugins](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installing-plugins.html) to integrate or build CKEditor 5, please be informed that starting with this version, some import paths have changed in the [ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package and should be updated accordingly:
+
+```js
+// ❌ Old import paths:
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListUI from '@ckeditor/ckeditor5-list/src/listui';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolistediting';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listpropertiesediting';
+
+// ✅ New import paths (with subdirectories):
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
+import ListUI from '@ckeditor/ckeditor5-list/src/list/listui';
+import TodoListEditing from '@ckeditor/ckeditor5-list/src/todolist/todolistediting';
+import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/listpropertiesediting';
+```
+
+<info-box>
+	Please note that **import paths for top-level plugins such as {@link module:list/list~List}, {@link module:list/liststyle~ListStyle}, {@link module:list/todolist~TodoList}, etc. remain the same**. If you are not sure what import path you should use, you can always browse the [source code on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list/src) that corresponds to the contents of the package on npm.
+</info-box>
+
+### Mandatory consumption of all model items in the downcast conversion pipeline
+
+Starting from this version, all {@link framework/guides/architecture/editing-engine#model model} {@link module:engine/model/item~Item items} must be consumed in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and possible solutions, please refer to the {@link framework/guides/support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+
+### Obsoleted `triggerBy` option in the downcast pipeline
+
+If some of your downcast pipeline converters took advantage of the experimental `triggerBy` property to trigger (re)conversion upon changes of attributes or children, they need to be updated. For instance:
+
+```js
+// ❌ The old conversion using obsolete "triggerBy":
+editor.conversion.for( 'downcast' ).elementToElement( {
+	model: 'myElement',
+	view: ( modelElement, { writer } ) => {
+		return writer.createContainerElement( 'div', {
+			'data-owner-id': modelElement.getAttribute( 'ownerId' ),
+			class: `my-element my-element-${ modelElement.getAttribute( 'type' ) }`
+		} );
+	},
+	triggerBy: {
+		attributes: [ 'ownerId', 'type' ],
+		children: 'childModelElement'
+	}
+} );
+
+// ✅ The new conversion syntax:
+editor.conversion.for( 'downcast' ).elementToElement( {
+	model: {
+		name: 'myElement',
+		attributes: [ 'ownerId', 'type' ],
+		children: true
+	},
+	view: ( modelElement, { writer } ) => {
+		// The same converter code.
+	}
+} );
+```
+
+<info-box>
+	Please note that the new syntax is available both in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers.
+</info-box>
+
+### New downcast converters for the {@link features/table tables} feature
+
+The conversion brought by the {@link module:table/tableediting~TableEditing} plugin has been refined in this version and now relies heavily on the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} downcast conversion helper.
+
+If your integration extends or overwrites that conversion (`table`, `tableRow`, `tableCell` model elements and/or their attributes), you might need to undertake some actions to align your custom features to the latest editor API. Please note that the extent of necessary changes may vary depending on how advanced your customizations are.
+
+### Responsibility shift in low–level downcast converters
+
+{@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} will now fire events for model items whether they were {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} or not. This means that low–level (event–driven) downcast converters listening to these events must first {@link module:engine/conversion/viewconsumable~ViewConsumable#test test} whether the item has already been consumed to prevent double conversion and errors:
+
+```js
+editor.conversion.for( 'downcast' ).add( dispatcher => {
+	dispatcher.on( '...', ( evt, data, conversionApi ) => {
+		// Before converting, check whether the change has not already been consumed.
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
+		// Converter code...
+	} );
+} );
+```
+
+Also, please keep in mind that starting with this version, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
+
+### Obsoleted `Differ#refreshItem()` method
+
+Please note that `Differ#refreshItem()` is obsolete and has been replaced by {@link module:engine/controller/editingcontroller~EditingController#reconvertItem}:
+
+```js
+// ❌ Old API:
+editor.model.document.differ.refreshItem( ... );
+
+// ✅ New API:
+editor.editing.reconvertItem( ... );
+```
+
+### Changes of imports in CKEditor 5 Collaboration Features
 
 DLL builds support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies had to be changed to allow for the new building process.
 
@@ -61,7 +163,7 @@ Adding `CloudServicesRevisionHistoryAdapter` will also require:
 
 - `CloudServices` (`@ckeditor/ckeditor5-cloud-services/src/cloudservices`).
 
-## Comments editor configuration required
+### Comments editor configuration required
 
 Since cross-package dependencies inside the project were removed, the configuration for the comments editor became required. Keep in mind that the editor used in comments section is also a CKEditor 5 instance and is configured the same way as the regular editor.
 
@@ -102,4 +204,56 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 		editorConfig: {}
 	}
 } );
+```
+
+## New API
+
+### New `elementToStructure()` downcast helper
+
+The new {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper has been introduced to streamline downcast conversion to complex view structures. Unlike {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement}, it allows placing children of an element in configurable slots in the view structure without the need to develop complex converters using low–level event–driven API.
+
+To learn more about this new helper, please refer to {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API docs} or check out the {@link framework/guides/deep-dive/conversion/downcast#converting-element-to-structure official guide} with plenty of examples and details.
+
+### New API to trigger downcast (re)conversion
+
+The [`triggerBy` property is obsolete](#obsoleted-triggerby-option-in-downcast-pipeline) and a new API has been created to trigger downcast conversion of a model element upon changes to its attributes or children (also known as *reconversion*):
+
+```js
+editor.conversion.for( 'downcast' ).elementToElement( {
+	model: {
+		name: 'myElement',
+
+		// Changes to these attributes will (re)convert myElement.
+		attributes: [ 'ownerId', 'type' ],
+
+		// If some children are added or removed, myElement will be (re)converted.
+		children: true
+	},
+	view: ( modelElement, { writer } ) => {
+		// ...
+	}
+} );
+```
+
+The new syntax of the `model` property is available in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers. Please refer to respective API documentation for more details.
+
+### Improved API of `DowncastWriter#createContainerElement()`
+
+Starting from this version, you can specify children of a container element directly in the {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} method:
+
+```js
+// ❌ Old API:
+const element = writer.createContainerElement( 'p', { id: '1234' } );
+
+writer.insert( writer.createPositionAt( element, 0 ), childElementA );
+writer.insert( writer.createPositionAt( element, 1 ), childElementB );
+// ...
+
+// ✅ New API:
+writer.createContainerElement( 'p', { id: '1234' }, [
+	childElementA,
+	childElementB,
+
+	// ...
+] );
 ```
