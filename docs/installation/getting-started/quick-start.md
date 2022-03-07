@@ -107,11 +107,12 @@ Then, install packages needed to build CKEditor 5:
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:
@@ -154,14 +155,17 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
 					}
 				]
 			}
@@ -175,6 +179,10 @@ module.exports = {
 	performance: { hints: false }
 };
 ```
+
+<info-box>
+    If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
+</info-box>
 
 ### Creating an editor
 
@@ -263,9 +271,9 @@ If everything worked correctly, you should see:
 ```
 p@m /workspace/quick-start> ./node_modules/.bin/webpack --mode development
 Hash: c96beab038124d61568f
-Version: webpack 4.15.1
+Version: webpack 5.58.1
 Time: 3023ms
-Built at: 2018-07-05 17:37:38
+Built at: 2022-03-02 17:37:38
         Asset      Size  Chunks             Chunk Names
     bundle.js  2.45 MiB    main  [emitted]  main
 bundle.js.map  2.39 MiB    main  [emitted]  main
