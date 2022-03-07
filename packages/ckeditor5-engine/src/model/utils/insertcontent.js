@@ -47,7 +47,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
  */
-export default function insertContent( model, content, selectable, placeOrOffset ) {
+export default function insertContent( model, content, selectable, placeOrOffset, options = { originalInsertionSelection: undefined } ) {
 	return model.change( writer => {
 		let selection;
 
@@ -63,7 +63,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
 		}
 
-		const insertion = new Insertion( model, writer, selection.anchor );
+		const insertion = new Insertion( model, writer, selection.anchor, options.originalInsertionSelection );
 
 		let nodesToInsert;
 
@@ -105,7 +105,9 @@ export default function insertContent( model, content, selectable, placeOrOffset
  * @private
  */
 class Insertion {
-	constructor( model, writer, position ) {
+	constructor( model, writer, position, originalInsertionSelection ) {
+		this.originalInsertionSelection = originalInsertionSelection;
+
 		/**
 		 * The model in context of which the insertion should be performed.
 		 *
@@ -314,6 +316,21 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node
 	 */
 	_handleNode( node ) {
+		const schema = this.model.schema;
+
+		if ( this.originalInsertionSelection ) {
+			const selectionParentAttributes = this.originalInsertionSelection.getAttributes();
+
+			for ( const [ attributeName, attributeValue ] of selectionParentAttributes ) {
+				const isAttributeValid = schema.checkAttribute( node, attributeName );
+				const shouldCopyOnReplace = schema.getAttributeProperties( attributeName ).copyOnReplace;
+
+				if ( isAttributeValid && shouldCopyOnReplace ) {
+					this.writer.setAttribute( attributeName, attributeValue, node );
+				}
+			}
+		}
+
 		// Let's handle object in a special way.
 		// * They should never be merged with other elements.
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.

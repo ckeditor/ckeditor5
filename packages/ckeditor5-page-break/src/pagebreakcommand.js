@@ -44,7 +44,12 @@ export default class PageBreakCommand extends Command {
 		model.change( writer => {
 			const pageBreakElement = writer.createElement( 'pageBreak' );
 
-			model.insertContent( pageBreakElement );
+			model.insertContent(
+				pageBreakElement,
+				undefined,
+				undefined,
+				{ originalInsertionSelection: model.document.selection.anchor.parent }
+			);
 
 			let nextElement = pageBreakElement.nextSibling;
 

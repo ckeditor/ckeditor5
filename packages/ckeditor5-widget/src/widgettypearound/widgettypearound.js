@@ -146,7 +146,9 @@ export default class WidgetTypeAround extends Plugin {
 		const editingView = editor.editing.view;
 
 		editor.execute( 'insertParagraph', {
-			position: editor.model.createPositionAt( widgetModelElement, position )
+			position: editor.model.createPositionAt( widgetModelElement, position ),
+			attributes: {},
+			insertionContextElement: widgetModelElement
 		} );
 
 		editingView.focus();

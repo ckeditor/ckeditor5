@@ -91,6 +91,12 @@ export default class DocumentListEditing extends Plugin {
 			allowAttributes: LIST_ATTRIBUTES
 		} );
 
+		for ( const attribute of LIST_ATTRIBUTES ) {
+			model.schema.setAttributeProperties( attribute, {
+				copyOnReplace: true
+			} );
+		}
+
 		model.document.registerPostFixer( writer => modelChangePostFixer( model, writer ) );
 
 		model.on( 'insertContent', createModelIndentPasteFixer( model ), { priority: 'high' } );

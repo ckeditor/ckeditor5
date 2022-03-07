@@ -112,7 +112,7 @@ export function insertMedia( model, url, insertRange ) {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
-		model.insertContent( mediaElement, insertRange );
+		model.insertContent( mediaElement, insertRange, undefined, { originalInsertionSelection: model.document.selection.anchor.parent } );
 
 		writer.setSelection( mediaElement, 'on' );
 	} );

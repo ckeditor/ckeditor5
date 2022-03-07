@@ -44,7 +44,12 @@ export default class HorizontalLineCommand extends Command {
 		model.change( writer => {
 			const horizontalElement = writer.createElement( 'horizontalLine' );
 
-			model.insertContent( horizontalElement );
+			model.insertContent(
+				horizontalElement,
+				undefined,
+				undefined,
+				{ originalInsertionSelection: model.document.selection.anchor.parent }
+			);
 
 			let nextElement = horizontalElement.nextSibling;
 

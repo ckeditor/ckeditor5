@@ -448,8 +448,8 @@ export default class Model {
 	 * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
 	 * at the insertion position.
 	 */
-	insertContent( content, selectable, placeOrOffset ) {
-		return insertContent( this, content, selectable, placeOrOffset );
+	insertContent( content, selectable, placeOrOffset, options = { originalInsertionSelection: undefined } ) {
+		return insertContent( this, content, selectable, placeOrOffset, options );
 	}
 
 	/**
