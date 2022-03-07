@@ -121,10 +121,10 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 
 	```js
 	// ❌ Old imports:
-	import CloudServicesTrackChangesAdapter from './realtimecollaborativetrackchanges/cloudservicestrackchangesadapter';
+	import CloudServicesTrackChangesAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter';
 
 	// ✅ New imports:
-	import CloudServicesTrackChangesAdapter from './realtimecollaborativetrackchanges/cloudservicestrackchangesadapter';
+	import CloudServicesTrackChangesAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges/cloudservicestrackchangesadapter';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 	import CommentsRepository from '@ckeditor/ckeditor5-comments/src/comments/commentsrepository';
 	import TrackChangesEditing from '@ckeditor/ckeditor5-track-changes/src/trackchangesediting';
@@ -134,10 +134,10 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 
 	```js
 	// ❌ Old imports:
-	import CloudServicesRevisionHistoryAdapter from './realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
+	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
 
 	// ✅ New imports:
-	import CloudServicesRevisionHistoryAdapter from './realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
+	import CloudServicesRevisionHistoryAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory/cloudservicesrevisionhistoryadapter';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 	```
 
