@@ -13,6 +13,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import DocumentListProperties from '@ckeditor/ckeditor5-list/src/documentlistproperties';
 import SourceEditing from '@ckeditor/ckeditor5-source-editing/src/sourceediting';
+import Indent from '@ckeditor/ckeditor5-indent/src/indent';
 
 import GeneralHtmlSupport from '../../src/generalhtmlsupport';
 
@@ -25,12 +26,14 @@ ClassicEditor
 			Italic,
 			Paragraph,
 			Strikethrough,
+			Indent,
 			SourceEditing,
 			GeneralHtmlSupport
 		],
 		toolbar: [
 			'sourceEditing', '|',
 			'numberedList', 'bulletedList', '|',
+			'outdent', 'indent', '|',
 			'outdent', 'indent', '|',
 			'bold', 'italic', 'strikethrough'
 		],
@@ -58,3 +61,7 @@ ClassicEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
+
+document.getElementById( 'chbx-show-borders' ).addEventListener( 'change', () => {
+	document.body.classList.toggle( 'show-borders' );
+} );

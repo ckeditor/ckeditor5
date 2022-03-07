@@ -29,7 +29,6 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import Indent from '@ckeditor/ckeditor5-indent/src/indent';
-import IndentBlock from '@ckeditor/ckeditor5-indent/src/indentblock';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
@@ -40,66 +39,76 @@ import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 import DocumentList from '../../src/documentlist';
+import DocumentListProperties from '../../src/documentlistproperties';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, IndentBlock, Italic, Link,
-			MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
-			AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
-			CloudServices, SourceEditing, DocumentList
-		],
-		toolbar: [
-			'sourceEditing', '|',
-			'numberedList', 'bulletedList',
-			'outdent', 'indent', '|',
-			'heading', '|',
-			'bold', 'italic', 'link', '|',
-			'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock', '|',
-			'htmlEmbed', '|',
-			'alignment', '|',
-			'pageBreak', 'horizontalLine', '|',
-			'undo', 'redo'
-		],
-		cloudServices: CS_CONFIG,
-		table: {
-			contentToolbar: [
-				'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
-			]
-		},
-		image: {
-			styles: [
-				'alignCenter',
-				'alignLeft',
-				'alignRight'
-			],
-			resizeOptions: [
-				{
-					name: 'resizeImage:original',
-					label: 'Original size',
-					value: null
-				},
-				{
-					name: 'resizeImage:50',
-					label: '50%',
-					value: '50'
-				},
-				{
-					name: 'resizeImage:75',
-					label: '75%',
-					value: '75'
-				}
+		...( {
+			plugins: [
+				Essentials, BlockQuote, Bold, Heading, Image, ImageCaption, ImageStyle, ImageToolbar, Indent, Italic, Link,
+				MediaEmbed, Paragraph, Table, TableToolbar, CodeBlock, TableCaption, EasyImage, ImageResize, LinkImage,
+				AutoImage, HtmlEmbed, HtmlComment, Alignment, PageBreak, HorizontalLine, ImageUpload,
+				CloudServices, SourceEditing, DocumentList, DocumentListProperties
 			],
 			toolbar: [
-				'imageTextAlternative', 'toggleImageCaption', '|',
-				'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
-				'resizeImage'
-			]
-		},
-		placeholder: 'Type the content here!',
-		htmlEmbed: {
-			showPreviews: true,
-			sanitizeHtml: html => ( { html, hasChange: false } )
+				'sourceEditing', '|',
+				'numberedList', 'bulletedList', '|',
+				'outdent', 'indent', '|',
+				'heading', '|',
+				'bold', 'italic', 'link', '|',
+				'blockQuote', 'uploadImage', 'insertTable', 'mediaEmbed', 'codeBlock', '|',
+				'htmlEmbed', '|',
+				'alignment', '|',
+				'pageBreak', 'horizontalLine', '|',
+				'undo', 'redo'
+			],
+			cloudServices: CS_CONFIG,
+			table: {
+				contentToolbar: [
+					'tableColumn', 'tableRow', 'mergeTableCells', 'toggleTableCaption'
+				]
+			},
+			image: {
+				styles: [
+					'alignCenter',
+					'alignLeft',
+					'alignRight'
+				],
+				resizeOptions: [
+					{
+						name: 'resizeImage:original',
+						label: 'Original size',
+						value: null
+					},
+					{
+						name: 'resizeImage:50',
+						label: '50%',
+						value: '50'
+					},
+					{
+						name: 'resizeImage:75',
+						label: '75%',
+						value: '75'
+					}
+				],
+				toolbar: [
+					'imageTextAlternative', 'toggleImageCaption', '|',
+					'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText', 'imageStyle:side', '|',
+					'resizeImage'
+				]
+			},
+			placeholder: 'Type the content here!',
+			htmlEmbed: {
+				showPreviews: true,
+				sanitizeHtml: html => ( { html, hasChange: false } )
+			}
+		} ),
+		list: {
+			properties: {
+				styles: true,
+				startIndex: true,
+				reversed: true
+			}
 		}
 	} )
 	.then( editor => {

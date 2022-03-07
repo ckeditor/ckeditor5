@@ -1,7 +1,7 @@
-<head>
-	<meta http-equiv="Content-Security-Policy"
-		content="script-src 'self' https://ckeditor.com 'unsafe-inline' 'unsafe-eval'">
-</head>
+<div class="options-container">
+	<input id="chbx-show-borders" type="checkbox" />
+	<label for="chbx-show-borders">Show borders</label>
+</div>
 
 <div id="editor">
 	<ul data-main="list" style="background-color: yellow">
@@ -17,16 +17,20 @@
 </div>
 
 <style>
-	ul, ol {
+	.show-borders ul, .show-borders ol {
 		border: 2px dashed blue;
 		padding-top: 5px;
 		padding-bottom: 5px;
 		margin: 5px;
 	}
 
-	li {
+	.show-borders li {
 		border: 2px dotted red;
 		padding: 5px;
 		margin: 5px;
+	}
+
+	.options-container {
+		margin-bottom: 16px;
 	}
 </style>
