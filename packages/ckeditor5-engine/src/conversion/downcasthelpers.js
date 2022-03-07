@@ -25,6 +25,8 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 /**
  * Downcast conversion helper functions.
  *
+ * Learn more about {@glink framework/guides/deep-dive/conversion/downcast downcast helpers}.
+ *
  * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
 export default class DowncastHelpers extends ConversionHelpers {
