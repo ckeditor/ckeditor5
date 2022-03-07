@@ -106,10 +106,11 @@ export function listUpcastCleanList() {
  * @protected
  * @param {module:engine/model/model~Model} model The editor model.
  * @param {module:engine/controller/editingcontroller~EditingController} editing The editing controller.
+ * @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
  * @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
  * @return {Function}
  */
-export function reconvertItemsOnDataChange( model, editing, documentListEditing ) {
+export function reconvertItemsOnDataChange( model, editing, attributeNames, documentListEditing ) {
 	return () => {
 		const changes = model.document.differ.getChanges();
 		const itemsToRefresh = [];
@@ -135,7 +136,7 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 			else if ( entry.type == 'attribute' ) {
 				const item = entry.range.start.nodeAfter;
 
-				if ( entry.attributeKey.startsWith( 'list' ) ) {
+				if ( attributeNames.includes( entry.attributeKey ) ) {
 					findAndAddListHeadToMap( entry.range.start, itemToListHead );
 
 					if ( entry.attributeNewValue === null ) {
@@ -187,7 +188,7 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 			// Update the stack for the current indent level.
 			stack[ itemIndent ] = Object.fromEntries(
 				Array.from( node.getAttributes() )
-					.filter( ( [ key ] ) => key.startsWith( 'list' ) )
+					.filter( ( [ key ] ) => attributeNames.includes( key ) )
 			);
 
 			// Find all blocks of the current node.
@@ -221,7 +222,7 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 			return false;
 		}
 
-		const useBogus = shouldUseBogusParagraph( item, blocks );
+		const useBogus = shouldUseBogusParagraph( item, attributeNames, blocks );
 
 		if ( useBogus && viewElement.is( 'element', 'p' ) ) {
 			return true;
@@ -282,21 +283,18 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
  * Returns the list item downcast converter.
  *
  * @protected
- * @param {module:list/documentlist/documentlistediting~DocumentListEditing} documentListEditing The document list editing plugin.
+ * @param {Array.<String>} attributes A list of attribute names that should be converted if are set.
+ * @param {TODO} strategies TODO
+ * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}
  */
-export function listItemDowncastConverter( documentListEditing ) {
-	const model = documentListEditing.editor.model;
-	const consumer = createAttributesConsumer();
+export function listItemDowncastConverter( attributes, strategies, model ) {
+	const consumer = createAttributesConsumer( attributes );
 
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 
 		const listItem = data.item;
-
-		if ( !data.attributeKey.startsWith( 'list' ) ) {
-			return;
-		}
 
 		// Test if attributes on the converted items are not consumed.
 		if ( !consumer( listItem, consumable ) ) {
@@ -311,7 +309,7 @@ export function listItemDowncastConverter( documentListEditing ) {
 		unwrapListItemBlock( viewElement, writer );
 
 		// Then wrap them with the new list wrappers.
-		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), documentListEditing._downcastStrategies, writer );
+		wrapListItemBlock( listItem, writer.createRangeOn( viewElement ), strategies, writer );
 	};
 }
 
@@ -319,14 +317,15 @@ export function listItemDowncastConverter( documentListEditing ) {
  * Returns the bogus paragraph view element creator. A bogus paragraph is used if a list item contains only a single block or nested list.
  *
  * @protected
+ * @param {Array.<String>} attributeNames The list of all model list attributes (including registered strategies).
  * @param {Object} [options]
  * @param {Boolean} [options.dataPipeline=false]
  * @returns {Function}
  */
-export function bogusParagraphCreator( { dataPipeline } = {} ) {
+export function bogusParagraphCreator( attributeNames, { dataPipeline } = {} ) {
 	return ( modelElement, { writer } ) => {
 		// Convert only if a bogus paragraph should be used.
-		if ( !shouldUseBogusParagraph( modelElement ) ) {
+		if ( !shouldUseBogusParagraph( modelElement, attributeNames ) ) {
 			return;
 		}
 
@@ -411,13 +410,13 @@ function wrapListItemBlock( listItem, viewRange, strategies, writer ) {
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
-function createAttributesConsumer() {
+function createAttributesConsumer( attributes ) {
 	return ( node, consumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
-		for ( const attributeName of node.getAttributeKeys() ) {
-			if ( attributeName.startsWith( 'list' ) ) {
+		for ( const attributeName of attributes ) {
+			if ( node.hasAttribute( attributeName ) ) {
 				events.push( `attribute:${ attributeName }` );
 			}
 		}
@@ -433,7 +432,7 @@ function createAttributesConsumer() {
 }
 
 // Whether the given item should be rendered as a bogus paragraph.
-function shouldUseBogusParagraph( item, blocks = getAllListItemBlocks( item ) ) {
+function shouldUseBogusParagraph( item, attributeNames, blocks = getAllListItemBlocks( item ) ) {
 	if ( !isListItemBlock( item ) ) {
 		return false;
 	}
@@ -445,7 +444,7 @@ function shouldUseBogusParagraph( item, blocks = getAllListItemBlocks( item ) ) 
 		}
 
 		// Don't use bogus paragraph if there are attributes from other features.
-		if ( !attributeKey.startsWith( 'list' ) ) {
+		if ( !attributeNames.includes( attributeKey ) ) {
 			return false;
 		}
 	}
