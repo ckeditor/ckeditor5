@@ -255,6 +255,19 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
 				continue;
 			}
 
+			/**
+			 * Event fired on changes detected on the model list element to verify if the view representation of a list element
+			 * is representing those attributes.
+			 *
+			 * It allows triggering a re-wrapping of a list item.
+			 *
+			 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+			 *
+			 * @protected
+			 * @event module:list/documentlist/documentlistediting~DocumentListEditing#event:checkAttributes
+			 * @param {module:engine/view/element~Element} viewElement
+			 * @param {Object} modelAttributes
+			 */
 			const eventName = `checkAttributes:${ isListItemElement ? 'item' : 'list' }`;
 			const needsRefresh = documentListEditing.fire( eventName, {
 				viewElement: element,

@@ -103,6 +103,22 @@ export default class DocumentListPropertiesEditing extends Plugin {
 			}
 		} );
 
+		// Reset list properties after indenting list items.
+		this.listenTo( editor.commands.get( 'indentList' ), 'afterExecute', ( evt, changedBlocks ) => {
+			model.change( writer => {
+				for ( const node of changedBlocks ) {
+					for ( const strategy of strategies ) {
+						if ( strategy.appliesToListItem( node ) ) {
+							// Just reset the attribute.
+							// If there is a previous indented list that this node should be merged into,
+							// the postfixer will unify all the attributes of both sub-lists.
+							writer.setAttribute( strategy.attributeName, strategy.defaultValue, node );
+						}
+					}
+				}
+			} );
+		} );
+
 		// Add or remove list properties attributes depending on the list type.
 		documentListEditing.on( 'postFixer', ( evt, { listNodes, writer } ) => {
 			for ( const { node } of listNodes ) {
@@ -189,14 +205,17 @@ export default class DocumentListPropertiesEditing extends Plugin {
 /**
  * Strategy for dealing with `listItem` attributes supported by this plugin.
  *
- * @typedef {Object} AttributeStrategy
+ * @typedef {Object} module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy
  * @protected
- * @property {String} #attributeName
- * @property {*} #defaultValue
- * @property {Function} #addCommand
- * @property {Function} #appliesToListItem
- * @property {Function} #setAttributeOnDowncast
- * @property {Function} #getAttributeOnUpcast
+ * @property {String} attributeName The model attribute name.
+ * @property {*} defaultValue The model attribute default value.
+ * @property {Object} viewConsumables The view consumable as expected by
+ * {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable`}.
+ * @property {Function} addCommand Registers an editor command.
+ * @property {Function} appliesToListItem Verifies whether the strategy is applicable for the specified model element.
+ * @property {Function} hasValidAttribute Verifies whether the model attribute value is valid.
+ * @property {Function} setAttributeOnDowncast Sets the property on the view element.
+ * @property {Function} getAttributeOnUpcast Retrieves the property value from the view element.
  */
 
 // Creates an array of strategies for dealing with enabled listItem attributes.
@@ -205,7 +224,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 // @param {Boolean} enabledProperties.styles
 // @param {Boolean} enabledProperties.reversed
 // @param {Boolean} enabledProperties.startIndex
-// @returns {Array.<module:list/listpropertiesediting~AttributeStrategy>}
+// @returns {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>}
 function createAttributeStrategies( enabledProperties ) {
 	const strategies = [];
 

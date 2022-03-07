@@ -17,7 +17,8 @@ import {
 	outdentFollowingItems,
 	ListItemUid,
 	sortBlocks,
-	getSelectedBlockObject
+	getSelectedBlockObject,
+	isListItemBlock
 } from './utils/model';
 
 /**
@@ -102,7 +103,7 @@ export default class DocumentListCommand extends Command {
 				this._fireAfterExecute( changedBlocks );
 			}
 			// Turning on the list items for a collapsed selection inside a list item.
-			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && blocks[ 0 ].hasAttribute( 'listType' ) ) {
+			else if ( ( selectedBlockObject || document.selection.isCollapsed ) && isListItemBlock( blocks[ 0 ] ) ) {
 				const changedBlocks = getListItems( selectedBlockObject || blocks[ 0 ] );
 
 				for ( const block of changedBlocks ) {

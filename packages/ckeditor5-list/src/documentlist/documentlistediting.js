@@ -319,8 +319,8 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches a listener to the {@link module:engine/view/document~Document#tab:tab} event and handles tab key and tab+shift keys presses
-	 * in document lists.
+	 * Attaches a listener to the {@link module:engine/view/document~Document#event:tab} event and handles tab key and tab+shift keys
+	 * presses in document lists.
 	 *
 	 * @private
 	 */
@@ -400,7 +400,7 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers model post-fixers.
 	 *
 	 * @private
 	 */
@@ -502,6 +502,22 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 	const seenIds = new Set();
 
 	for ( const listHead of itemToListHead.values() ) {
+		/**
+		 * Event fired on changes detected on the model list element to verify if the view representation of a list element
+		 * is representing those attributes.
+		 *
+		 * It allows triggering a re-wrapping of a list item.
+		 *
+		 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
+		 *
+		 * @protected
+		 * @event module:list/documentlist/documentlistediting~DocumentListEditing#event:postFixer
+		 * @param {module:engine/model/element~Element} listHead The head element of a list.
+		 * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
+		 * @param {Set.<String>} seenIds The set of already known IDs.
+		 * @param {Object} modelAttributes
+		 * @returns {Boolean} If a post-fixer made a change of the model tree, it should return `true`.
+		 */
 		const listNodes = { [ Symbol.iterator ]: () => iterateSiblingListBlocks( listHead, 'forward' ) };
 
 		applied = documentListEditing.fire( 'postFixer', { listHead, writer, seenIds, listNodes } ) || applied;
