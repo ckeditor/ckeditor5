@@ -181,24 +181,6 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			it( 'should convert style on a nested list', () => {
-				test.data(
-					'<ul>' +
-						'<li>' +
-							'cd' +
-							'<ol style="list-style-type:upper-alpha;">' +
-								'<li>efg</li>' +
-							'</ol>' +
-						'</li>' +
-					'</ul>',
-
-					modelList( `
-						* cd {id:001} {style:default}
-						  # efg {id:000} {style:upper-alpha}
-					` )
-				);
-			} );
-
 			it( 'view ol converter should not fire if change was already consumed', () => {
 				editor.data.upcastDispatcher.on( 'element:ol', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.viewItem, { styles: 'list-style-type' } );
@@ -901,7 +883,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			it( 'should convert single list (type: numbered)', () => {
+			it( 'should convert single list (type: numbered, reversed)', () => {
 				test.data(
 					'<ol reversed="reversed">' +
 						'<li>Foo</li>' +
@@ -940,7 +922,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			it( 'should convert on a nested list', () => {
+			it( 'should convert on a nested list (in bulleted list)', () => {
 				test.data(
 					'<ul>' +
 						'<li>' +
@@ -958,7 +940,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			it( 'should convert on a nested list', () => {
+			it( 'should convert on a nested list (in numbered list)', () => {
 				test.data(
 					'<ol>' +
 						'<li>' +
@@ -1552,7 +1534,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			it( 'should convert single list (type: numbered)', () => {
+			it( 'should convert single list (type: numbered, start: 5)', () => {
 				test.data(
 					'<ol start="5">' +
 						'<li>Foo</li>' +
@@ -2215,7 +2197,7 @@ describe( 'DocumentListPropertiesEditing - converters', () => {
 				);
 			} );
 
-			it( 'should convert single list (type: numbered)', () => {
+			it( 'should convert single list (type: numbered, styled, reversed, start: 5)', () => {
 				test.data(
 					'<ol style="list-style-type:lower-alpha;" reversed="reversed" start="5">' +
 						'<li>Foo</li>' +
