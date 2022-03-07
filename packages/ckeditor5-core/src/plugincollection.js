@@ -344,7 +344,7 @@ export default class PluginCollection {
 			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
 			 *
-			 * **If you see this warning when using one of the {@glink /installation/advanced/alternative-setups/predefined-builds
+			 * **If you see this warning when using one of the {@glink installation/advanced/alternative-setups/predefined-builds
 			 * CKEditor 5 Builds}**,
 			 * it means that you try to enable a plugin which was not included in that build. This may be due to a typo
 			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
@@ -354,7 +354,7 @@ export default class PluginCollection {
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
 			 * provide each plugin through a reference (as a constructor function). Check out the examples in
-			 * {@glink /installation/advanced/alternative-setups/integrating-from-source "Building from source"}.
+			 * {@glink installation/advanced/alternative-setups/integrating-from-source "Building from source"}.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param {String} plugin The name of the plugin which could not be loaded.
