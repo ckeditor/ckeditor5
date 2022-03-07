@@ -79,9 +79,10 @@ export default class DocumentListEditing extends Plugin {
 	 */
 	init() {
 		/**
-		 * TODO
+		 * The list of registered downcast strategies.
 		 *
 		 * @private
+		 * @type {Array.<module:list/documentlist/documentlistediting~DowncastStrategy>}
 		 */
 		this._downcastStrategies = [];
 
@@ -149,14 +150,19 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * TODO
+	 * Registers a downcast strategyl
+	 *
+	 * **Note**: Strategies must be registered in the `Plugin#init()` phase so that it can be applied
+	 * in the `DocumentListEditing#afterInit()`.
+	 *
+	 * @param {module:list/documentlist/documentlistediting~DowncastStrategy} strategy The downcast strategy to register.
 	 */
 	registerDowncastStrategy( strategy ) {
 		this._downcastStrategies.push( strategy );
 	}
 
 	/**
-	 * TODO
+	 * Returns list of model attribute names that should affect downcast conversion.
 	 *
 	 * @private
 	 */
@@ -427,6 +433,13 @@ export default class DocumentListEditing extends Plugin {
 		}, { priority: 'high' } );
 	}
 }
+
+/**
+ * @typedef {Object} module:list/documentlist/documentlistediting~DowncastStrategy
+ * @property {'list'|'item'} scope The scope of the downcast (whether it applies to LI or OL/UL).
+ * @property {String} attributeName The model attribute name.
+ * @property {Function} setAttributeOnDowncast Sets the property on the view element.
+ */
 
 // Post-fixer that reacts to changes on document and fixes incorrect model states (invalid `listItemId` and `listIndent` values).
 //
