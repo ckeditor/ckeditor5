@@ -40,7 +40,10 @@ import {
 	getViewElementIdForListType,
 	getViewElementNameForListType
 } from './utils/view';
-import ListWalker, { iterateSiblingListBlocks } from './utils/listwalker';
+import ListWalker, {
+	iterateSiblingListBlocks,
+	ListBlocksIterable
+} from './utils/listwalker';
 
 import '../../theme/documentlist.css';
 
@@ -518,9 +521,12 @@ function modelChangePostFixer( model, writer, attributeNames, documentListEditin
 		 * @param {Object} modelAttributes
 		 * @returns {Boolean} If a post-fixer made a change of the model tree, it should return `true`.
 		 */
-		const listNodes = { [ Symbol.iterator ]: () => iterateSiblingListBlocks( listHead, 'forward' ) };
-
-		applied = documentListEditing.fire( 'postFixer', { listHead, writer, seenIds, listNodes } ) || applied;
+		applied = documentListEditing.fire( 'postFixer', {
+			listNodes: new ListBlocksIterable( listHead ),
+			listHead,
+			writer,
+			seenIds
+		} ) || applied;
 	}
 
 	return applied;

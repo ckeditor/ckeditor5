@@ -210,7 +210,7 @@ export default class ListWalker {
  * @protected
  * @param {module:engine/model/node~Node} node The model node.
  * @param {'backward'|'forward'} [direction='forward'] Iteration direction.
- * @returns {Iterable.<module:list/documentlist/utils/listwalker~ListIteratorValue>} The object with `node` and `previous`
+ * @returns {Iterator.<module:list/documentlist/utils/listwalker~ListIteratorValue>} The object with `node` and `previous`
  * {@link module:engine/model/element~Element blocks}.
  */
 export function* iterateSiblingListBlocks( node, direction = 'forward' ) {
@@ -226,8 +226,34 @@ export function* iterateSiblingListBlocks( node, direction = 'forward' ) {
 }
 
 /**
+ * The iterable protocol over the list elements.
+ *
+ * @protected
+ */
+export class ListBlocksIterable {
+	/**
+	 * @param {module:engine/model/element~Element} listHead The head element of a list.
+	 */
+	constructor( listHead ) {
+		this._listHead = listHead;
+	}
+
+	/**
+	 * List blocks iterator.
+	 *
+	 * Iterates over all blocks of a list.
+	 *
+	 * @returns {Iterator.<module:list/documentlist/utils/listwalker~ListIteratorValue>}
+	 */
+	[ Symbol.iterator ]() {
+		return iterateSiblingListBlocks( this._listHead, 'forward' );
+	}
+}
+
+/**
  * Object returned by `iterateSiblingListBlocks()` when traversing a list.
  *
+ * @protected
  * @typedef {Object} module:list/documentlist/utils/listwalker~ListIteratorValue
  * @property {module:engine/model/node~Node} node The current list node.
  * @property {module:engine/model/node~Node} previous The previous list node.

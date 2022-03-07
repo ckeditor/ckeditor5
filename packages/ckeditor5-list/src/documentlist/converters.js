@@ -297,7 +297,7 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
  *
  * @protected
  * @param {Array.<String>} attributeNames A list of attribute names that should be converted if are set.
- * @param {TODO} strategies TODO
+ * @param {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>} strategies The strategies.
  * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}
  */
