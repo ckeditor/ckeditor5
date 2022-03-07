@@ -374,12 +374,7 @@ export default class DocumentListEditing extends Plugin {
 
 		editor.conversion.for( 'downcast' )
 			.add( dispatcher => {
-				for ( const attributeName of attributeNames ) {
-					dispatcher.on(
-						`attribute:${ attributeName }`,
-						listItemDowncastConverter( attributeNames, this._downcastStrategies, model )
-					);
-				}
+				dispatcher.on( 'attribute', listItemDowncastConverter( attributeNames, this._downcastStrategies, model ) );
 			} );
 
 		this.listenTo( model.document, 'change:data', reconvertItemsOnDataChange( model, editor.editing, attributeNames, this ) );

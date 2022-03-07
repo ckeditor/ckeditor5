@@ -283,18 +283,22 @@ export function reconvertItemsOnDataChange( model, editing, attributeNames, docu
  * Returns the list item downcast converter.
  *
  * @protected
- * @param {Array.<String>} attributes A list of attribute names that should be converted if are set.
+ * @param {Array.<String>} attributeNames A list of attribute names that should be converted if are set.
  * @param {TODO} strategies TODO
  * @param {module:engine/model/model~Model} model The model.
  * @returns {Function}
  */
-export function listItemDowncastConverter( attributes, strategies, model ) {
-	const consumer = createAttributesConsumer( attributes );
+export function listItemDowncastConverter( attributeNames, strategies, model ) {
+	const consumer = createAttributesConsumer( attributeNames );
 
 	return ( evt, data, conversionApi ) => {
 		const { writer, mapper, consumable } = conversionApi;
 
 		const listItem = data.item;
+
+		if ( !attributeNames.includes( data.attributeKey ) ) {
+			return;
+		}
 
 		// Test if attributes on the converted items are not consumed.
 		if ( !consumer( listItem, consumable ) ) {
@@ -410,12 +414,12 @@ function wrapListItemBlock( listItem, viewRange, strategies, writer ) {
 }
 
 // Returns the function that is responsible for consuming attributes that are set on the model node.
-function createAttributesConsumer( attributes ) {
+function createAttributesConsumer( attributeNames ) {
 	return ( node, consumable ) => {
 		const events = [];
 
 		// Collect all set attributes that are triggering conversion.
-		for ( const attributeName of attributes ) {
+		for ( const attributeName of attributeNames ) {
 			if ( node.hasAttribute( attributeName ) ) {
 				events.push( `attribute:${ attributeName }` );
 			}

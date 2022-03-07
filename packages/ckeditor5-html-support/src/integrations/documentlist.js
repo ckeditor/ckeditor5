@@ -40,6 +40,26 @@ export default class DocumentListElementSupport extends Plugin {
 		const dataFilter = editor.plugins.get( DataFilter );
 		const documentListEditing = editor.plugins.get( 'DocumentListEditing' );
 
+		// Register downcast strategy.
+		// Note that this must be done before document list editing registers conversion in afterInit.
+		documentListEditing.registerDowncastStrategy( {
+			scope: 'item',
+			attributeName: 'htmlLiAttributes',
+
+			setAttributeOnDowncast( writer, attributeValue, viewElement ) {
+				setViewAttributes( writer, attributeValue, viewElement );
+			}
+		} );
+
+		documentListEditing.registerDowncastStrategy( {
+			scope: 'list',
+			attributeName: 'htmlListAttributes',
+
+			setAttributeOnDowncast( writer, viewAttributes, viewElement ) {
+				setViewAttributes( writer, viewAttributes, viewElement );
+			}
+		} );
+
 		dataFilter.on( 'register', ( evt, definition ) => {
 			if ( ![ 'ul', 'ol', 'li' ].includes( definition.view ) ) {
 				return;
@@ -60,25 +80,6 @@ export default class DocumentListElementSupport extends Plugin {
 				dispatcher.on( 'element:ul', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
 				dispatcher.on( 'element:ol', viewToModelListAttributeConverter( 'htmlListAttributes', dataFilter ), { priority: 'low' } );
 				dispatcher.on( 'element:li', viewToModelListAttributeConverter( 'htmlLiAttributes', dataFilter ), { priority: 'low' } );
-			} );
-
-			// Register downcast strategy.
-			documentListEditing.registerDowncastStrategy( {
-				scope: 'item',
-				attributeName: 'htmlLiAttributes',
-
-				setAttributeOnDowncast( writer, attributeValue, viewElement ) {
-					setViewAttributes( writer, attributeValue, viewElement );
-				}
-			} );
-
-			documentListEditing.registerDowncastStrategy( {
-				scope: 'list',
-				attributeName: 'htmlListAttributes',
-
-				setAttributeOnDowncast( writer, viewAttributes, viewElement ) {
-					setViewAttributes( writer, viewAttributes, viewElement );
-				}
 			} );
 
 			// Make sure that all items in a single list (items at the same level & listType) have the same properties.
