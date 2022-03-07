@@ -21,7 +21,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### New import paths in the ckeditor5-list package
 
-If your application [imports individual plugins](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installing-plugins.html) to integrate or build CKEditor 5, please be informed that starting with this version, some import paths have changed in the [ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package and should be updated accordingly:
+Starting with v33.0.0, some import paths have changed in the [ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application [imports individual plugins](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installing-plugins.html) to integrate or build CKEditor 5, you should updated the paths accordingly:
 
 ```js
 // ❌ Old import paths:
@@ -38,21 +38,20 @@ import ListPropertiesEditing from '@ckeditor/ckeditor5-list/src/listproperties/l
 ```
 
 <info-box>
-	Please note that **import paths for top-level plugins such as {@link module:list/list~List}, {@link module:list/listproperties~ListProperties}, {@link module:list/todolist~TodoList}, etc. remain the same**. If you are not sure what import path you should use, you can always browse the [source code on GitHub](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list/src) that corresponds to the contents of the package on npm.
+	Please note that **import paths for top-level plugins such as {@link module:list/list~List}, {@link module:list/listproperties~ListProperties}, {@link module:list/todolist~TodoList}, etc. remain the same**. If you are not sure what import path you should use, you can always [browse the GitHub source code](https://github.com/ckeditor/ckeditor5/tree/master/packages/ckeditor5-list/src) that corresponds to the contents of the package on npm.
 </info-box>
 
 ### Additional dependencies in CKEditor 5 Collaboration Features
 
-{@link builds/guides/development/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies had to be changed to allow for the new building process.
+The {@link builds/guides/development/dll-builds DLL builds} support was introduced for collaboration features. As a result, some imports, plugin requirements and cross-package dependencies have changed to allow for the new building process.
 
-From now on, additional plugins will be required, when following CKEditor 5 collaboration features are added to the editor:
+From now on, additional plugins will be required, when the following CKEditor 5 collaboration features are added to the editor:
 
 * **{@link module:track-changes/trackchanges~TrackChanges}** will also require adding {@link module:comments/comments~Comments} to the list of the editor plugins:
 
 	```js
 	// ❌ Old imports:
 	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges';
-
 	// ✅ New imports:
 	import TrackChanges from '@ckeditor/ckeditor5-track-changes/src/trackchanges';
 	import Comments from '@ckeditor/ckeditor5-comments/src/comments';
@@ -63,7 +62,6 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 	```js
 	// ❌ Old imports:
 	import RealTimeCollaborativeEditing from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativeediting';
-
 	// ✅ New imports:
 	import RealTimeCollaborativeEditing from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativeediting';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -74,7 +72,6 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 	```js
 	// ❌ Old imports:
 	import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments';
-
 	// ✅ New imports:
 	import RealTimeCollaborativeComments from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -86,7 +83,6 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 	```js
 	// ❌ Old imports:
 	import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges';
-
 	// ✅ New imports:
 	import RealTimeCollaborativeTrackChanges from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativetrackchanges';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -99,7 +95,6 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 	```js
 	// ❌ Old imports:
 	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
-
 	// ✅ New imports:
 	import RealTimeCollaborativeRevisionHistory from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativerevisionhistory';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -110,7 +105,6 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 	```js
 	// ❌ Old imports:
 	import CloudServicesCommentsAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments/cloudservicescommentsadapter';
-
 	// ✅ New imports:
 	import CloudServicesCommentsAdapter from '@ckeditor/ckeditor5-real-time-collaboration/src/realtimecollaborativecomments/cloudservicescommentsadapter';
 	import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
@@ -143,9 +137,9 @@ From now on, additional plugins will be required, when following CKEditor 5 coll
 
 ### Mandatory consumption of all model items in the downcast conversion pipeline
 
-Starting from this version, all {@link framework/guides/architecture/editing-engine#model model} {@link module:engine/model/item~Item items} must be consumed in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and possible solutions, please refer to the {@link framework/guides/support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
+Starting with v33.0.0, all {@link framework/guides/architecture/editing-engine#model model} {@link module:engine/model/item~Item items} must be consumed in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} pipeline to prevent errors and unpredictable behavior of the editor features. If a model item is not consumed, the `conversion-model-consumable-not-consumed` error will be thrown. To learn more about the causes of this error and about possible solutions, please refer to the {@link framework/guides/support/error-codes#error-conversion-model-consumable-not-consumed API documentation}.
 
-### Obsoleted `triggerBy` option in the downcast pipeline
+### The `triggerBy` option in the downcast pipeline is now obsolete
 
 If some of your downcast pipeline converters took advantage of the experimental `triggerBy` property to trigger (re)conversion upon changes of attributes or children, they need to be updated. For instance:
 
@@ -182,15 +176,15 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 	Please note that the new syntax is available both in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers.
 </info-box>
 
-### New downcast converters for the {@link features/table tables} feature
+### New downcast converters for the {@link features/table table feature}
 
 The conversion brought by the {@link module:table/tableediting~TableEditing} plugin has been refined in this version and now relies heavily on the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} downcast conversion helper.
 
-If your integration extends or overwrites that conversion (`table`, `tableRow`, `tableCell` model elements and/or their attributes), you might need to undertake some actions to align your custom features to the latest editor API. Please note that the extent of necessary changes may vary depending on how advanced your customizations are.
+If your integration extends or overwrites that conversion (the `table`, `tableRow`, `tableCell` model elements and/or their attributes), you might need to undertake some actions to align your custom features with the latest editor API. Please note that the extent of necessary changes may vary depending on how advanced your customizations are.
 
-### Responsibility shift in low–level downcast converters
+### Responsibility shift in the low–level downcast converters
 
-{@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} will now fire events for model items whether they were {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} or not. This means that low–level (event–driven) downcast converters listening to these events must first {@link module:engine/conversion/viewconsumable~ViewConsumable#test test} whether the item has already been consumed to prevent double conversion and errors:
+{@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} will now fire events for model items no matter if they were {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} or not. This means that the low–level (event–driven) downcast converters listening to these events must first {@link module:engine/conversion/viewconsumable~ViewConsumable#test test} whether the item has already been consumed to prevent double conversion and errors:
 
 ```js
 editor.conversion.for( 'downcast' ).add( dispatcher => {
@@ -205,9 +199,9 @@ editor.conversion.for( 'downcast' ).add( dispatcher => {
 } );
 ```
 
-Also, please keep in mind that starting with this version, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
+Also, please keep in mind that starting with v33.0.0, all model items [must be consumed](#mandatory-consumption-of-all-model-items-in-the-downcast-conversion-pipeline) by your custom converters to prevent further errors.
 
-### Obsoleted `Differ#refreshItem()` method
+### The `Differ#refreshItem()` method is now obsolete
 
 Please note that `Differ#refreshItem()` is obsolete and has been replaced by {@link module:engine/controller/editingcontroller~EditingController#reconvertItem}:
 
@@ -219,11 +213,11 @@ editor.model.document.differ.refreshItem( ... );
 editor.editing.reconvertItem( ... );
 ```
 
-### Comments editor configuration required
+### Comments editor configuration is now required
 
-Since cross-package dependencies inside the project were removed, the configuration for the comments editor became required. Keep in mind that the editor used in comments section is also a CKEditor 5 instance and is configured the same way as the regular editor.
+Since the cross-package dependencies inside the project were removed, the configuration for the comments editor became required. Keep in mind that the editor used in the comments section is also a CKEditor 5 instance and is configured the same way as the regular editor.
 
-After the update, you should configure the comments editor using `config.comments.editorConfig` option:
+After the update, you should configure the comments editor using the `config.comments.editorConfig` option:
 
 ```js
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
@@ -243,12 +237,12 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 ```
 
 <info-box>
-	Before the change, the comments editor included `Bold`, `Italic`, `Autoformat` and `List` plugins.
+	Before the change, the comments editor included the `Bold`, `Italic`, `Autoformat` and `List` plugins.
 
-	If you want to keep the same user experience after updating the editor, configure the comments editor as shown in the example above.
+	If you want to keep the same user experience after updating the editor, you need to configure the comments editor as shown in the example above.
 </info-box>
 
-If the configuration is not provided, a warning will be logged in the console and the the comments editor will be initialized with the most basic features, that is typing, paragraph and undo.
+If this configuration is not provided, a warning will be logged in the console and the the comments editor will be initialized with the most basic features, that is just typing, paragraph and undo features.
 
 To hide the warning (and use the basic configuration), provide an empty configuration for the comments editor:
 
@@ -268,11 +262,11 @@ ClassicEditor.create( document.querySelector( '#editor' ), {
 
 The new {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper has been introduced to streamline downcast conversion to complex view structures. Unlike {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement}, it allows placing children of an element in configurable slots in the view structure without the need to develop complex converters using low–level event–driven API.
 
-To learn more about this new helper, please refer to {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API docs} or check out the {@link framework/guides/deep-dive/conversion/downcast#converting-element-to-structure official guide} with plenty of examples and details.
+To learn more about this new helper, please refer to the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure API docs} or check out the {@link framework/guides/deep-dive/conversion/downcast#converting-element-to-structure official conversion guide} with plenty of examples and details.
 
 ### New API to trigger downcast (re)conversion
 
-The [`triggerBy` property is obsolete](#obsoleted-triggerby-option-in-downcast-pipeline) and a new API has been created to trigger downcast conversion of a model element upon changes to its attributes or children (also known as *reconversion*):
+The [`triggerBy` property is obsolete](#the-triggerby-option-in-the-downcast-pipeline-is-now-obsolete) and a new API has been created to trigger downcast conversion of a model element upon changes to its attributes or children (also known as *reconversion*):
 
 ```js
 editor.conversion.for( 'downcast' ).elementToElement( {
@@ -291,11 +285,11 @@ editor.conversion.for( 'downcast' ).elementToElement( {
 } );
 ```
 
-The new syntax of the `model` property is available in {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers. Please refer to respective API documentation for more details.
+The new syntax of the `model` property is available in the {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement} and {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helpers. Please refer to the respective API documentation for more details.
 
 ### Improved API of `DowncastWriter#createContainerElement()`
 
-Starting from this version, you can specify children of a container element directly in the {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} method:
+Starting from v33.0.0, you can specify the children of a container element directly in the {@link module:engine/view/downcastwriter~DowncastWriter#createContainerElement} method:
 
 ```js
 // ❌ Old API:
