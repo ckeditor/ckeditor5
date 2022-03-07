@@ -263,7 +263,7 @@ export function reconvertItemsOnDataChange( model, editing, documentListEditing 
 			 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
 			 *
 			 * @protected
-			 * @event checkAttributes
+			 * @event module:list/documentlist/documentlistediting~DocumentListEditing#event:checkAttributes
 			 * @param {module:engine/view/element~Element} viewElement
 			 * @param {Object} modelAttributes
 			 */

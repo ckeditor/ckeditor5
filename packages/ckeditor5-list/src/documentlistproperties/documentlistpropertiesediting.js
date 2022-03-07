@@ -207,17 +207,17 @@ export default class DocumentListPropertiesEditing extends Plugin {
 /**
  * Strategy for dealing with `listItem` attributes supported by this plugin.
  *
- * @typedef {Object} AttributeStrategy
+ * @typedef {Object} module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy
  * @protected
- * @property {String} #attributeName The model attribute name.
- * @property {*} #defaultValue The model attribute default value.
+ * @property {String} attributeName The model attribute name.
+ * @property {*} defaultValue The model attribute default value.
  * @property {Object} viewConsumables The view consumable as expected by
  * {@link module:engine/conversion/viewconsumable~ViewConsumable#consume `ViewConsumable`}.
- * @property {Function} #addCommand Registers an editor command.
- * @property {Function} #appliesToListItem Verifies whether the strategy is applicable for the specified model element.
- * @property {Function} #hasValidAttribute Verifies whether the model attribute value is valid.
- * @property {Function} #setAttributeOnDowncast Sets the property on the view element.
- * @property {Function} #getAttributeOnUpcast Retrieves the property value from the view element.
+ * @property {Function} addCommand Registers an editor command.
+ * @property {Function} appliesToListItem Verifies whether the strategy is applicable for the specified model element.
+ * @property {Function} hasValidAttribute Verifies whether the model attribute value is valid.
+ * @property {Function} setAttributeOnDowncast Sets the property on the view element.
+ * @property {Function} getAttributeOnUpcast Retrieves the property value from the view element.
  */
 
 // Creates an array of strategies for dealing with enabled listItem attributes.
@@ -226,7 +226,7 @@ export default class DocumentListPropertiesEditing extends Plugin {
 // @param {Boolean} enabledProperties.styles
 // @param {Boolean} enabledProperties.reversed
 // @param {Boolean} enabledProperties.startIndex
-// @returns {Array.<module:list/listpropertiesediting~AttributeStrategy>}
+// @returns {Array.<module:list/documentlistproperties/documentlistpropertiesediting~AttributeStrategy>}
 function createAttributeStrategies( enabledProperties ) {
 	const strategies = [];
 

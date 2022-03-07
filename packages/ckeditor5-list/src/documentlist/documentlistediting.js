@@ -310,8 +310,8 @@ export default class DocumentListEditing extends Plugin {
 	}
 
 	/**
-	 * Attaches a listener to the {@link module:engine/view/document~Document#tab:tab} event and handles tab key and tab+shift keys presses
-	 * in document lists.
+	 * Attaches a listener to the {@link module:engine/view/document~Document#event:tab} event and handles tab key and tab+shift keys
+	 * presses in document lists.
 	 *
 	 * @private
 	 */
@@ -498,7 +498,7 @@ function modelChangePostFixer( model, writer, documentListEditing ) {
 		 * **Note**: For convenience this event is namespaced and could be captured as `checkAttributes:list` or `checkAttributes:item`.
 		 *
 		 * @protected
-		 * @event postFixer
+		 * @event module:list/documentlist/documentlistediting~DocumentListEditing#event:postFixer
 		 * @param {module:engine/model/element~Element} listHead The head element of a list.
 		 * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
 		 * @param {Set.<String>} seenIds The set of already known IDs.
