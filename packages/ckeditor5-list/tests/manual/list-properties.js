@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, document */
+/* globals CKEditorInspector, console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -21,7 +21,6 @@ import TodoList from '../../src/todolist';
 import RemoveFormat from '@ckeditor/ckeditor5-remove-format/src/removeformat';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import CKEditorInspector from '@ckeditor/ckeditor5-inspector';
 
 const config = {
 	initialData: `
@@ -86,7 +85,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'a': editor } );
+		CKEditorInspector.attach( { 'Styles + Start index + Reversed': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -104,7 +103,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'b': editor } );
+		CKEditorInspector.attach( { 'Styles + Start index': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -122,7 +121,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'c': editor } );
+		CKEditorInspector.attach( { 'Styles + Reversed': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -142,7 +141,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'd': editor } );
+		CKEditorInspector.attach( { 'Start index + Reversed': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -160,7 +159,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'e': editor } );
+		CKEditorInspector.attach( { 'Start index': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -178,7 +177,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'f': editor } );
+		CKEditorInspector.attach( { 'Reversed': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -198,7 +197,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'g': editor } );
+		CKEditorInspector.attach( { 'Just styles': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
@@ -218,7 +217,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		CKEditorInspector.attach( { 'h': editor } );
+		CKEditorInspector.attach( { 'No properties enabled': editor } );
 	} )
 	.catch( err => {
 		console.error( err.stack );
