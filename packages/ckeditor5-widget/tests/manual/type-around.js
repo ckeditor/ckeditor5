@@ -94,7 +94,7 @@ class InlineWidget extends Plugin {
 }
 
 document.querySelector( '#toggleReadOnly' ).addEventListener( 'click', () => {
-	window.editor.isReadOnly = !window.editor.isReadOnly;
+	window.editor.setReadOnlyLock( 'manual-test', !window.editor.hasReadonlyLock( 'manual-test' ) );
 } );
 
 ClassicEditor

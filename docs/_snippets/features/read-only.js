@@ -66,7 +66,11 @@ ClassicEditor
 		const button = document.querySelector( '#snippet-read-only-toggle' );
 
 		button.addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+			if ( editor.isReadOnly ) {
+				editor.clearReadOnlyLock( 'readonly-mode' );
+			} else {
+				editor.setReadOnlyLock( 'readonly-mode' );
+			}
 
 			button.innerText = editor.isReadOnly ? 'Switch to editable mode' : 'Switch to read-only mode';
 		} );

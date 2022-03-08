@@ -24,7 +24,7 @@ ClassicEditor
 		window.editor = editor;
 
 		document.getElementById( 'readonly-toggle' ).addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+			editor.setReadOnlyLock( 'manual-test', !editor.hasReadonlyLock( 'manual-test' ) );
 		} );
 	} )
 	.catch( err => {

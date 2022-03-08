@@ -842,10 +842,10 @@ describe( 'HtmlEmbedEditing', () => {
 				const domContentWrapper = editor.editing.view.domConverter.mapViewToDom( contentWrapper );
 				const editButton = domContentWrapper.querySelector( '.raw-html-embed__edit-button' );
 
-				editor.isReadOnly = true;
+				editor.setReadOnlyLock( 'unit-test' );
 				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.true;
 
-				editor.isReadOnly = false;
+				editor.clearReadOnlyLock( 'unit-test' );
 				expect( editButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );
 
@@ -878,11 +878,11 @@ describe( 'HtmlEmbedEditing', () => {
 				const saveButton = domContentWrapper.querySelector( '.raw-html-embed__save-button' );
 				const cancelButton = domContentWrapper.querySelector( '.raw-html-embed__cancel-button' );
 
-				editor.isReadOnly = true;
+				editor.setReadOnlyLock( 'unit-test' );
 				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.true;
 				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 
-				editor.isReadOnly = false;
+				editor.clearReadOnlyLock( 'unit-test' );
 				expect( saveButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 				expect( cancelButton.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );

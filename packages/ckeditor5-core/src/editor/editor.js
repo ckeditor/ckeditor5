@@ -148,10 +148,15 @@ export default class Editor {
 		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
 		 * to modify the document by using them. Also, the editable element(s) become non-editable.
 		 *
-		 * In order to make the editor read-only, you can set this value directly:
+		 * In order to make the editor read-only, you need to call the {@link #setReadOnlyLock} method:
 		 *
-		 *		editor.isReadOnly = true;
+		 *		editor.setReadOnlyLock( 'feature-lock-id' );
 		 *
+		 * To clear the lock, call later the {@link #clearReadOnlyLock} method:
+		 *
+		 * 		editor.clearReadOnlyLock( 'feature-lock-id' );
+		 *
+		 * @readonly
 		 * @observable
 		 * @member {Boolean} #isReadOnly
 		 */
@@ -227,6 +232,97 @@ export default class Editor {
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
 		this.keystrokes.listenTo( this.editing.view.document );
+
+		/**
+		 * Set of read-only lock IDs.
+		 *
+		 * @private
+		 * @type {Set.<String>}
+		 */
+		this._readOnlyStack = new Set();
+	}
+
+	/**
+	 * Returns `true` if some feature with the given lock ID ensures the editor being in the read-only state.
+	 */
+	hasReadOnlyLock( lockId ) {
+		return this._readOnlyStack.has( lockId );
+	}
+
+	/**
+	 * Sets the need of the editor being read-only by the feature with given lock ID.
+	 *
+	 * When at least one feature needs to set the read-only mode, then the `editor.isReadOnly` will be set to `true`.
+	 *
+	 * You can remove the lock using the {@link #clearRedaOnlyLock} method.
+	 *
+	 * @param {String} lockId
+	 * @param {Boolean} [value]
+	 */
+	setReadOnlyLock( lockId, value ) {
+		if ( typeof lockId === 'undefined' ) {
+			/**
+			 * The lock ID is missing. Make sure that you pass the ID to the `editor.setReadOnlyLock()` method.
+			 *
+			 * @error editor-read-only-missing-lock-id
+			 */
+			throw new CKEditorError( 'editor-read-only-missing-lock-id', { lockId } );
+		}
+
+		if ( value === false ) {
+			if ( this.hasReadOnlyLock( lockId ) ) {
+				this.clearReadOnlyLock( lockId );
+			}
+
+			return;
+		}
+
+		if ( value === true && this.hasReadOnlyLock( lockId ) ) {
+			return;
+		}
+
+		if ( this._readOnlyStack.has( lockId ) ) {
+			/**
+			 * The lock ID has been already registered. Make sure that you remove the lock ID correctly with
+			 * the `editor.clearReadOnlyLock()` method.
+			 *
+			 * @error editor-read-only-duplicated-lock-id
+			 */
+			throw new CKEditorError( 'editor-read-only-duplicated-lock-id', { lockId } );
+		}
+
+		this._readOnlyStack.add( lockId );
+
+		if ( this._readOnlyStack.size === 1 ) {
+			this.on( 'set:isReadonly', forceReadOnly, { priority: 'highest' } );
+			this.isReadOnly = true;
+		}
+	}
+
+	/**
+	 * Removes the need of the editor being readonly by the feature with given lock ID.
+	 *
+	 * When no feature sets the lock anymore, then the `editor.isReadOnly` will be set to `false`.
+	 *
+	 * @param {String} lockId
+	 */
+	clearReadOnlyLock( lockId ) {
+		if ( !this._readOnlyStack.has( lockId ) ) {
+			/**
+			 * The lock ID cannot be found. Make sure that you add the lock correctly with
+			 * the `editor.setReadOnlyLock()` method before calling the `editor.clearReadOnlyLock()` method.
+			 *
+			 * @error editor-read-only-lock-not-found
+			 */
+			throw new CKEditorError( 'editor-read-only-lock-not-found', { lockId } );
+		}
+
+		this._readOnlyStack.delete( lockId );
+
+		if ( this._readOnlyStack.size == 0 ) {
+			this.off( 'set:isEnabled', forceReadOnly );
+			this.isReadOnly = false;
+		}
 	}
 
 	/**
@@ -450,3 +546,8 @@ mix( Editor, ObservableMixin );
  * @static
  * @member {Object} module:core/editor/editor~Editor.defaultConfig
  */
+
+function forceReadOnly( evt ) {
+	evt.return = true;
+	evt.stop();
+}

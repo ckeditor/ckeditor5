@@ -208,7 +208,8 @@ ClassicEditor
 		const button = document.getElementById( 'read-only' );
 
 		button.addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+			editor.setReadOnlyLock( 'manual-test', !editor.hasReadonlyLock( 'manual-test' ) );
+
 			button.textContent = editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
 
 			editor.editing.view.focus();

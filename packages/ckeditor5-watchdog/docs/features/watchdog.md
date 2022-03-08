@@ -131,7 +131,7 @@ watchdog.on( 'stateChange', () => {
 	console.log( `State changed from ${ currentState } to ${ prevState }` );
 
 	if ( currentState === 'crashedPermanently' ) {
-		watchdog.editor.isReadOnly = true;
+		watchdog.editor.setReadOnlyLock( 'unit-test' );
 	}
 
 	prevState = currentState;
@@ -249,7 +249,7 @@ watchdog.setCreator( async config => {
 
 // Setting a custom destructor for the context.
 watchdog.setDestructor( async context => {
-	
+
 	// Do something before destroy.
 
 	await context.destroy();

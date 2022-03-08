@@ -311,7 +311,7 @@ BootstrapEditor
 		window.editor = editor;
 
 		$( '#toggle-readonly' ).on( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
+			editor.setReadOnlyLock( 'manual-test', !editor.hasReadonlyLock( 'manual-test' ) );
 		} );
 	} )
 	.catch( err => {

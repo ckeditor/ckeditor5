@@ -46,7 +46,7 @@ describe( 'ReplaceCommand', () => {
 		} );
 
 		it( 'should be disabled in readonly editor', () => {
-			editor.isReadOnly = true;
+			editor.setReadOnlyLock( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.false;
 		} );

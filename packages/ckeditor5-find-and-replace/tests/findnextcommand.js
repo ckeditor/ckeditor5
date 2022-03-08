@@ -72,7 +72,7 @@ describe( 'FindNextCommand', () => {
 			command._state.results.add( {} );
 			command._state.results.add( {} );
 
-			editor.isReadOnly = true;
+			editor.setReadOnlyLock( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );
@@ -84,8 +84,8 @@ describe( 'FindNextCommand', () => {
 			command._state.results.add( {} );
 			command._state.results.add( {} );
 
-			editor.isReadOnly = true;
-			editor.isReadOnly = false;
+			editor.setReadOnlyLock( 'unit-test' );
+			editor.clearReadOnlyLock( 'unit-test' );
 
 			expect( command.isEnabled ).to.be.true;
 		} );

@@ -120,7 +120,7 @@ function initEditor() {
 			}
 
 			function readOnly() {
-				editor.isReadOnly = !editor.isReadOnly;
+				editor.setReadOnlyLock( 'manual-test', !editor.hasReadonlyLock( 'manual-test' ) );
 				document.getElementById( 'read-only' ).textContent =
 					editor.isReadOnly ? 'Turn off read-only mode' : 'Turn on read-only mode';
 

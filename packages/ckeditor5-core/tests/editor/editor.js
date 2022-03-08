@@ -164,13 +164,15 @@ describe( 'Editor', () => {
 		it( 'should bind editing.view.document#isReadOnly to the editor', () => {
 			const editor = new TestEditor();
 
-			editor.isReadOnly = false;
-
 			expect( editor.editing.view.document.isReadOnly ).to.false;
 
-			editor.isReadOnly = true;
+			editor.setReadOnlyLock( 'unit-test' );
 
 			expect( editor.editing.view.document.isReadOnly ).to.true;
+
+			editor.clearReadOnlyLock( 'unit-test' );
+
+			expect( editor.editing.view.document.isReadOnly ).to.false;
 		} );
 
 		it( 'should activate #keystrokes', () => {
@@ -426,7 +428,7 @@ describe( 'Editor', () => {
 
 			editor.on( 'change:isReadOnly', spy );
 
-			editor.isReadOnly = true;
+			editor.setReadOnlyLock( 'unit-test' );
 
 			sinon.assert.calledOnce( spy );
 		} );
