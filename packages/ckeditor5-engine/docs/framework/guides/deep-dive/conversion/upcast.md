@@ -20,6 +20,10 @@ Incoming data becomes the view which is then converted into the model via regist
 
 {@snippet framework/mini-inspector}
 
+<info-box>
+	If you just want to quickly enable some common HTML tags that are not explicitly supported by the dedicated CKEditor 5 features, you can use the {@link features/general-html-support General HTML Support} feature instead of writing your own custom upcast converters.
+</info-box>
+
 ## Registering a converter
 
 In order to instruct the engine how to convert a specific view element into a model element, you need to register an **upcast converter** by using the `editor.conversion.for( 'upcast' )` method:
@@ -112,7 +116,7 @@ The above converter will handle the conversion of every `<div class="example">` 
 {@snippet framework/mini-inspector-upcast-element}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
 ## Converting structures
@@ -194,7 +198,7 @@ The above converter will detect all `<div class="wrapper"><div class="inner-wrap
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
 ## Further reading
