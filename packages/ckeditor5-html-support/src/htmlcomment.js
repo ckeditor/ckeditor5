@@ -13,7 +13,7 @@ import { uid } from 'ckeditor5/src/utils';
 /**
  * The HTML comment feature. It preserves the HTML comments (`<!-- -->`) in the editor data.
  *
- * For a detailed overview, check the {@glink features/ghs/general-html-support#html-comments HTML comment feature documentation}.
+ * For a detailed overview, check the {@glink features/ghs/html-comments HTML comment feature documentation}.
  *
  * @extends module:core/plugin~Plugin
  */
