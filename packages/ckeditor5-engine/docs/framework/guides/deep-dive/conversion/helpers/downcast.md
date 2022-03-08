@@ -381,4 +381,4 @@ First converter has the default priority, `normal`. The second converter will be
 
 ## Further reading
 
-Check out a {@link framework/guides/deep-dive/conversion/helpers/upcast dedicated page} with a full list of complementary {@link framework/guides/deep-dive/conversion/upcast upcast conversion} helpers.
+Check out the {@link framework/guides/deep-dive/conversion/helpers/upcast dedicated guide} with a full list of complementary {@link framework/guides/deep-dive/conversion/upcast upcast conversion helpers}.

@@ -17,7 +17,7 @@ The editing engine implements an MVC architecture. The shape of it is not enforc
 
 [{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
 
-What you can see are three layers: **model**, **controller** and **view**. There is one **model document** which is {@link framework/guides/deep-dive/conversion/intro **converted**} into separate views &mdash; the [**editing view**](#editing-pipeline) and the [**data view**](#data-pipeline). These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
+What you can see, are three layers: **model**, **controller** and **view**. There is one **model document** which is {@link framework/guides/deep-dive/conversion/intro **converted**} into separate views &mdash; the [**editing view**](#editing-pipeline) and the [**data view**](#data-pipeline). These two views represent, respectively, the content that the user is editing (the DOM structure that you see in the browser) and the editor input and output data (in a format that the plugged data processor understands). Both views feature virtual DOM structures (custom, DOM-like structures) on which converters and features work and which are then **rendered** to the DOM.
 
 The green blocks are the code introduced by editor features (plugins). These features control what changes are made to the model, how they are converted to the view and how the model needs to be changed based on fired events (the view's and model's ones).
 
@@ -369,7 +369,7 @@ Let's take a look at the diagram of the engine's MVC architecture and see where 
 
 ### More information
 
-A more in-depth introduction with examples can be found in the {@link framework/guides/deep-dive/conversion/intro dedicated guide about conversion}.
+A more in-depth introduction with examples can be found in the {@link framework/guides/deep-dive/conversion/intro dedicated conversion guide}.
 
 For additional information, you can also check out the {@link framework/guides/tutorials/implementing-a-block-widget#defining-converters Implementing a block widget} and {@link framework/guides/tutorials/implementing-an-inline-widget#defining-converters Implementing an inline widget} tutorials.
 

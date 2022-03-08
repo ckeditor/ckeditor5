@@ -366,4 +366,4 @@ First converter has the default `normal` priority. The second converter will be 
 
 ## Further reading
 
-Check out a {@link framework/guides/deep-dive/conversion/helpers/downcast dedicated page} with a full list of complementary {@link framework/guides/deep-dive/conversion/downcast downcast conversion} helpers.
+Check out a {@link framework/guides/deep-dive/conversion/helpers/downcast dedicated guide} with a full list of complementary {@link framework/guides/deep-dive/conversion/downcast downcast conversion helpers}.
