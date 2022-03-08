@@ -281,7 +281,7 @@
 					]
 				},
 				{
-					"name": "General HTML Support",
+					"name": "HTML Support",
 					"id": "features-ghs",
 					"slug": "ghs"
 				},
