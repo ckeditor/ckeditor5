@@ -452,6 +452,38 @@ describe( 'PlainTableOutput', () => {
 				testEditor.destroy();
 			} );
 
+			// See: https://github.com/ckeditor/ckeditor5/issues/11394
+			it( 'should allow overriding image caption converters', async () => {
+				const testEditor = await ClassicTestEditor.create( editorElement, {
+					plugins: [ ArticlePluginSet, Table, TableCaption, PlainTableOutput ],
+					image: { toolbar: [ '|' ] }
+				} );
+
+				testEditor.conversion.for( 'dataDowncast' ).elementToElement( {
+					model: 'caption',
+					view: ( modelElement, { writer } ) => {
+						return writer.createContainerElement( 'foobar' );
+					},
+					converterPriority: 'high'
+				} );
+
+				testEditor.setData(
+					'<figure class="image">' +
+						'<img src="/assets/sample.png" />' +
+						'<figcaption>Caption</figcaption>' +
+					'</figure>'
+				);
+
+				expect( testEditor.getData() ).to.equal(
+					'<figure class="image">' +
+						'<img src="/assets/sample.png">' +
+						'<foobar>Caption</foobar>' +
+					'</figure>'
+				);
+
+				testEditor.destroy();
+			} );
+
 			function createEmptyTable() {
 				setModelData(
 					model,
