@@ -197,6 +197,6 @@ The above converter will convert all `<myElement>` model elements to `<div class
 	Using your own custom model element requires defining it in the schema first.
 </info-box>
 
-## Read next
+## Further reading
 
-{@link framework/guides/deep-dive/conversion/upcast View to model (upcast)}
+If you want to learn more about downcast helpers mentioned in this guide, we have {@link framework/guides/deep-dive/conversion/helpers/downcast rounded them up} for you with complete descriptions and examples. We also recommend you to check out the {@link framework/guides/deep-dive/conversion/upcast upcast conversion} guide and learn how to convert raw data on the editor input into a live model state.

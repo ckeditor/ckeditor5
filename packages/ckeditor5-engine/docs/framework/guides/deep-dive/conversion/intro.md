@@ -10,13 +10,23 @@ modified_at: 2022-03-02
 
 ## What is the conversion?
 
-As you have learnt already, the editor works on two separate layers - model and view. The process of transforming one into the other is called conversion.
+The {@link framework/guides/architecture/editing-engine editing engine} of CKEditor 5 works on two separate layers &mdash; {@link framework/guides/architecture/editing-engine#model model} and {@link framework/guides/architecture/editing-engine#view view}. The process of transforming one into the other is called conversion.
 
-First, when you load data into the editor, the view is created out of the markup. Then, with the help of the upcast converters, the model is created. Once that is done, the model becomes the editor state.
+### Upcast conversion
 
-All changes, such as typing or pasting from the clipboard, are applied directly to the model. In order to update the editing view, e.i. the layer being displayed to the user, the engine transforms changes in the model to the view. The same process is executed when data needs to be generated (e.g. when you copy editor content or use `editor.getData()`).
+When you load data into the editor, the view is created out of the markup. Then, with the help of the upcast converters, the model is created. Once that is done, the model becomes the editor state. The whole process is called upcast conversion.
+
+{@img assets/img/editor-initalization.svg 266 A diagram explaining loading data into the editor.}
+
+### Downcast conversion
+
+All changes, such as typing or pasting from the clipboard, are applied directly to the model. In order to update the editing view, e.i. the layer being displayed to the user, the engine transforms these changes in the model to the view. The same process is executed when data needs to be generated (e.g. when you copy editor content or use `editor.getData()`). These processes are called editing and downcast conversions.
+
+{@img assets/img/editor-data-flow.svg 582 Diagram explaining interaction between the user, model, and editor output.}
 
 You can think about upcast and downcast as processes working in opposite directions, ones that are symmetrical to each other.
+
+## Further reading
 
 In the following guides you will learn how to create the right converter for each case when creating your very own CKEditor 5 plugin.
 

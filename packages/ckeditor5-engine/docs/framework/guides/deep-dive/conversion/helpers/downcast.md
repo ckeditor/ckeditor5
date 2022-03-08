@@ -8,6 +8,8 @@ modified_at: 2022-03-02
 
 # Downcast helpers (model to view)
 
+This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion}.
+
 ## Element to element
 
 Converting a model element to a view element is the most common case of conversion. It is used to create view elements like `<p>` or `<h1>`, that we call "container elements".
@@ -376,3 +378,7 @@ editor.conversion
 ```
 
 First converter has the default priority, `normal`. The second converter will be called earlier because of its higher priority, thus the `source` model attribute will get converted to `src` view attribute instead of `href`.
+
+## Further reading
+
+Check out the {@link framework/guides/deep-dive/conversion/helpers/upcast dedicated guide} with a full list of complementary {@link framework/guides/deep-dive/conversion/upcast upcast conversion helpers}.
