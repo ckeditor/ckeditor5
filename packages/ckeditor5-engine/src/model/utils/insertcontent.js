@@ -318,15 +318,26 @@ class Insertion {
 	_handleNode( node ) {
 		const schema = this.model.schema;
 
+		// TODO: extract to seperate function in utils and tidy it. Same code is in deletecontent
 		if ( this.originalInsertionSelection ) {
-			const selectionParentAttributes = this.originalInsertionSelection.getAttributes();
+			let elementToCopyAttributesFrom;
 
-			for ( const [ attributeName, attributeValue ] of selectionParentAttributes ) {
-				const isAttributeValid = schema.checkAttribute( node, attributeName );
-				const shouldCopyOnReplace = schema.getAttributeProperties( attributeName ).copyOnReplace;
+			if ( this.originalInsertionSelection.isCollapsed ) {
+				elementToCopyAttributesFrom = this.originalInsertionSelection.anchor.parent;
+			} else {
+				elementToCopyAttributesFrom = this.originalInsertionSelection.getSelectedElement();
+			}
 
-				if ( isAttributeValid && shouldCopyOnReplace ) {
-					this.writer.setAttribute( attributeName, attributeValue, node );
+			if ( elementToCopyAttributesFrom ) {
+				const selectionParentAttributes = elementToCopyAttributesFrom.getAttributes();
+
+				for ( const [ attributeName, attributeValue ] of selectionParentAttributes ) {
+					const isAttributeValid = schema.checkAttribute( node, attributeName );
+					const shouldCopyOnReplace = schema.getAttributeProperties( attributeName ).copyOnReplace;
+
+					if ( isAttributeValid && shouldCopyOnReplace ) {
+						this.writer.setAttribute( attributeName, attributeValue, node );
+					}
 				}
 			}
 		}

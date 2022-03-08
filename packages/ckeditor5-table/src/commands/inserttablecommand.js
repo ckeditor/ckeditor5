@@ -70,7 +70,7 @@ export default class InsertTableCommand extends Command {
 
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, options );
-			model.insertContent( table, insertionRange, undefined, { originalInsertionSelection: selection.anchor.parent } );
+			model.insertContent( table, insertionRange, undefined, { originalInsertionSelection: selection } );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );

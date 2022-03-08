@@ -84,14 +84,6 @@ export default class ImageUtils extends Plugin {
 		const model = editor.model;
 		const selection = model.document.selection;
 
-		let insertionContext;
-
-		if ( imageType === 'imageInline' ) {
-			insertionContext = model.document.selection.getSelectedElement();
-		} else {
-			insertionContext = model.document.selection.anchor.parent;
-		}
-
 		imageType = determineImageTypeForInsertion( editor, selectable || selection, imageType );
 
 		// Mix declarative attributes with selection attributes because the new image should "inherit"
@@ -117,7 +109,7 @@ export default class ImageUtils extends Plugin {
 				selectable = findOptimalInsertionRange( selection, model );
 			}
 
-			model.insertContent( imageElement, selectable, undefined, { originalInsertionSelection: insertionContext } );
+			model.insertContent( imageElement, selectable, undefined, { originalInsertionSelection: selection } );
 
 			// Imageing an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {

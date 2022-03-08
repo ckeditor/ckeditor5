@@ -48,7 +48,7 @@ export default class PageBreakCommand extends Command {
 				pageBreakElement,
 				undefined,
 				undefined,
-				{ originalInsertionSelection: model.document.selection.anchor.parent }
+				{ originalInsertionSelection: model.document.selection }
 			);
 
 			let nextElement = pageBreakElement.nextSibling;

@@ -48,7 +48,7 @@ export default class HorizontalLineCommand extends Command {
 				horizontalElement,
 				undefined,
 				undefined,
-				{ originalInsertionSelection: model.document.selection.anchor.parent }
+				{ originalInsertionSelection: model.document.selection }
 			);
 
 			let nextElement = horizontalElement.nextSibling;

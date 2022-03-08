@@ -444,6 +444,8 @@ export default class Model {
 	 * The selection into which the content should be inserted. If not provided the current model document selection will be used.
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] To be used when a model item was passed as `selectable`.
 	 * This param defines a position in relation to that item.
+	 * @param {Object} [options] Insert content options.
+	 * @param {String} [options.originalInsertionSelection=undefined] The code block language.
 	 * @returns {module:engine/model/range~Range} Range which contains all the performed changes. This is a range that, if removed,
 	 * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
 	 * at the insertion position.

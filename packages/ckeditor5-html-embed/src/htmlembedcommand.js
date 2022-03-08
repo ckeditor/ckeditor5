@@ -69,7 +69,7 @@ export default class HtmlEmbedCommand extends Command {
 					htmlEmbedElement,
 					undefined,
 					undefined,
-					{ originalInsertionSelection: model.document.selection.anchor.parent }
+					{ originalInsertionSelection: model.document.selection }
 				);
 
 				writer.setSelection( htmlEmbedElement, 'on' );
