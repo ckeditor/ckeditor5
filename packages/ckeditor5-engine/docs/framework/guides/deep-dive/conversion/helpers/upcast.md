@@ -90,7 +90,7 @@ editor.conversion
 ```
 
 <info-box>
-	If you forget to specify these attributes, another converter, e.g. from General HTML Support feature, may also handle these attributes resulting in duplicating them in the model.
+	If you forget to specify these attributes, another converter, e.g. from {@link features/general-html-support General HTML Support feature}, may also handle these attributes resulting in duplicating them in the model.
 </info-box>
 
 ### Changing converter priority

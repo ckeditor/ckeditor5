@@ -20,6 +20,10 @@ Incoming data becomes the view which is then converted into the model via regist
 
 {@snippet framework/mini-inspector}
 
+<info-box>
+	If you just want to quickly enable some common HTML that is not explicitly supported by the dedicated CKEditor 5 features, use the {@link features/general-html-support General HTML Support feature} instead of writing custom upcast converters.
+</info-box>
+
 ## Registering a converter
 
 In order to instruct the engine how to convert a specific view element into a model element, you need to register an **upcast converter** by using the `editor.conversion.for( 'upcast' )` method:
