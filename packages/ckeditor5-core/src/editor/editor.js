@@ -162,6 +162,9 @@ export default class Editor {
 		 */
 		this.set( 'isReadOnly', false );
 
+		// Stop the event to not allow changing the property by hand.
+		this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
+
 		/**
 		 * The editor's model.
 		 *
@@ -266,7 +269,7 @@ export default class Editor {
 			 *
 			 * @error editor-read-only-missing-lock-id
 			 */
-			throw new CKEditorError( 'editor-read-only-missing-lock-id', { lockId } );
+			throw new CKEditorError( 'editor-read-only-missing-lock-id', null, { lockId } );
 		}
 
 		if ( value === false ) {
@@ -288,19 +291,20 @@ export default class Editor {
 			 *
 			 * @error editor-read-only-duplicated-lock-id
 			 */
-			throw new CKEditorError( 'editor-read-only-duplicated-lock-id', { lockId } );
+			throw new CKEditorError( 'editor-read-only-duplicated-lock-id', null, { lockId } );
 		}
 
 		this._readOnlyStack.add( lockId );
 
 		if ( this._readOnlyStack.size === 1 ) {
-			this.on( 'set:isReadonly', forceReadOnly, { priority: 'highest' } );
+			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 			this.isReadOnly = true;
+			this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 		}
 	}
 
 	/**
-	 * Removes the need of the editor being readonly by the feature with given lock ID.
+	 * Removes the need of the editor being read-only by the feature with given lock ID.
 	 *
 	 * When no feature sets the lock anymore, then the `editor.isReadOnly` will be set to `false`.
 	 *
@@ -314,14 +318,15 @@ export default class Editor {
 			 *
 			 * @error editor-read-only-lock-not-found
 			 */
-			throw new CKEditorError( 'editor-read-only-lock-not-found', { lockId } );
+			throw new CKEditorError( 'editor-read-only-lock-not-found', null, { lockId } );
 		}
 
 		this._readOnlyStack.delete( lockId );
 
 		if ( this._readOnlyStack.size == 0 ) {
-			this.off( 'set:isEnabled', forceReadOnly );
+			this.off( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 			this.isReadOnly = false;
+			this.on( 'set:isReadOnly', stopReadOnlyChangeEvent, { priority: 'highest' } );
 		}
 	}
 
@@ -547,7 +552,13 @@ mix( Editor, ObservableMixin );
  * @member {Object} module:core/editor/editor~Editor.defaultConfig
  */
 
-function forceReadOnly( evt ) {
-	evt.return = true;
+function stopReadOnlyChangeEvent( evt, name, value, oldValue ) {
+	// eslint-disable-next-line no-undef
+	console.warn(
+		'Editor#isReadOnly should be now changed using lock mechanism: ' +
+		'`Editor#setReadOnlyLock( lockId )` and `Editor#clearReadOnlyLock( lockId )`.'
+	);
+
+	evt.return = oldValue;
 	evt.stop();
 }
