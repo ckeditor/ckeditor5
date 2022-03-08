@@ -21,8 +21,9 @@ import {
 describe( 'image plugin integration', () => {
 	let element;
 	let editor, model;
-	let blockCommand;
+
 	const imgSrc = 'foo/bar.jpg';
+
 	testUtils.createSinonSandbox();
 
 	beforeEach( async () => {
@@ -47,12 +48,14 @@ describe( 'image plugin integration', () => {
 	} );
 
 	describe( 'changing image type', () => {
+		let blockCommand, inlineCommand;
+
 		beforeEach( () => {
 			blockCommand = editor.commands.get( 'imageTypeBlock' );
-			// inlineCommand = editor.commands.get( 'imageTypeInline' );
+			inlineCommand = editor.commands.get( 'imageTypeInline' );
 		} );
 
-		describe( 'block image to inline image', () => {
+		describe( 'inline image to block image', () => {
 			it( 'should replace inline image with a block image', () => {
 				setModelData( model, modelList( [
 					`* <paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
@@ -105,22 +108,115 @@ describe( 'image plugin integration', () => {
 				);
 			} );
 
-			it( 'should replace block image with a paragraphed inline image when an image is in a block', () => {
+			it( 'should replace an inline image with a paragraphed inline image when an image is in a block', () => {
 				setModelData( model, modelList( [
-					'* <paragraph>Foo</paragraph>' +
-					`  [<imageInline src="${ imgSrc }"></imageInline>]`
+					'* Foo',
+					`  <paragraph>[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
 				] ) );
 
 				blockCommand.execute();
 
 				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
 					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]`
+				);
+			} );
+
+			it( 'should split an image after paragraph and create an image block if image inline is at the end', () => {
+				setModelData( model, modelList( [
+					'* Foo',
+					`  <paragraph>Bar [<imageInline src="${ imgSrc }"></imageInline>]</paragraph>`
+				] ) );
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar </paragraph>' +
+					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]`
+				);
+			} );
+
+			it( 'should split an image before paragraph and create an image block if image inline is at the start', () => {
+				setModelData( model, modelList( [
+					'* Foo',
+					`  <paragraph>[<imageInline src="${ imgSrc }"></imageInline>] Bar</paragraph>`
+				] ) );
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]` +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted"> Bar</paragraph>'
+				);
+			} );
+
+			it( 'should split a paragraph into two and insert a block image between', () => {
+				setModelData( model, modelList( [
+					'* Foo',
+					`  <paragraph>Bar [<imageInline src="${ imgSrc }"></imageInline>] Yar</paragraph>`
+				] ) );
+
+				blockCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar </paragraph>' +
+					`[<imageBlock listIndent="0" listItemId="000" listType="bulleted" src="${ imgSrc }"></imageBlock>]` +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted"> Yar</paragraph>'
 				);
 			} );
 		} );
 
-		// describe( 'block image to inline image', () => {
+		describe( 'block image to inline image', () => {
+			it( 'should change image block to inline block when an image is a first item in a list', () => {
+				setModelData( model, modelList( [
+					`* [<imageBlock src="${ imgSrc }"></imageBlock>]`
+				] ) );
 
-		// } );
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should change image block to inline block when an image is a block item in a list', () => {
+				setModelData( model, modelList( [
+					'* Foo',
+					`  [<imageBlock src="${ imgSrc }"></imageBlock>]`
+				] ) );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>'
+				);
+			} );
+
+			it( 'should change image block to inline block when an image is not a last block item in a list', () => {
+				setModelData( model, modelList( [
+					'* Foo',
+					`  [<imageBlock src="${ imgSrc }"></imageBlock>]`,
+					'  Bar'
+				] ) );
+
+				inlineCommand.execute();
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>' +
+					'<paragraph listIndent="0" listItemId="000" listType="bulleted">Bar</paragraph>'
+				);
+			} );
+		} );
 	} );
 } );
