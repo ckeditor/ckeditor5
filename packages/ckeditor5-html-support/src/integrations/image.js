@@ -84,6 +84,10 @@ export default class ImageElementSupport extends Plugin {
 function viewToModelImageAttributeConverter( dataFilter ) {
 	return dispatcher => {
 		dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+			if ( !data.modelRange ) {
+				return;
+			}
+
 			const viewImageElement = data.viewItem;
 			const viewContainerElement = viewImageElement.parent;
 
