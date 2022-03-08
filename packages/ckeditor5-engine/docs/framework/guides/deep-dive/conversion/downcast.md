@@ -194,7 +194,11 @@ The above converter will convert all `<myElement>` model elements to `<div class
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
+</info-box>
+
+<info-box>
+	For editor users, the best interaction with complex structures is when they act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ## Further reading

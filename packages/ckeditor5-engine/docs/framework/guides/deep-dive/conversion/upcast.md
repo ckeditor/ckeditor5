@@ -112,7 +112,7 @@ The above converter will handle the conversion of every `<div class="example">` 
 {@snippet framework/mini-inspector-upcast-element}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
 ## Converting structures
@@ -194,7 +194,7 @@ The above converter will detect all `<div class="wrapper"><div class="inner-wrap
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
 ## Further reading
