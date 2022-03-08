@@ -149,7 +149,7 @@ editor.conversion
 Note that in this example we create two elements, which is not possible by using the previously mentioned `elementToElement()` helper.
 
 <info-box>
-	For editor users, the best interaction with complex structures is when they act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ### Handling model element’s children
@@ -175,7 +175,7 @@ editor.conversion
 ```
 
 <info-box>
-	For editor users, the best interaction with complex structures is when they act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
 </info-box>
 
 ## Attribute to element
