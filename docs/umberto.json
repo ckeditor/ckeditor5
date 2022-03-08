@@ -281,6 +281,11 @@
 					]
 				},
 				{
+					"name": "General HTML Support",
+					"id": "features-ghs",
+					"slug": "ghs"
+				},
+				{
 					"name": "Images",
 					"id": "features-images",
 					"slug": "images",

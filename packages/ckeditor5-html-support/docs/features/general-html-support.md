@@ -1,5 +1,6 @@
 ---
-category: features
+category: features-ghs
+order: 10
 modified_at: 2021-10-25
 ---
 
@@ -313,55 +314,6 @@ dataFilter.allowElement( 'object-block' );
 It is possible to add support for arbitrary styles, classes and other attributes to existing CKEditor 5 features (such as paragraphs, headings, list items, etc.). Most of the existing CKEditor 5 features can already be extended this way, however, some cannot yet. This includes e.g.: the `<ul>` and `<ol>` elements of the list feature (see: [#9917](https://github.com/ckeditor/ckeditor5/issues/9917)).
 
 We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/). You can also track other [GHS-related issues](https://github.com/ckeditor/ckeditor5/issues/9856) on GitHub.
-
-## HTML comments
-
-By default, all HTML comments are filtered out during the editor initialization. The {@link module:html-support/htmlcomment~HtmlComment} feature allows developers to keep them in the document content and retrieve them back, e.g. while {@link builds/guides/integration/saving-data saving the editor data}. The comments are transparent from the users point of view and they are not displayed in the editable content.
-
-<info-box>
-	The HTML comment feature is **experimental and not yet production-ready**.
-
-	The support for HTML comments is at the basic level so far - see the [known issues](#known-issues-2) section below.
-</info-box>
-
-### Demo
-
-The CKEditor 5 instance below is configured to keep the HTML comments in the document content. You can view the source of the document using {@link features/source-editing source editing} feature. Toggle the source editing mode {@icon @ckeditor/ckeditor5-source-editing/theme/icons/source-editing.svg Source editing} to see that the HTML comment is present in the document source. You can uncomment the paragraph below the picture and upon leaving the source editing mode, you will see this paragraph in the editable area.
-
-{@snippet features/html-comment}
-
-### Installation
-
-To add this feature to your rich-text editor, install the [`@ckeditor/ckeditor5-html-support`](https://www.npmjs.com/package/@ckeditor/ckeditor5-html-support) package:
-
-```plaintext
-npm install --save @ckeditor/ckeditor5-html-support
-```
-
-Then add it to the editor configuration:
-
-```js
-import HtmlComment from '@ckeditor/ckeditor5-html-support/src/htmlcomment';
-
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [ HtmlComment, ... ],
-	} )
-	.then( ... )
-	.catch( ... );
-```
-
-<info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
-</info-box>
-
-HTML comment feature does not require any configuration.
-
-### Known issues
-
-The main issue with the HTML comments feature is that comments can be easily repositioned or lost in various cases [#10118](https://github.com/ckeditor/ckeditor5/issues/10118), [#10119](https://github.com/ckeditor/ckeditor5/issues/10119). Also copying and pasting (or dragging and dropping) elements containing HTML comments within the editor does not work as expected [#10127](https://github.com/ckeditor/ckeditor5/issues/10127).
-
-We are open for feedback, so if you find any issue, feel free to report it in the [main CKEditor 5 repository](https://github.com/ckeditor/ckeditor5/issues/).
 
 ## Related features
 
