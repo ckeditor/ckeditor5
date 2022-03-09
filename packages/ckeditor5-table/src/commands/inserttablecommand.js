@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { findOptimalInsertionRange } from 'ckeditor5/src/widget';
 
 /**
  * The insert table command.
@@ -55,8 +54,6 @@ export default class InsertTableCommand extends Command {
 		const tableUtils = this.editor.plugins.get( 'TableUtils' );
 		const config = this.editor.config.get( 'table' );
 
-		const insertionRange = findOptimalInsertionRange( selection, model );
-
 		const defaultRows = config.defaultHeadings.rows;
 		const defaultColumns = config.defaultHeadings.columns;
 
@@ -70,7 +67,8 @@ export default class InsertTableCommand extends Command {
 
 		model.change( writer => {
 			const table = tableUtils.createTable( writer, options );
-			model.insertContent( table, insertionRange, undefined, { originalInsertionSelection: selection } );
+
+			model.insertObject( table, selection, undefined );
 
 			writer.setSelection( writer.createPositionAt( table.getNodeByPath( [ 0, 0, 0 ] ), 0 ) );
 		} );

@@ -27,6 +27,7 @@ import getSelectedContent from './utils/getselectedcontent';
 import { injectSelectionPostFixer } from './utils/selection-post-fixer';
 import { autoParagraphEmptyRoots } from './utils/autoparagraphing';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import insertObject from '@ckeditor/ckeditor5-widget/src/insertobject';
 
 // @if CK_DEBUG_ENGINE // const { dumpTrees } = require( '../dev-utils/utils' );
 // @if CK_DEBUG_ENGINE // const { OperationReplayer } = require( '../dev-utils/operationreplayer' ).default;
@@ -452,6 +453,20 @@ export default class Model {
 	 */
 	insertContent( content, selectable, placeOrOffset, options = { originalInsertionSelection: undefined } ) {
 		return insertContent( this, content, selectable, placeOrOffset, options );
+	}
+
+	/*
+		Place for exceptional documentation
+		Object - an object that we would like to insert
+		Selectable - 99% - document selection, but sometimes custom one.
+		Offset - just to pass to insert content
+		Options -     	setSelection: 'on|in|after',
+						findOptimalPosition: true,
+						// Maybe:
+						doNotInheritBlockAttributes: true
+	*/
+	insertObject( object, selectable, offset, options ) {
+		return insertObject( this, object, selectable, offset, options );
 	}
 
 	/**

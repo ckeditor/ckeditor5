@@ -47,7 +47,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * would return the model to the state before the insertion. If no changes were preformed by `insertContent`, returns a range collapsed
  * at the insertion position.
  */
-export default function insertContent( model, content, selectable, placeOrOffset, options = { originalInsertionSelection: undefined } ) {
+export default function insertContent( model, content, selectable, placeOrOffset ) {
 	return model.change( writer => {
 		let selection;
 
@@ -63,7 +63,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
 			model.deleteContent( selection, { doNotAutoparagraph: true } );
 		}
 
-		const insertion = new Insertion( model, writer, selection.anchor, options.originalInsertionSelection );
+		const insertion = new Insertion( model, writer, selection.anchor );
 
 		let nodesToInsert;
 
@@ -105,9 +105,7 @@ export default function insertContent( model, content, selectable, placeOrOffset
  * @private
  */
 class Insertion {
-	constructor( model, writer, position, originalInsertionSelection ) {
-		this.originalInsertionSelection = originalInsertionSelection;
-
+	constructor( model, writer, position ) {
 		/**
 		 * The model in context of which the insertion should be performed.
 		 *
@@ -316,32 +314,6 @@ class Insertion {
 	 * @param {module:engine/model/node~Node} node
 	 */
 	_handleNode( node ) {
-		const schema = this.model.schema;
-
-		// TODO: extract to seperate function in utils and tidy it. Same code is in deletecontent
-		if ( this.originalInsertionSelection ) {
-			let elementToCopyAttributesFrom;
-
-			if ( this.originalInsertionSelection.isCollapsed ) {
-				elementToCopyAttributesFrom = this.originalInsertionSelection.anchor.parent;
-			} else {
-				elementToCopyAttributesFrom = this.originalInsertionSelection.getSelectedElement();
-			}
-
-			if ( elementToCopyAttributesFrom ) {
-				const selectionParentAttributes = elementToCopyAttributesFrom.getAttributes();
-
-				for ( const [ attributeName, attributeValue ] of selectionParentAttributes ) {
-					const isAttributeValid = schema.checkAttribute( node, attributeName );
-					const shouldCopyOnReplace = schema.getAttributeProperties( attributeName ).copyOnReplace;
-
-					if ( isAttributeValid && shouldCopyOnReplace ) {
-						this.writer.setAttribute( attributeName, attributeValue, node );
-					}
-				}
-			}
-		}
-
 		// Let's handle object in a special way.
 		// * They should never be merged with other elements.
 		// * If they are not allowed in any of the selection ancestors, they could be either autoparagraphed or totally removed.

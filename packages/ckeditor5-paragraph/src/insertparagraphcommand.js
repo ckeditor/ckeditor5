@@ -61,7 +61,6 @@ export default class InsertParagraphCommand extends Command {
 			}
 
 			model.insertContent( paragraph, position, undefined, { originalInsertionSelection } );
-			// model.insertContent( paragraph, position, undefined, { originalInsertionSelection: options.insertionContextElement } );
 
 			writer.setSelection( paragraph, 'in' );
 		} );
