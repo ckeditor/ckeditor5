@@ -1,0 +1,63 @@
+/* Accordion */
+.helpjuice-accordion {
+	position: relative;
+	background-color: #F3F5F8;
+	padding: 10px;
+}
+
+.helpjuice-accordion-title, .helpjuice-accordion-body {
+	background: #FFFFFF;
+}
+
+/* Accordion Title */
+.helpjuice-accordion-title {
+	margin: 0;
+	padding: 10px 60px 10px 10px;
+}
+
+/* Accordion Body */
+.helpjuice-accordion-body {
+	display: none;
+	margin: 10px 0 0;
+	padding: 10px;
+}
+
+.helpjuice-accordion-body.active {
+	display: block;
+}
+
+/* Toggle button */
+.helpjuice-accordion-toggle {
+	position: absolute!important;
+	top: 22px;
+	right: 20px;
+	z-index: 100;
+	outline: none!important;
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #e1e1e1;
+	border-radius: 50%;
+}
+
+.helpjuice-accordion-toggle::before {
+	content: "";
+	width: 7px;
+	height: 7px;
+	border-left: 2px solid #999999;
+	border-top: 2px solid #999999;
+	display: block;
+	transform: rotate(-135deg);
+	margin-top: -5px;
+}
+
+.helpjuice-accordion-toggle:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-accordion-toggle div {
+	display: none;
+}

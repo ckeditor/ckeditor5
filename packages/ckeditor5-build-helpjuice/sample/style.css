@@ -1,0 +1,24 @@
+.container {
+	max-width: 962px;
+	margin: 30px auto 0;
+}
+
+.container > h1 {
+	text-align: center;
+}
+
+.ck-fontsize-option .ck-button__label {
+	font-size: 14px!important;
+}
+
+.ck-content {
+	height: 100vh;
+}
+
+.ck-content .todo-list .todo-list__label > input {
+	margin-bottom: 6px!important;
+}
+
+.ck.ck-toolbar__items > button.ck-button:nth-of-type(17) svg {
+	width: 16px;
+}

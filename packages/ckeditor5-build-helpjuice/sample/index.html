@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Helpjuice Editor</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<div class="container">
+		<h1>Helpjuice Editor</h1>
+
+		<div id="helpjuice-editor">
+
+		</div>
+	</div>
+
+	<script src="../build/hjeditor.js"></script>
+	<script src="../node_modules/@ckeditor/ckeditor5-inspector/build/inspector.js"></script>
+	<script src="editor.js"></script>
+
+	<!-- Stimulus Controllers -->
+	<script type="module">
+    import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+    window.Stimulus = Application.start()
+
+    Stimulus.register("accordion", class extends Controller {
+      	static targets = ["body"]
+		static classes = ["active"]
+
+		toggle() {
+			this.bodyTarget.classList.toggle("active")
+		}
+    })
+  </script>
+</body>
+
+</html>
