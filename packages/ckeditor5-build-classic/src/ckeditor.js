@@ -44,7 +44,7 @@ import SpecialCharactersEssentials from '@ckeditor/ckeditor5-special-characters/
 import {SourceEditing} from "@ckeditor/ckeditor5-source-editing";
 import {Subscript, Superscript} from "@ckeditor/ckeditor5-basic-styles";
 import {RemoveFormat} from "@ckeditor/ckeditor5-remove-format";
-import {GeneralHtmlSupport} from "@ckeditor/ckeditor5-html-support";
+import GeneralHtmlSupport from "@ckeditor/ckeditor5-html-support/src/generalhtmlsupport";
 
 
 class ClassicEditor extends ClassicEditorBase {}
