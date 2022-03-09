@@ -1,3 +1,7 @@
+This is Helpjuice version of CK Editor 5
+
+It is important that you use the stable branch of a build, not the master branch. The master branch might contain changes which are not yet compatible with the versions of CKEditor 5 source packages that were published on npm.
+
 CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub&url=https%3A%2F%2Fgithub.com%2Fckeditor%2Fckeditor5)
 ===================================
 
