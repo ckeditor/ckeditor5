@@ -47,6 +47,7 @@ import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 
 // Custom Plugins
 import Accordion from './plugins/accordion/accordion';
+import Tab from './plugins/tab/tab';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -90,7 +91,8 @@ HelpjuiceEditor.builtinPlugins = [
 	HtmlEmbed,
 	RemoveFormat,
 	SourceEditing,
-	Accordion
+	Accordion,
+	Tab
 ];
 
 // Editor configuration.
@@ -158,7 +160,8 @@ HelpjuiceEditor.defaultConfig = {
 			'removeFormat',
 			'undo',
 			'redo',
-			'accordion'
+			'accordion',
+			'tab'
 		],
 		shouldNotGroupWhenFull: true
 	},

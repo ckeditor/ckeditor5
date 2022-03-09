@@ -5,6 +5,35 @@
 	padding: 10px;
 }
 
+.helpjuice-accordion::before {
+	content: "Accordion";
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: #e1e1e1;
+	color: #999999;
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 10px;
+	z-index: 9999;
+	border-radius: 2px;
+}
+
+.helpjuice-accordion.ck-widget,
+.ck-blurred .helpjuice-accordion.ck-widget {
+	outline: 3px solid #e1e1e1!important;
+}
+.helpjuice-accordion.ck-widget:hover {
+	outline-color: #ffc83d!important;
+}
+
+.ck-focused .helpjuice-accordion.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-accordion.ck-widget.ck-widget_selected:hover {
+	outline-color: #1f89e5!important;
+}
+
 .helpjuice-accordion-title, .helpjuice-accordion-body {
 	background: #FFFFFF;
 }
@@ -29,7 +58,7 @@
 /* Toggle button */
 .helpjuice-accordion-toggle {
 	position: absolute!important;
-	top: 22px;
+	top: 25px;
 	right: 20px;
 	z-index: 100;
 	outline: none!important;

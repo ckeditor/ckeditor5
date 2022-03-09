@@ -90,6 +90,17 @@ module.exports = {
 				]
 			}
 		]
-	}
+	},
+	watch: true,
+
+	watchOptions: {
+    	ignored: '/node_modules',
+  	},
+
+	// Useful for debugging.
+	devtool: 'source-map',
+
+	// By default webpack logs warnings if the bundle is bigger than 200kb.
+	performance: { hints: false }
 };
 

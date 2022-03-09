@@ -1,0 +1,92 @@
+/* tab */
+.helpjuice-tab {
+	position: relative;
+	background-color: #F3F5F8;
+	padding: 10px;
+}
+
+.helpjuice-tab::before {
+	content: "Tab";
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: #e1e1e1;
+	color: #999999;
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 10px;
+	z-index: 9999;
+	border-radius: 2px;
+}
+
+.helpjuice-tab.ck-widget,
+.ck-blurred .helpjuice-tab.ck-widget {
+	outline: 3px solid #e1e1e1!important;
+}
+.helpjuice-tab.ck-widget:hover {
+	outline-color: #ffc83d!important;
+}
+
+.ck-focused .helpjuice-tab.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-tab.ck-widget.ck-widget_selected:hover {
+	outline-color: #1f89e5!important;
+}
+
+.helpjuice-tab-title, .helpjuice-tab-body {
+	background: #FFFFFF;
+}
+
+/* tab Title */
+.helpjuice-tab-title {
+	margin: 0;
+	padding: 10px 60px 10px 10px;
+}
+
+/* tab Body */
+.helpjuice-tab-body {
+	display: none;
+	margin: 10px 0 0;
+	padding: 10px;
+}
+
+.helpjuice-tab-body.active {
+	display: block;
+}
+
+/* Toggle button */
+.helpjuice-tab-toggle {
+	position: absolute!important;
+	top: 25px;
+	right: 20px;
+	z-index: 100;
+	outline: none!important;
+	cursor: pointer;
+	width: 24px;
+	height: 24px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: #e1e1e1;
+	border-radius: 50%;
+}
+
+.helpjuice-tab-toggle::before {
+	content: "";
+	width: 7px;
+	height: 7px;
+	border-left: 2px solid #999999;
+	border-top: 2px solid #999999;
+	display: block;
+	transform: rotate(-135deg);
+	margin-top: -5px;
+}
+
+.helpjuice-tab-toggle:hover {
+	outline-color: none!important;
+}
+
+.helpjuice-tab-toggle div {
+	display: none;
+}

@@ -1,3 +1,7 @@
+html {
+	font-family: "Open Sans", sans-serif;
+}
+
 .container {
 	max-width: 962px;
 	margin: 30px auto 0;
@@ -19,6 +23,7 @@
 	margin-bottom: 6px!important;
 }
 
-.ck.ck-toolbar__items > button.ck-button:nth-of-type(17) svg {
+.ck.ck-toolbar__items > button.ck-button:nth-of-type(17) svg,
+.ck.ck-toolbar__items > button.ck-button:nth-of-type(18) svg {
 	width: 16px;
 }
