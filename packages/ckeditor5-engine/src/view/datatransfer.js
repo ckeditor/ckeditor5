@@ -4,7 +4,7 @@
  */
 
 /**
- * @module clipboard/datatransfer
+ * @module engine/view/datatransfer
  */
 
 /**
