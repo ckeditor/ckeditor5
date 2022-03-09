@@ -247,51 +247,51 @@ export default class Editor {
 
 	/**
 	 * Returns `true` if some feature with the given lock ID ensures the editor being in the read-only state.
+	 *
+	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
 	 */
 	hasReadOnlyLock( lockId ) {
 		return this._readOnlyStack.has( lockId );
 	}
 
 	/**
-	 * Sets the need of the editor being read-only by the feature with given lock ID.
+	 * Sets the read-only lock on the editor with given lock ID.
 	 *
-	 * When at least one feature needs to set the read-only mode, then the `editor.isReadOnly` will be set to `true`.
+	 * When at least one feature sets the read-only lock, then the {@link #isReadOnly `isReadOnly` property} will be set to `true`.
+	 * Otherwise it is set to `false`.
 	 *
-	 * You can remove the lock using the {@link #clearRedaOnlyLock} method.
+	 * 		editor.setReadOnlyLock( 'my-feature-lock-id' );
 	 *
-	 * @param {String} lockId
-	 * @param {Boolean} [value]
+	 * You can remove the lock using the {@link #clearReadOnlyLock} method afterwards.
+	 *
+	 * 		editor.clearReadOnlyLock( 'my-feature-lock-id' );
+	 *
+	 * It is possible to pass the additional argument - `value` to determine if the lock should be set or removed.
+	 *
+	 * 		let shouldMyFeatureSetReadOnlyMode = false;
+	 * 		editor.setReadOnlyLock( 'my-feature-lock-id', shouldMyFeatureSetReadOnlyMode );
+	 *
+	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
+	 * @param {Boolean} [value=true] An optional value indicating whether the lock should be set or removed.
 	 */
-	setReadOnlyLock( lockId, value ) {
-		if ( typeof lockId === 'undefined' ) {
+	setReadOnlyLock( lockId, value = true ) {
+		if ( typeof lockId !== 'string' ) {
 			/**
-			 * The lock ID is missing. Make sure that you pass the ID to the `editor.setReadOnlyLock()` method.
+			 * The lock ID is missing or it is not a string.
 			 *
-			 * @error editor-read-only-missing-lock-id
+			 * @error editor-read-only-lock-id-not-a-string
 			 */
-			throw new CKEditorError( 'editor-read-only-missing-lock-id', null, { lockId } );
+			throw new CKEditorError( 'editor-read-only-lock-id-not-a-string', null, { lockId } );
 		}
 
 		if ( value === false ) {
-			if ( this.hasReadOnlyLock( lockId ) ) {
-				this.clearReadOnlyLock( lockId );
-			}
+			this.clearReadOnlyLock( lockId );
 
-			return;
-		}
-
-		if ( value === true && this.hasReadOnlyLock( lockId ) ) {
 			return;
 		}
 
 		if ( this._readOnlyStack.has( lockId ) ) {
-			/**
-			 * The lock ID has been already registered. Make sure that you remove the lock ID correctly with
-			 * the `editor.clearReadOnlyLock()` method.
-			 *
-			 * @error editor-read-only-duplicated-lock-id
-			 */
-			throw new CKEditorError( 'editor-read-only-duplicated-lock-id', null, { lockId } );
+			return;
 		}
 
 		this._readOnlyStack.add( lockId );
@@ -304,21 +304,19 @@ export default class Editor {
 	}
 
 	/**
-	 * Removes the need of the editor being read-only by the feature with given lock ID.
+	 * Removes the read-only lock from the editor with given lock ID.
 	 *
-	 * When no feature sets the lock anymore, then the `editor.isReadOnly` will be set to `false`.
+	 * When no lock is present on the editor anymore, then the {@link #isReadOnly `isReadOnly` property} will be set to `false`.
 	 *
-	 * @param {String} lockId
+	 * @param {String} lockId The lock ID for setting the editor to the read-only state.
 	 */
 	clearReadOnlyLock( lockId ) {
+		if ( typeof lockId !== 'string' ) {
+			throw new CKEditorError( 'editor-read-only-lock-id-not-a-string', null, { lockId } );
+		}
+
 		if ( !this._readOnlyStack.has( lockId ) ) {
-			/**
-			 * The lock ID cannot be found. Make sure that you add the lock correctly with
-			 * the `editor.setReadOnlyLock()` method before calling the `editor.clearReadOnlyLock()` method.
-			 *
-			 * @error editor-read-only-lock-not-found
-			 */
-			throw new CKEditorError( 'editor-read-only-lock-not-found', null, { lockId } );
+			return;
 		}
 
 		this._readOnlyStack.delete( lockId );

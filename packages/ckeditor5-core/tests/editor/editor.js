@@ -492,32 +492,58 @@ describe( 'Editor', () => {
 			expect( editor.isReadOnly ).to.false;
 		} );
 
-		it( 'setting read-only lock should throw an error when the lock ID is duplicated', () => {
+		it( 'setting read-only lock twice should not throw an error for the same lock ID', () => {
 			const editor = new TestEditor();
 
 			editor.setReadOnlyLock( 'lock' );
+			editor.setReadOnlyLock( 'lock' );
 
-			expectToThrowCKEditorError( () => {
-				editor.setReadOnlyLock( 'lock' );
-			}, /editor-read-only-duplicated-lock-id/, null, { lockId: 'lock' } );
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.clearReadOnlyLock( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.false;
 		} );
 
-		it( 'setting read-only lock should throw an error when the lock ID is undefined', () => {
+		it( 'clearing read-only lock should not throw an error if the lock ID is not present', () => {
+			const editor = new TestEditor();
+
+			editor.clearReadOnlyLock( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.false;
+
+			editor.setReadOnlyLock( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.true;
+
+			editor.clearReadOnlyLock( 'lock' );
+			editor.clearReadOnlyLock( 'lock' );
+
+			expect( editor.isReadOnly ).to.be.false;
+		} );
+
+		it( 'setting read-only lock should throw an error when the lock ID is not a string', () => {
 			const editor = new TestEditor();
 
 			expectToThrowCKEditorError( () => {
 				editor.setReadOnlyLock();
-			}, /editor-read-only-missing-lock-id/, null, { lockId: undefined } );
-		} );
-
-		it( 'clearing read-only lock should throw an error when the lock ID is undefined', () => {
-			const editor = new TestEditor();
-
-			editor.setReadOnlyLock( 'lock' );
+			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: undefined } );
 
 			expectToThrowCKEditorError( () => {
-				editor.clearReadOnlyLock( 'missing-lock-id' );
-			}, /editor-read-only-lock-not-found/, null, { lockId: 'missing-lock-id' } );
+				editor.setReadOnlyLock( 123 );
+			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: 123 } );
+		} );
+
+		it( 'clearing read-only lock should throw an error when the lock ID is not a string', () => {
+			const editor = new TestEditor();
+
+			expectToThrowCKEditorError( () => {
+				editor.clearReadOnlyLock();
+			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: undefined } );
+
+			expectToThrowCKEditorError( () => {
+				editor.clearReadOnlyLock( 123 );
+			}, /editor-read-only-lock-id-not-a-string/, null, { lockId: 123 } );
 		} );
 	} );
 
