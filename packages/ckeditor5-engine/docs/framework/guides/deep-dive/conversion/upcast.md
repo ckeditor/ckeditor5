@@ -3,6 +3,7 @@ category: framework-deep-dive-conversion
 menu-title: View to model (upcast)
 order: 30
 since: 33.0.0
+modified_at: 2022-03-02
 ---
 
 # View to model (upcast)
@@ -18,6 +19,10 @@ The upcast process conversion happens every time any data is being loaded into t
 Incoming data becomes the view which is then converted into the model via registered converters.
 
 {@snippet framework/mini-inspector}
+
+<info-box>
+	If you just want to quickly enable some common HTML tags that are not explicitly supported by the dedicated CKEditor 5 features, you can use the {@link features/general-html-support General HTML Support} feature instead of writing your own custom upcast converters.
+</info-box>
 
 ## Registering a converter
 
@@ -111,7 +116,7 @@ The above converter will handle the conversion of every `<div class="example">` 
 {@snippet framework/mini-inspector-upcast-element}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
 ## Converting structures
@@ -193,9 +198,9 @@ The above converter will detect all `<div class="wrapper"><div class="inner-wrap
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
-## Read next
+## Further reading
 
-{@link framework/guides/deep-dive/conversion/helpers/intro Conversion helpers}
+If you want to learn more about upcast helpers mentioned in this guide, we have {@link framework/guides/deep-dive/conversion/helpers/upcast rounded them up} for you with complete descriptions and examples. We also recommend you to check out the {@link framework/guides/deep-dive/conversion/downcast downcast conversion} guide and learn how to convert the editor model state into data output and editing view.

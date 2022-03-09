@@ -3,9 +3,12 @@ category: framework-deep-dive-conversion-helpers
 menu-title: Downcast helpers (model to view)
 order: 20
 since: 33.0.0
+modified_at: 2022-03-02
 ---
 
 # Downcast helpers (model to view)
+
+This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/downcast downcast conversion}.
 
 ## Element to element
 
@@ -145,7 +148,9 @@ editor.conversion
 
 Note that in this example we create two elements, which is not possible by using the previously mentioned `elementToElement()` helper.
 
-Another thing to remember is that in a real-life scenario it would be recommended for this element to be {@link framework/guides/tutorials/implementing-a-block-widget a widget}.
+<info-box>
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+</info-box>
 
 ### Handling model element’s children
 
@@ -168,6 +173,10 @@ editor.conversion
 		}
 	} );
 ```
+
+<info-box>
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+</info-box>
 
 ## Attribute to element
 
@@ -375,3 +384,7 @@ editor.conversion
 ```
 
 First converter has the default priority, `normal`. The second converter will be called earlier because of its higher priority, thus the `source` model attribute will get converted to `src` view attribute instead of `href`.
+
+## Further reading
+
+Check out the {@link framework/guides/deep-dive/conversion/helpers/upcast dedicated guide} with a full list of complementary {@link framework/guides/deep-dive/conversion/upcast upcast conversion helpers}.

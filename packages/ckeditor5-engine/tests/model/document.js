@@ -454,7 +454,7 @@ describe( 'Document', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should be fired when updated marker affects data', () => {
+		it( 'should be fired when marker changes affecting data', () => {
 			const root = doc.createRoot();
 			root._appendChild( new Text( 'foo' ) );
 
@@ -462,18 +462,13 @@ describe( 'Document', () => {
 			const changeDataSpy = sandbox.spy();
 			const changeSpy = sandbox.spy();
 
-			doc.on( 'change:data', changeDataSpy );
-			doc.on( 'change', changeSpy );
-
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
-				writer.addMarker( 'name', { range, usingOperation: false } );
+				writer.addMarker( 'name', { range, usingOperation: true } );
 			} );
 
-			sinon.assert.calledOnce( changeSpy );
-			sinon.assert.notCalled( changeDataSpy );
-
-			sandbox.resetHistory();
+			doc.on( 'change:data', changeDataSpy );
+			doc.on( 'change', changeSpy );
 
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 3 ) );
@@ -488,6 +483,31 @@ describe( 'Document', () => {
 			model.change( writer => {
 				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
 				writer.updateMarker( 'name', { affectsData: false, range } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( changeDataSpy );
+		} );
+
+		it( 'should not be fired when marker does not affect data', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const sandbox = sinon.createSandbox();
+			const changeDataSpy = sandbox.spy();
+			const changeSpy = sandbox.spy();
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 4 ) );
+				writer.addMarker( 'name', { range, usingOperation: false, affectsData: false } );
+			} );
+
+			doc.on( 'change:data', changeDataSpy );
+			doc.on( 'change', changeSpy );
+
+			model.change( writer => {
+				const range = writer.createRange( writer.createPositionAt( root, 2 ), writer.createPositionAt( root, 3 ) );
+				writer.updateMarker( 'name', { range } );
 			} );
 
 			sinon.assert.calledOnce( changeSpy );

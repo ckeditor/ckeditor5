@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-autoformat",
-  "version": "32.0.0",
+  "version": "33.0.0",
   "description": "Autoformatting feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -12,24 +12,24 @@
   ],
   "main": "src/index.js",
   "dependencies": {
-    "ckeditor5": "^32.0.0"
+    "ckeditor5": "^33.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^32.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^32.0.0",
-    "@ckeditor/ckeditor5-code-block": "^32.0.0",
-    "@ckeditor/ckeditor5-core": "^32.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^33.0.0",
+    "@ckeditor/ckeditor5-code-block": "^33.0.0",
+    "@ckeditor/ckeditor5-core": "^33.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^28.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^32.0.0",
-    "@ckeditor/ckeditor5-engine": "^32.0.0",
-    "@ckeditor/ckeditor5-enter": "^32.0.0",
-    "@ckeditor/ckeditor5-heading": "^32.0.0",
-    "@ckeditor/ckeditor5-horizontal-line": "^32.0.0",
-    "@ckeditor/ckeditor5-list": "^32.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^32.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^32.0.0",
-    "@ckeditor/ckeditor5-typing": "^32.0.0",
-    "@ckeditor/ckeditor5-undo": "^32.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^33.0.0",
+    "@ckeditor/ckeditor5-engine": "^33.0.0",
+    "@ckeditor/ckeditor5-enter": "^33.0.0",
+    "@ckeditor/ckeditor5-heading": "^33.0.0",
+    "@ckeditor/ckeditor5-horizontal-line": "^33.0.0",
+    "@ckeditor/ckeditor5-list": "^33.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^33.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^33.0.0",
+    "@ckeditor/ckeditor5-typing": "^33.0.0",
+    "@ckeditor/ckeditor5-undo": "^33.0.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },
