@@ -38,47 +38,61 @@ export default class StyleEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const stylesMap = prepareStylesMap( editor );
+		const dataSchema = editor.plugins.get( 'DataSchema' );
+		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
+		const styles = new Styles( normalizedStyleDefinitions );
 
-		editor.commands.add( 'style', new StyleCommand( editor, stylesMap ) );
+		editor.commands.add( 'style', new StyleCommand( editor, styles ) );
 	}
 }
 
-// TODO
-//
-// @private
-// @param editor
-function prepareStylesMap( editor ) {
-	const stylesMap = new Map( [
-		[ 'elementToDefinition', new Map() ],
-		[ 'classToDefinition', new Map() ]
-	] );
+class Styles {
+	constructor( styleDefinitions ) {
+		this.styleTypes = [ 'inline', 'block' ];
+		this.styleDefinitions = styleDefinitions;
+		this.elementToDefinition = new Map();
+		this.classToDefinition = new Map();
 
-	convertStyleDefinitionsToStylesMap( editor, stylesMap, 'inline' );
-	convertStyleDefinitionsToStylesMap( editor, stylesMap, 'block' );
+		this._prepareDefinitionsMapping();
+	}
 
-	return stylesMap;
-}
+	/**
+	 * TODO
+	 */
+	_prepareDefinitionsMapping() {
+		for ( const type of this.styleTypes ) {
+			for ( const { modelElements, name, element, classes } of this.styleDefinitions[ type ] ) {
+				for ( const modelElement of modelElements ) {
+					const currentValue = this.elementToDefinition.get( modelElement ) || [];
+					const newValue = [ ...currentValue, { name, element, classes } ];
+					this.elementToDefinition.set( modelElement, newValue );
+				}
 
-// TODO
-//
-// @private
-// @param editor
-// @param stylesMap
-// @param type
-function convertStyleDefinitionsToStylesMap( editor, stylesMap, type ) {
-	const dataSchema = editor.plugins.get( 'DataSchema' );
-	const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
-
-	for ( const { modelElements, name, element, classes } of normalizedStyleDefinitions[ type ] ) {
-		for ( const modelElement of modelElements ) {
-			const currentValue = stylesMap.get( 'elementToDefinition' ).get( modelElement ) || [];
-			const newValue = [ ...currentValue, { name, element, classes } ];
-			stylesMap.get( 'elementToDefinition' ).set( modelElement, newValue );
+				for ( const htmlClass of classes ) {
+					this.classToDefinition.set( htmlClass, { name, element, classes } );
+				}
+			}
 		}
+	}
 
-		for ( const htmlClass of classes ) {
-			stylesMap.get( 'classToDefinition' ).set( htmlClass, { name, element, classes } );
-		}
+	/**
+	 * TODO
+	 */
+	getInlineElementsNames() {
+		return this.styleDefinitions.inline.map( ( { name } ) => name );
+	}
+
+	/**
+	 * TODO
+	 */
+	getDefinitionsFromElementName( elementName ) {
+		return this.elementToDefinition.get( elementName );
+	}
+
+	/**
+	 * TODO
+	 */
+	getDefinitionsFromClassName( className ) {
+		return this.classToDefinition.get( className );
 	}
 }

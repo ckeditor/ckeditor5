@@ -8,7 +8,6 @@
  */
 
 import { Command } from 'ckeditor5/src/core';
-import { normalizeConfig } from './utils';
 import { first } from 'ckeditor5/src/utils';
 
 /**
@@ -17,7 +16,7 @@ import { first } from 'ckeditor5/src/utils';
  * @extends module:core/command~Command
  */
 export default class StyleCommand extends Command {
-	constructor( editor, stylesMap ) {
+	constructor( editor, styles ) {
 		super( editor );
 
 		/**
@@ -34,7 +33,7 @@ export default class StyleCommand extends Command {
 		 * @readonly
 		 * @member {Map.<String, Map.<String, module:style/style~StyleDefinition>>}
 		 */
-		this.stylesMap = stylesMap;
+		this.styles = styles;
 
 		/**
 		 * TODO
@@ -50,8 +49,6 @@ export default class StyleCommand extends Command {
 	refresh() {
 		let value = [];
 		const editor = this.editor;
-		const dataSchema = editor.plugins.get( 'DataSchema' );
-		const normalizedStyleDefinitions = normalizeConfig( dataSchema, editor.config.get( 'style.definitions' ) );
 		const selection = editor.model.document.selection;
 		const block = first( selection.getSelectedBlocks() );
 		const isInline = !selection.getSelectedElement();
@@ -59,27 +56,12 @@ export default class StyleCommand extends Command {
 		this.enabledStyles = [];
 
 		if ( isInline ) {
-			const inlineStylesNames = normalizedStyleDefinitions.inline.map( ( { name } ) => name );
-
-			this.enabledStyles = [ ...this.enabledStyles, ...inlineStylesNames ];
-
-			const attributes = selection.getAttributes();
-
-			for ( const [ attribute ] of attributes ) {
-				value = [ ...value, ...this._getValue( attribute ) ];
-			}
+			value = this._prepareNewInlineElementValue( value, selection );
+			this.enabledStyles = this.styles.getInlineElementsNames();
 		}
 
 		if ( block ) {
-			const availableDefinitions = this.stylesMap.get( 'elementToDefinition' ).get( block.name );
-
-			if ( availableDefinitions ) {
-				const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
-
-				this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
-			}
-
-			value = [ ...value, ...this._getValue( 'htmlAttributes' ) ];
+			value = this._prepareNewBlockElementValue( value, block );
 		}
 
 		this.isEnabled = this.enabledStyles.length > 0;
@@ -160,21 +142,56 @@ export default class StyleCommand extends Command {
 	/**
 	 * TODO
 	 *
+	 * @param {TODO} value
+	 * @param {TODO} selection
+	 */
+	_prepareNewInlineElementValue( value, selection ) {
+		let newValue = [];
+
+		const attributes = selection.getAttributes();
+
+		for ( const [ attribute ] of attributes ) {
+			newValue = [ ...value, ...this._getValue( attribute ) ];
+		}
+
+		return newValue;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @param {TODO} value
+	 * @param {TODO} block
+	 */
+	_prepareNewBlockElementValue( value, block ) {
+		const availableDefinitions = this.styles.getDefinitionsFromElementName( block.name );
+
+		if ( availableDefinitions ) {
+			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
+
+			this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
+		}
+
+		return [ ...value, ...this._getValue( 'htmlAttributes' ) ];
+	}
+
+	/**
+	 * TODO
+	 *
 	 * @param {TODO} attribute
 	 */
 	_getValue( attribute ) {
 		const value = [];
-		const classes =
-			attribute === 'htmlAttributes' ?
-				this._getValueFromBlockElement() :
-				this._getValueFromFirstAllowedNode( attribute );
+		const classes = attribute === 'htmlAttributes' ?
+			this._getValueFromBlockElement() :
+			this._getValueFromFirstAllowedNode( attribute );
 
 		if ( !classes ) {
 			return value;
 		}
 
 		for ( const htmlClass of classes ) {
-			const { name } = this.stylesMap.get( 'classToDefinition' ).get( htmlClass );
+			const { name } = this.styles.getDefinitionsFromClassName( htmlClass );
 
 			value.push( name );
 		}
