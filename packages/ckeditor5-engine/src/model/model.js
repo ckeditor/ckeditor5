@@ -466,6 +466,7 @@ export default class Model {
 						doNotInheritBlockAttributes: true
 	*/
 	insertObject( object, selectable, offset, options ) {
+		// TODO: Get rid of import from widget package, so engine does not depend on it.
 		return insertObject( this, object, selectable, offset, options );
 	}
 
