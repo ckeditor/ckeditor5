@@ -13,7 +13,8 @@ import DeleteObserver from './deleteobserver';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
- * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
+ * The delete and backspace feature. Handles keys such as <kbd>Delete</kbd> and <kbd>Backspace</kbd>, other
+ * keystrokes and user actions that result in deleting content in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -32,6 +33,9 @@ export default class Delete extends Plugin {
 		return 'Delete';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const view = editor.editing.view;
@@ -51,40 +55,45 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			const deleteCommandParams = { unit: data.unit, sequence: data.sequence };
+			const { direction, sequence, selectionToRemove, unit } = data;
+			const commandName = direction === 'forward' ? 'deleteForward' : 'delete';
+			const commandData = { unit, sequence };
 
-			// If a specific (view) selection to remove was set, convert it to a model selection and set as a parameter for `DeleteCommand`.
-			if ( data.selectionToRemove ) {
-				const modelSelection = editor.model.createSelection();
-				const ranges = [];
+			// * First of all, make sure that the "selectionToRemove" is used only for units other than "codePoint" or
+			//   "character". This is related to the multi-byte characters decomposition (like complex emojis) and
+			//   in these two cases, it is expected that the command will figure everything out from the unit type only
+			//   even though the selection could be provided. Check out comments in DeleteObserver's DELETE_EVENT_TYPES
+			//   to learn more.
+			// * Android IMEs have a quirk which is addressed by passing a complete selection in case of
+			//   the "codePoint" unit. See DeleteObserver to learn more.
+			if ( unit !== 'codePoint' && unit !== 'character' || env.isAndroid && unit === 'codePoint' ) {
+				const modelRanges = [ ...selectionToRemove.getRanges() ].map( viewRange => {
+					return editor.editing.mapper.toModelRange( viewRange );
+				} );
 
-				for ( const viewRange of data.selectionToRemove.getRanges() ) {
-					ranges.push( editor.editing.mapper.toModelRange( viewRange ) );
-				}
-
-				modelSelection.setTo( ranges );
-
-				deleteCommandParams.selection = modelSelection;
+				commandData.unit = 'selection';
+				commandData.selection = editor.model.createSelection( modelRanges );
 			}
 
-			editor.execute( data.direction == 'forward' ? 'deleteForward' : 'delete', deleteCommandParams );
-
-			data.preventDefault();
+			editor.execute( commandName, commandData );
 
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 
 		// Android IMEs have a quirk - they change DOM selection after the input changes were performed by the browser.
-		// This happens on `keyup` event. Android doesn't know anything about our deletion and selection handling. Even if the selection
-		// was changed during input events, IME remembers the position where the selection "should" be placed and moves it there.
+		// This happens on `keyup` event. Android doesn't know anything about our deletion and selection handling.
+		// Even if the selection was changed during input events, IME remembers the position where the selection "should"
+		// be placed and moves it there.
 		//
-		// To prevent incorrect selection, we save the selection after deleting here and then re-set it on `keyup`. This has to be done
-		// on DOM selection level, because on `keyup` the model selection is still the same as it was just after deletion, so it
-		// wouldn't be changed and the fix would do nothing.
+		// To prevent incorrect selection, we save the selection after deleting here and then re-set it on `keyup`.
+		// This has to be done on DOM selection level, because on `keyup` the model selection is still the same as it was
+		// just after deletion, so it wouldn't be changed and the fix would do nothing.
 		//
+		// **Note**: See DeleteObserver for the first part of this quirk.
 		if ( env.isAndroid ) {
 			let domSelectionAfterDeletion = null;
 
+			// This listener records the native DOM selection after deleting (note the lowest listener priority).
 			this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 				const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
 
@@ -96,6 +105,7 @@ export default class Delete extends Plugin {
 				};
 			}, { priority: 'lowest' } );
 
+			// This listener fixes the native DOM selection after deleting.
 			this.listenTo( viewDocument, 'keyup', ( evt, data ) => {
 				if ( domSelectionAfterDeletion ) {
 					const domSelection = data.domTarget.ownerDocument.defaultView.getSelection();
