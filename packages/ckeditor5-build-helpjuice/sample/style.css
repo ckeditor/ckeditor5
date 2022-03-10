@@ -27,3 +27,24 @@ html {
 .ck.ck-toolbar__items > button.ck-button:nth-of-type(18) svg {
 	width: 16px;
 }
+
+.ck.ck-button.helpjuice-callout-info-btn svg,
+.ck.ck-button.helpjuice-callout-success-btn svg,
+.ck.ck-button.helpjuice-callout-warning-btn svg,
+.ck.ck-button.helpjuice-callout-danger-btn svg {
+	width: 17px;
+}
+
+.ck.ck-button.helpjuice-callout-info-btn svg {
+	color: #004085;
+}
+.ck.ck-button.helpjuice-callout-success-btn svg {
+	color: #155724;
+}
+.ck.ck-button.helpjuice-callout-warning-btn svg {
+	color: #856404;
+}
+.ck.ck-button.helpjuice-callout-danger-btn svg {
+	color: #721c24;
+}
+

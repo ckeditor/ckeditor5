@@ -18,8 +18,6 @@ import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
 import FontColor from '@ckeditor/ckeditor5-font/src/fontcolor';
 import FontBackgroundColor from '@ckeditor/ckeditor5-font/src/fontbackgroundcolor';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import CKFinder from '@ckeditor/ckeditor5-ckfinder/src/ckfinder';
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
@@ -37,7 +35,6 @@ import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefrom
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation';
-import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 import CodeBlock from '@ckeditor/ckeditor5-code-block/src/codeblock';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import HtmlEmbed from '@ckeditor/ckeditor5-html-embed/src/htmlembed';
@@ -48,6 +45,10 @@ import ImageInsert from '@ckeditor/ckeditor5-image/src/imageinsert';
 // Custom Plugins
 import Accordion from './plugins/accordion/accordion';
 import Tab from './plugins/tab/tab';
+import Info from './plugins/calloutblocks/info/info';
+import Success from './plugins/calloutblocks/success/success';
+import Warning from './plugins/calloutblocks/warning/warning';
+import Danger from './plugins/calloutblocks/danger/danger';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -66,9 +67,6 @@ HelpjuiceEditor.builtinPlugins = [
 	FontBackgroundColor,
 	BlockQuote,
 	HorizontalLine,
-	CKFinder,
-	CloudServices,
-	EasyImage,
 	Heading,
 	Image,
 	ImageCaption,
@@ -92,7 +90,11 @@ HelpjuiceEditor.builtinPlugins = [
 	RemoveFormat,
 	SourceEditing,
 	Accordion,
-	Tab
+	Tab,
+	Info,
+	Success,
+	Warning,
+	Danger
 ];
 
 // Editor configuration.
@@ -161,7 +163,12 @@ HelpjuiceEditor.defaultConfig = {
 			'undo',
 			'redo',
 			'accordion',
-			'tab'
+			'tab',
+			'|',
+			'info',
+			'success',
+			'warning',
+			'danger'
 		],
 		shouldNotGroupWhenFull: true
 	},

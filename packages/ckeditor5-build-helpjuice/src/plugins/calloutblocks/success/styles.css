@@ -1,0 +1,54 @@
+.helpjuice-callout {
+	border-radius: 5px;
+	padding: 10px 20px;
+	margin: 10px 0;
+}
+
+.helpjuice-callout .helpjuice-callout-body {
+	border: none!important;
+	box-shadow: none!important;
+}
+
+/* Success Callout */
+.helpjuice-callout.success {
+	background: #d4edda;
+}
+.helpjuice-callout.success .helpjuice-callout-body {
+	background: #d4edda!important;
+}
+.helpjuice-callout.success .helpjuice-callout-body h2:first-of-type {
+	color: #155724;
+}
+
+/* Info Callout */
+.helpjuice-callout.info {
+	background: #cce5ff;
+}
+.helpjuice-callout.info .helpjuice-callout-body {
+	background: #cce5ff!important;
+}
+.helpjuice-callout.info .helpjuice-callout-body h2:first-of-type {
+	color: #004085;
+}
+
+/* Warning Callout */
+.helpjuice-callout.warning {
+	background: #fff3cd;
+}
+.helpjuice-callout.warning .helpjuice-callout-body {
+	background: #fff3cd!important;
+}
+.helpjuice-callout.warning .helpjuice-callout-body h2:first-of-type {
+	color: #856404;
+}
+
+/* Danger Callout */
+.helpjuice-callout.danger {
+	background: #f8d7da;
+}
+.helpjuice-callout.danger .helpjuice-callout-body {
+	background: #f8d7da!important;
+}
+.helpjuice-callout.danger .helpjuice-callout-body h2:first-of-type {
+	color: #721c24;
+}
