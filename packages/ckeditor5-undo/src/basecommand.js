@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -51,20 +51,19 @@ export default class BaseCommand extends Command {
 
 			const options = data[ 1 ];
 
-			if ( options.batchType ) {
-				return;
+			// If batch type is not set, default to non-undoable batch.
+			if ( !options.batchType ) {
+				options.batchType = { isUndoable: false };
 			}
-
-			options.batchType = 'transparent';
 		}, { priority: 'high' } );
 
 		// Clear the stack for the `transparent` batches.
 		this.listenTo( editor.data, 'set', ( evt, data ) => {
-			// We can assume that the object exists - it was ensured
-			// with the high priority listener before.
+			// We can assume that the object exists and it has a `batchType` property.
+			// It was ensured with a higher priority listener before.
 			const options = data[ 1 ];
 
-			if ( options.batchType === 'transparent' ) {
+			if ( !options.batchType.isUndoable ) {
 				this.clearStack();
 			}
 		} );

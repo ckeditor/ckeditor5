@@ -111,7 +111,7 @@ editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data
 The default action (inserting the content into the editor) is performed by a low priority listener, so it can be overridden by a normal one. With the `lowest` priority you can also execute actions after the content has already been inserted.
 
 ```js
-editor.plugins.get( 'ClipboardPipeline' ).on( 'inputTransformation', ( evt, data ) => {
+editor.plugins.get( 'ClipboardPipeline' ).on( 'contentInsertion', ( evt, data ) => {
 	console.log( 'Content was inserted.' );
 }, { priority: 'lowest' } );
 ```
