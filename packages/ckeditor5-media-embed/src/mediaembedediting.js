@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -184,7 +184,7 @@ export default class MediaEmbedEditing extends Plugin {
 		} );
 
 		// Model -> Data
-		conversion.for( 'dataDowncast' ).elementToElement( {
+		conversion.for( 'dataDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );
@@ -204,7 +204,7 @@ export default class MediaEmbedEditing extends Plugin {
 			} ) );
 
 		// Model -> View (element)
-		conversion.for( 'editingDowncast' ).elementToElement( {
+		conversion.for( 'editingDowncast' ).elementToStructure( {
 			model: 'media',
 			view: ( modelElement, { writer } ) => {
 				const url = modelElement.getAttribute( 'url' );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -35,15 +35,6 @@ export default class InputCommand extends Command {
 		 * @member {module:typing/utils/changebuffer~ChangeBuffer} #_buffer
 		 */
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
-
-		/**
-		 * Stores batches created by the input command. The batches are used to differentiate input batches from other batches using
-		 * {@link module:typing/input~Input#isInput} method.
-		 *
-		 * @type {WeakSet<module:engine/model/batch~Batch>}
-		 * @protected
-		 */
-		this._batches = new WeakSet();
 	}
 
 	/**
@@ -88,9 +79,6 @@ export default class InputCommand extends Command {
 
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
-
-			// Store the batch as an 'input' batch for the Input.isInput( batch ) check.
-			this._batches.add( this._buffer.batch );
 
 			model.deleteContent( selection );
 

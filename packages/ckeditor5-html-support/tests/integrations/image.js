@@ -1,7 +1,7 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
-*/
+ */
 
 import { range } from 'lodash-es';
 
@@ -1220,6 +1220,25 @@ describe( 'ImageElementSupport', () => {
 			expect( editor.getData() ).to.equal(
 				'<p><img src="/assets/sample.png"></p>'
 			);
+		} );
+
+		// See: https://github.com/ckeditor/ckeditor5/issues/10703.
+		it( 'should not break inside <dir> element if image contains an attribute', () => {
+			dataFilter.loadAllowedConfig( [ {
+				name: 'img',
+				attributes: true
+			}, {
+				name: 'dir'
+			} ] );
+
+			editor.setData( '<dir><img data-foo="bar">' );
+
+			expect( getModelDataWithAttributes( model, { withoutSelection: true } ) ).to.deep.equal( {
+				data: '<htmlDir></htmlDir>',
+				attributes: {}
+			} );
+
+			expect( editor.getData() ).to.equal( '' );
 		} );
 	} );
 

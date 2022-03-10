@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -69,12 +69,12 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 			preAttributes.spellcheck = 'false';
 		}
 
-		const pre = writer.createContainerElement( 'pre', preAttributes );
 		const code = writer.createContainerElement( 'code', {
 			class: languagesToClasses[ codeBlockLanguage ] || null
 		} );
 
-		writer.insert( writer.createPositionAt( pre, 0 ), code );
+		const pre = writer.createContainerElement( 'pre', preAttributes, code );
+
 		writer.insert( targetViewPosition, pre );
 		mapper.bindElements( data.item, code );
 	};

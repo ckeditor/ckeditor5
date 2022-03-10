@@ -47,6 +47,17 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			// Create initial data object containing data from all roots.
+			const initialData = {};
+
+			for ( const rootName of Object.keys( sourceElements ) ) {
+				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
+			}
+
+			this.editor.config.set( 'initialData', initialData );
+		}
+
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
 			this.model.document.createRoot( '$root', rootName );
@@ -96,16 +107,7 @@ class MultirootEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => {
-						const initialData = {};
-
-						// Create initial data object containing data from all roots.
-						for ( const rootName of Object.keys( sourceElements ) ) {
-							initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
-						}
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);

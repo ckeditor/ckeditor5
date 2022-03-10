@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -74,11 +74,10 @@ export function isMediaWidget( viewElement ) {
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
 export function createMediaFigureElement( writer, registry, url, options ) {
-	const figure = writer.createContainerElement( 'figure', { class: 'media' } );
-
-	writer.insert( writer.createPositionAt( figure, 0 ), registry.getMediaViewElement( writer, url, options ) );
-
-	return figure;
+	return writer.createContainerElement( 'figure', { class: 'media' }, [
+		registry.getMediaViewElement( writer, url, options ),
+		writer.createSlot()
+	] );
 }
 
 /**

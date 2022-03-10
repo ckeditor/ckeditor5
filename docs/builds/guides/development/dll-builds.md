@@ -20,16 +20,18 @@ This is where the DLL builds come to the rescue.
 
 DLL builds are based on the [DLL webpack](https://webpack.js.org/plugins/dll-plugin/) plugin that provides a CKEditor 5 **base DLL** and a set of **[DLL consumer plugins](https://webpack.js.org/plugins/dll-plugin/#dllreferenceplugin)**.
 
-Currently, CKEditor 5 does not come with a ready-to-use DLL build. Using this integration method requires creating it on your own, based on the tools available in the {@link framework/guides/contributing/development-environment CKEditor 5 development environment}.
+CKEditor 5 comes with ready-to-use DLL builds. These builds are added to the NPM packages and they are available inside the `/build` directory of each package.
 
-Follow the [Ship CKEditor 5 DLLs](https://github.com/ckeditor/ckeditor5/issues/9145) issue for updates (and add 👍&nbsp; if you are interested in this functionality).
+<info-box>
+	For simplicity reasons, this guide does not include any collaboration features. If you are interested in adding these features, please check the {@link builds/guides/development/dll-builds-collaboration-features DLL builds for CKEditor 5 Collaboration Features} guide after reading this one.
+</info-box>
 
 ## Anatomy of a DLL build
 
 A DLL build of the editor consists of two parts:
 
-* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations.
-* **DLL-compatible package builds**. Every package that is not part of the base DLL build is built into a DLL-compatible JavaScript file.
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
+* **DLL-compatible package builds**. Every package that is not part of the base DLL build is built into a DLL-compatible JavaScript file. These DLLs are available on NPM in `@ckeditor/ckeditor5-[FEATURE_NAME]` packages.
 
 In order to load an editor, you need to use the base DLL build plus several DLL-compatible package builds. You will see how to do that later on.
 
@@ -37,12 +39,8 @@ In order to load an editor, you need to use the base DLL build plus several DLL-
 
 In order to create your own base DLL build and DLL-compatible packages builds, all you need to do is:
 
-1. Set up the {@link framework/guides/contributing/development-environment CKEditor 5 development environment} locally.
-2. Run `npm run dll:build`.
-
-The base DLL build can be found in `./build/ckeditor5-dll.js`.
-
-The DLL-compatible builds of other packages can be found in `./packages/ckeditor5-*/build/<pkg-name>.js`. For example: `./packages/ckeditor5-image/build/image.js`.
+1. Install `ckeditor5` package from NPM.
+1. Install `@ckeditor/ckeditor5-*` packages for all plugins that you want to include in the build.
 
 This is it.
 
@@ -61,31 +59,31 @@ For example:
 ```html
 <!-- Base DLL build. -->
 <!-- Note: It includes ckeditor5-paragraph too. -->
-<script src="path/to/ckeditor5/build/ckeditor5-dll.js"></script>
+<script src="path/to/node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- DLL-compatible build of ckeditor5-editor-classic. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
 
 <!-- DLL-compatible builds of editor features. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-autoformat/build/autoformat.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/basic-styles.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/block-quote.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-essentials/build/essentials.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/heading.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-image/build/image.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/indent.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-link/build/link.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-list/build/list.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/media-embed.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-table/build/table.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
 
 <script>
 	const config = {
 		plugins: [
+			CKEditor5.autoformat.Autoformat,
 			CKEditor5.basicStyles.Bold,
 			CKEditor5.basicStyles.Italic,
-			CKEditor5.autoformat.Autoformat,
 			CKEditor5.blockQuote.BlockQuote,
 			CKEditor5.essentials.Essentials,
 			CKEditor5.heading.Heading,
@@ -155,7 +153,7 @@ For example:
 
 Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor 5 instance.
 
-<iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/ex7hcoz1/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+<iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/q7L8rd40/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 ## Localization
 
@@ -173,36 +171,36 @@ For example:
 
 ```html
 <!-- Base DLL build. -->
-<script src="path/to/ckeditor5/build/ckeditor5-dll.js"></script>
+<script src="path/to/node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- DLL-compatible build of ckeditor5-editor-classic. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
 
 <!-- DLL-compatible builds of editor features. -->
-<script src="path/to/ckeditor5/packages/ckeditor5-autoformat/build/autoformat.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/basic-styles.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/block-quote.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-essentials/build/essentials.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/heading.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-image/build/image.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/indent.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-link/build/link.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-list/build/list.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/media-embed.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-table/build/table.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-basic-styles/build/basic-styles.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-block-quote/build/block-quote.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-essentials/build/essentials.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-heading/build/heading.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-image/build/image.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-indent/build/indent.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-link/build/link.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-list/build/list.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-media-embed/build/media-embed.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-paste-from-office/build/paste-from-office.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-table/build/table.js"></script>
 
 <!-- Spanish translation files. -->
-<script src="path/to/ckeditor5/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-basic-styles/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-block-quote/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-heading/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-image/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-indent/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-link/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-list/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-media-embed/build/translations/es.js"></script>
-<script src="path/to/ckeditor5/packages/ckeditor5-table/build/translations/es.js"></script>
+<script src="path/to/node_modules/ckeditor5/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-basic-styles/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-block-quote/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-heading/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-image/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-indent/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-link/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-list/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-media-embed/build/translations/es.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-table/build/translations/es.js"></script>
 
 <script>
 	const config = {

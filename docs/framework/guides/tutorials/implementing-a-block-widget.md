@@ -368,7 +368,7 @@ For the simple box plugin to start doing anything you need to define model-view 
 Converters tell the editor how to convert the view to the model (e.g. when loading the data to the editor or handling pasted content) and how to render the model to the view (for editing purposes, or when retrieving the editor data).
 
 <info-box>
-	Read more about the {@link framework/guides/architecture/editing-engine#conversion model-view conversion}.
+	Read more about the {@link framework/guides/deep-dive/conversion/downcast conversion in the editor}.
 </info-box>
 
 This is the moment when you need to think about how you want to render the `<simpleBox>` element and its children to the DOM (what the user will see) and to the data. CKEditor 5 allows converting the model to a different structure for editing purposes and a different one to be stored as "data" or exchanged with other applications when copy-pasting the content. However, for simplicity, use the same representation in both pipelines for now.

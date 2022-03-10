@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -125,9 +125,9 @@ describe( 'ImageUploadProgress', () => {
 
 		model.document.registerPostFixer( () => {
 			for ( const change of doc.differ.getChanges() ) {
-				// The differ.refreshItem() simulates remove and insert of and image parent thus preventing image from proper work.
+				// The editing.reconvertItem() simulates remove and insert of and image parent thus preventing image from proper work.
 				if ( change.type == 'insert' && change.name == 'imageBlock' ) {
-					doc.differ.refreshItem( change.position.parent );
+					editor.editing.reconvertItem( change.position.parent );
 
 					return false; // Refreshing item should not trigger calling post-fixer again.
 				}
