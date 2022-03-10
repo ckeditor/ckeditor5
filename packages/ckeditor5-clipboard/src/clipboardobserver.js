@@ -244,7 +244,7 @@ function getDropViewRange( view, domEvent ) {
  * @see module:clipboard/clipboard~Clipboard
  * @event module:engine/view/document~Document#event:dragging
  * @param {Object} data The event data.
- * @param {module:clipboard/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
+ * @param {module:engine/view/datatransfer~DataTransfer} data.dataTransfer The data transfer instance.
  * @param {module:engine/view/element~Element} target The tree view element representing the target.
  * @param {Array.<module:engine/view/range~Range>} data.targetRanges Ranges which are the target of the operation
  * (usually – into which the content should be inserted).
