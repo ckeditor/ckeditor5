@@ -5,13 +5,23 @@ order: 91
 modified_at: 2022-02-21
 ---
 
+# Migration to CKEditor 5 v33.0.0
+
+<info-box warning>
+	<span style="font-family: sans;">⚠️</span>&nbsp;&nbsp;️️️ **Warning: Information for customers which use CKEditor 5 with real-time collaboration and [upload the editor bundles to Cloud Services](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html).**
+
+	If you are using CKEditor 5 with real-time collaboration, and you upload the editor bundles to CKEditor Cloud Services (e.g. in order to use the document storage, import and export or connection optimization features), then please wait with upgrading to CKEditor 5 v33.0.0.
+
+	CKEditor Cloud Services will start supporting CKEditor 5 v33.0.0 editor bundles on March, 12th. Until then, uploading a bundle (with CKEditor 5 v33.0.0) will be rejected by the REST API.
+
+	The On-Premises version of CKEditor Cloud Services that will start supporting CKEditor 5 v33.0.0 editor bundles is going to be released by the end of March 2022.
+</info-box>
+
 <info-box>
 	When updating your CKEditor 5 installation, make sure **all the packages are the same version** to avoid errors.
 
 	For custom builds, you may try removing the `package-lock.json` or `yarn.lock` files (if applicable) and reinstalling all packages before rebuilding the editor. For best results, make sure you use the most recent package versions.
 </info-box>
-
-# Migration to CKEditor 5 v33.0.0
 
 For the entire list of changes introduced in version 33.0.0, see the [changelog for CKEditor 5 v33.0.0](https://github.com/ckeditor/ckeditor5/blob/master/CHANGELOG.md#3300-2022-03-07).
 
