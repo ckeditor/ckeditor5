@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/inputcommand
+ * @module typing/inserttextcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -12,11 +12,11 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import ChangeBuffer from './utils/changebuffer';
 
 /**
- * The input command. Used by the {@link module:typing/input~Input input feature} to handle typing.
+ * The insert text command. Used by the {@link module:typing/input~Input input feature} to handle typing.
  *
  * @extends module:core/command~Command
  */
-export default class InputCommand extends Command {
+export default class InsertTextCommand extends Command {
 	/**
 	 * Creates an instance of the command.
 	 *

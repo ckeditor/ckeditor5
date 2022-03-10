@@ -7,11 +7,11 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import InputCommand from '../src/inputcommand';
+import InsertTextCommand from '../src/inserttextcommand';
 import ChangeBuffer from '../src/utils/changebuffer';
 import Input from '../src/input';
 
-describe( 'InputCommand', () => {
+describe( 'InsertTextCommand', () => {
 	let editor, model, doc, buffer, inputCommand;
 
 	testUtils.createSinonSandbox();
@@ -23,7 +23,7 @@ describe( 'InputCommand', () => {
 				model = editor.model;
 				doc = model.document;
 
-				inputCommand = new InputCommand( editor, 20 );
+				inputCommand = new InsertTextCommand( editor, 20 );
 				editor.commands.add( 'input', inputCommand );
 
 				buffer = inputCommand.buffer;

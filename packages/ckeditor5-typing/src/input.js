@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import InputCommand from './inputcommand';
+import InsertTextCommand from './inserttextcommand';
 
 import injectUnsafeKeystrokesHandling from './utils/injectunsafekeystrokeshandling';
 import injectTypingMutationsHandling from './utils/injecttypingmutationshandling';
@@ -33,7 +33,7 @@ export default class Input extends Plugin {
 		const editor = this.editor;
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
-		const inputCommand = new InputCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
+		const inputCommand = new InsertTextCommand( editor, editor.config.get( 'typing.undoStep' ) || 20 );
 
 		editor.commands.add( 'input', inputCommand );
 
