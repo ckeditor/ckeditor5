@@ -21,7 +21,7 @@ Listed below are the most important changes that require your attention when upg
 
 ### New import paths in the ckeditor5-list package
 
-Starting with v33.0.0, some import paths have changed in the [ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application [imports individual plugins](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/installing-plugins.html) to integrate or build CKEditor 5, you should updated the paths accordingly:
+Starting with v33.0.0, some import paths have changed in the [ckeditor5-list](https://www.npmjs.com/package/@ckeditor/ckeditor5-list) package. If your application {@link builds/guides/integration/installing-plugins imports individual plugins} to integrate or build CKEditor 5, you should updated the paths accordingly:
 
 ```js
 // ❌ Old import paths:

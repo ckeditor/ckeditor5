@@ -180,11 +180,11 @@ If you do not want the CKEditor component to be enabled globally, you can skip t
 </script>
 ```
 
-## Integrating a build from the online builder
+## Integrating a custom build from the online builder
 
 This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-The directory with the editor's build cannot be placed inside the `src/` directory because Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+Unpack it into you application main directory. The directory with the editor build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
 
 ```
 ├── ckeditor5
@@ -207,7 +207,7 @@ Then, add the package located in the `ckeditor5` directory as a dependency of yo
 yarn add file:./ckeditor5
 ```
 
-Now, import the build in your application:
+Finally, import the build in your application:
 
 ```html
 <template>
