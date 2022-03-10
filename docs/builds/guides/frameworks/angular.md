@@ -14,9 +14,9 @@ order: 20
 	</a>
 </p>
 
-CKEditor 5 consists of {@link builds/guides/overview ready-to-use editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
+CKEditor 5 consists of {@link builds/guides/overview predefined editor builds} and {@link framework/guides/overview CKEditor 5 Framework} upon which the builds are based.
 
-Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via builds. Integrating {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
+Currently, the CKEditor 5 component for Angular supports integrating CKEditor 5 only via the predefined builds. Integrating {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source CKEditor 5 built from source} is not possible yet due to the lack of ability to [adjust webpack configuration in `angular-cli`](https://github.com/angular/angular-cli/issues/10618).
 
 <info-box>
 	While there is no support to integrate CKEditor 5 from source yet, you can still {@link builds/guides/development/custom-builds create a custom build of CKEditor 5} and include it in your Angular application.
@@ -35,7 +35,7 @@ All available versions are [listed on npm](https://www.npmjs.com/package/@ckedit
 
 <info-box>
 	CKEditor 5 packages do not include TypeScript typings yet. With strict mode enabled, you must take care of the typings yourself. Otherwise, you might see the `Could not find a declaration file for module` error. **Please bear in mind that projects generated using Angular CLI have strict mode enabled by default.**
-	
+
 	For more information, please see [Strict mode project tips](#strict-mode-project-tips).
 </info-box>
 
@@ -153,7 +153,7 @@ Note that to allow importing JavaScript files without providing their correspond
 
 This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
 
-The directory with the editor's build cannot be placed inside the `src/` directory because Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+Unpack it into you application main directory. The directory with the editor build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
 
 ```
 ├── ckeditor5
@@ -197,9 +197,9 @@ When running the application, you might additionally get errors about missing ty
 
 ### Using the editor with collaboration plugins
 
-The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and later import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
+The easiest way to integrate {@link features/collaboration collaboration plugins} in an Angular application is to create a custom build first and then import it from the Angular application &mdash; see [Using a custom CKEditor 5 build](#using-a-custom-ckeditor-5-build).
 
-For such scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
+For such a scenario we provide a few ready-to-use integrations featuring collaborative editing in Angular applications:
 
 - [CKEditor 5 with real-time collaboration features](https://github.com/ckeditor/ckeditor5-collaboration-samples/tree/master/real-time-collaboration-for-angular)
 
@@ -211,7 +211,7 @@ It is not mandatory to build applications on top of the above samples, however, 
 
 If you have the strict mode set in your project, you need to specify types for CKEditor 5 packages. Otherwise you will get the `Could not find a declaration file for module` error.
 
-To fix that you need to create a TypeScript declaration file and declare modules that miss their types:
+To fix that, you need to create a TypeScript declaration file and declare modules that miss their types:
 
 ```ts
 // typings.d.ts

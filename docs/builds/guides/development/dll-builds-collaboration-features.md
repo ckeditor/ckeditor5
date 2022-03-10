@@ -25,7 +25,7 @@ In order to create an editor with collaboration features, you need to use the tw
 
 ## Integrating CKEditor 5 Collaboration Features as DLL builds
 
-The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses `<script>` tags.
+The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses the `<script>` tags.
 
 In order to run the editor, you need to load the necessary files (base DLL + CF base DLL + editor creator + features). These files expose their content in the `CKEditor5` global, using the following format:
 
