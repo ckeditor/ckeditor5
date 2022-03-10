@@ -5,12 +5,15 @@
 
 import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import getAttributesWithProperty from '@ckeditor/ckeditor5-utils/src/getattributeswithproperty';
 
 import { findOptimalInsertionRange } from './utils';
 
 /**
  * @module widget/insertobject
  */
+
+const insertObjectDefaultOptions = { setSelection: 'in', findOptimalPosition: true };
 
 /*
 	Place for exceptional documentation
@@ -22,10 +25,10 @@ import { findOptimalInsertionRange } from './utils';
 					// Maybe:
 					doNotInheritBlockAttributes: true
 */
-export default function insertObject( model, object, selectable, offset, options = { setSelection: 'in', findOptimalPosition: true } ) {
-	return model.change( writer => {
-		const schema = model.schema;
+export default function insertObject( model, object, selectable, offset, options = {} ) {
+	const optionsWithDefaults = { ...insertObjectDefaultOptions, ...options };
 
+	return model.change( writer => {
 		let selection;
 
 		if ( !selectable ) {
@@ -36,54 +39,31 @@ export default function insertObject( model, object, selectable, offset, options
 			selection = writer.createSelection( selectable, offset );
 		}
 
-		if ( options.findOptimalPosition ) {
-			selection = getInsertionPosition( model, object, selection );
+		let insertionSelection = selection;
 
-			if ( !( selection instanceof Selection ) && !( selection instanceof DocumentSelection ) ) {
-				selection = writer.createSelection( selectable, offset );
-			}
+		if ( optionsWithDefaults.findOptimalPosition && model.schema.isBlock( object ) ) {
+			insertionSelection = writer.createSelection( findOptimalInsertionRange( selection, model ) );
 		}
 
-		// TODO: extract to seperate function in utils and tidy it. Similar code is in deletecontent
-
-		// Get attributes
-		const attributesToCopy = {};
-		const selectedBlocks = selection.getSelectedBlocks();
-		const firstSelectedBlockAttributes = selectedBlocks.next().value.getAttributes();
-
-		for ( const [ attributeName, attributeValue ] of firstSelectedBlockAttributes ) {
-			const isAttributeValid = true;
-			// const isAttributeValid = schema.checkAttribute( object, attributeName );
-			const shouldCopyOnReplace = schema.getAttributeProperties( attributeName ).copyOnReplace;
-
-			if ( isAttributeValid && shouldCopyOnReplace ) {
-				attributesToCopy[ attributeName ] = attributeValue;
-			}
-		}
-
-		// Autoparagraph
-		if ( !model.schema.checkChild( selection.anchor.parent, object ) && model.schema.checkChild( 'paragraph', object ) ) {
-			const paragraph = writer.createElement( 'paragraph', attributesToCopy );
-
-			if ( !selection.isCollapsed ) {
-				model.deleteContent( selection, { doNotAutoparagraph: true } );
-			}
-
-			writer.insert( paragraph, selection.anchor );
-
-			selection = writer.createPositionAt( paragraph, 0 );
-		}
+		// Get and set attributes
+		const firstSelectedBlock = selection.getSelectedBlocks().next().value;
+		const attributesToCopy = getAttributesWithProperty( model, firstSelectedBlock, 'copyOnReplace', true );
 
 		writer.setAttributes( attributesToCopy, object );
 
-		return model.insertContent( object, selection, offset, options );
-	} );
-}
+		// Autoparagraph
+		if ( !model.schema.checkChild( insertionSelection.anchor.parent, object ) && model.schema.checkChild( 'paragraph', object ) ) {
+			const paragraph = writer.createElement( 'paragraph', attributesToCopy );
 
-function getInsertionPosition( model, object, selectable ) {
-	if ( model.schema.isBlock( object ) ) {
-		return findOptimalInsertionRange( selectable, model );
-	} else {
-		return selectable;
-	}
+			if ( !insertionSelection.isCollapsed ) {
+				model.deleteContent( insertionSelection, { doNotAutoparagraph: true } );
+			}
+
+			writer.insert( paragraph, insertionSelection.anchor );
+
+			insertionSelection = writer.createPositionAt( paragraph, 0 );
+		}
+
+		return model.insertContent( object, insertionSelection, offset, options );
+	} );
 }

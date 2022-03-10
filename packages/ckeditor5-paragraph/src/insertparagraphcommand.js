@@ -35,12 +35,14 @@ export default class InsertParagraphCommand extends Command {
 	 * the new paragraph will be inserted.
 	 * @fires execute
 	 */
-	execute( options ) {
+	execute( options = {} ) {
 		const model = this.editor.model;
+		const attributes = options.attributes;
+
 		let position = options.position;
 
 		model.change( writer => {
-			const paragraph = writer.createElement( 'paragraph' );
+			const paragraph = writer.createElement( 'paragraph', attributes );
 
 			if ( !model.schema.checkChild( position.parent, paragraph ) ) {
 				const allowedParent = model.schema.findAllowedParent( position, paragraph );
@@ -54,13 +56,7 @@ export default class InsertParagraphCommand extends Command {
 				position = writer.split( position, allowedParent ).position;
 			}
 
-			let originalInsertionSelection;
-
-			if ( options.insertionContextElement ) {
-				originalInsertionSelection = writer.createSelection( options.insertionContextElement, 'on' );
-			}
-
-			model.insertContent( paragraph, position, undefined, { originalInsertionSelection } );
+			model.insertContent( paragraph, position );
 
 			writer.setSelection( paragraph, 'in' );
 		} );

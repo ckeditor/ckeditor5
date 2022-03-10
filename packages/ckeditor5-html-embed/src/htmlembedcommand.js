@@ -65,11 +65,11 @@ export default class HtmlEmbedCommand extends Command {
 			} else {
 				htmlEmbedElement = writer.createElement( 'rawHtml' );
 
-				model.insertContent(
+				model.insertObject(
 					htmlEmbedElement,
 					undefined,
 					undefined,
-					{ originalInsertionSelection: model.document.selection }
+					{ setSelection: 'on', findOptimalPosition: false }
 				);
 
 				writer.setSelection( htmlEmbedElement, 'on' );

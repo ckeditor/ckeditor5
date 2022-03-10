@@ -13,6 +13,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import getAttributesWithProperty from '@ckeditor/ckeditor5-utils/src/getattributeswithproperty';
 import {
 	isForwardArrowKeyCode,
 	keyCodes
@@ -145,10 +146,11 @@ export default class WidgetTypeAround extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		const attributesToCopy = getAttributesWithProperty( this.editor.model, widgetModelElement, 'copyOnReplace', true );
+
 		editor.execute( 'insertParagraph', {
 			position: editor.model.createPositionAt( widgetModelElement, position ),
-			attributes: {},
-			insertionContextElement: widgetModelElement
+			attributes: attributesToCopy
 		} );
 
 		editingView.focus();

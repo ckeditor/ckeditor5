@@ -7,6 +7,8 @@
  * @module engine/model/utils/deletecontent
  */
 
+import getAttributesWithProperty from '@ckeditor/ckeditor5-utils/src/getattributeswithproperty';
+
 import LivePosition from '../liveposition';
 import Range from '../range';
 import DocumentSelection from '../documentselection';
@@ -80,22 +82,6 @@ export default function deleteContent( model, selection, options = {} ) {
 			return;
 		}
 
-		const attributesToCopy = {};
-		const selectedElement = selection.getSelectedElement();
-
-		if ( selectedElement && !options.doNotAutoparagraph ) {
-			const attributes = selectedElement.getAttributes();
-
-			for ( const [ attributeName, attributeValue ] of attributes ) {
-				const isAttributeValid = schema.checkAttribute( 'paragraph', attributeName );
-				const shouldCopyOnReplace = schema.getAttributeProperties( attributeName ).copyOnReplace;
-
-				if ( isAttributeValid && shouldCopyOnReplace ) {
-					attributesToCopy[ attributeName ] = attributeValue;
-				}
-			}
-		}
-
 		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
 		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 
@@ -130,6 +116,9 @@ export default function deleteContent( model, selection, options = {} ) {
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
+			const selectedElement = selection.getSelectedElement();
+			const attributesToCopy = getAttributesWithProperty( model, selectedElement, 'copyOnReplace', true );
+
 			insertParagraph( writer, startPosition, selection, attributesToCopy );
 		}
 
