@@ -3,6 +3,7 @@ category: framework-deep-dive-conversion
 menu-title: Model to view (downcast)
 order: 20
 since: 33.0.0
+modified_at: 2022-03-02
 ---
 
 # Model to view (downcast)
@@ -193,9 +194,13 @@ The above converter will convert all `<myElement>` model elements to `<div class
 {@snippet framework/mini-inspector-structure}
 
 <info-box>
-	Using your own custom model element requires defining it in the schema first.
+	Using your own custom model element requires defining it in the {@link framework/guides/deep-dive/schema schema} first.
 </info-box>
 
-## Read next
+<info-box>
+	For editor users, the best way to interact with complex structures is to act as independent entities and stay intact, for instance, when copied, pasted, and edited. CKEditor 5 allows that through the {@link module:widget/utils~toWidget widget API}. If you want to learn how to use it on top of `elementToStructure()`, be sure to check out the {@link framework/guides/tutorials/implementing-a-block-widget Implementing a block widget} tutorial.
+</info-box>
 
-{@link framework/guides/deep-dive/conversion/upcast View to model (upcast)}
+## Further reading
+
+If you want to learn more about downcast helpers mentioned in this guide, we have {@link framework/guides/deep-dive/conversion/helpers/downcast rounded them up} for you with complete descriptions and examples. We also recommend you to check out the {@link framework/guides/deep-dive/conversion/upcast upcast conversion} guide and learn how to convert raw data on the editor input into a live model state.

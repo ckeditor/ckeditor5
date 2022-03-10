@@ -3,9 +3,12 @@ category: framework-deep-dive-conversion-helpers
 menu-title: Upcast helpers (view to model)
 order: 30
 since: 33.0.0
+modified_at: 2022-03-02
 ---
 
 # Upcast helpers (view to model)
+
+This article lists all editor helpers available in the {@link framework/guides/deep-dive/conversion/upcast upcast conversion}.
 
 ## Element to element
 
@@ -87,7 +90,7 @@ editor.conversion
 ```
 
 <info-box>
-	If you forget to specify these attributes, another converter, e.g. from General HTML Support feature, may also handle these attributes resulting in duplicating them in the model.
+	If you forget to specify these attributes, another converter, e.g. from {@link features/general-html-support General HTML Support feature}, may also handle these attributes resulting in duplicating them in the model.
 </info-box>
 
 ### Changing converter priority
@@ -360,3 +363,7 @@ editor.conversion
 ```
 
 First converter has the default `normal` priority. The second converter will be called earlier because of its higher priority, thus the `src` view attribute will get converted to a `sourceAddress` model attribute (instead of `source`).
+
+## Further reading
+
+Check out a {@link framework/guides/deep-dive/conversion/helpers/downcast dedicated guide} with a full list of complementary {@link framework/guides/deep-dive/conversion/downcast downcast conversion helpers}.
