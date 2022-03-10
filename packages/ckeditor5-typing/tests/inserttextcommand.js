@@ -92,11 +92,33 @@ describe( 'InsertTextCommand', () => {
 		} );
 
 		it( 'inserts text for collapsed range', () => {
-			setData( model, '<paragraph>foo[]</paragraph>' );
+			setData( model, '<paragraph>foo</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'bar',
-				range: doc.selection.getFirstRange()
+				range: model.createRange(
+					// <paragraph>foo[]</paragraph>
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 3 ),
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 3 )
+				)
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
+		} );
+
+		it( 'should insert text for a collapsed selection', () => {
+			setData( model, '<paragraph>foo</paragraph>' );
+
+			editor.execute( 'input', {
+				text: 'bar',
+				selection: model.createSelection(
+					model.createRange(
+						// <paragraph>foo[]</paragraph>
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 3 ),
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 3 )
+					)
+				)
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foobar[]</paragraph>' );
@@ -104,11 +126,33 @@ describe( 'InsertTextCommand', () => {
 		} );
 
 		it( 'replaces text for range within single element on the beginning', () => {
-			setData( model, '<paragraph>[fooba]r</paragraph>' );
+			setData( model, '<paragraph>foobar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'rab',
-				range: doc.selection.getFirstRange()
+				range: model.createRange(
+					// <paragraph>[fooba]r</paragraph>
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 0 ),
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 5 )
+				)
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>rab[]r</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
+		} );
+
+		it( 'should replace text for range within single element on the beginning', () => {
+			setData( model, '<paragraph>foobar</paragraph>' );
+
+			editor.execute( 'input', {
+				text: 'rab',
+				selection: model.createSelection(
+					model.createRange(
+						// <paragraph>[fooba]r</paragraph>
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 0 ),
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 5 )
+					)
+				)
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>rab[]r</paragraph>' );
@@ -116,11 +160,33 @@ describe( 'InsertTextCommand', () => {
 		} );
 
 		it( 'replaces text for range within single element in the middle', () => {
-			setData( model, '<paragraph>fo[oba]r</paragraph>' );
+			setData( model, '<paragraph>foobar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'bazz',
-				range: doc.selection.getFirstRange()
+				range: model.createRange(
+					// <paragraph>fo[oba]r</paragraph>
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 2 ),
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 5 )
+				)
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>fobazz[]r</paragraph>' );
+			expect( buffer.size ).to.equal( 4 );
+		} );
+
+		it( 'should replace text for range within single element in the middle', () => {
+			setData( model, '<paragraph>foobar</paragraph>' );
+
+			editor.execute( 'input', {
+				text: 'bazz',
+				selection: model.createSelection(
+					model.createRange(
+						// <paragraph>fo[oba]r</paragraph>
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 2 ),
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 5 )
+					)
+				)
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>fobazz[]r</paragraph>' );
@@ -128,11 +194,33 @@ describe( 'InsertTextCommand', () => {
 		} );
 
 		it( 'replaces text for range within single element on the end', () => {
-			setData( model, '<paragraph>fooba[r]</paragraph>' );
+			setData( model, '<paragraph>foobar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'zzz',
-				range: doc.selection.getFirstRange()
+				range: model.createRange(
+					// <paragraph>fooba[r]</paragraph>
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 5 ),
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 6 )
+				)
+			} );
+
+			expect( getData( model ) ).to.equal( '<paragraph>foobazzz[]</paragraph>' );
+			expect( buffer.size ).to.equal( 3 );
+		} );
+
+		it( 'should replace text for range within single element on the end', () => {
+			setData( model, '<paragraph>foobar</paragraph>' );
+
+			editor.execute( 'input', {
+				text: 'zzz',
+				selection: model.createSelection(
+					model.createRange(
+						// <paragraph>fooba[r]</paragraph>
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 5 ),
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 6 )
+					)
+				)
 			} );
 
 			expect( getData( model ) ).to.equal( '<paragraph>foobazzz[]</paragraph>' );
@@ -140,11 +228,33 @@ describe( 'InsertTextCommand', () => {
 		} );
 
 		it( 'replaces text for range within multiple elements', () => {
-			setData( model, '<heading1>F[OO</heading1><paragraph>b]ar</paragraph>' );
+			setData( model, '<heading1>FOO</heading1><paragraph>bar</paragraph>' );
 
 			editor.execute( 'input', {
 				text: 'unny c',
-				range: doc.selection.getFirstRange()
+				range: model.createRange(
+					// <heading1>F[OO</heading1><paragraph>b]ar</paragraph>
+					model.createPositionAt( doc.getRoot().getChild( 0 ), 1 ),
+					model.createPositionAt( doc.getRoot().getChild( 1 ), 1 )
+				)
+			} );
+
+			expect( getData( model ) ).to.equal( '<heading1>Funny c[]ar</heading1>' );
+			expect( buffer.size ).to.equal( 6 );
+		} );
+
+		it( 'should replace text for range within multiple elements', () => {
+			setData( model, '<heading1>FOO</heading1><paragraph>bar</paragraph>' );
+
+			editor.execute( 'input', {
+				text: 'unny c',
+				selection: model.createSelection(
+					model.createRange(
+						// <heading1>F[OO</heading1><paragraph>b]ar</paragraph>
+						model.createPositionAt( doc.getRoot().getChild( 0 ), 1 ),
+						model.createPositionAt( doc.getRoot().getChild( 1 ), 1 )
+					)
+				)
 			} );
 
 			expect( getData( model ) ).to.equal( '<heading1>Funny c[]ar</heading1>' );
