@@ -17,7 +17,7 @@ This release introduces the following new features:
 
 There were also a few bug fixes:
 
-* [Removing complex emojis now work as expected](https://github.com/ckeditor/ckeditor5/issues/6504)
+* [Removing complex emojis now works as expected](https://github.com/ckeditor/ckeditor5/issues/6504)
 * [Preparing DLL package builds in the development mode (the `--dev` flag) no longer ends with an error](https://github.com/ckeditor/ckeditor5/issues/11170)
 * [Clicking content that has a comment does not cause content data change (resulting with extra autosave)](https://github.com/ckeditor/ckeditor5/issues/9901)
 * [The `<CKEditorContext>` React component now destroys properly](https://github.com/ckeditor/ckeditor5-react/issues/283)
