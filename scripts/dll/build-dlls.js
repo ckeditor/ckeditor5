@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -28,7 +28,7 @@ console.log( '\n📍 ' + chalk.cyan.underline( 'Creating the base DLL build...\n
 const webpackArguments = [ '--config=./scripts/dll/webpack.config.dll.js' ];
 
 if ( IS_DEVELOPMENT_MODE ) {
-	webpackArguments.push( '--dev' );
+	webpackArguments.push( '--mode=development' );
 }
 
 childProcess.spawnSync( 'webpack', webpackArguments, {
@@ -47,7 +47,7 @@ console.log( '\n📍 ' + chalk.underline( 'Creating DLL-compatible package build
 const nodeArguments = [ './scripts/dll/build-packages-dlls.js' ];
 
 if ( IS_DEVELOPMENT_MODE ) {
-	nodeArguments.push( '--dev' );
+	nodeArguments.push( '--mode=development' );
 }
 
 childProcess.spawnSync( 'node', nodeArguments, {

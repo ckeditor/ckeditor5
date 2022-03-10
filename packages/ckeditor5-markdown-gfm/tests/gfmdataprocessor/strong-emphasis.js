@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -33,10 +33,10 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'***This is strong and em.***',
 
-				'<p><strong><em>This is strong and em.</em></strong></p>',
+				'<p><em><strong>This is strong and em.</strong></em></p>',
 
 				// Normalized after converting back.
-				'**_This is strong and em._**'
+				'_**This is strong and em.**_'
 			);
 		} );
 
@@ -44,10 +44,10 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'Single ***word*** is strong and em.',
 
-				'<p>Single <strong><em>word</em></strong> is strong and em.</p>',
+				'<p>Single <em><strong>word</strong></em> is strong and em.</p>',
 
 				// Normalized after converting back.
-				'Single **_word_** is strong and em.'
+				'Single _**word**_ is strong and em.'
 			);
 		} );
 
@@ -55,10 +55,10 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'___This is strong and em.___',
 
-				'<p><strong><em>This is strong and em.</em></strong></p>',
+				'<p><em><strong>This is strong and em.</strong></em></p>',
 
 				// Normalized after converting back.
-				'**_This is strong and em._**'
+				'_**This is strong and em.**_'
 
 			);
 		} );
@@ -67,10 +67,10 @@ describe( 'GFMDataProcessor', () => {
 			testDataProcessor(
 				'Single ___word___ is strong and em.',
 
-				'<p>Single <strong><em>word</em></strong> is strong and em.</p>',
+				'<p>Single <em><strong>word</strong></em> is strong and em.</p>',
 
 				// Normalized after converting back.
-				'Single **_word_** is strong and em.'
+				'Single _**word**_ is strong and em.'
 			);
 		} );
 
