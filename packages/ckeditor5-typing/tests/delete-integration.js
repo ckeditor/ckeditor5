@@ -18,7 +18,7 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'DeleteCommand integration', () => {
+describe( 'Delete integration', () => {
 	let editor, model;
 
 	beforeEach( () => {

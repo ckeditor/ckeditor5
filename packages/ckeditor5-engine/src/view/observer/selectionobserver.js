@@ -10,37 +10,23 @@
 /* global setInterval, clearInterval */
 
 import Observer from './observer';
-import MutationObserver from './mutationobserver';
 import { debounce } from 'lodash-es';
 
 /**
  * Selection observer class observes selection changes in the document. If a selection changes on the document this
- * observer checks if there are any mutations and if the DOM selection is different from the
- * {@link module:engine/view/document~Document#selection view selection}. The selection observer fires
- * {@link module:engine/view/document~Document#event:selectionChange} event only if a selection change was the only change in the document
- * and the DOM selection is different then the view selection.
+ * observer checks if the DOM selection is different from the {@link module:engine/view/document~Document#selection view selection}.
+ * The selection observer fires {@link module:engine/view/document~Document#event:selectionChange} event only if
+ * a selection change was the only change in the document and the DOM selection is different from the view selection.
  *
  * This observer also manages the {@link module:engine/view/document~Document#isSelecting} property of the view document.
  *
  * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
- * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
 	constructor( view ) {
 		super( view );
-
-		/**
-		 * Instance of the mutation observer. Selection observer calls
-		 * {@link module:engine/view/observer/mutationobserver~MutationObserver#flush} to ensure that the mutations will be handled
-		 * before the {@link module:engine/view/document~Document#event:selectionChange} event is fired.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
-		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
-		 */
-		this.mutationObserver = view.getObserver( MutationObserver );
 
 		/**
 		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
@@ -165,9 +151,8 @@ export default class SelectionObserver extends Observer {
 	}
 
 	/**
-	 * Selection change listener. {@link module:engine/view/observer/mutationobserver~MutationObserver#flush Flush} mutations, check if
-	 * a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange} event on every change
-	 * and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
+	 * Selection change listener. Check if a selection changes and fires {@link module:engine/view/document~Document#event:selectionChange}
+	 * event on every change and {@link module:engine/view/document~Document#event:selectionChangeDone} when a selection stop changing.
 	 *
 	 * @private
 	 * @param {Event} domEvent DOM event.
@@ -184,9 +169,7 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// Ensure the mutation event will be before selection event on all browsers.
-		this.mutationObserver.flush();
-
+		// TODO update comment
 		// If there were mutations then the view will be re-rendered by the mutation observer and the selection
 		// will be updated, so the selections will equal and the event will not be fired, as expected.
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );

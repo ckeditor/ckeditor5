@@ -17,7 +17,7 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'Typing – InputCommand integration', () => {
+describe( 'Typing – Input integration', () => {
 	let editor, model, doc, viewDocument, boldView, italicView, editorElement;
 
 	beforeEach( () => {

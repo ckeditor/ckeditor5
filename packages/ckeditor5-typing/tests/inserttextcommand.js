@@ -24,7 +24,7 @@ describe( 'InsertTextCommand', () => {
 				doc = model.document;
 
 				inputCommand = new InsertTextCommand( editor, 20 );
-				editor.commands.add( 'input', inputCommand );
+				editor.commands.add( 'insertText', inputCommand );
 
 				buffer = inputCommand.buffer;
 				buffer.size = 0;
@@ -40,11 +40,11 @@ describe( 'InsertTextCommand', () => {
 
 	describe( 'buffer', () => {
 		it( 'has buffer getter', () => {
-			expect( editor.commands.get( 'input' ).buffer ).to.be.an.instanceof( ChangeBuffer );
+			expect( editor.commands.get( 'insertText' ).buffer ).to.be.an.instanceof( ChangeBuffer );
 		} );
 
 		it( 'has a buffer limit configured to default value of 20', () => {
-			expect( editor.commands.get( 'input' )._buffer ).to.have.property( 'limit', 20 );
+			expect( editor.commands.get( 'insertText' )._buffer ).to.have.property( 'limit', 20 );
 		} );
 
 		it( 'has a buffer configured to config.typing.undoStep', () => {
@@ -56,7 +56,7 @@ describe( 'InsertTextCommand', () => {
 					}
 				} )
 				.then( editor => {
-					expect( editor.commands.get( 'input' )._buffer ).to.have.property( 'limit', 5 );
+					expect( editor.commands.get( 'insertText' )._buffer ).to.have.property( 'limit', 5 );
 				} );
 		} );
 	} );
@@ -66,7 +66,7 @@ describe( 'InsertTextCommand', () => {
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.enqueueChange( () => {
-				editor.execute( 'input', { text: 'x' } );
+				editor.execute( 'insertText', { text: 'x' } );
 
 				// We expect that command is executed in enqueue changes block. Since we are already in
 				// an enqueued block, the command execution will be postponed. Hence, no changes.
@@ -83,7 +83,7 @@ describe( 'InsertTextCommand', () => {
 			const spyLock = testUtils.sinon.spy( buffer, 'lock' );
 			const spyUnlock = testUtils.sinon.spy( buffer, 'unlock' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: ''
 			} );
 
@@ -94,7 +94,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'inserts text for collapsed range', () => {
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'bar',
 				range: model.createRange(
 					// <paragraph>foo[]</paragraph>
@@ -110,7 +110,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should insert text for a collapsed selection', () => {
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'bar',
 				selection: model.createSelection(
 					model.createRange(
@@ -128,7 +128,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'replaces text for range within single element on the beginning', () => {
 			setData( model, '<paragraph>foobar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'rab',
 				range: model.createRange(
 					// <paragraph>[fooba]r</paragraph>
@@ -144,7 +144,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should replace text for range within single element on the beginning', () => {
 			setData( model, '<paragraph>foobar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'rab',
 				selection: model.createSelection(
 					model.createRange(
@@ -162,7 +162,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'replaces text for range within single element in the middle', () => {
 			setData( model, '<paragraph>foobar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'bazz',
 				range: model.createRange(
 					// <paragraph>fo[oba]r</paragraph>
@@ -178,7 +178,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should replace text for range within single element in the middle', () => {
 			setData( model, '<paragraph>foobar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'bazz',
 				selection: model.createSelection(
 					model.createRange(
@@ -196,7 +196,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'replaces text for range within single element on the end', () => {
 			setData( model, '<paragraph>foobar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'zzz',
 				range: model.createRange(
 					// <paragraph>fooba[r]</paragraph>
@@ -212,7 +212,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should replace text for range within single element on the end', () => {
 			setData( model, '<paragraph>foobar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'zzz',
 				selection: model.createSelection(
 					model.createRange(
@@ -230,7 +230,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'replaces text for range within multiple elements', () => {
 			setData( model, '<heading1>FOO</heading1><paragraph>bar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'unny c',
 				range: model.createRange(
 					// <heading1>F[OO</heading1><paragraph>b]ar</paragraph>
@@ -246,7 +246,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should replace text for range within multiple elements', () => {
 			setData( model, '<heading1>FOO</heading1><paragraph>bar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'unny c',
 				selection: model.createSelection(
 					model.createRange(
@@ -264,7 +264,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'uses current selection when range is not given', () => {
 			setData( model, '<paragraph>foob[ar]</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'az'
 			} );
 
@@ -275,7 +275,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'only removes content when empty text given', () => {
 			setData( model, '<paragraph>[fo]obar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: '',
 				range: doc.selection.getFirstRange()
 			} );
@@ -287,7 +287,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should set selection according to passed resultRange (collapsed)', () => {
 			setData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'new',
 				resultRange: editor.model.createRange( editor.model.createPositionFromPath( doc.getRoot(), [ 0, 5 ] ) )
 			} );
@@ -299,7 +299,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'should set selection according to passed resultRange (non-collapsed)', () => {
 			setData( model, '<paragraph>[foo]bar</paragraph>' );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'new',
 				resultRange: editor.model.createRange(
 					editor.model.createPositionFromPath( doc.getRoot(), [ 0, 3 ] ),
@@ -314,7 +314,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'only removes content when no text given (with default non-collapsed range)', () => {
 			setData( model, '<paragraph>[fo]obar</paragraph>' );
 
-			editor.execute( 'input' );
+			editor.execute( 'insertText' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>[]obar</paragraph>' );
 			expect( buffer.size ).to.equal( 0 );
@@ -323,7 +323,7 @@ describe( 'InsertTextCommand', () => {
 		it( 'does not change selection and content when no text given (with default collapsed range)', () => {
 			setData( model, '<paragraph>fo[]obar</paragraph>' );
 
-			editor.execute( 'input' );
+			editor.execute( 'insertText' );
 
 			expect( getData( model ) ).to.equal( '<paragraph>fo[]obar</paragraph>' );
 			expect( buffer.size ).to.equal( 0 );
@@ -334,7 +334,7 @@ describe( 'InsertTextCommand', () => {
 
 			const version = doc.version;
 
-			editor.execute( 'input' );
+			editor.execute( 'insertText' );
 
 			expect( doc.version ).to.equal( version );
 		} );
@@ -379,7 +379,7 @@ describe( 'InsertTextCommand', () => {
 				} );
 			}, { priority: 'high' } );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'foo'
 			} );
 
@@ -411,7 +411,7 @@ describe( 'InsertTextCommand', () => {
 
 			setData( model, '<paragraph>[foo]</paragraph>' );
 
-			editor.execute( 'input', { text: 'bar' } );
+			editor.execute( 'insertText', { text: 'bar' } );
 
 			expect( getData( model ) ).to.equal( '<paragraph>bar[]</paragraph>' );
 
@@ -423,7 +423,7 @@ describe( 'InsertTextCommand', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should destroy change buffer', () => {
-			const command = editor.commands.get( 'input' );
+			const command = editor.commands.get( 'insertText' );
 			const destroy = command._buffer.destroy = testUtils.sinon.spy();
 
 			command.destroy();

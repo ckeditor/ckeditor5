@@ -15,7 +15,6 @@ import Position from './position';
 import Range from './range';
 import Selection from './selection';
 
-import MutationObserver from './observer/mutationobserver';
 import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import SelectionObserver from './observer/selectionobserver';
@@ -47,12 +46,12 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * on DOM and fire events on the {@link module:engine/view/document~Document Document}.
  * Note that the following observers are added by the class constructor and are always available:
  *
- * * {@link module:engine/view/observer/mutationobserver~MutationObserver},
  * * {@link module:engine/view/observer/selectionobserver~SelectionObserver},
  * * {@link module:engine/view/observer/focusobserver~FocusObserver},
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
  * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+ * * {@link module:engine/view/observer/inputobserver~InputObserver}.
  *
  * This class also {@link module:engine/view/view~View#attachDomRoot binds the DOM and the view elements}.
  *
@@ -178,7 +177,6 @@ export default class View {
 		this._writer = new DowncastWriter( this.document );
 
 		// Add default observers.
-		this.addObserver( MutationObserver );
 		this.addObserver( SelectionObserver );
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
@@ -683,6 +681,7 @@ export default class View {
 	}
 
 	/**
+	 * TODO verify the comment
 	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *

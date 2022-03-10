@@ -7,7 +7,6 @@
 
 import View from '../../../src/view/view';
 import Observer from '../../../src/view/observer/observer';
-import MutationObserver from '../../../src/view/observer/mutationobserver';
 import KeyObserver from '../../../src/view/observer/keyobserver';
 import InputObserver from '../../../src/view/observer/inputobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
@@ -31,7 +30,7 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 8;
+	const DEFAULT_OBSERVERS_COUNT = 7;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	beforeEach( () => {
@@ -81,7 +80,6 @@ describe( 'view', () => {
 
 	it( 'should add default observers', () => {
 		expect( count( view._observers ) ).to.equal( DEFAULT_OBSERVERS_COUNT );
-		expect( view.getObserver( MutationObserver ) ).to.be.instanceof( MutationObserver );
 		expect( view.getObserver( SelectionObserver ) ).to.be.instanceof( SelectionObserver );
 		expect( view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );

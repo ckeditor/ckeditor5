@@ -33,6 +33,7 @@ export default class EnterObserver extends Observer {
 			const domEvent = data.domEvent;
 			const { inputType } = domEvent;
 
+			// TODO make it consistent and use some const array with description as in InsertTextObserver etc.
 			if ( inputType !== 'insertParagraph' && inputType !== 'insertLineBreak' ) {
 				return;
 			}

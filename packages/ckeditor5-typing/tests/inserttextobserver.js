@@ -1,0 +1,154 @@
+/**
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/* globals document */
+
+import InsertTextObserver from '../src/inserttextobserver';
+import { fireBeforeInputDomEvent } from './_utils/utils';
+
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { setData as viewSetData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
+describe( 'InsertTextObserver', () => {
+	let view, viewDocument, insertTextEventSpy;
+	let domRoot;
+
+	testUtils.createSinonSandbox();
+
+	beforeEach( () => {
+		domRoot = document.createElement( 'div' );
+
+		view = new View();
+		viewDocument = view.document;
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domRoot );
+		view.addObserver( InsertTextObserver );
+
+		insertTextEventSpy = testUtils.sinon.spy();
+		viewDocument.on( 'insertText', insertTextEventSpy );
+	} );
+
+	afterEach( () => {
+		view.destroy();
+	} );
+
+	it( 'can be initialized', () => {
+		expect( () => {
+			view = new View();
+			viewDocument = view.document;
+			createViewRoot( viewDocument );
+			view.attachDomRoot( document.createElement( 'div' ) );
+
+			view.addObserver( InsertTextObserver );
+
+			view.destroy();
+		} ).to.not.throw();
+	} );
+
+	it( 'should not work if the observer is disabled', () => {
+		view.getObserver( InsertTextObserver ).isEnabled = false;
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertParagraph'
+		} );
+
+		sinon.assert.notCalled( insertTextEventSpy );
+	} );
+
+	it( 'should ignore other input types', () => {
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'anyInputType'
+		} );
+
+		sinon.assert.notCalled( insertTextEventSpy );
+	} );
+
+	it( 'should always preventDefault() the beforeinput event', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		const viewRange = view.document.selection.getFirstRange();
+		const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+		let interceptedEventData;
+
+		viewDocument.on( 'beforeinput', ( evt, data ) => {
+			interceptedEventData = data;
+			sinon.spy( interceptedEventData, 'preventDefault' );
+		}, { priority: Number.POSITIVE_INFINITY } );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertText',
+			ranges: [ domRange ],
+			data: 'bar'
+		} );
+
+		sinon.assert.calledOnce( interceptedEventData.preventDefault );
+	} );
+
+	it( 'should always stop() the beforeinput event', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		const viewRange = view.document.selection.getFirstRange();
+		const domRange = view.domConverter.viewRangeToDom( viewRange );
+
+		let interceptedEventInfo;
+
+		viewDocument.on( 'beforeinput', evt => {
+			interceptedEventInfo = evt;
+		}, { priority: Number.POSITIVE_INFINITY } );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertText',
+			ranges: [ domRange ],
+			data: 'bar'
+		} );
+
+		expect( interceptedEventInfo.stop.called ).to.be.true;
+	} );
+
+	it( 'should handle the insertText input type and execute the input command', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		const viewRange = view.document.selection.getFirstRange();
+		const domRange = view.domConverter.viewRangeToDom( viewRange );
+		const viewSelection = view.createSelection( viewRange );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertText',
+			ranges: [ domRange ],
+			data: 'bar'
+		} );
+
+		sinon.assert.calledOnce( insertTextEventSpy );
+
+		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+
+		expect( firstCallArgs.text ).to.equal( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+	} );
+
+	it( 'should handle the insertReplacementText input type and execute the input command', () => {
+		viewSetData( view, '<p>fo{}o</p>' );
+
+		const viewRange = view.document.selection.getFirstRange();
+		const domRange = view.domConverter.viewRangeToDom( viewRange );
+		const viewSelection = view.createSelection( viewRange );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertReplacementText',
+			ranges: [ domRange ],
+			data: 'bar'
+		} );
+
+		sinon.assert.calledOnce( insertTextEventSpy );
+
+		const firstCallArgs = insertTextEventSpy.firstCall.args[ 1 ];
+
+		expect( firstCallArgs.text ).to.equal( 'bar' );
+		expect( firstCallArgs.selection.isEqual( viewSelection ) ).to.be.true;
+	} );
+} );
