@@ -70,9 +70,21 @@ describe( 'Input', () => {
 					await editor.destroy();
 				} );
 
+				it( 'should always preventDefault() the original beforeinput event', () => {
+					const spy = sinon.spy();
+
+					viewDocument.fire( 'insertText', {
+						preventDefault: spy,
+						text: 'bar'
+					} );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
 				it( 'should have the text property passed correctly to the insert text command', async () => {
 					viewDocument.fire( 'insertText', {
-						text: 'bar'
+						text: 'bar',
+						preventDefault: sinon.spy()
 					} );
 
 					const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
@@ -91,7 +103,8 @@ describe( 'Input', () => {
 						text: 'bar',
 						selection: view.createSelection(
 							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
-						)
+						),
+						preventDefault: sinon.spy()
 					} );
 
 					const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
@@ -120,7 +133,8 @@ describe( 'Input', () => {
 						resultRange: view.createRange(
 							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 2 ),
 							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 3 )
-						)
+						),
+						preventDefault: sinon.spy()
 					} );
 
 					const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];

@@ -84,7 +84,7 @@ describe( 'EnterObserver', () => {
 		sinon.assert.notCalled( enterSpy );
 	} );
 
-	it( 'should always preventDefault() the beforeinput event', () => {
+	it( 'should never preventDefault() the beforeinput event', () => {
 		let interceptedEventData;
 
 		viewDocument.on( 'beforeinput', ( evt, data ) => {
@@ -96,7 +96,7 @@ describe( 'EnterObserver', () => {
 			inputType: 'insertParagraph'
 		} );
 
-		sinon.assert.calledOnce( interceptedEventData.preventDefault );
+		sinon.assert.notCalled( interceptedEventData.preventDefault );
 	} );
 
 	it( 'should stop() the beforeinput event if enter event was also stopped', () => {

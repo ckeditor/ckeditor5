@@ -109,6 +109,19 @@ describe( 'Delete feature', () => {
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
 	} );
+
+	it( 'should always preventDefault() the original beforeinput event', () => {
+		const spy = sinon.spy();
+
+		viewDocument.fire( 'delete', {
+			preventDefault: spy,
+			direction: 'backward',
+			inputType: 'deleteContentBackward',
+			unit: 'character'
+		} );
+
+		sinon.assert.calledOnce( spy );
+	} );
 } );
 
 describe( 'Delete using the beforeinput event', () => {

@@ -55,6 +55,8 @@ export default class Delete extends Plugin {
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			data.preventDefault();
+
 			const { direction, sequence, selectionToRemove, unit } = data;
 			const commandName = direction === 'forward' ? 'deleteForward' : 'delete';
 			const commandData = { unit, sequence };

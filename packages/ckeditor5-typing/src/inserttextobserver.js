@@ -7,7 +7,9 @@
  * @module typing/inserttextobserver
  */
 
+import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
+import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 
 const TYPING_INPUT_TYPES = [
 	// For collapsed range:
@@ -42,26 +44,24 @@ export default class InsertTextObserver extends Observer {
 				return;
 			}
 
-			const { data: text, targetRanges, inputType } = data;
+			const { data: text, targetRanges, inputType, domEvent } = data;
 
 			if ( !TYPING_INPUT_TYPES.includes( inputType ) ) {
 				return;
 			}
 
-			viewDocument.fire( 'insertText', {
+			const eventInfo = new EventInfo( viewDocument, 'insertText' );
+
+			viewDocument.fire( eventInfo, new DomEventData( viewDocument, domEvent, {
 				text,
 				selection: view.createSelection( targetRanges )
-			} );
+			} ) );
 
-			// If this listener handled the event, there's no point in propagating it any further
-			// to other callbacks.
-			evt.stop();
-
-			// Without this preventDefault(), typing accented characters in Chrome on Mac does not work (inserts 2 characters).
-			// The **second** beforeInput event (the one when user accepts the choice) comes with a collapsed DOM range
-			// (should be expanded instead to replace the character from the first step). That's why this particular input must
-			// be preventDefaulted().
-			data.preventDefault();
+			// Stop the beforeinput event if `delete` event was stopped.
+			// https://github.com/ckeditor/ckeditor5/issues/753
+			if ( eventInfo.stop.called ) {
+				evt.stop();
+			}
 		} );
 	}
 

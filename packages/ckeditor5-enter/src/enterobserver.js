@@ -49,8 +49,6 @@ export default class EnterObserver extends Observer {
 			if ( event.stop.called ) {
 				evt.stop();
 			}
-
-			data.preventDefault();
 		} );
 	}
 

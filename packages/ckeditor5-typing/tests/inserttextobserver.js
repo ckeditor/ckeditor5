@@ -67,7 +67,39 @@ describe( 'InsertTextObserver', () => {
 		sinon.assert.notCalled( insertTextEventSpy );
 	} );
 
-	it( 'should always preventDefault() the beforeinput event', () => {
+	it( 'should stop the beforeinput event propagation if insertText event was stopped', () => {
+		let interceptedEventInfo;
+
+		viewDocument.on( 'beforeinput', evt => {
+			interceptedEventInfo = evt;
+		}, { priority: Number.POSITIVE_INFINITY } );
+
+		viewDocument.on( 'insertText', evt => {
+			evt.stop();
+		} );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertText'
+		} );
+
+		expect( interceptedEventInfo.stop.called ).to.be.true;
+	} );
+
+	it( 'should not stop the beforeinput event propagation if insertText event was not stopped', () => {
+		let interceptedEventInfo;
+
+		viewDocument.on( 'beforeinput', evt => {
+			interceptedEventInfo = evt;
+		}, { priority: Number.POSITIVE_INFINITY } );
+
+		fireBeforeInputDomEvent( domRoot, {
+			inputType: 'insertText'
+		} );
+
+		expect( interceptedEventInfo.stop.called ).to.be.undefined;
+	} );
+
+	it( 'should never preventDefault() the beforeinput event', () => {
 		viewSetData( view, '<p>fo{}o</p>' );
 
 		const viewRange = view.document.selection.getFirstRange();
@@ -86,28 +118,7 @@ describe( 'InsertTextObserver', () => {
 			data: 'bar'
 		} );
 
-		sinon.assert.calledOnce( interceptedEventData.preventDefault );
-	} );
-
-	it( 'should always stop() the beforeinput event', () => {
-		viewSetData( view, '<p>fo{}o</p>' );
-
-		const viewRange = view.document.selection.getFirstRange();
-		const domRange = view.domConverter.viewRangeToDom( viewRange );
-
-		let interceptedEventInfo;
-
-		viewDocument.on( 'beforeinput', evt => {
-			interceptedEventInfo = evt;
-		}, { priority: Number.POSITIVE_INFINITY } );
-
-		fireBeforeInputDomEvent( domRoot, {
-			inputType: 'insertText',
-			ranges: [ domRange ],
-			data: 'bar'
-		} );
-
-		expect( interceptedEventInfo.stop.called ).to.be.true;
+		sinon.assert.notCalled( interceptedEventData.preventDefault );
 	} );
 
 	it( 'should handle the insertText input type and execute the input command', () => {

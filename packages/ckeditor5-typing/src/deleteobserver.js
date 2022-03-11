@@ -194,8 +194,6 @@ export default class DeleteObserver extends Observer {
 			if ( eventInfo.stop.called ) {
 				evt.stop();
 			}
-
-			data.preventDefault();
 		} );
 	}
 

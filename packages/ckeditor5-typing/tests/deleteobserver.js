@@ -147,7 +147,7 @@ describe( 'Delete', () => {
 			expect( interceptedEventInfo.stop.called ).to.be.undefined;
 		} );
 
-		it( 'should always preventDefault() the beforeinput event', () => {
+		it( 'should never preventDefault() the beforeinput event', () => {
 			let interceptedEventData;
 
 			viewDocument.on( 'beforeinput', ( evt, data ) => {
@@ -159,7 +159,7 @@ describe( 'Delete', () => {
 				inputType: 'deleteContentBackward'
 			} );
 
-			sinon.assert.calledOnce( interceptedEventData.preventDefault );
+			sinon.assert.notCalled( interceptedEventData.preventDefault );
 		} );
 
 		describe( 'beforeinput event types handling', () => {
