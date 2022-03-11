@@ -99,7 +99,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			editor.execute( 'input', { text: 'a' } );
+			editor.execute( 'insertText', { text: 'a' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">a[]</listItem>' );
 			expect( getViewData( view ) ).to.equalMarkup(
@@ -110,7 +110,7 @@ describe( 'TodoListEditing', () => {
 				'</ul>'
 			);
 
-			editor.execute( 'input', { text: 'b' } );
+			editor.execute( 'insertText', { text: 'b' } );
 
 			expect( getModelData( model ) ).to.equalMarkup( '<listItem listIndent="0" listType="todo">ab[]</listItem>' );
 			expect( getViewData( view ) ).to.equalMarkup(
@@ -622,7 +622,7 @@ describe( 'TodoListEditing', () => {
 		it( 'should properly handle typing inside text node with attribute', () => {
 			setModelData( model, '<listItem listType="todo" listIndent="0"><$text bold="true">[]foo</$text></listItem>' );
 
-			editor.execute( 'input', { text: 'b' } );
+			editor.execute( 'insertText', { text: 'b' } );
 
 			expect( getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo"><$text bold="true">b[]foo</$text></listItem>'
@@ -645,7 +645,7 @@ describe( 'TodoListEditing', () => {
 				'<listItem listType="todo" listIndent="0"><$text bold="true" linkHref="foo">[]foo</$text></listItem>'
 			);
 
-			editor.execute( 'input', { text: 'b' } );
+			editor.execute( 'insertText', { text: 'b' } );
 
 			expect( getModelData( model ) ).to.equalMarkup(
 				'<listItem listIndent="0" listType="todo"><$text bold="true" linkHref="foo">b[]foo</$text></listItem>'
