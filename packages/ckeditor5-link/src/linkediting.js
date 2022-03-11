@@ -233,7 +233,6 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
-		const modelDocument = editor.model.document;
 
 		this.listenTo( viewDocument, 'click', ( evt, data ) => {
 			const shouldOpen = env.isMac ? data.domEvent.metaKey : data.domEvent.ctrlKey;
@@ -264,16 +263,10 @@ export default class LinkEditing extends Plugin {
 			openLink( url );
 		}, { context: '$capture' } );
 
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			const selection = modelDocument.selection;
-
-			const selectedElement = selection.getSelectedElement();
-
-			const url = selectedElement ?
-				selectedElement.getAttribute( 'linkHref' ) :
-				selection.getAttribute( 'linkHref' );
-
-			const shouldOpen = url && data.domEvent.altKey;
+		// Open link on Alt+Enter.
+		this.listenTo( viewDocument, 'keydown', ( evt, { domEvent } ) => {
+			const url = editor.commands.get( 'link' ).value;
+			const shouldOpen = url && domEvent.keyCode === keyCodes.enter && domEvent.altKey;
 
 			if ( !shouldOpen ) {
 				return;
@@ -282,7 +275,7 @@ export default class LinkEditing extends Plugin {
 			evt.stop();
 
 			openLink( url );
-		}, { context: 'a' } );
+		} );
 	}
 
 	/**
@@ -536,7 +529,7 @@ export default class LinkEditing extends Plugin {
 
 		// Detect pressing `Backspace`.
 		this.listenTo( view.document, 'delete', ( evt, data ) => {
-			hasBackspacePressed = data.domEvent.keyCode === keyCodes.backspace;
+			hasBackspacePressed = data.direction === 'backward';
 		}, { priority: 'high' } );
 
 		// Before removing the content, check whether the selection is inside a link or at the end of link but with 2-SCM enabled.

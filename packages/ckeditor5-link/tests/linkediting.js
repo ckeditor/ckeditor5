@@ -1199,7 +1199,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar</$text>[]</paragraph>' );
 
-			editor.execute( 'input', { text: 'Foo' } );
+			editor.execute( 'insertText', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar</$text>Foo[]</paragraph>' );
 		} );
@@ -1214,7 +1214,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>[]<$text linkHref="url">Bar</$text></paragraph>' );
 
-			editor.execute( 'input', { text: 'Foo' } );
+			editor.execute( 'insertText', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo[]<$text linkHref="url">Bar</$text></paragraph>' );
 		} );
@@ -1229,7 +1229,7 @@ describe( 'LinkEditing', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">B[]ar</$text></paragraph>' );
 
-			editor.execute( 'input', { text: 'ar. B' } );
+			editor.execute( 'insertText', { text: 'ar. B' } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph><$text linkHref="url">Bar. B[]ar</$text></paragraph>' );
 		} );
@@ -1246,7 +1246,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="foo">Foo</$text>[]<$text linkHref="bar">Bar</$text></paragraph>'
 			);
 
-			editor.execute( 'input', { text: 'Foo' } );
+			editor.execute( 'insertText', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="foo">Foo</$text>Foo[]<$text linkHref="bar">Bar</$text></paragraph>'
@@ -1265,7 +1265,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="foo">Foo</$text>[]<$text linkHref="bar">Bar</$text></paragraph>'
 			);
 
-			editor.execute( 'input', { text: 'Foo' } );
+			editor.execute( 'insertText', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="foo">Foo</$text>Foo[]<$text linkHref="bar">Bar</$text></paragraph>'
@@ -1284,7 +1284,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text bold="true" linkHref="url">Bar</$text><$text bold="true">[]</$text></paragraph>'
 			);
 
-			editor.execute( 'input', { text: 'Foo' } );
+			editor.execute( 'insertText', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph><$text bold="true" linkHref="url">Bar</$text><$text bold="true">Foo[]</$text></paragraph>'
@@ -1340,7 +1340,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>[]</paragraph>'
 			);
 
-			editor.execute( 'input', { text: 'Foo' } );
+			editor.execute( 'insertText', { text: 'Foo' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph><$text linkHref="https://ckeditor.com" linkIsFoo="true" linkTarget="_blank">Bar</$text>Foo[]</paragraph>'
@@ -1415,7 +1415,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is [<$text linkHref="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1440,7 +1440,7 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1461,7 +1461,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is [<$text linkHref="foo">Fo]o</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1486,7 +1486,7 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1513,7 +1513,7 @@ describe( 'LinkEditing', () => {
 				'</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1573,7 +1573,7 @@ describe( 'LinkEditing', () => {
 				stopPropagation: sinon.spy()
 			} );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1587,7 +1587,7 @@ describe( 'LinkEditing', () => {
 				'[<imageBlock src="/assets/sample.png"></imageBlock>]'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1601,7 +1601,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is [<$text bold="foo">Foo</$text>] from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1616,11 +1616,13 @@ describe( 'LinkEditing', () => {
 			);
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1635,11 +1637,13 @@ describe( 'LinkEditing', () => {
 			);
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.delete,
 				preventDefault: () => {}
+			}, {
+				direction: 'forward',
+				selectionToRemove: view.document.selection
 			} ) );
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1653,7 +1657,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is <$text linkHref="foo">[Foo</$text> from <$text linkHref="bar">Bar]</$text>.</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1665,7 +1669,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is[ <$text linkHref="foo">Foo]</$text> from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1679,7 +1683,7 @@ describe( 'LinkEditing', () => {
 				'<paragraph>This is <$text linkHref="foo">[Foo</$text> ]from <$text linkHref="bar">Bar</$text>.</paragraph>'
 			);
 
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: 'Abcde'
 			} );
 
@@ -1735,15 +1739,19 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( false );
@@ -1766,8 +1774,10 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial "linkHref" state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
@@ -1775,8 +1785,10 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link ("linkHref")' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character the link ("linkHref")' ).to.equal( false );
@@ -1800,15 +1812,19 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
@@ -1821,15 +1837,19 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing space after the link' ).to.equal( true );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'removing a character in the link' ).to.equal( true );
@@ -1840,13 +1860,17 @@ describe( 'LinkEditing', () => {
 			setModelData( model, '<paragraph>Foo <$text bold="true">Bolded.</$text> []Bar</paragraph>' );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.backspace,
 				preventDefault: () => {}
+			}, {
+				direction: 'backward',
+				selectionToRemove: view.document.selection
 			} ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text bold="true">Bolded[]</$text>Bar</paragraph>' );
@@ -1858,9 +1882,11 @@ describe( 'LinkEditing', () => {
 			expect( model.document.selection.hasAttribute( 'linkHref' ), 'initial state' ).to.equal( false );
 
 			view.document.fire( 'delete', new DomEventData( view.document, {
-				keyCode: keyCodes.delete,
 				preventDefault: () => {}
-			}, { direction: 'forward' } ) );
+			}, {
+				direction: 'forward',
+				selectionToRemove: view.document.selection
+			} ) );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>Foo <$text linkHref="url">Bar[]</$text></paragraph>' );
 
