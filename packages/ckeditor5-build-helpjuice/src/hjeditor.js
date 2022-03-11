@@ -49,6 +49,7 @@ import Info from './plugins/calloutblocks/info/info';
 import Success from './plugins/calloutblocks/success/success';
 import Warning from './plugins/calloutblocks/warning/warning';
 import Danger from './plugins/calloutblocks/danger/danger';
+import InternalBlock from './plugins/internalblock/internalblock';
 
 export default class HelpjuiceEditor extends ClassicEditorBase { }
 
@@ -94,7 +95,8 @@ HelpjuiceEditor.builtinPlugins = [
 	Info,
 	Success,
 	Warning,
-	Danger
+	Danger,
+	InternalBlock
 ];
 
 // Editor configuration.
@@ -162,13 +164,14 @@ HelpjuiceEditor.defaultConfig = {
 			'removeFormat',
 			'undo',
 			'redo',
+			'|',
 			'accordion',
 			'tab',
-			'|',
 			'info',
 			'success',
 			'warning',
-			'danger'
+			'danger',
+			'internalblock'
 		],
 		shouldNotGroupWhenFull: true
 	},

@@ -17,6 +17,7 @@ html {
 
 .ck-content {
 	height: 100vh;
+	padding: 20px 30px!important;
 }
 
 .ck-content .todo-list .todo-list__label > input {

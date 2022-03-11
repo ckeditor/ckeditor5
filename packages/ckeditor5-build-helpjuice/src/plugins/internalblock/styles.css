@@ -1,0 +1,63 @@
+.helpjuice-internal-block.ck-widget {
+	position: relative;
+	background-color: #F3F5F8;
+	padding: 10px;
+}
+.helpjuice-internal-block.ck-widget::before {
+	content: "Restricted Content";
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: #757575;
+	color: #FFFFFF;
+	position: absolute;
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+	padding: 1px 10px;
+	z-index: 9999;
+	border-radius: 2px;
+}
+
+.helpjuice-internal-block.ck-widget,
+.ck-blurred .helpjuice-internal-block.ck-widget {
+	outline: 3px solid #e1e1e1!important;
+}
+.helpjuice-internal-block.ck-widget:hover {
+	outline-color: #ffc83d!important;
+}
+
+.ck-focused .helpjuice-internal-block.ck-widget.ck-widget_selected,
+.ck-focused .helpjuice-internal-block.ck-widget.ck-widget_selected:hover {
+	outline-color: #1f89e5!important;
+}
+
+.helpjuice-internal-block.ck-widget .helpjuice-internal-block-title.ck-widget {
+	position: absolute;
+	top: 0;
+	right: 0;
+	outline: none!important;
+	z-index: 9999;
+}
+.helpjuice-internal-block.ck-widget .helpjuice-internal-block-title.ck-widget p {
+	margin: -8px 0 0 0;
+	padding: 1px 10px;
+	font-size: 10px;
+	font-weight: normal;
+	text-transform: uppercase;
+	background-color: #757575;
+	color: #FFFFFF;
+	z-index: 9999;
+	border-radius: 2px;
+	cursor: pointer;
+}
+.helpjuice-internal-block.ck-widget .helpjuice-internal-block-title.ck-widget .ck-reset_all {
+	display: none!important;
+}
+
+.helpjuice-internal-block.ck-widget .helpjuice-internal-block-body {
+	background: none!important;
+	border: none;
+	box-shadow: none!important;
+	padding: 0 10px;
+}
