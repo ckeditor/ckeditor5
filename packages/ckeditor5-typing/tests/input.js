@@ -14,17 +14,28 @@ import InsertTextCommand from '../src/inserttextcommand';
 
 describe( 'Input', () => {
 	describe( 'Input plugin', () => {
-		let domElement;
+		let domElement, editor, view, viewDocument, insertTextCommandSpy;
 
 		testUtils.createSinonSandbox();
 
-		beforeEach( () => {
+		beforeEach( async () => {
 			domElement = document.createElement( 'div' );
 			document.body.appendChild( domElement );
+
+			editor = await ClassicTestEditor.create( domElement, {
+				plugins: [ Input, Paragraph ],
+				initialData: '<p>foo</p>'
+			} );
+
+			view = editor.editing.view;
+			viewDocument = view.document;
+			insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
 		} );
 
-		afterEach( () => {
+		afterEach( async () => {
 			domElement.remove();
+
+			await editor.destroy();
 		} );
 
 		it( 'should define #pluginName', () => {
@@ -52,98 +63,79 @@ describe( 'Input', () => {
 				await editor.destroy();
 			} );
 
-			describe( 'insertText view document event handling', () => {
-				let editor, view, viewDocument, insertTextCommandSpy;
+			it( 'should always preventDefault() the original beforeinput event', () => {
+				const spy = sinon.spy();
 
-				beforeEach( async () => {
-					editor = await ClassicTestEditor.create( domElement, {
-						plugins: [ Input, Paragraph ],
-						initialData: '<p>foo</p>'
-					} );
-
-					view = editor.editing.view;
-					viewDocument = view.document;
-					insertTextCommandSpy = testUtils.sinon.stub( editor.commands.get( 'insertText' ), 'execute' );
+				viewDocument.fire( 'insertText', {
+					preventDefault: spy,
+					text: 'bar'
 				} );
 
-				afterEach( async () => {
-					await editor.destroy();
+				sinon.assert.calledOnce( spy );
+			} );
+
+			it( 'should have the text property passed correctly to the insert text command', async () => {
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					preventDefault: sinon.spy()
 				} );
 
-				it( 'should always preventDefault() the original beforeinput event', () => {
-					const spy = sinon.spy();
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-					viewDocument.fire( 'insertText', {
-						preventDefault: spy,
-						text: 'bar'
-					} );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
 
-					sinon.assert.calledOnce( spy );
+			it( 'should have the selection property passed correctly to the insert text command', async () => {
+				const expectedSelection = editor.model.createSelection(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
+				);
+
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					selection: view.createSelection(
+						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
+					),
+					preventDefault: sinon.spy()
 				} );
 
-				it( 'should have the text property passed correctly to the insert text command', async () => {
-					viewDocument.fire( 'insertText', {
-						text: 'bar',
-						preventDefault: sinon.spy()
-					} );
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-					const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
+				expect( firstCallArgs.resultRange ).to.be.undefined;
+			} );
 
-					sinon.assert.calledOnce( insertTextCommandSpy );
-					expect( firstCallArgs.text ).to.equal( 'bar' );
-					expect( firstCallArgs.resultRange ).to.be.undefined;
+			it( 'should have result range passed correctly to the insert text command', async () => {
+				const expectedSelection = editor.model.createSelection(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
+				);
+
+				const expectedRange = editor.model.createRange(
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 2 ),
+					editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 3 )
+				);
+
+				viewDocument.fire( 'insertText', {
+					text: 'bar',
+					selection: view.createSelection(
+						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
+					),
+					resultRange: view.createRange(
+						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 2 ),
+						view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 3 )
+					),
+					preventDefault: sinon.spy()
 				} );
 
-				it( 'should have the selection property passed correctly to the insert text command', async () => {
-					const expectedSelection = editor.model.createSelection(
-						editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
-					);
+				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
 
-					viewDocument.fire( 'insertText', {
-						text: 'bar',
-						selection: view.createSelection(
-							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
-						),
-						preventDefault: sinon.spy()
-					} );
-
-					const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-					sinon.assert.calledOnce( insertTextCommandSpy );
-					expect( firstCallArgs.text ).to.equal( 'bar' );
-					expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
-					expect( firstCallArgs.resultRange ).to.be.undefined;
-				} );
-
-				it( 'should have result range passed correctly to the insert text command', async () => {
-					const expectedSelection = editor.model.createSelection(
-						editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 1 )
-					);
-
-					const expectedRange = editor.model.createRange(
-						editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 2 ),
-						editor.model.createPositionAt( editor.model.document.getRoot().getChild( 0 ), 3 )
-					);
-
-					viewDocument.fire( 'insertText', {
-						text: 'bar',
-						selection: view.createSelection(
-							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 1 )
-						),
-						resultRange: view.createRange(
-							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 2 ),
-							view.createPositionAt( viewDocument.getRoot().getChild( 0 ).getChild( 0 ), 3 )
-						),
-						preventDefault: sinon.spy()
-					} );
-
-					const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];
-
-					sinon.assert.calledOnce( insertTextCommandSpy );
-					expect( firstCallArgs.text ).to.equal( 'bar' );
-					expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
-					expect( firstCallArgs.resultRange.isEqual( expectedRange ) ).to.be.true;
-				} );
+				sinon.assert.calledOnce( insertTextCommandSpy );
+				expect( firstCallArgs.text ).to.equal( 'bar' );
+				expect( firstCallArgs.selection.isEqual( expectedSelection ) ).to.be.true;
+				expect( firstCallArgs.resultRange.isEqual( expectedRange ) ).to.be.true;
 			} );
 		} );
 	} );
