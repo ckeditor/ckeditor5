@@ -1526,7 +1526,8 @@ describe( 'WidgetTypeAround', () => {
 				text,
 				selection: editingView.createSelection(
 					editor.editing.mapper.toViewRange( editor.model.document.selection.getFirstRange() )
-				)
+				),
+				preventDefault: sinon.spy()
 			} );
 		}
 
