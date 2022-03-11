@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -63,7 +63,8 @@ export default class DeleteCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] The command options.
-	 * @param {'character'} [options.unit='character'] See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
+	 * @param {'character'|'codePoint'|'word'} [options.unit='character']
+	 * See {@link module:engine/model/utils/modifyselection~modifySelection}'s options.
 	 * @param {Number} [options.sequence=1] A number describing which subsequent delete event it is without the key being released.
 	 * See the {@link module:engine/view/document~Document#event:delete} event data.
 	 * @param {module:engine/model/selection~Selection} [options.selection] Selection to remove. If not set, current model selection
@@ -88,7 +89,11 @@ export default class DeleteCommand extends Command {
 
 			// Try to extend the selection in the specified direction.
 			if ( selection.isCollapsed ) {
-				model.modifySelection( selection, { direction: this.direction, unit: options.unit } );
+				model.modifySelection( selection, {
+					direction: this.direction,
+					unit: options.unit,
+					treatEmojiAsSingleUnit: true
+				} );
 			}
 
 			// Check if deleting in an empty editor. See #61.

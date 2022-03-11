@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -11,7 +11,6 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import StandardEditingModeEditing from '../src/standardeditingmodeediting';
 import RestrictedEditingExceptionCommand from '../src/restrictededitingexceptioncommand';
-import { assertEqualMarkup } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
 describe( 'StandardEditingModeEditing', () => {
 	let editor, model;
@@ -99,8 +98,8 @@ describe( 'StandardEditingModeEditing', () => {
 					'</paragraph>'
 				);
 
-				assertEqualMarkup( editor.getData(), expectedView );
-				assertEqualMarkup( getViewData( editor.editing.view, { withoutSelection: true } ), expectedView );
+				expect( editor.getData() ).to.equalMarkup( expectedView );
+				expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equalMarkup( expectedView );
 			} );
 		} );
 	} );

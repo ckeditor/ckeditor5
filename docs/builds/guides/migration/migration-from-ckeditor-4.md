@@ -15,7 +15,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to {@link builds/guides/overview#when-not-to-use-builds When NOT to use CKEditor 5 Builds?} for more information.
+Before starting, be sure that migrating is your best choice. Refer to {@link builds/guides/overview#when-not-to-use-builds When NOT to use CKEditor 5 builds?} for more information.
 
 ## Installation and integration
 
@@ -95,7 +95,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td>
 				<p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved via the {@link features/general-html-support General HTML Support feature}. The GHS allows adding HTML markup not covered by official CKEditor 5 features into the editor's content. Such elements can be loaded, pasted, or output. It does not, however, provide a dedicated UI for the extended HTML markup.</p>
 				<p> Having full-fledged HTML support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup. For more information on how to create plugins check the {@link framework/guides/creating-simple-plugin Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p>
-				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/guides/deep-dive/conversion-introduction conversion tutorials} to learn how to extend the conversion rules.</p>
+				<p>Note that only content that is explicitly converted between the model and the view by the editor plugins will be preserved in CKEditor 5. Check the {@link framework/guides/deep-dive/conversion/intro conversion tutorials} to learn how to extend the conversion rules.</p>
 			</td>
 		</tr>
 		<tr>

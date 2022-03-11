@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -124,7 +124,6 @@ export default class TextTransformation extends Plugin {
 	_enableTransformationWatchers() {
 		const editor = this.editor;
 		const model = editor.model;
-		const inputPlugin = editor.plugins.get( 'Input' );
 		const deletePlugin = editor.plugins.get( 'Delete' );
 		const normalizedTransformations = normalizeTransformations( editor.config.get( 'typing.transformations' ) );
 
@@ -140,7 +139,7 @@ export default class TextTransformation extends Plugin {
 		};
 
 		const watcherCallback = ( evt, data ) => {
-			if ( !inputPlugin.isInput( data.batch ) ) {
+			if ( !data.batch.isTyping ) {
 				return;
 			}
 
@@ -249,8 +248,9 @@ function normalizeTransformations( config ) {
 	const configured = config.include.concat( extra ).filter( isNotRemoved );
 
 	return expandGroupsAndRemoveDuplicates( configured )
-		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group
+		.filter( isNotRemoved ) // Filter out 'remove' transformations as they might be set in group.
 		.map( transformation => TRANSFORMATIONS[ transformation ] || transformation )
+		.filter( transformation => typeof transformation === 'object' ) // Filter out transformations set as string that has not been found.
 		.map( transformation => ( {
 			from: normalizeFrom( transformation.from ),
 			to: normalizeTo( transformation.to )

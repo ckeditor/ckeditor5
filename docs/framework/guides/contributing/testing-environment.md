@@ -1,6 +1,7 @@
 ---
 category: framework-contributing
 order: 20
+modified_at: 2021-11-24
 ---
 
 # Testing environment
@@ -27,6 +28,7 @@ It accepts the following arguments that must be passed after the `--` option:
 * `--browsers` &ndash; Browsers that will be used to run the tests. Defaults to `Chrome`.
 * `--debug` (alias `-d`) &ndash; Allows specifying custom debug flags. For example, the `--debug engine` option uncomments the `// @if CK_DEBUG_ENGINE //` lines in the code. Note that by default `--debug` is set to `true` even if you did not specify it. This enables the base set of debug logs (`// @if CK_DEBUG //`) which should always be enabled in the testing environment. You can completely turn off the debug mode by setting the `--debug false` option.
 * `--port` &ndash; Specifies the port for the server to use. Defaults to `9876`.
+* `--identity-file="/path/to/file.js"` (alias `-i`) &ndash; Path to the file containing the license key(s) for closed–source features.
 
 ### Examples
 
@@ -47,6 +49,51 @@ Run the `bold*.js` tests in the [`ckeditor5-basic-styles`](https://github.com/ck
 ```
 yarn run test -cw --files=basic-styles/bold*.js
 ```
+
+### Custom Chai assertions
+
+Our testing environment allows for some custom `Chai` assertions. There is no need to import them, as they are imported by default inside all tests.
+
+#### `equalMarkup`
+
+Tests whether two given strings containing markup language are equal. Unlike `expect().to.equal()` from Chai assertion library, this assertion formats the markup before showing a diff. It can be used to test HTML strings and strings containing a serialized model.
+
+This assertion will pass:
+
+```js
+expect( `<b>foo</b>` ).to.equalMarkup( `<b>foo</b>` )
+```
+
+This assertion will throw an error:
+
+```js
+expect(
+	'<paragraph>foo bXXX[]r baz</paragraph>'
+).to.equalMarkup(
+	'<paragraph>foo bYYY[]r baz</paragraph>'
+);
+```
+
+#### `attribute`
+
+Asserts that the target has an attribute with the given key name. See {@link module:engine/model/documentselection~DocumentSelection#hasAttribute hasAttribute}.
+
+```js
+expect( selection ).to.have.attribute( 'linkHref' );
+```
+
+When optional `value` is provided, `.attribute` also asserts that the attribute's value is equal to the given `value`. See {@link module:engine/model/documentselection~DocumentSelection#getAttribute getAttribute}.
+
+```js
+expect( selection ).to.have.attribute( 'linkHref', 'example.com' );
+```
+
+Negations works as well.
+
+```js
+expect( selection ).to.not.have.attribute( 'linkHref' );
+```
+
 
 ## Running manual tests
 

@@ -11,7 +11,7 @@ The {@link module:heading/heading~Heading} feature enables support for headings.
 Headings can easily be added with toolbar dropdown, buttons or with {@link features/autoformat Markdown code} as you type. They can also be cleared with the {@link features/remove-format remove format} feature.
 
 <info-box info>
-	This feature is enabled by default in all builds.
+	This feature is enabled by default in all {@link builds/guides/overview predefined builds}.
 </info-box>
 
 ## Heading levels
@@ -164,7 +164,7 @@ ClassicEditor
 ## Installation
 
 <info-box info>
-	This feature is enabled by default in all builds. The installation instructions are for developers interested in building their own, custom editor.
+	This feature is enabled by default in all predefined builds. The installation instructions are for developers interested in building their own, custom editor.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-heading`](https://www.npmjs.com/package/@ckeditor/ckeditor5-heading) package:

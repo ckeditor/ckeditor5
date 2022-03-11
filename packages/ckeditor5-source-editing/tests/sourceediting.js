@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -428,7 +428,7 @@ describe( 'SourceEditing', () => {
 			expect( setDataSpy.calledOnce ).to.be.true;
 			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
 				{ main: '<p>Foo</p><p>bar</p>' },
-				{ batchType: 'default' }
+				{ batchType: { isUndoable: true } }
 			] );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p><p>bar</p>' );
 		} );
@@ -451,6 +451,40 @@ describe( 'SourceEditing', () => {
 
 			expect( setData.callCount ).to.equal( 0 );
 			expect( editor.data.get() ).to.equal( '<p>Foo</p>' );
+		} );
+
+		it( 'should update the editor data after calling editor.getData() in the source editing mode', () => {
+			const setDataSpy = sinon.spy();
+
+			editor.data.on( 'set', setDataSpy );
+
+			button.fire( 'execute' );
+
+			const domRoot = editor.editing.view.getDomRoot();
+			const textarea = domRoot.nextSibling.children[ 0 ];
+
+			textarea.value = 'foo';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Trigger getData() while in the source editing mode.
+			expect( editor.getData() ).to.equal( '<p>foo</p>' );
+
+			textarea.value = 'bar';
+			textarea.dispatchEvent( new Event( 'input' ) );
+
+			// Exit source editing mode.
+			button.fire( 'execute' );
+
+			expect( setDataSpy.calledTwice ).to.be.true;
+			expect( setDataSpy.firstCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'foo' },
+				{ batchType: { isUndoable: true } }
+			] );
+			expect( setDataSpy.secondCall.args[ 1 ] ).to.deep.equal( [
+				{ main: 'bar' },
+				{ batchType: { isUndoable: true } }
+			] );
+			expect( editor.data.get() ).to.equal( '<p>bar</p>' );
 		} );
 
 		it( 'should insert the formatted HTML source (editor output) into the textarea', () => {

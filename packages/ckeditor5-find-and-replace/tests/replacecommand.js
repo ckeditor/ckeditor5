@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -9,6 +9,7 @@ import FindAndReplaceEditing from '../src/findandreplaceediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'ReplaceCommand', () => {
 	let editor, model, command;
@@ -16,7 +17,7 @@ describe( 'ReplaceCommand', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing ]
+				plugins: [ FindAndReplaceEditing, Paragraph, BoldEditing, ItalicEditing, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -114,7 +115,7 @@ describe( 'ReplaceCommand', () => {
 				}
 			}
 
-			expect( getData( editor.model, { convertMarkers: true } ) ).to.equal(
+			expect( getData( editor.model, { convertMarkers: true, withoutSelection: true } ) ).to.equal(
 				'<paragraph>bar <findResult:1:start></findResult:1:start>' +
 					'<findResultHighlighted:x:start></findResultHighlighted:x:start>foo<findResult:1:end></findResult:1:end>' +
 					'<findResultHighlighted:x:end></findResultHighlighted:x:end> ' +
@@ -167,6 +168,35 @@ describe( 'ReplaceCommand', () => {
 			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal(
 				'<paragraph><$text italic="true">foo </$text>bom<$text italic="true"> foo</$text></paragraph>'
 			);
+		} );
+
+		it( 'should not replace find results that landed in the $graveyard root (e.g. removed by collaborators)', () => {
+			setData( model, '<paragraph>Aoo Boo Coo Doo</paragraph>' );
+
+			const { results } = editor.execute( 'find', 'oo' );
+
+			model.change( writer => {
+				writer.remove(
+					// <paragraph>Aoo [Boo Coo] Doo</paragraph>
+					model.createRange(
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 4 ),
+						model.createPositionAt( model.document.getRoot().getChild( 0 ), 11 )
+					)
+				);
+			} );
+
+			// Wrap this call in the transparent batch to make it easier to undo the above deletion only.
+			// In real life scenario the above deletion would be a transparent batch from the remote user,
+			// and undo would also be triggered by the remote user.
+			model.enqueueChange( { isUndoable: false }, () => {
+				editor.execute( 'replaceAll', 'aa', results );
+			} );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa  Daa</paragraph>' );
+
+			editor.execute( 'undo' );
+
+			expect( getData( editor.model, { withoutSelection: true } ) ).to.equal( '<paragraph>Aaa Boo Coo Daa</paragraph>' );
 		} );
 	} );
 } );

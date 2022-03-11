@@ -158,36 +158,34 @@ The `CKEditorContext` component supports the following properties:
      * `{Boolean} willContextRestart` &ndash; When `true`, it means that the context component will restart itself.
 
 <info-box>
-	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/comments-outside-of-editor).
+	An example build that exposes both context and classic editor can be found in the [CKEditor 5 collaboration sample](https://github.com/ckeditor/ckeditor5-collaboration-samples/blob/master/real-time-collaboration-comments-outside-of-editor-for-react).
 </info-box>
 
 ## Customizing the builds
 
-{@link builds/guides/overview CKEditor 5 builds} come ready to use, with a set of built-in plugins and a predefined configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add plugins you need to rebuild the editor.
+The {@link builds/guides/overview CKEditor 5 predefined builds} come ready to use, with a set of built-in plugins and a preset configuration. While you can change the configuration easily by using the `config` property of the `<CKEditor>` component which allows you to change the {@link features/toolbar toolbar} or {@link builds/guides/integration/configuration#removing-features remove some plugins}, in order to add more plugins you need to rebuild the editor.
 
 There are three main ways to do that.
 
-* {@link builds/guides/development/custom-builds Customize one of the existing builds}.
+### Using the CKEditor 5 online builder
 
-	This option does not require any changes in your project's configuration. You will create a new build somewhere next to your project and include it like you included one of the existing builds. Therefore, it is the easiest way to add missing features.
+Create your own CKEditor 5 build with customized plugins, toolbar and language in five simple steps using our dedicated [online builder](https://ckeditor.com/ckeditor-5/online-builder/). It is a fast, intuitive tool that allows for customizing your editing experience with a set of plugins of your own choice. Read more about this option in the [Integrating a build from the online builder](#integrating-a-build-from-the-online-builder) section.
 
-	Read more about this method in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
+<info-box>
+	If you want to use the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is not selected. The React integration comes with the watchdog feature already integrated into the core.
+</info-box>
 
-* [Use the CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+### Customizing one of the predefined builds
 
-    Create your own CKEditor 5 build with customized plugins, toolbar and language in 5 simple steps.
+This option requires making changes to the {@link builds/guides/development/custom-builds predefined build} of your choice. Much like in [the case of online builder](#integrating-a-build-from-the-online-builder), you then need to place the custom editor's folder next to the `src/` directory and add it as a dependency using `yarn add file` command.
 
-	<info-box>
-		If you want to use the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/), make sure that the [watchdog feature](https://ckeditor.com/docs/ckeditor5/latest/features/watchdog.html) is not selected. The React integration comes with the watchdog feature already integrated into the core.
-	</info-box>
+Read more about customising a predefined build in the {@link builds/guides/integration/installing-plugins Installing plugins} guide.
 
-	Read more about this option in the [Integrating a build from the online builder](#integrating-a-build-from-the-online-builder) section.
+### Integrating the editor from source
 
-* {@link builds/guides/integration/advanced-setup Integrate the editor from source}.
+In this approach, you will include a CKEditor 5 {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source built from source}, so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
 
-	In this approach you will include a CKEditor 5 built from source &mdash; so you will choose the editor creator you want and the list of plugins, etc. It is more powerful and creates a tighter integration between your application and the WYSIWYG editor, however, it requires adjusting your `webpack.config.js` to CKEditor 5 needs.
-
-	Read more about this option in the [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source) section.
+Read more about this option in the [Integrating CKEditor 5 from source](#integrating-ckeditor-5-built-from-source) section.
 
 ### Using the document editor build
 
@@ -215,7 +213,7 @@ class App extends Component {
 
 						this.editor = editor;
 					} }
-					onError={ ( { willEditorRestart } ) => {
+					onError={ ( error, { willEditorRestart } ) => {
 						// If the editor is restarted, the toolbar element will be created once again.
 						// The `onReady` callback will be called again and the new toolbar will be added.
 						// This is why you need to remove the older toolbar.
@@ -394,7 +392,7 @@ Before you start modifying the webpack configuration, first install some CKEdito
 
 ```
 yarn add \
-	raw-loader@3 \
+	raw-loader@4 \
 	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-theme-lark \
 	@ckeditor/ckeditor5-react \
@@ -435,14 +433,17 @@ Then, add two new elements to the exported object under the `module.rules` array
 				}
 			}
 		},
+		'css-loader',
 		{
 			loader: 'postcss-loader',
-			options: styles.getPostCssConfig( {
-				themeImporter: {
-					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-				},
-				minify: true
-			} )
+			options: {
+				postcssOptions: styles.getPostCssConfig( {
+					themeImporter: {
+						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+					},
+					minify: true
+				} )
+			}
 		}
 	]
 },
@@ -480,18 +481,18 @@ Finally, exclude CKEditor 5 SVG and CSS files from `file-loader`. Find the last 
 ```js
 {
 	loader: require.resolve( 'file-loader' ),
-	// Exclude `js` files to keep the "css" loader working as it injects
-	// its runtime that would otherwise be processed through the "file" loader.
-	// Also exclude `html` and `json` extensions so they get processed
-	// by webpack's internal loaders.
-	exclude: [
-		/\.(js|mjs|jsx|ts|tsx)$/,
-		/\.html$/,
-		/\.json$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
-		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
-	],
 	options: {
+		// Exclude `js` files to keep the "css" loader working as it injects
+		// its runtime that would otherwise be processed through the "file" loader.
+		// Also exclude `html` and `json` extensions so they get processed
+		// by webpack's internal loaders.
+		exclude: [
+			/\.(js|mjs|jsx|ts|tsx)$/,
+			/\.html$/,
+			/\.json$/,
+			/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+			/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/
+		],
 		name: 'static/media/[name].[hash:8].[ext]',
 	}
 }

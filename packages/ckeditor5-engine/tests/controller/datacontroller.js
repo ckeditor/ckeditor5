@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -291,22 +291,26 @@ describe( 'DataController', () => {
 			expect( modelDocument.history.getOperations().length ).to.equal( 1 );
 		} );
 
-		it( 'should create a `default` batch by default', () => {
+		it( 'should create a batch with default type if `batchType` option is not given', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
 			const operation = modelDocument.history.getOperations()[ 0 ];
+			const batch = operation.batch;
 
-			expect( operation.batch.type ).to.equal( 'default' );
+			expect( batch.isUndoable ).to.be.true;
+			expect( batch.isLocal ).to.be.true;
+			expect( batch.isUndo ).to.be.false;
+			expect( batch.isTyping ).to.be.false;
 		} );
 
 		it( 'should create a batch specified by the `options.batch` option when provided', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
-			data.set( 'foo', { batchType: 'transparent' } );
+			data.set( 'foo', { batchType: { isUndoable: true } } );
 
 			const operation = modelDocument.history.getOperations()[ 0 ];
 
-			expect( operation.batch.type ).to.equal( 'transparent' );
+			expect( operation.batch.isUndoable ).to.be.true;
 		} );
 
 		it( 'should cause firing change event', () => {
@@ -396,6 +400,16 @@ describe( 'DataController', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			downcastHelpers.elementToElement( { model: 'paragraph', view: 'p' } );
+		} );
+
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			data.on( 'get', spy );
+
+			data.get();
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [] );
 		} );
 
 		it( 'should get paragraph with text', () => {
@@ -672,8 +686,102 @@ describe( 'DataController', () => {
 			expect( stringifyView( viewDocumentFragment ) ).to.equal( 'f<span class="a">oo</span>' );
 		} );
 
+		it( 'adjacent markers do not overlap regardless of creation order', () => {
+			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			downcastHelpers.markerToData( { model: 'marker' } );
+			upcastHelpers.dataToMarker( { view: 'marker' } );
+
+			const modelP = modelElement.getChild( 0 );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+			} );
+
+			const rangeA = model.createRange( model.createPositionAt( modelP, 0 ), model.createPositionAt( modelP, 3 ) );
+			const rangeB = model.createRange( model.createPositionAt( modelP, 3 ), model.createPositionAt( modelP, 6 ) );
+
+			model.change( writer => {
+				writer.addMarker( 'marker:a', { range: rangeA, usingOperation: true } );
+				writer.addMarker( 'marker:b', { range: rangeB, usingOperation: true } );
+			} );
+
+			const viewDocumentFragment1 = data.toView( modelP );
+			expect( stringifyView( viewDocumentFragment1 ) ).to.equal(
+				'<marker-start name="a"></marker-start>foo<marker-end name="a"></marker-end>' +
+				'<marker-start name="b"></marker-start>bar<marker-end name="b"></marker-end>'
+			);
+
+			model.change( writer => {
+				writer.removeMarker( 'marker:a' );
+				writer.removeMarker( 'marker:b' );
+
+				writer.addMarker( 'marker:b', { range: rangeB, usingOperation: true } );
+				writer.addMarker( 'marker:a', { range: rangeA, usingOperation: true } );
+			} );
+
+			const viewDocumentFragment2 = data.toView( modelP );
+			expect( stringifyView( viewDocumentFragment2 ) ).to.equal(
+				'<marker-start name="a"></marker-start>foo<marker-end name="a"></marker-end>' +
+				'<marker-start name="b"></marker-start>bar<marker-end name="b"></marker-end>'
+			);
+		} );
+
+		it( 'intersecting markers downcast consistently regardless of creation order', () => {
+			const modelElement = parseModel( '<div><paragraph>1234567890</paragraph></div>', schema );
+			const modelRoot = model.document.getRoot();
+
+			downcastHelpers.markerToData( { model: 'marker' } );
+			upcastHelpers.dataToMarker( { view: 'marker' } );
+
+			const modelP = modelElement.getChild( 0 );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRoot, 0 );
+			} );
+
+			function range( start, end ) {
+				return model.createRange( model.createPositionAt( modelP, start ), model.createPositionAt( modelP, end ) );
+			}
+
+			const markerRanges = {
+				base: range( 2, 8 ),
+				equal: range( 2, 8 ),
+				outsideStart: range( 0, 2 ),
+				overlapStart: range( 1, 3 ),
+				insideStart: range( 2, 4 ),
+				inside: range( 3, 6 ),
+				insideEnd: range( 6, 8 ),
+				overlapEnd: range( 7, 9 ),
+				outsideEnd: range( 8, 10 )
+			};
+
+			model.change( writer => {
+				for ( const [ name, range ] of Object.entries( markerRanges ) ) {
+					writer.addMarker( `marker:${ name }`, { range, usingOperation: true } );
+				}
+			} );
+
+			const result = stringifyView( data.toView( modelP ) );
+
+			model.change( writer => {
+				for ( const name of Object.keys( markerRanges ) ) {
+					writer.removeMarker( `marker:${ name }` );
+				}
+
+				for ( const [ name, range ] of Object.entries( markerRanges ).reverse() ) {
+					writer.addMarker( `marker:${ name }`, { range, usingOperation: true } );
+				}
+			} );
+
+			const viewDocumentFragment2 = data.toView( modelP );
+			expect( stringifyView( viewDocumentFragment2 ) ).to.equal( result );
+		} );
+
 		it( 'should convert a document fragment and its markers', () => {
 			downcastHelpers.markerToData( { model: 'foo' } );
+
 			const modelDocumentFragment = parseModel( '<paragraph>foo</paragraph><paragraph>bar</paragraph>', schema );
 
 			const range = model.createRange(

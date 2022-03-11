@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,8 +30,20 @@ describe( 'SelectAllCommand', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'constructor()', () => {
+		it( 'sets public properties', () => {
+			expect( command ).to.have.property( 'affectsData', false );
+		} );
+	} );
+
 	describe( 'isEnabled', () => {
 		it( 'should always be "true" because the command is stateless', () => {
+			expect( command.isEnabled ).to.be.true;
+		} );
+
+		it( 'should not depend on editor read-only state', () => {
+			editor.isReadOnly = true;
+
 			expect( command.isEnabled ).to.be.true;
 		} );
 	} );

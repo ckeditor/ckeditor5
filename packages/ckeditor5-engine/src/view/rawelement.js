@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -131,12 +131,13 @@ export default class RawElement extends Element {
 	 *
 	 *		const myRawElement = downcastWriter.createRawElement( 'div' );
 	 *
-	 *		myRawElement.render = function( domElement ) {
-	 *			domElement.innerHTML = '<b>This is the raw content of myRawElement.</b>';
+	 *		myRawElement.render = function( domElement, domConverter ) {
+	 *			domConverter.setContentOf( domElement, '<b>This is the raw content of myRawElement.</b>' );
 	 *		};
 	 *
 	 * @method #render
 	 * @param {HTMLElement} domElement The native DOM element representing the raw view element.
+	 * @param {module:engine/view/domconverter~DomConverter} domConverter Instance of the DomConverter used to optimize the output.
 	 */
 }
 

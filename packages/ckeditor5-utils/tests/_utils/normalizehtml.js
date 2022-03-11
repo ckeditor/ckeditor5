@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -18,7 +18,7 @@ import Document from '@ckeditor/ckeditor5-engine/src/view/document';
 export default function normalizeHtml( html, options = {} ) {
 	const processor = new HtmlDataProcessor( new Document( new StylesProcessor() ) );
 	const domFragment = processor._toDom( html );
-	const viewFragment = processor._domConverter.domToView( domFragment, options );
+	const viewFragment = processor.domConverter.domToView( domFragment, options );
 
 	return stringify( viewFragment );
 }

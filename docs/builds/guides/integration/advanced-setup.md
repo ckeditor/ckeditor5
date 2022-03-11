@@ -13,13 +13,13 @@ In this guide, we would like to show you ways to closer integrate CKEditor 5 wit
 
 In order to start developing CKEditor 5 you will require:
 
-* [Node.js](https://nodejs.org/en/) 12.0.0+
+* [Node.js](https://nodejs.org/en/) 14.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 * [Git](https://git-scm.com/)
 
 ## Bundler
 
-CKEditor 5 is currently built using [webpack@4](https://webpack.js.org). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
+CKEditor 5 is currently built using [webpack@5](https://webpack.js.org). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done in the future.
 
 Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
 
@@ -99,11 +99,12 @@ The second step is to install dependencies needed to build the editor. The list 
 npm install --save \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
 	@ckeditor/ckeditor5-dev-utils \
-	postcss-loader@3 \
-	raw-loader@3 \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3 \
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4
 ```
 
 ### Webpack configuration
@@ -148,21 +149,28 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					},
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
+					}
 				]
 			}
 		]
 	}
 };
 ```
+
+<info-box>
+    If you cannot use the latest webpack (at the moment of writing this guide, it is 5), the provided configuration will also work with webpack 4.
+</info-box>
 
 #### Webpack Encore
 
@@ -195,11 +203,14 @@ Encore.
 	.addLoader({
 		test: /ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css$/,
 		loader: 'postcss-loader',
-		options: styles.getPostCssConfig( {
-			themeImporter: {
-				themePath: require.resolve('@ckeditor/ckeditor5-theme-lark')
-			}
-		} )
+		options: {
+			postcssOptions: styles.getPostCssConfig( {
+				themeImporter: {
+					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+				},
+				minify: true
+			} )
+		}
 	} )
 ```
 
@@ -381,7 +392,7 @@ Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up-to-date version of this package (and that webpack uses this version).
 
-	CKEditor 5 Builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
+	CKEditor 5 builds use [`Terser`](https://github.com/terser/terser) instead of `uglifyjs-webpack-plugin` because [the later one seems to be unsupported anymore](https://github.com/ckeditor/ckeditor5/issues/1353).
 </info-box>
 
 ### Option: Extracting CSS
@@ -391,7 +402,7 @@ One of the most common requirements is to extract CKEditor 5 CSS to a separate f
 ```bash
 npm install --save \
 	mini-css-extract-plugin \
-	css-loader
+	css-loader@5
 ```
 
 And add it to your webpack configuration:
@@ -423,12 +434,14 @@ module.exports = {
 					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
 					}
 				]
 			}
@@ -441,15 +454,9 @@ Webpack will now create a separate file called `styles.css` which you will need 
 
 ### Option: Building to ES5 target
 
-CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
+CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 builds are also published in the original ES6 format.
 
 However, it may happen that your environment requires ES5. For instance, if you use tools like the original [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor 5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5 code.
-
-<info-box>
-	In the [production mode](https://webpack.js.org/concepts/mode/) webpack uses [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin) which supports ES6+ code. This is because it does not use the original [UglifyJS](https://github.com/mishoo/UglifyJS) plugin (which does not support ES6+), but instead it uses the [`uglify-es`](https://github.com/mishoo/UglifyJS2/tree/harmony) package.
-
-	We recommend upgrading your setup to webpack@4 and its built-in modes which allows you to avoid transpiling the source to ES5.
-</info-box>
 
 In order to create an ES5 build of CKEditor 5 you can use [Babel](https://babeljs.io/):
 

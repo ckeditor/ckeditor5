@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -24,6 +24,17 @@ describe( 'FindPreviousCommand', () => {
 
 	afterEach( () => {
 		return editor.destroy();
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'sets public properties', () => {
+			expect( command ).to.have.property( 'isEnabled', false );
+			expect( command ).to.have.property( 'affectsData', false );
+		} );
+
+		it( 'sets state property', () => {
+			expect( command ).to.have.property( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
+		} );
 	} );
 
 	describe( 'isEnabled', () => {
@@ -86,12 +97,6 @@ describe( 'FindPreviousCommand', () => {
 			expect( multiRootEditor.commands.get( 'findPrevious' ).isEnabled ).to.be.true;
 
 			multiRootEditor.destroy();
-		} );
-	} );
-
-	describe( 'state', () => {
-		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
 		} );
 	} );
 

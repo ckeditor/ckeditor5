@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -44,9 +44,11 @@ describe( 'FindAndReplaceFormView', () => {
 	beforeEach( () => {
 		view = new FindAndReplaceFormView( { t: val => val } );
 		view.render();
+		document.body.appendChild( view.element );
 	} );
 
 	afterEach( () => {
+		view.element.remove();
 		view.destroy();
 	} );
 
@@ -385,7 +387,7 @@ describe( 'FindAndReplaceFormView', () => {
 			} );
 
 			it( 'should register child views\' #element in #focusTracker', () => {
-				view = new FindAndReplaceFormView( { t: val => val } );
+				const view = new FindAndReplaceFormView( { t: val => val } );
 
 				const spy = testUtils.sinon.spy( view._focusTracker, 'add' );
 
@@ -399,16 +401,20 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.calledWithExactly( spy.getCall( 5 ), view._optionsDropdown.element );
 				sinon.assert.calledWithExactly( spy.getCall( 6 ), view._replaceButtonView.element );
 				sinon.assert.calledWithExactly( spy.getCall( 7 ), view._replaceAllButtonView.element );
+
+				view.destroy();
 			} );
 
 			it( 'starts listening for #keystrokes coming from #element', () => {
-				view = new FindAndReplaceFormView( { t: val => val } );
+				const view = new FindAndReplaceFormView( { t: val => val } );
 
 				const spy = sinon.spy( view._keystrokes, 'listenTo' );
 
 				view.render();
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, view.element );
+
+				view.destroy();
 			} );
 
 			describe( 'activates keyboard navigation in the form', () => {
@@ -654,6 +660,20 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
+			it( 'skips command execution on "enter" when search phrase input is dirty', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.enter,
+					target: view._replaceInputView.fieldView.element
+				};
+
+				const spy = sinon.spy( view._replaceButtonView, 'fire' );
+
+				view.isDirty = true;
+				view._keystrokes.press( keyEvtData );
+
+				sinon.assert.notCalled( spy );
+			} );
+
 			it( 'ignores "shift+enter" when pressed somewhere else', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.enter,
@@ -670,6 +690,24 @@ describe( 'FindAndReplaceFormView', () => {
 				sinon.assert.notCalled( keyEvtData.stopPropagation );
 				sinon.assert.notCalled( spy );
 			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view._focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view._keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

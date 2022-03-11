@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -68,6 +68,34 @@ describe( 'CKEditorError', () => {
 		expect( error ).to.have.property(
 			'message',
 			`foo {"bar":"a","bom":{"x":1},"bim":10}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+		);
+		expect( error ).to.have.property( 'data', data );
+	} );
+
+	it( 'appends stringified data to the message if stringified object contains circular references', () => {
+		const data = { foo: 'bar' };
+
+		data.bar = data;
+
+		const error = new CKEditorError( 'foo', null, data );
+
+		expect( error ).to.have.property(
+			'message',
+			`foo {"foo":"bar","bar":"[object Object]"}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
+		);
+		expect( error ).to.have.property( 'data', data );
+	} );
+
+	it( 'appends stringified data to the message if stringified object contains multiple exact same circular references', () => {
+		const data = { foo: 'bar' };
+
+		data.bar = [ data, data ];
+
+		const error = new CKEditorError( 'foo', null, data );
+
+		expect( error ).to.have.property(
+			'message',
+			`foo {"foo":"bar","bar":["[object Object]","[object Object]"]}\nRead more: ${ DOCUMENTATION_URL }#error-foo`
 		);
 		expect( error ).to.have.property( 'data', data );
 	} );

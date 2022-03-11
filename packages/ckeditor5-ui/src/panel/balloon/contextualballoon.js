@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -168,6 +168,17 @@ export default class ContextualBalloon extends Plugin {
 		 * @type {module:ui/view~View}
 		 */
 		this._fakePanelsView = this._createFakePanelsView();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.view.destroy();
+		this._rotatorView.destroy();
+		this._fakePanelsView.destroy();
 	}
 
 	/**
@@ -509,7 +520,7 @@ export default class ContextualBalloon extends Plugin {
 
 			// Don't modify the original options object.
 			position = Object.assign( {}, position, {
-				viewportOffsetConfig: this.editor.config.get( 'ui.viewportOffset' )
+				viewportOffsetConfig: this.editor.ui.viewportOffset
 			} );
 		}
 
@@ -626,6 +637,15 @@ class RotatorView extends View {
 		super.render();
 
 		this.focusTracker.add( this.element );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	destroy() {
+		super.destroy();
+
+		this.focusTracker.destroy();
 	}
 
 	/**

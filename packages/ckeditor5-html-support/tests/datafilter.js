@@ -1,7 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
+
+/* global document, console */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -12,12 +14,11 @@ import DataFilter from '../src/datafilter';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { expectToThrowCKEditorError } from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { getModelDataWithAttributes } from './_utils/utils';
 import { addBackgroundRules } from '@ckeditor/ckeditor5-engine/src/view/styles/background';
 
 import GeneralHtmlSupport from '../src/generalhtmlsupport';
-
-/* global document */
 
 describe( 'DataFilter', () => {
 	let editor, model, editorElement, dataFilter, dataSchema;
@@ -116,7 +117,12 @@ describe( 'DataFilter', () => {
 				// register it before DataFilter listener.
 				this.editor.data.on( 'init', evt => {
 					evt.stop();
-				}, { priority: 'high' } );
+				}, {
+					// The actual RTC client listens on 'high' but in these tests we're making a point
+					// of GHS registering its converters before anything else triggers the downcast conversion.
+					// See https://github.com/ckeditor/ckeditor5/issues/11356.
+					priority: 'highest'
+				} );
 			}
 		}
 
@@ -168,6 +174,41 @@ describe( 'DataFilter', () => {
 			expect( editor.getData() ).to.equal( '<p><video>' +
 				'<source src="https://example.com/video.mp4" type="video/mp4">' +
 				' Your browser does not support the video tag.</video>' +
+				'</p>'
+			);
+		} );
+
+		it( 'should filter the editing view', () => {
+			testUtils.sinon.stub( console, 'warn' )
+				.withArgs( sinon.match( /^domconverter-unsafe-attribute-detected/ ) )
+				.callsFake( () => {} );
+
+			dataFilter.allowElement( 'video' );
+
+			editor.setData( '<p><video>' +
+				'<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
+					'Your browser does not support the video tag.</video>' +
+				'</p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<paragraph>' +
+					'<htmlVideo htmlContent="<source src="https://example.com/video.mp4" type="video/mp4" onclick="action()">' +
+					'Your browser does not support the video tag."></htmlVideo>' +
+				'</paragraph>'
+			);
+
+			expect( getViewData( editor.editing.view, {
+				withoutSelection: true,
+				renderRawElements: true,
+				domConverter: editor.editing.view.domConverter
+			} ) ).to.equal(
+				'<p>' +
+					'<span class="ck-widget html-object-embed" contenteditable="false" data-html-object-embed-label="HTML object">' +
+						'<video class="html-object-embed__content">' +
+							'<source src="https://example.com/video.mp4" type="video/mp4" data-ck-unsafe-attribute-onclick="action()">' +
+							'Your browser does not support the video tag.' +
+						'</video>' +
+					'</span>' +
 				'</p>'
 			);
 		} );
@@ -336,10 +377,12 @@ describe( 'DataFilter', () => {
 		} );
 
 		it( 'should consume htmlAttributes attribute (editing downcast)', () => {
-			const spy = sinon.spy();
+			let consumable;
 
 			editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-				dispatcher.on( 'attribute:htmlAttributes:htmlInput', spy );
+				dispatcher.on( 'insert:htmlInput', ( evt, data, conversionApi ) => {
+					consumable = conversionApi.consumable;
+				} );
 			} );
 
 			dataFilter.allowElement( 'input' );
@@ -347,7 +390,7 @@ describe( 'DataFilter', () => {
 
 			editor.setData( '<p><input type="number"/></p>' );
 
-			expect( spy.called ).to.be.false;
+			expect( consumable.test( model.document.getRoot().getChild( 0 ).getChild( 0 ), 'attribute:htmlAttributes' ) ).to.be.false;
 		} );
 
 		function getObjectModelDataWithAttributes( model, options ) {

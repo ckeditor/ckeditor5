@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -20,9 +20,12 @@ import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import isComment from '@ckeditor/ckeditor5-utils/src/dom/iscomment';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+
+import '../../theme/renderer.css';
 
 /**
  * Renderer is responsible for updating the DOM structure and the DOM selection based on
@@ -98,8 +101,34 @@ export default class Renderer {
 		 * this is set to `false`.
 		 *
 		 * @member {Boolean}
+		 * @observable
 		 */
-		this.isFocused = false;
+		this.set( 'isFocused', false );
+
+		/**
+		 * Indicates whether the user is making a selection in the document (e.g. holding the mouse button and moving the cursor).
+		 * When they stop selecting, the property goes back to `false`.
+		 *
+		 * Note: In some browsers, the renderer will stop rendering the selection and inline fillers while the user is making
+		 * a selection to avoid glitches in DOM selection
+		 * (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
+		 *
+		 * @member {Boolean}
+		 * @observable
+		 */
+		this.set( 'isSelecting', false );
+
+		// Rendering the selection and inline filler manipulation should be postponed in (non-Android) Blink until the user finishes
+		// creating the selection in DOM to avoid accidental selection collapsing
+		// (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
+		// When the user stops selecting, all pending changes should be rendered ASAP, though.
+		if ( env.isBlink && !env.isAndroid ) {
+			this.on( 'change:isSelecting', () => {
+				if ( !this.isSelecting ) {
+					this.render();
+				}
+			} );
+		}
 
 		/**
 		 * The text node in which the inline filler was rendered.
@@ -170,29 +199,41 @@ export default class Renderer {
 	 */
 	render() {
 		let inlineFillerPosition;
+		const isInlineFillerRenderingPossible = env.isBlink && !env.isAndroid ? !this.isSelecting : true;
 
 		// Refresh mappings.
 		for ( const element of this.markedChildren ) {
 			this._updateChildrenMappings( element );
 		}
 
-		// There was inline filler rendered in the DOM but it's not
-		// at the selection position any more, so we can remove it
-		// (cause even if it's needed, it must be placed in another location).
-		if ( this._inlineFiller && !this._isSelectionInInlineFiller() ) {
-			this._removeInlineFiller();
-		}
+		// Don't manipulate inline fillers while the selection is being made in (non-Android) Blink to prevent accidental
+		// DOM selection collapsing
+		// (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
+		if ( isInlineFillerRenderingPossible ) {
+			// There was inline filler rendered in the DOM but it's not
+			// at the selection position any more, so we can remove it
+			// (cause even if it's needed, it must be placed in another location).
+			if ( this._inlineFiller && !this._isSelectionInInlineFiller() ) {
+				this._removeInlineFiller();
+			}
 
-		// If we've got the filler, let's try to guess its position in the view.
-		if ( this._inlineFiller ) {
-			inlineFillerPosition = this._getInlineFillerPosition();
-		}
-		// Otherwise, if it's needed, create it at the selection position.
-		else if ( this._needsInlineFillerAtSelection() ) {
-			inlineFillerPosition = this.selection.getFirstPosition();
+			// If we've got the filler, let's try to guess its position in the view.
+			if ( this._inlineFiller ) {
+				inlineFillerPosition = this._getInlineFillerPosition();
+			}
+			// Otherwise, if it's needed, create it at the selection position.
+			else if ( this._needsInlineFillerAtSelection() ) {
+				inlineFillerPosition = this.selection.getFirstPosition();
 
-			// Do not use `markToSync` so it will be added even if the parent is already added.
-			this.markedChildren.add( inlineFillerPosition.parent );
+				// Do not use `markToSync` so it will be added even if the parent is already added.
+				this.markedChildren.add( inlineFillerPosition.parent );
+			}
+		}
+		// Paranoid check: we make sure the inline filler has any parent so it can be mapped to view position
+		// by DomConverter.
+		else if ( this._inlineFiller && this._inlineFiller.parentNode ) {
+			// While the user is making selection, preserve the inline filler at its original position.
+			inlineFillerPosition = this.domConverter.domPositionToView( this._inlineFiller );
 		}
 
 		for ( const element of this.markedAttributes ) {
@@ -209,26 +250,30 @@ export default class Renderer {
 			}
 		}
 
-		// Check whether the inline filler is required and where it really is in the DOM.
-		// At this point in most cases it will be in the DOM, but there are exceptions.
-		// For example, if the inline filler was deep in the created DOM structure, it will not be created.
-		// Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
-		// it will not be present.
-		// Fix those and similar scenarios.
-		if ( inlineFillerPosition ) {
-			const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
-			const domDocument = fillerDomPosition.parent.ownerDocument;
+		// * Check whether the inline filler is required and where it really is in the DOM.
+		//   At this point in most cases it will be in the DOM, but there are exceptions.
+		//   For example, if the inline filler was deep in the created DOM structure, it will not be created.
+		//   Similarly, if it was removed at the beginning of this function and then neither text nor children were updated,
+		//   it will not be present. Fix those and similar scenarios.
+		// * Don't manipulate inline fillers while the selection is being made in (non-Android) Blink to prevent accidental
+		//   DOM selection collapsing
+		//   (https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723).
+		if ( isInlineFillerRenderingPossible ) {
+			if ( inlineFillerPosition ) {
+				const fillerDomPosition = this.domConverter.viewPositionToDom( inlineFillerPosition );
+				const domDocument = fillerDomPosition.parent.ownerDocument;
 
-			if ( !startsWithFiller( fillerDomPosition.parent ) ) {
-				// Filler has not been created at filler position. Create it now.
-				this._inlineFiller = addInlineFiller( domDocument, fillerDomPosition.parent, fillerDomPosition.offset );
+				if ( !startsWithFiller( fillerDomPosition.parent ) ) {
+					// Filler has not been created at filler position. Create it now.
+					this._inlineFiller = addInlineFiller( domDocument, fillerDomPosition.parent, fillerDomPosition.offset );
+				} else {
+					// Filler has been found, save it.
+					this._inlineFiller = fillerDomPosition.parent;
+				}
 			} else {
-				// Filler has been found, save it.
-				this._inlineFiller = fillerDomPosition.parent;
+				// There is no filler needed.
+				this._inlineFiller = null;
 			}
-		} else {
-			// There is no filler needed.
-			this._inlineFiller = null;
 		}
 
 		// First focus the new editing host, then update the selection.
@@ -401,7 +446,7 @@ export default class Renderer {
 		}
 
 		if ( isInlineFiller( domFillerNode ) ) {
-			domFillerNode.parentNode.removeChild( domFillerNode );
+			domFillerNode.remove();
 		} else {
 			domFillerNode.data = domFillerNode.data.substr( INLINE_FILLER_LENGTH );
 		}
@@ -511,13 +556,14 @@ export default class Renderer {
 
 		// Add or overwrite attributes.
 		for ( const key of viewAttrKeys ) {
-			domElement.setAttribute( key, viewElement.getAttribute( key ) );
+			this.domConverter.setDomElementAttribute( domElement, key, viewElement.getAttribute( key ), viewElement );
 		}
 
 		// Remove from DOM attributes which do not exists in the view.
 		for ( const key of domAttrKeys ) {
+			// All other attributes not present in the DOM should be removed.
 			if ( !viewElement.hasAttribute( key ) ) {
-				domElement.removeAttribute( key );
+				this.domConverter.removeDomElementAttribute( domElement, key );
 			}
 		}
 	}
@@ -543,7 +589,7 @@ export default class Renderer {
 		const inlineFillerPosition = options.inlineFillerPosition;
 		const actualDomChildren = this.domConverter.mapViewToDom( viewElement ).childNodes;
 		const expectedDomChildren = Array.from(
-			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { bind: true, inlineFillerPosition } )
+			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { bind: true } )
 		);
 
 		// Inline filler element has to be created as it is present in the DOM, but not in the view. It is required
@@ -684,6 +730,14 @@ export default class Renderer {
 	 * @private
 	 */
 	_updateSelection() {
+		// Block updating DOM selection in (non-Android) Blink while the user is selecting to prevent accidental selection collapsing.
+		// Note: Structural changes in DOM must trigger selection rendering, though. Nodes the selection was anchored
+		// to, may disappear in DOM which would break the selection (e.g. in real-time collaboration scenarios).
+		// https://github.com/ckeditor/ckeditor5/issues/10562, https://github.com/ckeditor/ckeditor5/issues/10723
+		if ( env.isBlink && !env.isAndroid && this.isSelecting && !this.markedChildren.size ) {
+			return;
+		}
+
 		// If there is no selection - remove DOM and fake selections.
 		if ( this.selection.rangeCount === 0 ) {
 			this._removeDomSelection();
@@ -936,7 +990,7 @@ function addInlineFiller( domDocument, domParentOrArray, offset ) {
 function areSimilar( node1, node2 ) {
 	return isNode( node1 ) && isNode( node2 ) &&
 		!isText( node1 ) && !isText( node2 ) &&
-		node1.nodeType !== Node.COMMENT_NODE && node2.nodeType !== Node.COMMENT_NODE &&
+		!isComment( node1 ) && !isComment( node2 ) &&
 		node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
 }
 
