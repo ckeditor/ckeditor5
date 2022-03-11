@@ -59,13 +59,13 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		/**
 		 * Commands allowed in non-restricted areas.
 		 *
-		 * Commands always enabled combine typing feature commands: `'typing'`, `'delete'` and `'deleteForward'` with commands defined
-		 * in the feature configuration.
+		 * Commands always enabled combine typing feature commands: `'input'`, `'insertText'`, `'delete'`, and `'deleteForward'` with
+		 * commands defined in the feature configuration.
 		 *
 		 * @type {Set<string>}
 		 * @private
 		 */
-		this._allowedInException = new Set( [ 'input', 'delete', 'deleteForward' ] );
+		this._allowedInException = new Set( [ 'input', 'insertText', 'delete', 'deleteForward' ] );
 	}
 
 	/**
@@ -205,11 +205,18 @@ export default class RestrictedEditingModeEditing extends Plugin {
 		this.listenTo( model, 'deleteContent', restrictDeleteContent( editor ), { priority: 'high' } );
 
 		const inputCommand = editor.commands.get( 'input' );
+		const insertTextCommand = editor.commands.get( 'insertText' );
 
 		// The restricted editing might be configured without input support - ie allow only bolding or removing text.
 		// This check is bit synthetic since only tests are used this way.
 		if ( inputCommand ) {
 			this.listenTo( inputCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
+		}
+
+		// The restricted editing might be configured without insert text support - ie allow only bolding or removing text.
+		// This check is bit synthetic since only tests are used this way.
+		if ( insertTextCommand ) {
+			this.listenTo( insertTextCommand, 'execute', disallowInputExecForWrongRange( editor ), { priority: 'high' } );
 		}
 
 		// Block clipboard outside exception marker on paste and drop.
