@@ -658,7 +658,7 @@ describe( 'AutoMediaEmbed - integration', () => {
 	function simulateTyping( text ) {
 		// While typing, every character is an atomic change.
 		text.split( '' ).forEach( character => {
-			editor.execute( 'input', {
+			editor.execute( 'insertText', {
 				text: character
 			} );
 		} );
