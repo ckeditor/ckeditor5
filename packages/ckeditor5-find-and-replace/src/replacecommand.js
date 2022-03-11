@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -49,6 +49,13 @@ export default class ReplaceCommand extends Command {
 
 		model.change( writer => {
 			const range = result.marker.getRange();
+
+			// Don't replace a result (marker) that found its way into the $graveyard (e.g. removed by collaborators).
+			if ( range.root.rootName === '$graveyard' ) {
+				this._state.results.remove( result );
+
+				return;
+			}
 
 			let textAttributes = {};
 

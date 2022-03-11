@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -67,6 +67,17 @@ class MultirootEditor extends Editor {
 	constructor( sourceElements, config ) {
 		super( config );
 
+		if ( this.config.get( 'initialData' ) === undefined ) {
+			// Create initial data object containing data from all roots.
+			const initialData = {};
+
+			for ( const rootName of Object.keys( sourceElements ) ) {
+				initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
+			}
+
+			this.config.set( 'initialData', initialData );
+		}
+
 		// Create root and UIView element for each editable container.
 		for ( const rootName of Object.keys( sourceElements ) ) {
 			this.model.document.createRoot( '$root', rootName );
@@ -116,16 +127,7 @@ class MultirootEditor extends Editor {
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
-					.then( () => {
-						const initialData = {};
-
-						// Create initial data object containing data from all roots.
-						for ( const rootName of Object.keys( sourceElements ) ) {
-							initialData[ rootName ] = getDataFromElement( sourceElements[ rootName ] );
-						}
-
-						return editor.data.init( initialData );
-					} )
+					.then( () => editor.data.init( editor.config.get( 'initialData' ) ) )
 					.then( () => editor.fire( 'ready' ) )
 					.then( () => editor )
 			);
@@ -415,7 +417,12 @@ MultirootEditor
 			footerleft: 'Left footer content',
 			footerright: 'Right footer content'
 		},
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} )
 	.then( newEditor => {
 		document.querySelector( '#toolbar' ).appendChild( newEditor.ui.view.toolbar.element );

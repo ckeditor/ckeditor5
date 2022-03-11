@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -13,7 +13,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ListStyle from '@ckeditor/ckeditor5-list/src/liststyle';
+import ListProperties from '@ckeditor/ckeditor5-list/src/listproperties';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableProperties from '@ckeditor/ckeditor5-table/src/tableproperties';
@@ -72,7 +72,7 @@ describe( 'PasteFromOffice - integration', () => {
 		type: 'integration',
 		browsers,
 		editorConfig: {
-			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, ListStyle, PasteFromOffice ]
+			plugins: [ Clipboard, Paragraph, Heading, Bold, Italic, Underline, Link, List, ListProperties, PasteFromOffice ]
 		},
 		skip: {
 			safari: [ 'heading3Styled' ] // Skip due to spacing issue (#13).

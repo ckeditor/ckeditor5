@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
 import Autoformat from '../src/autoformat';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';

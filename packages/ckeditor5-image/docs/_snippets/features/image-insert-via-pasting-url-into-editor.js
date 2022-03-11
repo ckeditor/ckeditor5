@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -10,7 +10,12 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-insert-via-pasting-url-into-editor' ), {
 		removePlugins: [ 'ImageToolbar', 'ImageCaption', 'ImageStyle', 'ImageResize', 'LinkImage' ],
-		cloudServices: CS_CONFIG
+		cloudServices: CS_CONFIG,
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} )
 	.then( editor => {
 		window.editorInsertImageViaPastingUrlIntoEditor = editor;

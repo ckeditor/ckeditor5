@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -120,6 +120,14 @@ describe( 'MentionUI', () => {
 
 		it( 'should add MentionView to a panel', () => {
 			expect( editor.plugins.get( ContextualBalloon ).visibleView ).to.be.instanceof( MentionsView );
+		} );
+
+		it( 'should hide the contextual balloon when editor turns into a readonly mode', () => {
+			expect( panelView.isVisible ).to.be.true;
+
+			editor.isReadOnly = true;
+
+			expect( panelView.isVisible ).to.be.false;
 		} );
 	} );
 
@@ -517,14 +525,14 @@ describe( 'MentionUI', () => {
 				env.features.isRegExpUnicodePropertySupported = false;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])([\\S]{2,})$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\(\\[{"\'])([@])(.{2,})$', 'u' );
 			} );
 
 			it( 'returns a ES2018 RegExp for browsers supporting Unicode punctuation groups', () => {
 				env.features.isRegExpUnicodePropertySupported = true;
 				createRegExp( '@', 2 );
 				sinon.assert.calledOnce( regExpStub );
-				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])([\\S]{2,})$', 'u' );
+				sinon.assert.calledWithExactly( regExpStub, '(?:^|[ \\p{Ps}\\p{Pi}"\'])([@])(.{2,})$', 'u' );
 			} );
 		} );
 
@@ -1934,7 +1942,7 @@ describe( 'MentionUI', () => {
 					feeds: [
 						{
 							marker: '@',
-							feed: [ '@a1', '@a2', '@a3' ]
+							feed: [ '@a1', '@a2', '@a3', '@a4 xyz', '@a5 x y z', '@a6 x$z' ]
 						},
 						{
 							marker: '$',
@@ -1959,7 +1967,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( mentionsView.items ).to.have.length( 3 );
+						expect( mentionsView.items ).to.have.length( 6 );
 
 						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 					} )
@@ -1994,7 +2002,7 @@ describe( 'MentionUI', () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
 
-						expect( mentionsView.items ).to.have.length( 3 );
+						expect( mentionsView.items ).to.have.length( 6 );
 					} );
 			} );
 
@@ -2009,7 +2017,7 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
-						expect( mentionsView.items ).to.have.length( 3 );
+						expect( mentionsView.items ).to.have.length( 6 );
 
 						mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
 					} )
@@ -2032,6 +2040,66 @@ describe( 'MentionUI', () => {
 					.then( () => {
 						expect( panelView.isVisible ).to.be.true;
 						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+					} );
+			} );
+
+			it( 'should match a feed', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@a3', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
+					} );
+			} );
+
+			it( 'should match a feed with space', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@a4 xyz', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
+					} );
+			} );
+
+			it( 'should match a feed with multiple spaces', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@a5 x y z', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
+					} );
+			} );
+
+			it( 'should match a feed with spaces and other mention character', () => {
+				setData( model, '<paragraph>foo []</paragraph>' );
+
+				model.change( writer => {
+					writer.insertText( '@a6 x$z', doc.selection.getFirstPosition() );
+				} );
+
+				return waitForDebounce()
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 1 );
 					} );
 			} );
 		} );
@@ -2182,6 +2250,82 @@ describe( 'MentionUI', () => {
 					} );
 			} );
 		} );
+
+		describe( 'overriding the number of visible mentions using config.mention.dropdownLimit', () => {
+			const longFeed = [
+				'@01', '@02', '@03', '@04', '@05', '@06', '@07', '@08', '@09', '@10',
+				'@11', '@12', '@13', '@16', '@17', '@18', '@17', '@18', '@19', '@20',
+				'@21', '@22', '@23', '@24', '@25', '@26', '@27', '@28', '@29', '@30'
+			];
+
+			const simpleArrayFeed = {
+				marker: '@',
+				feed: longFeed
+			};
+
+			const customFunctionFeed = {
+				marker: '@',
+				feed: () => {
+					return longFeed;
+				}
+			};
+
+			it( 'works with specific number in case of custom function feed', () => {
+				const mentionsLimit = 3;
+
+				return createClassicTestEditor( {
+					dropdownLimit: mentionsLimit,
+					feeds: [ customFunctionFeed ] } )
+					.then( () => {
+						setData( editor.model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( mentionsLimit );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the dropdownLimit value', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: 25,
+					feeds: [ simpleArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( 25 );
+					} );
+			} );
+
+			it( 'dropdown list length should be equal to the length of the feed provided', () => {
+				return createClassicTestEditor( {
+					dropdownLimit: Infinity,
+					feeds: [ simpleArrayFeed ] } )
+					.then( () => {
+						setData( model, '<paragraph>foo []</paragraph>' );
+
+						model.change( writer => {
+							writer.insertText( '@', doc.selection.getFirstPosition() );
+						} );
+					} )
+					.then( waitForDebounce )
+					.then( () => {
+						expect( panelView.isVisible ).to.be.true;
+						expect( mentionsView.items ).to.have.length( simpleArrayFeed.feed.length );
+					} );
+			} );
+		} );
 	} );
 
 	describe( 'execute', () => {
@@ -2224,9 +2368,10 @@ describe( 'MentionUI', () => {
 			return waitForDebounce()
 				.then( () => {
 					mentionsView.items.get( 0 ).children.get( 0 ).fire( 'execute' );
-
-					expect( panelView.isVisible ).to.be.false;
-					expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					return waitForDebounce().then( () => {
+						expect( panelView.isVisible ).to.be.false;
+						expect( editor.model.markers.has( 'mention' ) ).to.be.false;
+					} );
 				} );
 		} );
 

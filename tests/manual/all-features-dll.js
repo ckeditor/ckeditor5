@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -57,7 +57,7 @@ const { Bold, Italic, Strikethrough, Subscript, Superscript, Underline, Code } =
 const { FindAndReplace } = window.CKEditor5.findAndReplace;
 const { FontColor, FontFamily, FontSize, FontBackgroundColor } = window.CKEditor5.font;
 const { Indent, IndentBlock } = window.CKEditor5.indent;
-const { List, ListStyle, TodoList } = window.CKEditor5.list;
+const { List, ListProperties, TodoList } = window.CKEditor5.list;
 const { SpecialCharacters, SpecialCharactersEssentials } = window.CKEditor5.specialCharacters;
 const { Table, TableToolbar, TableCellProperties, TableProperties, TableCaption } = window.CKEditor5.table;
 const { Alignment } = window.CKEditor5.alignment;
@@ -128,7 +128,7 @@ const config = {
 		HtmlEmbed,
 		HtmlComment,
 		Indent, IndentBlock,
-		List, ListStyle, TodoList,
+		List, ListProperties, TodoList,
 		MediaEmbed,
 		Mention,
 		PageBreak,
@@ -238,9 +238,7 @@ const config = {
 			isGallery: {
 				mode: 'manual',
 				label: 'Gallery link',
-				attributes: {
-					class: 'gallery'
-				}
+				classes: 'gallery'
 			}
 		}
 	},

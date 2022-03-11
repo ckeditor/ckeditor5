@@ -25,11 +25,12 @@ First, install required dependencies:
 
 ```bash
 npm install --save \
-	postcss-loader@3 \
-	raw-loader@3 \
-	style-loader@1 \
-	webpack@4 \
-	webpack-cli@3 \
+	css-loader@5 \
+	postcss-loader@4 \
+	raw-loader@4 \
+	style-loader@2 \
+	webpack@5 \
+	webpack-cli@4 \
 	@ckeditor/ckeditor5-basic-styles \
 	@ckeditor/ckeditor5-core \
 	@ckeditor/ckeditor5-dev-utils \
@@ -81,15 +82,18 @@ module.exports = {
 							}
 						}
 					},
+					'css-loader',
 					{
 						loader: 'postcss-loader',
-						options: styles.getPostCssConfig( {
-							themeImporter: {
-								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-							},
-							minify: true
-						} )
-					},
+						options: {
+							postcssOptions: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
+					}
 				]
 			}
 		]
@@ -292,8 +296,8 @@ The HTML structure (data output) of the converter will be a `<span>` with a `pla
 <span class="placeholder">{name}</span>
 ```
 
-* **Upcast conversion**. This view-to-model converter will look for `<span>`s with the `placeholder` class, read the `<span>`'s text and create model `<placeholder>` elements with the `name` attribute set accordingly.
-* **Downcast conversion**. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
+* {@link framework/guides/deep-dive/conversion/upcast **Upcast conversion**}. This view-to-model converter will look for `<span>`s with the `placeholder` class, read the `<span>`'s text and create model `<placeholder>` elements with the `name` attribute set accordingly.
+* {@link framework/guides/deep-dive/conversion/downcast **Downcast conversion**}. The model-to-view conversion will be slightly different for "editing" and "data" pipelines as the "editing downcast" pipeline will use widget utilities to enable widget-specific behavior in the editing view. In both pipelines, the element will be rendered using the same structure.
 
 ```js
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

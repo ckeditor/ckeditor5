@@ -1,6 +1,7 @@
 ---
 category: framework-architecture
 order: 20
+modified_at: 2021-10-25
 ---
 
 # Core editor architecture
@@ -149,6 +150,25 @@ enableBold();
 ```
 
 The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
+
+By default, editor commands are disabled when the editor is in the {@link module:core/editor/editor~Editor#isReadOnly read-only} mode. However, if your command does not change the editor data and you want it to stay enabled in the read-only mode, you can set the {@link module:core/command~Command#affectsData `affectsData`} flag to `false`:
+
+```js
+class MyAlwaysEnabledCommand extends Command {
+	constructor( editor ) {
+		super( editor );
+
+		// This command will remain enabled even when the editor is read-only.
+		this.affectsData = false;
+	}
+}
+```
+
+The {@link module:core/command~Command#affectsData `affectsData`} flag will also affect the command in {@link features/read-only#related-features other editor modes} that restrict user write permissions.
+
+<info-box>
+	The `affectsData` flag is set to `true` by default for all editor commands and, unless your command should be enabled when the editor is read-only, you do not need to change it. Also, please keep in mind that the flag is immutable during the lifetime of the editor.
+</info-box>
 
 ## Event system and observables
 

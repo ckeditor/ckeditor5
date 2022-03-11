@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -43,15 +43,17 @@ async function startStandardEditingMode() {
 			'bulletedList', 'numberedList', 'blockQuote', 'insertTable', '|',
 			'undo', 'redo'
 		],
-		image: {
-			toolbar: [ 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side', '|', 'toggleImageCaption', 'imageTextAlternative' ]
-		},
 		table: {
 			contentToolbar: [
 				'tableColumn',
 				'tableRow',
 				'mergeTableCells'
 			]
+		},
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
 		}
 	} );
 }
@@ -59,7 +61,12 @@ async function startStandardEditingMode() {
 async function startRestrictedEditingMode() {
 	await reloadEditor( {
 		removePlugins: [ 'StandardEditingMode' ],
-		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ]
+		toolbar: [ 'restrictedEditing', '|', 'bold', 'italic', 'link', '|', 'undo', 'redo' ],
+		ui: {
+			viewportOffset: {
+				top: window.getViewportTopOffsetConfig()
+			}
+		}
 	} );
 }
 

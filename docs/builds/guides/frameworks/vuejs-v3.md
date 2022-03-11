@@ -24,6 +24,10 @@ The easiest way to use CKEditor 5 in your Vue.js application is by choosing one 
 
 Additionally, you can [integrate CKEditor 5 from source](#using-ckeditor-from-source) which is a much more flexible and powerful solution, but requires some additional configuration.
 
+<info-box>
+	The {@link features/watchdog watchdog feature} is available for the {@link builds/guides/frameworks/react React} and {@link builds/guides/frameworks/angular Angular} integrations, but is not supported in Vue yet.
+</info-box>
+
 ## Quick start
 
 Install the [CKEditor 5 WYSIWYG editor component for Vue.js](https://www.npmjs.com/package/@ckeditor/ckeditor5-vue) and the {@link builds/guides/overview#available-builds editor build of your choice}.
@@ -175,6 +179,60 @@ If you do not want the CKEditor component to be enabled globally, you can skip t
 </script>
 ```
 
+## Integrating a build from the online builder
+
+This guide assumes that you have created a zip archive with the editor built using the [CKEditor 5 online builder](https://ckeditor.com/ckeditor-5/online-builder/).
+
+Unpack it into you application main directory. The directory with the editor's build cannot be placed inside the `src/` directory as Node will return an error. Because of that, we recommend placing the directory next to the `src/` and `node_modules/` folders:
+
+```
+├── ckeditor5
+│   ├── build
+│   ├── sample
+│   ├── src
+│   ├── ...
+│   ├── package.json
+│   └── webpack.config.js
+├── node_modules
+├── public
+├── src
+├── ...
+└── package.json
+```
+
+Then, add the package located in the `ckeditor5` directory as a dependency of your project:
+
+```
+yarn add file:./ckeditor5
+```
+
+Finally, import the build in your application:
+
+```html
+<template>
+    <div id="app">
+        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig"></ckeditor>
+    </div>
+</template>
+
+<script>
+    import Editor from 'ckeditor5-custom-build/build/ckeditor';
+
+    export default {
+        name: 'app',
+        data() {
+            return {
+                editor: Editor,
+                editorData: '<p>Content of the editor.</p>',
+                editorConfig: {
+                    // The configuration of the editor.
+                }
+            };
+        }
+    }
+</script>
+```
+
 ## Using CKEditor from source
 
 Integrating the rich text editor from source allows you to use the full power of the {@link framework/guides/overview CKEditor 5 Framework}.
@@ -196,8 +254,8 @@ npm install --save \
     @ckeditor/ckeditor5-vue \
     @ckeditor/ckeditor5-dev-webpack-plugin \
     @ckeditor/ckeditor5-dev-utils \
-    postcss-loader@3 \
-    raw-loader@0.5.1
+    postcss-loader@4 \
+    raw-loader@4
 ```
 
 Edit the `vue.config.js` file and use the following configuration. If the file is not present, create it in the root of the application (i.e. next to `package.json`):
@@ -265,12 +323,14 @@ module.exports = {
 			.use( 'postcss-loader' )
 			.loader( 'postcss-loader' )
 			.tap( () => {
-				return styles.getPostCssConfig( {
-					themeImporter: {
-						themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
-					},
-					minify: true
-				} );
+				return {
+					postcssOptions: styles.getPostCssConfig( {
+						themeImporter: {
+							themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
+						},
+						minify: true
+					} )
+				};
 			} );
 	}
 };

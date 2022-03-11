@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -36,7 +36,7 @@ describe( 'ImageTypeCommand', () => {
 	describe( 'isEnabled', () => {
 		describe( 'block command', () => {
 			it( 'should be false when the selection directly in the root', () => {
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setModelData( model, '[]' );
 
 					blockCommand.refresh();
@@ -90,7 +90,7 @@ describe( 'ImageTypeCommand', () => {
 
 		describe( 'inline command', () => {
 			it( 'should be false when the selection directly in the root', () => {
-				model.enqueueChange( 'transparent', () => {
+				model.enqueueChange( { isUndoable: false }, () => {
 					setModelData( model, '[]' );
 
 					inlineCommand.refresh();

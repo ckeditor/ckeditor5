@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -131,11 +131,9 @@ export default class Widget extends Plugin {
 				// All of them must be marked as selected, for instance [<widget></widget><widget></widget>]
 				for ( const value of range ) {
 					const node = value.item;
-
-					// Do not mark nested widgets in selected one. See: #57.
+					// Do not mark nested widgets in selected one. See: #4594
 					if ( isWidget( node ) && !isChild( node, lastMarked ) ) {
 						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
-
 						this._previouslySelected.add( node );
 						lastMarked = node;
 					}

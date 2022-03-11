@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -1134,6 +1134,28 @@ describe( 'Element', () => {
 			expect( el.getIdentity() ).to.equal(
 				'baz class="one,three,two" style="border-radius:10px;text-align:center;" bar="two" foo="one"'
 			);
+		} );
+	} );
+
+	describe( 'shouldRenderUnsafeAttribute()', () => {
+		let element;
+
+		beforeEach( () => {
+			element = new Element( document, 'p' );
+		} );
+
+		it( 'should return true if the atribute name is among unsafe attributes', () => {
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
+
+			expect( element.shouldRenderUnsafeAttribute( 'foo' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'bar' ) ).to.be.true;
+			expect( element.shouldRenderUnsafeAttribute( 'baz' ) ).to.be.true;
+		} );
+
+		it( 'should return false if the atribute name is not among unsafe attributes', () => {
+			element._unsafeAttributesToRender = [ 'foo', 'bar', 'baz' ];
+
+			expect( element.shouldRenderUnsafeAttribute( 'abc' ) ).to.be.false;
 		} );
 	} );
 } );

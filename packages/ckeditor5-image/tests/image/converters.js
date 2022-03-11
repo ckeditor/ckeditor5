@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -8,7 +8,10 @@ import {
 	upcastImageFigure,
 	downcastImageAttribute
 } from '../../src/image/converters';
-import { createImageViewElement } from '../../src/image/utils';
+import {
+	createBlockImageViewElement,
+	createInlineImageViewElement
+} from '../../src/image/utils';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -47,17 +50,17 @@ describe( 'Image converters', () => {
 			} );
 
 			const imageEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'imageBlock' ), writer, '' );
+				imageUtils.toImageWidget( createBlockImageViewElement( writer ), writer, '' );
 
 			const imageInlineEditingElementCreator = ( modelElement, { writer } ) =>
-				imageUtils.toImageWidget( createImageViewElement( writer, 'imageInline' ), writer, '' );
+				imageUtils.toImageWidget( createInlineImageViewElement( writer ), writer, '' );
 
-			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
 				model: 'imageBlock',
 				view: imageEditingElementCreator
 			} );
 
-			editor.conversion.for( 'editingDowncast' ).elementToElement( {
+			editor.conversion.for( 'editingDowncast' ).elementToStructure( {
 				model: 'imageInline',
 				view: imageInlineEditingElementCreator
 			} );
@@ -225,9 +228,30 @@ describe( 'Image converters', () => {
 			expectModel( '' );
 		} );
 
-		it( 'should not left unconverted figure media element', () => {
+		it( 'should not consume if the img element was not converted', () => {
+			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+				data.modelRange = conversionApi.writer.createRange( data.modelCursor );
+			}, { priority: 'high' } );
+
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.true;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
+
+		it( 'should not left unconsumed figure media element', () => {
 			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 				expect( conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ).to.be.false;
+			}, { priority: 'low' } );
+
+			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
+		} );
+
+		it( 'should consume the figure element before the img conversion starts', () => {
+			editor.data.upcastDispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.viewItem.parent, { name: true, classes: 'image' } ) ).to.be.false;
 			}, { priority: 'low' } );
 
 			editor.setData( '<figure class="image"><img src="/assets/sample.png" /></figure>' );
@@ -237,6 +261,7 @@ describe( 'Image converters', () => {
 	describe( 'downcastImageAttribute', () => {
 		it( 'should convert adding attribute to image', () => {
 			setModelData( model, '<imageBlock src=""></imageBlock>' );
+
 			const image = document.getRoot().getChild( 0 );
 
 			model.change( writer => {
@@ -313,7 +338,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false"><foo></foo><img alt="foo bar" src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img><foo></foo></figure>'
 			);
 		} );
 	} );

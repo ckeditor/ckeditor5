@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -30,7 +30,7 @@ import { _addMentionAttributes } from './mentionediting';
  *				name: 'Foo',
  *				title: 'Big Foo'
  *			},
- *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *			range: editor.model.createRange( focus, focus.getShiftedBy( -1 ) )
  *		} );
  *
  *		// It will replace one character before the selection focus with the 'The "Big Foo"' text
@@ -43,7 +43,7 @@ import { _addMentionAttributes } from './mentionediting';
  *				title: 'Big Foo'
  *			},
  *			text: 'The "Big Foo"',
- *			range: model.createRange( focus, focus.getShiftedBy( -1 ) )
+ *			range: editor.model.createRange( focus, focus.getShiftedBy( -1 ) )
  *		} );
  *
  * @extends module:core/command~Command

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -16,6 +16,7 @@ import ToolbarLineBreakView from './toolbarlinebreakview';
 import ResizeObserver from '@ckeditor/ckeditor5-utils/src/dom/resizeobserver';
 import preventDefault from '../bindings/preventdefault.js';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
+import isVisible from '@ckeditor/ckeditor5-utils/src/dom/isvisible';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import { createDropdown, addToolbarToDropdown } from '../dropdown/utils';
 import { logWarning } from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -259,6 +260,8 @@ export default class ToolbarView extends View {
 	 */
 	destroy() {
 		this._behavior.destroy();
+		this.focusTracker.destroy();
+		this.keystrokes.destroy();
 
 		return super.destroy();
 	}
@@ -756,7 +759,7 @@ class DynamicGrouping {
 		// the toolbar is visible (the next ResizeObserver callback execution). This is handy because
 		// the grouping could be caused by increasing the #maxWidth when the toolbar was invisible and the next
 		// time it shows up, some items could actually be ungrouped (https://github.com/ckeditor/ckeditor5/issues/6575).
-		if ( !this.viewElement.offsetParent ) {
+		if ( !isVisible( this.viewElement ) ) {
 			this.shouldUpdateGroupingOnNextResize = true;
 
 			return;

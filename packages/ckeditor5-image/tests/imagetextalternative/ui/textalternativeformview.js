@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* global Event */
+/* global document, Event */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import TextAlternativeFormView from '../../../src/imagetextalternative/ui/textalternativeformview';
@@ -106,6 +106,12 @@ describe( 'TextAlternativeFormView', () => {
 			describe( 'activates keyboard navigation in the form', () => {
 				beforeEach( () => {
 					view.render();
+					document.body.appendChild( view.element );
+				} );
+
+				afterEach( () => {
+					view.element.remove();
+					view.destroy();
 				} );
 
 				it( 'so "tab" focuses the next focusable item', () => {
@@ -147,6 +153,24 @@ describe( 'TextAlternativeFormView', () => {
 					sinon.assert.calledOnce( spy );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy the FocusTracker instance', () => {
+			const destroySpy = sinon.spy( view.focusTracker, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
+		} );
+
+		it( 'should destroy the KeystrokeHandler instance', () => {
+			const destroySpy = sinon.spy( view.keystrokes, 'destroy' );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( destroySpy );
 		} );
 	} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -61,7 +61,7 @@ function startExternalInsert( editor ) {
 
 			function typing() {
 				wait( 40 ).then( () => {
-					model.enqueueChange( 'transparent', writer => {
+					model.enqueueChange( { isUndoable: false }, writer => {
 						writer.insertText( text[ index ], position );
 						position = position.getShiftedBy( 1 );
 
@@ -83,7 +83,7 @@ function startExternalInsert( editor ) {
 
 	function insertNewLine( path ) {
 		return wait( 200 ).then( () => {
-			model.enqueueChange( 'transparent', writer => {
+			model.enqueueChange( { isUndoable: false }, writer => {
 				writer.insertElement( 'paragraph', writer.createPositionFromPath( model.document.getRoot(), path ) );
 			} );
 
@@ -107,7 +107,7 @@ function startExternalDelete( editor ) {
 	const model = editor.model;
 
 	wait( 3000 ).then( () => {
-		model.enqueueChange( 'transparent', writer => {
+		model.enqueueChange( { isUndoable: false }, writer => {
 			const start = writer.createPositionFromPath( model.document.getRoot(), [ 1 ] );
 
 			writer.remove( writer.createRange( start, start.getShiftedBy( 1 ) ) );

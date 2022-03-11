@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -25,6 +25,17 @@ describe( 'FindCommand', () => {
 
 	afterEach( () => {
 		return editor.destroy();
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'sets public properties', () => {
+			expect( command ).to.have.property( 'isEnabled', true );
+			expect( command ).to.have.property( 'affectsData', false );
+		} );
+
+		it( 'sets state property', () => {
+			expect( command ).to.have.property( '_state', editor.plugins.get( 'FindAndReplaceEditing' ).state );
+		} );
 	} );
 
 	describe( 'isEnabled', () => {
@@ -56,12 +67,6 @@ describe( 'FindCommand', () => {
 		} );
 	} );
 
-	describe( 'state', () => {
-		it( 'is set to plugin\'s state', () => {
-			expect( command._state ).to.equal( editor.plugins.get( 'FindAndReplaceEditing' ).state );
-		} );
-	} );
-
 	describe( 'execute()', () => {
 		describe( 'with string passed', () => {
 			it( 'places markers correctly in the model', () => {
@@ -71,7 +76,7 @@ describe( 'FindCommand', () => {
 				const markers = getSimplifiedMarkersFromResults( results );
 
 				expect( stringify( model.document.getRoot(), null, markers ) ).to.equal(
-					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <X:start></X:start>bar<X:end></X:end> bom.</paragraph>'
+					'<paragraph>Foo <X:start></X:start>bar<X:end></X:end> baz. Bam <Y:start></Y:start>bar<Y:end></Y:end> bom.</paragraph>'
 				);
 			} );
 
@@ -294,6 +299,14 @@ describe( 'FindCommand', () => {
 					expect( results.length ).to.equal( 0 );
 				} );
 
+				it( 'set to true matches words separated by a single space', () => {
+					editor.setData( '<p>bar bar</p>' );
+
+					const { results } = command.execute( 'bar', { wholeWords: true } );
+
+					expect( results.length ).to.equal( 2 );
+				} );
+
 				it( 'is disabled by default', () => {
 					editor.setData( '<p>foo aabaraa</p>' );
 
@@ -335,7 +348,7 @@ describe( 'FindCommand', () => {
 					);
 
 					expect( stringify( multiRootModel.document.getRoot( 'second' ), null, [ markerSecond ] ) ).to.equal(
-						'<paragraph>Foo bar ba<X:start></X:start>z<X:end></X:end></paragraph>'
+						'<paragraph>Foo bar ba<Y:start></Y:start>z<Y:end></Y:end></paragraph>'
 					);
 				} );
 
@@ -368,9 +381,13 @@ describe( 'FindCommand', () => {
 		 * random and unique.
 		 */
 		function getSimplifiedMarkersFromResults( results ) {
+			let letter = 'X';
+
 			return results.map( item => {
 				// Replace markers id to a predefined value, as originally these are unique random ids.
-				item.marker.name = 'X';
+				item.marker.name = letter;
+
+				letter = String.fromCharCode( letter.charCodeAt( 0 ) + 1 );
 
 				return item.marker;
 			} );

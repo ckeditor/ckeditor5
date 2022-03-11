@@ -10,10 +10,6 @@ The {@link module:upload/adapters/simpleuploadadapter~SimpleUploadAdapter simple
 
 See the [Server–side configuration](#server-side-configuration) section to learn about the requirements your server–side application must meet to support this upload adapter.
 
-<info-box>
-	Check out the comprehensive {@link features/image-upload Image upload overview} to learn about other ways to upload images into CKEditor 5.
-</info-box>
-
 ## Installation
 
 <info-box info>

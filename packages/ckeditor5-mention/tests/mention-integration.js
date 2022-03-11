@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -313,7 +313,7 @@ describe( 'Mention feature - integration', () => {
 						writer.setSelection( writer.createRangeOn( model.document.getRoot().getChild( 0 ).getChild( 0 ) ) );
 					} );
 
-					editor.editing.view.document.fire( 'click' );
+					editor.editing.view.document.fire( 'click', { domEvent: {} } );
 
 					expect( panelView.isVisible ).to.be.true;
 					expect( balloon.visibleView === mentionsView ).to.be.false; // LinkUI

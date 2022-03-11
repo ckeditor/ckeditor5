@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2021, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
@@ -154,6 +154,13 @@ export default class SourceEditing extends Plugin {
 
 			this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => this._handleReadOnlyMode( isReadOnly ) );
 		}
+
+		// Update the editor data while calling editor.getData() in the source editing mode.
+		editor.data.on( 'get', () => {
+			if ( this.isSourceEditingMode ) {
+				this._updateEditorData();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -261,6 +268,29 @@ export default class SourceEditing extends Plugin {
 		const editor = this.editor;
 		const editingView = editor.editing.view;
 
+		this._updateEditorData();
+
+		editingView.change( writer => {
+			for ( const [ rootName ] of this._replacedRoots ) {
+				writer.removeClass( 'ck-hidden', editingView.document.getRoot( rootName ) );
+			}
+		} );
+
+		this._elementReplacer.restore();
+
+		this._replacedRoots.clear();
+		this._dataFromRoots.clear();
+
+		editingView.focus();
+	}
+
+	/**
+	 * Updates the source data in all hidden editing roots.
+	 *
+	 * @private
+	 */
+	_updateEditorData() {
+		const editor = this.editor;
 		const data = {};
 
 		for ( const [ rootName, domSourceEditingElementWrapper ] of this._replacedRoots ) {
@@ -272,25 +302,11 @@ export default class SourceEditing extends Plugin {
 			if ( oldData !== newData ) {
 				data[ rootName ] = newData;
 			}
-
-			editingView.change( writer => {
-				const viewRoot = editingView.document.getRoot( rootName );
-
-				writer.removeClass( 'ck-hidden', viewRoot );
-			} );
 		}
-
-		this._elementReplacer.restore();
-
-		this._replacedRoots.clear();
-
-		this._dataFromRoots.clear();
 
 		if ( Object.keys( data ).length ) {
-			editor.data.set( data, { batchType: 'default' } );
+			editor.data.set( data, { batchType: { isUndoable: true } } );
 		}
-
-		editor.editing.view.focus();
 	}
 
 	/**
