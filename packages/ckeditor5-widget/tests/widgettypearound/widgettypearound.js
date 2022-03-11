@@ -1291,6 +1291,19 @@ describe( 'WidgetTypeAround', () => {
 					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
 				} );
 
+				it( 'should delete a widget if there is no fake caret', () => {
+					setModelData( editor.model, '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+
+					expect( getModelData( model ) ).to.equal( '[<blockWidget></blockWidget>]<paragraph>foo</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+
+					fireDeleteEvent();
+					expect( getModelData( model ) ).to.equal( '<paragraph>[]</paragraph><paragraph>foo</paragraph>' );
+					expect( modelSelection.getAttribute( TYPE_AROUND_SELECTION_ATTRIBUTE ) ).to.be.undefined;
+
+					sinon.assert.calledOnce( domEventDataStub.domEvent.preventDefault );
+				} );
+
 				it( 'should delete a sibling widget', () => {
 					setModelData( editor.model, '<blockWidget><nested>foo</nested></blockWidget>[<blockWidget></blockWidget>]' );
 
@@ -1503,7 +1516,7 @@ describe( 'WidgetTypeAround', () => {
 
 				const data = {
 					direction: isForward ? 'forward' : 'backward',
-					// inputType: isForward ? 'deleteContentForward' : 'deleteContentBackward',
+					inputType: isForward ? 'deleteContentForward' : 'deleteContentBackward',
 					unit: 'character',
 					targetRanges: []
 				};
