@@ -60,7 +60,8 @@ const turndownService = new TurndownService( {
 
 turndownService.use( [
 	gfm,
-	todoList
+	todoList,
+	strikethrough
 ] );
 
 /**
@@ -87,6 +88,16 @@ function todoList( turndownService ) {
 			return ( node.checked ? '[x]' : '[ ]' ) + ' ';
 		}
 	} );
+}
+
+// This is a copy of the original strikethrough rule from turdown-plugin-gfm, with minor changes.
+function strikethrough(turndownService) {
+	turndownService.addRule('strikethrough', {
+		filter: ['del', 's', 'strike'],
+		replacement: function (content) {
+			return '~~' + content + '~~';
+		}
+	});
 }
 
 // Autolink matcher.
