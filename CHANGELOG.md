@@ -3,6 +3,10 @@ Changelog
 
 ## [33.0.0](https://github.com/ckeditor/ckeditor5/compare/v32.0.0...v33.0.0) (2022-03-07)
 
+| ⚠️&nbsp;&nbsp; **Information for customers which use CKEditor 5 with real-time collaboration and [upload the editor bundles to](https://ckeditor.com/docs/cs/latest/guides/collaboration/editor-bundle.html) Cloud Services.** |
+| :--- |
+| If you are using CKEditor 5 with real-time collaboration, and you upload the editor bundles to CKEditor Cloud Services (e.g. in order to use the document storage, import and export or connection optimization features), then please wait with upgrading to CKEditor 5 v33.0.0.<br /><br />CKEditor Cloud Services will start supporting CKEditor 5 v33.0.0 editor bundles on March, 12th. Until then, uploading a bundle (with CKEditor 5 v33.0.0) will be rejected by the REST API.<br /><br />The On-Premises version of CKEditor Cloud Services that will start supporting CKEditor 5 v33.0.0 editor bundles is going to be released by the end of March 2022. |
+
 ### Release highlights
 
 We are happy to announce the release of CKEditor 5 v33.0.0.
@@ -17,7 +21,7 @@ This release introduces the following new features:
 
 There were also a few bug fixes:
 
-* [Removing complex emojis now work as expected](https://github.com/ckeditor/ckeditor5/issues/6504)
+* [Removing complex emojis now works as expected](https://github.com/ckeditor/ckeditor5/issues/6504)
 * [Preparing DLL package builds in the development mode (the `--dev` flag) no longer ends with an error](https://github.com/ckeditor/ckeditor5/issues/11170)
 * [Clicking content that has a comment does not cause content data change (resulting with extra autosave)](https://github.com/ckeditor/ckeditor5/issues/9901)
 * [The `<CKEditorContext>` React component now destroys properly](https://github.com/ckeditor/ckeditor5-react/issues/283)

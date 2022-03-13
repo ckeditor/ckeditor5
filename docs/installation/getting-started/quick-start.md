@@ -16,7 +16,7 @@ CKEditor 5 can provide any WYSIWYG editor type. From online editors similar to G
 In this guide, you will learn how to run your own CKEditor 5 instance. Below you can find two unique paths describing the installation process. Choose one (or both!) and start your CKEditor 5 journey!
 
 Available paths:
-* [online builder path](#creating-custom-builds-with-online-builder) &ndash; The most beginners-friendly and quickest path.
+* [Online builder path](#creating-custom-builds-with-online-builder) &ndash; The most beginners-friendly and quickest path.
 * [Building from the source path](#building-the-editor-from-source) &ndash; An advanced path including using `npm` and webpack.
 
 ## Creating custom builds with online builder

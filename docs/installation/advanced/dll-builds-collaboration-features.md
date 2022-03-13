@@ -1,8 +1,8 @@
 ---
 menu-title: DLL builds for CKEditor 5 Collaboration Features
 category: alternative-setups
-order: 25
-modified_at: 2022-02-22
+order: 30
+modified_at: 2022-02-21
 ---
 
 # CKEditor 5 DLL builds for CKEditor 5 Collaboration Features
@@ -25,7 +25,7 @@ In order to create an editor with collaboration features, you need to use the tw
 
 ## Integrating CKEditor 5 Collaboration Features as DLL builds
 
-The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses `<script>` tags.
+The exact way to use a DLL build will depend on your system. Presented in this guide is the simplest method that uses the `<script>` tags.
 
 In order to run the editor, you need to load the necessary files (base DLL + CF base DLL + editor creator + features). These files expose their content in the `CKEditor5` global, using the following format:
 
@@ -80,6 +80,7 @@ Below is an example of an integration:
 
 <script>
 	const watchdog = new CKEditor5.watchdog.EditorWatchdog( Editor );
+
 	watchdog.create( document.querySelector( '#editor', {
 		plugins: [
 			CKEditor5.autoformat.Autoformat,

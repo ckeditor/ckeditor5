@@ -11,7 +11,7 @@ const childProcess = require( 'child_process' );
 const path = require( 'path' );
 
 const ROOT_DIRECTORY = path.resolve( __dirname, '..', '..' );
-const IS_DEVELOPMENT_MODE = process.argv.includes( '--dev' );
+const IS_DEVELOPMENT_MODE = process.argv.includes( '--mode=development' );
 
 const notBaseDLL = name => name !== 'ckeditor5-dll';
 const hasDLLBuild = name => {
@@ -26,7 +26,7 @@ const buildDll = fullPackageName => {
 	const yarnArguments = [ 'run', 'dll:build' ];
 
 	if ( IS_DEVELOPMENT_MODE ) {
-		yarnArguments.push( '--dev' );
+		yarnArguments.push( '--mode=development' );
 	}
 
 	const subprocess = childProcess.spawnSync( 'yarn', yarnArguments, {

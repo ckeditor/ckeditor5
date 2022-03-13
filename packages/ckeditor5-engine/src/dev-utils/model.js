@@ -31,6 +31,7 @@ import Mapper from '../conversion/mapper';
 import {
 	convertCollapsedSelection,
 	convertRangeSelection,
+	insertAttributesAndChildren,
 	insertElement,
 	insertText,
 	insertUIElement,
@@ -233,6 +234,7 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 	mapper.bindElements( node.root, viewRoot );
 
 	downcastDispatcher.on( 'insert:$text', insertText() );
+	downcastDispatcher.on( 'insert', insertAttributesAndChildren(), { priority: 'lowest' } );
 	downcastDispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( '$textProxy' ) ) {
 			const converter = wrap( ( modelAttributeValue, { writer } ) => {
@@ -260,28 +262,28 @@ export function stringify( node, selectionOrPositionOrRange = null, markers = nu
 		return writer.createUIElement( name );
 	} ) );
 
+	const markersMap = new Map();
+
+	if ( markers ) {
+		// To provide stable results, sort markers by name.
+		for ( const marker of Array.from( markers ).sort( ( a, b ) => a.name < b.name ? 1 : -1 ) ) {
+			markersMap.set( marker.name, marker.getRange() );
+		}
+	}
+
 	// Convert model to view.
 	const writer = view._writer;
-	downcastDispatcher.convertInsert( range, writer );
+	downcastDispatcher.convert( range, markersMap, writer );
 
 	// Convert model selection to view selection.
 	if ( selection ) {
 		downcastDispatcher.convertSelection( selection, markers || model.markers, writer );
 	}
 
-	if ( markers ) {
-		// To provide stable results, sort markers by name.
-		markers = Array.from( markers ).sort( ( a, b ) => a.name < b.name ? 1 : -1 );
-
-		for ( const marker of markers ) {
-			downcastDispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-		}
-	}
-
 	// Parse view to data string.
 	let data = viewStringify( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
 
-	// Removing unneccessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
+	// Removing unnecessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
 	data = data.substr( 5, data.length - 11 );
 
 	view.destroy();

@@ -10,7 +10,7 @@ import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteedi
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import HorizontalLineEditing from '@ckeditor/ckeditor5-horizontal-line/src/horizontallineediting';
 import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
-import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/list/listediting';
 import ImageBlockEditing from '@ckeditor/ckeditor5-image/src/image/imageblockediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Input from '@ckeditor/ckeditor5-typing/src/input';
@@ -22,7 +22,7 @@ import TableEditing from '../src/tableediting';
 import TableCellPropertiesEditing from '../src/tablecellproperties/tablecellpropertiesediting';
 import TableWalker from '../src/tablewalker';
 
-import TableClipboard, { getTableIfOnlyTableInContent } from '../src/tableclipboard';
+import TableClipboard from '../src/tableclipboard';
 
 describe( 'table clipboard', () => {
 	let editor, model, modelRoot, tableSelection, viewDocument, element;
@@ -3984,9 +3984,13 @@ describe( 'table clipboard', () => {
 		} );
 	} );
 
-	describe( 'getTableIfOnlyTableInContent helper', () => {
+	describe( 'getTableIfOnlyTableInContent()', () => {
+		let tableClipboard;
+
 		beforeEach( async () => {
 			await createEditor();
+
+			tableClipboard = editor.plugins.get( 'TableClipboard' );
 		} );
 
 		it( 'should return null for no table provided', () => {
@@ -3994,7 +3998,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getChild( 0 );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for a text node provided', async () => {
@@ -4002,7 +4006,7 @@ describe( 'table clipboard', () => {
 
 			const content = modelRoot.getNodeByPath( [ 0, 0 ] );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for mixed content provided (table + paragraph)', () => {
@@ -4013,7 +4017,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return null for mixed content provided (paragraph + table)', () => {
@@ -4024,7 +4028,7 @@ describe( 'table clipboard', () => {
 
 			const content = documentFragmentFromChildren( modelRoot );
 
-			expect( getTableIfOnlyTableInContent( content, model ) ).to.be.null;
+			expect( tableClipboard.getTableIfOnlyTableInContent( content, model ) ).to.be.null;
 		} );
 
 		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
@@ -4034,20 +4038,20 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
 		} );
 
-		it( 'should return table element for mixed content provided (table + empty paragraph)', () => {
+		it( 'should return table element for mixed content provided (empty paragraph + table)', () => {
 			setModelData( model,
 				'<paragraph></paragraph>' +
 				'<table><tableRow><tableCell><paragraph>bar</paragraph></tableCell></tableRow></table>'
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4062,7 +4066,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4074,7 +4078,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = documentFragmentFromChildren( modelRoot );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;
@@ -4086,7 +4090,7 @@ describe( 'table clipboard', () => {
 			);
 
 			const content = modelRoot.getChild( 0 );
-			const result = getTableIfOnlyTableInContent( content, model );
+			const result = tableClipboard.getTableIfOnlyTableInContent( content, model );
 
 			expect( result ).to.be.not.null;
 			expect( result.is( 'element', 'table' ) ).to.be.true;

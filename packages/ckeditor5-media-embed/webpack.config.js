@@ -13,5 +13,5 @@ module.exports = builds.getDllPluginWebpackConfig( {
 	themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' ),
 	packagePath: __dirname,
 	manifestPath: require.resolve( 'ckeditor5/build/ckeditor5-dll.manifest.json' ),
-	isDevelopmentMode: process.argv.includes( '--dev' )
+	isDevelopmentMode: process.argv.includes( '--mode=development' )
 } );

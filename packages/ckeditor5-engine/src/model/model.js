@@ -516,6 +516,7 @@ export default class Model {
 	 * @param {Object} [options]
 	 * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
 	 * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
+	 * @param {Boolean} [options.treatEmojiAsSingleUnit=false] Whether multi-characer emoji sequences should be handled as single unit.
 	 */
 	modifySelection( selection, options ) {
 		modifySelection( this, selection, options );

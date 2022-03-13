@@ -10,7 +10,7 @@
 import Position from '../position';
 import TreeWalker from '../treewalker';
 import Range from '../range';
-import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
+import { isInsideSurrogatePair, isInsideCombinedSymbol, isInsideEmojiSequence } from '@ckeditor/ckeditor5-utils/src/unicode';
 import DocumentSelection from '../documentselection';
 
 const wordBoundaryCharacters = ' ,.?!:;"-()';
@@ -49,11 +49,13 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
+ * @param {Boolean} [options.treatEmojiAsSingleUnit=false] Whether multi-characer emoji sequences should be handled as single unit.
  */
 export default function modifySelection( model, selection, options = {} ) {
 	const schema = model.schema;
 	const isForward = options.direction != 'backward';
 	const unit = options.unit ? options.unit : 'character';
+	const treatEmojiAsSingleUnit = !!options.treatEmojiAsSingleUnit;
 
 	const focus = selection.focus;
 
@@ -63,7 +65,7 @@ export default function modifySelection( model, selection, options = {} ) {
 		direction: isForward ? 'forward' : 'backward'
 	} );
 
-	const data = { walker, schema, isForward, unit };
+	const data = { walker, schema, isForward, unit, treatEmojiAsSingleUnit };
 
 	let next;
 
@@ -89,10 +91,10 @@ export default function modifySelection( model, selection, options = {} ) {
 }
 
 // Checks whether the selection can be extended to the the walker's next value (next position).
-// @param {{ walker, unit, isForward, schema }} data
+// @param {{ walker, unit, isForward, schema, treatEmojiAsSingleUnit }} data
 // @param {module:engine/view/treewalker~TreeWalkerValue} value
 function tryExtendingTo( data, value ) {
-	const { isForward, walker, unit, schema } = data;
+	const { isForward, walker, unit, schema, treatEmojiAsSingleUnit } = data;
 	const { type, item, nextPosition } = value;
 
 	// If found text, we can certainly put the focus in it. Let's just find a correct position
@@ -102,7 +104,7 @@ function tryExtendingTo( data, value ) {
 			return getCorrectWordBreakPosition( walker, isForward );
 		}
 
-		return getCorrectPosition( walker, unit, isForward );
+		return getCorrectPosition( walker, unit, treatEmojiAsSingleUnit );
 	}
 
 	// Entering an element.
@@ -139,14 +141,19 @@ function tryExtendingTo( data, value ) {
 //
 // @param {module:engine/model/treewalker~TreeWalker} walker
 // @param {String} unit The unit by which selection should be modified.
-function getCorrectPosition( walker, unit ) {
+// @param {Boolean} treatEmojiAsSingleUnit
+function getCorrectPosition( walker, unit, treatEmojiAsSingleUnit ) {
 	const textNode = walker.position.textNode;
 
 	if ( textNode ) {
 		const data = textNode.data;
 		let offset = walker.position.offset - textNode.startOffset;
 
-		while ( isInsideSurrogatePair( data, offset ) || ( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ) {
+		while (
+			isInsideSurrogatePair( data, offset ) ||
+			( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ||
+			( treatEmojiAsSingleUnit && isInsideEmojiSequence( data, offset ) )
+		) {
 			walker.next();
 
 			offset = walker.position.offset - textNode.startOffset;

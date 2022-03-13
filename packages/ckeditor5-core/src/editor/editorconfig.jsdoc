@@ -41,13 +41,17 @@
  *			.catch( ... );
  *
  * By default, the editor is initialized with the content of the element on which this editor is initialized.
- * See {@link module:core/editor/editor~Editor.create Editor.create()}.
- *
- * This configuration option lets you override initial data if an element is passed to `Editor.create()`.
+ * This configuration option lets you override this behavior and pass different initial data.
  * It is especially useful if it is difficult for your integration to put the data inside the HTML element.
  *
- * **Note:** If initial data is passed to `Editor.create()` as a parameter and, at the same time, via this configuration option,
- * an error will be thrown as those two options exclude themselves.
+ * See also {@link module:core/editor/editor~Editor.create Editor.create()}.
+ *
+ * **Note:** If initial data is passed to `Editor.create()` in the first parameter (instead of a DOM element), and,
+ * at the same time, `config.initialData` is set, an error will be thrown as those two options exclude themselves.
+ *
+ * If `config.initialData` is not set when the editor is initialized, the data received in `Editor.create()` call
+ * will be used to set `config.initialData`. As a result, `initialData` is always set in the editor's config and
+ * plugins can read and/or modify it during initialization.
  *
  * @member {String} module:core/editor/editorconfig~EditorConfig#initialData
  */

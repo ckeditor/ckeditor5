@@ -22,7 +22,6 @@
 		"builds/guides/integration/frameworks/vuejs.html": "installation/frameworks/vuejs-v3.html",
 		"builds/guides/integration/advancedsetup.html": "installation/advanced/integrating-from-source.html",
 		"builds/guides/license-and-legal.html": "support/license-and-legal.html",
-		"builds/guides/migrate.html": "updating/migration-from-ckeditor-4.html",
 		"builds/guides/migration/migration-to-25.0.0.html": "updating/migration-to-25.html",
 		"builds/guides/migration/migration-to-26.0.0.html": "updating/migration-to-26.html",
 		"builds/guides/migration/migration-to-27.0.0.html": "updating/migration-to-27.html",
@@ -93,7 +92,13 @@
 		"builds/guides/development/custom-builds.html": "installation/getting-started/quick-start.html#creating-custom-builds",
 		"builds/guides/development/plugins.html": "installation/advanced/plugins.html",
 		"builds/guides/development/dll-builds.html": "installation/advanced/alternative-setups/dll-builds.html",
-		"builds/guides/faq.html": "support/faq.html"
+		"builds/guides/faq.html": "support/faq.html",
+		"examples/builds/custom-build.html": "examples/builds-custom/full-featured-editor.html",
+		"framework/guides/deep-dive/conversion/conversion-introduction.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-extending-output.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/conversion-preserving-custom-content.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/custom-element-conversion.html": "framework/guides/deep-dive/conversion/intro.html",
+		"framework/guides/deep-dive/conversion/element-reconversion.html": "framework/guides/deep-dive/conversion/intro.html"
 	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
@@ -330,7 +335,15 @@
 									"name": "Conversion",
 									"id": "framework-deep-dive-conversion",
 									"slug": "conversion",
-									"order": 100
+									"order": 100,
+									"categories": [
+										{
+											"name": "Conversion helpers",
+											"id": "framework-deep-dive-conversion-helpers",
+											"slug": "helpers",
+											"order": 100
+										}
+									]
 								},
 								{
 									"name": "User interface",
@@ -345,12 +358,6 @@
 							"id": "framework-contributing",
 							"slug": "contributing",
 							"order": 400
-						},
-						{
-							"name": "Support",
-							"id": "framework-support",
-							"slug": "support",
-							"order": 500
 						}
 					]
 				}

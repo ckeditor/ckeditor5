@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-word-count",
-  "version": "32.0.0",
+  "version": "33.0.0",
   "description": "Word and character count feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -13,23 +13,23 @@
   "main": "src/index.js",
   "dependencies": {
     "lodash-es": "^4.17.15",
-    "ckeditor5": "^32.0.0"
+    "ckeditor5": "^33.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^32.0.0",
-    "@ckeditor/ckeditor5-block-quote": "^32.0.0",
-    "@ckeditor/ckeditor5-core": "^32.0.0",
+    "@ckeditor/ckeditor5-basic-styles": "^33.0.0",
+    "@ckeditor/ckeditor5-block-quote": "^33.0.0",
+    "@ckeditor/ckeditor5-core": "^33.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^28.0.1",
-    "@ckeditor/ckeditor5-editor-classic": "^32.0.0",
-    "@ckeditor/ckeditor5-engine": "^32.0.0",
-    "@ckeditor/ckeditor5-enter": "^32.0.0",
-    "@ckeditor/ckeditor5-image": "^32.0.0",
-    "@ckeditor/ckeditor5-link": "^32.0.0",
-    "@ckeditor/ckeditor5-list": "^32.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^32.0.0",
-    "@ckeditor/ckeditor5-table": "^32.0.0",
-    "@ckeditor/ckeditor5-theme-lark": "^32.0.0",
-    "@ckeditor/ckeditor5-utils": "^32.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^33.0.0",
+    "@ckeditor/ckeditor5-engine": "^33.0.0",
+    "@ckeditor/ckeditor5-enter": "^33.0.0",
+    "@ckeditor/ckeditor5-image": "^33.0.0",
+    "@ckeditor/ckeditor5-link": "^33.0.0",
+    "@ckeditor/ckeditor5-list": "^33.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^33.0.0",
+    "@ckeditor/ckeditor5-table": "^33.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^33.0.0",
+    "@ckeditor/ckeditor5-utils": "^33.0.0",
     "webpack": "^5.58.1",
     "webpack-cli": "^4.9.0"
   },

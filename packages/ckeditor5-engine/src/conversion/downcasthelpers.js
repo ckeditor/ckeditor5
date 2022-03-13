@@ -12,6 +12,7 @@
 import ModelRange from '../model/range';
 import ModelSelection from '../model/selection';
 import ModelElement from '../model/element';
+import ModelPosition from '../model/position';
 
 import ViewAttributeElement from '../view/attributeelement';
 import DocumentSelection from '../model/documentselection';
@@ -23,6 +24,8 @@ import toArray from '@ckeditor/ckeditor5-utils/src/toarray';
 
 /**
  * Downcast conversion helper functions.
+ *
+ * Learn more about {@glink framework/guides/deep-dive/conversion/downcast downcast helpers}.
  *
  * @extends module:engine/conversion/conversionhelpers~ConversionHelpers
  */
@@ -60,40 +63,240 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *			}
 	 *		} );
 	 *
-	 * The element-to-element conversion supports the reconversion mechanism. This is helpful in the conversion to complex view structures
-	 * where multiple atomic element-to-element and attribute-to-attribute or attribute-to-element could be used. By specifying
-	 * `triggerBy()` events you can trigger reconverting the model to full view tree structures at once.
+	 * The element-to-element conversion supports the reconversion mechanism. It can be enabled by using either the `attributes` or
+	 * the `children` props on a model description. You will find a couple examples below.
+	 *
+	 * In order to reconvert an element if any of its direct children have been added or removed, use the `children` property on a `model`
+	 * description. For example, this model:
+	 *
+	 *		<box>
+	 *			<paragraph>Some text.</paragraph>
+	 *		</box>
+	 *
+	 * will be converted into this structure in the view:
+	 *
+	 *		<div class="box" data-type="single">
+	 *			<p>Some text.</p>
+	 *		</div>
+	 *
+	 * But if more items were inserted in the model:
+	 *
+	 *		<box>
+	 *			<paragraph>Some text.</paragraph>
+	 *			<paragraph>Other item.</paragraph>
+	 *		</box>
+	 *
+	 * it will be converted into this structure in the view (note the element `data-type` change):
+	 *
+	 *		<div class="box" data-type="multiple">
+	 *			<p>Some text.</p>
+	 *			<p>Other item.</p>
+	 *		</div>
+	 *
+	 * Such a converter would look like this (note that the `paragraph` elements are converted separately):
 	 *
 	 *		editor.conversion.for( 'downcast' ).elementToElement( {
-	 *			model: 'complex',
-	 *			view: ( modelElement, conversionApi ) => createComplexViewFromModel( modelElement, conversionApi ),
-	 *			triggerBy: {
-	 *				attributes: [ 'foo', 'bar' ],
-	 *				children: [ 'slot' ]
+	 *			model: {
+	 *	 			name: 'box',
+	 *	 			children: true
+	 *			},
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createContainerElement( 'div', {
+	 *					class: 'box',
+	 *					'data-type': modelElement.childCount == 1 ? 'single' : 'multiple'
+	 *				} );
+	 *			}
+	 *		} );
+	 *
+	 * In order to reconvert element if any of its attributes have been updated, use the `attributes` property on a `model`
+	 * description. For example, this model:
+	 *
+	 *		<heading level="2">Some text.</heading>
+	 *
+	 * will be converted into this structure in the view:
+	 *
+	 *		<h2>Some text.</h2>
+	 *
+	 * But if the `heading` element's `level` attribute has been updated to `3` for example, then
+	 * it will be converted into this structure in the view:
+	 *
+	 *		<h3>Some text.</h3>
+	 *
+	 * Such a converter would look as follows:
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToElement( {
+	 *			model: {
+	 *	 			name: 'heading',
+	 *	 			attributes: 'level'
+	 *			},
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				return writer.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
 	 *			}
 	 *		} );
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
 	 * to the conversion process.
 	 *
-	 * You can read more about element-to-element conversion in the
-	 * {@glink framework/guides/deep-dive/conversion/custom-element-conversion Custom element conversion} guide.
+	 * You can read more about the element-to-element conversion in the
+	 * {@glink framework/guides/deep-dive/conversion/downcast downcast conversion} guide.
 	 *
 	 * @method #elementToElement
 	 * @param {Object} config Conversion configuration.
-	 * @param {String} config.model The name of the model element to convert.
+	 * @param {String|Object} config.model The description or a name of the model element to convert.
+	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
+	 * the view element. Note that the view will be reconverted if any of the listed attributes changes.
+ 	 * @param {Boolean} [config.model.children] Specifies whether the view element requires reconversion if the list
+	 * of the model child nodes changed.
 	 * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
 	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
 	 * as parameters and returns a view container element.
-	 * @param {Object} [config.triggerBy] Reconversion triggers. At least one trigger must be defined.
-	 * @param {Array.<String>} config.triggerBy.attributes The name of the element's attributes whose change will trigger element
-	 * reconversion.
-	 * @param {Array.<String>} config.triggerBy.children The name of direct children whose adding or removing will trigger element
-	 * reconversion.
 	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
 	 */
 	elementToElement( config ) {
 		return this.add( downcastElementToElement( config ) );
+	}
+
+	/**
+	 * The model element to view structure (several elements) conversion helper.
+	 *
+	 * This conversion results in creating a view structure with one or more slots defined for the child nodes.
+	 * For example, a model `<table>` may become this structure in the view:
+	 *
+	 *		<figure class="table">
+	 *			<table>
+	 *				<tbody>${ slot for table rows }</tbody>
+	 *			</table>
+	 *		</figure>
+	 *
+	 * The children of the model's `<table>` element will be inserted into the `<tbody>` element.
+	 * If the `elementToElement()` helper was used, the children would be inserted into the `<figure>`.
+	 *
+	 * An example converter that converts the following model structure:
+	 *
+	 *		<wrappedParagraph>Some text.</wrappedParagraph>
+	 *
+	 * into this structure in the view:
+	 *
+	 *		<div class="wrapper">
+	 *			<p>Some text.</p>
+	 *		</div>
+	 *
+	 * would look like this:
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+	 *			model: 'wrappedParagraph',
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				const wrapperViewElement = writer.createContainerElement( 'div', { class: 'wrapper' } );
+	 *				const paragraphViewElement = writer.createContainerElement( 'p' );
+	 *
+	 *				writer.insert( writer.createPositionAt( wrapperViewElement, 0 ), paragraphViewElement );
+	 *				writer.insert( writer.createPositionAt( paragraphViewElement, 0 ), writer.createSlot() );
+	 *
+	 *				return wrapperViewElement;
+	 *			}
+	 *		} );
+	 *
+	 * The `slorFor()` function can also take a callback that allows filtering which children of the model element
+	 * should be converted into this slot.
+	 *
+	 * Imagine a table feature where for this model structure:
+	 *
+	 *		<table headingRows="1">
+	 *			<tableRow> ... table cells 1 ... </tableRow>
+	 *			<tableRow> ... table cells 2 ... </tableRow>
+	 *			<tableRow> ... table cells 3 ... </tableRow>
+	 *			<caption>Caption text</caption>
+	 *		</table>
+	 *
+	 * we want to generate this view structure:
+	 *
+	 *		<figure class="table">
+	 *			<table>
+	 *				<thead>
+	 *					<tr> ... table cells 1 ... </tr>
+	 *				</thead>
+	 *				<tbody>
+	 *					<tr> ... table cells 2 ... </tr>
+	 *					<tr> ... table cells 3 ... </tr>
+	 *				</tbody>
+	 *			</table>
+	 *			<figcaption>Caption text</figcaption>
+	 *		</figure>
+	 *
+	 * The converter has to take the `headingRows` attribute into consideration when allocating the `<tableRow>` elements
+	 * into the `<tbody>` and `<thead>` elements. Hence, we need two slots and need to define proper filter callbacks for them.
+	 *
+	 * Additionally, all elements other than `<tableRow>` should be placed outside the `<table>` tag.
+	 * In the example above, this will handle the table caption.
+	 *
+	 * Such a converter would look like this:
+	 *
+	 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+	 *			model: {
+	 *				name: 'table',
+	 *				attributes: [ 'headingRows' ]
+	 *			},
+	 *			view: ( modelElement, conversionApi ) => {
+	 *				const { writer } = conversionApi;
+	 *
+	 *				const figureElement = writer.createContainerElement( 'figure', { class: 'table' } );
+	 *				const tableElement = writer.createContainerElement( 'table' );
+	 *
+	 *				writer.insert( writer.createPositionAt( figureElement, 0 ), tableElement );
+	 *
+	 *				const headingRows = modelElement.getAttribute( 'headingRows' ) || 0;
+	 *
+	 *				if ( headingRows > 0 ) {
+	 *					const tableHead = writer.createContainerElement( 'thead' );
+	 *
+	 *					const headSlot = writer.createSlot( node => node.is( 'element', 'tableRow' ) && node.index < headingRows );
+	 *
+	 *					writer.insert( writer.createPositionAt( tableElement, 'end' ), tableHead );
+	 *					writer.insert( writer.createPositionAt( tableHead, 0 ), headSlot );
+	 *				}
+	 *
+	 *				if ( headingRows < tableUtils.getRows( table ) ) {
+	 *					const tableBody = writer.createContainerElement( 'tbody' );
+	 *
+	 *					const bodySlot = writer.createSlot( node => node.is( 'element', 'tableRow' ) && node.index >= headingRows );
+	 *
+	 *					writer.insert( writer.createPositionAt( tableElement, 'end' ), tableBody );
+	 *					writer.insert( writer.createPositionAt( tableBody, 0 ), bodySlot );
+	 *				}
+	 *
+	 *				const restSlot = writer.createSlot( node => !node.is( 'element', 'tableRow' ) );
+	 *
+	 *				writer.insert( writer.createPositionAt( figureElement, 'end' ), restSlot );
+	 *
+	 *				return figureElement;
+	 *			}
+	 *		} );
+	 *
+	 * Note: The children of a model element that's being converted must be allocated in the same order in the view
+	 * in which they are placed in the model.
+	 *
+	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
+	 * to the conversion process.
+	 *
+	 * @method #elementToStructure
+	 * @param {Object} config Conversion configuration.
+ 	 * @param {String|Object} config.model The description or a name of the model element to convert.
+	 * @param {String} [config.model.name] The name of the model element to convert.
+ 	 * @param {String|Array.<String>} [config.model.attributes] The list of attribute names that should be consumed while creating
+	 * the view structure. Note that the view will be reconverted if any of the listed attributes will change.
+	 * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view A function
+	 * that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
+	 * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
+	 * @returns {module:engine/conversion/downcasthelpers~DowncastHelpers}
+	 */
+	elementToStructure( config ) {
+		return this.add( downcastElementToStructure( config ) );
 	}
 
 	/**
@@ -258,8 +461,8 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * the attribute key, possible values and, optionally, an element name to convert from.
 	 * @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
 	 * the model attribute value and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
-	 * as parameters and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
-	 * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
+	 * as parameters and returns a `{ key, value }` object. If the `key` is `'class'`, the `value` can be a `String` or an
+	 * array of `String`s. If the `key` is `'style'`, the `value` is an object with key-value pairs. In other cases, `value` is a `String`.
 	 * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
 	 * `{ key, value }` objects or a functions.
 	 * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
@@ -272,14 +475,14 @@ export default class DowncastHelpers extends ConversionHelpers {
 	/**
 	 * Model marker to view element conversion helper.
 	 *
-	 * **Note**: This method should be used mainly for editing downcast and it is recommended
-	 * to use {@link #markerToData `#markerToData()`} helper instead.
+	 * **Note**: This method should be used mainly for editing the downcast and it is recommended
+	 * to use the {@link #markerToData `#markerToData()`} helper instead.
 	 *
 	 * This helper may produce invalid HTML code (e.g. a span between table cells).
-	 * It should be used only when you are sure that the produced HTML will be semantically correct.
+	 * It should only be used when you are sure that the produced HTML will be semantically correct.
 	 *
 	 * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
-	 * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
+	 * is collapsed, only one element is created. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
 	 * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
 	 *
 	 *		editor.conversion.for( 'editingDowncast' ).markerToElement( {
@@ -321,7 +524,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * {@link module:engine/view/uielement~UIElement view UI element}. The `data` object and
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi `conversionApi`} are passed from
 	 * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
-	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
+	 * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` for
 	 * the marker end boundary element.
 	 *
 	 * See {@link module:engine/conversion/conversion~Conversion#for `conversion.for()`} to learn how to add a converter
@@ -344,7 +547,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 * Model marker to highlight conversion helper.
 	 *
 	 * This conversion results in creating a highlight on view nodes. For this kind of conversion,
-	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
+	 * the {@link module:engine/conversion/downcasthelpers~HighlightDescriptor} should be provided.
 	 *
 	 * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
 	 * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
@@ -382,7 +585,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *
 	 * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
 	 * receives the `data` object and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast conversion API}
-	 * as a parameters and should return a
+	 * as the parameters and should return a
 	 * {@link module:engine/conversion/downcasthelpers~HighlightDescriptor highlight descriptor}.
 	 * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
 	 *
@@ -464,7 +667,7 @@ export default class DowncastHelpers extends ConversionHelpers {
 	 *		// Model:
 	 *		<blockQuote>[]<paragraph>Foo</paragraph></blockQuote>
 	 *
-	 * 		// View:
+	 *		// View:
 	 *		<blockquote><p data-group-end-before="name" data-group-start-before="name">Foo</p></blockquote>
 	 *
 	 * Similarly, when a marker is collapsed after the last element:
@@ -530,7 +733,7 @@ export default class DowncastHelpers extends ConversionHelpers {
  */
 export function insertText() {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -539,6 +742,23 @@ export function insertText() {
 		const viewText = viewWriter.createText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
+	};
+}
+
+/**
+ * Function factory that creates a default downcast converter for triggering attributes and children conversion.
+ *
+ * @returns {Function} The converter.
+ */
+export function insertAttributesAndChildren() {
+	return ( evt, data, conversionApi ) => {
+		conversionApi.convertAttributes( data.item );
+
+		// Start converting children of the current item.
+		// In case of reconversion children were already re-inserted or converted separately.
+		if ( !data.reconversion && data.item.is( 'element' ) && !data.item.isEmpty ) {
+			conversionApi.convertChildren( data.item );
+		}
 	};
 }
 
@@ -565,7 +785,7 @@ export function remove() {
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
 		for ( const child of conversionApi.writer.createRangeIn( removed ).getItems() ) {
-			conversionApi.mapper.unbindViewElement( child );
+			conversionApi.mapper.unbindViewElement( child, { defer: true } );
 		}
 	};
 }
@@ -713,7 +933,7 @@ export function clearAttributes() {
 }
 
 /**
- * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
+ * Function factory that creates a converter which converts the set/change/remove attribute changes from the model to the view.
  * It can also be used to convert selection attributes. In that case, an empty attribute element will be created and the
  * selection will be put inside it.
  *
@@ -745,6 +965,10 @@ export function clearAttributes() {
  */
 export function wrap( elementCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
 		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi );
@@ -756,9 +980,7 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( data.item, evt.name );
 
 		const viewWriter = conversionApi.writer;
 		const viewSelection = viewWriter.document.selection;
@@ -789,8 +1011,7 @@ export function wrap( elementCreator ) {
  * It is expected that the function returns an {@link module:engine/view/element~Element}.
  * The result of the function will be inserted into the view.
  *
- * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
+ * The converter automatically consumes the corresponding value from the consumables list and binds the model and view elements.
  *
  *		downcastDispatcher.on(
  *			'insert:myElem',
@@ -806,24 +1027,88 @@ export function wrap( elementCreator ) {
  *
  * @protected
  * @param {Function} elementCreator Function returning a view element, which will be inserted.
+ * @param {module:engine/conversion/downcasthelpers~ConsumerFunction} [consumer] Function defining element consumption process.
+ * By default this function just consume passed item insertion.
  * @returns {Function} Insert element event converter.
  */
-export function insertElement( elementCreator ) {
+export function insertElement( elementCreator, consumer = defaultConsumer ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !consumer( data.item, conversionApi.consumable, { preflight: true } ) ) {
+			return;
+		}
+
 		const viewElement = elementCreator( data.item, conversionApi );
 
 		if ( !viewElement ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
-			return;
-		}
+		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
+		consumer( data.item, conversionApi.consumable );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
 		conversionApi.writer.insert( viewPosition, viewElement );
+
+		// Convert attributes before converting children.
+		conversionApi.convertAttributes( data.item );
+
+		// Convert children or reinsert previous view elements.
+		reinsertOrConvertNodes( viewElement, data.item.getChildren(), conversionApi, { reconversion: data.reconversion } );
+	};
+}
+
+/**
+ * Function factory that creates a converter which converts a single model node insertion to a view structure.
+ *
+ * It is expected that the passed element creator function returns an {@link module:engine/view/element~Element} with attached slots
+ * created with `writer.createSlot()` to indicate where child nodes should be converted.
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ *
+ * @protected
+ * @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} elementCreator Function returning a view structure,
+ * which will be inserted.
+ * @param {module:engine/conversion/downcasthelpers~ConsumerFunction} consumer A callback that is expected to consume all the consumables
+ * that were used by the element creator.
+ * @returns {Function} Insert element event converter.
+*/
+export function insertStructure( elementCreator, consumer ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !consumer( data.item, conversionApi.consumable, { preflight: true } ) ) {
+			return;
+		}
+
+		const slotsMap = new Map();
+
+		conversionApi.writer._registerSlotFactory( createSlotFactory( data.item, slotsMap, conversionApi ) );
+
+		// View creation.
+		const viewElement = elementCreator( data.item, conversionApi );
+
+		conversionApi.writer._clearSlotFactory();
+
+		if ( !viewElement ) {
+			return;
+		}
+
+		// Check if all children are covered by slots and there is no child that landed in multiple slots.
+		validateSlotsChildren( data.item, slotsMap, conversionApi );
+
+		// Consume an element insertion and all present attributes that are specified as a reconversion triggers.
+		consumer( data.item, conversionApi.consumable );
+
+		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+		conversionApi.mapper.bindElements( data.item, viewElement );
+		conversionApi.writer.insert( viewPosition, viewElement );
+
+		// Convert attributes before converting children.
+		conversionApi.convertAttributes( data.item );
+
+		// Fill view slots with previous view elements or create new ones.
+		fillSlots( viewElement, slotsMap, conversionApi, { reconversion: data.reconversion } );
 	};
 }
 
@@ -1056,7 +1341,7 @@ function removeMarkerData( viewCreator ) {
 	};
 }
 
-// Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
+// Function factory that creates a converter which converts the set/change/remove attribute changes from the model to the view.
 //
 // Attributes from the model are converted to the view element attributes in the view. You may provide a custom function to generate
 // a key-value attribute pair to add/change/remove. If not provided, model attributes will be converted to view element
@@ -1087,6 +1372,10 @@ function removeMarkerData( viewCreator ) {
 // @returns {Function} Set/change attribute converter.
 function changeAttribute( attributeCreator ) {
 	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
+			return;
+		}
+
 		const oldAttribute = attributeCreator( data.attributeOldValue, conversionApi );
 		const newAttribute = attributeCreator( data.attributeNewValue, conversionApi );
 
@@ -1094,9 +1383,7 @@ function changeAttribute( attributeCreator ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+		conversionApi.consumable.consume( data.item, evt.name );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
 		const viewWriter = conversionApi.writer;
@@ -1106,7 +1393,7 @@ function changeAttribute( attributeCreator ) {
 		if ( !viewElement ) {
 			/**
 			 * This error occurs when a {@link module:engine/model/textproxy~TextProxy text node's} attribute is to be downcasted
-			 * by {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
+			 * by an {@link module:engine/conversion/conversion~Conversion#attributeToAttribute `Attribute to Attribute converter`}.
 			 * In most cases it is caused by converters misconfiguration when only "generic" converter is defined:
 			 *
 			 *		editor.conversion.for( 'downcast' ).attributeToAttribute( {
@@ -1138,10 +1425,7 @@ function changeAttribute( attributeCreator ) {
 			 *
 			 * @error conversion-attribute-to-attribute-on-text
 			 */
-			throw new CKEditorError(
-				'conversion-attribute-to-attribute-on-text',
-				[ data, conversionApi ]
-			);
+			throw new CKEditorError( 'conversion-attribute-to-attribute-on-text', conversionApi.dispatcher, data );
 		}
 
 		// First remove the old attribute if there was one.
@@ -1366,34 +1650,106 @@ function removeHighlight( highlightDescriptor ) {
 // See {@link ~DowncastHelpers#elementToElement `.elementToElement()` downcast helper} for examples and config params description.
 //
 // @param {Object} config Conversion configuration.
-// @param {String} config.model
+// @param {String|Object} config.model The description or a name of the model element to convert.
+// @param {String|Array.<String>} [config.model.attributes] List of attributes triggering element reconversion.
+// @param {Boolean} [config.model.children] Should reconvert element if the list of model child nodes changed.
 // @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view
-// @param {Object} [config.triggerBy]
-// @param {Array.<String>} [config.triggerBy.attributes]
-// @param {Array.<String>} [config.triggerBy.children]
 // @returns {Function} Conversion helper.
 function downcastElementToElement( config ) {
 	config = cloneDeep( config );
 
+	config.model = normalizeModelElementConfig( config.model );
 	config.view = normalizeToElementConfig( config.view, 'container' );
 
+	// Trigger reconversion on children list change if element is a subject to any reconversion.
+	// This is required to be able to trigger Differ#refreshItem() on a direct child of the reconverted element.
+	if ( config.model.attributes.length ) {
+		config.model.children = true;
+	}
+
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on(
+			'insert:' + config.model.name,
+			insertElement( config.view, createConsumer( config.model ) ),
+			{ priority: config.converterPriority || 'normal' }
+		);
 
-		if ( config.triggerBy ) {
-			if ( config.triggerBy.attributes ) {
-				for ( const attributeKey of config.triggerBy.attributes ) {
-					dispatcher._mapReconversionTriggerEvent( config.model, `attribute:${ attributeKey }:${ config.model }` );
-				}
-			}
-
-			if ( config.triggerBy.children ) {
-				for ( const childName of config.triggerBy.children ) {
-					dispatcher._mapReconversionTriggerEvent( config.model, `insert:${ childName }` );
-					dispatcher._mapReconversionTriggerEvent( config.model, `remove:${ childName }` );
-				}
-			}
+		if ( config.model.children || config.model.attributes.length ) {
+			dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
 		}
+	};
+}
+
+// Model element to view structure conversion helper.
+//
+// See {@link ~DowncastHelpers#elementToStructure `.elementToStructure()` downcast helper} for examples and config params description.
+//
+// @param {Object} config Conversion configuration.
+// @param {String|Object} config.model
+// @param {String} [config.model.name]
+// @param {Array.<String>} [config.model.attributes]
+// @param {module:engine/conversion/downcasthelpers~StructureCreatorFunction} config.view
+// @returns {Function} Conversion helper.
+function downcastElementToStructure( config ) {
+	config = cloneDeep( config );
+
+	config.model = normalizeModelElementConfig( config.model );
+	config.view = normalizeToElementConfig( config.view, 'container' );
+
+	// Trigger reconversion on children list change because it always needs to use slots to put children in proper places.
+	// This is required to be able to trigger Differ#refreshItem() on a direct child of the reconverted element.
+	config.model.children = true;
+
+	return dispatcher => {
+		if ( dispatcher._conversionApi.schema.checkChild( config.model.name, '$text' ) ) {
+			/**
+			 * This error occurs when a {@link module:engine/model/element~Element model element} is downcasted
+			 * via {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure} helper but the element was
+			 * allowed to host `$text` by the {@link module:engine/model/schema~Schema model schema}.
+			 *
+			 * For instance, this may be the result of `myElement` allowing the content of
+			 * {@glink framework/guides/deep-dive/schema#generic-items `$block`} in its schema definition:
+			 *
+			 *		// Element definition in schema.
+			 *		schema.register( 'myElement', {
+			 *			allowContentOf: '$block',
+			 *
+			 *			// ...
+			 *		} );
+			 *
+			 *		// ...
+			 *
+			 *		// Conversion of myElement with the use of elementToStructure().
+			 *		editor.conversion.for( 'downcast' ).elementToStructure( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * In such case, {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToElement `elementToElement()`} helper
+			 * can be used instead to get around this problem:
+			 *
+			 *		editor.conversion.for( 'downcast' ).elementToElement( {
+			 *			model: 'myElement',
+			 *			view: ( modelElement, { writer } ) => {
+			 *				// ...
+			 *			}
+			 *		} );
+			 *
+			 * @error conversion-element-to-structure-disallowed-text
+			 * @param {String} elementName The name of the element the structure is to be created for.
+			 */
+			throw new CKEditorError( 'conversion-element-to-structure-disallowed-text', dispatcher, { elementName: config.model.name } );
+		}
+
+		dispatcher.on(
+			'insert:' + config.model.name,
+			insertStructure( config.view, createConsumer( config.model ) ),
+			{ priority: config.converterPriority || 'normal' }
+		);
+
+		dispatcher.on( 'reduceChanges', createChangeReducer( config.model ), { priority: 'low' } );
 	};
 }
 
@@ -1541,6 +1897,31 @@ function downcastMarkerToHighlight( config ) {
 	};
 }
 
+// Takes `config.model`, and converts it to an object with normalized structure.
+//
+// @param {String|Object} model Model configuration or element name.
+// @param {String} model.name
+// @param {Array.<String>} [model.attributes]
+// @param {Boolean} [model.children]
+// @returns {Object}
+function normalizeModelElementConfig( model ) {
+	if ( typeof model == 'string' ) {
+		model = { name: model };
+	}
+
+	// List of attributes that should trigger reconversion.
+	if ( !model.attributes ) {
+		model.attributes = [];
+	} else if ( !Array.isArray( model.attributes ) ) {
+		model.attributes = [ model.attributes ];
+	}
+
+	// Whether a children insertion/deletion should trigger reconversion.
+	model.children = !!model.children;
+
+	return model;
+}
+
 // Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ElementDefinition}, converts it
 // to a function (because lower level converters accept only element creator functions).
 //
@@ -1670,6 +2051,291 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 	return descriptor;
 }
 
+// Creates a function that checks a single differ diff item whether it should trigger reconversion.
+//
+// @param {Object} model A normalized `config.model` converter configuration.
+// @param {String} model.name The name of element.
+// @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
+// @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @returns {Function}
+function createChangeReducerCallback( model ) {
+	return ( node, change ) => {
+		if ( !node.is( 'element', model.name ) ) {
+			return false;
+		}
+
+		if ( change.type == 'attribute' ) {
+			if ( model.attributes.includes( change.attributeKey ) ) {
+				return true;
+			}
+		} else {
+			/* istanbul ignore else: This is always true because otherwise it would not register a reducer callback. */
+			if ( model.children ) {
+				return true;
+			}
+		}
+
+		return false;
+	};
+}
+
+// Creates a `reduceChanges` event handler for reconversion.
+//
+// @param {Object} model A normalized `config.model` converter configuration.
+// @param {String} model.name The name of element.
+// @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
+// @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @returns {Function}
+function createChangeReducer( model ) {
+	const shouldReplace = createChangeReducerCallback( model );
+
+	return ( evt, data ) => {
+		const reducedChanges = [];
+
+		if ( !data.reconvertedElements ) {
+			data.reconvertedElements = new Set();
+		}
+
+		for ( const change of data.changes ) {
+			// For attribute use node affected by the change.
+			// For insert or remove use parent element because we need to check if it's added/removed child.
+			const node = change.position ? change.position.parent : change.range.start.nodeAfter;
+
+			if ( !node || !shouldReplace( node, change ) ) {
+				reducedChanges.push( change );
+
+				continue;
+			}
+
+			// If it's already marked for reconversion, so skip this change, otherwise add the diff items.
+			if ( !data.reconvertedElements.has( node ) ) {
+				data.reconvertedElements.add( node );
+
+				const position = ModelPosition._createBefore( node );
+
+				reducedChanges.push( {
+					type: 'remove',
+					name: node.name,
+					position,
+					length: 1
+				}, {
+					type: 'reinsert',
+					name: node.name,
+					position,
+					length: 1
+				} );
+			}
+		}
+
+		data.changes = reducedChanges;
+	};
+}
+
+// Creates a function that checks if an element and its watched attributes can be consumed and consumes them.
+//
+// @param {Object} model A normalized `config.model` converter configuration.
+// @param {String} model.name The name of element.
+// @param {Array.<String>} model.attributes The list of attribute names that should trigger reconversion.
+// @param {Boolean} [model.children] Whether the child list change should trigger reconversion.
+// @returns {module:engine/conversion/downcasthelpers~ConsumerFunction}
+function createConsumer( model ) {
+	return ( node, consumable, options = {} ) => {
+		const events = [ 'insert' ];
+
+		// Collect all set attributes that are triggering conversion.
+		for ( const attributeName of model.attributes ) {
+			if ( node.hasAttribute( attributeName ) ) {
+				events.push( `attribute:${ attributeName }` );
+			}
+		}
+
+		if ( !events.every( event => consumable.test( node, event ) ) ) {
+			return false;
+		}
+
+		if ( !options.preflight ) {
+			events.forEach( event => consumable.consume( node, event ) );
+		}
+
+		return true;
+	};
+}
+
+// Creates a function that create view slots.
+//
+// @param {module:engine/model/element~Element} element
+// @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @returns {Function} Exposed by writer as createSlot().
+function createSlotFactory( element, slotsMap, conversionApi ) {
+	return ( writer, modeOrFilter = 'children' ) => {
+		const slot = writer.createContainerElement( '$slot' );
+
+		let children = null;
+
+		if ( modeOrFilter === 'children' ) {
+			children = Array.from( element.getChildren() );
+		} else if ( typeof modeOrFilter == 'function' ) {
+			children = Array.from( element.getChildren() ).filter( element => modeOrFilter( element ) );
+		} else {
+			/**
+			 * Unknown slot mode was provided to `writer.createSlot()` in downcast converter.
+			 *
+			 * @error conversion-slot-mode-unknown
+			 */
+			throw new CKEditorError( 'conversion-slot-mode-unknown', conversionApi.dispatcher, { modeOrFilter } );
+		}
+
+		slotsMap.set( slot, children );
+
+		return slot;
+	};
+}
+
+// Checks if all children are covered by slots and there is no child that landed in multiple slots.
+//
+// @param {module:engine/model/element~Element}
+// @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+function validateSlotsChildren( element, slotsMap, conversionApi ) {
+	const childrenInSlots = Array.from( slotsMap.values() ).flat();
+	const uniqueChildrenInSlots = new Set( childrenInSlots );
+
+	if ( uniqueChildrenInSlots.size != childrenInSlots.length ) {
+		/**
+		 * Filters provided to `writer.createSlot()` overlap (at least two filters accept the same child element).
+		 *
+		 * @error conversion-slot-filter-overlap
+		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * allocated to multiple slots.
+		 */
+		throw new CKEditorError( 'conversion-slot-filter-overlap', conversionApi.dispatcher, { element } );
+	}
+
+	if ( uniqueChildrenInSlots.size != element.childCount ) {
+		/**
+		 * Filters provided to `writer.createSlot()` are incomplete and exclude at least one children element (one of
+		 * the children elements would not be assigned to any of the slots).
+		 *
+		 * @error conversion-slot-filter-incomplete
+		 * @param {module:engine/model/element~Element} element The element of which children would not be properly
+		 * allocated to multiple slots.
+		 */
+		throw new CKEditorError( 'conversion-slot-filter-incomplete', conversionApi.dispatcher, { element } );
+	}
+}
+
+// Fill slots with appropriate view elements.
+//
+// @param {module:engine/view/element~Element} viewElement
+// @param {Map.<module:engine/view/element~Element,Array.<module:engine/model/node~Node>>} slotsMap
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Object} options
+// @param {Boolean} [options.reconversion]
+function fillSlots( viewElement, slotsMap, conversionApi, options ) {
+	// Set temporary position mapping to redirect child view elements into a proper slots.
+	conversionApi.mapper.on( 'modelToViewPosition', toViewPositionMapping, { priority: 'highest' } );
+
+	let currentSlot = null;
+	let currentSlotNodes = null;
+
+	// Fill slots with nested view nodes.
+	for ( [ currentSlot, currentSlotNodes ] of slotsMap ) {
+		reinsertOrConvertNodes( viewElement, currentSlotNodes, conversionApi, options );
+
+		conversionApi.writer.move(
+			conversionApi.writer.createRangeIn( currentSlot ),
+			conversionApi.writer.createPositionBefore( currentSlot )
+		);
+		conversionApi.writer.remove( currentSlot );
+	}
+
+	conversionApi.mapper.off( 'modelToViewPosition', toViewPositionMapping );
+
+	function toViewPositionMapping( evt, data ) {
+		const element = data.modelPosition.nodeAfter;
+
+		// Find the proper offset within the slot.
+		const index = currentSlotNodes.indexOf( element );
+
+		if ( index < 0 ) {
+			return;
+		}
+
+		data.viewPosition = data.mapper.findPositionIn( currentSlot, index );
+	}
+}
+
+// Inserts view representation of `nodes` into the `viewElement` either by bringing back just removed view nodes
+// or by triggering conversion for them.
+//
+// @param {module:engine/view/element~Element} viewElement
+// @param {Iterable.<module:engine/model/element~Element>} modelNodes
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Object} options
+// @param {Boolean} [options.reconversion]
+function reinsertOrConvertNodes( viewElement, modelNodes, conversionApi, options ) {
+	// Fill with nested view nodes.
+	for ( const modelChildNode of modelNodes ) {
+		// Try reinserting the view node for the specified model node...
+		if ( !reinsertNode( viewElement.root, modelChildNode, conversionApi, options ) ) {
+			// ...or else convert the model element to the view.
+			conversionApi.convertItem( modelChildNode );
+		}
+	}
+}
+
+// Checks if the view for the given model element could be reused and reinserts it to the view.
+//
+// @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} viewRoot
+// @param {module:engine/model/element~Element} modelElement
+// @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi
+// @param {Object} options
+// @param {Boolean} [options.reconversion]
+// @returns {Boolean} `false` if view element can't be reused.
+function reinsertNode( viewRoot, modelElement, conversionApi, options ) {
+	const { writer, mapper } = conversionApi;
+
+	// Don't reinsert if this is not a reconversion...
+	if ( !options.reconversion ) {
+		return false;
+	}
+
+	const viewChildNode = mapper.toViewElement( modelElement );
+
+	// ...or there is no view to reinsert or it was already inserted to the view structure...
+	if ( !viewChildNode || viewChildNode.root == viewRoot ) {
+		return false;
+	}
+
+	// ...or it was strictly marked as not to be reused.
+	if ( !conversionApi.canReuseView( viewChildNode ) ) {
+		return false;
+	}
+
+	// Otherwise reinsert the view node.
+	writer.move(
+		writer.createRangeOn( viewChildNode ),
+		mapper.toViewPosition( ModelPosition._createBefore( modelElement ) )
+	);
+
+	return true;
+}
+
+// The default consumer for insert events.
+// @param {module:engine/model/item~Item} item Model item.
+// @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The model consumable.
+// @param {Object} [options]
+// @param {Boolean} [options.preflight=false] Whether should consume or just check if can be consumed.
+// @returns {Boolean}
+function defaultConsumer( item, consumable, { preflight } = {} ) {
+	if ( preflight ) {
+		return consumable.test( item, 'insert' );
+	} else {
+		return consumable.consume( item, 'insert' );
+	}
+}
+
 /**
  * An object describing how the marker highlight should be represented in the view.
  *
@@ -1703,4 +2369,46 @@ function prepareDescriptor( highlightDescriptor, data, conversionApi ) {
  * an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these attributes will be set on that
  * attribute element. If the descriptor is applied to an element, usually these attributes will be set on that element, however,
  * this depends on how the element converts the descriptor.
+ */
+
+/**
+ * A filtering function used to choose model child nodes to be downcasted into the specific view
+ * {@link module:engine/view/downcastwriter~DowncastWriter#createSlot "slot"} while executing the
+ * {@link module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure `elementToStructure()`} converter.
+ *
+ * @callback module:engine/conversion/downcasthelpers~SlotFilter
+ *
+ * @param {module:engine/model/node~Node} node A model node.
+ * @returns {Boolean} Whether the provided model node should be downcasted into this slot.
+ *
+ * @see module:engine/view/downcastwriter~DowncastWriter#createSlot
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ * @see module:engine/conversion/downcasthelpers~insertStructure
+ */
+
+/**
+ * A function that takes the model element and {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi downcast
+ * conversion API} as parameters and returns a view container element with slots for model child nodes to be converted into.
+ *
+ * @callback module:engine/conversion/downcasthelpers~StructureCreatorFunction
+ * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
+ * @param {module:engine/conversion/downcastdispatcher~DowncastConversionApi} conversionApi The conversion interface.
+ * @returns {module:engine/view/element~Element} The view structure with slots for model child nodes.
+ *
+ * @see module:engine/conversion/downcasthelpers~DowncastHelpers#elementToStructure
+ * @see module:engine/conversion/downcasthelpers~insertStructure
+ */
+
+/**
+ * A function that is expected to consume all the consumables that were used by the element creator.
+ *
+ * @callback module:engine/conversion/downcasthelpers~ConsumerFunction
+ * @param {module:engine/model/element~Element} element The model element to be converted to the view structure.
+ * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable The `ModelConsumable` same as in
+ * {@link module:engine/conversion/downcastdispatcher~DowncastConversionApi#consumable `DowncastConversionApi.consumable`}.
+ * @param {Object} [options]
+ * @param {Boolean} [options.preflight=false] Whether should consume or just check if can be consumed.
+ * @returns {Boolean} `true` if all consumable values were available and were consumed, `false` otherwise.
+ *
+ * @see module:engine/conversion/downcasthelpers~insertStructure
  */

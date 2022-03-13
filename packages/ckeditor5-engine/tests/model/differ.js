@@ -1497,7 +1497,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'add marker', () => {
-			differ.bufferMarkerChange( 'name', null, range, true );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 
@@ -1517,7 +1517,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'remove marker', () => {
-			differ.bufferMarkerChange( 'name', range, null, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1537,7 +1537,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'change marker\'s range', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1559,20 +1559,20 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'add marker not affecting data', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, false );
+			differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: false } );
 
 			expect( differ.hasDataChanges() ).to.be.false;
 		} );
 
 		it( 'add marker affecting data', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
 			expect( differ.hasDataChanges() ).to.be.true;
 		} );
 
 		it( 'add marker and remove it', () => {
-			differ.bufferMarkerChange( 'name', null, range, true );
-			differ.bufferMarkerChange( 'name', range, null, true );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 			expect( differ.getMarkersToAdd() ).to.deep.equal( [] );
@@ -1582,8 +1582,8 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'add marker and change it', () => {
-			differ.bufferMarkerChange( 'name', null, range, true );
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [] );
 
@@ -1602,16 +1602,51 @@ describe( 'Differ', () => {
 			] );
 		} );
 
-		it( 'change marker to not affecting data', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
-			differ.bufferMarkerChange( 'name', range, rangeB, false );
+		describe( 'hasDataChanges()', () => {
+			it( 'should return `true` when marker stops affecting data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range, affectsData: false } );
 
-			expect( differ.hasDataChanges() ).to.be.false;
+				// As marker is longer outputted to the data, the data may be changed.
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `true` when marker starts affecting data', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: false } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: false }, { range, affectsData: true } );
+
+				// As marker is longer outputted to the data, the data may be changed.
+				expect( differ.hasDataChanges() ).to.be.true;
+			} );
+
+			it( 'should return `false` when continuous marker changes do not change affecting data and was initially set to false', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: false }, { range: rangeB, affectsData: false } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: false }, { range, affectsData: true } );
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: false } );
+
+				// As marker is longer outputted to the data, the data may be changed.
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `false` when the range does not change', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
+
+				// As marker is longer outputted to the data, the data may be changed.
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
+
+			it( 'should return `false` when the continuous changes result in not changed range', () => {
+				differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+				differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range, affectsData: true } );
+
+				// As marker is longer outputted to the data, the data may be changed.
+				expect( differ.hasDataChanges() ).to.be.false;
+			} );
 		} );
 
 		it( 'change marker and remove it', () => {
-			differ.bufferMarkerChange( 'name', range, rangeB, true );
-			differ.bufferMarkerChange( 'name', rangeB, null, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: rangeB, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range: rangeB, affectsData: true }, { range: null, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1633,8 +1668,8 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'remove marker and add it at same range', () => {
-			differ.bufferMarkerChange( 'name', range, null, true );
-			differ.bufferMarkerChange( 'name', null, range, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range: null, affectsData: true } );
+			differ.bufferMarkerChange( 'name', { range: null, affectsData: true }, { range, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1656,7 +1691,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'change marker to the same range', () => {
-			differ.bufferMarkerChange( 'name', range, range, true );
+			differ.bufferMarkerChange( 'name', { range, affectsData: true }, { range, affectsData: true } );
 
 			expect( differ.getMarkersToRemove() ).to.deep.equal( [
 				{ name: 'name', range }
@@ -1791,11 +1826,11 @@ describe( 'Differ', () => {
 		} );
 	} );
 
-	describe( 'refreshItem()', () => {
+	describe( '#_refreshItem()', () => {
 		it( 'should mark given element to be removed and added again', () => {
 			const p = root.getChild( 0 );
 
-			differ.refreshItem( p );
+			differ._refreshItem( p );
 
 			expectChanges( [
 				{ type: 'remove', name: 'paragraph', length: 1, position: model.createPositionBefore( p ) },
@@ -1808,7 +1843,7 @@ describe( 'Differ', () => {
 			const range = model.createRangeIn( p );
 			const textProxy = [ ...range.getItems() ][ 0 ];
 
-			differ.refreshItem( textProxy );
+			differ._refreshItem( textProxy );
 
 			expectChanges( [
 				{ type: 'remove', name: '$text', length: 3, position: model.createPositionAt( p, 0 ) },
@@ -1821,7 +1856,7 @@ describe( 'Differ', () => {
 			model.change( () => {
 				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
 
-				differ.refreshItem( root.getChild( 2 ).getChild( 0 ) );
+				differ._refreshItem( root.getChild( 2 ).getChild( 0 ) );
 
 				expectChanges( [
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
@@ -1846,7 +1881,7 @@ describe( 'Differ', () => {
 
 			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
 
-			differ.refreshItem( root.getChild( 1 ) );
+			differ._refreshItem( root.getChild( 1 ) );
 
 			expectChanges( [
 				{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },

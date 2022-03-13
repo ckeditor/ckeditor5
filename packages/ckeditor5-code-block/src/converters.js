@@ -69,12 +69,12 @@ export function modelToViewCodeBlockInsertion( model, languageDefs, useLabels = 
 			preAttributes.spellcheck = 'false';
 		}
 
-		const pre = writer.createContainerElement( 'pre', preAttributes );
 		const code = writer.createContainerElement( 'code', {
 			class: languagesToClasses[ codeBlockLanguage ] || null
 		} );
 
-		writer.insert( writer.createPositionAt( pre, 0 ), code );
+		const pre = writer.createContainerElement( 'pre', preAttributes, code );
+
 		writer.insert( targetViewPosition, pre );
 		mapper.bindElements( data.item, code );
 	};

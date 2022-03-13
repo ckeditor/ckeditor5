@@ -124,10 +124,18 @@ export default class WidgetToolbarRepository extends Plugin {
 		// Trying to register a toolbar without any item.
 		if ( !items.length ) {
 			/**
-			 * When {@link #register} a new toolbar, you need to provide a non-empty array with
+			 * When {@link #register registering} a new widget toolbar, you need to provide a non-empty array with
 			 * the items that will be inserted into the toolbar.
 			 *
+			 * If you see this error when integrating the editor, you likely forgot to configure one of the widget toolbars.
+			 *
+			 * See for instance:
+			 *
+			 * * {@link module:table/table~TableConfig#contentToolbar `config.table.contentToolbar`}
+			 * * {@link module:image/image~ImageConfig#toolbar `config.image.toolbar`}
+			 *
 			 * @error widget-toolbar-no-items
+			 * @param {String} toolbarId The id of the toolbar that has not been configured correctly.
 			 */
 			logWarning( 'widget-toolbar-no-items', { toolbarId } );
 

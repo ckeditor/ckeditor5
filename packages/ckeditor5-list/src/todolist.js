@@ -7,16 +7,16 @@
  * @module list/todolist
  */
 
-import TodoListEditing from './todolistediting';
-import TodoListUI from './todolistui';
+import TodoListEditing from './todolist/todolistediting';
+import TodoListUI from './todolist/todolistui';
 import { Plugin } from 'ckeditor5/src/core';
 import '../theme/todolist.css';
 
 /**
  * The to-do list feature.
  *
- * This is a "glue" plugin that loads the {@link module:list/todolistediting~TodoListEditing to-do list editing feature}
- * and the {@link module:list/todolistui~TodoListUI to-do list UI feature}.
+ * This is a "glue" plugin that loads the {@link module:list/todolist/todolistediting~TodoListEditing to-do list editing feature}
+ * and the {@link module:list/todolist/todolistui~TodoListUI to-do list UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */

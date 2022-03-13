@@ -1,7 +1,7 @@
 ---
 menu-title: Predefined builds
 category: alternative-setups
-order: 30
+order: 40
 ---
 
 # Predefined CKEditor 5 builds

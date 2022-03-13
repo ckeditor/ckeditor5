@@ -30,8 +30,8 @@ CKEditor 5 comes with ready-to-use DLL builds. These builds are added to the NPM
 
 A DLL build of the editor consists of two parts:
 
-* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations (`ckeditor5`).
-* **DLL-compatible package builds**. Every package that is not part of the base DLL build is built into a DLL-compatible JavaScript file (`@ckeditor/ckeditor5-*`).
+* **Base DLL build**. It is a single JavaScript file that combines the contents of several core CKEditor 5 packages: `utils`, `core`, `engine`, `ui`, `clipboard`, `enter`, `paragraph`, `select-all`, `typing`, `undo`, `upload`, and `widget`. These packages are either the framework core, or are features used by nearly all editor installations. The build is available on NPM in `ckeditor5` package.
+* **DLL-compatible package builds**. Every package that is not part of the base DLL build is built into a DLL-compatible JavaScript file. These DLLs are available on NPM in `@ckeditor/ckeditor5-[FEATURE_NAME]` packages.
 
 In order to load an editor, you need to use the base DLL build plus several DLL-compatible package builds. You will see how to do that later on.
 
@@ -153,7 +153,7 @@ For example:
 
 Presented below is a working sample editor using the DLL mechanism. Observe the source and then click **"Result"** to switch to the live view of the working CKEditor 5 instance.
 
-<iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/ex7hcoz1/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
+<iframe width="100%" height="850" src="//jsfiddle.net/ckeditor/q7L8rd40/embedded/html,result/dark/" allowfullscreen="allowfullscreen" allowpaymentrequest frameborder="0"></iframe>
 
 ## Localization
 
@@ -174,7 +174,7 @@ For example:
 <script src="path/to/node_modules/ckeditor5/build/ckeditor5-dll.js"></script>
 
 <!-- DLL-compatible build of ckeditor5-editor-classic. -->
-<script src="path/to/node_modules/ckeditor5/packages/ckeditor5-editor-classic/build/editor-classic.js"></script>
+<script src="path/to/node_modules/@ckeditor/ckeditor5-editor-classic/build/editor-classic.js"></script>
 
 <!-- DLL-compatible builds of editor features. -->
 <script src="path/to/node_modules/@ckeditor/ckeditor5-autoformat/build/autoformat.js"></script>

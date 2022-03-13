@@ -87,6 +87,10 @@ export default class Title extends Plugin {
 
 		// Conversion.
 		editor.conversion.for( 'downcast' ).elementToElement( { model: 'title-content', view: 'h1' } );
+		editor.conversion.for( 'downcast' ).add( dispatcher => dispatcher.on( 'insert:title', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.item, evt.name );
+		} ) );
+
 		// Custom converter is used for data v -> m conversion to avoid calling post-fixer when setting data.
 		// See https://github.com/ckeditor/ckeditor5/issues/2036.
 		editor.data.upcastDispatcher.on( 'element:h1', dataViewModelH1Insertion, { priority: 'high' } );
@@ -153,27 +157,24 @@ export default class Title extends Plugin {
 		const rootRange = model.createRangeIn( root );
 		const viewDocumentFragment = viewWriter.createDocumentFragment();
 
-		data.downcastDispatcher.conversionApi.options = options;
-
-		// Convert the entire root to view.
-		data.mapper.clearBindings();
-		data.mapper.bindElements( root, viewDocumentFragment );
-		data.downcastDispatcher.convertInsert( rootRange, viewWriter );
-
-		// Convert all markers that intersects with body.
+		// Find all markers that intersects with body.
 		const bodyStartPosition = model.createPositionAfter( root.getChild( 0 ) );
 		const bodyRange = model.createRange( bodyStartPosition, model.createPositionAt( root, 'end' ) );
+
+		const markers = new Map();
 
 		for ( const marker of model.markers ) {
 			const intersection = bodyRange.getIntersection( marker.getRange() );
 
 			if ( intersection ) {
-				data.downcastDispatcher.convertMarkerAdd( marker.name, intersection, viewWriter );
+				markers.set( marker.name, intersection );
 			}
 		}
 
-		// Clean `conversionApi`.
-		delete data.downcastDispatcher.conversionApi.options;
+		// Convert the entire root to view.
+		data.mapper.clearBindings();
+		data.mapper.bindElements( root, viewDocumentFragment );
+		data.downcastDispatcher.convert( rootRange, markers, viewWriter, options );
 
 		// Remove title element from view.
 		viewWriter.remove( viewWriter.createRangeOn( viewDocumentFragment.getChild( 0 ) ) );

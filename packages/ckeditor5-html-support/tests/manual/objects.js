@@ -72,44 +72,48 @@ class ExtendHTMLSupport extends Plugin {
 	}
 }
 
-ClassicEditor
-	.create( document.querySelector( '#editor' ), {
-		plugins: [
-			BlockQuote,
-			Bold,
-			Code,
-			Essentials,
-			ExtendHTMLSupport,
-			Highlight,
-			Italic,
-			Link,
-			List,
-			Paragraph,
-			Strikethrough,
-			Subscript,
-			Superscript,
-			Table,
-			Underline
-		],
-		toolbar: [
-			'bold',
-			'italic',
-			'strikethrough',
-			'underline',
-			'code',
-			'subscript',
-			'superscript',
-			'highlight',
-			'|',
-			'numberedList',
-			'bulletedList',
-			'|',
-			'blockquote'
-		]
-	} )
-	.then( editor => {
-		window.editor = editor;
-	} )
-	.catch( err => {
-		console.error( err.stack );
-	} );
+// The editor cannot be created automatically to avoid the manual test crawler
+// occasionally throwing on network issues due to the content inside the editor.
+document.getElementById( 'init-editor' ).addEventListener( 'click', () => {
+	ClassicEditor
+		.create( document.querySelector( '#editor' ), {
+			plugins: [
+				BlockQuote,
+				Bold,
+				Code,
+				Essentials,
+				ExtendHTMLSupport,
+				Highlight,
+				Italic,
+				Link,
+				List,
+				Paragraph,
+				Strikethrough,
+				Subscript,
+				Superscript,
+				Table,
+				Underline
+			],
+			toolbar: [
+				'bold',
+				'italic',
+				'strikethrough',
+				'underline',
+				'code',
+				'subscript',
+				'superscript',
+				'highlight',
+				'|',
+				'numberedList',
+				'bulletedList',
+				'|',
+				'blockquote'
+			]
+		} )
+		.then( editor => {
+			window.editor = editor;
+		} )
+		.catch( err => {
+			console.error( err.stack );
+		} );
+} );
