@@ -169,9 +169,6 @@ export default class SelectionObserver extends Observer {
 			return;
 		}
 
-		// TODO update comment
-		// If there were mutations then the view will be re-rendered by the mutation observer and the selection
-		// will be updated, so the selections will equal and the event will not be fired, as expected.
 		const newViewSelection = this.domConverter.domSelectionToView( domSelection );
 
 		// Do not convert selection change if the new view selection has no ranges in it.

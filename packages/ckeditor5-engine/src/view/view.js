@@ -681,8 +681,7 @@ export default class View {
 	}
 
 	/**
-	 * TODO verify the comment
-	 * Renders all changes. In order to avoid triggering the observers (e.g. mutations) all observers are disabled
+	 * Renders all changes. In order to avoid triggering the observers (e.g. selection) all observers are disabled
 	 * before rendering and re-enabled after that.
 	 *
 	 * @private

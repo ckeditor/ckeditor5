@@ -69,8 +69,7 @@ describe( 'Delete feature', () => {
 		expect( spy.calledWithMatch( 'delete', { unit: 'character', sequence: 5 } ) ).to.be.true;
 	} );
 
-	// TODO verify when the command options receive selection
-	it.skip( 'passes options.selection parameter to delete command if selection to remove was specified', () => {
+	it( 'passes options.selection parameter to delete command if selection to remove was specified and unit is "selection"', () => {
 		editor.setData( '<p>Foobar</p>' );
 
 		const spy = editor.execute = sinon.spy();
@@ -82,7 +81,7 @@ describe( 'Delete feature', () => {
 
 		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvt, {
 			direction: 'backward',
-			unit: 'character',
+			unit: 'selection',
 			sequence: 1,
 			selectionToRemove: viewSelection
 		} ) );

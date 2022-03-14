@@ -446,8 +446,6 @@ describe( 'Delete', () => {
 					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
 						domTarget: domElement,
 						inputType: 'deleteContentBackward',
-
-						// TODO: Is this OK?
 						targetRanges: []
 					} ) );
 
@@ -470,11 +468,9 @@ describe( 'Delete', () => {
 
 					viewDocument.on( 'delete', spy );
 
-					viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
 						domTarget: domElement,
 						inputType: 'insertText',
-
-						// TODO: Is this OK?
 						targetRanges: []
 					} ) );
 
@@ -489,8 +485,6 @@ describe( 'Delete', () => {
 					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
 						domTarget: domElement,
 						inputType: 'deleteContentBackward',
-
-						// TODO: Is this OK?
 						targetRanges: []
 					} ) );
 
@@ -505,8 +499,6 @@ describe( 'Delete', () => {
 					viewDocument.fire( 'beforeinput', new DomEventData( viewDocument, getDomEvent(), {
 						domTarget: domElement,
 						inputType: 'insertText',
-
-						// TODO: Is this OK?
 						targetRanges: []
 					} ) );
 
