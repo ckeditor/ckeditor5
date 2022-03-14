@@ -142,14 +142,14 @@ export default class DeleteObserver extends Observer {
 			}
 
 			const deleteData = {
-				// Standard "delete" event data.
 				direction: deleteEventSpec.direction,
 				unit: deleteEventSpec.unit,
-				sequence,
-
-				// beforeinput data extension.
-				inputType
+				sequence
 			};
+
+			if ( deleteData.unit == DELETE_SELECTION ) {
+				deleteData.selectionToRemove = view.createSelection( targetRanges[ 0 ] );
+			}
 
 			// Android IMEs have a quirk. Sometimes it may change the DOM selection on `beforeinput` event so that
 			// the selection contains all the text that the IME wants to remove. But sometimes it is only expanding
@@ -168,10 +168,9 @@ export default class DeleteObserver extends Observer {
 
 				// This is the former scenario when the IME wants more than a single character to be removed.
 				if ( anchorNode === focusNode && anchorOffset + 1 !== focusOffset ) {
+					deleteData.unit = DELETE_SELECTION;
 					deleteData.selectionToRemove = view.domConverter.domSelectionToView( domSelection );
 				}
-			} else {
-				deleteData.selectionToRemove = view.createSelection( targetRanges[ 0 ] );
 			}
 
 			const eventInfo = new BubblingEventInfo( document, 'delete', targetRanges[ 0 ] );

@@ -61,19 +61,11 @@ export default class Delete extends Plugin {
 			const commandName = direction === 'forward' ? 'deleteForward' : 'delete';
 			const commandData = { unit, sequence };
 
-			// * First of all, make sure that the "selectionToRemove" is used only for units other than "codePoint" or
-			//   "character". This is related to the multi-byte characters decomposition (like complex emojis) and
-			//   in these two cases, it is expected that the command will figure everything out from the unit type only
-			//   even though the selection could be provided. Check out comments in DeleteObserver's DELETE_EVENT_TYPES
-			//   to learn more.
-			// * Android IMEs have a quirk which is addressed by passing a complete selection in case of
-			//   the "codePoint" unit. See DeleteObserver to learn more.
-			if ( unit !== 'codePoint' && unit !== 'character' || env.isAndroid && unit === 'codePoint' ) {
-				const modelRanges = [ ...selectionToRemove.getRanges() ].map( viewRange => {
+			if ( unit == 'selection' ) {
+				const modelRanges = Array.from( selectionToRemove.getRanges() ).map( viewRange => {
 					return editor.editing.mapper.toModelRange( viewRange );
 				} );
 
-				commandData.unit = 'selection';
 				commandData.selection = editor.model.createSelection( modelRanges );
 			}
 
