@@ -79,64 +79,83 @@ export default class StyleCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 		const value = definition.classes.join( ' ' );
-		const isBlock = definition.isBlock;
-		const block = first( selection.getSelectedBlocks() );
 
 		model.change( writer => {
-			let selectedElement = selection.getSelectedElement();
+			/**
+			 * BLOCK ELEMENTS (BLOCK STYLES)
+			 */
 
-			if ( isBlock ) {
-				selectedElement = block;
-			}
+			// 1. Find element to work on
+			const selectedBlockElement = this._getSelectedBlockElement( selection, definition );
 
-			if ( selectedElement ) {
-				writer.setAttribute( 'htmlAttributes', {
-					classes: this._mergeElementClasses( value, selectedElement )
-				}, selectedElement );
+			// 2. Set htmlAttributes on this element
+			if ( selectedBlockElement ) {
+				const selectedValue = this._getValueFromClass( value );
+
+				if ( this.value.includes( selectedValue ) ) {
+					if ( this.value.length === 1 ) {
+						writer.removeAttribute( 'htmlAttributes', selectedBlockElement );
+						return;
+					}
+				} else {
+					writer.setAttribute( 'htmlAttributes', {
+						classes: this._mergeElementClasses( value, selectedBlockElement )
+					}, selectedBlockElement );
+				}
 
 				return;
 			}
 
+			/**
+			 * TEXT NODES (INLINE STYLES)
+			 */
 			const { modelElements } = definition;
-			const attributeElement = modelElements.find( attributeName =>
-				attributeName.startsWith( 'html' )
-			);
+
+			// Get GHS attribute element from all matching definition model elements.
+			// It may be for example htmlSpan, htmlCode, htmlPre etc...
+			const attributeElement = modelElements.find( attributeName => attributeName.startsWith( 'html' ) );
 
 			if ( selection.isCollapsed ) {
 				if ( value ) {
 					writer.setSelectionAttribute( attributeElement, {
-						classes: this._mergeCollapsedSelectionClasses(
-							value,
-							attributeElement,
-							selection
-						)
+						classes: this._mergeCollapsedSelectionClasses( value, attributeElement, selection )
 					} );
-				} else {
-					writer.removeSelectionAttribute( attributeElement );
 				}
 			} else {
-				const ranges = model.schema.getValidRanges(
-					selection.getRanges(),
-					attributeElement
-				);
+				const ranges = model.schema.getValidRanges( selection.getRanges(), attributeElement );
 
 				for ( const range of ranges ) {
 					if ( value ) {
 						for ( const item of range.getItems() ) {
 							writer.setAttribute( attributeElement, {
-								classes: this._mergeRangeItemClasses(
-									value,
-									attributeElement,
-									item
-								)
+								classes: this._mergeRangeItemClasses( value, attributeElement, item )
 							}, item );
 						}
-					} else {
-						writer.removeAttribute( attributeElement, range );
 					}
 				}
 			}
 		} );
+	}
+
+	_getValueFromClass( classes ) {
+		const definition = this.styles.getDefinitionsByClassName( classes );
+
+		if ( definition ) {
+			return definition.name;
+		}
+	}
+
+	_getSelectedBlockElement( selection, definition ) {
+		const isBlock = definition.isBlock;
+		const block = first( selection.getSelectedBlocks() );
+
+		let selectedElement = selection.getSelectedElement();
+
+		if ( isBlock ) {
+			selectedElement = block;
+		}
+
+		return selectedElement;
 	}
 
 	/**
@@ -151,7 +170,7 @@ export default class StyleCommand extends Command {
 		const attributes = selection.getAttributes();
 
 		for ( const [ attribute ] of attributes ) {
-			newValue = [ ...value, ...this._getValue( attribute ) ];
+			newValue = [ ...value, ...this._getAttributeValue( attribute ) ];
 		}
 
 		return newValue;
@@ -164,7 +183,7 @@ export default class StyleCommand extends Command {
 	 * @param {TODO} block
 	 */
 	_prepareNewBlockElementValue( value, block ) {
-		const availableDefinitions = this.styles.getDefinitionsFromElementName( block.name );
+		const availableDefinitions = this.styles.getDefinitionsByElementName( block.name );
 
 		if ( availableDefinitions ) {
 			const blockStyleNames = availableDefinitions.map( ( { name } ) => name );
@@ -172,7 +191,7 @@ export default class StyleCommand extends Command {
 			this.enabledStyles = [ ...this.enabledStyles, ...blockStyleNames ];
 		}
 
-		return [ ...value, ...this._getValue( 'htmlAttributes' ) ];
+		return [ ...value, ...this._getAttributeValue( 'htmlAttributes' ) ];
 	}
 
 	/**
@@ -180,7 +199,7 @@ export default class StyleCommand extends Command {
 	 *
 	 * @param {TODO} attribute
 	 */
-	_getValue( attribute ) {
+	_getAttributeValue( attribute ) {
 		const value = [];
 		const classes = attribute === 'htmlAttributes' ?
 			this._getValueFromBlockElement() :
@@ -191,7 +210,7 @@ export default class StyleCommand extends Command {
 		}
 
 		for ( const htmlClass of classes ) {
-			const { name } = this.styles.getDefinitionsFromClassName( htmlClass );
+			const { name } = this.styles.getDefinitionsByClassName( htmlClass );
 
 			value.push( name );
 		}

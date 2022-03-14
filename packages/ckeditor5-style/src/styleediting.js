@@ -68,9 +68,7 @@ class Styles {
 					this.elementToDefinition.set( modelElement, newValue );
 				}
 
-				for ( const htmlClass of classes ) {
-					this.classToDefinition.set( htmlClass, { name, element, classes } );
-				}
+				this.classToDefinition.set( classes.join( ' ' ), { name, element, classes } );
 			}
 		}
 	}
@@ -85,14 +83,14 @@ class Styles {
 	/**
 	 * TODO
 	 */
-	getDefinitionsFromElementName( elementName ) {
+	getDefinitionsByElementName( elementName ) {
 		return this.elementToDefinition.get( elementName );
 	}
 
 	/**
 	 * TODO
 	 */
-	getDefinitionsFromClassName( className ) {
+	getDefinitionsByClassName( className ) {
 		return this.classToDefinition.get( className );
 	}
 }

@@ -30,13 +30,13 @@ describe( 'StyleCommand', () => {
 		classes: [ 'typewriter' ]
 	};
 
-	// const deletedStyleDefinition = {
-	// 	isBlock: false,
-	// 	modelElements: [ 'htmlSpan' ],
-	// 	name: 'Deleted text',
-	// 	element: 'span',
-	// 	classes: [ 'deleted' ]
-	// };
+	const multipleClassesDefinition = {
+		isBlock: false,
+		modelElements: [ 'htmlSpan' ],
+		name: 'Multiple classes',
+		element: 'span',
+		classes: [ 'class-one', 'class-two' ]
+	};
 
 	const bigHeadingStyleDefinition = {
 		isBlock: true,
@@ -77,6 +77,11 @@ describe( 'StyleCommand', () => {
 							name: 'Deleted text',
 							element: 'span',
 							classes: [ 'deleted' ]
+						},
+						{
+							name: 'Multiple classes',
+							element: 'span',
+							classes: [ 'class-one', 'class-two' ]
 						},
 						{
 							name: 'Big heading',
@@ -218,9 +223,19 @@ describe( 'StyleCommand', () => {
 					'</paragraph>'
 				);
 			} );
+
+			it( 'should add multiple htmlSpan attributes to the selected text if definition specify multiple classes', () => {
+				setData( model, '<paragraph>fo[ob]ar</paragraph>' );
+
+				command.execute( multipleClassesDefinition );
+
+				expect( getData( model ) ).to.equal(
+					'<paragraph>fo[<$text htmlSpan="{"classes":["class-one class-two"]}">ob</$text>]ar</paragraph>'
+				);
+			} );
 		} );
 
-		describe( 'block styles', () => {
+		describe.only( 'block styles', () => {
 			it( 'should add htmlAttribute with proper class to the selected element', () => {
 				setData( model, '<heading2>foo[]bar</heading2>' );
 
@@ -240,6 +255,15 @@ describe( 'StyleCommand', () => {
 				expect( getData( model ) ).to.equal(
 					'<heading2 htmlAttributes="{"classes":["red-heading","big-heading"]}">foo[]bar</heading2>'
 				);
+			} );
+
+			it( 'should remove htmlAttribute from the selected element', () => {
+				const attributes = { classes: [ 'big-heading' ] };
+				setData( model, '<heading2 htmlAttributes="' + attributes + '">foo[]bar</heading2>' );
+
+				command.execute( bigHeadingStyleDefinition );
+
+				expect( getData( model ) ).to.equal( '<heading2>foo[]bar</heading2>' );
 			} );
 		} );
 	} );

@@ -177,6 +177,10 @@ export function modelToViewBlockAttributeConverter( { model: modelName } ) {
 			const viewWriter = conversionApi.writer;
 			const viewElement = conversionApi.mapper.toViewElement( data.item );
 
+			if ( !viewAttributes ) {
+				return;
+			}
+
 			setViewAttributes( viewWriter, viewAttributes, viewElement );
 		} );
 	};
