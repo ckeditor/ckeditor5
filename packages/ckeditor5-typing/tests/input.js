@@ -68,6 +68,7 @@ describe( 'Input', () => {
 
 				viewDocument.fire( 'insertText', {
 					preventDefault: spy,
+					selection: viewDocument.selection,
 					text: 'bar'
 				} );
 
@@ -77,7 +78,8 @@ describe( 'Input', () => {
 			it( 'should have the text property passed correctly to the insert text command', async () => {
 				viewDocument.fire( 'insertText', {
 					text: 'bar',
-					preventDefault: sinon.spy()
+					selection: viewDocument.selection,
+					preventDefault: () => {}
 				} );
 
 				const firstCallArgs = insertTextCommandSpy.firstCall.args[ 0 ];

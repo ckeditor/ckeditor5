@@ -179,8 +179,7 @@ describe( 'Delete', () => {
 					sinon.assert.calledWithMatch( deleteSpy, {}, {
 						unit: 'selection',
 						direction: 'backward',
-						sequence: 0,
-						inputType: 'deleteContent'
+						sequence: 0
 					} );
 
 					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
@@ -204,12 +203,8 @@ describe( 'Delete', () => {
 						unit: 'codePoint',
 						direction: 'backward',
 						sequence: 0,
-						inputType: 'deleteContentBackward'
+						selectionToRemove: undefined
 					} );
-
-					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
-
-					expect( range.isEqual( viewRange ) ).to.be.true;
 				} );
 
 				it( 'should handle the deleteWordBackward event type and fire the delete event', () => {
@@ -228,12 +223,8 @@ describe( 'Delete', () => {
 						unit: 'word',
 						direction: 'backward',
 						sequence: 0,
-						inputType: 'deleteWordBackward'
+						selectionToRemove: undefined
 					} );
-
-					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
-
-					expect( range.isEqual( viewRange ) ).to.be.true;
 				} );
 
 				it( 'should handle the deleteHardLineBackward event type and fire the delete event', () => {
@@ -251,8 +242,7 @@ describe( 'Delete', () => {
 					sinon.assert.calledWithMatch( deleteSpy, {}, {
 						unit: 'selection',
 						direction: 'backward',
-						sequence: 0,
-						inputType: 'deleteHardLineBackward'
+						sequence: 0
 					} );
 
 					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
@@ -275,8 +265,7 @@ describe( 'Delete', () => {
 					sinon.assert.calledWithMatch( deleteSpy, {}, {
 						unit: 'selection',
 						direction: 'backward',
-						sequence: 0,
-						inputType: 'deleteSoftLineBackward'
+						sequence: 0
 					} );
 
 					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
@@ -302,12 +291,8 @@ describe( 'Delete', () => {
 						unit: 'character',
 						direction: 'forward',
 						sequence: 0,
-						inputType: 'deleteContentForward'
+						selectionToRemove: undefined
 					} );
-
-					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
-
-					expect( range.isEqual( viewRange ) ).to.be.true;
 				} );
 
 				it( 'should handle the deleteWordForward event type and fire the delete event', () => {
@@ -326,12 +311,8 @@ describe( 'Delete', () => {
 						unit: 'word',
 						direction: 'forward',
 						sequence: 0,
-						inputType: 'deleteWordForward'
+						selectionToRemove: undefined
 					} );
-
-					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
-
-					expect( range.isEqual( viewRange ) ).to.be.true;
 				} );
 
 				it( 'should handle the deleteHardLineForward event type and fire the delete event', () => {
@@ -349,8 +330,7 @@ describe( 'Delete', () => {
 					sinon.assert.calledWithMatch( deleteSpy, {}, {
 						unit: 'selection',
 						direction: 'forward',
-						sequence: 0,
-						inputType: 'deleteHardLineForward'
+						sequence: 0
 					} );
 
 					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();
@@ -373,8 +353,7 @@ describe( 'Delete', () => {
 					sinon.assert.calledWithMatch( deleteSpy, {}, {
 						unit: 'selection',
 						direction: 'forward',
-						sequence: 0,
-						inputType: 'deleteSoftLineForward'
+						sequence: 0
 					} );
 
 					const range = deleteSpy.firstCall.args[ 1 ].selectionToRemove.getFirstRange();

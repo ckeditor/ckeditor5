@@ -45,17 +45,16 @@ export default class Input extends Plugin {
 			data.preventDefault();
 
 			const { text, selection: viewSelection, resultRange: viewResultRange } = data;
-			const insertTextCommandData = { text };
 
 			// If view selection was specified, translate it to model selection.
-			// If not specified, the command will use the current document selection anyway.
-			if ( viewSelection ) {
-				const modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => {
-					return editor.editing.mapper.toModelRange( viewRange );
-				} );
+			const modelRanges = Array.from( viewSelection.getRanges() ).map( viewRange => {
+				return editor.editing.mapper.toModelRange( viewRange );
+			} );
 
-				insertTextCommandData.selection = editor.model.createSelection( modelRanges );
-			}
+			const insertTextCommandData = {
+				text,
+				selection: editor.model.createSelection( modelRanges )
+			};
 
 			if ( viewResultRange ) {
 				insertTextCommandData.resultRange = editor.editing.mapper.toModelRange( viewResultRange );

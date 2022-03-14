@@ -11,6 +11,11 @@ import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import BubblingEventInfo from '@ckeditor/ckeditor5-engine/src/view/observer/bubblingeventinfo';
 
+const ENTER_EVENT_TYPES = {
+	insertParagraph: { isSoft: false },
+	insertLineBreak: { isSoft: true }
+};
+
 /**
  * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
  *
@@ -31,17 +36,16 @@ export default class EnterObserver extends Observer {
 			}
 
 			const domEvent = data.domEvent;
-			const { inputType } = domEvent;
+			const enterEventSpec = ENTER_EVENT_TYPES[ domEvent.inputType ];
 
-			// TODO make it consistent and use some const array with description as in InsertTextObserver etc.
-			if ( inputType !== 'insertParagraph' && inputType !== 'insertLineBreak' ) {
+			if ( !enterEventSpec ) {
 				return;
 			}
 
 			const event = new BubblingEventInfo( doc, 'enter', data.targetRanges[ 0 ] );
 
 			doc.fire( event, new DomEventData( doc, domEvent, {
-				isSoft: inputType === 'insertLineBreak'
+				isSoft: enterEventSpec.isSoft
 			} ) );
 
 			// Stop `beforeinput` event if `enter` event was stopped.
