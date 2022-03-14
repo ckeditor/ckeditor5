@@ -134,6 +134,10 @@ export default class DeleteObserver extends Observer {
 		} );
 
 		document.on( 'beforeinput', ( evt, data ) => {
+			if ( !this.isEnabled ) {
+				return;
+			}
+
 			const { targetRanges, domEvent, inputType } = data;
 			const deleteEventSpec = DELETE_EVENT_TYPES[ inputType ];
 

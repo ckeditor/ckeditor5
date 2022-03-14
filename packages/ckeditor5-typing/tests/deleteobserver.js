@@ -162,6 +162,16 @@ describe( 'Delete', () => {
 			sinon.assert.notCalled( interceptedEventData.preventDefault );
 		} );
 
+		it( 'should not work if the observer is disabled', () => {
+			view.getObserver( DeleteObserver ).isEnabled = false;
+
+			fireBeforeInputDomEvent( domRoot, {
+				inputType: 'deleteContentBackward'
+			} );
+
+			sinon.assert.notCalled( deleteSpy );
+		} );
+
 		describe( 'beforeinput event types handling', () => {
 			describe( 'backward delete event types', () => {
 				it( 'should handle the deleteContent event type and fire the delete event', () => {
