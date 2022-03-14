@@ -25,7 +25,7 @@ The CKEditor 5 Framework consist of several [npm packages](https://npmjs.com). T
 * [Node.js](https://nodejs.org/en/) 14.0.0+
 * npm 5.7.1+ (**note:** some npm 5+ versions were known to cause [problems](https://github.com/npm/npm/issues/16991), especially with deduplicating packages; upgrade npm when in doubt)
 
-Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 builds Advanced setup} guide.
+Besides Node.js and npm you also need [webpack@5](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link installation/advanced/integrating-from-source Integrating from source} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -112,7 +112,7 @@ module.exports = {
 
 ## Creating an editor
 
-You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link builds/guides/integration/installing-plugins#requirements must have the same version as the base editor package}.
+You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple rich-text editor. Keep in mind however, that all packages (excluding `@ckeditor/ckeditor5-dev-*`) {@link installation/getting-started/installing-plugins#requirements must have the same version as the base editor package}.
 You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
@@ -134,7 +134,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	No {@link builds/guides/overview editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/integration/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
+	No {@link installation/advanced/predefined-builds editor builds} are used because adding new plugins to them requires rebuilding them anyway. This can be done by {@link installation/getting-started/installing-plugins customizing a build} or by including the CKEditor 5 source into your application (like in this guide).
 </info-box>
 
 ```js

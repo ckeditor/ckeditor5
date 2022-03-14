@@ -19,7 +19,7 @@ There are two available types of watchdogs:
 * [Context watchdog](#context-watchdog) &ndash; To be used when your application uses the context.
 
 <info-box>
-	Note: A watchdog can be used only with an {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source editor built from source}.
+	Note: A watchdog can be used only with an {@link installation/advanced/integrating-from-source editor built from source}.
 </info-box>
 
 ## Usage
@@ -249,7 +249,7 @@ watchdog.setCreator( async config => {
 
 // Setting a custom destructor for the context.
 watchdog.setDestructor( async context => {
-	
+
 	// Do something before destroy.
 
 	await context.destroy();
