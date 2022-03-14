@@ -31,7 +31,7 @@ Read our comprehensive blog post about [Managing images with CKEditor 5](https:/
 
 ## Demo
 
-The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
+The demo below uses the {@link installation/advanced/predefined-builds#classic-editor Classic editor} configured to use the {@link features/easy-image Easy Image} service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) and the `AutoImage` plugin, which allows to {@link features/images-inserting paste image URLs directly}:
 
 {@snippet build-classic-source}
 
@@ -79,7 +79,7 @@ The {@link features/simple-upload-adapter Simple upload adapter} allows uploadin
 
 ### Base64 adapter
 
-The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link builds/guides/integration/saving-data editor output}.
+The {@link features/base64-upload-adapter Base64 upload feature} converts images inserted into the editor into [Base64 strings](https://en.wikipedia.org/wiki/Base64) in the {@link installation/advanced/saving-data editor output}.
 
 <info-box warning>
 	Please remember that while `Base64` upload is a very easy solution, it is also highly inefficient. The image file itself is kept as data in the database, generating a much heavier data load and higher transfer. We recommend using alternative ways to upload images into CKEditor 5.

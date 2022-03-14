@@ -93,7 +93,7 @@ To find out more see the following [CKEditor 5 documentation](https://ckeditor.c
 
 * [API documentation](https://ckeditor.com/docs/ckeditor5/latest/api/index.html)
 * [CKEditor 5 Framework documentation](https://ckeditor.com/docs/ckeditor5/latest/framework/index.html)
-* [CKEditor 5 builds documentation](https://ckeditor.com/docs/ckeditor5/latest/builds/index.html)
+* [CKEditor 5 builds documentation](https://ckeditor.com/docs/ckeditor5/latest/installation/index.html)
 * [CKEditor 5 Features documentation](https://ckeditor.com/docs/ckeditor5/latest/features/index.html)
 * [CKEditor 5 Examples](https://ckeditor.com/docs/ckeditor5/latest/examples/index.html)
 
