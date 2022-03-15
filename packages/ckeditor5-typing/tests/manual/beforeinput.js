@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 
-/* globals console, document */
+/* globals window, console, document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
@@ -106,7 +106,7 @@ ClassicEditor
 		}
 	} )
 	.then( editor => {
-		// window.editor = editor;
+		window.editor = editor;
 
 		let beforeInputEventCount = 0;
 		let compositionEventCount = 0;
