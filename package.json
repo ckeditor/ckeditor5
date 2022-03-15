@@ -172,6 +172,7 @@
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
   "resolutions": {
+    "eslint-config-ckeditor5": "^4.0.0",
     "postcss-loader": "^4.0.0",
     "karma-coverage": "2.1.0"
   },
