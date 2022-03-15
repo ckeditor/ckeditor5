@@ -287,7 +287,10 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]'
+				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]' +
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="001" listType="bulleted">Bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="002" listType="bulleted">Yar</paragraph>'
 			} );
 		} );
 
@@ -298,8 +301,10 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Fo</paragraph>' +
-					'[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]'
+				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]' +
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">Fooo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="001" listType="bulleted">Bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="002" listType="bulleted">Yar</paragraph>'
 			} );
 		} );
 
@@ -310,8 +315,10 @@ describe( 'Inserting widgets in document lists', () => {
 					'* Bar',
 					'* Yar]'
 				],
-				expected: '<paragraph listIndent="0" listItemId="000" listType="bulleted">Foo</paragraph>' +
-					'[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]'
+				expected: '[<media listIndent="0" listItemId="000" listType="bulleted" url=""></media>]' +
+				'<paragraph listIndent="0" listItemId="000" listType="bulleted">Fooo</paragraph>' +
+				'<paragraph listIndent="0" listItemId="001" listType="bulleted">Bar</paragraph>' +
+				'<paragraph listIndent="0" listItemId="002" listType="bulleted">Yar</paragraph>'
 			} );
 		} );
 	} );

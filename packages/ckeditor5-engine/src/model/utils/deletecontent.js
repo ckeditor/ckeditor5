@@ -80,6 +80,9 @@ export default function deleteContent( model, selection, options = {} ) {
 			return;
 		}
 
+		const selectedElement = selection.getSelectedElement();
+		const attributesToCopy = schema.getAttributesWithProperty( selectedElement, 'copyOnReplace', true );
+
 		// Get the live positions for the range adjusted to span only blocks selected from the user perspective.
 		const [ startPosition, endPosition ] = getLivePositionsForSelectedBlocks( selRange );
 
@@ -114,10 +117,15 @@ export default function deleteContent( model, selection, options = {} ) {
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
 		// If autoparagraphing is off, we assume that you know what you do so we leave the selection wherever it was.
 		if ( !options.doNotAutoparagraph && shouldAutoparagraph( schema, startPosition ) ) {
-			const selectedElement = selection.getSelectedElement();
-			const attributesToCopy = schema.getAttributesWithProperty( selectedElement, 'copyOnReplace', true );
+			const attributes = {};
 
-			insertParagraph( writer, startPosition, selection, attributesToCopy );
+			for ( const attributeName of Object.keys( attributesToCopy ) ) {
+				if ( model.schema.checkAttribute( 'paragraph', attributeName ) ) {
+					attributes[ attributeName ] = attributesToCopy[ attributeName ];
+				}
+			}
+
+			insertParagraph( writer, startPosition, selection, attributes );
 		}
 
 		startPosition.detach();

@@ -694,7 +694,11 @@ describe( 'ImageTypeCommand', () => {
 			} );
 
 			it( 'should copy parent block attributes to image block', () => {
-				setModelData( model, `<paragraph pretty="true" smart="true">[<imageInline src="${ imgSrc }"></imageInline>]</paragraph>` );
+				setModelData( model,
+					'<paragraph pretty="true" smart="true">' +
+						`[<imageInline src="${ imgSrc }"></imageInline>]` +
+					'</paragraph>`'
+				);
 
 				blockCommand.execute();
 

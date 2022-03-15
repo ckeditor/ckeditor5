@@ -108,7 +108,7 @@ export function getSelectedMediaModelWidget( selection ) {
  * the default behavior of {@link module:engine/model/model~Model#insertContent `model.insertContent()`} will
  * be applied.
  */
-export function insertMedia( model, url, selectable ) {
+export function insertMedia( model, url, selectable, findOptimalPosition ) {
 	model.change( writer => {
 		const mediaElement = writer.createElement( 'media', { url } );
 
@@ -116,7 +116,7 @@ export function insertMedia( model, url, selectable ) {
 			mediaElement,
 			selectable,
 			undefined,
-			{ setSelection: 'on' }
+			{ setSelection: 'on', findOptimalPosition }
 		);
 	} );
 }

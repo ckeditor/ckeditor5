@@ -185,11 +185,15 @@ describe( 'MediaEmbedCommand', () => {
 			} );
 
 			it( 'should copy attributes from first selected element', () => {
-				setData( model, '<p pretty="true">[foo</p><p smart="true" >bar]</p>' );
+				setData( model, '<p pretty="true">[foo</p><p smart="true">bar]</p>' );
 
 				command.execute( 'http://cksource.com' );
 
-				expect( getData( model ) ).to.equalMarkup( '[<media pretty="true" url="http://cksource.com"></media>]' );
+				expect( getData( model ) ).to.equalMarkup(
+					'[<media pretty="true" url="http://cksource.com"></media>]' +
+					'<p pretty="true">foo</p>' +
+					'<p smart="true">bar</p>'
+				);
 			} );
 
 			it( 'should only copy $block attributes marked with copyOnReplace', () => {

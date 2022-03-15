@@ -5,6 +5,7 @@
 
 import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import { first } from 'ckeditor5/src/utils';
 
 import { findOptimalInsertionRange } from './utils';
 
@@ -12,19 +13,19 @@ import { findOptimalInsertionRange } from './utils';
  * @module widget/insertobject
  */
 
-const insertObjectDefaultOptions = { setSelection: undefined, findOptimalPosition: false };
-
 /*
-	Place for exceptional documentation
-	Object - an object that we would like to insert
-	Selectable - 99% - document selection, but sometimes custom one.
-	Offset - just to pass to insert content
-	Options -     	setSelection: 'on|after',
-					findOptimalPosition: true,
-					// Maybe:
-					doNotInheritBlockAttributes: true
+Place for exceptional documentation
+Object - an object that we would like to insert
+Selectable - 99% - document selection, but sometimes custom one.
+Offset - just to pass to insert content
+Options -     	setSelection: 'on|after',
+findOptimalPosition: true,
+// Maybe:
+doNotInheritBlockAttributes: true
 */
 export default function insertObject( model, object, selectable, offset, options = {} ) {
+	let objectToInsert = object;
+	const insertObjectDefaultOptions = { setSelection: undefined, findOptimalPosition: false };
 	const optionsWithDefaults = { ...insertObjectDefaultOptions, ...options };
 
 	return model.change( writer => {
@@ -46,25 +47,35 @@ export default function insertObject( model, object, selectable, offset, options
 		}
 
 		// Get and set attributes
-		const firstSelectedBlock = selection.getSelectedBlocks().next().value;
+		const firstSelectedBlock = first( selection.getSelectedBlocks() );
 		const attributesToCopy = model.schema.getAttributesWithProperty( firstSelectedBlock, 'copyOnReplace', true );
 
-		writer.setAttributes( attributesToCopy, object );
-
 		// Autoparagraph
-		if ( !model.schema.checkChild( insertionSelection.anchor.parent, object ) && model.schema.checkChild( 'paragraph', object ) ) {
+		if (
+			!model.schema.checkChild( insertionSelection.anchor.parent, object ) &&
+			model.schema.checkChild( insertionSelection.anchor.parent, 'paragraph' &&
+			model.schema.checkChild( 'paragraph', object ) )
+		) {
 			const paragraph = writer.createElement( 'paragraph', attributesToCopy );
 
 			if ( !insertionSelection.isCollapsed ) {
 				model.deleteContent( insertionSelection, { doNotAutoparagraph: true } );
 			}
 
-			writer.insert( paragraph, insertionSelection.anchor );
+			writer.insert( object, paragraph );
 
+			objectToInsert = paragraph;
 			insertionSelection = writer.createPositionAt( paragraph, 0 );
 		}
 
-		const affectedRange = model.insertContent( object, insertionSelection, offset, options );
+		// Add checking schema
+		for ( const attributeName of Object.keys( attributesToCopy ) ) {
+			if ( model.schema.checkAttribute( objectToInsert, attributeName ) ) {
+				writer.setAttribute( attributeName, attributesToCopy[ attributeName ], objectToInsert );
+			}
+		}
+
+		const affectedRange = model.insertContent( objectToInsert, insertionSelection, offset );
 
 		if ( optionsWithDefaults.setSelection ) {
 			_setSelection( writer, model, object, optionsWithDefaults.setSelection );
@@ -74,7 +85,7 @@ export default function insertObject( model, object, selectable, offset, options
 	} );
 }
 
-function _setSelection( writer, model, contextElement, place ) {
+function _setSelection( writer, model, contextElement, place, attributes ) {
 	if ( place === 'after' ) {
 		let nextElement = contextElement.nextSibling;
 
@@ -85,6 +96,13 @@ function _setSelection( writer, model, contextElement, place ) {
 		if ( !canSetSelection && model.schema.checkChild( contextElement.parent, 'paragraph' ) ) {
 			nextElement = writer.createElement( 'paragraph' );
 
+			// Need to decide if it should be enabled.
+			// for ( const attributeName of Object.keys( attributes ) ) {
+			// 	if ( model.schema.checkAttribute( nextElement, attributeName ) ) {
+			// 		writer.setAttribute( attributeName, attributes[ attributeName ], nextElement );
+			// 	}
+			// }
+
 			model.insertContent( nextElement, writer.createPositionAfter( contextElement ) );
 		}
 
@@ -92,9 +110,7 @@ function _setSelection( writer, model, contextElement, place ) {
 		if ( nextElement ) {
 			writer.setSelection( nextElement, 0 );
 		}
-	}
-
-	if ( place === 'on' ) {
+	} else if ( place === 'on' ) {
 		writer.setSelection( contextElement, 'on' );
 	}
 }
