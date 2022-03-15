@@ -102,7 +102,7 @@
     "coveralls": "^3.1.0",
     "css-loader": "^5.2.7",
     "eslint": "^7.19.0",
-    "eslint-config-ckeditor5": "^3.0.0",
+    "eslint-config-ckeditor5": "^4.0.0",
     "glob": "^7.1.6",
     "http-server": "^0.12.3",
     "husky": "^4.2.5",
@@ -122,7 +122,7 @@
     "react-dom": "^16.13.1",
     "style-loader": "^2.0.0",
     "stylelint": "^13.5.0",
-    "stylelint-config-ckeditor5": "^2.0.0",
+    "stylelint-config-ckeditor5": "^4.0.0",
     "svgo": "^2.2.2",
     "terser-webpack-plugin": "^4.2.3",
     "umberto": "^2.0.0",
@@ -144,8 +144,8 @@
     "url": "https://github.com/ckeditor/ckeditor5.git"
   },
   "scripts": {
-    "lint": "eslint --quiet '**/*.js' --format ./scripts/eslint-formatter.js",
-    "stylelint": "stylelint --quiet --allow-empty-input 'packages/**/*.css' 'docs/**/*.css'",
+    "lint": "eslint --quiet \"**/*.js\" --format ./scripts/eslint-formatter.js",
+    "stylelint": "stylelint --quiet --allow-empty-input \"packages/**/*.css\" \"docs/**/*.css\"",
     "test": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
     "manual": "node --max_old_space_size=8192 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "manual:verify": "node ./scripts/web-crawler/index.js --manual",
@@ -172,7 +172,7 @@
     "check-dependencies": "ckeditor5-dev-tests-check-dependencies"
   },
   "resolutions": {
-    "eslint-config-ckeditor5": "^3.0.0",
+    "eslint-config-ckeditor5": "^4.0.0",
     "postcss-loader": "^4.0.0",
     "karma-coverage": "2.1.0"
   },

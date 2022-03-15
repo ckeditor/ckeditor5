@@ -1,3 +1,19 @@
 {
-	"extends": "stylelint-config-ckeditor5"
+	"extends": "stylelint-config-ckeditor5",
+	"plugins": [
+		"stylelint-plugin-ckeditor5-rules/lib/license-header"
+	],
+	"rules": {
+		"ckeditor5-rules/license-header": [
+			true,
+			{
+				"headerLines": [
+					"/*",
+					" * Copyright (c) 2003-2022, CKSource Holding sp. z o.o. All rights reserved.",
+					" * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license",
+					" */"
+				]
+			}
+		]
+	}
 }
