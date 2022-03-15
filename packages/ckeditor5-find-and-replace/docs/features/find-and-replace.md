@@ -41,7 +41,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
+	Read more about {@link installation/getting-started/installing-plugins installing plugins}.
 </info-box>
 
 <!-- TODO: Update this with proper description and values, and code snippet for replace / replaceAll -->
