@@ -235,7 +235,7 @@ describe( 'StyleCommand', () => {
 			} );
 		} );
 
-		describe.only( 'block styles', () => {
+		describe( 'block styles', () => {
 			it( 'should add htmlAttribute with proper class to the selected element', () => {
 				setData( model, '<heading2>foo[]bar</heading2>' );
 
